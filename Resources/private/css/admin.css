@@ -1,0 +1,12 @@
+form #order_items table,
+form #order_items p {
+    margin-bottom: 0;
+}
+
+form #order_items table>tbody>tr:first-child>td {
+    border-top: none;
+}
+
+form #order_items table table {
+    margin-left: 10px;
+}

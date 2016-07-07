@@ -1,0 +1,381 @@
+ekyna_commerce:
+    label: Commerce
+#    settings:
+#        cookies:
+#            label: Cookies
+#            mode:
+#                label: Mode
+#                header: En-tête
+#                dialog: Dialogue
+#            header_text: Texte du mode en-tête
+#            dialog_text: Texte du mode dialogue
+#            close: Masquer ce message
+#            learn: En savoir plus
+    state:
+        label:
+            singular: État/Région
+            plural: États/Régions
+    adjustment:
+        mode:
+            flat: Montant
+            percent: Pourcentage
+    country:
+        label:
+            singular: Pays
+            plural: Pays
+        header:
+            list: Pays <small>Liste des pays</small>
+            show: Détail du pays <small>%name%</small>
+            new: Créer un nouveau pays
+            edit: Modifier le pays <small>%name%</small>
+            remove: Supprimer le pays <small>%name%</small>
+        button:
+            list: Liste des pays
+            show: Détail du pays
+            new: Nouveau pays
+            edit: Modifier le pays
+            remove: Supprimer le pays
+        alert:
+            no_item: Aucun pays configuré
+    currency:
+        label:
+            singular: Devise
+            plural: Devises
+        header:
+            list: Devises <small>Liste des devises</small>
+            show: Détail de la devise <small>%name%</small>
+            new: Créer une nouvelles devise
+            edit: Modifier la devise <small>%name%</small>
+            remove: Supprimer la devise <small>%name%</small>
+        button:
+            list: Liste des devises
+            show: Détail de la devise
+            new: Nouvelle devise
+            edit: Modifier la devise
+            remove: Supprimer la devise
+        alert:
+            no_item: Aucune devise configuré
+    customer:
+        label:
+            singular: Client
+            plural: Clients
+        header:
+            list: Clients <small>Liste des clients</small>
+            show: Détail du client <small>%name%</small>
+            new: Créer un nouveau client
+            edit: Modifier le client <small>%name%</small>
+            remove: Supprimer le client <small>%name%</small>
+        button:
+            list: Liste des clients
+            show: Détail du client
+            new: Nouveau client
+            edit: Modifier le client
+            remove: Supprimer le client
+#        field:
+#            controller: Gabarit
+#        value:
+#            root: Racine
+        alert:
+            no_item: Aucun client configuré
+    customer_address:
+        label:
+            singular: Adresse
+            plural: Adresses
+        header:
+            list: Adresses <small>Liste des adresses</small>
+            show: Détail de l'adresse <small>%name%</small>
+            new: Créer une nouvelle adresse
+            edit: Modifier l'adresse <small>%name%</small>
+            remove: Supprimer l'adresse <small>%name%</small>
+        button:
+            list: Liste des adresses
+            show: Détail de l'adresse
+            new: Nouvelle adresse
+            edit: Modifier l'adresse
+            remove: Supprimer l'adresse
+#        field:
+#            controller: Gabarit
+#        value:
+#            root: Racine
+        alert:
+            no_item: Aucune adresse configuré
+    customer_group:
+        label:
+            singular: Groupe de clients
+            plural: Groupes de clients
+        header:
+            list: Groupes de clients <small>Liste des groupes</small>
+            show: Détail du groupes de clients <small>%name%</small>
+            new: Créer un nouveau groupe de clients
+            edit: Modifier le groupe de clients <small>%name%</small>
+            remove: Supprimer le groupe de clients <small>%name%</small>
+        button:
+            list: Liste des groupes de clients
+            show: Détail du groupe de clients
+            new: Nouveau groupe de clients
+            edit: Modifier le groupe de clients
+            remove: Supprimer le groupe de clients
+        alert:
+            no_item: Aucun groupe de clients configuré
+    order:
+        label:
+            singular: Commande
+            plural: Commandes
+        header:
+            list: Commandes <small>Liste des commandes</small>
+            show: Détail de la commande<small>%number%</small>
+            new: Créer une nouvelle commande
+            edit: Modifier la commande <small>%number%</small>
+            remove: Supprimer la commande <small>%number%</small>
+        button:
+            list: Liste des commandes
+            show: Détail de la commande
+            new: Nouvelle commande
+            edit: Modifier la commande
+            remove: Supprimer la commande
+        field:
+            customer: Client
+            addresses: Adresses
+            invoice_address: Adresse de facturation
+            delivery_address: Adresse de livraison
+            same_address: Même adresse
+            invoice: Facture
+            invoice_pdf: Facture PDF
+            no_shipment: Sans livraison
+            details: Détail
+            net_unit: Prix Unit. HT
+            net_total: Total HT
+            tax_total: Total taxes
+            adjustment_total: Total remises
+            paid_total: Total réglements
+            grand_total: Total TTC
+            weight_total: Poids total
+            document_footer: Pied de page des documents
+            state: Statut
+            payment_state: Statut paiement
+            shipment_state: Statut livraison
+        form:
+            add_item: Ajouter une ligne produit
+            remove_item: Supprimer la ligne produit ?
+            add_child_item: Ajouter une ligne sous-produit
+            remove_child_item: Supprimer la ligne sous-produit ?
+            add_item_adjustment: Ajouter une remise produit
+            remove_item_adjustment: Supprime la remise produit ?
+            add_adjustment: Ajouter une remise
+            remove_adjustment: Supprimer la remise ?
+        alert:
+            no_item: Aucune commande configuré
+        state:
+            new: Création
+            pending: En attente
+            refused: Refusée
+            accepted: Acceptée
+            completed: Complétée
+            refunded: Remboursée
+            cancelled: Annulée
+        type:
+            cart: Panier
+            order: Commande
+            quote: Devis
+        message:
+            already_paid: La commande est déjà réglée en totalité
+            has_payment_cant_deleted: Cette commande a des paiements et ne peut être supprimée.
+            has_shipment_cant_deleted: Cette commande a des livraisons et ne peut être supprimée.
+        dashboard:
+            title: Commandes à traiter
+            none: Aucune commande à traiter
+    order_item:
+        field:
+            net_unit_price: Prix unit. H.T.
+            net_total: Total H.T.
+            tax: T.V.A.
+            tax_name: Nom taxe
+            tax_rate: Taux taxe
+    payment:
+        label:
+            singular: Paiement
+            plural: Paiements
+        header:
+            new: Créer un nouveau paiement
+            edit: Modifier le paiement
+            remove: Supprimer le paiement
+        field:
+            notes: Notes
+        button:
+            new: Nouveau paiement
+            edit: Modifier le paiement
+            remove: Supprimer le paiement
+        alert:
+            no_item: Aucun paiement configuré
+        message:
+            remove_confirm: Souhaitez-vous réellement supprimer ce paiement ?
+        state:
+            new:
+                label: Création
+                message: Votre paiement a bien été créé.
+            pending:
+                label: En attente
+                message: Votre paiement est en attente.
+            captured:
+                label: Accepté
+                message: Votre paiement est accepté.
+            failed:
+                label: Refusé
+                message: Votre paiement est refusé.
+            cancelled:
+                label: Annulé
+                message: Votre paiement a été annulé.
+            refunded:
+                label: Remboursé
+                message: Votre paiement est remboursé.
+            suspended:
+                label: Suspendu
+                message: Votre paiement est supendu.
+            authorized:
+                label: Autorisé
+                message: Votre paiement est autorisé.
+            expired:
+                label: Expiré
+                message: Votre paiement a expiré.
+            unknown:
+                label: Inconnu
+                message: Le statut de votre paiement est inconnu.
+        transition:
+            create: Créer
+            hang: Attendre
+            capture: Accepter
+            fail: Refuser
+            cancel: Annuler
+            refund: Rembourser
+            authorize: Autoriser
+            suspend: Suspendre
+            expire: Expirer
+            void: Néant
+        impossible_transition: Impossible d'appliquer le changement de statut du paiement demandé.
+    payment_method:
+        label:
+            singular: Mode de paiement
+            plural: Modes de paiement
+        header:
+            list: Modes de paiement <small>Liste des modes</small>
+            show: Détail du mode de paiement <small>%name%</small>
+            new: Créer un nouveau mode de paiement
+            edit: Modifier le mode de paiement <small>%name%</small>
+            remove: Supprimer le mode de paiement <small>%name%</small>
+        button:
+            list: Liste des modes
+            show: Détail du mode
+            new: Nouveau mode
+            edit: Modifier le mode
+            remove: Supprimer le mode
+            choose: Je choisi de régler par %gateway_name%
+        field:
+            factory_name: Passerelle
+            available: Partie publique
+        alert:
+            empty_list: Aucun mode de paiement configuré
+    shipment:
+        label:
+            singular: Livraison
+            plural: Livraisons
+        header:
+            new: Créer une nouvelle livraison
+            edit: Modifier la livraison
+            remove: Supprimer la livraison
+        button:
+            new: Nouvelle livraison
+            edit: Modifier la livraison
+            remove: Supprimer la livraison
+        message:
+            remove_confirm: Souhaitez-vous réellement supprimer cette livraison ?
+        alert:
+            no_item: Aucune livraison configuré
+        state:
+            checkout: Vérification
+            onhold: En cours d'envoi
+            pending: En attente
+            backordered: En réapprovisionnement
+            ready: Prêt
+            shipped: Expédié
+            completed: Complété
+            returned: Retourné
+            cancelled: Annulé
+    shipment_method:
+        label:
+            singular: Mode de livraison
+            plural: Modes de livraison
+        header:
+            list: Modes de livraison <small>Liste des modes</small>
+            show: Détail du mode de livraison <small>%name%</small>
+            new: Créer un nouveau mode de livraison
+            edit: Modifier le mode de livraison <small>%name%</small>
+            remove: Supprimer le mode de livraison <small>%name%</small>
+        button:
+            list: Liste des modes
+            show: Détail du mode
+            new: Nouveau mode
+            edit: Modifier le mode
+            remove: Supprimer le mode
+            choose: Je choisi une livraison par %gateway_name%
+        field:
+            available: Partie publique
+        alert:
+            empty_list: Aucun mode de livraison configuré
+    tax:
+        label:
+            singular: Taxe
+            plural: Taxes
+        header:
+            list: Taxes <small>Liste des taxes</small>
+            show: Détail de la taxe<small>%name%</small>
+            new: Créer une nouvelle taxe
+            edit: Modifier la taxe <small>%name%</small>
+            remove: Supprimer la taxe <small>%name%</small>
+        button:
+            list: Liste des taxes
+            show: Détail de la taxe
+            new: Nouvelle taxe
+            edit: Modifier la taxe
+            remove: Supprimer la taxe
+        field:
+            postal_code_match: Masque de code postal
+        alert:
+            no_item: Aucune tax configuré
+    tax_group:
+        label:
+            singular: Groupe de taxes
+            plural: Groupes de taxes
+        header:
+            list: Groupe de taxes <small>Liste des groupes</small>
+            show: Détail du groupe de taxes<small>%name%</small>
+            new: Créer un nouveau groupe de taxes
+            edit: Modifier le groupe de taxes <small>%name%</small>
+            remove: Supprimer le groupe de taxes <small>%name%</small>
+        button:
+            list: Liste des groupes
+            show: Détail du groupe
+            new: Nouveau groupe
+            edit: Modifier le groupe
+            remove: Supprimer le groupe
+        field:
+            default: Par défaut
+        alert:
+            no_item: Aucun groupe de taxes configuré
+    tax_rule:
+        label:
+            singular: Règle de taxes
+            plural: Règles de taxes
+        header:
+            list: Règle de taxes <small>Liste des règles</small>
+            show: Détail de la règle de taxes<small>%name%</small>
+            new: Créer une nouvelle règle de taxes
+            edit: Modifier la règle de taxes <small>%name%</small>
+            remove: Supprimer la règle de taxes <small>%name%</small>
+        button:
+            list: Liste des règles
+            show: Détail de la règle
+            new: Nouvelle règle
+            edit: Modifier la règle
+            remove: Supprimer la règle
+        alert:
+            no_item: Aucune règle de taxes configuré

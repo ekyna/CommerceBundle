@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<constraint-mapping
+        xmlns="http://symfony.com/schema/dic/constraint-mapping"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                        http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+
+    <!-- Customer -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\Customer">
+        <property name="gender">
+            <constraint name="NotBlank" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
+        </property>
+    </class>
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\CustomerAddress">
+        <property name="gender">
+            <constraint name="NotBlank" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
+        </property>
+        <property name="phone">
+            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
+                <option name="type">fixed_line</option>
+            </constraint>
+        </property>
+        <property name="mobile">
+            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
+                <option name="type">mobile</option>
+            </constraint>
+        </property>
+    </class>
+
+    <!-- Order -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\Order">
+        <property name="gender">
+            <constraint name="NotBlank" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
+        </property>
+    </class>
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\OrderAddress">
+        <property name="gender">
+            <constraint name="NotBlank" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
+        </property>
+        <property name="phone">
+            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
+                <option name="type">fixed_line</option>
+            </constraint>
+        </property>
+        <property name="mobile">
+            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
+                <option name="type">mobile</option>
+            </constraint>
+        </property>
+    </class>
+
+</constraint-mapping>

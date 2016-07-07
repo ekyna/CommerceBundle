@@ -1,0 +1,43 @@
+ekyna_commerce_order_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.order.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_order_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.order.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_order_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.order.controller:newAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_order_admin_show:
+    path: /{orderId}/show
+    defaults: { _controller: "ekyna_commerce.order.controller:showAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_admin_edit:
+    path: /{orderId}/edit
+    defaults: { _controller: "ekyna_commerce.order.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+#ekyna_commerce_order_admin_toggle:
+#    path: /{orderId}/toggle/{field}
+#    defaults: { _controller: "ekyna_commerce.order.controller:toggleAction", field: enabled }
+#    methods: [GET]
+#    requirements:
+#        orderId: \d+
+#        field: \w+
+
+ekyna_commerce_order_admin_remove:
+    path: /{orderId}/remove
+    defaults: { _controller: "ekyna_commerce.order.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+

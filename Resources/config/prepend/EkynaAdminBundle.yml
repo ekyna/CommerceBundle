@@ -1,0 +1,3 @@
+ekyna_admin:
+    stylesheets:
+        - 'bundles/ekynacommerce/css/admin.css'

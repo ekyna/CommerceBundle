@@ -1,0 +1,276 @@
+{% extends 'EkynaAdminBundle:Form:form_div_layout.html.twig' %}
+
+
+{% block ekyna_commerce_address_widget %}
+{% spaceless %}
+    {{ form_errors(form) }}
+    {% if address.customer is defined %}
+        {{ form_row(form.customer) }}
+    {% endif %}
+    {{ form_row(form.company) }}
+    {{ form_row(form.identity) }}
+    {{ form_row(form.street) }}
+    {{ form_row(form.supplement) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.postalCode, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.city, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    {% if form.country is defined %}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.country, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {#{{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}#}
+        </div>
+    </div>
+    {% endif %}
+    {% if form.phone is defined %}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    {% endif %}
+    {#{{ form_rest(form) }}#}
+{% endspaceless %}
+{% endblock ekyna_commerce_address_widget %}
+
+
+{% block ekyna_commerce_order_items_widget %}
+{% spaceless %}
+    {% set attr = attr|merge({'class': 'ekyna-collection' }) %}
+    {% set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' %}
+
+    {# Prototype #}
+    {% if prototype is defined %}
+        {# Controls #}
+        {% set controls =
+            '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-up" ' ~
+                    'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
+                '<span class="glyphicon glyphicon-chevron-up"></span>' ~
+            '</button>' ~
+            '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                    'data-collection="' ~ form.vars.id ~ '" data-field="__id__"' ~ delete_button_confirm ~ '>' ~
+                '<span class="glyphicon glyphicon-remove"></span>' ~
+            '</button>' ~
+            '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-down" ' ~
+                    'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
+                '<span class="glyphicon glyphicon-chevron-down"></span>' ~
+            '</button>' %}
+        {% set attr = attr|merge({'data-prototype': form_widget(prototype)|replace({'__controls__': controls}) }) %}
+        {% set attr = attr|merge({'data-prototype-name': prototype_name }) %}
+    {% endif %}
+
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        <table class="ekyna-collection-child-container table">
+            {% if not form.vars.children_mode %}
+            {# Header #}
+            <thead>
+                <tr>
+                    <th>
+                        {{ 'ekyna_core.field.designation'|trans }} /
+                        {{ 'ekyna_core.field.reference'|trans }}
+                    </th>
+                    <th>
+                        {{ 'ekyna_core.field.weight'|trans }}
+                    </th>
+                    <th>
+                        {{ 'ekyna_core.field.quantity'|trans }} /
+                        {{ 'ekyna_core.field.price'|trans }}
+                    </th>
+                    <th>
+                        {{ 'ekyna_core.field.tax'|trans }}
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            {% endif %}
+
+            {# Rows #}
+            {% for child in form %}
+                {% set controls =
+                    '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-up" ' ~
+                            'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
+                        '<span class="glyphicon glyphicon-chevron-up"></span>' ~
+                    '</button>' ~
+                    '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                            'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '"' ~
+                            delete_button_confirm ~ '>' ~
+                        '<span class="glyphicon glyphicon-remove"></span>' ~
+                    '</button>' ~
+                    '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-down" ' ~
+                            'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
+                        '<span class="glyphicon glyphicon-chevron-down"></span>' ~
+                    '</button>'
+                %}
+                {{ form_widget(child)|replace({'__controls__': controls})|raw }}
+            {% endfor %}
+
+            {# Footer #}
+            <tfoot>
+            {% if form.vars.allow_add %}
+                <tr>
+                    <td colspan="5">
+                        <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                        </button>
+                    </td>
+                </tr>
+            {% endif %}
+            </tfoot>
+        </table>
+        {#{{ form_rest(form) }}#}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_order_items_widget %}
+
+
+{% block ekyna_commerce_order_item_widget %}
+{% spaceless %}
+    <tbody class="ekyna-collection-child">
+        {# TODO {{ form_errors(form) }}#}
+        <tr>
+            <td colspan="2">{{ form_widget(form.designation) }}</td>
+            <td>{{ form_widget(form.quantity) }}</td>
+            <td>{{ form_widget(form.taxName) }}</td>
+            <td rowspan="3" class="ekyna-collection-controls">__controls__</td>
+        </tr>
+        <tr>
+            <td>{{ form_widget(form.reference) }}</td>
+            <td>{{ form_widget(form.weight) }}</td>
+            <td>{{ form_widget(form.netPrice) }}</td>
+            <td>
+                {{ form_widget(form.taxRate) }}
+                {{ form_widget(form.position) }}
+            </td>
+        </tr>
+        {% if form.vars.with_collections %}
+        <tr>
+            <td colspan="4">
+                {{ form_widget(form.items) }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                {{ form_widget(form.adjustments) }}
+            </td>
+        </tr>
+        {% endif %}
+
+        {#{{ form_rest(form) }}#}
+    </tbody>
+{% endspaceless %}
+{% endblock ekyna_commerce_order_item_widget %}
+
+
+{% block ekyna_commerce_adjustments_widget %}
+{% spaceless %}
+    {% set attr = attr|merge({'class': 'ekyna-collection' }) %}
+    {% set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' %}
+
+    {# Prototype #}
+    {% if prototype is defined %}
+        {# Controls #}
+        {% set controls =
+            '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-up" ' ~
+                    'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
+                '<span class="glyphicon glyphicon-chevron-up"></span>' ~
+            '</button>' ~
+            '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                    'data-collection="' ~ form.vars.id ~ '" data-field="__id__"' ~ delete_button_confirm ~ '>' ~
+                '<span class="glyphicon glyphicon-remove"></span>' ~
+            '</button>' ~
+            '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-down" ' ~
+                    'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
+                '<span class="glyphicon glyphicon-chevron-down"></span>' ~
+            '</button>' %}
+        {% set attr = attr|merge({'data-prototype': form_widget(prototype)|replace({'__controls__': controls}) }) %}
+        {% set attr = attr|merge({'data-prototype-name': prototype_name }) %}
+    {% endif %}
+
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        <table class="table">
+            {# Header #}
+            {#<thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                <th>{{ 'ekyna_core.field.mode'|trans }}</th>
+                <th>{{ 'ekyna_core.field.amount'|trans }}</th>
+                <th></th>
+            </tr>
+            </thead>#}
+
+            {# Rows #}
+            <tbody class="ekyna-collection-child-container">
+            {% for child in form %}
+                {% set controls =
+                    '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-up" ' ~
+                            'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
+                        '<span class="glyphicon glyphicon-chevron-up"></span>' ~
+                    '</button>' ~
+                    '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                            'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '"' ~
+                            delete_button_confirm ~ '>' ~
+                        '<span class="glyphicon glyphicon-remove"></span>' ~
+                    '</button>' ~
+                    '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-down" ' ~
+                            'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
+                        '<span class="glyphicon glyphicon-chevron-down"></span>' ~
+                    '</button>'
+                %}
+                {{ form_widget(child)|replace({'__controls__': controls})|raw }}
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if form.vars.allow_add %}
+        <p>
+            <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                    data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+            </button>
+        </p>
+        {% endif %}
+        {{ form_rest(form) }}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_adjustments_widget %}
+
+
+{% block ekyna_commerce_adjustment_widget %}
+{% spaceless %}
+    {# TODO {{ form_errors(form) }}#}
+    <tr class="ekyna-collection-child">
+        <td>{{ form_widget(form.designation) }}</td>
+        <td>{{ form_widget(form.mode) }}</td>
+        <td>
+            {{ form_widget(form.amount) }}
+            {{ form_widget(form.position) }}
+        </td>
+        <td class="ekyna-collection-controls controls-inline">__controls__</td>
+    </tr>
+    {{ form_rest(form) }}
+{% endspaceless %}
+{% endblock ekyna_commerce_adjustment_widget %}
+
+
+{#{% block ekyna_user_address_choice_widget %}
+{% spaceless %}
+    <div {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            {{ form_widget(child) }}
+            {{ form_errors(child) }}
+        {% endfor %}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_user_address_choice_widget %}#}

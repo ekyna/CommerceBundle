@@ -1,0 +1,31 @@
+ekyna_commerce_country_admin:
+    resource: "admin/country.yml"
+    prefix:   /countries
+
+ekyna_commerce_currency_admin:
+    resource: "admin/currency.yml"
+    prefix:   /currencies
+
+ekyna_commerce_customer_admin:
+    resource: "admin/customer.yml"
+    prefix:   /customers
+
+ekyna_commerce_customer_group_admin:
+    resource: "admin/customer_group.yml"
+    prefix:   /customer-groups
+
+ekyna_commerce_order_admin:
+    resource: "admin/order.yml"
+    prefix:   /orders
+
+ekyna_commerce_tax_admin:
+    resource: "admin/tax.yml"
+    prefix:   /taxes
+
+ekyna_commerce_tax_group_admin:
+    resource: "admin/tax_group.yml"
+    prefix:   /tax-groups
+
+ekyna_commerce_tax_rule_admin:
+    resource: "admin/tax_rule.yml"
+    prefix:   /tax-rules

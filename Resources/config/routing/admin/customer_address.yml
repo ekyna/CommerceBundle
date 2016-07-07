@@ -1,0 +1,44 @@
+#ekyna_commerce_customer_address_admin_home:
+#    path: ""
+#    defaults: { _controller: "ekyna_commerce.customer_address.controller:homeAction" }
+#    methods: [GET]
+#    requirements:
+#        customerId: \d+
+#
+#ekyna_commerce_customer_address_admin_list:
+#    path: /list
+#    defaults: { _controller: "ekyna_commerce.customer_address.controller:listAction" }
+#    methods: [GET|POST]
+#    requirements:
+#        customerId: \d+
+
+ekyna_commerce_customer_address_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        customerId: \d+
+
+ekyna_commerce_customer_address_admin_show:
+    path: /{customerAddressId}/show
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:showAction" }
+    methods: [GET]
+    requirements:
+        customerId: \d+
+        customerAddressId: \d+
+
+ekyna_commerce_customer_address_admin_edit:
+    path: /{customerAddressId}/edit
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        customerId: \d+
+        customerAddressId: \d+
+
+ekyna_commerce_customer_address_admin_remove:
+    path: /{customerAddressId}/remove
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        customerId: \d+
+        customerAddressId: \d+

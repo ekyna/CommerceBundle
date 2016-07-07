@@ -1,0 +1,29 @@
+{
+    "name" : "ekyna/commerce-bundle",
+    "description" : "Commerce management",
+    "type" : "symfony-bundle",
+    "authors" : [{
+            "name" : "Etienne Dauvergne",
+            "homepage" : "http://ekyna.com"
+        }
+    ],
+    "keywords" : [
+        "symfony2",
+        "commerce",
+        "bundle"
+    ],
+    "homepage" : "https://github.com/ekyna/CommerceBundle",
+    "license" : [
+        "MIT"
+    ],
+    "require" : {
+        "php" : ">=5.4.0",
+        "ekyna/admin-bundle" : "0.6.x-dev",
+        "ekyna/commerce" : "0.6.x-dev"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Ekyna\\Bundle\\CommerceBundle\\" : ""
+        }
+    }
+}

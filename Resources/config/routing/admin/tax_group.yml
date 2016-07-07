@@ -1,0 +1,35 @@
+ekyna_commerce_tax_group_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.tax_group.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_tax_group_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.tax_group.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_tax_group_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.tax_group.controller:newAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_tax_group_admin_show:
+    path: /{taxGroupId}/show
+    defaults: { _controller: "ekyna_commerce.tax_group.controller:showAction" }
+    methods: [GET]
+    requirements:
+        taxGroupId: \d+
+
+ekyna_commerce_tax_group_admin_edit:
+    path: /{taxGroupId}/edit
+    defaults: { _controller: "ekyna_commerce.tax_group.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        taxGroupId: \d+
+
+ekyna_commerce_tax_group_admin_remove:
+    path: /{taxGroupId}/remove
+    defaults: { _controller: "ekyna_commerce.tax_group.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        taxGroupId: \d+

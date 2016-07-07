@@ -1,0 +1,30 @@
+{% spaceless %}
+<strong>
+{% if address.lastName is not empty and address.firstName is not empty %}
+    {{ render_identity(address) }}
+{% else %}
+    {{ render_identity(address.user) }}
+{% endif %}
+</strong><br>
+
+{% if address.company != '' %}
+    <strong><em>{{ address.company }}</em></strong><br>
+{% endif %}
+
+{{ address.street }}<br>
+{% if address.supplement != '' %}
+    {{ address.supplement }}<br>
+{% endif %}
+
+{{ address.postalCode }} {{ address.city }}<br>
+{{ address.country.code|country }}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}<br>
+
+{% if display_phones %}
+    {% if address.phone != '' %}
+        <abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ phone_number_format(address.phone, 'NATIONAL') }}<br>
+    {% endif %}
+    {% if address.mobile != '' %}
+        <abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ phone_number_format(address.mobile, 'NATIONAL') }}<br>
+    {% endif %}
+{% endif %}
+{% endspaceless %}

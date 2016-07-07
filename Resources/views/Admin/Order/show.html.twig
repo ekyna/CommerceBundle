@@ -1,0 +1,44 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.order.header.show'|trans({'%number%': order.number})|raw }}</h1>
+{% endblock title %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(order, 'edit') }}
+    {{ admin_resource_btn(order, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#order-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        </li>
+        <li>
+            <a href="#order-details" data-toggle="tab">{{ 'ekyna_commerce.order.field.details'|trans }}</a>
+        </li>
+        <li>
+            <a href="#order-payments" data-toggle="tab">{{ 'ekyna_commerce.payment.label.plural'|trans }}</a>
+        </li>
+        <li>
+            <a href="#order-shipments" data-toggle="tab">{{ 'ekyna_commerce.shipment.label.plural'|trans }}</a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="order-general">
+                {% include "EkynaCommerceBundle:Admin/Order/Show:general.html.twig" %}
+            </div>
+            <div class="tab-pane" id="order-details">
+                {% include "EkynaCommerceBundle:Admin/Order/Show:details.html.twig" %}
+            </div>
+            <div class="tab-pane" id="order-payments">
+                {% include "EkynaCommerceBundle:Admin/Order/Show:payments.html.twig" %}
+            </div>
+            <div class="tab-pane" id="order-shipments">
+                {% include "EkynaCommerceBundle:Admin/Order/Show:shipments.html.twig" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

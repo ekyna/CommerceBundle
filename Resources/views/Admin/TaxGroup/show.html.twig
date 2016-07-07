@@ -1,0 +1,33 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(taxGroup, 'edit') }}
+    {{ admin_resource_btn(taxGroup, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="general">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(taxGroup.name, 'text', 'ekyna_core.field.name') }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(taxGroup.default, 'checkbox', 'ekyna_commerce.tax_group.field.default') }}
+                    </div>
+                </div>
+                {{ show_row(taxGroup.taxRules, 'entity', 'ekyna_commerce.tax_rule.label.plural', {
+                    'route': 'ekyna_commerce_tax_rule_admin_show',
+                    'route_params_map': {'taxRuleId': 'id'}
+                }) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

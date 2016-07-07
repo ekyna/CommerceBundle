@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping
+        xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                        http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="Ekyna\Bundle\CommerceBundle\Entity\OrderAddress"
+            table="commerce_order_address">
+
+        <field name="gender" type="string" column="gender" length="8"/>
+        <field name="phone" column="phone" type="phone_number" nullable="true"/>
+        <field name="mobile" column="mobile" type="phone_number" nullable="true"/>
+
+    </entity>
+
+</doctrine-mapping>

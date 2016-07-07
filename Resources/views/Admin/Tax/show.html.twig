@@ -1,0 +1,34 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(tax, 'edit') }}
+    {{ admin_resource_btn(tax, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="general">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(tax.name, 'text', 'ekyna_core.field.name') }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(tax.rate + ' %', 'number', 'ekyna_core.field.rate') }}
+                    </div>
+                </div>
+                {{ show_row(tax.country, 'entity', 'ekyna_commerce.country.label.singular', {
+                    'route': 'ekyna_commerce_country_admin_show',
+                    'route_params_map': {'countryId': 'id'}
+                }) }}
+                {{ show_row(tax.postalCodeMatch, 'text', 'ekyna_commerce.tax.fiel.postal_code_match') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

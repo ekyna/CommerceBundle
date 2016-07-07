@@ -1,0 +1,30 @@
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+    </li>
+</ul>
+<div class="panel-body form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form) }}
+    <div class="tab-content">
+        <div class="tab-pane active" id="general">
+            {{ form_row(form.email) }}
+            {{ form_row(form.company) }}
+            {{ form_row(form.identity) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <hr>
+            {{ form_row(form.customerGroups) }}
+            {{ form_row(form.parent) }}
+            {{ form_row(form.user) }}
+        </div>
+    </div>
+    {{ form_rest(form) }}
+</div>

@@ -1,0 +1,217 @@
+<?php
+
+namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
+
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+
+/**
+ * Class Configuration
+ * @package Ekyna\Bundle\CommerceBundle\DependencyInjection
+ * @author  Etienne Dauvergne <contact@ekyna.com>
+ */
+class Configuration implements ConfigurationInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigTreeBuilder()
+    {
+        $treeBuilder = new TreeBuilder();
+        $rootNode = $treeBuilder->root('ekyna_commerce');
+
+        $this->addDefaultSection($rootNode);
+        $this->addPoolsSection($rootNode);
+
+        return $treeBuilder;
+    }
+
+    /**
+     * Adds `pools` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addDefaultSection(ArrayNodeDefinition $node)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $node
+            ->children()
+                ->arrayNode('default')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('countries')
+                            ->defaultValue(['US'])
+                            ->prototype('scalar')->end()
+                        ->end()
+                        ->arrayNode('currencies')
+                            ->defaultValue(['USD'])
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `pools` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addPoolsSection(ArrayNodeDefinition $node)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $node
+            ->children()
+                ->arrayNode('pools')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('country')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Address\Entity\Country')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CountryController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\CountryType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CountryType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('currency')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\Currency')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CurrencyController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CurrencyType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('customer_address')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue('EkynaCommerceBundle:Admin/CustomerAddress')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\CustomerAddress')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerAddressController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerAddressType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.customer')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('customer')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/Customer:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/Customer:show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Customer')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\CustomerType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('customer_group')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerGroup')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerGroupController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\CustomerGroupType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerGroupType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('order')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/Order:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/Order:show.html',
+                                    'edit.html'  => 'EkynaCommerceBundle:Admin/Order:edit.html',
+                                    'remove.html'  => 'EkynaCommerceBundle:Admin/Order:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Order')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\OrderType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\OrderType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\OrderEvent')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('tax')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/Tax:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/Tax:show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\Tax')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\TaxType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\TaxType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('tax_group')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/TaxGroup:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/TaxGroup:show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\TaxGroup')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxGroupController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\TaxGroupType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('tax_rule')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/TaxRule:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/TaxRule:show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\TaxRule')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxRuleController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\TaxRuleType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+}
