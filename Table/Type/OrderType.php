@@ -30,7 +30,7 @@ class OrderType extends ResourceTableType
                 'label' => 'ekyna_commerce.customer.label.singular',
                 'sortable' => true,
             ])
-            ->addColumn('grandTotal', 'currency', [
+            ->addColumn('grandTotal', 'price', [
                 'label' => 'ekyna_commerce.order.field.grand_total',
                 'sortable' => true,
                 'currency_path' => 'currency.code'
