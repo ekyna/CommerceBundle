@@ -48,12 +48,12 @@ class OrderItemType extends ResourceFormType
                     'property_path' => 'children',
                     'children_mode' => true,
                     'entry_options' => [
-                        'label' => false,
+                        'label'            => false,
                         'with_collections' => false,
                     ],
                 ])
                 ->add('adjustments', AdjustmentsType::class, [
-                    'entry_type' => OrderItemAdjustmentType::class,
+                    'entry_type'            => OrderItemAdjustmentType::class,
                     'add_button_text'       => 'ekyna_commerce.order.form.add_item_adjustment',
                     'delete_button_confirm' => 'ekyna_commerce.order.form.remove_item_adjustment',
                 ]);

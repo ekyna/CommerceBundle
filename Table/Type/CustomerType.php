@@ -33,21 +33,25 @@ class CustomerType extends ResourceTableType
             ->addColumn('name', 'anchor', [
                 'label'                => 'ekyna_core.field.name',
                 'property_path'        => null,
-                'sortable'             => true,
+//                'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_customer_admin_show',
                 'route_parameters_map' => ['customerId' => 'id'],
             ])
+            ->addColumn('company', 'text', array(
+                'label' => 'ekyna_core.field.company',
+                'sortable' => true,
+            ))
             ->addColumn('email', 'text', array(
                 'label' => 'ekyna_core.field.email',
                 'sortable' => true,
             ))
-            ->addColumn('groups', 'anchor', [
-                'label'                => 'ekyna_core.field.group',
+            /* TODO ->addColumn('customerGroups', 'anchor', [
+                'label'                => 'ekyna_commerce.customer_group.label.plural',
                 'property_path'        => 'group.name',
                 'sortable'             => false,
                 'route_name'           => 'ekyna_commerce_customer_group_admin_show',
                 'route_parameters_map' => ['groupId' => 'group.id'],
-            ])
+            ])*/
             ->addColumn('createdAt', 'datetime', [
                 'label'    => 'ekyna_core.field.created_at',
                 'sortable' => true,
@@ -77,14 +81,17 @@ class CustomerType extends ResourceTableType
             ->addFilter('lastName', 'text', [
                 'label' => 'ekyna_core.field.last_name',
             ])
+            ->addFilter('company', 'text', [
+                'label' => 'ekyna_core.field.company',
+            ])
             ->addFilter('email', 'text', [
                 'label' => 'ekyna_core.field.email',
             ])
-            ->addFilter('groups', 'entity', [
+            /* TODO ->addFilter('customerGroups', 'entity', [
                 'label'         => 'ekyna_core.field.group',
                 'class'         => $this->customerGroupClass,
                 'property'      => 'name',
-            ])
+            ])*/
             ->addFilter('createdAt', 'datetime', [
                 'label' => 'ekyna_core.field.created_at',
             ]);

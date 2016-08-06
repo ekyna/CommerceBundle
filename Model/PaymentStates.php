@@ -19,6 +19,7 @@ final class PaymentStates extends AbstractConstants
     {
         $prefix = 'ekyna_commerce.payment.state.';
         $suffix = '.label';
+
         return [
             States::STATE_NEW        => [$prefix.States::STATE_NEW.$suffix,        'default', false],
             States::STATE_PENDING    => [$prefix.States::STATE_PENDING.$suffix,    'warning', true],

@@ -1,24 +1,94 @@
 ekyna_commerce:
     label: Commerce
-#    settings:
-#        cookies:
-#            label: Cookies
-#            mode:
-#                label: Mode
-#                header: En-tête
-#                dialog: Dialogue
-#            header_text: Texte du mode en-tête
-#            dialog_text: Texte du mode dialogue
-#            close: Masquer ce message
-#            learn: En savoir plus
-    state:
-        label:
-            singular: État/Région
-            plural: États/Régions
+    sales: Ventes
+    store: Catalogue
     adjustment:
         mode:
             flat: Montant
             percent: Pourcentage
+    attribute:
+        label:
+            singular: Attribut
+            plural: Attributs
+        header:
+            list: Attributs <small>Liste des attribut</small>
+            show: Détail de l'attribut <small>%name%</small>
+            new: Créer un nouvel attribut
+            edit: Modifier l'attribut <small>%name%</small>
+            remove: Supprimer l'attribut <small>%name%</small>
+        button:
+            list: Liste des attributs
+            show: Détail de l'attribut
+            new: Nouvel attribut
+            edit: Modifier l'attribut
+            remove: Supprimer l'attribut
+        alert:
+            no_item: Aucun attribut configuré
+    attribute_group:
+        label:
+            singular: Groupe d'attributs
+            plural: Groupes d'attributs
+        header:
+            list: Groupes d'attributs <small>Liste des groupes</small>
+            show: Détail du groupe <small>%name%</small>
+            new: Créer un nouveau groupe
+            edit: Modifier le groupe <small>%name%</small>
+            remove: Supprimer le groupe <small>%name%</small>
+        button:
+            list: Liste des groupes
+            show: Détail du groupe
+            new: Nouveau groupe
+            edit: Modifier le groupe
+            remove: Supprimer le groupe
+        alert:
+            no_item: Aucun groupe configuré
+    attribute_set:
+        label:
+            singular: Modèle d'attributs
+            plural: Modèles d'attributs
+        header:
+            list: Modèles d'attributs <small>Liste des modèles</small>
+            show: Détail du modèle <small>%name%</small>
+            new: Créer un nouveau modèle
+            edit: Modifier le modèle <small>%name%</small>
+            remove: Supprimer le modèle <small>%name%</small>
+        button:
+            list: Liste des modèles
+            show: Détail du modèle
+            new: Nouveau modèle
+            edit: Modifier le modèle
+            remove: Supprimer le modèle
+        field:
+            multiple: Choix multiple
+        alert:
+            no_item: Aucun modèle configuré
+    bundle_slot:
+        label:
+            singular: Emplacement
+            plural: Emplacements
+        button:
+            add: Ajouter un produit
+            add_configurable: Ajouter un emplacement
+    bundle_choice:
+        label:
+            singular: Produit
+            plural: Choix
+        field:
+            min_quantity: Qte. min.
+            max_quantity: Qte. max.
+        button:
+            add: Ajouter un choix
+    bundle_choice_rule:
+        label:
+            singular: Règle
+            plural: Règles
+        type:
+            disabled: Désactivé
+            optional: Optionnel
+        field:
+            expression: Expression
+        button:
+            add: Ajouter une règle
     country:
         label:
             singular: Pays
@@ -117,6 +187,18 @@ ekyna_commerce:
             remove: Supprimer le groupe de clients
         alert:
             no_item: Aucun groupe de clients configuré
+    option:
+        label:
+            singular: Option
+            plural: Options
+        button:
+            add: Ajouter une options
+    option_group:
+        label:
+            singular: Groupe d'options
+            plural: Groupes d'options
+        button:
+            add: Ajouter un groupe d'options
     order:
         label:
             singular: Commande
@@ -274,6 +356,41 @@ ekyna_commerce:
             available: Partie publique
         alert:
             empty_list: Aucun mode de paiement configuré
+    product:
+        label:
+            singular: Produit
+            plural: Produits
+        header:
+            list: Produits <small>Liste des produits</small>
+            show: Détail du produit <small>%name%</small>
+            new: Créer un nouveau produit
+            edit: Modifier le produit <small>%name%</small>
+            remove: Supprimer le produit <small>%name%</small>
+        button:
+            list: Liste des produits
+            show: Détail du produit
+            new: Nouveau produit
+            edit: Modifier le produit
+            remove: Supprimer le produit
+        type:
+            simple: Simple
+            variable: Variable
+            variant: Variante
+            bundle: Pack
+            configurable: Pack personnalisable
+        field:
+            parent: Parent
+            net_price: Prix Net
+        alert:
+            no_item: Aucun produit configuré
+    variant:
+        label:
+            singular: Variante
+            plural: Variantes
+        header:
+            list: Variantes <small>Liste des variantes</small>
+        button:
+            new: Nouvelle variante
     shipment:
         label:
             singular: Livraison
@@ -321,6 +438,10 @@ ekyna_commerce:
             available: Partie publique
         alert:
             empty_list: Aucun mode de livraison configuré
+    state:
+        label:
+            singular: État/Région
+            plural: États/Régions
     tax:
         label:
             singular: Taxe

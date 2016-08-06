@@ -23,14 +23,15 @@ class OrderItemsType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'label'                 => false,
-                'entry_type'            => OrderItemType::class,
-                'entry_options'         => ['label' => false],
-                'allow_add'             => true,
-                'allow_delete'          => true,
-                'allow_sort'            => true,
-                'attr'                  => ['widget_col' => 12],
-                'children_mode'         => false,
+                'label'          => false,
+                'prototype_name' => '__item__',
+                'entry_type'     => OrderItemType::class,
+                'entry_options'  => ['label' => false],
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'allow_sort'     => true,
+                'attr'           => ['widget_col' => 12],
+                'children_mode'  => false,
             ])
             ->setDefault('add_button_text', function (Options $options) {
                 if ($options['children_mode']) {

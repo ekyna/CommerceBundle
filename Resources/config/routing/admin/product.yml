@@ -1,0 +1,45 @@
+ekyna_commerce_product_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.product.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_product_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.product.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_product_admin_new:
+    path: /new/{type}
+    defaults: { _controller: "ekyna_commerce.product.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        type: '^[a-z]+$'
+
+ekyna_commerce_product_admin_show:
+    path: /{productId}/show
+    defaults: { _controller: "ekyna_commerce.product.controller:showAction" }
+    methods: [GET]
+    requirements:
+        productId: \d+
+
+ekyna_commerce_product_admin_edit:
+    path: /{productId}/edit
+    defaults: { _controller: "ekyna_commerce.product.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        productId: \d+
+
+#ekyna_commerce_product_admin_toggle:
+#    path: /{productId}/toggle/{field}
+#    defaults: { _controller: "ekyna_commerce.product.controller:toggleAction", field: enabled }
+#    methods: [GET]
+#    requirements:
+#        productId: \d+
+#        field: \w+
+
+ekyna_commerce_product_admin_remove:
+    path: /{productId}/remove
+    defaults: { _controller: "ekyna_commerce.product.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        productId: \d+

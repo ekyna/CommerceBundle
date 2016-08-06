@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
-use Ekyna\Bundle\UserBundle\Model\IdentityInterface;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
 
 /**
@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
  * @package Ekyna\Bundle\CommerceBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class Order extends BaseOrder implements IdentityInterface
+class Order extends BaseOrder implements OrderInterface
 {
     /**
      * @var string

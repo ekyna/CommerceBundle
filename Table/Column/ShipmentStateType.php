@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Bundle\CommerceBundle\Service\StateHelper;
+use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
 use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
 use Ekyna\Component\Table\Table;
 use Ekyna\Component\Table\View\Cell;
@@ -15,19 +15,19 @@ use Ekyna\Component\Table\View\Cell;
 class ShipmentStateType extends TextType
 {
     /**
-     * @var StateHelper
+     * @var ConstantHelper
      */
-    private $stateHelper;
+    private $constantHelper;
 
 
     /**
      * Constructor.
      *
-     * @param StateHelper $stateHelper
+     * @param ConstantHelper $stateHelper
      */
-    public function __construct(StateHelper $stateHelper)
+    public function __construct(ConstantHelper $constantHelper)
     {
-        $this->stateHelper = $stateHelper;
+        $this->constantHelper = $constantHelper;
     }
 
     /**
@@ -39,7 +39,7 @@ class ShipmentStateType extends TextType
 
         $cell->setVars([
             'type'  => 'text',
-            'value' => $this->stateHelper->renderShipmentStateBadge($cell->vars['value']),
+            'value' => $this->constantHelper->renderShipmentStateBadge($cell->vars['value']),
         ]);
     }
 

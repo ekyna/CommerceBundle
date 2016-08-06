@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class CustomerAddressType
@@ -20,16 +19,16 @@ class CustomerAddressType extends ResourceTableType
     {
         $builder
             ->addColumn('id', 'number', [
-                'sortable' => true,
+//                'sortable' => true,
             ])
-            ->addColumn('name', 'anchor', [
+            ->addColumn('street', 'text', [
                 'label'                => 'ekyna_core.field.name',
                 'property_path'        => null,
-                'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_customer_admin_show',
-                'route_parameters_map' => ['customerId' => 'id'],
+//                'sortable'             => true,
+//                'route_name'           => 'ekyna_commerce_customer_admin_show',
+//                'route_parameters_map' => ['customerId' => 'id'],
             ])
-            ->addColumn('email', 'text', array(
+            /*->addColumn('email', 'text', array(
                 'label' => 'ekyna_core.field.email',
                 'sortable' => true,
             ))
@@ -43,7 +42,7 @@ class CustomerAddressType extends ResourceTableType
             ->addColumn('createdAt', 'datetime', [
                 'label'    => 'ekyna_core.field.created_at',
                 'sortable' => true,
-            ])
+            ])*/
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
@@ -85,14 +84,13 @@ class CustomerAddressType extends ResourceTableType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    /*public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
 
         $resolver->setDefault('customer', null);
 
-        // TODO
-        /*if (null !== $group = $this->getUserGroup()) {
+        if (null !== $group = $this->getUserGroup()) {
             $resolver->setDefaults([
                 'customize_qb' => function (QueryBuilder $qb, $alias) use ($group) {
                     $qb
@@ -100,8 +98,8 @@ class CustomerAddressType extends ResourceTableType
                         ->andWhere($qb->expr()->gte('g.position', $group->getPosition()));
                 },
             ]);
-        }*/
-    }
+        }
+    }*/
 
     /**
      * {@inheritdoc}

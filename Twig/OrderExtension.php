@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\StateHelper;
+use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
 
 /**
  * Class OrderExtension
@@ -12,19 +12,19 @@ use Ekyna\Bundle\CommerceBundle\Service\StateHelper;
 class OrderExtension extends \Twig_Extension
 {
     /**
-     * @var StateHelper
+     * @var ConstantHelper
      */
-    private $stateHelper;
+    private $constantHelper;
 
 
     /**
      * Constructor.
      *
-     * @param StateHelper $stateHelper
+     * @param ConstantHelper $constantHelper
      */
-    public function __construct(StateHelper $stateHelper)
+    public function __construct(ConstantHelper $constantHelper)
     {
-        $this->stateHelper = $stateHelper;
+        $this->constantHelper = $constantHelper;
     }
 
     /**
@@ -33,8 +33,8 @@ class OrderExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('order_state_label', [$this->stateHelper, 'renderOrderStateLabel'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFilter('order_state_badge', [$this->stateHelper, 'renderOrderStateBadge'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFilter('order_state_label', [$this->constantHelper, 'renderOrderStateLabel'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFilter('order_state_badge', [$this->constantHelper, 'renderOrderStateBadge'], ['is_safe' => ['html']]),
         ];
     }
 

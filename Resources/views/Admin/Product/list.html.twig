@@ -1,0 +1,7 @@
+{% extends "EkynaAdminBundle:Entity/Default:list.html.twig" %}
+
+{% import "EkynaCommerceBundle:Admin/Product:_macro.html.twig" as macros %}
+
+{% block actions %}
+    {{ macros.new_product_button() }}
+{% endblock actions %}

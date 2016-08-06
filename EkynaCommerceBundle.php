@@ -4,6 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle;
 
 use Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler\AdminMenuPass;
 use Ekyna\Bundle\CoreBundle\AbstractBundle;
+use Ekyna\Component\Commerce;
+use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler\ConfigureValidatorPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -30,19 +32,19 @@ class EkynaCommerceBundle extends AbstractBundle
      */
     protected function getModelInterfaces()
     {
-        return [
-            'Ekyna\Component\Commerce\Customer\Model\CustomerInterface'        => 'ekyna_commerce.customer.class',
-            'Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface' => 'ekyna_commerce.customer_address.class',
+        return array_replace(DoctrineBundleMapping::getDefaultImplementations(), [
+            Commerce\Customer\Model\CustomerInterface::class        => 'ekyna_commerce.customer.class',
+            Commerce\Customer\Model\CustomerAddressInterface::class => 'ekyna_commerce.customer_address.class',
 
-            'Ekyna\Component\Commerce\Order\Model\OrderInterface'        => 'ekyna_commerce.order.class',
-            'Ekyna\Component\Commerce\Order\Model\OrderAddressInterface' => 'ekyna_commerce.order_address.class',
+            Commerce\Order\Model\OrderInterface::class              => 'ekyna_commerce.order.class',
+            Commerce\Order\Model\OrderAddressInterface::class       => 'ekyna_commerce.order_address.class',
 
-            'Ekyna\Component\Commerce\Payment\Model\PaymentInterface'       => 'ekyna_commerce.payment.class',
-            'Ekyna\Component\Commerce\Payment\Model\PaymentMethodInterface' => 'ekyna_commerce.payment_method.class',
+            Commerce\Payment\Model\PaymentInterface::class          => 'ekyna_commerce.payment.class',
+            Commerce\Payment\Model\PaymentMethodInterface::class    => 'ekyna_commerce.payment_method.class',
 
-            'Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface'       => 'ekyna_commerce.shipment.class',
-            'Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface'   => 'ekyna_commerce.shipment_item.class',
-            'Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface' => 'ekyna_commerce.shipment_method.class',
-        ];
+            Commerce\Shipment\Model\ShipmentInterface::class        => 'ekyna_commerce.shipment.class',
+            Commerce\Shipment\Model\ShipmentItemInterface::class    => 'ekyna_commerce.shipment_item.class',
+            Commerce\Shipment\Model\ShipmentMethodInterface::class  => 'ekyna_commerce.shipment_method.class',
+        ]);
     }
 }

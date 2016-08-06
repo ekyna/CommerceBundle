@@ -1,19 +1,20 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Service;
+namespace Ekyna\Bundle\CommerceBundle\Helper;
 
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class StateHelper
- * @package Ekyna\Bundle\CommerceBundle\Service
+ * Class ConstantHelper
+ * @package Ekyna\Bundle\CommerceBundle\Helper
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class StateHelper
+class ConstantHelper
 {
     /**
      * @var TranslatorInterface
@@ -54,6 +55,26 @@ class StateHelper
     private function renderBadge($label, $theme = 'default')
     {
         return sprintf('<span class="label label-%s">%s</span>', $theme, $label);
+    }
+
+    /**
+     * Renders the product type label.
+     *
+     * @param ProductInterface|string $typeOrProduct
+     *
+     * @return string
+     */
+    public function renderProductTypeLabel($typeOrProduct)
+    {
+        if ($typeOrProduct instanceof ProductInterface) {
+            $typeOrProduct = $typeOrProduct->getType();
+        }
+
+        if (Model\ProductTypes::isValid($typeOrProduct)) {
+            return $this->renderLabel(Model\ProductTypes::getLabel($typeOrProduct));
+        }
+
+        return $this->renderLabel();
     }
 
     /**

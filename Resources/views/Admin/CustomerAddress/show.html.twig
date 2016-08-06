@@ -1,20 +1,14 @@
 {% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
 
-{#{% block title %}
-<h1>{{ 'ekyna_commerce.customer.header.show'|trans({'%name%': customer})|raw }}</h1>
-{% endblock %}
-
-{% block actions %}
-{{ admin_resource_btn(customer, 'list') }}
-{% endblock %}#}
+{% block actions %}{% endblock %}#}
 
 {% block main %}
 <div class="actions">
     {#{% if not page.getDynamicPath %}
         {{ ui_button('ekyna_core.button.show_front', {'type': 'link', 'icon': 'eye-open', 'path': path(page.route)}, {'target': '_blank'}) }}
     {% endif %}#}
-    {{ admin_resource_btn(customer, 'edit') }}
-    {{ admin_resource_btn(customer, 'remove') }}
+    {{ admin_resource_btn(customerAddress, 'edit') }}
+    {{ admin_resource_btn(customerAddress, 'remove') }}
 </div>
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
@@ -25,45 +19,8 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="general">
-                {{ show_row(customer.email, 'text', 'ekyna_core.field.email') }}
-                {{ show_row(customer.company, 'text', 'ekyna_core.field.company') }}
-                <div class="row show-row">
-                    <div class="col-md-2 show-label">
-                        {{ 'ekyna_core.field.identity'|trans }}
-                    </div>
-                    <div class="col-md-10">
-                        <div class="show-widget show-widget-inline">
-                            {{ render_identity(customer) }}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ show_row(customer.phone, 'tel', 'ekyna_core.field.phone', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ show_row(customer.mobile, 'tel', 'ekyna_core.field.mobile', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                </div>
-                <hr>
-                {{ show_row(customer.customerGroups, 'entity', 'ekyna_commerce.customer_group.label.plural', {
-                    'route': 'ekyna_commerce_customer_group_admin_show',
-                    'route_params_map': {'customerGroupId': 'id'}
-                }) }}
-                {{ show_row(customer.parent, 'entity', 'ekyna_core.field.parent', {
-                    'route': 'ekyna_commerce_customer_admin_show',
-                    'route_params_map': {'customerId': 'id'}
-                }) }}
-                {{ show_row(customer.user, 'entity', 'ekyna_user.user.label.singular', {
-                    'route': 'ekyna_user_user_admin_show',
-                    'route_params_map': {'userId': 'id'}
-                }) }}
+                {{ show_row(customerAddress.street, 'text', 'ekyna_core.field.street') }}
+                {# TODO #}
             </div>
         </div>
     </div>

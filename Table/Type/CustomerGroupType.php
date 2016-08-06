@@ -21,9 +21,12 @@ class CustomerGroupType extends ResourceTableType
             ->addColumn('id', 'number', [
                 'sortable' => true,
             ])
-            ->addColumn('name', 'text', array(
-                'label' => 'ekyna_core.field.name',
-                'sortable' => true,
+            ->addColumn('name', 'anchor', array(
+                'label'                => 'ekyna_core.field.name',
+                'property_path'        => null,
+                'sortable'             => true,
+                'route_name'           => 'ekyna_commerce_customer_group_admin_show',
+                'route_parameters_map' => ['customerGroupId' => 'id'],
             ))
             // TODO default
             ->addColumn('actions', 'admin_actions', [
@@ -31,15 +34,15 @@ class CustomerGroupType extends ResourceTableType
                     [
                         'label'                => 'ekyna_core.button.edit',
                         'class'                => 'warning',
-                        'route_name'           => 'ekyna_user_user_admin_edit',
-                        'route_parameters_map' => ['userId' => 'id'],
+                        'route_name'           => 'ekyna_commerce_customer_group_admin_edit',
+                        'route_parameters_map' => ['customerGroupId' => 'id'],
                         'permission'           => 'edit',
                     ],
                     [
                         'label'                => 'ekyna_core.button.remove',
                         'class'                => 'danger',
-                        'route_name'           => 'ekyna_user_user_admin_remove',
-                        'route_parameters_map' => ['userId' => 'id'],
+                        'route_name'           => 'ekyna_commerce_customer_group_admin_remove',
+                        'route_parameters_map' => ['customerGroupId' => 'id'],
                         'permission'           => 'delete',
                     ],
                 ],

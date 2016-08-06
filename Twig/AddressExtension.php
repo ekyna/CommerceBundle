@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Component\Commerce\Address\Model\AddressInterface;
+use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 
 /**
  * Class AddressExtension

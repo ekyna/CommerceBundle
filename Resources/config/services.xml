@@ -5,6 +5,15 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="ekyna_commerce.attribute_slot.class">Ekyna\Component\Commerce\Product\Entity\AttributeSlot</parameter>
+
+        <parameter key="ekyna_commerce.bundle_choice.class">Ekyna\Component\Commerce\Product\Entity\BundleChoice</parameter>
+        <parameter key="ekyna_commerce.bundle_choice_rule.class">Ekyna\Component\Commerce\Product\Entity\BundleChoiceRule</parameter>
+        <parameter key="ekyna_commerce.bundle_slot.class">Ekyna\Component\Commerce\Product\Entity\BundleSlot</parameter>
+
+        <parameter key="ekyna_commerce.option_group.class">Ekyna\Component\Commerce\Product\Entity\OptionGroup</parameter>
+        <parameter key="ekyna_commerce.option.class">Ekyna\Component\Commerce\Product\Entity\Option</parameter>
+
         <parameter key="ekyna_commerce.order_address.class">Ekyna\Bundle\CommerceBundle\Entity\OrderAddress</parameter>
         <parameter key="ekyna_commerce.order_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderAdjustment</parameter>
         <parameter key="ekyna_commerce.order_item.class">Ekyna\Component\Commerce\Order\Entity\OrderItem</parameter>
@@ -19,136 +28,210 @@
     </parameters>
 
     <services>
+        <!-- Doctrine persistence adapter -->
+        <service id="ekyna_commerce.doctrine_persistence_adapter" class="Ekyna\Component\Commerce\Bridge\Doctrine\Adapter\PersistenceAdapter">
+            <argument type="service" id="doctrine"/>
+        </service>
+
         <!-- Calculator -->
-        <service id="ekyna_commerce.order.calculator" class="Ekyna\Component\Commerce\Order\Calculator\Calculator"/>
+        <service id="ekyna_commerce.order.calculator" class="Ekyna\Component\Commerce\Order\Calculator\Calculator" lazy="true"/>
 
         <!-- Generator -->
-        <service id="ekyna_commerce.order.number_generator" class="Ekyna\Bundle\CommerceBundle\Service\Order\NumberGenerator">
+        <service id="ekyna_commerce.order.number_generator" class="Ekyna\Bundle\CommerceBundle\Service\Order\NumberGenerator" lazy="true">
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument>%ekyna_commerce.order.class%</argument>
         </service>
 
         <!-- Helpers -->
-        <service id="ekyna_commerce.subject.helper" class="Ekyna\Bundle\CommerceBundle\Helper\SubjectHelper">
+        <service id="ekyna_commerce.helper.subject" class="Ekyna\Bundle\CommerceBundle\Helper\SubjectHelper" lazy="true">
             <argument type="service" id="ekyna_commerce.subject.resolver_registry" />
         </service>
-        <service id="ekyna_commerce.state_helper" class="Ekyna\Bundle\CommerceBundle\Service\StateHelper">
+        <service id="ekyna_commerce.helper.constant" class="Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper" lazy="true">
             <argument type="service" id="translator"/>
         </service>
 
         <!-- Resolvers -->
-        <service id="ekyna_commerce.subject.resolver_registry" class="Ekyna\Component\Commerce\Subject\Resolver\SubjectResolverRegistry"/>
-        <service id="ekyna_commerce.order.state_resolver" class="Ekyna\Bundle\CommerceBundle\Service\Order\StateResolver"/>
+        <service id="ekyna_commerce.subject.resolver_registry" class="Ekyna\Component\Commerce\Subject\Resolver\SubjectResolverRegistry" lazy="true"/>
+        <service id="ekyna_commerce.order.state_resolver" class="Ekyna\Bundle\CommerceBundle\Service\Order\StateResolver" lazy="true"/>
+
+        <!-- Variant builder -->
+        <service id="ekyna_commerce.product.variant_builder" class="Ekyna\Component\Commerce\Product\Builder\VariantBuilder" lazy="true">
+            <argument>%ekyna_commerce.product.class%</argument>
+            <call method="setPersistenceAdapter">
+                <argument type="service" id="ekyna_commerce.doctrine_persistence_adapter"/>
+            </call>
+        </service>
 
         <!-- Event listeners -->
-        <service id="ekyna_commerce.order.event_subscriber" class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">
+        <service id="ekyna_commerce.customer.event_subscriber" class="Ekyna\Bundle\CommerceBundle\EventListener\CustomerEventSubscriber" lazy="true">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+        <service id="ekyna_commerce.order.event_subscriber" class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber" lazy="true">
             <argument type="service" id="ekyna_commerce.order.number_generator" />
             <argument type="service" id="ekyna_commerce.order.calculator" />
             <argument type="service" id="ekyna_commerce.order.state_resolver" />
             <tag name="kernel.event_subscriber"/>
         </service>
+        <service id="ekyna_commerce.product.event_subscriber" class="Ekyna\Bundle\CommerceBundle\EventListener\ProductEventSubscriber" lazy="true">
+            <argument type="service" id="ekyna_commerce.product.variant_builder"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Form event listeners -->
+        <service id="ekyna_commerce.product.form_type.event_subscriber" class="Ekyna\Bundle\CommerceBundle\Form\EventListener\ProductTypeSubscriber" lazy="true">
+            <argument>%ekyna_commerce.product.class%</argument>
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <argument>%ekyna_commerce.attribute_set.class%</argument>
+        </service>
 
         <!-- Form types -->
-        <service id="ekyna_commerce.country_choice.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CountryChoiceType">
+        <service id="ekyna_commerce.attribute.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\AttributeType" lazy="true">
+            <argument>%ekyna_commerce.attribute.class%</argument>
+            <argument>%ekyna_commerce.attribute_group.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.attribute_slot.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\AttributeSlotType" lazy="true">
+            <argument>%ekyna_commerce.attribute_slot.class%</argument>
+            <argument>%ekyna_commerce.attribute_group.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.bundle_choice.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\BundleChoiceType" lazy="true">
+            <argument>%ekyna_commerce.bundle_choice.class%</argument>
+            <argument>%ekyna_commerce.product.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.bundle_choice_rule.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\BundleChoiceRuleType" lazy="true">
+            <argument>%ekyna_commerce.bundle_choice_rule.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.bundle_slot.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\BundleSlotType" lazy="true">
+            <argument>%ekyna_commerce.bundle_slot.class%</argument>
+            <argument>%ekyna_commerce.bundle_choice.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.country_choice.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CountryChoiceType" lazy="true">
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.currency_choice.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType">
+        <service id="ekyna_commerce.currency_choice.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType" lazy="true">
             <argument>%ekyna_commerce.currency.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.customer_address.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType">
+        <service id="ekyna_commerce.customer_address.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType" lazy="true">
             <argument>%ekyna_commerce.customer_address.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
             <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.customer.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerType">
+        <service id="ekyna_commerce.customer.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerType" lazy="true">
             <argument>%ekyna_commerce.customer.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
             <argument>%ekyna_user.user.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.order_address.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderAddressType">
+        <service id="ekyna_commerce.option_group.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OptionGroupType" lazy="true">
+            <argument>%ekyna_commerce.option_group.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.option.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OptionType" lazy="true">
+            <argument>%ekyna_commerce.option.class%</argument>
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.order_address.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderAddressType" lazy="true">
             <argument>%ekyna_commerce.order_address.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.order_adjustment.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderAdjustmentType">
+        <service id="ekyna_commerce.order_adjustment.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderAdjustmentType" lazy="true">
             <argument>%ekyna_commerce.order_adjustment.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.order_item_adjustment.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderItemAdjustmentType">
+        <service id="ekyna_commerce.order_item_adjustment.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderItemAdjustmentType" lazy="true">
             <argument>%ekyna_commerce.order_item_adjustment.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.order_item.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderItemType">
+        <service id="ekyna_commerce.order_item.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderItemType" lazy="true">
             <argument>%ekyna_commerce.order_item.class%</argument>
-            <argument type="service" id="ekyna_commerce.subject.helper"/>
+            <argument type="service" id="ekyna_commerce.helper.subject"/>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.order.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderType">
+        <service id="ekyna_commerce.order.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderType" lazy="true">
             <argument>%ekyna_commerce.order.class%</argument>
             <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.tax_group.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupType">
+        <service id="ekyna_commerce.product.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\ProductType" lazy="true">
+            <argument type="service" id="ekyna_commerce.product.form_type.event_subscriber"/>
+            <argument>%ekyna_commerce.product.class%</argument>
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.tax_group.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupType" lazy="true">
             <argument>%ekyna_commerce.tax_group.class%</argument>
             <argument>%ekyna_commerce.tax_rule.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.tax_rule.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType">
+        <service id="ekyna_commerce.tax_rule.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType" lazy="true">
             <argument>%ekyna_commerce.tax_rule.class%</argument>
             <argument>%ekyna_commerce.tax_group.class%</argument>
             <argument>%ekyna_commerce.tax.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
             <tag name="form.type" />
         </service>
-        <service id="ekyna_commerce.tax.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxType">
+        <service id="ekyna_commerce.tax.form_type" class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxType" lazy="true">
             <argument>%ekyna_commerce.tax.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type" />
         </service>
 
         <!-- Table types -->
-        <service id="ekyna_commerce.customer.table_type" class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType">
+        <service id="ekyna_commerce.customer.table_type" class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType" lazy="true">
             <argument>%ekyna_commerce.customer.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
             <tag name="table.type" alias="ekyna_commerce_customer" />
         </service>
 
         <!-- Table column types -->
-        <service id="ekyna_commerce.order_customer.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\OrderCustomerType">
+        <service id="ekyna_commerce.order_customer.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\OrderCustomerType" lazy="true">
             <argument type="service" id="ekyna_user.helper.identity"/>
             <tag name="table.column_type" alias="ekyna_commerce_order_customer" />
         </service>
-        <service id="ekyna_commerce.order_state.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\OrderStateType">
-            <argument type="service" id="ekyna_commerce.state_helper"/>
+        <service id="ekyna_commerce.order_state.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\OrderStateType" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
             <tag name="table.column_type" alias="ekyna_commerce_order_state" />
         </service>
-        <service id="ekyna_commerce.payment_state.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
-            <argument type="service" id="ekyna_commerce.state_helper"/>
+        <service id="ekyna_commerce.product_type.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\ProductTypeType" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
+            <tag name="table.column_type" alias="ekyna_commerce_product_type" />
+        </service>
+        <service id="ekyna_commerce.payment_state.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
             <tag name="table.column_type" alias="ekyna_commerce_payment_state" />
         </service>
-        <service id="ekyna_commerce.shipment_state.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">
-            <argument type="service" id="ekyna_commerce.state_helper"/>
+        <service id="ekyna_commerce.shipment_state.column_type" class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
             <tag name="table.column_type" alias="ekyna_commerce_shipment_state" />
         </service>
 
         <!-- Twig extensions -->
-        <service id="ekyna_commerce.twig.address_extension" class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension">
+        <service id="ekyna_commerce.twig.address_extension" class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension" lazy="true">
             <tag name="twig.extension" />
         </service>
-        <service id="ekyna_commerce.twig.order_extension" class="Ekyna\Bundle\CommerceBundle\Twig\OrderExtension">
-            <argument type="service" id="ekyna_commerce.state_helper"/>
+        <service id="ekyna_commerce.twig.order_extension" class="Ekyna\Bundle\CommerceBundle\Twig\OrderExtension" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
             <tag name="twig.extension" />
         </service>
-        <service id="ekyna_commerce.twig.payment_extension" class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension">
-            <argument type="service" id="ekyna_commerce.state_helper"/>
+        <service id="ekyna_commerce.twig.payment_extension" class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
             <tag name="twig.extension" />
         </service>
-        <service id="ekyna_commerce.twig.shipment_extension" class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension">
-            <argument type="service" id="ekyna_commerce.state_helper"/>
+        <service id="ekyna_commerce.twig.product_extension" class="Ekyna\Bundle\CommerceBundle\Twig\ProductExtension" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
+            <tag name="twig.extension" />
+        </service>
+        <service id="ekyna_commerce.twig.shipment_extension" class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension" lazy="true">
+            <argument type="service" id="ekyna_commerce.helper.constant"/>
             <tag name="twig.extension" />
         </service>
 

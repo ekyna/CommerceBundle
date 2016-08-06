@@ -18,22 +18,25 @@ class OrderType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('number', 'anchor', [
-                'label' => 'ekyna_core.field.number',
+            ->addColumn('id', 'number', [
                 'sortable' => true,
-                'route_name' => 'ekyna_commerce_order_admin_show',
+            ])
+            ->addColumn('number', 'anchor', [
+                'label'                => 'ekyna_core.field.number',
+                'sortable'             => true,
+                'route_name'           => 'ekyna_commerce_order_admin_show',
                 'route_parameters_map' => [
-                    'orderId' => 'id'
+                    'orderId' => 'id',
                 ],
             ])
             ->addColumn('customer', 'ekyna_commerce_order_customer', [
-                'label' => 'ekyna_commerce.customer.label.singular',
+                'label'    => 'ekyna_commerce.customer.label.singular',
                 'sortable' => true,
             ])
             ->addColumn('grandTotal', 'price', [
-                'label' => 'ekyna_commerce.order.field.grand_total',
-                'sortable' => true,
-                'currency_path' => 'currency.code'
+                'label'         => 'ekyna_commerce.order.field.grand_total',
+                'sortable'      => true,
+                'currency_path' => 'currency.code',
             ])
             ->addColumn('state', 'ekyna_commerce_order_state', [
                 'label' => 'ekyna_commerce.order.field.state',
@@ -47,22 +50,22 @@ class OrderType extends ResourceTableType
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
-                        'label' => 'ekyna_core.button.edit',
-                        'class' => 'warning',
-                        'route_name' => 'ekyna_commerce_order_admin_edit',
+                        'label'                => 'ekyna_core.button.edit',
+                        'class'                => 'warning',
+                        'route_name'           => 'ekyna_commerce_order_admin_edit',
                         'route_parameters_map' => [
-                            'orderId' => 'id'
+                            'orderId' => 'id',
                         ],
-                        'permission' => 'edit',
+                        'permission'           => 'edit',
                     ],
                     [
-                        'label' => 'ekyna_core.button.remove',
-                        'class' => 'danger',
-                        'route_name' => 'ekyna_commerce_order_admin_remove',
+                        'label'                => 'ekyna_core.button.remove',
+                        'class'                => 'danger',
+                        'route_name'           => 'ekyna_commerce_order_admin_remove',
                         'route_parameters_map' => [
-                            'orderId' => 'id'
+                            'orderId' => 'id',
                         ],
-                        'permission' => 'delete',
+                        'permission'           => 'delete',
                     ],
                 ],
             ])
@@ -80,8 +83,7 @@ class OrderType extends ResourceTableType
             ])
             ->addFilter('lastName', 'text', [
                 'label' => 'ekyna_core.field.last_name',
-            ])
-            /*->addFilter('atiTotal', 'number', [
+            ])/*->addFilter('atiTotal', 'number', [
                 'label' => 'ekyna_order.order.field.ati_total',
             ])
             ->addFilter('state', 'choice', [
@@ -95,7 +97,8 @@ class OrderType extends ResourceTableType
             ->addFilter('shipmentState', 'choice', [
                 'label' => 'ekyna_order.order.field.shipment_state',
                 'choices' => ShipmentStates::getChoices(),
-            ])*/;
+            ])*/
+        ;
     }
 
     /**

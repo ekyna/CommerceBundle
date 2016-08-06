@@ -1,0 +1,44 @@
+#ekyna_commerce_attribute_admin_home:
+#    path: ""
+#    defaults: { _controller: "ekyna_commerce.attribute.controller:homeAction" }
+#    methods: [GET]
+#    requirements:
+#        attributeGroupId: \d+
+#
+#ekyna_commerce_attribute_admin_list:
+#    path: /list
+#    defaults: { _controller: "ekyna_commerce.attribute.controller:listAction" }
+#    methods: [GET|POST]
+#    requirements:
+#        attributeGroupId: \d+
+
+ekyna_commerce_attribute_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.attribute.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        attributeGroupId: \d+
+
+ekyna_commerce_attribute_admin_show:
+    path: /{attributeId}/show
+    defaults: { _controller: "ekyna_commerce.attribute.controller:showAction" }
+    methods: [GET]
+    requirements:
+        attributeGroupId: \d+
+        attributeId: \d+
+
+ekyna_commerce_attribute_admin_edit:
+    path: /{attributeId}/edit
+    defaults: { _controller: "ekyna_commerce.attribute.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        attributeGroupId: \d+
+        attributeId: \d+
+
+ekyna_commerce_attribute_admin_remove:
+    path: /{attributeId}/remove
+    defaults: { _controller: "ekyna_commerce.attribute.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        attributeGroupId: \d+
+        attributeId: \d+
