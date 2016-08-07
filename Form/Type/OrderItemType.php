@@ -51,13 +51,15 @@ class OrderItemType extends ResourceFormType
                         'label'            => false,
                         'with_collections' => false,
                     ],
-                ])
-                ->add('adjustments', AdjustmentsType::class, [
-                    'entry_type'            => OrderItemAdjustmentType::class,
-                    'add_button_text'       => 'ekyna_commerce.order.form.add_item_adjustment',
-                    'delete_button_confirm' => 'ekyna_commerce.order.form.remove_item_adjustment',
                 ]);
         }
+
+        $builder->add('adjustments', AdjustmentsType::class, [
+            'prototype_name'        => '__item_adjustment__',
+            'entry_type'            => OrderItemAdjustmentType::class,
+            'add_button_text'       => 'ekyna_commerce.order.form.add_item_adjustment',
+            'delete_button_confirm' => 'ekyna_commerce.order.form.remove_item_adjustment',
+        ]);
 
         $subscriber = new OrderItemTypeSubscriber($this->subjectHelper, $this->getFields($options));
         $builder->addEventSubscriber($subscriber);
@@ -136,20 +138,6 @@ class OrderItemType extends ResourceFormType
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.quantity',
                     'min'         => 1,
-                ],
-            ]],
-            ['taxName', Type\TextType::class, [
-                'label'  => 'ekyna_commerce.order_item.field.tax_name',
-                'sizing' => 'sm',
-                'attr'   => [
-                    'placeholder' => 'ekyna_commerce.order_item.field.tax_name',
-                ],
-            ]],
-            ['taxRate', Type\NumberType::class, [
-                'label'  => 'ekyna_commerce.order_item.field.tax_rate',
-                'sizing' => 'sm',
-                'attr'   => [
-                    'placeholder' => 'ekyna_commerce.order_item.field.tax_rate',
                 ],
             ]],
             ['position', Type\HiddenType::class, [

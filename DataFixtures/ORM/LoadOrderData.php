@@ -5,6 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 use Ekyna\Bundle\CommerceBundle\Entity\Order;
 use Ekyna\Bundle\CommerceBundle\Event\OrderEvent;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes;
 use Ekyna\Component\Commerce\Order\Entity\OrderAdjustment;
 use Ekyna\Component\Commerce\Order\Entity\OrderItem;
 use Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment;
@@ -46,7 +48,7 @@ class LoadOrderData extends AbstractFixture
                 ->setItems($order);
 
             for ($a = 0; $a < rand(0, 2); $a++) {
-                $order->addAdjustment($this->generateAdjustment($a));
+                $order->addAdjustment($this->generateDiscount($a));
             }
 
             // TODO dispatch pre-create
@@ -142,49 +144,53 @@ class LoadOrderData extends AbstractFixture
 
         // TODO randomly product based
 
+        $position = 0;
+
         // Tax
-        switch (rand(0, 2)) {
-            case 0 :
-                $item
-                    ->setTaxName('TVA 20%')
-                    ->setTaxRate(20);
-                break;
-            case 1:
-                $item
-                    ->setTaxName('TVA 10%')
-                    ->setTaxRate(10);
-                break;
+        if (0 < $rate = rand(0, 2)) {
+            $adjustment = new OrderItemAdjustment();
+            $adjustment
+                ->setDesignation(sprintf('TVA %s%%', $rate))
+                ->setType(AdjustmentTypes::TYPE_TAXATION)
+                ->setMode(AdjustmentModes::MODE_PERCENT)
+                ->setAmount($rate)
+                ->setPosition($position);
+
+            $item->addAdjustment($adjustment);
+
+            $position++;
         }
 
         $item
             ->setNetPrice(rand(1000, 10000) / 100)
             ->setWeight(rand(100, 1000));
 
-        for ($a = 0; $a < rand(0, 2); $a++) {
-            $item->addAdjustment($this->generateItemAdjustment($a));
+        for ($a = $position; $a < rand(0, 2); $a++) {
+            $item->addAdjustment($this->generateItemDiscount($a));
         }
 
         return $item;
     }
 
-    private function generateItemAdjustment($position)
+    private function generateItemDiscount($position)
     {
         $adjustment = new OrderItemAdjustment();
         $adjustment
             ->setDesignation($this->faker->sentence(rand(3, 5), false))
-            ->setMode(50 < rand(0, 100) ? OrderItemAdjustment::MODE_FLAT : OrderItemAdjustment::MODE_PERCENT)
+            ->setType(AdjustmentTypes::TYPE_DISCOUNT)
+            ->setMode(50 < rand(0, 100) ? AdjustmentModes::MODE_FLAT : AdjustmentModes::MODE_PERCENT)
             ->setAmount(rand(5, 50))
             ->setPosition($position);
 
         return $adjustment;
     }
 
-    private function generateAdjustment($position)
+    private function generateDiscount($position)
     {
         $adjustment = new OrderAdjustment();
         $adjustment
             ->setDesignation($this->faker->sentence(rand(3, 5), false))
-            ->setMode(50 < rand(0, 100) ? OrderItemAdjustment::MODE_FLAT : OrderItemAdjustment::MODE_PERCENT)
+            ->setMode(50 < rand(0, 100) ? AdjustmentModes::MODE_FLAT : AdjustmentModes::MODE_PERCENT)
             ->setAmount(rand(5, 50))
             ->setPosition($position);
 

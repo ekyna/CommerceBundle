@@ -3,6 +3,13 @@ ekyna_commerce:
     sales: Ventes
     store: Catalogue
     adjustment:
+        label:
+            singular: Ajustement
+            plural: Ajustements
+        type:
+            taxation: Taxe
+            included: Inclus
+            discount: Remise
         mode:
             flat: Montant
             percent: Pourcentage
@@ -241,10 +248,10 @@ ekyna_commerce:
             remove_item: Supprimer la ligne produit ?
             add_child_item: Ajouter une ligne sous-produit
             remove_child_item: Supprimer la ligne sous-produit ?
-            add_item_adjustment: Ajouter une remise produit
-            remove_item_adjustment: Supprime la remise produit ?
-            add_adjustment: Ajouter une remise
-            remove_adjustment: Supprimer la remise ?
+            add_item_adjustment: Ajouter un ajustement produit
+            remove_item_adjustment: Supprimer l'ajustement produit ?
+            add_adjustment: Ajouter un ajustement
+            remove_adjustment: Supprimer l'ajustement ?
         alert:
             no_item: Aucune commande configuré
         state:

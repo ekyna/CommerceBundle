@@ -17,10 +17,10 @@ class SubjectHelper extends Helper implements SubjectHelperInterface
      */
     public function getFormOptions(OrderItemInterface $item, $property)
     {
-        if ($item->hasSubjectIdentity() && null !== $resolver = $this->getResolver($item)) {
+        /*if ($item->hasSubjectIdentity() && null !== $resolver = $this->getResolver($item)) {
             /** @var \Ekyna\Bundle\CommerceBundle\Resolver\SubjectResolverInterface $resolver */
-            return $resolver->getFormOptions($item, $property);
-        }
+            /*return $resolver->getFormOptions($item, $property);
+        }*/
 
         return [];
     }

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
+use Ekyna\Bundle\CommerceBundle\Model\AdjustmentTypes;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -25,6 +26,15 @@ class AbstractAdjustmentType extends ResourceFormType
                 'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.designation',
+                ],
+            ])
+            ->add('type', Type\ChoiceType::class, [
+                'label' => 'ekyna_core.field.type',
+                'choices' => AdjustmentTypes::getChoices(),
+                'sizing' => 'sm',
+                'attr'   => [
+                    'class' => 'no-select2',
+                    'placeholder' => 'ekyna_core.field.type',
                 ],
             ])
             ->add('mode', Type\ChoiceType::class, [

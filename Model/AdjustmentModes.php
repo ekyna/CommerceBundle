@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
-use Ekyna\Component\Commerce\Order\Model\AdjustmentModes as Modes;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as Modes;
 use Ekyna\Bundle\CoreBundle\Model\AbstractConstants;
 
 /**

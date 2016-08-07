@@ -76,6 +76,7 @@
             {#<thead>
             <tr>
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                <th>{{ 'ekyna_core.field.type'|trans }}</th>
                 <th>{{ 'ekyna_core.field.mode'|trans }}</th>
                 <th>{{ 'ekyna_core.field.amount'|trans }}</th>
                 <th></th>
@@ -106,7 +107,7 @@
         </table>
         {% if form.vars.allow_add %}
         <p>
-            <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+            <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
                     data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
                 {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
             </button>
@@ -122,13 +123,14 @@
 {% spaceless %}
     {# TODO {{ form_errors(form) }}#}
     <tr class="ekyna-collection-child">
-        <td>{{ form_widget(form.designation) }}</td>
+        <td width="30%">{{ form_widget(form.designation) }}</td>
+        <td>{{ form_widget(form.type) }}</td>
         <td>{{ form_widget(form.mode) }}</td>
-        <td>
-            {{ form_widget(form.amount) }}
+        <td>{{ form_widget(form.amount) }}</td>
+        <td class="ekyna-collection-controls">
             {{ form_widget(form.position) }}
+            <div class="btn-group">__controls__</div>
         </td>
-        <td class="ekyna-collection-controls controls-inline">__controls__</td>
     </tr>
     {{ form_rest(form) }}
 {% endspaceless %}
@@ -216,16 +218,16 @@
             {# Controls #}
             {% set controls =
             '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-up" ' ~
-            'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
-            '<span class="glyphicon glyphicon-chevron-up"></span>' ~
+                'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
+                    '<span class="glyphicon glyphicon-chevron-up"></span>' ~
             '</button>' ~
             '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
-            'data-collection="' ~ form.vars.id ~ '" data-field="__id__"' ~ delete_button_confirm ~ '>' ~
-            '<span class="glyphicon glyphicon-remove"></span>' ~
+                'data-collection="' ~ form.vars.id ~ '" data-field="__id__"' ~ delete_button_confirm ~ '>' ~
+                    '<span class="glyphicon glyphicon-remove"></span>' ~
             '</button>' ~
             '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-down" ' ~
-            'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
-            '<span class="glyphicon glyphicon-chevron-down"></span>' ~
+                'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
+                    '<span class="glyphicon glyphicon-chevron-down"></span>' ~
             '</button>' %}
             {% set attr = attr|merge({'data-prototype': form_widget(prototype)|replace({'__controls__': controls}) }) %}
             {% set attr = attr|merge({'data-prototype-name': prototype_name }) %}
@@ -239,18 +241,19 @@
                     <thead>
                     <tr>
                         <th>
-                            {{ 'ekyna_core.field.designation'|trans }} /
+                            {{ 'ekyna_core.field.designation'|trans }}
+                        </th>
+                        <th>
                             {{ 'ekyna_core.field.reference'|trans }}
                         </th>
                         <th>
                             {{ 'ekyna_core.field.weight'|trans }}
                         </th>
                         <th>
-                            {{ 'ekyna_core.field.quantity'|trans }} /
                             {{ 'ekyna_core.field.price'|trans }}
                         </th>
                         <th>
-                            {{ 'ekyna_core.field.tax'|trans }}
+                            {{ 'ekyna_core.field.quantity'|trans }}
                         </th>
                         <th></th>
                     </tr>
@@ -261,17 +264,17 @@
                 {% for child in form %}
                     {% set controls =
                     '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-up" ' ~
-                    'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
-                    '<span class="glyphicon glyphicon-chevron-up"></span>' ~
+                        'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
+                            '<span class="glyphicon glyphicon-chevron-up"></span>' ~
                     '</button>' ~
                     '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
-                    'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '"' ~
-                    delete_button_confirm ~ '>' ~
-                    '<span class="glyphicon glyphicon-remove"></span>' ~
+                        'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '"' ~
+                            delete_button_confirm ~ '>' ~
+                        '<span class="glyphicon glyphicon-remove"></span>' ~
                     '</button>' ~
                     '<button type="button" class="btn btn-default btn-xs" data-collection-role="move-down" ' ~
-                    'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
-                    '<span class="glyphicon glyphicon-chevron-down"></span>' ~
+                        'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '">' ~
+                            '<span class="glyphicon glyphicon-chevron-down"></span>' ~
                     '</button>'
                     %}
                     {{ form_widget(child)|replace({'__controls__': controls})|raw }}
@@ -282,7 +285,7 @@
                 {% if form.vars.allow_add %}
                     <tr>
                         <td colspan="5">
-                            <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                            <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
                                     data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
                                 {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
                             </button>
@@ -299,36 +302,31 @@
 
 {% block ekyna_commerce_order_item_widget %}
     {% spaceless %}
-        <tbody class="ekyna-collection-child">
+        <tbody class="ekyna-collection-child ekyna-sale-item">
         {# TODO {{ form_errors(form) }}#}
         <tr>
-            <td colspan="2">{{ form_widget(form.designation) }}</td>
-            <td>{{ form_widget(form.quantity) }}</td>
-            <td>{{ form_widget(form.taxName) }}</td>
-            <td rowspan="3" class="ekyna-collection-controls">__controls__</td>
-        </tr>
-        <tr>
+            <td width="30%">{{ form_widget(form.designation) }}</td>
             <td>{{ form_widget(form.reference) }}</td>
             <td>{{ form_widget(form.weight) }}</td>
             <td>{{ form_widget(form.netPrice) }}</td>
-            <td>
-                {{ form_widget(form.taxRate) }}
+            <td>{{ form_widget(form.quantity) }}</td>
+            <td rowspan="{{ form.vars.with_collections ? 3 : 2 }}" class="ekyna-collection-controls">
                 {{ form_widget(form.position) }}
+                <div class="btn-group-vertical">__controls__</div>
             </td>
         </tr>
         {% if form.vars.with_collections %}
             <tr>
-                <td colspan="4">
+                <td colspan="5" class="ekyna-sale-item-children">
                     {{ form_widget(form.items) }}
                 </td>
             </tr>
-            <tr>
-                <td colspan="4">
-                    {{ form_widget(form.adjustments) }}
-                </td>
-            </tr>
         {% endif %}
-
+        <tr>
+            <td colspan="5" class="ekyna-sale-item-children">
+                {{ form_widget(form.adjustments) }}
+            </td>
+        </tr>
         {#{{ form_rest(form) }}#}
         </tbody>
     {% endspaceless %}

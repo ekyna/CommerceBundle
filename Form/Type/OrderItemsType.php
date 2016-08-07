@@ -24,7 +24,6 @@ class OrderItemsType extends AbstractType
         $resolver
             ->setDefaults([
                 'label'          => false,
-                'prototype_name' => '__item__',
                 'entry_type'     => OrderItemType::class,
                 'entry_options'  => ['label' => false],
                 'allow_add'      => true,
@@ -33,6 +32,13 @@ class OrderItemsType extends AbstractType
                 'attr'           => ['widget_col' => 12],
                 'children_mode'  => false,
             ])
+            ->setDefault('prototype_name', function (Options $options) {
+                if ($options['children_mode']) {
+                    return '__child_item__';
+                }
+
+                return '__item__';
+            })
             ->setDefault('add_button_text', function (Options $options) {
                 if ($options['children_mode']) {
                     return 'ekyna_commerce.order.form.add_child_item';
