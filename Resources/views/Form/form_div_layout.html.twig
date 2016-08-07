@@ -65,10 +65,13 @@
                     'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
                 '<span class="glyphicon glyphicon-chevron-down"></span>' ~
             '</button>' %}
-        {% set attr = attr|merge({'data-prototype': form_widget(prototype)|replace({'__controls__': controls}) }) %}
-        {% set attr = attr|merge({'data-prototype-name': prototype_name }) %}
+        {% set attr = attr|merge({'data-prototype': form.vars.id ~ '_prototype'}) %}
+        {% set attr = attr|merge({'data-prototype-name': prototype_name}) %}
     {% endif %}
 
+    <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
+        {{ form_widget(prototype)|replace({'__controls__': controls}) }}
+    </div>
     <div {{ block('widget_container_attributes') }}>
         {{ form_errors(form) }}
         <table class="table">
@@ -229,10 +232,12 @@
                 'data-collection="' ~ form.vars.id ~ '" data-field="__id__">' ~
                     '<span class="glyphicon glyphicon-chevron-down"></span>' ~
             '</button>' %}
-            {% set attr = attr|merge({'data-prototype': form_widget(prototype)|replace({'__controls__': controls}) }) %}
-            {% set attr = attr|merge({'data-prototype-name': prototype_name }) %}
+            {% set attr = attr|merge({'data-prototype': form.vars.id ~ '_prototype'}) %}
+            {% set attr = attr|merge({'data-prototype-name': prototype_name}) %}
         {% endif %}
-
+        <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
+            {{ form_widget(prototype)|replace({'__controls__': controls}) }}
+        </div>
         <div {{ block('widget_container_attributes') }}>
             {{ form_errors(form) }}
             <table class="ekyna-collection-child-container table">
