@@ -19,9 +19,9 @@ class CustomerEventSubscriber extends CustomerListener implements EventSubscribe
     public static function getSubscribedEvents()
     {
         return [
-            CustomerEvents::PRE_CREATE     => ['onPreCreate', 0],
-            CustomerEvents::PRE_UPDATE     => ['onPreUpdate', 0],
-            CustomerEvents::PRE_DELETE     => ['onPreDelete', 0],
+            CustomerEvents::INSERT  => ['onInsert', 0],
+            CustomerEvents::UPDATE  => ['onUpdate', 0],
+            CustomerEvents::DELETE  => ['onDelete', 0],
         ];
     }
 }

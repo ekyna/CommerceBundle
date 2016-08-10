@@ -19,9 +19,9 @@ class ProductEventSubscriber extends ProductListener implements EventSubscriberI
     public static function getSubscribedEvents()
     {
         return [
-            ProductEvents::PRE_CREATE => ['onPreCreate', 0],
-            ProductEvents::PRE_UPDATE => ['onPreUpdate', 0],
-            ProductEvents::PRE_DELETE => ['onPreDelete', 0],
+            ProductEvents::INSERT => ['onInsert', 0],
+            ProductEvents::UPDATE => ['onUpdate', 0],
+            ProductEvents::DELETE => ['onDelete', 0],
         ];
     }
 }

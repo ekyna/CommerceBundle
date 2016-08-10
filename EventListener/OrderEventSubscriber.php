@@ -51,9 +51,11 @@ class OrderEventSubscriber extends OrderListener implements EventSubscriberInter
                 ['onStateChange', 0],
                 ['onPostStateChange', -512],
             ],*/
-            OrderEvents::PRE_CREATE     => ['onPreCreate', 0],
-            OrderEvents::PRE_UPDATE     => ['onPreUpdate', 0],
-            OrderEvents::PRE_DELETE     => ['onPreDelete', 0],
+
+            OrderEvents::INSERT     => ['onInsert', 0],
+            OrderEvents::UPDATE     => ['onUpdate', 0],
+
+            OrderEvents::PRE_DELETE => ['onPreDelete', 0],
         ];
     }
 }

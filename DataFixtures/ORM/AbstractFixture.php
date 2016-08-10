@@ -34,7 +34,7 @@ abstract class AbstractFixture
     extends BaseFixture
     implements FixtureInterface,
                OrderedFixtureInterface,
-               ProcessorInterface,
+//               ProcessorInterface,
                ContainerAwareInterface
 {
     /**
@@ -78,13 +78,14 @@ abstract class AbstractFixture
             'locale'    => $this->container->getParameter('hautelook_alice.locale'),
             'seed'      => uniqid(),
             'providers' => [$this],
-        ], [
+        ]/*, [
             $this,
-        ]);
+        ]*/);
     }
 
     /**
      * @inheritdoc
+     * @todo remove
      */
     public function preProcess($object)
     {
@@ -100,6 +101,7 @@ abstract class AbstractFixture
 
     /**
      * @inheritdoc
+     * @todo remove
      */
     public function postProcess($object)
     {
