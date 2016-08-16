@@ -150,10 +150,10 @@ class LoadOrderData extends AbstractFixture
         if (0 < $rate = rand(0, 2)) {
             $adjustment = new OrderItemAdjustment();
             $adjustment
-                ->setDesignation(sprintf('TVA %s%%', $rate))
+                ->setDesignation(sprintf('TVA %s%%', $rate*10))
                 ->setType(AdjustmentTypes::TYPE_TAXATION)
                 ->setMode(AdjustmentModes::MODE_PERCENT)
-                ->setAmount($rate)
+                ->setAmount($rate*10)
                 ->setPosition($position);
 
             $item->addAdjustment($adjustment);
