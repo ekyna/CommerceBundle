@@ -4,19 +4,17 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\AdminBundle\Event\ResourceEventInterface;
 use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Order\Event\OrderEvents;
-use Ekyna\Component\Commerce\Order\EventListener\OrderListener;
 use Ekyna\Component\Commerce\Order\Model\OrderEventInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class OrderEventSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderEventSubscriber extends OrderListener implements EventSubscriberInterface
+class OrderEventSubscriber extends BaseSubscriber
 {
     /**
      * Pre delete event handler.
@@ -41,21 +39,8 @@ class OrderEventSubscriber extends OrderListener implements EventSubscriberInter
      */
     public static function getSubscribedEvents()
     {
-        return [
-            /*OrderEvents::CONTENT_CHANGE => [
-                ['onPreContentChange', 512],
-                ['onContentChange', 0],
-                ['onPostContentChange', -512],
-            ],
-            OrderEvents::STATE_CHANGE   => [
-                ['onStateChange', 0],
-                ['onPostStateChange', -512],
-            ],*/
-
-            OrderEvents::INSERT     => ['onInsert', 0],
-            OrderEvents::UPDATE     => ['onUpdate', 0],
-
+        return array_merge(parent::getSubscribedEvents(), [
             OrderEvents::PRE_DELETE => ['onPreDelete', 0],
-        ];
+        ]);
     }
 }
