@@ -30,7 +30,7 @@
 
         <!-- Calculator -->
         <service id="ekyna_commerce.order.calculator"
-                 class="Ekyna\Component\Commerce\Order\Calculator\Calculator"/>
+                 class="Ekyna\Component\Commerce\Common\Calculator\Calculator"/>
 
         <!-- Generator -->
         <service id="ekyna_commerce.order.number_generator"
@@ -63,15 +63,13 @@
 
         <!-- Resource event listeners -->
         <service id="ekyna_commerce.customer.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\CustomerEventSubscriber">
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber">
             <tag name="resource.event_subscriber"/>
         </service>
         <service id="ekyna_commerce.product.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\ProductEventSubscriber">
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ProductEventSubscriber">
             <tag name="resource.event_subscriber"/>
         </service>
-
-        <!-- Event listeners -->
         <service id="ekyna_commerce.order.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">
             <argument type="service" id="ekyna_commerce.order.number_generator"/>
