@@ -178,7 +178,7 @@ class LoadOrderData extends AbstractFixture
         $adjustment
             ->setDesignation($this->faker->sentence(rand(3, 5), false))
             ->setType(AdjustmentTypes::TYPE_DISCOUNT)
-            ->setMode(50 < rand(0, 100) ? AdjustmentModes::MODE_FLAT : AdjustmentModes::MODE_PERCENT)
+            ->setMode(AdjustmentModes::MODE_PERCENT)
             ->setAmount(rand(5, 50))
             ->setPosition($position);
 
