@@ -29,7 +29,7 @@
     <services>
 
         <!-- Calculator -->
-        <service id="ekyna_commerce.order.calculator"
+        <service id="ekyna_commerce.common.calculator"
                  class="Ekyna\Component\Commerce\Common\Calculator\Calculator"/>
 
         <!-- Generator -->
@@ -73,7 +73,7 @@
         <service id="ekyna_commerce.order.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">
             <argument type="service" id="ekyna_commerce.order.number_generator"/>
-            <argument type="service" id="ekyna_commerce.order.calculator"/>
+            <argument type="service" id="ekyna_commerce.common.calculator"/>
             <argument type="service" id="ekyna_commerce.order.state_resolver"/>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
@@ -243,6 +243,12 @@
             <tag name="table.column_type" alias="ekyna_commerce_shipment_state"/>
         </service>
 
+        <!-- View -->
+        <service id="ekyna_commerce.common.view_builder"
+                class="Ekyna\Component\Commerce\Common\View\Builder">
+            <argument type="service" id="ekyna_commerce.common.calculator"/>
+        </service>
+
         <!-- Twig extensions -->
         <service id="ekyna_commerce.twig.address_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension">
@@ -251,6 +257,7 @@
         <service id="ekyna_commerce.twig.order_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\OrderExtension">
             <argument type="service" id="ekyna_commerce.helper.constant"/>
+            <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.payment_extension"

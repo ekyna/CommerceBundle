@@ -1,0 +1,52 @@
+{% import _self as macros %}
+
+{% macro line_view(line, level) %}
+    {% import _self as macros %}
+
+    {% if line.lines is empty %}
+    <tr>
+        <td>{{ line.designation }}</td>
+        <td>{{ line.reference }}</td>
+        <td class="text-right">{{ line.unit|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.quantity }}</td>
+        <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.tax|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
+    </tr>
+    {% else %}
+        <tr>
+            <td>{{ line.designation }}</td>
+            <td>{{ line.reference }}</td>
+            <td></td>
+            <td>{{ line.quantity }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% for child in line.lines %}
+            {{ macros.line_view(child, level + 1) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.net_unit'|trans }}</th>
+            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for line in view.lines %}
+            {{ macros.line_view(line, 0) }}
+        {% endfor %}
+    </tbody>
+
+</table>

@@ -222,7 +222,7 @@ ekyna_commerce:
             new: Nouvelle commande
             edit: Modifier la commande
             remove: Supprimer la commande
-        field:
+        field: # TODO move to ekyna_commerce.sale.*
             customer: Client
             addresses: Adresses
             invoice_address: Adresse de facturation
