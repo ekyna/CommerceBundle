@@ -16,17 +16,17 @@
             <div class="tab-pane active" id="general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(tax.name, 'text', 'ekyna_core.field.name') }}
+                        {{ show_row(tax.name, 'text', 'ekyna_core.field.name', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(tax.rate + ' %', 'number', 'ekyna_core.field.rate') }}
+                        {{ show_row(tax.rate + ' %', 'number', 'ekyna_core.field.rate', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
                     </div>
                 </div>
                 {{ show_row(tax.country, 'entity', 'ekyna_commerce.country.label.singular', {
                     'route': 'ekyna_commerce_country_admin_show',
                     'route_params_map': {'countryId': 'id'}
                 }) }}
-                {{ show_row(tax.postalCodeMatch, 'text', 'ekyna_commerce.tax.fiel.postal_code_match') }}
+                {{ show_row(tax.postalCodeMatch, 'text', 'ekyna_commerce.tax.field.postal_code_match') }}
             </div>
         </div>
     </div>

@@ -466,7 +466,7 @@ ekyna_commerce:
             edit: Modifier la taxe
             remove: Supprimer la taxe
         field:
-            postal_code_match: Masque de code postal
+            postal_code_match: Masque code postal
         alert:
             no_item: Aucune tax configuré
     tax_group:

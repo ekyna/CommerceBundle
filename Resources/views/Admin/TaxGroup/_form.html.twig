@@ -11,10 +11,10 @@
         <div class="tab-pane active" id="general">
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.name) }}
+                    {{ form_row(form.name, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.default) }}
+                    {{ form_row(form.default, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             {{ form_row(form.taxRules) }}

@@ -16,10 +16,10 @@
             <div class="tab-pane active" id="general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(taxGroup.name, 'text', 'ekyna_core.field.name') }}
+                        {{ show_row(taxGroup.name, 'text', 'ekyna_core.field.name', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(taxGroup.default, 'checkbox', 'ekyna_commerce.tax_group.field.default') }}
+                        {{ show_row(taxGroup.default, 'checkbox', 'ekyna_commerce.tax_group.field.default', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
                     </div>
                 </div>
                 {{ show_row(taxGroup.taxRules, 'entity', 'ekyna_commerce.tax_rule.label.plural', {
