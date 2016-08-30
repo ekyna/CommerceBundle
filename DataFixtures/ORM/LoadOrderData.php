@@ -131,7 +131,7 @@ class LoadOrderData extends AbstractFixture
         $item
             ->setDesignation($this->faker->sentence(rand(3, 5), false))
             ->setReference($this->faker->bothify(strtoupper('????-####')))
-            ->setQuantity(rand(1, 10))
+            ->setQuantity(rand(1, 5))
             ->setPosition($position);
 
         if ($level < 1 && 0 == rand(0, 2)) {
