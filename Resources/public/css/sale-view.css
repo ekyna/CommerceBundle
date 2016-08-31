@@ -1,13 +1,16 @@
-.sale-view tbody tr.level-0 td:first-child {
+.sale-view tbody tr td.sale-view-number {
+  color: #a2afbc;
+}
+.sale-view tbody tr.level-0 td.sale-view-designation {
   padding-left: 8px;
 }
-.sale-view tbody tr.level-1 td:first-child {
+.sale-view tbody tr.level-1 td.sale-view-designation {
   padding-left: 24px;
 }
-.sale-view tbody tr.level-2 td:first-child {
+.sale-view tbody tr.level-2 td.sale-view-designation {
   padding-left: 40px;
 }
-.sale-view tbody tr.level-3 td:first-child {
+.sale-view tbody tr.level-3 td.sale-view-designation {
   padding-left: 56px;
 }
 .sale-view tbody .sale-view-totals th {

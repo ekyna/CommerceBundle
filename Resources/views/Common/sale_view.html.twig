@@ -3,21 +3,22 @@
 {% macro line_view(line, level) %}
     {% import _self as macros %}
     <tr class="level-{{ level }}">
+        <td class="sale-view-number">{{ line.number }}</td>
+        <td class="sale-view-designation">{{ line.designation }}</td>
+        <td>{{ line.reference }}</td>
     {% if line.children %}
-        <td>{{ line.designation }}</td>
-        <td>{{ line.reference }}</td>
-        <td></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
         <td class="text-right">{{ line.quantity }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
     {% else %}
-        <td>{{ line.designation }}</td>
-        <td>{{ line.reference }}</td>
         <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
+        <td class="text-right">{% if line.taxRate is not same as(null) %}{{ line.taxRate|localizednumber }}{% endif %}</td>
         <td class="text-right">{{ line.quantity }}</td>
         <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ line.tax|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
         <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
     {% endif %}
     </tr>
@@ -30,9 +31,11 @@
 
     <thead>
         <tr>
-            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+            <th class="sale-view-number">&nbsp;</th>
+            <th class="sale-view-designation">{{ 'ekyna_core.field.designation'|trans }}</th>
             <th>{{ 'ekyna_core.field.reference'|trans }}</th>
             <th>{{ 'ekyna_commerce.order.field.net_unit'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.tax_rate'|trans }}</th>
             <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
             <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
@@ -49,15 +52,17 @@
     <tbody>
         {% if view.discounts is empty %}
         <tr>
-            <th colspan="4" rowspan="2">&nbsp;</th>
+            <th colspan="5" rowspan="2">&nbsp;</th>
             <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
+            <th>&nbsp;</th>
             <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
         </tr>
         {% endif %}
         <tr>
             {% if view.discounts is not empty %}
-            <th colspan="4"><strong>Totaux avant remise</strong></th>
+            <th>&nbsp;</th>
+            <th colspan="5"><strong>Total avant remise</strong></th>
             {% endif %}
             <td class="text-right">{{ view.gross.base|localizedcurrency('EUR') }}</td>
             <td class="text-right">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
@@ -68,24 +73,26 @@
     {% if view.discounts is not empty %}
     <tbody>
         <tr>
-            <td colspan="7">&nbsp;</td>
+            <td colspan="8">&nbsp;</td>
         </tr>
         {% for discount in view.discounts %}
         <tr>
-            <td>{{ discount.designation }}</td>
+            <td class="sale-view-number">{#{{ discount.number }}#}</td>
+            <td class="sale-view-designation">{{ discount.designation }}</td>
             <td>{{ discount.reference }}</td>
             <td class="text-right">&nbsp;</td>
             <td class="text-right">&nbsp;</td>
+            <td class="text-right">&nbsp;</td>
             <td class="text-right">{{ discount.base|localizedcurrency('EUR') }}</td>
-            <td class="text-right">{{ discount.tax|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ discount.taxAmount|localizedcurrency('EUR') }}</td>
             <td class="text-right">{{ discount.total|localizedcurrency('EUR') }}</td>
         </tr>
         {% endfor %}
     </tbody>
 
     <tbody>
-        <tr class="sale-view-totals">
-            <th colspan="4" rowspan="2">&nbsp;</th>
+        <tr class="">
+            <th colspan="6" rowspan="2">&nbsp;</th>
             <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>

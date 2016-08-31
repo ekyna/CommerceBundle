@@ -112,7 +112,7 @@ class LoadOrderData extends AbstractFixture
      */
     private function setItems(Order $order)
     {
-        for ($i = 0; $i < rand(1,4); $i++) {
+        for ($i = 0; $i < rand(1, 4); $i++) {
             $order->addItem($this->generateItem($i));
         }
 
@@ -128,7 +128,7 @@ class LoadOrderData extends AbstractFixture
     private function generateItem($position, $level = 0)
     {
         $nbChildren = 0;
-        if ($level < 1 && 0 == rand(0, 2)) {
+        if (($level == 0) && (0 == rand(0, 2))) {
             $nbChildren = rand(1, 3);
         }
 
@@ -143,7 +143,7 @@ class LoadOrderData extends AbstractFixture
             ->setQuantity(rand(1, 5))
             ->setPosition($position);
 
-        if ($nbChildren) {
+        if (0 < $nbChildren) {
             for ($c = 0; $c < $nbChildren; $c++) {
                 $item->addChild($this->generateItem($level + 1));
             }
@@ -156,13 +156,14 @@ class LoadOrderData extends AbstractFixture
         $position = 0;
 
         // Tax
-        if (0 < $rate = rand(0, 2)) {
+        $rate = rand(1, 2)*10;
+        if (0 < $rate) {
             $adjustment = new OrderItemAdjustment();
             $adjustment
-                ->setDesignation(sprintf('TVA %s%%', $rate*10))
+                ->setDesignation(sprintf('TVA %s%%', $rate))
                 ->setType(AdjustmentTypes::TYPE_TAXATION)
                 ->setMode(AdjustmentModes::MODE_PERCENT)
-                ->setAmount($rate*10)
+                ->setAmount($rate)
                 ->setPosition($position);
 
             $item->addAdjustment($adjustment);
@@ -199,15 +200,15 @@ class LoadOrderData extends AbstractFixture
 
     private function generateDiscount($position)
     {
-        if (50 < rand(0, 100)) {
+        /*if (50 < rand(0, 100)) {
             $mode = AdjustmentModes::MODE_FLAT;
             $amount = rand(20, 100);
             $designation = sprintf('Remise %d €', $amount);
-        } else {
+        } else {*/
             $mode = AdjustmentModes::MODE_PERCENT;
             $amount = rand(5, 20);
             $designation = sprintf('Remise %d%%', $amount);
-        }
+        //}
 
         $adjustment = new OrderAdjustment();
         $adjustment
