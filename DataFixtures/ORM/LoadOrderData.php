@@ -112,7 +112,7 @@ class LoadOrderData extends AbstractFixture
      */
     private function setItems(Order $order)
     {
-        for ($i = 0; $i < 6; $i++) {
+        for ($i = 0; $i < rand(1,4); $i++) {
             $order->addItem($this->generateItem($i));
         }
 
@@ -127,15 +127,24 @@ class LoadOrderData extends AbstractFixture
      */
     private function generateItem($position, $level = 0)
     {
+        $nbChildren = 0;
+        if ($level < 1 && 0 == rand(0, 2)) {
+            $nbChildren = rand(1, 3);
+        }
+
+        $designation = $nbChildren
+            ? 'Pack ' . $this->faker->sentence(rand(2,3), false)
+            : 'Produit ' . $this->faker->sentence(rand(2,3), false);
+
         $item = new OrderItem();
         $item
-            ->setDesignation($this->faker->sentence(rand(3, 5), false))
-            ->setReference($this->faker->bothify(strtoupper('????-####')))
+            ->setDesignation($designation)
+            ->setReference(strtoupper($this->faker->bothify(strtoupper('????-####'))))
             ->setQuantity(rand(1, 5))
             ->setPosition($position);
 
-        if ($level < 1 && 0 == rand(0, 2)) {
-            for ($c = 0; $c < rand(1, 3); $c++) {
+        if ($nbChildren) {
+            for ($c = 0; $c < $nbChildren; $c++) {
                 $item->addChild($this->generateItem($level + 1));
             }
 
@@ -175,11 +184,14 @@ class LoadOrderData extends AbstractFixture
     private function generateItemDiscount($position)
     {
         $adjustment = new OrderItemAdjustment();
+
+        $percent = rand(5, 20);
+
         $adjustment
-            ->setDesignation($this->faker->sentence(rand(3, 5), false))
+            ->setDesignation(sprintf('Remise %d%%', $percent))
             ->setType(AdjustmentTypes::TYPE_DISCOUNT)
             ->setMode(AdjustmentModes::MODE_PERCENT)
-            ->setAmount(rand(5, 50))
+            ->setAmount($percent)
             ->setPosition($position);
 
         return $adjustment;
@@ -187,11 +199,21 @@ class LoadOrderData extends AbstractFixture
 
     private function generateDiscount($position)
     {
+        if (50 < rand(0, 100)) {
+            $mode = AdjustmentModes::MODE_FLAT;
+            $amount = rand(20, 100);
+            $designation = sprintf('Remise %d €', $amount);
+        } else {
+            $mode = AdjustmentModes::MODE_PERCENT;
+            $amount = rand(5, 20);
+            $designation = sprintf('Remise %d%%', $amount);
+        }
+
         $adjustment = new OrderAdjustment();
         $adjustment
-            ->setDesignation($this->faker->sentence(rand(3, 5), false))
-            ->setMode(50 < rand(0, 100) ? AdjustmentModes::MODE_FLAT : AdjustmentModes::MODE_PERCENT)
-            ->setAmount(rand(5, 50))
+            ->setDesignation($designation)
+            ->setMode($mode)
+            ->setAmount($amount)
             ->setPosition($position);
 
         return $adjustment;

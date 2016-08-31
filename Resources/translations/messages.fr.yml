@@ -233,7 +233,7 @@ ekyna_commerce:
             no_shipment: Sans livraison
             details: Détail
             net_unit: Prix Unit. HT
-            net_total: Total HT
+            net_total: Total HT # TODO rename to base_total ?
             tax_total: Total taxes
             adjustment_total: Total remises
             paid_total: Total réglements

@@ -2,34 +2,31 @@
 
 {% macro line_view(line, level) %}
     {% import _self as macros %}
-
-    {% if line.lines is empty %}
-    <tr>
+    <tr class="level-{{ level }}">
+    {% if line.children %}
         <td>{{ line.designation }}</td>
         <td>{{ line.reference }}</td>
-        <td class="text-right">{{ line.unit|localizedcurrency('EUR') }}</td>
+        <td></td>
+        <td class="text-right">{{ line.quantity }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    {% else %}
+        <td>{{ line.designation }}</td>
+        <td>{{ line.reference }}</td>
+        <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
         <td class="text-right">{{ line.quantity }}</td>
         <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
         <td class="text-right">{{ line.tax|localizedcurrency('EUR') }}</td>
         <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
-    </tr>
-    {% else %}
-        <tr>
-            <td>{{ line.designation }}</td>
-            <td>{{ line.reference }}</td>
-            <td></td>
-            <td>{{ line.quantity }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        {% for child in line.lines %}
-            {{ macros.line_view(child, level + 1) }}
-        {% endfor %}
     {% endif %}
+    </tr>
+    {% for child in line.lines %}
+        {{ macros.line_view(child, level + 1) }}
+    {% endfor %}
 {% endmacro %}
 
-<table class="table table-striped">
+<table class="table table-striped sale-view">
 
     <thead>
         <tr>
@@ -44,9 +41,80 @@
     </thead>
 
     <tbody>
-        {% for line in view.lines %}
-            {{ macros.line_view(line, 0) }}
+        {% for item in view.items %}
+            {{ macros.line_view(item, 0) }}
         {% endfor %}
     </tbody>
 
+    <tbody>
+        {% if view.discounts is empty %}
+        <tr>
+            <th colspan="4" rowspan="2">&nbsp;</th>
+            <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
+        </tr>
+        {% endif %}
+        <tr>
+            {% if view.discounts is not empty %}
+            <th colspan="4"><strong>Totaux avant remise</strong></th>
+            {% endif %}
+            <td class="text-right">{{ view.gross.base|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ view.gross.total|localizedcurrency('EUR') }}</td>
+        </tr>
+    </tbody>
+
+    {% if view.discounts is not empty %}
+    <tbody>
+        <tr>
+            <td colspan="7">&nbsp;</td>
+        </tr>
+        {% for discount in view.discounts %}
+        <tr>
+            <td>{{ discount.designation }}</td>
+            <td>{{ discount.reference }}</td>
+            <td class="text-right">&nbsp;</td>
+            <td class="text-right">&nbsp;</td>
+            <td class="text-right">{{ discount.base|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ discount.tax|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ discount.total|localizedcurrency('EUR') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <tbody>
+        <tr class="sale-view-totals">
+            <th colspan="4" rowspan="2">&nbsp;</th>
+            <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
+        </tr>
+        <tr>
+            <td class="text-right">{{ view.final.base|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ view.final.tax|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ view.final.total|localizedcurrency('EUR') }}</td>
+        </tr>
+    </tbody>
+    {% endif %}
+
 </table>
+
+{% if view.taxes is not empty %}
+<table class="table table-striped taxes-view">
+    <thead>
+        <tr>
+            <th>Taxe</th>
+            <th>Montant</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for tax in view.taxes %}
+        <tr>
+            <td>{{ tax.name }}</td>
+            <td class="text-right">{{ tax.total|localizedcurrency('EUR') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}

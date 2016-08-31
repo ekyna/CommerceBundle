@@ -1,0 +1,21 @@
+.sale-view tbody tr.level-0 td:first-child {
+  padding-left: 8px;
+}
+.sale-view tbody tr.level-1 td:first-child {
+  padding-left: 24px;
+}
+.sale-view tbody tr.level-2 td:first-child {
+  padding-left: 40px;
+}
+.sale-view tbody tr.level-3 td:first-child {
+  padding-left: 56px;
+}
+.sale-view tbody .sale-view-totals th {
+  font-weight: 700;
+  position: relative;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.taxes-view {
+  width: auto;
+}

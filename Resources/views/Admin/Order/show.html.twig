@@ -42,3 +42,8 @@
     </div>
 </div>
 {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
+{% endblock stylesheets %}
