@@ -36,6 +36,8 @@ class EkynaCommerceBundle extends AbstractBundle
             Commerce\Customer\Model\CustomerInterface::class        => 'ekyna_commerce.customer.class',
             Commerce\Customer\Model\CustomerAddressInterface::class => 'ekyna_commerce.customer_address.class',
 
+            Commerce\Product\Model\ProductInterface::class          => 'ekyna_commerce.product.class',
+
             Commerce\Order\Model\OrderInterface::class              => 'ekyna_commerce.order.class',
             Commerce\Order\Model\OrderAddressInterface::class       => 'ekyna_commerce.order_address.class',
 

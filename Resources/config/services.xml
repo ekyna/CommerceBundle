@@ -21,6 +21,8 @@
         <parameter key="ekyna_commerce.payment.class">Ekyna\Component\Commerce\Payment\Entity\Payment</parameter>
         <parameter key="ekyna_commerce.payment_method.class">Ekyna\Component\Commerce\Payment\Entity\PaymentMethod</parameter>
 
+        <parameter key="ekyna_commerce.product.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ProductType</parameter>
+
         <parameter key="ekyna_commerce.shipment.class">Ekyna\Component\Commerce\Shipment\Entity\Shipment</parameter>
         <parameter key="ekyna_commerce.shipment_item.class">Ekyna\Component\Commerce\Shipment\Entity\ShipmentItem</parameter>
         <parameter key="ekyna_commerce.shipment_method.class">Ekyna\Component\Commerce\Shipment\Entity\ShipmentMethod</parameter>
@@ -181,7 +183,7 @@
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.product.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\ProductType">
+                 class="%ekyna_commerce.product.form_type.class%">
             <argument type="service" id="ekyna_commerce.product.form_type.event_subscriber"/>
             <argument>%ekyna_commerce.product.class%</argument>
             <argument>%ekyna_commerce.tax_group.class%</argument>

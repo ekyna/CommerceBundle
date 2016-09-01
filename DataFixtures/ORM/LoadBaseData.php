@@ -2,9 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DataFixtures\ORM;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Nelmio\Alice\Fixtures;
-
 /**
  * Class LoadBaseData
  * @package Ekyna\Bundle\CommerceBundle\DataFixtures\ORM
