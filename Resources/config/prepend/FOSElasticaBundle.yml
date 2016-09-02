@@ -1,0 +1,26 @@
+fos_elastica:
+    indexes:
+        search:
+            types:
+                ekyna_commerce_customer:
+                    serializer:
+                        groups: [Search]
+#                    _all: {enabled: false}
+#                    mappings:
+#                        company: ~
+#                        firstName: ~
+#                        lastName: ~
+#                        email: ~
+#                    dynamic_templates:
+#                        default:
+#                            match_mapping_type: string
+#                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                    persistence:
+                        driver: orm
+                        model: "%ekyna_commerce.customer.class%"
+                        provider:
+                            batch_size: 25
+                        listener: ~
+                        finder: ~
+                        repository: Ekyna\Bundle\CommerceBundle\Search\CommerceRepository
+
