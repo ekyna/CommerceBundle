@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Bundle\UserBundle\Form\Type\IdentityType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -49,12 +50,24 @@ class OrderType extends ResourceFormType
                 'sizing' => 'sm',
             ])
             ->add('customer', EntitySearchType::class, [
-                'label'        => 'ekyna_commerce.customer.label.singular',
-                'entity'       => $this->customerClass,
-                'search_route' => 'ekyna_commerce_customer_admin_search',
-                'find_route'   => 'ekyna_commerce_customer_admin_find',
-                'allow_clear'  => false,
-                'required'     => false,
+                'label'           => 'ekyna_commerce.customer.label.singular',
+                'class'          => $this->customerClass,
+                'search_route'    => 'ekyna_commerce_customer_admin_search',
+                'find_route'      => 'ekyna_commerce_customer_admin_find',
+                'allow_clear'     => false,
+                'choice_label' => function(CustomerInterface $data) {
+                    $output = $data->getFirstName() . ' ' . $data->getLastName() . ' &lt;<em>' . $data->getEmail() . '</em>&gt;';
+                    if (0 < strlen($data->getCompany())) {
+                        $output = '[<strong>' . $data->getCompany() . '</strong>] ' . $output;
+                    }
+                    return '<span>' . $output . '</span>';
+                },
+                'format_function' =>
+                    "if(!data.id)return 'Rechercher';" .
+                    "var output=data.first_name+' '+data.last_name+' &lt;<em>'+data.email+'</em>&gt;';" .
+                    "if(data.company)output='[<strong>'+data.company+'</strong>] '+output;" .
+                    "return $('<span>'+output+'</span>');",
+                'required'        => false,
             ])
             /*->add('customer', ResourceType::class, [
                 'label'     => 'ekyna_commerce.customer.label.singular',

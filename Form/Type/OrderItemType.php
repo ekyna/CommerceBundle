@@ -117,6 +117,7 @@ class OrderItemType extends ResourceFormType
             ['weight', Type\IntegerType::class, [
                 'label'  => 'ekyna_core.field.weight',
                 'sizing' => 'sm',
+                'required' => false,
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.weight',
                     'input_group' => ['append' => 'g'],
@@ -127,6 +128,7 @@ class OrderItemType extends ResourceFormType
                 'label'  => 'ekyna_commerce.order_item.field.net_unit_price',
                 'scale'  => 5,
                 'sizing' => 'sm',
+                'required' => false,
                 'attr'   => [
                     'placeholder' => 'ekyna_commerce.order_item.field.net_unit_price',
                     'input_group' => ['append' => '€'],  // TODO order currency
