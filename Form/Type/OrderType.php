@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Bundle\UserBundle\Form\Type\IdentityType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,13 +48,20 @@ class OrderType extends ResourceFormType
             ->add('currency', CurrencyChoiceType::class, [
                 'sizing' => 'sm',
             ])
-            // TODO customer search
-            ->add('customer', ResourceType::class, [
+            ->add('customer', EntitySearchType::class, [
+                'label'        => 'ekyna_commerce.customer.label.singular',
+                'entity'       => $this->customerClass,
+                'search_route' => 'ekyna_commerce_customer_admin_search',
+                'find_route'   => 'ekyna_commerce_customer_admin_find',
+                'allow_clear'  => false,
+                'required'     => false,
+            ])
+            /*->add('customer', ResourceType::class, [
                 'label'     => 'ekyna_commerce.customer.label.singular',
                 'class'     => $this->customerClass,
                 'allow_new' => true,
                 'required'  => false,
-            ])
+            ])*/
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,

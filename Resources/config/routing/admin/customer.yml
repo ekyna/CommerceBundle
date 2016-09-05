@@ -34,6 +34,20 @@ ekyna_commerce_customer_admin_remove:
     requirements:
         customerId: \d+
 
+ekyna_commerce_customer_admin_search:
+    path: /search
+    defaults: { _controller: "ekyna_commerce.customer.controller:searchAction" }
+    methods: [GET]
+    options:
+        expose: true
+
+ekyna_commerce_customer_admin_find:
+    path: /find
+    defaults: { _controller: "ekyna_commerce.customer.controller:findAction" }
+    methods: [GET]
+    options:
+        expose: true
+
 ekyna_commerce_customer_address_admin:
     resource: customer_address.yml
     prefix: /{customerId}/addresses

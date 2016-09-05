@@ -1,0 +1,12 @@
+Ekyna\Bundle\CommerceBundle\Entity\Customer:
+    attributes:
+        id:
+            groups: [Default, Search]
+        company:
+            groups: [Default, Search]
+        email:
+            groups: [Default, Search]
+        firstName:
+            groups: [Default, Search]
+        lastName:
+            groups: [Default, Search]
