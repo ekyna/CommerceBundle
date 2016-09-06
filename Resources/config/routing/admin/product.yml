@@ -43,3 +43,17 @@ ekyna_commerce_product_admin_remove:
     methods: [GET|POST]
     requirements:
         productId: \d+
+
+ekyna_commerce_product_admin_search:
+    path: /search
+    defaults: { _controller: "ekyna_commerce.product.controller:searchAction" }
+    methods: [GET]
+    options:
+        expose: true
+
+ekyna_commerce_product_admin_find:
+    path: /find
+    defaults: { _controller: "ekyna_commerce.product.controller:findAction" }
+    methods: [GET]
+    options:
+        expose: true

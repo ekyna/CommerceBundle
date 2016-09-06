@@ -7,19 +7,19 @@ use Elastica\Query;
 use FOS\ElasticaBundle\Repository;
 
 /**
- * Class CustomerRepository
+ * Class ProductRepository
  * @package Ekyna\Bundle\CommerceBundle\Search
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class CustomerRepository extends Repository implements SearchRepositoryInterface
+class ProductRepository extends Repository implements SearchRepositoryInterface
 {
     /**
-     * Search customers.
+     * Search products.
      *
      * @param string  $expression
      * @param integer $limit
      *
-     * @return \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface[]
+     * @return \Ekyna\Component\Commerce\Product\Model\ProductInterface[]
      */
     public function defaultSearch($expression, $limit = 10)
     {
@@ -29,7 +29,7 @@ class CustomerRepository extends Repository implements SearchRepositoryInterface
             $query = new Query\MultiMatch();
             $query
                 ->setQuery($expression)
-                ->setFields(array('email', 'first_name', 'last_name', 'company'));
+                ->setFields(array('designation'));
         }
 
         return $this->find($query, $limit);

@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle;
 
-use Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler\AdminMenuPass;
+use Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler;
 use Ekyna\Bundle\CoreBundle\AbstractBundle;
 use Ekyna\Component\Commerce;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
@@ -23,8 +23,10 @@ class EkynaCommerceBundle extends AbstractBundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new AdminMenuPass());
         $container->addCompilerPass(new ConfigureValidatorPass());
+        $container->addCompilerPass(new Compiler\SubjectProviderPass());
+        $container->addCompilerPass(new Compiler\SubjectResolverPass());
+        $container->addCompilerPass(new Compiler\AdminMenuPass());
     }
 
     /**

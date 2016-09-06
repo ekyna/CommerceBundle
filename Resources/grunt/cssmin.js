@@ -10,8 +10,8 @@ module.exports = function (grunt, options) {
                     ext: '.css'
                 }
             ]
-        }
-        /*commerce_less: {
+        },
+        commerce_less: {
             files: [
                 {
                     expand: true,
@@ -21,6 +21,6 @@ module.exports = function (grunt, options) {
                     ext: '.css'
                 }
             ]
-        }*/
+        }
     }
 };

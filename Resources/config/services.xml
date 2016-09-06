@@ -42,6 +42,7 @@
         </service>
 
         <!-- Helpers -->
+        <!-- TODO move to Service\Subject and rename service id -->
         <service id="ekyna_commerce.helper.subject"
                  class="Ekyna\Bundle\CommerceBundle\Helper\SubjectHelper">
             <argument type="service" id="ekyna_commerce.subject.resolver_registry"/>
@@ -51,11 +52,30 @@
             <argument type="service" id="translator"/>
         </service>
 
-        <!-- Resolvers -->
+        <!-- Subject -->
+        <service id="ekyna_commerce.subject.provider_registry"
+                 class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
         <service id="ekyna_commerce.subject.resolver_registry"
                  class="Ekyna\Component\Commerce\Subject\Resolver\SubjectResolverRegistry"/>
+
+        <service id="ekyna_commerce.product.subject_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Product\ProductProvider">
+            <argument type="service" id="ekyna_commerce.tax.resolver"/>
+            <argument>%ekyna_commerce.product.class%</argument>
+            <tag name="ekyna_commerce.subject_provider"/>
+        </service>
+        <service id="ekyna_commerce.product.subject_resolver"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Product\ProductResolver">
+            <tag name="ekyna_commerce.subject_resolver"/>
+        </service>
+
+        <!-- Resolvers -->
         <service id="ekyna_commerce.order.state_resolver"
                  class="Ekyna\Bundle\CommerceBundle\Service\Order\StateResolver"/>
+        <service id="ekyna_commerce.tax.resolver"
+                 class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
+            <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
+        </service>
 
         <!-- Variant builder -->
         <service id="ekyna_commerce.product.variant_generator"
@@ -89,7 +109,19 @@
             <argument>%ekyna_commerce.attribute_set.class%</argument>
         </service>
 
+        <!-- Form flows -->
+        <service id="ekyna_commerce.add_subject.form_flow"
+                 class="Ekyna\Bundle\CommerceBundle\Form\AddSubjectFlow"
+                 parent="craue.form.flow">
+        </service>
+
         <!-- Form types -->
+        <service id="ekyna_commerce.subject_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\SubjectChoiceType">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry" />
+            <tag name="form.type"/>
+        </service>
+
         <service id="ekyna_commerce.attribute.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\AttributeType">
             <argument>%ekyna_commerce.attribute.class%</argument>

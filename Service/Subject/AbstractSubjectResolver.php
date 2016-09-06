@@ -1,16 +1,15 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Resolver;
+namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
-use Ekyna\Component\Commerce\Subject\Resolver\AbstractSubjectResolver as BaseResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class AbstractSubjectResolver
- * @package Ekyna\Bundle\CommerceBundle\Resolver
+ * @package Ekyna\Bundle\CommerceBundle\Service\Subject
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-abstract class AbstractSubjectResolver extends BaseResolver implements SubjectResolverInterface
+abstract class AbstractSubjectResolver implements SubjectResolverInterface
 {
     /**
      * @var UrlGeneratorInterface

@@ -1,97 +1,142 @@
-{% import _self as macros %}
+{% set columns_count = 9 %}
 
-{% macro line_view(line, level) %}
-    {% import _self as macros %}
-    <tr class="level-{{ level }}">
+{% block lines_headers %}
+{% spaceless %}
+    <th class="sale-view-number">&nbsp;</th>
+    <th class="sale-view-designation">{{ 'ekyna_core.field.designation'|trans }}</th>
+    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+    <th>{{ 'ekyna_commerce.order.field.net_unit'|trans }}</th>
+    <th>{{ 'ekyna_commerce.order.field.tax_rate'|trans }}</th>
+    <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+    <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
+    <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
+    <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
+{% endspaceless %}
+{% endblock lines_headers %}
+
+
+{% block line_leaf_quantity %}
+{% spaceless %}
+    <td class="text-right">{{ line.quantity }}</td>
+{% endspaceless %}
+{% endblock line_leaf_quantity %}
+
+
+{% block line_leaf %}
+{% spaceless %}
+    <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
+    <td class="text-right">{% if line.taxRate is not same as(null) %}{{ line.taxRate|localizednumber }}{% endif %}</td>
+    {{ block('line_leaf_quantity') }}
+    <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
+    <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
+    <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
+{% endspaceless %}
+{% endblock line_leaf %}
+
+
+{% block line_node_quantity %}
+{% spaceless %}
+    <td class="text-right">{{ line.quantity }}</td>
+{% endspaceless %}
+{% endblock line_node_quantity %}
+
+
+{% block line_node %}
+{% spaceless %}
+    <td colspan="2">&nbsp;</td>
+    {{ block('line_node_quantity') }}
+    <td colspan="3">&nbsp;</td>
+{% endspaceless %}
+{% endblock line_node %}
+
+
+{% block line %}
+{% spaceless %}
+    <tr class="level-{{ line.level }}">
         <td class="sale-view-number">{{ line.number }}</td>
         <td class="sale-view-designation">{{ line.designation }}</td>
         <td>{{ line.reference }}</td>
-    {% if line.children %}
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td class="text-right">{{ line.quantity }}</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    {% else %}
-        <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
-        <td class="text-right">{% if line.taxRate is not same as(null) %}{{ line.taxRate|localizednumber }}{% endif %}</td>
-        <td class="text-right">{{ line.quantity }}</td>
-        <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
-    {% endif %}
+        {% if line.children %}
+            {{ block('line_node') }}
+        {% else %}
+            {{ block('line_leaf') }}
+        {% endif %}
     </tr>
-    {% for child in line.lines %}
-        {{ macros.line_view(child, level + 1) }}
+    {% set lines = line.lines %}
+    {% for line in lines %}
+        {{ block('line') }}
     {% endfor %}
-{% endmacro %}
+    {# TODO be aware that line_view variable has been overrided #}
+{% endspaceless %}
+{% endblock line %}
 
-<table class="table table-striped sale-view">
 
+{% block lines %}
+{% spaceless %}
     <thead>
         <tr>
-            <th class="sale-view-number">&nbsp;</th>
-            <th class="sale-view-designation">{{ 'ekyna_core.field.designation'|trans }}</th>
-            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.net_unit'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.tax_rate'|trans }}</th>
-            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
+            {{ block('lines_headers') }}
         </tr>
     </thead>
-
+    {% for line in view.items %}
     <tbody>
-        {% for item in view.items %}
-            {{ macros.line_view(item, 0) }}
-        {% endfor %}
+        {{ block('line') }}
     </tbody>
+    {% endfor %}
+{% endspaceless %}
+{% endblock lines %}
 
+
+{% block gross_totals %}
+{% spaceless %}
     <tbody>
-        {% if view.discounts is empty %}
         <tr>
-            <th colspan="5" rowspan="2">&nbsp;</th>
-            <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
             <th>&nbsp;</th>
-            <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
-        </tr>
-        {% endif %}
-        <tr>
-            {% if view.discounts is not empty %}
-            <th>&nbsp;</th>
-            <th colspan="5"><strong>Total avant remise</strong></th>
-            {% endif %}
+            <th class="text-right" colspan="5"><strong>Total avant remise</strong></th>
             <td class="text-right">{{ view.gross.base|localizedcurrency('EUR') }}</td>
             <td class="text-right">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
             <td class="text-right">{{ view.gross.total|localizedcurrency('EUR') }}</td>
         </tr>
     </tbody>
+{% endspaceless %}
+{% endblock gross_totals %}
 
-    {% if view.discounts is not empty %}
+
+{% block discount %}
+{% spaceless %}
+    <td class="sale-view-number">{#{{ discount.number }}#}</td>
+    <td class="sale-view-designation">{{ discount.designation }}</td>
+    <td>{{ discount.reference }}</td>
+    <td class="text-right" colspan="3">&nbsp;</td>
+    <td class="text-right">{{ discount.base|localizedcurrency('EUR') }}</td>
+    <td class="text-right">{{ discount.taxAmount|localizedcurrency('EUR') }}</td>
+    <td class="text-right">{{ discount.total|localizedcurrency('EUR') }}</td>
+{% endspaceless %}
+{% endblock discount %}
+
+
+{% block discounts %}
+{% spaceless %}
     <tbody>
         <tr>
-            <td colspan="8">&nbsp;</td>
+            <td colspan="9">&nbsp;</td>
         </tr>
-        {% for discount in view.discounts %}
-        <tr>
-            <td class="sale-view-number">{#{{ discount.number }}#}</td>
-            <td class="sale-view-designation">{{ discount.designation }}</td>
-            <td>{{ discount.reference }}</td>
-            <td class="text-right">&nbsp;</td>
-            <td class="text-right">&nbsp;</td>
-            <td class="text-right">&nbsp;</td>
-            <td class="text-right">{{ discount.base|localizedcurrency('EUR') }}</td>
-            <td class="text-right">{{ discount.taxAmount|localizedcurrency('EUR') }}</td>
-            <td class="text-right">{{ discount.total|localizedcurrency('EUR') }}</td>
-        </tr>
-        {% endfor %}
     </tbody>
-
+    {% for discount in view.discounts %}
     <tbody>
-        <tr class="">
+        <tr>
+            {{ block('discount') }}
+        </tr>
+    </tbody>
+    {% endfor %}
+{% endspaceless %}
+{% endblock discounts %}
+
+
+{% block gran_totals %}
+{% spaceless %}
+    <tbody>
+        <tr>
             <th colspan="6" rowspan="2">&nbsp;</th>
             <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
@@ -103,25 +148,47 @@
             <td class="text-right">{{ view.final.total|localizedcurrency('EUR') }}</td>
         </tr>
     </tbody>
-    {% endif %}
+{% endspaceless %}
+{% endblock gran_totals %}
 
-</table>
 
-{% if view.taxes is not empty %}
-<table class="table table-striped taxes-view">
-    <thead>
+{% block taxes %}
+{% spaceless %}
+    <table class="table table-striped taxes-view">
+        <thead>
         <tr>
             <th>Taxe</th>
             <th>Montant</th>
         </tr>
-    </thead>
-    <tbody>
-    {% for tax in view.taxes %}
-        <tr>
-            <td>{{ tax.name }}</td>
-            <td class="text-right">{{ tax.total|localizedcurrency('EUR') }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% endif %}
+        </thead>
+        <tbody>
+        {% for tax in view.taxes %}
+            <tr>
+                <td>{{ tax.name }}</td>
+                <td class="text-right">{{ tax.total|localizedcurrency('EUR') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endspaceless %}
+{% endblock taxes %}
+
+
+{% block sale %}
+{% spaceless %}
+
+    <table class="table table-striped sale-view">
+        {{ block('lines') }}
+
+        {% if view.discounts is not empty %}
+            {{ block('gross_totals') }}
+            {{ block('discounts') }}
+        {% endif %}
+
+        {{ block('gran_totals') }}
+    </table>
+
+    {{ block('taxes') }}
+
+{% endspaceless %}
+{% endblock sale %}

@@ -1,15 +1,14 @@
 <?php
 
 
-namespace Ekyna\Bundle\CommerceBundle\Resolver;
+namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
 use Ekyna\Component\Commerce\Subject\Resolver\SubjectResolverInterface as BaseInterface;
-use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Interface SubjectResolverInterface
- * @package Ekyna\Bundle\CommerceBundle\Resolver
+ * @package Ekyna\Bundle\CommerceBundle\Service\Subject
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 interface SubjectResolverInterface extends BaseInterface
@@ -22,13 +21,4 @@ interface SubjectResolverInterface extends BaseInterface
      * @return $this|AbstractSubjectResolver
      */
     public function setUrlGenerator(UrlGeneratorInterface $urlGenerator);
-
-    /**
-     * Returns the order item form options.
-     *
-     * @param OrderItemInterface $item
-     * @param string             $property
-     * @return array
-     */
-    public function getFormOptions(OrderItemInterface $item, $property);
 }

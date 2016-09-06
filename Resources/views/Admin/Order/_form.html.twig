@@ -9,11 +9,11 @@
             {{ 'ekyna_commerce.order.field.addresses'|trans }}
         </a>
     </li>
-    <li>
+    {#<li>
         <a href="#order-details" data-toggle="tab">
             {{ 'ekyna_commerce.order.field.details'|trans }}
         </a>
-    </li>
+    </li>#}
 </ul>
 <div class="panel-body form-body">
     {{ bootstrap_set_style('horizontal') }}
@@ -47,10 +47,10 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="order-details">
+        {#<div class="tab-pane" id="order-details">
             {{ form_row(form.items) }}
             {{ form_row(form.adjustments) }}
-        </div>
+        </div>#}
     </div>
     {{ form_rest(form) }}
 </div>

@@ -58,4 +58,22 @@
         </property>
     </class>
 
+    <class name="Ekyna\Bundle\CommerceBundle\Model\SubjectChoice">
+        <property name="type">
+            <constraint name="NotNull">
+                <option name="groups">
+                    <value>Default</value>
+                    <value>flow_step_1</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="choice">
+            <constraint name="NotNull">
+                <option name="groups">
+                    <value>Default</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+
 </constraint-mapping>

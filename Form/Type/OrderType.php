@@ -69,12 +69,6 @@ class OrderType extends ResourceFormType
                     "return $('<span>'+output+'</span>');",
                 'required'        => false,
             ])
-            /*->add('customer', ResourceType::class, [
-                'label'     => 'ekyna_commerce.customer.label.singular',
-                'class'     => $this->customerClass,
-                'allow_new' => true,
-                'required'  => false,
-            ])*/
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
@@ -98,11 +92,11 @@ class OrderType extends ResourceFormType
                 'label'    => 'ekyna_commerce.order.field.delivery_address',
                 'required' => false,
             ])
-            ->add('items', OrderItemsType::class)
+            /*->add('items', OrderItemsType::class)
             ->add('adjustments', AdjustmentsType::class, [
                 'entry_type'            => OrderAdjustmentType::class,
                 'add_button_text'       => 'ekyna_commerce.order.form.add_adjustment',
                 'delete_button_confirm' => 'ekyna_commerce.order.form.remove_adjustment',
-            ]);
+            ])*/;
     }
 }

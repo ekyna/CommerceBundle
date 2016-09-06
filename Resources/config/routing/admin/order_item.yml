@@ -1,0 +1,37 @@
+ekyna_commerce_order_item_admin_add:
+    path: /add
+    defaults: { _controller: "ekyna_commerce.order.controller:addSubjectAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_item_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.order.controller:newItemAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_item_admin_configure:
+    path: /{orderItemId}/configure
+    defaults: { _controller: "ekyna_commerce.order.controller:configureSubjectAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+
+ekyna_commerce_order_item_admin_edit:
+    path: /{orderItemId}/edit
+    defaults: { _controller: "ekyna_commerce.order.controller:editItemAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+
+ekyna_commerce_order_item_admin_remove:
+    path: /{orderItemId}/remove
+    defaults: { _controller: "ekyna_commerce.order.controller:removeItemAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+

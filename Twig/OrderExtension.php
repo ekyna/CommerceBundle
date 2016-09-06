@@ -87,15 +87,13 @@ class OrderExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function renderSaleView(\Twig_Environment $env, SaleInterface $sale)
+    public function renderSaleView(\Twig_Environment $env, SaleInterface $sale, $template = 'EkynaCommerceBundle:Common:sale_view.html.twig')
     {
-        if (null === $this->saleViewTemplate) {
-            $this->saleViewTemplate = $env->loadTemplate('EkynaCommerceBundle:Common:sale_view.html.twig');
-        }
+        $this->saleViewTemplate = $env->loadTemplate($template);
 
         $view = $this->viewBuilder->buildSaleView($sale);
 
-        return $this->saleViewTemplate->render(['view' => $view]);
+        return $this->saleViewTemplate->renderBlock('sale', ['view' => $view]);
     }
 
 

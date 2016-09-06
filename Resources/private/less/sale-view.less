@@ -1,11 +1,12 @@
 @base-cell-padding: 8px;
+@text-color: #526273;
 
 .sale-view {
 
     tbody {
         tr {
             td.sale-view-number {
-                color: lighten(#526273, 30%);
+                color: lighten(@text-color, 30%);
             }
 
             &.level-0 {
@@ -30,6 +31,29 @@
             &.level-3 {
                 td.sale-view-designation {
                     padding-left: @base-cell-padding + 48px;
+                }
+            }
+        }
+
+        .sale-view-actions {
+            text-align: right;
+            min-width: 78px;
+
+            a {
+                display:inline-block;
+                width: 18px;
+                height: 18px;
+                line-height: 18px;
+                text-align: center;
+                margin-right: 2px;
+                color: lighten(@text-color, 30%);
+
+                &:hover {
+                    color: @text-color;
+                }
+
+                &:last-child {
+                    margin-right: 0;
                 }
             }
         }

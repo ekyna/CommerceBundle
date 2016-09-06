@@ -275,6 +275,18 @@ ekyna_commerce:
             title: Commandes à traiter
             none: Aucune commande à traiter
     order_item:
+        header:
+            add: Ajouter un article
+            configure: Configurer l'article
+            new: Créer une ligne
+            edit: Modifier la ligne
+            remove: Supprimer la ligne
+        button:
+            add: Ajouter un article
+            configure: Configurer l'article
+            new: Créer une ligne
+            edit: Modifier la ligne
+            remove: Supprimer la ligne
         field:
             net_unit_price: Prix unit. H.T.
             net_total: Total H.T.

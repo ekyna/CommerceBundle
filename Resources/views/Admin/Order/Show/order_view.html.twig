@@ -1,0 +1,107 @@
+{% extends 'EkynaCommerceBundle:Common:sale_view.html.twig' %}
+
+
+{% block lines_headers %}
+{% spaceless %}
+    {{ parent() }}
+    <th class="sale-view-actions"></th>
+{% endspaceless %}
+{% endblock lines_headers %}
+
+
+{% block line_leaf %}
+{% spaceless %}
+    {{ parent() }}
+    <td class="sale-view-actions">
+        {# TODO line source object (item or adjustment) #}
+        <a href="javascript: void(0)" title="Modifier">
+            <i class="fa fa-pencil"></i>
+        </a>
+        <a href="javascript: void(0)" title="Supprimer" onclick="return confirm('Souhaitez-vous réellement supprimer cette ligne ?')">
+            <i class="fa fa-remove"></i>
+        </a>
+    </td>
+{% endspaceless %}
+{% endblock line_leaf %}
+
+
+{% block line_node %}
+{% spaceless %}
+    {{ parent() }}
+    <td class="sale-view-actions">
+        {# TODO is configurable ? (helper ?) #}
+        <a href="javascript: void(0)" title="Configurer">
+            <i class="fa fa-cog"></i>
+        </a>
+        <a href="javascript: void(0)" title="Modifier">
+            <i class="fa fa-pencil"></i>
+        </a>
+        <a href="javascript: void(0)" title="Supprimer" onclick="return confirm('Souhaitez-vous réellement supprimer cette ligne ?')">
+            <i class="fa fa-remove"></i>
+        </a>
+    </td>
+{% endspaceless %}
+{% endblock line_node %}
+
+
+{% block gross_totals %}
+{% spaceless %}
+    <tbody>
+    <tr>
+        <th>&nbsp;</th>
+        <th class="text-right" colspan="5"><strong>Total avant remise</strong></th>
+        <td class="text-right">{{ view.gross.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.gross.total|localizedcurrency('EUR') }}</td>
+        <th>&nbsp;</th>
+    </tr>
+    </tbody>
+{% endspaceless %}
+{% endblock gross_totals %}
+
+
+{% block discount %}
+{% spaceless %}
+    {{ parent() }}
+    <td class="sale-view-actions">
+        {# TODO actions #}
+    </td>
+{% endspaceless %}
+{% endblock discount %}
+
+
+{% block discounts %}
+{% spaceless %}
+    <tbody>
+        <tr>
+            <td colspan="10">&nbsp;</td>
+        </tr>
+    </tbody>
+    {% for discount in view.discounts %}
+    <tbody>
+        <tr>
+            {{ block('discount') }}
+        </tr>
+    </tbody>
+    {% endfor %}
+{% endspaceless %}
+{% endblock discounts %}
+
+{% block gran_totals %}
+{% spaceless %}
+    <tbody>
+        <tr>
+            <th colspan="6" rowspan="2">&nbsp;</th>
+            <th>{{ 'ekyna_commerce.order.field.net_total'|trans|upper }}</th>
+            <th>{{ 'ekyna_commerce.order.field.tax_total'|trans|upper }}</th>
+            <th>{{ 'ekyna_commerce.order.field.grand_total'|trans|upper }}</th>
+            <th rowspan="2">&nbsp;</th>
+        </tr>
+        <tr>
+            <td class="text-right">{{ view.final.base|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ view.final.tax|localizedcurrency('EUR') }}</td>
+            <td class="text-right">{{ view.final.total|localizedcurrency('EUR') }}</td>
+        </tr>
+    </tbody>
+{% endspaceless %}
+{% endblock gran_totals %}

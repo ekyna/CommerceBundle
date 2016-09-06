@@ -1,0 +1,6 @@
+Ekyna\Component\Commerce\Product\Entity\Product:
+    attributes:
+        id:
+            groups: [Default, Search]
+        designation:
+            groups: [Default, Search]

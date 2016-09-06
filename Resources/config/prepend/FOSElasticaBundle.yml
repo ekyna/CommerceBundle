@@ -17,4 +17,19 @@ fos_elastica:
                         listener: ~
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Search\CustomerRepository
+                ekyna_commerce_product:
+                    serializer:
+                        groups: [Search]
+                    dynamic_templates:
+                        default:
+                            match_mapping_type: string
+                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                    persistence:
+                        driver: orm
+                        model: "%ekyna_commerce.product.class%"
+                        provider:
+                            batch_size: 25
+                        listener: ~
+                        finder: ~
+                        repository: Ekyna\Bundle\CommerceBundle\Search\ProductRepository
 

@@ -4,30 +4,35 @@ Ekyna\Component\Commerce\Product\Entity\Product:
         designation: Coque VESA
         reference: COQU-VESA
         netPrice: 50
+        weight: 300
         taxGroup: '@tg_tablets'
     p_manchon_1:
         type: simple
         designation: Manchon switch
         reference: MANC-SWIT
         netPrice: 10
+        weight: 100
         taxGroup: '@tg_tablets'
     p_manchon_2:
         type: simple
         designation: Manchon rotate
         reference: MANC-ROTA
         netPrice: 10
+        weight: 110
         taxGroup: '@tg_tablets'
     p_socle_1:
         type: simple
         designation: Socle Counter 45
         reference: SOCL-COUN
         netPrice: 60
+        weight: 250
         taxGroup: '@tg_tablets'
     p_socle_2:
         type: simple
         designation: Socle Free Standing
         reference: SOCL-FRST
         netPrice: 100
+        weight: 270
         taxGroup: '@tg_tablets'
     p_tablet_1:
         type: variable
@@ -40,6 +45,7 @@ Ekyna\Component\Commerce\Product\Entity\Product:
         parent: '@p_tablet_1'
         reference: GALA-TABA-1
         netPrice: 320
+        weight: 800
         attributes:
             - '@a_wifi'
             - '@a_16go'
@@ -49,6 +55,7 @@ Ekyna\Component\Commerce\Product\Entity\Product:
         parent: '@p_tablet_1'
         reference: GALA-TABA-2
         netPrice: 320
+        weight: 800
         attributes:
             - '@a_wifi'
             - '@a_16go'
@@ -58,6 +65,7 @@ Ekyna\Component\Commerce\Product\Entity\Product:
         parent: '@p_tablet_1'
         reference: GALA-TABA-3
         netPrice: 340
+        weight: 800
         attributes:
             - '@a_wifi'
             - '@a_3g'
@@ -68,6 +76,7 @@ Ekyna\Component\Commerce\Product\Entity\Product:
         parent: '@p_tablet_1'
         reference: GALA-TABA-4
         netPrice: 360
+        weight: 800
         attributes:
             - '@a_wifi'
             - '@a_3g'

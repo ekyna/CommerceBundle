@@ -1,10 +1,6 @@
-{#<div class="row show-row">
-    <div class="col-md-2 show-label">
-        {{ 'ekyna_commerce.order.field.details'|trans }}
-    </div>
-    <div class="col-md-10">
-        <div class="show-widget show-widget-block">#}
-            {{ render_sale_view(order) }}
-{#        </div>
-    </div>
-</div>#}
+{#{{ render_sale_view(order) }}#}
+{{ render_sale_view(order, 'EkynaCommerceBundle:Admin/Order/Show:order_view.html.twig') }}
+
+<a href="{{ path('ekyna_commerce_order_item_admin_add', {'orderId': order.id}) }}" class="btn btn-sm btn-primary">
+    {{ 'ekyna_commerce.order_item.button.add'|trans }}
+</a>

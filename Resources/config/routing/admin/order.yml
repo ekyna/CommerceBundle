@@ -41,3 +41,7 @@ ekyna_commerce_order_admin_remove:
     methods: [GET|POST]
     requirements:
         orderId: \d+
+
+ekyna_commerce_order_item_admin:
+    resource: order_item.yml
+    prefix: /{orderId}/items
