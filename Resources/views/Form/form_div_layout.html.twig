@@ -185,10 +185,10 @@
             </div>
         </div>
         {{ form_row(form.rules, {'label_col': 2, 'widget_col': 10}) }}
+        {{ form_widget(form.position) }}
     {% else %}
         {{ form_row(form.quantity, {'label_col': 2, 'widget_col': 10}) }}
     {% endif %}
-    {{ form_widget(form.position) }}
     {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_bundle_choice_widget %}

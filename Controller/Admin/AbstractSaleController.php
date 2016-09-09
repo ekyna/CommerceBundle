@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectChoice;
+use Ekyna\Component\Commerce\Subject\Model\SubjectIdentity;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,20 +31,24 @@ abstract class AbstractSaleController extends ResourceController
         $context = $this->loadContext($request);
 
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\OrderInterface $resource */
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $resource */
         $resource = $context->getResource($resourceName);
 
         $this->isGranted('EDIT', $resource);
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $data = new SubjectChoice();
+        $itemClass = $this->getParameter('ekyna_commerce.order_item.class');
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        $item = new $itemClass();
+        // So that we can access to the sale from the item.
+        $resource->addItem($item);
 
         $action = $this->generateUrl('ekyna_commerce_order_item_admin_add', [
             'orderId' => $resource->getId()
         ]);
 
-        $flow = $this->get('ekyna_commerce.add_subject.form_flow');
+        $flow = $this->get('ekyna_commerce.add_item.form_flow');
         $flow->setGenericFormOptions([
             'action' => $action,
             'method' => 'POST',
@@ -51,7 +56,7 @@ abstract class AbstractSaleController extends ResourceController
             'admin_mode' => true,
             '_redirect_enabled' => true,
         ]);
-        $flow->bind($data);
+        $flow->bind($item);
 
         $form = $flow->createForm();
 
@@ -61,16 +66,7 @@ abstract class AbstractSaleController extends ResourceController
             if ($flow->nextStep()) {
                 $form = $flow->createForm();
             } else {
-                // Create the item with defaults based on subject choice
-                $provider = $this
-                    ->get('ekyna_commerce.subject.provider_registry')
-                    ->getProvider($data->getType());
-
-                $itemClass = $this->getParameter('ekyna_commerce.order_item.class');
-                $item = new $itemClass();
-                $resource->addItem($item); // So that we can access to order from item.
-
-                $provider->setItemDefaults($item, $data->getChoice());
+                // TODO validation
 
                 // TODO use ResourceManager
                 $event = $this->getOperator()->update($resource);
@@ -96,7 +92,6 @@ abstract class AbstractSaleController extends ResourceController
                     }
                 }
 
-                // Redirect to order (TODO redirect to configure item subject ?)
                 return $this->redirect($this->generateResourcePath($resource));
             }
         }
@@ -105,8 +100,8 @@ abstract class AbstractSaleController extends ResourceController
             $modal = $this->createModal('edit');
             $modal
                 ->setContent($form->createView())
-                ->setVars($context->getTemplateVars())
-            ;
+                ->setVars($context->getTemplateVars());
+
             return $this->get('ekyna_core.modal')->render($modal);
         }
 
@@ -120,14 +115,6 @@ abstract class AbstractSaleController extends ResourceController
                 'flow' => $flow,
             ])
         );
-
-        // 1. Type (provider) choice
-
-        // 2. Subject choice
-
-        // 3. Generate item defaults (use provider)
-
-        // 4. Redirect to configure
     }
 
     /**

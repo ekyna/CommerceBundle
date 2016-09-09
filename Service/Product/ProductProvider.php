@@ -2,14 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 
-use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
-use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
-use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes;
+use Ekyna\Bundle\SocialButtonsBundle\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
-use Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment;
-use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
-use Ekyna\Component\Commerce\Subject\Model\SubjectIdentity;
+use Ekyna\Component\Commerce\Product\Model\ProductTypes;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -20,27 +17,37 @@ use Symfony\Component\Form\FormInterface;
  */
 class ProductProvider implements SubjectProviderInterface
 {
-    /**
-     * @var TaxResolverInterface
-     */
-    private $taxResolver;
+    const NAME = 'product';
 
     /**
-     * @var string
+     * @var ItemBuilder
      */
-    private $productClass;
+    private $itemBuilder;
+
+    /**
+     * @var FormBuilder
+     */
+    private $formBuilder;
 
 
     /**
      * Constructor.
      *
-     * @param TaxResolverInterface $taxResolver
-     * @param string $productClass
+     * @param ItemBuilder $itemBuilder
+     * @param FormBuilder $formBuilder
      */
-    public function __construct(TaxResolverInterface $taxResolver, $productClass)
+    public function __construct(ItemBuilder $itemBuilder, FormBuilder $formBuilder)
     {
-        $this->taxResolver = $taxResolver;
-        $this->productClass = $productClass;
+        $this->itemBuilder = $itemBuilder;
+        $this->formBuilder = $formBuilder;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function needChoice(SaleItemInterface $item)
+    {
+        return true;
     }
 
     /**
@@ -48,74 +55,57 @@ class ProductProvider implements SubjectProviderInterface
      */
     public function buildChoiceForm(FormInterface $form)
     {
-        // TODO: Implement buildChoiceForm() method.
-
-        $form->add('choice', EntitySearchType::class, [
-            'label'           => 'ekyna_commerce.product.label.singular',
-            'class'           => $this->productClass,
-            'search_route'    => 'ekyna_commerce_product_admin_search',
-            'find_route'      => 'ekyna_commerce_product_admin_find',
-            'allow_clear'     => false,
-            'format_function' =>
-                "if(!data.id)return 'Rechercher';" .
-                "return $('<span>'+data.designation+'</span>');",
-            'required'        => false,
-        ]);
+        $this->formBuilder->buildChoiceForm($form);
     }
 
     /**
      * @inheritdoc
      */
-    public function buildItemForm(FormInterface $form)
+    public function handleChoiceSubmit(SaleItemInterface $item)
     {
-        // TODO: Implement buildItemForm() method.
-    }
+        $subject = $this->getItemSubject($item);
 
-    /**
-     * @inheritdoc
-     */
-    public function setItemDefaults(SaleItemInterface $item, $subject)
-    {
-        /** @var \Ekyna\Component\Commerce\Product\Model\ProductInterface $subject */
-        $identity = new SubjectIdentity();
-        $identity
-            ->setId($subject->getId())
-            ->setClass(get_class($subject));
+        $data = [
+            'provider' => $this->getName(),
+            'id'       => $subject->getId(),
+        ];
 
-        $item
-            ->setSubject($subject)
-            ->setSubjectIdentity($identity)
-            ->setDesignation($subject->getDesignation())
-            ->setReference($subject->getReference())
-            ->setNetPrice($subject->getNetPrice())
-            ->setQuantity(1)
-            ->setWeight($subject->getWeight());
+        $item->setSubjectData(array_replace((array)$item->getSubjectData(), $data));
 
-        $sale = $item->getSale();
-        $customer = $sale->getCustomer();
-        $address = $sale->getDeliveryAddress();
-        $taxGroup = $subject->getTaxGroup();
-
-        if (null !== $customer && null !== $address) {
-            $taxes = $this->taxResolver->getApplicableTaxesByTaxGroupAndCustomerGroups(
-                $taxGroup, $customer->getCustomerGroups(), $address
-            );
-
-            // TODO $this->adjustmentFactory->buildTaxationAdjustments($item, $taxes);
-
-            // TODO temporary
-            foreach ($taxes as $tax) {
-                $adjustment = new OrderItemAdjustment();
-                $adjustment
-                    ->setMode(AdjustmentModes::MODE_PERCENT)
-                    ->setType(AdjustmentTypes::TYPE_TAXATION)
-                    ->setDesignation($tax->getName())
-                    ->setAmount($tax->getRate());
-
-                /** @var \Ekyna\Component\Commerce\Order\Model\OrderItemInterface $item */
-                $item->addAdjustment($adjustment);
-            }
+        if (!$this->needConfiguration($item)) {
+            $this->itemBuilder->buildItem($item, $subject);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function needConfiguration(SaleItemInterface $item)
+    {
+        $subject = $this->getItemSubject($item);
+
+        /** @var \Ekyna\Component\Commerce\Product\Model\ProductInterface $subject */
+        return $subject->getType() === ProductTypes::TYPE_CONFIGURABLE;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildConfigurationForm(FormInterface $form, SaleItemInterface $item)
+    {
+        $subject = $this->getItemSubject($item);
+
+        $this->formBuilder->buildConfigurableForm($form, $subject);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleConfigurationSubmit(SaleItemInterface $item)
+    {
+        $subject = $this->getItemSubject($item);
+
+        $this->itemBuilder->buildItem($item, $subject);
     }
 
     /**
@@ -131,7 +121,7 @@ class ProductProvider implements SubjectProviderInterface
      */
     public function getName()
     {
-        return 'product';
+        return self::NAME;
     }
 
     /**
@@ -140,5 +130,27 @@ class ProductProvider implements SubjectProviderInterface
     public function getLabel()
     {
         return 'ekyna_commerce.product.label.singular';
+    }
+
+    /**
+     * Asserts that the item subject is set.
+     *
+     * @param SaleItemInterface $item
+     *
+     * @return ProductInterface
+     * @throws RuntimeException
+     */
+    private function getItemSubject(SaleItemInterface $item)
+    {
+        /** @noinspection PhpInternalEntityUsedInspection */
+        if (null === $subject = $item->getSubject()) {
+            throw new RuntimeException('Item subject must be set.');
+        }
+
+        if (!$subject instanceof ProductInterface) {
+            throw new InvalidArgumentException("Expected instance of " . ProductInterface::class);
+        }
+
+        return $subject;
     }
 }

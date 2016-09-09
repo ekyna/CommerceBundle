@@ -2,21 +2,19 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
-use Ekyna\Bundle\CommerceBundle\Model\SubjectChoice;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class SubjectChoiceType
+ * Class SubjectProviderType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class SubjectChoiceType extends AbstractType
+class SubjectProviderType extends AbstractType
 {
     /**
      * @inheritdoc
@@ -26,24 +24,19 @@ class SubjectChoiceType extends AbstractType
         /** @var SubjectProviderRegistryInterface $registry */
         $registry = $options['provider_registry'];
 
-        $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($registry) {
-                /** @var SaleItemInterface $item */
-                $item = $event->getData();
-                $form = $event->getForm();
+        $types = [];
+        foreach ($registry->getProviders() as $provider) {
+            $types[$provider->getLabel()] = $provider->getName();
+        }
 
-                $registry
-                    ->getProvider($item)
-                    ->buildChoiceForm($form);
-            })
-            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($registry) {
-                /** @var SaleItemInterface $item */
-                $item = $event->getData();
-
-                $registry
-                    ->getProvider($item)
-                    ->handleChoiceSubmit($item);
-            });
+        $builder->add('provider', ChoiceType::class, array(
+            'label'   => 'Type', // TODO
+            'choices' => $types,
+            'property_path' => 'subjectData[provider]',
+            'attr' => [
+                'class' => 'no-select2',
+            ],
+        ));
     }
 
     /**
@@ -54,7 +47,7 @@ class SubjectChoiceType extends AbstractType
         $resolver
             ->setDefaults([
                 'provider_registry' => null,
-                'data_class'        => SaleItemInterface::class,
+                'data_class' => SaleItemInterface::class
             ])
             ->setAllowedTypes('provider_registry', SubjectProviderRegistryInterface::class);
     }

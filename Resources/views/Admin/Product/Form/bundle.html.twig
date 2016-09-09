@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Admin/Product/Form:base.html.twig' %}
+
+{% block general_tab %}
+    {{ parent() }}
+    {{ form_row(form.bundleSlots) }}
+{% endblock general_tab %}
+
+
+{#{% block pricing_tab %}{% endblock pricing_tab %}#}
+
+
+{#{% block seo_tab %}{% endblock seo_tab %}#}

@@ -52,21 +52,31 @@
             <argument type="service" id="translator"/>
         </service>
 
-        <!-- Subject -->
+        <!-- Subject (Product) -->
         <service id="ekyna_commerce.subject.provider_registry"
                  class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
         <service id="ekyna_commerce.subject.resolver_registry"
                  class="Ekyna\Component\Commerce\Subject\Resolver\SubjectResolverRegistry"/>
 
-        <service id="ekyna_commerce.product.subject_provider"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Product\ProductProvider">
-            <argument type="service" id="ekyna_commerce.tax.resolver"/>
+        <service id="ekyna_commerce.product.form_builder"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Product\FormBuilder">
             <argument>%ekyna_commerce.product.class%</argument>
-            <tag name="ekyna_commerce.subject_provider"/>
         </service>
         <service id="ekyna_commerce.product.subject_resolver"
                  class="Ekyna\Bundle\CommerceBundle\Service\Product\ProductResolver">
+            <argument type="service" id="ekyna_commerce.product.repository"/>
             <tag name="ekyna_commerce.subject_resolver"/>
+        </service>
+        <service id="ekyna_commerce.product.item_builder"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Product\ItemBuilder">
+            <argument type="service" id="ekyna_commerce.product.subject_resolver"/>
+            <argument type="service" id="ekyna_commerce.tax.resolver"/>
+        </service>
+        <service id="ekyna_commerce.product.subject_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Product\ProductProvider">
+            <argument type="service" id="ekyna_commerce.product.item_builder"/>
+            <argument type="service" id="ekyna_commerce.product.form_builder"/>
+            <tag name="ekyna_commerce.subject_provider"/>
         </service>
 
         <!-- Resolvers -->
@@ -110,17 +120,28 @@
         </service>
 
         <!-- Form flows -->
-        <service id="ekyna_commerce.add_subject.form_flow"
-                 class="Ekyna\Bundle\CommerceBundle\Form\AddSubjectFlow"
+        <service id="ekyna_commerce.add_item.form_flow"
+                 class="Ekyna\Bundle\CommerceBundle\Form\AddItemFlow"
                  parent="craue.form.flow">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry" />
         </service>
 
         <!-- Form types -->
+        <!--<service id="ekyna_commerce.subject_provider.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\SubjectProviderType">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry" />
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.subject_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\SubjectChoiceType">
             <argument type="service" id="ekyna_commerce.subject.provider_registry" />
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.subject_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\SubjectChoiceType">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry" />
+            <tag name="form.type"/>
+        </service>-->
 
         <service id="ekyna_commerce.attribute.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\AttributeType">

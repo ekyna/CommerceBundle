@@ -12,11 +12,11 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class SubjectChoiceType
+ * Class SubjectConfigurationType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class SubjectChoiceType extends AbstractType
+class SubjectConfigurationType extends AbstractType
 {
     /**
      * @inheritdoc
@@ -27,14 +27,14 @@ class SubjectChoiceType extends AbstractType
         $registry = $options['provider_registry'];
 
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($registry) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($registry) {
                 /** @var SaleItemInterface $item */
                 $item = $event->getData();
                 $form = $event->getForm();
 
                 $registry
                     ->getProvider($item)
-                    ->buildChoiceForm($form);
+                    ->buildConfigurationForm($form, $item);
             })
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($registry) {
                 /** @var SaleItemInterface $item */
@@ -42,7 +42,7 @@ class SubjectChoiceType extends AbstractType
 
                 $registry
                     ->getProvider($item)
-                    ->handleChoiceSubmit($item);
+                    ->handleConfigurationSubmit($item);
             });
     }
 
@@ -54,7 +54,7 @@ class SubjectChoiceType extends AbstractType
         $resolver
             ->setDefaults([
                 'provider_registry' => null,
-                'data_class'        => SaleItemInterface::class,
+                'data_class' => SaleItemInterface::class
             ])
             ->setAllowedTypes('provider_registry', SubjectProviderRegistryInterface::class);
     }

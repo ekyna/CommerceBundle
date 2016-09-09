@@ -215,7 +215,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Product\Entity\Product')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\ProductController')->end()
                                 ->scalarNode('operator')->end()
-                                ->scalarNode('repository')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Bundle\CommerceBundle\Repository\ProductRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\ProductType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\ProductType')->end()
                                 ->scalarNode('parent')->end()
