@@ -32,6 +32,7 @@ class SubjectConfigurationType extends AbstractType
                 $item = $event->getData();
                 $form = $event->getForm();
 
+                // TODO Provider may be null ...
                 $registry
                     ->getProvider($item)
                     ->buildConfigurationForm($form, $item);
@@ -40,6 +41,7 @@ class SubjectConfigurationType extends AbstractType
                 /** @var SaleItemInterface $item */
                 $item = $event->getData();
 
+                // TODO Provider may be null ...
                 $registry
                     ->getProvider($item)
                     ->handleConfigurationSubmit($item);

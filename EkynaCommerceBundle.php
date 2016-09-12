@@ -35,6 +35,8 @@ class EkynaCommerceBundle extends AbstractBundle
     protected function getModelInterfaces()
     {
         return array_replace(DoctrineBundleMapping::getDefaultImplementations(), [
+            Commerce\Cart\Model\CartInterface::class                => 'ekyna_commerce.cart.class',
+
             Commerce\Customer\Model\CustomerInterface::class        => 'ekyna_commerce.customer.class',
             Commerce\Customer\Model\CustomerAddressInterface::class => 'ekyna_commerce.customer_address.class',
 

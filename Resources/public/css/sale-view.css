@@ -1,1 +1,43 @@
-.sale-view tbody tr td.sale-view-number{color:#a2afbc}.sale-view tbody tr.level-0 td.sale-view-designation{padding-left:8px}.sale-view tbody tr.level-1 td.sale-view-designation{padding-left:24px}.sale-view tbody tr.level-2 td.sale-view-designation{padding-left:40px}.sale-view tbody tr.level-3 td.sale-view-designation{padding-left:56px}.sale-view tbody .sale-view-actions{text-align:right;min-width:78px}.sale-view tbody .sale-view-actions a{display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;margin-right:2px;color:#a2afbc}.sale-view tbody .sale-view-actions a:hover{color:#526273}.sale-view tbody .sale-view-actions a:last-child{margin-right:0}.sale-view tbody .sale-view-totals th{font-weight:700;position:relative;text-transform:uppercase;font-size:11px}.taxes-view{width:auto}
+.sale-view tbody tr td.sale-view-number {
+  color: #a2afbc;
+}
+.sale-view tbody tr.level-0 td.sale-view-designation {
+  padding-left: 8px;
+}
+.sale-view tbody tr.level-1 td.sale-view-designation {
+  padding-left: 24px;
+}
+.sale-view tbody tr.level-2 td.sale-view-designation {
+  padding-left: 40px;
+}
+.sale-view tbody tr.level-3 td.sale-view-designation {
+  padding-left: 56px;
+}
+.sale-view tbody .sale-view-actions {
+  text-align: right;
+  min-width: 78px;
+}
+.sale-view tbody .sale-view-actions a {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  margin-right: 2px;
+  color: #a2afbc;
+}
+.sale-view tbody .sale-view-actions a:hover {
+  color: #526273;
+}
+.sale-view tbody .sale-view-actions a:last-child {
+  margin-right: 0;
+}
+.sale-view tbody .sale-view-totals th {
+  font-weight: 700;
+  position: relative;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.taxes-view {
+  width: auto;
+}

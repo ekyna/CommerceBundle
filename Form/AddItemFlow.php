@@ -64,22 +64,10 @@ class AddItemFlow extends FormFlow
             ],
             [
                 'label'        => 'configure',
-                'form_type'    => Type\SubjectConfigurationType::class,
+                'form_type'    => Type\SaleItemSubjectType::class,
                 'form_options' => [
-                    'provider_registry' => $this->providerRegistry,
                     'validation_groups' => ['add_item_flow_step_3'],
                 ],
-                'skip'         => function ($estimatedCurrentStepNumber, FormFlowInterface $flow) {
-                    if ($estimatedCurrentStepNumber < 3) {
-                        return false;
-                    }
-                    /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
-                    $item = $flow->getFormData();
-
-                    return !$this->providerRegistry
-                        ->getProvider($item)
-                        ->needConfiguration($item);
-                },
             ],
         ];
     }

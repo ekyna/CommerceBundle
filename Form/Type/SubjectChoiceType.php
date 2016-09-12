@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
-use Ekyna\Bundle\CommerceBundle\Model\SubjectChoice;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Symfony\Component\Form\AbstractType;
@@ -32,6 +31,7 @@ class SubjectChoiceType extends AbstractType
                 $item = $event->getData();
                 $form = $event->getForm();
 
+                // TODO Provider may be null ...
                 $registry
                     ->getProvider($item)
                     ->buildChoiceForm($form);
@@ -40,6 +40,7 @@ class SubjectChoiceType extends AbstractType
                 /** @var SaleItemInterface $item */
                 $item = $event->getData();
 
+                // TODO Provider may be null ...
                 $registry
                     ->getProvider($item)
                     ->handleChoiceSubmit($item);

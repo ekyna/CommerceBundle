@@ -6,7 +6,6 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\BundleSlotsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\OptionGroupType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\ProductAttributesType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\ProductAttributeType;
 use Ekyna\Bundle\CommerceBundle\Model\ProductTypes;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;

@@ -42,7 +42,7 @@ class ProductResolver extends AbstractSubjectResolver implements SubjectResolver
 
         $data = $item->getSubjectData();
 
-        return $this->productRepository->findById($data['id']);
+        return $this->productRepository->findOneById($data['id']);
 
         // TODO $item->setSubject($product) ?
     }
@@ -70,7 +70,7 @@ class ProductResolver extends AbstractSubjectResolver implements SubjectResolver
     /**
      * @inheritdoc
      */
-    public function supports(SaleItemInterface $item)
+    public function supportsItem(SaleItemInterface $item)
     {
         $data = $item->getSubjectData();
 
@@ -97,7 +97,7 @@ class ProductResolver extends AbstractSubjectResolver implements SubjectResolver
      */
     protected function assertSupports(SaleItemInterface $item)
     {
-        if (!$this->supports($item)) {
+        if (!$this->supportsItem($item)) {
             throw new InvalidArgumentException('Unsupported sale item.');
         }
     }

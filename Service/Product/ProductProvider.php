@@ -2,11 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 
-use Ekyna\Bundle\SocialButtonsBundle\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Product\Model\BundleSlotInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductTypes;
+use Ekyna\Component\Commerce\Product\Repository\ProductRepositoryInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -18,6 +20,11 @@ use Symfony\Component\Form\FormInterface;
 class ProductProvider implements SubjectProviderInterface
 {
     const NAME = 'product';
+
+    /**
+     * @var ProductRepositoryInterface
+     */
+    private $repository;
 
     /**
      * @var ItemBuilder
@@ -33,11 +40,16 @@ class ProductProvider implements SubjectProviderInterface
     /**
      * Constructor.
      *
-     * @param ItemBuilder $itemBuilder
-     * @param FormBuilder $formBuilder
+     * @param ProductRepositoryInterface $repository
+     * @param ItemBuilder                $itemBuilder
+     * @param FormBuilder                $formBuilder
      */
-    public function __construct(ItemBuilder $itemBuilder, FormBuilder $formBuilder)
-    {
+    public function __construct(
+        ProductRepositoryInterface $repository,
+        ItemBuilder $itemBuilder,
+        FormBuilder $formBuilder
+    ) {
+        $this->repository = $repository;
         $this->itemBuilder = $itemBuilder;
         $this->formBuilder = $formBuilder;
     }
@@ -63,57 +75,172 @@ class ProductProvider implements SubjectProviderInterface
      */
     public function handleChoiceSubmit(SaleItemInterface $item)
     {
-        $subject = $this->getItemSubject($item);
+        $product = $this->getItemProduct($item);
 
         $data = [
             'provider' => $this->getName(),
-            'id'       => $subject->getId(),
+            'id'       => $product->getId(),
         ];
 
         $item->setSubjectData(array_replace((array)$item->getSubjectData(), $data));
+    }
 
-        if (!$this->needConfiguration($item)) {
-            $this->itemBuilder->buildItem($item, $subject);
+    /**
+     * @inheritdoc
+     */
+    public function prepareItem(SaleItemInterface $item)
+    {
+        if (null === $product = $item->getSubject()) {
+            $product = $this->resolve($item);
+            $item->setSubject($product); // TODO May be done by resolve()
+        }
+
+        if (!$product instanceof ProductInterface) {
+            throw new InvalidArgumentException('Unexpected subject.');
+        }
+
+        // TODO move to item builder (can't actually because of the resolve() usage)
+        // If bundle/configurable product
+        if (in_array($product->getType(), [ProductTypes::TYPE_BUNDLE, ProductTypes::TYPE_CONFIGURABLE])) {
+            $itemClass = get_class($item);
+
+            // For each bundle/configurable slots
+            foreach ($product->getBundleSlots() as $bundleSlot) {
+                /** @var \Ekyna\Component\Commerce\Product\Model\BundleChoiceInterface $defaultChoice */
+                $defaultChoice = $bundleSlot->getChoices()->first();
+                $choiceProducts = [];
+
+                // Valid and default slot product(s)
+                foreach ($bundleSlot->getChoices() as $choice) {
+                    $choiceProducts[] = $choice->getProduct();
+                }
+
+                // Find slot matching item
+                if ($item->hasChildren()) {
+                    foreach ($item->getChildren() as $child) {
+                        // Check bundle slot id
+                        $childBundleSlotId = intval($item->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
+                        if ($childBundleSlotId != $bundleSlot->getId()) {
+                            continue;
+                        }
+
+                        // Get/resolve item subject
+                        if (null === $childProduct = $child->getSubject()) {
+                            $childProduct = $this->resolve($child);
+                        }
+
+                        // Invalid choice : set default
+                        if (!in_array($childProduct, $choiceProducts)) {
+                            $child
+                                ->setSubject($defaultChoice->getProduct())
+                                ->setQuantity($defaultChoice->getMinQuantity());
+                        }
+
+                        $child->setPosition($bundleSlot->getPosition());
+
+                        // Next bundle slot
+                        continue 2;
+                    }
+                }
+
+                // Item not found : create it
+                /** @var SaleItemInterface $bundleSlotItem */
+                $bundleSlotItem = new $itemClass;
+                $bundleSlotItem
+                    ->setSubject($defaultChoice->getProduct())
+                    ->setSubjectData(BundleSlotInterface::ITEM_DATA_KEY, $bundleSlot->getId())
+                    ->setQuantity($defaultChoice->getMinQuantity())
+                    ->setPosition($bundleSlot->getPosition());
+
+                $item->addChild($bundleSlotItem);
+            }
+
+            // TODO Sort items by position ?
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function needConfiguration(SaleItemInterface $item)
+    public function buildItemForm(FormInterface $form, SaleItemInterface $item)
     {
-        $subject = $this->getItemSubject($item);
-
-        /** @var \Ekyna\Component\Commerce\Product\Model\ProductInterface $subject */
-        return $subject->getType() === ProductTypes::TYPE_CONFIGURABLE;
+        $this->formBuilder->buildItemForm($form, $item);
     }
 
     /**
      * @inheritdoc
      */
-    public function buildConfigurationForm(FormInterface $form, SaleItemInterface $item)
+    public function handleItemSubmit(SaleItemInterface $item)
     {
-        $subject = $this->getItemSubject($item);
+        $product = $this->getItemProduct($item);
 
-        $this->formBuilder->buildConfigurableForm($form, $subject);
+        $this->itemBuilder->buildItem($item, $product);
     }
 
     /**
      * @inheritdoc
      */
-    public function handleConfigurationSubmit(SaleItemInterface $item)
+    public function resolve(SaleItemInterface $item)
     {
-        $subject = $this->getItemSubject($item);
+        $this->assertSupportsItem($item);
 
-        $this->itemBuilder->buildItem($item, $subject);
+        $data = $item->getSubjectData();
+        if (!array_key_exists('id', $data)) {
+            throw new InvalidArgumentException("Unexpected item subject data.");
+        }
+        $dataId = intval($data['id']);
+
+        if ((null !== $product = $item->getSubject())
+            && ($product instanceof ProductInterface)
+            && ($product->getId() !== $dataId)) {
+                return $product;
+        }
+
+        if ((0 < $dataId) && (null !== $product = $this->repository->findOneById($data['id']))) {
+            $item->setSubject($product);
+        } else {
+            throw new InvalidArgumentException("Failed to resolve item subject.");
+        }
+
+        return $product;
     }
 
     /**
      * @inheritdoc
      */
-    public function supports($subject)
+    public function supportsSubject($subject)
     {
         return $subject instanceof ProductInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function supportsItem(SaleItemInterface $item)
+    {
+        $data = $item->getSubjectData();
+
+        return array_key_exists('provider', $data) && $data['provider'] === self::NAME;
+
+        /*if (empty(array_diff(['provider', 'id'], array_keys($data)))) {
+            return $data['provider'] === self::NAME && is_int($data['id']) && 0 < $data['id'];
+        }
+
+        return false;*/
+    }
+
+    /**
+     * Asserts that the sale item is supported.
+     *
+     * @param SaleItemInterface $item
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function assertSupportsItem(SaleItemInterface $item)
+    {
+        if (!$this->supportsItem($item)) {
+            throw new InvalidArgumentException('Unsupported sale item.');
+        }
     }
 
     /**
@@ -140,7 +267,7 @@ class ProductProvider implements SubjectProviderInterface
      * @return ProductInterface
      * @throws RuntimeException
      */
-    private function getItemSubject(SaleItemInterface $item)
+    private function getItemProduct(SaleItemInterface $item)
     {
         /** @noinspection PhpInternalEntityUsedInspection */
         if (null === $subject = $item->getSubject()) {

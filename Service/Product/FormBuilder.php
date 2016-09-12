@@ -2,10 +2,17 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotType;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Product\Model\BundleSlotInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductTypes;
 use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -52,40 +59,28 @@ class FormBuilder
     }
 
     /**
-     * Builds the configurable product form.
+     * Build the product item form.
      *
-     * @param FormInterface    $form
-     * @param ProductInterface $product
+     * @param FormInterface     $form
+     * @param SaleItemInterface $item
      */
-    public function buildConfigurableForm(FormInterface $form, ProductInterface $product)
+    public function buildItemForm(FormInterface $form, SaleItemInterface $item)
     {
-        ProductTypes::assertConfigurable($product);
+        $form->add('quantity', Type\IntegerType::class, [
+            'label' => 'ekyna_core.field.quantity',
+            'attr' => [
+                'min' => 1,
+            ]
+        ]);
 
-        foreach ($product->getBundleSlots() as $bundleSlot) {
+        /** @var ProductInterface $product */
+        $product = $item->getSubject();
 
-            $choices = [];
-            foreach ($bundleSlot->getChoices() as $choice) {
-                $choices[$choice->getProduct()->getDesignation()] = $choice->getId();
-            }
-
-            $prefix = 'subjectData[configuration][' . $bundleSlot->getId() . ']';
-
-            $form
-                ->add('choice_' . $bundleSlot->getId(), Type\ChoiceType::class, [
-                    'label'    => $bundleSlot->getDescription(),
-                    'choices'  => $choices,
-                    'property_path' => $prefix . '[choice_id]',
-                    'required' => true,
-                ])
-                ->add('quantity_' . $bundleSlot->getId(), Type\RangeType::class, [
-                    'label'    => 'ekyna_core.field.quantity',
-                    'property_path' => $prefix . '[quantity]',
-                    'required' => true,
-                    'attr' => [ // TODO Min and max are choice relative
-                        'min' => 1,
-                        'max' => 1,
-                    ]
-                ]);
+        if ($product->getType() === ProductTypes::TYPE_CONFIGURABLE) {
+            $form->add('configuration', ConfigurableSlotsType::class, [
+                'bundle_slots' => $product->getBundleSlots()->toArray(),
+                'item' => $item,
+            ]);
         }
     }
 }
