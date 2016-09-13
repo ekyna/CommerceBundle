@@ -29,7 +29,11 @@ class ProductRepository extends Repository implements SearchRepositoryInterface
             $query = new Query\MultiMatch();
             $query
                 ->setQuery($expression)
-                ->setFields(array('designation'));
+                ->setFields([
+                    'designation',
+                    'title',
+                    'description',
+                ]);
         }
 
         return $this->find($query, $limit);

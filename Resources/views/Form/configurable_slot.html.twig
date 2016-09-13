@@ -21,8 +21,15 @@
             <div class="choice-info">
                 <h2 class="choice-title"></h2>
                 <div class="choice-description"></div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <span class="choice-price"></span>
+                    </div>
+                    <div class="col-xs-8">
+                        {{ form_row(form.quantity, {'label_col': 6, 'widget_col': 6}) }}
+                    </div>
+                </div>
             </div>
-            {{ form_row(form.quantity, {'label_col': 6, 'widget_col': 6}) }}
         </div>
         <div class="col-md-6 col-md-pull-6 choices">
             <a href="javascript: void(0)" class="prev">

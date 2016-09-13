@@ -28,28 +28,15 @@ class ConfigurableSlotType extends AbstractType
         /** @var BundleSlotInterface $bundleSlot */
         $bundleSlot = $options['bundle_slot'];
 
-        $fakeDesc =
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' .
-            'Vestibulum sodales ornare sapien, vel ultrices sapien rhoncus eu.';
-
         $subjectField = $builder
             ->create('subject', Type\ChoiceType::class, [
                 'label'        => $bundleSlot->getDescription(),
                 'choices'      => $bundleSlot->getChoices(),
                 'choice_value' => 'id',
                 'choice_label' => 'product.designation',
-                'choice_attr'  => function (BundleChoiceInterface $choice) use ($fakeDesc) {
-                    $product = $choice->getProduct();
-
+                'choice_attr'  => function (BundleChoiceInterface $choice) {
                     return [
-                        'data-config' => json_encode([
-                            'min_quantity' => $choice->getMinQuantity(),
-                            'max_quantity' => $choice->getMaxQuantity(),
-                            'title'        => $product->getDesignation(),
-                            'description'  => $fakeDesc, // TODO
-                            'image'        => 'bundles/app/img/no-image.jpg', // TODO
-                            'price'        => 49.99,
-                        ]),
+                        'data-config' => json_encode($this->buildChoiceAttributes($choice)),
                     ];
                 },
                 'expanded'     => true,
@@ -69,12 +56,29 @@ class ConfigurableSlotType extends AbstractType
     /**
      * @inheritDoc
      */
+    public function buildChoiceAttributes(BundleChoiceInterface $choice)
+    {
+        $product = $choice->getProduct();
+
+        return [
+            'min_quantity' => $choice->getMinQuantity(),
+            'max_quantity' => $choice->getMaxQuantity(),
+            'title'        => $product->getTitle(),
+            'description'  => $product->getDescription(),
+            'image'        => '/bundles/app/img/no-image.jpg', // TODO remove as not managed by this bundle
+            'price'        => $product->getNetPrice(), // TODO
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         /** @var BundleSlotInterface $bundleSlot */
         $bundleSlot = $options['bundle_slot'];
 
-        $view->vars['slot_title'] = 'Emplacement ' . $bundleSlot->getId();
+        $view->vars['slot_title'] = $bundleSlot->getTitle();
         $view->vars['slot_description'] = $bundleSlot->getDescription();
     }
 

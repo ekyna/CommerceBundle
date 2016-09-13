@@ -2,10 +2,12 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\BundleSlotsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\OptionGroupType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\ProductAttributesType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\ProductTranslationType;
 use Ekyna\Bundle\CommerceBundle\Model\ProductTypes;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
@@ -99,6 +101,11 @@ class ProductTypeSubscriber implements EventSubscriberInterface
     protected function buildSimpleProductForm(FormInterface $form, ProductInterface $product)
     {
         $form
+            ->add('translations', TranslationsFormsType::class, [
+                'form_type'      => ProductTranslationType::class,
+                'label'          => false,
+                'error_bubbling' => false,
+            ])
             ->add('designation', Type\TextType::class, [
                 'label' => 'ekyna_core.field.designation',
             ])
@@ -179,6 +186,11 @@ class ProductTypeSubscriber implements EventSubscriberInterface
     protected function buildVariableProductForm(FormInterface $form, ProductInterface $product)
     {
         $form
+            ->add('translations', TranslationsFormsType::class, [
+                'form_type'      => ProductTranslationType::class,
+                'label'          => false,
+                'error_bubbling' => false,
+            ])
             ->add('designation', Type\TextType::class, [
                 'label' => 'ekyna_core.field.designation',
             ])
@@ -215,6 +227,11 @@ class ProductTypeSubscriber implements EventSubscriberInterface
     protected function buildBundleProductForm(FormInterface $form, ProductInterface $product)
     {
         $form
+            ->add('translations', TranslationsFormsType::class, [
+                'form_type'      => ProductTranslationType::class,
+                'label'          => false,
+                'error_bubbling' => false,
+            ])
             ->add('designation', Type\TextType::class, [
                 'label' => 'ekyna_core.field.designation',
             ])
@@ -234,6 +251,11 @@ class ProductTypeSubscriber implements EventSubscriberInterface
     protected function buildConfigurableProductForm(FormInterface $form, ProductInterface $product)
     {
         $form
+            ->add('translations', TranslationsFormsType::class, [
+                'form_type'      => ProductTranslationType::class,
+                'label'          => false,
+                'error_bubbling' => false,
+            ])
             ->add('designation', Type\TextType::class, [
                 'label' => 'ekyna_core.field.designation',
             ])

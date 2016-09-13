@@ -4,3 +4,18 @@ Ekyna\Component\Commerce\Product\Entity\Product:
             groups: [Default, Search]
         designation:
             groups: [Default, Search]
+#        translations:
+#            groups: [Default, Search]
+        title:
+            groups: [Default, Search]
+        description:
+            groups: [Default, Search]
+
+#Ekyna\Component\Commerce\Product\Entity\ProductTranslation:
+#    attributes:
+#        locale:
+#            groups: [Default, Search]
+#        title:
+#            groups: [Default, Search]
+#        description:
+#            groups: [Default, Search]

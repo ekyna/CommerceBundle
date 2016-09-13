@@ -21,7 +21,7 @@ define(['jquery'], function($) {
             "maxwidth": "",           // Integer: Max-width of the slideshow, in pixels
             "navContainer": "",       // Selector: Where auto generated controls should be appended to, default is after the <ul>
             "manualControls": "",     // Selector: Declare custom pager navigation
-            "namespace": "commerce",  // String: change the default namespace used
+            "namespace": "conf-slot", // String: change the default namespace used
             "before": $.noop,         // Function: Before callback
             "after": $.noop           // Function: After callback
         }, options);
@@ -29,6 +29,8 @@ define(['jquery'], function($) {
         var i = 0;
 
         this.each(function() {
+
+            i++;
 
             var $this = $(this),
 
@@ -82,8 +84,44 @@ define(['jquery'], function($) {
                     return false;
                 })(),
 
+                // Before callback
+                // TODO use CSS transitions
+                beforeSlide = function(idx) {
+                    var $thisSlide = $slide.eq(idx),
+                        $choiceInput = $thisSlide.find('input[type="radio"]'),
+                        config = $choiceInput.data('config'),
+                        $quantityInput = $this.find('input[type="number"]'),
+                        $info = $this.find('.choice-info');
+
+                    $info.fadeOut(fadeTime/2, function() {
+                        var min = config.min_quantity || 1,
+                            max = config.max_quantity || 1;
+
+                        $choiceInput.prop('checked', true);
+
+                        var quantity = $quantityInput
+                            .prop('disabled', min == max)
+                            .prop('min', min)
+                            .prop('max', max)
+                            .val();
+
+                        if (quantity < min) {
+                            $quantityInput.val(min);
+                        } else if(quantity > max ) {
+                            $quantityInput.val(max);
+                        }
+
+                        $this.find('.choice-title').text(config.title);
+                        $this.find('.choice-description').html(config.description);
+                        $this.find('.choice-price').html(config.price + '&nbsp&euro;');
+
+                        $info.fadeIn(fadeTime/2);
+                    });
+                },
+
                 // Fading animation
                 slideTo = function (idx) {
+                    beforeSlide(idx);
                     settings.before(idx);
                     // If CSS3 transitions are supported
                     if (supportsTransitions) {
@@ -118,9 +156,14 @@ define(['jquery'], function($) {
                     }
                 };
 
-            // Add ID's to each slide
+            // Initialize each slides
             $slide.each(function (i) {
+                // Add ID
                 this.id = slideClassPrefix + i;
+
+                var $thisSlide = $(this);
+
+                $thisSlide.find('img').prop('src', $thisSlide.find('input').data('config').image);
             });
 
             // Add max-width and classes
@@ -206,8 +249,7 @@ define(['jquery'], function($) {
                 }*/
             });
 
-            console.log($slide.length);
-
+            beforeSlide(0);
         });
 
         return this;

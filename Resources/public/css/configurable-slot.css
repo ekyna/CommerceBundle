@@ -1,6 +1,13 @@
 .commerce-configurable-slot {
   overflow: hidden;
-  margin-bottom: 30px;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #dddddd;
+}
+.commerce-configurable-slot .slot-info {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px dotted #dddddd;
 }
 .commerce-configurable-slot .choices {
   overflow: hidden;

@@ -12,6 +12,8 @@
 
         <parameter key="ekyna_commerce.cart_item.class">Ekyna\Component\Commerce\Cart\Entity\CartItem</parameter>
 
+        <parameter key="ekyna_commerce.configurable_slot.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotType</parameter>
+
         <parameter key="ekyna_commerce.option_group.class">Ekyna\Component\Commerce\Product\Entity\OptionGroup</parameter>
         <parameter key="ekyna_commerce.option.class">Ekyna\Component\Commerce\Product\Entity\Option</parameter>
 
@@ -153,9 +155,13 @@
             <tag name="form.type"/>
         </service>
 
+        <service id="ekyna_commerce.configurable_slots.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotsType">
+            <argument>%ekyna_commerce.configurable_slot.form_type.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.configurable_slot.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotType">
-            <!--<argument type="service" id="ekyna_commerce.subject.provider_registry"/>-->
+                 class="%ekyna_commerce.configurable_slot.form_type.class%">
             <tag name="form.type"/>
             <tag name="form.js" selector=".commerce-configurable-slot" path="ekyna-commerce/form/configurable-slot" />
         </service>

@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemSubjectTypeSubscriber
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -37,6 +38,11 @@ class SaleItemSubjectType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // TODO Submit button
+        $builder->add('submit', SubmitType::class, [
+            'label' => 'Ajouter'
+        ]);
+
         $builder->addEventSubscriber(
             new SaleItemSubjectTypeSubscriber($this->providerRegistry)
         );

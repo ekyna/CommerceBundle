@@ -164,6 +164,9 @@
     {% else %}
 
     {% endif %}#}
+    {% if form.translations is defined %}
+        {{ form_row(form.translations, {'widget_col': 12}) }}
+    {% endif %}
     {{ form_row(form.choices, {'widget_col': 12}) }}
     {{ form_widget(form.position) }}
     {{ form_rest(form) }}

@@ -19,6 +19,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ConfigurableSlotsType extends AbstractType
 {
     /**
+     * @var string
+     */
+    private $slotTypeClass;
+
+
+    /**
+     * Constructor.
+     *
+     * @param $slotTypeClass
+     */
+    public function __construct($slotTypeClass)
+    {
+        $this->slotTypeClass = $slotTypeClass;
+    }
+
+    /**
      * @inheritdoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -42,7 +58,7 @@ class ConfigurableSlotsType extends AbstractType
                     $bundleSlotId = intval($child->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
                     if ($bundleSlotId == $bundleSlot->getId()) {
                         // TODO (PRE_SET_DATA) $form->add()
-                        $builder->add('slot_' . $bundleSlot->getId(), ConfigurableSlotType::class, [
+                        $builder->add('slot_' . $bundleSlot->getId(), $this->slotTypeClass, [
                             'bundle_slot'   => $bundleSlot,
                             'property_path' => 'children[' . $key . ']',
                         ]);
