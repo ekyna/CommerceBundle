@@ -100,7 +100,7 @@ define(['jquery'], function($) {
                         $choiceInput.prop('checked', true);
 
                         var quantity = $quantityInput
-                            .prop('disabled', min == max)
+                            //.prop('disabled', min == max)
                             .prop('min', min)
                             .prop('max', max)
                             .val();

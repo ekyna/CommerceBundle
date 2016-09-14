@@ -11,11 +11,5 @@ use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ProductRepository as
  */
 class ProductRepository extends BaseRepository
 {
-    /**
-     * @inheritdoc
-     */
-    public function findOneById($id)
-    {
-        return $this->find($id);
-    }
+
 }

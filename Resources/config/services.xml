@@ -34,6 +34,18 @@
 
     <services>
 
+        <!-- Factory -->
+        <service id="ekyna_commerce.sale_factory"
+                 class="Ekyna\Component\Commerce\Common\SaleFactory"/>
+
+        <!-- Adjustment builder -->
+        <service id="ekyna_commerce.adjustment_builder"
+                 class="Ekyna\Component\Commerce\Common\AdjustmentBuilder">
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_commerce.tax.resolver"/>
+        </service>
+
         <!-- Calculator -->
         <service id="ekyna_commerce.common.calculator"
                  class="Ekyna\Component\Commerce\Common\Calculator\Calculator"/>
@@ -55,12 +67,42 @@
                  class="Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper">
             <argument type="service" id="translator"/>
         </service>
+        <service id="ekyna_commerce.helper.cart"
+                 class="Ekyna\Bundle\CommerceBundle\Helper\CartHelper">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
+            <argument>%ekyna_commerce.cart_item.class%</argument>
+        </service>
 
         <!-- Cart -->
+        <service id="ekyna_commerce.cart.abstract_provider" abstract="true">
+            <call method="setCartRepository">
+                <argument type="service" id="ekyna_commerce.cart.repository"/>
+            </call>
+            <call method="setCartManager">
+                <argument type="service" id="ekyna_commerce.cart.manager"/>
+            </call>
+            <call method="setCustomerProvider">
+                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            </call>
+            <call method="setCartRepository">
+                <argument type="service" id="ekyna_commerce.cart.repository"/>
+            </call>
+            <call method="setCurrencyRepository">
+                <argument type="service" id="ekyna_commerce.currency.repository"/>
+            </call>
+        </service>
         <service id="ekyna_commerce.cart.session_provider"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\SessionCartProvider">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\SessionCartProvider"
+                 parent="ekyna_commerce.cart.abstract_provider">
             <argument type="service" id="session"/>
-            <argument type="service" id="ekyna_commerce.cart.repository"/>
+        </service>
+
+        <!-- Customer -->
+        <service id="ekyna_commerce.customer.security_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
         </service>
 
         <!-- Subject provider and resolver registries-->
@@ -74,7 +116,8 @@
         </service>
         <service id="ekyna_commerce.product.item_builder"
                  class="Ekyna\Bundle\CommerceBundle\Service\Product\ItemBuilder">
-            <argument type="service" id="ekyna_commerce.tax.resolver"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.adjustment_builder"/>
         </service>
 
         <service id="ekyna_commerce.product.subject_provider"
@@ -90,6 +133,8 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Order\StateResolver"/>
         <service id="ekyna_commerce.tax.resolver"
                  class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
+            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
+            <argument type="service" id="ekyna_commerce.country.repository"/>
             <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
         </service>
 
@@ -107,6 +152,12 @@
         <service id="ekyna_commerce.product.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ProductEventSubscriber">
             <tag name="resource.event_subscriber"/>
+        </service>
+        <service id="ekyna_commerce.cart.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber">
+            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
         <service id="ekyna_commerce.order.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">

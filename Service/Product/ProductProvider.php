@@ -199,6 +199,8 @@ class ProductProvider implements SubjectProviderInterface
         if ((0 < $dataId) && (null !== $product = $this->repository->findOneById($data['id']))) {
             $item->setSubject($product);
         } else {
+            // TODO $item->setSubject(null);
+            // TODO return null;
             throw new InvalidArgumentException("Failed to resolve item subject.");
         }
 

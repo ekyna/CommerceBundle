@@ -5,8 +5,8 @@
         xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                         http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="Ekyna\Bundle\CommerceBundle\Entity\Order"
-            table="commerce_order">
+    <entity name="Ekyna\Bundle\CommerceBundle\Entity\Cart"
+            table="commerce_cart">
 
         <field name="gender" type="string" column="gender" length="8" nullable="true"/>
 

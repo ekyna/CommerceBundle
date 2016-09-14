@@ -56,6 +56,7 @@ class Customer extends BaseCustomer implements CustomerInterface
     public function setGender($gender)
     {
         $this->gender = $gender;
+
         return $this;
     }
 }

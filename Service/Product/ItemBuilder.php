@@ -2,12 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 
+use Ekyna\Component\Commerce\Common\AdjustmentBuilderInterface;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Common\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
-use Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment;
 use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Ekyna\Component\Commerce\Product\Model\BundleSlotInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
@@ -23,19 +24,26 @@ class ItemBuilder
     const DATA_KEY_REMOVE_MISS_MATCH = 'remove_miss_match';
 
     /**
-     * @var TaxResolverInterface
+     * @var SaleFactoryInterface
      */
-    private $taxResolver;
+    private $saleFactory;
+
+    /**
+     * @var AdjustmentBuilderInterface
+     */
+    private $adjustmentBuilder;
 
 
     /**
      * Constructor.
      *
-     * @param TaxResolverInterface $taxResolver
+     * @param SaleFactoryInterface       $saleFactory
+     * @param AdjustmentBuilderInterface $adjustmentBuilder
      */
-    public function __construct(TaxResolverInterface $taxResolver)
+    public function __construct(SaleFactoryInterface $saleFactory, AdjustmentBuilderInterface $adjustmentBuilder)
     {
-        $this->taxResolver = $taxResolver;
+        $this->saleFactory = $saleFactory;
+        $this->adjustmentBuilder = $adjustmentBuilder;
     }
 
     /**
@@ -47,7 +55,7 @@ class ItemBuilder
      *
      * @return array The resulting item subject data.
      */
-    public function setItemProduct(SaleItemInterface $item, ProductInterface $product, array $extraData = [])
+    protected function setItemProduct(SaleItemInterface $item, ProductInterface $product, array $extraData = [])
     {
         if ((null === $subject = $item->getSubject()) || $product != $subject) {
             $item->setSubject($product);
@@ -252,30 +260,8 @@ class ItemBuilder
      */
     protected function buildItemAdjustments(SaleItemInterface $item, ProductInterface $product)
     {
-        $sale = $item->getSale();
-        $customer = $sale->getCustomer();
-        $address = $sale->getDeliveryAddress();
-        $taxGroup = $product->getTaxGroup();
-
-        if (null !== $customer && null !== $address) {
-            $taxes = $this->taxResolver->getApplicableTaxesByTaxGroupAndCustomerGroups(
-                $taxGroup, $customer->getCustomerGroups(), $address
-            );
-
-            // TODO $this->adjustmentFactory->buildTaxationAdjustments($item, $taxes);
-
-            // TODO temporary
-            foreach ($taxes as $tax) {
-                $adjustment = new OrderItemAdjustment();
-                $adjustment
-                    ->setMode(AdjustmentModes::MODE_PERCENT)
-                    ->setType(AdjustmentTypes::TYPE_TAXATION)
-                    ->setDesignation($tax->getName())
-                    ->setAmount($tax->getRate());
-
-                /** @var \Ekyna\Component\Commerce\Order\Model\OrderItemInterface $item */
-                $item->addAdjustment($adjustment);
-            }
-        }
+        $this
+            ->adjustmentBuilder
+            ->buildTaxationAdjustmentsForSaleItem($item, $product);
     }
 }

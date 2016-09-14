@@ -6,6 +6,15 @@
                         http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
 
+    <!-- Cart -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\Cart">
+        <property name="gender">
+            <constraint name="NotBlank" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
+        </property>
+    </class>
+
     <!-- Customer -->
 
     <class name="Ekyna\Bundle\CommerceBundle\Entity\Customer">
@@ -14,6 +23,8 @@
             <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
         </property>
     </class>
+
+    <!-- Customer Address -->
 
     <class name="Ekyna\Bundle\CommerceBundle\Entity\CustomerAddress">
         <property name="gender">
@@ -58,22 +69,13 @@
         </property>
     </class>
 
-    <!--<class name="Ekyna\Bundle\CommerceBundle\Model\SubjectChoice">
-        <property name="type">
-            <constraint name="NotNull">
-                <option name="groups">
-                    <value>Default</value>
-                    <value>flow_step_1</value>
-                </option>
-            </constraint>
+    <!-- Quote -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\Quote">
+        <property name="gender">
+            <constraint name="NotBlank" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
         </property>
-        <property name="choice">
-            <constraint name="NotNull">
-                <option name="groups">
-                    <value>Default</value>
-                </option>
-            </constraint>
-        </property>
-    </class>-->
+    </class>
 
 </constraint-mapping>

@@ -4,32 +4,32 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\AdminBundle\Event\ResourceEventInterface;
 use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
-use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
-use Ekyna\Component\Commerce\Order\Event\OrderEvents;
-use Ekyna\Component\Commerce\Order\Model\OrderEventInterface;
-use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Commerce\Cart\Event\CartEvents;
+use Ekyna\Component\Commerce\Cart\Model\CartEventInterface;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 
 /**
- * Class OrderEventSubscriber
+ * Class CartEventSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderEventSubscriber extends BaseSubscriber
+class CartEventSubscriber extends BaseSubscriber
 {
     /**
      * Pre delete event handler.
      *
-     * @param OrderEventInterface $event
+     * @param CartEventInterface $event
      */
-    public function onPreDelete(OrderEventInterface $event)
+    public function onPreDelete(CartEventInterface $event)
     {
         try {
             parent::onPreDelete($event);
         } catch (CommerceExceptionInterface $e) {
             /** @var ResourceEventInterface $event */
             $event->addMessage(new ResourceMessage(
-                'ekyna_commerce.order.message.cant_be_deleted', // TODO
+                'ekyna_commerce.cart.message.cant_be_deleted', // TODO
                 ResourceMessage::TYPE_ERROR
             ));
         }
@@ -38,22 +38,22 @@ class OrderEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
-    protected function handleIdentity(OrderInterface $order)
+    protected function handleIdentity(CartInterface $cart)
     {
         $changed = false;
 
         /**
-         * @var \Ekyna\Bundle\CommerceBundle\Model\OrderInterface $order
+         * @var \Ekyna\Bundle\CommerceBundle\Model\CartInterface $cart
          * @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer
          */
-        if (null !== $customer = $order->getCustomer()) {
-            if (0 == strlen($order->getGender())) {
-                $order->setGender($customer->getGender());
+        if (null !== $customer = $cart->getCustomer()) {
+            if (0 == strlen($cart->getGender())) {
+                $cart->setGender($customer->getGender());
                 $changed = true;
             }
         }
 
-        return $changed || parent::handleIdentity($order);
+        return $changed || parent::handleIdentity($cart);
     }
 
     /**
@@ -62,7 +62,7 @@ class OrderEventSubscriber extends BaseSubscriber
     public static function getSubscribedEvents()
     {
         return array_merge(parent::getSubscribedEvents(), [
-            OrderEvents::PRE_DELETE => ['onPreDelete', 0],
+            CartEvents::PRE_DELETE => ['onPreDelete', 0],
         ]);
     }
 }

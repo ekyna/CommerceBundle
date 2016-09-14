@@ -2,15 +2,15 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
+use Ekyna\Bundle\CommerceBundle\Model\CartInterface;
+use Ekyna\Component\Commerce\Cart\Entity\Cart as BaseCart;
 
 /**
- * Class Order
+ * Class Cart
  * @package Ekyna\Bundle\CommerceBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class Order extends BaseOrder implements OrderInterface
+class Cart extends BaseCart implements CartInterface
 {
     /**
      * @var string

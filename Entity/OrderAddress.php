@@ -42,6 +42,7 @@ class OrderAddress extends BaseAddress implements IdentityInterface
     public function setGender($gender)
     {
         $this->gender = $gender;
+
         return $this;
     }
 

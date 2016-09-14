@@ -4,10 +4,10 @@ Ekyna\Component\Commerce\Customer\Entity\CustomerGroup:
         default: true
     cg_business:
         name: Entreprises
-        default: true
+        default: false
     cg_retailer:
         name: Revendeurs
-        default: true
+        default: false
 
 Ekyna\Bundle\CommerceBundle\Entity\Customer:
     c_customer_test:

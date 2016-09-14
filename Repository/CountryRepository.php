@@ -2,14 +2,14 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
-use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CartRepository as BaseRepository;
+use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository as BaseRepository;
 
 /**
- * Class CartRepository
+ * Class CountryRepository
  * @package Ekyna\Bundle\CommerceBundle\Repository
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CartRepository extends BaseRepository
+class CountryRepository extends BaseRepository
 {
 
 }
