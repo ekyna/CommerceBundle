@@ -1,5 +1,4 @@
-{#{{ render_sale_view(order) }}#}
-{{ render_sale_view(order, 'EkynaCommerceBundle:Admin/Order/Show:order_view.html.twig') }}
+{{ render_sale_view(order_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
 
 <a href="{{ path('ekyna_commerce_order_item_admin_add', {'orderId': order.id}) }}" class="btn btn-sm btn-primary">
     {{ 'ekyna_commerce.order_item.button.add'|trans }}

@@ -13,6 +13,7 @@ use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Ekyna\Component\Commerce\Product\Model\BundleSlotInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductTypes;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 
 /**
  * Class ItemBuilder
@@ -44,31 +45,6 @@ class ItemBuilder
     {
         $this->saleFactory = $saleFactory;
         $this->adjustmentBuilder = $adjustmentBuilder;
-    }
-
-    /**
-     * Sets the item product (subject) and configures the item subject data.
-     *
-     * @param SaleItemInterface $item
-     * @param ProductInterface  $product
-     * @param array             $extraData
-     *
-     * @return array The resulting item subject data.
-     */
-    protected function setItemProduct(SaleItemInterface $item, ProductInterface $product, array $extraData = [])
-    {
-        if ((null === $subject = $item->getSubject()) || $product != $subject) {
-            $item->setSubject($product);
-        }
-
-        $data = array_replace((array)$item->getSubjectData(), $extraData, [
-            'provider' => ProductProvider::NAME,
-            'id'       => $product->getId(),
-        ]);
-
-        $item->setSubjectData($data);
-
-        return $data;
     }
 
     /**
@@ -153,8 +129,8 @@ class ItemBuilder
             $bundleProducts[] = $bundleProduct;
 
             // Find matching item
-            foreach ($item->getChildren() as $child) {
-                $bundleSlotId = intval($child->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
+            foreach ($item->getChildren() as $childItem) {
+                $bundleSlotId = intval($childItem->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
                 if ($bundleSlotId != $bundleSlot->getId()) {
                     continue;
                 }
@@ -162,11 +138,13 @@ class ItemBuilder
                 /** @var ProductInterface $childItemProduct */
                 $childItemProduct = $item->getSubject();
 
-                // Sets the bundle product
-                $this->buildItem($child, $childItemProduct, [
+                // Build the item form the bundle choice's product
+                $this->buildItem($childItem, $childItemProduct, [
                     self::DATA_KEY_REMOVE_MISS_MATCH => $removeMissMatch,
                 ]);
-                // Done by prepareItem()  //$item->setPosition($bundleSlot->getPosition());
+
+                // Item is immutable
+                $childItem->setImmutable(true);
 
                 continue 2;
             }
@@ -175,14 +153,14 @@ class ItemBuilder
             throw new RuntimeException("Bundle slot matching item not found.");
         }
 
-        // TODO remove bundle slots duplicates
+        // TODO Cleanup : remove bundle slots duplicates
 
         // Removes miss match items
         if ($removeMissMatch) {
-            foreach ($item->getChildren() as $child) {
-                $childProduct = $child->getSubject();
+            foreach ($item->getChildren() as $childItem) {
+                $childProduct = $childItem->getSubject();
                 if (null === $childProduct || !in_array($childProduct, $bundleProducts)) {
-                    $item->removeChild($child);
+                    $item->removeChild($childItem);
                 }
             }
         }
@@ -208,7 +186,8 @@ class ItemBuilder
         $item
             ->unsetSubjectData(self::DATA_KEY_REMOVE_MISS_MATCH)
             ->setDesignation($product->getDesignation())
-            ->setReference($product->getReference());
+            ->setReference($product->getReference())
+            ->setConfigurable(true);
 
         $this->buildItemAdjustments($item, $product);
 
@@ -229,7 +208,9 @@ class ItemBuilder
                 $this->buildItem($childItem, $childItemProduct, [
                     self::DATA_KEY_REMOVE_MISS_MATCH => $removeMissMatch,
                 ]);
-                // Done by prepareItem()  //$item->setPosition($bundleSlot->getPosition());
+
+                // Item is immutable
+                $childItem->setImmutable(true);
 
                 continue 2;
             }
@@ -238,7 +219,7 @@ class ItemBuilder
             throw new RuntimeException("Bundle slot matching item not found.");
         }
 
-        // TODO remove bundle slots duplicates ?
+        // TODO Cleanup : remove bundle slots duplicates ?
 
         // Removes miss match items
         if ($removeMissMatch) {
@@ -263,5 +244,30 @@ class ItemBuilder
         $this
             ->adjustmentBuilder
             ->buildTaxationAdjustmentsForSaleItem($item, $product);
+    }
+
+    /**
+     * Sets the item product (subject) and configures the item subject data.
+     *
+     * @param SaleItemInterface $item
+     * @param ProductInterface  $product
+     * @param array             $extraData
+     *
+     * @return array The resulting item subject data.
+     */
+    protected function setItemProduct(SaleItemInterface $item, ProductInterface $product, array $extraData = [])
+    {
+        if ((null === $subject = $item->getSubject()) || $product != $subject) {
+            $item->setSubject($product);
+        }
+
+        $data = array_replace((array)$item->getSubjectData(), $extraData, [
+            SubjectProviderInterface::DATA_KEY => ProductProvider::NAME,
+            'id'       => $product->getId(),
+        ]);
+
+        $item->setSubjectData($data);
+
+        return $data;
     }
 }

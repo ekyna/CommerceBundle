@@ -1,0 +1,193 @@
+{% extends 'EkynaCommerceBundle:Common:sale_view.html.twig' %}
+
+
+{% block action_attributes %}
+    {% spaceless %}
+        {% for name, value in attr %}
+            {% if name == 'title' %}
+                title="{{ value|trans }}"
+            {% elseif name == 'confirm' %}
+                onclick="return confirm('{{ value|trans|escape }}');"
+            {% else %}
+                {{ name }}{% if value is not same as(null) %}="{{ value }}"{% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endspaceless %}
+{% endblock action_attributes %}
+
+
+{% block action %}
+    {% set attr = action.attributes %}
+    <a href="{{ action.path }}" class="sale-detail-action" {{ block('action_attributes') }}>
+        <i class="{{ action.icon }}"></i>
+    </a>
+{% endblock action %}
+
+
+{% block lines_headers %}
+{% spaceless %}
+    {{ parent() }}
+    <th class="sale-detail-actions"></th>
+{% endspaceless %}
+{% endblock lines_headers %}
+
+
+{% block line_leaf_quantity %}
+{% spaceless %}
+    <td class="text-center">
+    {% if view.vars.form['item_' ~ line.id] is defined %}
+        {{ form_widget(view.vars.form['item_' ~ line.id]) }}
+    {% else %}
+        <span class="sale-detail-quantity">{{ line.quantity }}</span>
+    {% endif %}
+    </td>
+{% endspaceless %}
+{% endblock line_leaf_quantity %}
+
+{% block line_leaf %}
+{% spaceless %}
+    {{ parent() }}
+    <td class="sale-detail-actions">
+    {% if not line.immutable %}
+        {% for action in line.vars.actions %}
+            {{ block('action') }}
+        {% endfor %}
+    {% endif %}
+    </td>
+{% endspaceless %}
+{% endblock line_leaf %}
+
+
+{% block line_node_quantity %}
+{% spaceless %}
+    <td class="text-center">
+    {% if view.vars.form['item_' ~ line.id] is defined %}
+        {{ form_widget(view.vars.form['item_' ~ line.id]) }}
+    {% else %}
+        <span class="sale-detail-quantity">{{ line.quantity }}</span>
+    {% endif %}
+    </td>
+{% endspaceless %}
+{% endblock line_node_quantity %}
+
+
+{% block line_node %}
+{% spaceless %}
+    {{ parent() }}
+    <td class="sale-detail-actions">
+    {% if not line.immutable %}
+        {% for action in line.vars.actions %}
+            {{ block('action') }}
+        {% endfor %}
+    {% endif %}
+    </td>
+{% endspaceless %}
+{% endblock line_node %}
+
+
+{% block gross_totals %}
+{% spaceless %}
+    <tbody>
+    <tr>
+        <th>&nbsp;</th>
+        <th class="text-right" colspan="5"><strong>Total avant remise</strong></th>
+        <td class="text-right">{{ view.gross.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.gross.total|localizedcurrency('EUR') }}</td>
+        <th>&nbsp;</th>
+    </tr>
+    </tbody>
+{% endspaceless %}
+{% endblock gross_totals %}
+
+
+{% block discount %}
+{% spaceless %}
+    {{ parent() }}
+    <td class="sale-detail-actions">
+    {% if not discount.immutable %}
+        {% for action in discount.vars.actions %}
+            {{ block('action') }}
+        {% endfor %}
+    {% endif %}
+    </td>
+{% endspaceless %}
+{% endblock discount %}
+
+
+{% block discounts %}
+{% spaceless %}
+    <tbody>
+    <tr>
+        <td colspan="10">&nbsp;</td>
+    </tr>
+    </tbody>
+    {% for discount in view.discounts %}
+        <tbody>
+        <tr>
+            {{ block('discount') }}
+        </tr>
+        </tbody>
+    {% endfor %}
+{% endspaceless %}
+{% endblock discounts %}
+
+
+{% block gran_totals %}
+{% spaceless %}
+    <tbody>
+    <tr>
+        <th colspan="6" rowspan="2" class="sale-detail-buttons">
+            {{ form_widget(view.vars.form.submit) }}
+        </th>
+        <th>{{ 'ekyna_commerce.order.field.net_total'|trans|upper }}</th>
+        <th>{{ 'ekyna_commerce.order.field.tax_total'|trans|upper }}</th>
+        <th>{{ 'ekyna_commerce.order.field.grand_total'|trans|upper }}</th>
+        <th rowspan="2">&nbsp;</th>
+    </tr>
+    <tr>
+        <td class="text-right">{{ view.final.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.final.tax|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.final.total|localizedcurrency('EUR') }}</td>
+    </tr>
+    </tbody>
+{% endspaceless %}
+{% endblock gran_totals %}
+
+
+{% block sale %}
+{% spaceless %}
+    {{ form_start(view.vars.form, {'attr': {'class': 'sale-view'}}) }}
+    <div class="table-responsive">
+        <table class="table table-striped sale-detail">
+            {{ block('lines') }}
+
+            {% if view.discounts is not empty %}
+                {{ block('gross_totals') }}
+                {{ block('discounts') }}
+            {% endif %}
+
+            {{ block('gran_totals') }}
+        </table>
+
+        {{ block('taxes') }}
+    </div>
+    <div class="sale-detail-loading">
+        <div class="sk-fading-circle">
+            <div class="sk-circle-1 sk-circle"></div>
+            <div class="sk-circle-2 sk-circle"></div>
+            <div class="sk-circle-3 sk-circle"></div>
+            <div class="sk-circle-4 sk-circle"></div>
+            <div class="sk-circle-5 sk-circle"></div>
+            <div class="sk-circle-6 sk-circle"></div>
+            <div class="sk-circle-7 sk-circle"></div>
+            <div class="sk-circle-8 sk-circle"></div>
+            <div class="sk-circle-9 sk-circle"></div>
+            <div class="sk-circle-10 sk-circle"></div>
+            <div class="sk-circle-11 sk-circle"></div>
+            <div class="sk-circle-12 sk-circle"></div>
+        </div>
+    </div>
+    {{ form_end(view.vars.form) }}
+{% endspaceless %}
+{% endblock sale %}

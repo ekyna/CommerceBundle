@@ -1,6 +1,6 @@
 ekyna_commerce:
     label: Commerce
-    sales: Ventes
+    sales: Ventes # TODO replace by ekyna_commerce.sale.label.plural
     store: Catalogue
     adjustment:
         label:
@@ -96,6 +96,10 @@ ekyna_commerce:
             expression: Expression
         button:
             add: Ajouter une règle
+    cart:
+        label:
+            singular: Panier
+            plural: Paniers
     country:
         label:
             singular: Pays
@@ -411,6 +415,20 @@ ekyna_commerce:
             list: Variantes <small>Liste des variantes</small>
         button:
             new: Nouvelle variante
+    sale:
+        label:
+            singular: Vente
+            plural: Ventes
+        button:
+            configure_item: Configurer l'article
+            edit_item: Modifier la ligne
+            remove_item: Supprimer l'article
+            edit_adjustement: Modifier la remise
+            remove_adjustement: Supprimer la remise
+        confirm:
+            remove_item: Souhaitez-vous réellement supprimer cette article ?
+            remove_adjustment: Souhaitez-vous réellement supprimer cette remise ?
+        # TODO fiels from order translations
     shipment:
         label:
             singular: Livraison

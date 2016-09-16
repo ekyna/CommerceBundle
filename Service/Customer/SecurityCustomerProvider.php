@@ -45,7 +45,7 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
                 return false;
             }
 
-            if (null === $user = $token->getUser()) {
+            if (!is_object($user = $token->getUser())) {
                 return false;
             }
 

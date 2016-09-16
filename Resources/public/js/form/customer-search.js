@@ -4,7 +4,7 @@ define(['jquery', 'routing'], function($, router) {
     /**
      * Entity search widget
      */
-    $.fn.entitySearchWidget = function(config) {
+    $.fn.customerSearchWidget = function(config) {
 
         config = $.extend({
             limit: 8
@@ -64,7 +64,7 @@ define(['jquery', 'routing'], function($, router) {
 
     return {
         init: function($element) {
-            $element.entitySearchWidget();
+            $element.customerSearchWidget();
         }
     };
 });

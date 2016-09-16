@@ -42,6 +42,13 @@ ekyna_commerce_order_admin_remove:
     requirements:
         orderId: \d+
 
+ekyna_commerce_order_details_update:
+    path: /{orderId}/details-update
+    defaults: { _controller: "ekyna_commerce.order.controller:detailsUpdateAction" }
+    methods: [POST]
+    requirements:
+        orderId: \d+
+
 ekyna_commerce_order_item_admin:
     resource: order_item.yml
     prefix: /{orderId}/items

@@ -141,7 +141,8 @@ class LoadOrderData extends AbstractFixture
             ->setDesignation($designation)
             ->setReference(strtoupper($this->faker->bothify(strtoupper('????-####'))))
             ->setQuantity(rand(1, 5))
-            ->setPosition($position);
+            ->setPosition($position)
+            ->setImmutable(0 < $level);
 
         if (0 < $nbChildren) {
             for ($c = 0; $c < $nbChildren; $c++) {

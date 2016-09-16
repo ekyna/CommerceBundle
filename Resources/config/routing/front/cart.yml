@@ -1,0 +1,28 @@
+ekyna_commerce_cart_configure_item:
+    path: /items/{itemId}/configure
+    defaults: { _controller: "ekyna_commerce.controller.cart:configureItemAction" }
+    methods: [GET, POST]
+    requirements:
+        itemId: \d+
+
+ekyna_commerce_cart_remove_item:
+    path: /items/{itemId}/remove
+    defaults: { _controller: "ekyna_commerce.controller.cart:removeItemAction" }
+    methods: [POST]
+    requirements:
+        itemId: \d+
+
+ekyna_commerce_cart_remove_item_adjustment:
+    path: /items/{itemId}/adjustments/{adjustmentId}/remove
+    defaults: { _controller: "ekyna_commerce.controller.cart:removeItemAdjustmentAction" }
+    methods: [POST]
+    requirements:
+        itemId: \d+
+        adjustmentId: \d+
+
+ekyna_commerce_cart_remove_adjustment:
+    path: /adjustments/{adjustmentId}/remove
+    defaults: { _controller: "ekyna_commerce.controller.cart:removeAdjustmentAction" }
+    methods: [POST]
+    requirements:
+        adjustmentId: \d+

@@ -38,11 +38,6 @@ class SaleItemSubjectType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        // TODO Submit button
-        $builder->add('submit', SubmitType::class, [
-            'label' => 'Ajouter'
-        ]);
-
         $builder->addEventSubscriber(
             new SaleItemSubjectTypeSubscriber($this->providerRegistry)
         );

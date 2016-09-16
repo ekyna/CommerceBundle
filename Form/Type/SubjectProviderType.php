@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -32,7 +33,7 @@ class SubjectProviderType extends AbstractType
         $builder->add('provider', ChoiceType::class, array(
             'label'   => 'Type', // TODO
             'choices' => $types,
-            'property_path' => 'subjectData[provider]',
+            'property_path' => 'subjectData[' . SubjectProviderInterface::DATA_KEY . ']',
             'attr' => [
                 'class' => 'no-select2',
             ],

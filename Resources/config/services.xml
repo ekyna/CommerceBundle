@@ -4,6 +4,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="ekyna_commerce.controller.cart.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController</parameter>
+        <parameter key="ekyna_commerce.controller.cart_checkout.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController</parameter>
+
         <parameter key="ekyna_commerce.attribute_slot.class">Ekyna\Component\Commerce\Product\Entity\AttributeSlot</parameter>
 
         <parameter key="ekyna_commerce.bundle_choice.class">Ekyna\Component\Commerce\Product\Entity\BundleChoice</parameter>
@@ -13,6 +16,8 @@
         <parameter key="ekyna_commerce.cart_item.class">Ekyna\Component\Commerce\Cart\Entity\CartItem</parameter>
 
         <parameter key="ekyna_commerce.configurable_slot.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotType</parameter>
+
+        <parameter key="ekyna_commerce.helper.cart.class">Ekyna\Bundle\CommerceBundle\Helper\CartHelper</parameter>
 
         <parameter key="ekyna_commerce.option_group.class">Ekyna\Component\Commerce\Product\Entity\OptionGroup</parameter>
         <parameter key="ekyna_commerce.option.class">Ekyna\Component\Commerce\Product\Entity\Option</parameter>
@@ -33,6 +38,27 @@
     </parameters>
 
     <services>
+
+        <!-- Controllers -->
+        <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
+            <call method="setUrlGenerator">
+                <argument type="service" id="router"/>
+            </call>
+            <call method="setTemplating">
+                <argument type="service" id="templating"/>
+            </call>
+            <call method="setCartHelper">
+                <argument type="service" id="ekyna_commerce.helper.cart"/>
+            </call>
+        </service>
+        <service id="ekyna_commerce.controller.cart"
+                 class="%ekyna_commerce.controller.cart.class%"
+                 parent="ekyna_commerce.controller.cart.abstract">
+            <argument type="service" id="ekyna_core.modal" />
+        </service>
+        <service id="ekyna_commerce.controller.cart_checkout"
+                 class="%ekyna_commerce.controller.cart_checkout.class%"
+                 parent="ekyna_commerce.controller.cart.abstract"/>
 
         <!-- Factory -->
         <service id="ekyna_commerce.sale_factory"
@@ -67,9 +93,17 @@
                  class="Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper">
             <argument type="service" id="translator"/>
         </service>
-        <service id="ekyna_commerce.helper.cart"
-                 class="Ekyna\Bundle\CommerceBundle\Helper\CartHelper">
+        <service id="ekyna_commerce.helper.sale"
+                 class="Ekyna\Bundle\CommerceBundle\Helper\SaleHelper">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <argument type="service" id="form.factory"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="translator"/>
+        </service>
+        <service id="ekyna_commerce.helper.cart"
+                 class="%ekyna_commerce.helper.cart.class%">
+            <argument type="service" id="ekyna_commerce.helper.sale"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument>%ekyna_commerce.cart_item.class%</argument>
         </service>
@@ -374,7 +408,7 @@
 
         <!-- View -->
         <service id="ekyna_commerce.common.view_builder"
-                class="Ekyna\Component\Commerce\Common\View\Builder">
+                class="Ekyna\Component\Commerce\Common\View\ViewBuilder">
             <argument type="service" id="ekyna_commerce.common.calculator"/>
         </service>
 
@@ -386,7 +420,6 @@
         <service id="ekyna_commerce.twig.order_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\OrderExtension">
             <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.payment_extension"
@@ -397,6 +430,11 @@
         <service id="ekyna_commerce.twig.product_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\ProductExtension">
             <argument type="service" id="ekyna_commerce.helper.constant"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="ekyna_commerce.twig.sale_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension">
+            <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.shipment_extension"

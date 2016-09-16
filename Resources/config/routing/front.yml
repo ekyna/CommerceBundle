@@ -1,0 +1,7 @@
+ekyna_commerce_cart_checkout:
+    resource: "front/cart-checkout.yml"
+    prefix:   /mon-panier
+
+ekyna_commerce_cart:
+    resource: "front/cart.yml"
+    prefix:   /cart

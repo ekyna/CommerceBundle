@@ -2,10 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
-use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Provider\AbstractCartProvider;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
-use Ekyna\Component\Commerce\Cart\Repository\CartRepositoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -27,6 +25,11 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
      */
     protected $key;
 
+    /**
+     * @var bool
+     */
+    protected $initialized;
+
 
     /**
      * Constructor.
@@ -38,6 +41,26 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     {
         $this->session = $session;
         $this->key = $key;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasCart()
+    {
+        $this->initialize();
+
+        return parent::hasCart();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCart()
+    {
+        $this->initialize();
+
+        return parent::getCart();
     }
 
     /**
@@ -65,23 +88,20 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     }
 
     /**
-     * @inheritdoc
+     * Initializes the cart regarding to the session data.
      */
-    public function hasCart()
+    protected function initialize()
     {
-        if (parent::hasCart()) {
-            return true;
-        }
+        if (!$this->initialized) {
+            $this->initialized = true;
 
-        if (0 < $id = intval($this->session->get($this->key, 0))) {
-            if (null !== $cart = $this->cartRepository->findOneById($id)) {
-                $this->setCart($cart);
-                return true;
-            } else {
-                $this->clearCart();
+            if (0 < $id = intval($this->session->get($this->key, 0))) {
+                if (null !== $cart = $this->cartRepository->findOneById($id)) {
+                    $this->setCart($cart);
+                } else {
+                    $this->clearCart();
+                }
             }
         }
-
-        return false;
     }
 }

@@ -78,8 +78,8 @@ class ProductProvider implements SubjectProviderInterface
         $product = $this->getItemProduct($item);
 
         $data = [
-            'provider' => $this->getName(),
-            'id'       => $product->getId(),
+            SubjectProviderInterface::DATA_KEY => $this->getName(),
+            'id'                               => $product->getId(),
         ];
 
         $item->setSubjectData(array_replace((array)$item->getSubjectData(), $data));
@@ -190,10 +190,12 @@ class ProductProvider implements SubjectProviderInterface
         }
         $dataId = intval($data['id']);
 
-        if ((null !== $product = $item->getSubject())
+        if (
+            (null !== $product = $item->getSubject())
             && ($product instanceof ProductInterface)
-            && ($product->getId() !== $dataId)) {
-                return $product;
+            && ($product->getId() !== $dataId)
+        ) {
+            return $product;
         }
 
         if ((0 < $dataId) && (null !== $product = $this->repository->findOneById($data['id']))) {
@@ -220,15 +222,7 @@ class ProductProvider implements SubjectProviderInterface
      */
     public function supportsItem(SaleItemInterface $item)
     {
-        $data = $item->getSubjectData();
-
-        return array_key_exists('provider', $data) && $data['provider'] === self::NAME;
-
-        /*if (empty(array_diff(['provider', 'id'], array_keys($data)))) {
-            return $data['provider'] === self::NAME && is_int($data['id']) && 0 < $data['id'];
-        }
-
-        return false;*/
+        return $item->getSubjectData(SubjectProviderInterface::DATA_KEY) === self::NAME;
     }
 
     /**

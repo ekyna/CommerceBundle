@@ -2,11 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Ekyna\Bundle\CommerceBundle\Model\SubjectChoice;
-use Ekyna\Component\Commerce\Subject\Model\SubjectIdentity;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -115,70 +111,5 @@ abstract class AbstractSaleController extends ResourceController
                 'flow' => $flow,
             ])
         );
-    }
-
-    /**
-     * Creates a new sale item.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function newItemAction(Request $request)
-    {
-        $context = $this->loadContext($request);
-
-        $resourceName = $this->config->getResourceName();
-        $resource = $context->getResource($resourceName);
-
-        $this->isGranted('EDIT', $resource);
-    }
-
-    /**
-     * Configures the sale item subject.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function configureSubjectAction(Request $request)
-    {
-
-    }
-
-    /**
-     * Edits the sale item.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function editItemAction(Request $request)
-    {
-        $context = $this->loadContext($request);
-
-        $resourceName = $this->config->getResourceName();
-        $resource = $context->getResource($resourceName);
-
-        $this->isGranted('EDIT', $resource);
-    }
-
-    /**
-     * Removes the sale item.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function removeItemAction(Request $request)
-    {
-        $context = $this->loadContext($request);
-
-        $resourceName = $this->config->getResourceName();
-        $resource = $context->getResource($resourceName);
-
-        $this->isGranted('EDIT', $resource);
-
-        // TODO prevent locked item deletion
     }
 }

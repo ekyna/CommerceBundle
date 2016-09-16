@@ -1,0 +1,11 @@
+ekyna_commerce_cart_checkout_index:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:indexAction" }
+    methods: [GET, POST]
+    options:
+        _cms:
+            name: Mon panier
+            menus: [main, footer]
+            locked: true
+            advanced: false
+            position: 50

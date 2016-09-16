@@ -2,8 +2,8 @@
 
 {% block lines_headers %}
 {% spaceless %}
-    <th class="sale-view-number">&nbsp;</th>
-    <th class="sale-view-designation">{{ 'ekyna_core.field.designation'|trans }}</th>
+    <th class="sale-detail-number">&nbsp;</th>
+    <th class="sale-detail-designation">{{ 'ekyna_core.field.designation'|trans }}</th>
     <th>{{ 'ekyna_core.field.reference'|trans }}</th>
     <th>{{ 'ekyna_commerce.order.field.net_unit'|trans }}</th>
     <th>{{ 'ekyna_commerce.order.field.tax_rate'|trans }}</th>
@@ -25,7 +25,7 @@
 {% block line_leaf %}
 {% spaceless %}
     <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
-    <td class="text-right">{% if line.taxRate is not same as(null) %}{{ line.taxRate|localizednumber }}{% endif %}</td>
+    <td class="text-right">{% if line.taxRate is not same as(null) %}{{ line.taxRate|localizednumber }}%{% endif %}</td>
     {{ block('line_leaf_quantity') }}
     <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
     <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
@@ -53,10 +53,19 @@
 {% block line %}
 {% spaceless %}
     <tr class="level-{{ line.level }}">
-        <td class="sale-view-number">{{ line.number }}</td>
-        <td class="sale-view-designation">{{ line.designation }}</td>
+        <td class="sale-detail-number">{{ line.number }}</td>
+        <td class="sale-detail-designation">
+            {% if line.vars.link_path is defined %}
+                <a href="{{ line.vars.link_path }}"
+                    {% if line.vars.link_title is defined %} title="{{ line.vars.link_title }}"{% endif %}>
+                    {{ line.designation }}
+                </a>
+            {% else %}
+                {{ line.designation }}
+            {% endif %}
+        </td>
         <td>{{ line.reference }}</td>
-        {% if line.children %}
+        {% if line.lines is not empty %}
             {{ block('line_node') }}
         {% else %}
             {{ block('line_leaf') }}
@@ -104,8 +113,8 @@
 
 {% block discount %}
 {% spaceless %}
-    <td class="sale-view-number">{#{{ discount.number }}#}</td>
-    <td class="sale-view-designation">{{ discount.designation }}</td>
+    <td class="sale-detail-number">{#{{ discount.number }}#}</td>
+    <td class="sale-detail-designation">{{ discount.designation }}</td>
     <td>{{ discount.reference }}</td>
     <td class="text-right" colspan="3">&nbsp;</td>
     <td class="text-right">{{ discount.base|localizedcurrency('EUR') }}</td>
@@ -176,19 +185,19 @@
 
 {% block sale %}
 {% spaceless %}
+    <div class="sale-view table-responsive">
+        <table class="table table-striped sale-detail">
+            {{ block('lines') }}
 
-    <table class="table table-striped sale-view">
-        {{ block('lines') }}
+            {% if view.discounts is not empty %}
+                {{ block('gross_totals') }}
+                {{ block('discounts') }}
+            {% endif %}
 
-        {% if view.discounts is not empty %}
-            {{ block('gross_totals') }}
-            {{ block('discounts') }}
-        {% endif %}
+            {{ block('gran_totals') }}
+        </table>
 
-        {{ block('gran_totals') }}
-    </table>
-
-    {{ block('taxes') }}
-
+        {{ block('taxes') }}
+    </div>
 {% endspaceless %}
 {% endblock sale %}

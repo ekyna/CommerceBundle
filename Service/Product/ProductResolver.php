@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectResolverInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Product\Repository\ProductRepositoryInterface;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 
 /**
  * Class ProductResolver
@@ -72,13 +73,8 @@ class ProductResolver extends AbstractSubjectResolver implements SubjectResolver
      */
     public function supportsItem(SaleItemInterface $item)
     {
-        $data = $item->getSubjectData();
-
-        if (empty(array_diff(['provider', 'id'], array_keys($data)))) {
-            return $data['provider'] === ProductProvider::NAME && is_int($data['id']) && 0 < $data['id'];
-        }
-
-        return false;
+        return $item->getSubjectData(SubjectProviderInterface::DATA_KEY) === ProductProvider::NAME
+            && 0 < intval($item->getSubjectData('id'));
     }
 
     /**
@@ -93,6 +89,7 @@ class ProductResolver extends AbstractSubjectResolver implements SubjectResolver
      * Asserts that the sale item is supported.
      *
      * @param SaleItemInterface $item
+     *
      * @throws InvalidArgumentException
      */
     protected function assertSupports(SaleItemInterface $item)
