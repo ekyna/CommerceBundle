@@ -39,46 +39,6 @@ module.exports = function (grunt, options) {
                     dest: 'src/Ekyna/Bundle/CommerceBundle/Resources/public/js'
                 }
             ]
-        },
-        commerce_css_web: {
-            files: [
-                {
-                    expand: true,
-                    cwd: 'src/Ekyna/Bundle/CommerceBundle/Resources/public/css',
-                    src: ['**'],
-                    dest: 'web/bundles/ekynacommerce/css'
-                }
-            ]
-        },
-        commerce_js_web: {
-            files: [
-                {
-                    expand: true,
-                    cwd: 'src/Ekyna/Bundle/CommerceBundle/Resources/public/js',
-                    src: ['**'],
-                    dest: 'web/bundles/ekynacommerce/js'
-                }
-            ]
-        },
-        commerce_img_web: {
-            files: [
-                {
-                    expand: true,
-                    cwd: 'src/Ekyna/Bundle/CommerceBundle/Resources/public/img',
-                    src: ['**'],
-                    dest: 'web/bundles/ekynacommerce/img'
-                }
-            ]
-        },
-        commerce_web: {
-            files: [
-                {
-                    expand: true,
-                    cwd: 'src/Ekyna/Bundle/CommerceBundle/Resources/public',
-                    src: ['**'],
-                    dest: 'web/bundles/ekynacommerce'
-                }
-            ]
         }
     }
 };

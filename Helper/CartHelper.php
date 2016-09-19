@@ -12,7 +12,6 @@ use Ekyna\Component\Commerce\Common\View\Action;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class CartHelper

@@ -7,8 +7,6 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Product\Model\BundleSlotInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-//use Symfony\Component\Form\FormEvent;
-//use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -44,31 +42,21 @@ class ConfigurableSlotsType extends AbstractType
         /** @var SaleItemInterface $item */
         $item = $options['item'];
 
-        // TODO Listen to PRE_SET_DATA :
-        // actually not triggered, because this form does not
-        // exists during parent PRE_SET_DATA event propagation.
-
-//        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($bundleSlots) {
-//            /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
-//            $item = $event->getData();
-//            $form = $event->getForm();
-
-            foreach ($bundleSlots as $bundleSlot) {
-                foreach ($item->getChildren() as $key => $child) {
-                    $bundleSlotId = intval($child->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
-                    if ($bundleSlotId == $bundleSlot->getId()) {
-                        // TODO (PRE_SET_DATA) $form->add()
-                        $builder->add('slot_' . $bundleSlot->getId(), $this->slotTypeClass, [
-                            'bundle_slot'   => $bundleSlot,
-                            'property_path' => 'children[' . $key . ']',
-                        ]);
-                        continue 2;
-                    }
+        foreach ($bundleSlots as $bundleSlot) {
+            foreach ($item->getChildren() as $key => $child) {
+                $bundleSlotId = intval($child->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
+                if ($bundleSlotId == $bundleSlot->getId()) {
+                    // TODO (PRE_SET_DATA) $form->add()
+                    $builder->add('slot_' . $bundleSlot->getId(), $this->slotTypeClass, [
+                        'bundle_slot'   => $bundleSlot,
+                        'property_path' => 'children[' . $key . ']',
+                    ]);
+                    continue 2;
                 }
-
-                throw new InvalidArgumentException("Bundle slots / Item children configuration miss match.");
             }
-//        });
+
+            throw new InvalidArgumentException("Bundle slots / Item children configuration miss match.");
+        }
     }
 
     /**

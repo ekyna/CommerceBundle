@@ -119,7 +119,7 @@ class ProductProvider implements SubjectProviderInterface
                 if ($item->hasChildren()) {
                     foreach ($item->getChildren() as $child) {
                         // Check bundle slot id
-                        $childBundleSlotId = intval($item->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
+                        $childBundleSlotId = intval($child->getSubjectData(BundleSlotInterface::ITEM_DATA_KEY));
                         if ($childBundleSlotId != $bundleSlot->getId()) {
                             continue;
                         }

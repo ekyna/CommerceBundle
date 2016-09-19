@@ -52,6 +52,20 @@ class SaleItemSubjectTypeSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * Form post set data event handler.
+     *
+     * @param FormEvent $event
+     */
+//    public function onPostSetData(FormEvent $event)
+//    {
+//        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+//        $item = $event->getData();
+//        $form = $event->getForm();
+//
+//        $this->getProvider($item)->buildItemForm($form, $item);
+//    }
+
+    /**
      * Form post submit event handler.
      *
      * @param FormEvent $event
@@ -61,9 +75,7 @@ class SaleItemSubjectTypeSubscriber implements EventSubscriberInterface
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
         $item = $event->getData();
 
-        $provider = $this->getProvider($item);
-
-        $provider->handleItemSubmit($item);
+        $this->getProvider($item)->handleItemSubmit($item);
     }
 
     /**
@@ -88,8 +100,9 @@ class SaleItemSubjectTypeSubscriber implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return [
-            FormEvents::PRE_SET_DATA => ['onPreSetData', 1024],
-            FormEvents::POST_SUBMIT  => ['onPostSubmit', 1024],
+            FormEvents::PRE_SET_DATA  => ['onPreSetData', 1024],
+//            FormEvents::POST_SET_DATA => ['onPostSetData', 1024],
+            FormEvents::POST_SUBMIT   => ['onPostSubmit', 1024],
         ];
     }
 }

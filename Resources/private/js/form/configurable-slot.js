@@ -44,6 +44,7 @@ define(['jquery'], function($) {
 
                 // Helpers
                 index = 0,
+                checkedIndex = 0,
                 $slide = $this.find('.choices > ul').children(),
                 length = $slide.length,
                 fadeTime = parseFloat(settings.speed),
@@ -88,9 +89,9 @@ define(['jquery'], function($) {
                 // TODO use CSS transitions
                 beforeSlide = function(idx) {
                     var $thisSlide = $slide.eq(idx),
-                        $choiceInput = $thisSlide.find('input[type="radio"]'),
+                        $choiceInput = $thisSlide.find('input[type=radio]'),
                         config = $choiceInput.data('config'),
-                        $quantityInput = $this.find('input[type="number"]'),
+                        $quantityInput = $this.find('input[type=number]'),
                         $info = $this.find('.choice-info');
 
                     $info.fadeOut(fadeTime/2, function() {
@@ -161,9 +162,14 @@ define(['jquery'], function($) {
                 // Add ID
                 this.id = slideClassPrefix + i;
 
-                var $thisSlide = $(this);
+                var $thisSlide = $(this),
+                    $radio = $thisSlide.find('input[type=radio]');
 
-                $thisSlide.find('img').prop('src', $thisSlide.find('input').data('config').image);
+                $thisSlide.find('img').prop('src', $radio.data('config').image);
+
+                if ($radio.is(':checked')) {
+                    checkedIndex = i;
+                }
             });
 
             // Add max-width and classes
@@ -249,7 +255,7 @@ define(['jquery'], function($) {
                 }*/
             });
 
-            beforeSlide(0);
+            slideTo(checkedIndex);
         });
 
         return this;

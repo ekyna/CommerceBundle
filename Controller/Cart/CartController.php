@@ -56,6 +56,8 @@ class CartController extends AbstractController
             throw new NotFoundHttpException('Item is not configurable.');
         }
 
+        // TODO if not XHR, redirect to product detail page with itemID for configuration
+
         $form = $this
             ->getSaleHelper()
             ->getFormFactory()
@@ -164,8 +166,12 @@ class CartController extends AbstractController
             $view->vars['form'] = $form->createView();
         }
 
-        return $this->render('EkynaCommerceBundle:Cart:response.xml.twig', [
+        $response = $this->render('EkynaCommerceBundle:Cart:response.xml.twig', [
             'cart_view' => $view,
         ]);
+
+        $response->headers->set('Content-type', 'application/xml');
+
+        return $response;
     }
 }
