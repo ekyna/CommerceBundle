@@ -65,7 +65,7 @@ class ConfigurableSlotType extends AbstractType
             'max_quantity' => $choice->getMaxQuantity(),
             'title'        => $product->getTitle(),
             'description'  => $product->getDescription(),
-            'image'        => '/bundles/app/img/no-image.jpg', // TODO remove as not managed by this bundle
+            'image'        => '/bundles/ekynacommerce/img/no-image.jpg', // TODO remove as not managed by this bundle
             'price'        => $product->getNetPrice(), // TODO
         ];
     }
