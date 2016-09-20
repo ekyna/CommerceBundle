@@ -40,7 +40,7 @@ class CheckoutController extends AbstractController
                 $this->getCartHelper()->getCartProvider()->saveCart();
             }
 
-            $view = $this->getCartHelper()->buildView($cart);
+            $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
             $view->vars['form'] = $form->createView();
 
             if ($request->isXmlHttpRequest()) {

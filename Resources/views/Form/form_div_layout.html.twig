@@ -67,11 +67,10 @@
             '</button>' %}
         {% set attr = attr|merge({'data-prototype': form.vars.id ~ '_prototype'}) %}
         {% set attr = attr|merge({'data-prototype-name': prototype_name}) %}
+        <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
+            {{ form_widget(prototype)|replace({'__controls__': controls}) }}
+        </div>
     {% endif %}
-
-    <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
-        {{ form_widget(prototype)|replace({'__controls__': controls}) }}
-    </div>
     <div {{ block('widget_container_attributes') }}>
         {{ form_errors(form) }}
         <table class="table">
@@ -237,10 +236,10 @@
             '</button>' %}
             {% set attr = attr|merge({'data-prototype': form.vars.id ~ '_prototype'}) %}
             {% set attr = attr|merge({'data-prototype-name': prototype_name}) %}
+            <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
+                {{ form_widget(prototype)|replace({'__controls__': controls}) }}
+            </div>
         {% endif %}
-        <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
-            {{ form_widget(prototype)|replace({'__controls__': controls}) }}
-        </div>
         <div {{ block('widget_container_attributes') }}>
             {{ form_errors(form) }}
             <table class="ekyna-collection-child-container table">

@@ -8,6 +8,8 @@
     {{ form_widget(form.configuration) }}
 {% endif %}
 
-{{ form_row(form.quantity) }}
+{% if form.quantity is defined %}
+    {{ form_row(form.quantity) }}
+{% endif %}
 
 {{ form_rest(form) }}

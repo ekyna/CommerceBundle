@@ -3,9 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Helper;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleQuantitiesType;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -173,12 +175,12 @@ class SaleHelper
             ->formFactory
             ->create(SaleQuantitiesType::class, $sale, $options)
             ->add('submit', Type\SubmitType::class, [
-                'label' => 'Recalculer', // TODO translation
+                'label' => 'ekyna_commerce.sale.button.recalculate',
             ]);
     }
 
     /**
-     * Finds the item by its item.
+     * Finds the item by its id.
      *
      * @param SaleInterface|SaleItemInterface $saleOrItem
      * @param int                             $itemId
@@ -205,6 +207,61 @@ class SaleHelper
                     return $result;
                 }
             }
+        } else {
+            throw new InvalidArgumentException('Expected sale or sale item.');
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds the sale adjustment by its id.
+     *
+     * @param SaleInterface $sale
+     * @param int           $adjustmentId
+     *
+     * @return AdjustmentInterface|null
+     */
+    public function findSaleAdjustmentById(SaleInterface $sale, $adjustmentId)
+    {
+        foreach ($sale->getAdjustments() as $adjustment) {
+            if ($adjustmentId == $adjustment->getId()) {
+                return $adjustment;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds the sale item adjustment by its id.
+     *
+     * @param SaleInterface|SaleItemInterface $saleOrItem
+     * @param int                             $adjustmentId
+     *
+     * @return AdjustmentInterface|null
+     */
+    public function findSaleItemAdjustmentById($saleOrItem, $adjustmentId)
+    {
+        if ($saleOrItem instanceof SaleInterface) {
+            foreach ($saleOrItem->getItems() as $item) {
+                if (null !== $result = $this->findSaleItemAdjustmentById($item, $adjustmentId)) {
+                    return $result;
+                }
+            }
+        } elseif ($saleOrItem instanceof SaleItemInterface) {
+            foreach ($saleOrItem->getAdjustments() as $adjustment) {
+                if ($adjustmentId == $adjustment->getId()) {
+                    return $adjustment;
+                }
+            }
+            foreach ($saleOrItem->getChildren() as $item) {
+                if (null !== $result = $this->findSaleItemAdjustmentById($item, $adjustmentId)) {
+                    return $result;
+                }
+            }
+        } else {
+            throw new InvalidArgumentException('Expected sale or sale item.');
         }
 
         return null;
@@ -227,7 +284,7 @@ class SaleHelper
 
                     return true;
                 }
-                if ($this->removeItemById($item, $itemId)) {
+                if ((!$item->isImmutable()) && $this->removeItemById($item, $itemId)) {
                     return true;
                 }
             }
@@ -238,9 +295,30 @@ class SaleHelper
 
                     return true;
                 }
-                if ($this->removeItemById($item, $itemId)) {
+                if ((!$item->isImmutable()) && $this->removeItemById($item, $itemId)) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes the sale adjustment by its id.
+     *
+     * @param SaleInterface $sale
+     * @param int           $adjustmentId
+     *
+     * @return bool
+     */
+    public function removeSaleAdjustmentById(SaleInterface $sale, $adjustmentId)
+    {
+        if (null !== $adjustment = $this->findSaleAdjustmentById($sale, $adjustmentId)) {
+            if (!$adjustment->isImmutable()) {
+                $sale->removeAdjustment($adjustment);
+
+                return true;
             }
         }
 

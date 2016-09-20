@@ -73,6 +73,9 @@ class OrderItemType extends ResourceFormType
         $view->vars['with_collections'] = $options['with_collections'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
@@ -125,12 +128,12 @@ class OrderItemType extends ResourceFormType
                 ],
             ]],
             ['netPrice', Type\NumberType::class, [
-                'label'  => 'ekyna_commerce.order_item.field.net_unit_price',
+                'label'  => 'ekyna_commerce.sale.field.net_unit',
                 'scale'  => 5,
                 'sizing' => 'sm',
                 'required' => false,
                 'attr'   => [
-                    'placeholder' => 'ekyna_commerce.order_item.field.net_unit_price',
+                    'placeholder' => 'ekyna_commerce.sale.field.net_unit',
                     'input_group' => ['append' => '€'],  // TODO order currency
                 ],
             ]],

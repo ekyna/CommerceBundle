@@ -1,0 +1,22 @@
+{% extends "EkynaAdminBundle:Entity:sided.html.twig" %}
+
+{% set resource = _context[resource_name] %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.sale.header.item.add'|trans|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {#{{ admin_resource_btn(resource, 'list') }}
+    {{ admin_resource_btn(resource, 'new') }}#}
+{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form) }}
+    <div class="form-body">
+        {% include 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig' %}
+
+        {% include 'EkynaAdminBundle:Form:form_flow_buttons.html.twig' %}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}

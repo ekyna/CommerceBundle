@@ -5,28 +5,28 @@
     <th class="sale-detail-number">&nbsp;</th>
     <th class="sale-detail-designation">{{ 'ekyna_core.field.designation'|trans }}</th>
     <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-    <th>{{ 'ekyna_commerce.order.field.net_unit'|trans }}</th>
-    <th>{{ 'ekyna_commerce.order.field.tax_rate'|trans }}</th>
+    <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
+    <th>{{ 'ekyna_commerce.sale.field.tax_rate'|trans }}</th>
     <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-    <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
-    <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
-    <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
+    <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+    <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
+    <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
 {% endspaceless %}
 {% endblock lines_headers %}
 
 
-{% block line_leaf_quantity %}
+{% block line_quantity %}
 {% spaceless %}
     <td class="text-right">{{ line.quantity }}</td>
 {% endspaceless %}
-{% endblock line_leaf_quantity %}
+{% endblock line_quantity %}
 
 
 {% block line_leaf %}
 {% spaceless %}
     <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
     <td class="text-right">{% if line.taxRate is not same as(null) %}{{ line.taxRate|localizednumber }}%{% endif %}</td>
-    {{ block('line_leaf_quantity') }}
+    {{ block('line_quantity') }}
     <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
     <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
     <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
@@ -34,17 +34,10 @@
 {% endblock line_leaf %}
 
 
-{% block line_node_quantity %}
-{% spaceless %}
-    <td class="text-right">{{ line.quantity }}</td>
-{% endspaceless %}
-{% endblock line_node_quantity %}
-
-
 {% block line_node %}
 {% spaceless %}
     <td colspan="2">&nbsp;</td>
-    {{ block('line_node_quantity') }}
+    {{ block('line_quantity') }}
     <td colspan="3">&nbsp;</td>
 {% endspaceless %}
 {% endblock line_node %}
@@ -65,7 +58,7 @@
             {% endif %}
         </td>
         <td>{{ line.reference }}</td>
-        {% if line.lines is not empty %}
+        {% if line.node %}
             {{ block('line_node') }}
         {% else %}
             {{ block('line_leaf') }}
@@ -101,7 +94,9 @@
     <tbody>
         <tr>
             <th>&nbsp;</th>
-            <th class="text-right" colspan="5"><strong>Total avant remise</strong></th>
+            <th class="text-right" colspan="5">
+                <strong>{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</strong>
+            </th>
             <td class="text-right">{{ view.gross.base|localizedcurrency('EUR') }}</td>
             <td class="text-right">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
             <td class="text-right">{{ view.gross.total|localizedcurrency('EUR') }}</td>
@@ -147,9 +142,9 @@
     <tbody>
         <tr>
             <th colspan="6" rowspan="2">&nbsp;</th>
-            <th>{{ 'ekyna_commerce.order.field.net_total'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.tax_total'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.field.grand_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
         </tr>
         <tr>
             <td class="text-right">{{ view.final.base|localizedcurrency('EUR') }}</td>
@@ -166,8 +161,8 @@
     <table class="table table-striped taxes-view">
         <thead>
         <tr>
-            <th>Taxe</th>
-            <th>Montant</th>
+            <th>{{ 'ekyna_commerce.sale.field.tax_name'|trans }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.tax_amount'|trans }}</th>
         </tr>
         </thead>
         <tbody>
@@ -185,19 +180,23 @@
 
 {% block sale %}
 {% spaceless %}
-    <div class="sale-view table-responsive">
-        <table class="table table-striped sale-detail">
-            {{ block('lines') }}
+    <div class="sale-view">
+        <div class="table-responsive">
+            <table class="table table-striped sale-detail">
+                {{ block('lines') }}
 
-            {% if view.discounts is not empty %}
-                {{ block('gross_totals') }}
-                {{ block('discounts') }}
-            {% endif %}
+                {% if view.discounts is not empty %}
+                    {{ block('gross_totals') }}
+                    {{ block('discounts') }}
+                {% endif %}
 
-            {{ block('gran_totals') }}
-        </table>
+                {{ block('gran_totals') }}
+            </table>
+        </div>
 
-        {{ block('taxes') }}
+        {% if view.taxes is not empty %}
+            {{ block('taxes') }}
+        {% endif %}
     </div>
 {% endspaceless %}
 {% endblock sale %}

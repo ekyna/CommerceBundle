@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Helper\CartHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;

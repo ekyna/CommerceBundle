@@ -228,14 +228,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'             => 'EkynaCommerceBundle:Admin/Order:_form.html',
-                                    'show.html'              => 'EkynaCommerceBundle:Admin/Order:show.html',
-                                    'edit.html'              => 'EkynaCommerceBundle:Admin/Order:edit.html',
-                                    'remove.html'            => 'EkynaCommerceBundle:Admin/Order:remove.html',
-                                    'add_subject.html'       => 'EkynaCommerceBundle:Admin/OrderItem:add.html',
-                                    'configure_subject.html' => 'EkynaCommerceBundle:Admin/OrderItem:configure.html',
-                                    'new_item.html'          => 'EkynaCommerceBundle:Admin/OrderItem:new.html',
-                                    'edit_item.html'         => 'EkynaCommerceBundle:Admin/OrderItem:edit.html',
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Order:_form.html',
+                                    'show.html'   => 'EkynaCommerceBundle:Admin/Order:show.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Order:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Order:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Order')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderController')->end()

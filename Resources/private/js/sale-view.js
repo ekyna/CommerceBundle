@@ -13,13 +13,14 @@ define(['jquery', 'ekyna-modal', 'jquery/form'], function($, Modal) {
         return false;
     };
 
-    $(document).on('click', '.sale-detail-action[data-sale-modal]', function(e) {
+    $(document).on('click', '.sale-view [data-sale-modal]', function(e) {
         e.preventDefault();
 
-        var $saleView = $(e.target).closest('.sale-view');
+        var $this = $(this),
+            $saleView = $this.closest('.sale-view');
 
         var modal = new Modal();
-        modal.load({url: $(this).attr('href')});
+        modal.load({url: $this.attr('href')});
 
         $(modal).on('ekyna.modal.response', function (modalEvent) {
             if (modalEvent.contentType == 'xml') {
@@ -33,14 +34,20 @@ define(['jquery', 'ekyna-modal', 'jquery/form'], function($, Modal) {
         return false;
     });
 
-    $(document).on('click', '.sale-detail-action[data-sale-xhr]', function(e) {
+    $(document).on('click', '.sale-view [data-sale-xhr]', function(e) {
         e.preventDefault();
 
-        var $saleView = $(e.target).closest('.sale-view').addClass('loading');
+        var $this = $(this), confirmation = $this.data('confirm');
+        if (confirmation && confirmation.length && !confirm(confirmation)) {
+            return false;
+        }
+
+        var $saleView = $this.closest('.sale-view').addClass('loading'),
+            method = $this.data('sale-xhr');
 
         var xhr = $.ajax({
             url: $(this).attr('href'),
-            method: 'post',
+            method: method || 'post',
             dataType: 'xml'
         });
         xhr.done(function(response) {

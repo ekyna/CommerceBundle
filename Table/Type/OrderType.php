@@ -34,18 +34,18 @@ class OrderType extends ResourceTableType
                 'sortable' => true,
             ])
             ->addColumn('grandTotal', 'price', [
-                'label'         => 'ekyna_commerce.order.field.grand_total',
+                'label'         => 'ekyna_commerce.sale.field.grand_total',
                 'sortable'      => true,
                 'currency_path' => 'currency.code',
             ])
             ->addColumn('state', 'ekyna_commerce_order_state', [
-                'label' => 'ekyna_commerce.order.field.state',
+                'label' => 'ekyna_commerce.sale.field.state',
             ])
             ->addColumn('paymentState', 'ekyna_commerce_payment_state', [
-                'label' => 'ekyna_commerce.order.field.payment_state',
+                'label' => 'ekyna_commerce.sale.field.payment_state',
             ])
             ->addColumn('shipmentState', 'ekyna_commerce_shipment_state', [
-                'label' => 'ekyna_commerce.order.field.shipment_state',
+                'label' => 'ekyna_commerce.sale.field.shipment_state',
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [

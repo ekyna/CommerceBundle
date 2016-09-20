@@ -1,0 +1,19 @@
+<div class="form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form) }}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+            <th>{{ 'ekyna_core.field.weight'|trans }}</th>
+            <th>{{ 'ekyna_core.field.price'|trans }}</th>
+            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        {{ form_widget(form)|replace({'__controls__': ''})|raw }}
+    </table>
+    {{ form_rest(form) }}
+</div>

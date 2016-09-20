@@ -6,7 +6,7 @@
 
 .sale-view {
     position: relative;
-    margin: 30px 0;
+    padding: 30px 0;
 
     .sale-detail-loading {
         position: absolute;
@@ -73,11 +73,24 @@
 
             .sale-detail-actions {
                 text-align: right;
-            }
 
-            .sale-detail-buttons {
-                text-align: center;
-                vertical-align: middle;
+                > a {
+                    display: inline-block;
+                    width: 18px;
+                    height: 18px;
+                    line-height: 18px;
+                    text-align: center;
+                    margin-right: 2px;
+                    color: lighten(@text-color, 30%);
+
+                    &:hover {
+                        color: @text-color;
+                    }
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
             }
 
             .sale-detail-totals th {
@@ -87,26 +100,9 @@
                 font-size: 11px;
             }
 
-            a.sale-detail-action {
-                display: inline-block;
-                width: 18px;
-                height: 18px;
-                line-height: 18px;
-                text-align: center;
-                margin-right: 2px;
-                color: lighten(@text-color, 30%);
-
-                &:hover {
-                    color: @text-color;
-                }
-
-                &:last-child {
-                    margin-right: 0;
-                }
-            }
-
             input.sale-detail-quantity {
-                min-width: 48px;
+                display: inline-block;
+                width: 56px;
                 text-align: right;
                 padding: 0;
                 border: 0;
@@ -119,6 +115,19 @@
                 width: 100%;
                 text-align: right;
                 padding-right: 15px;
+            }
+        }
+    }
+
+    .sale-detail-buttons {
+        text-align: center;
+        vertical-align: middle;
+
+        > a {
+            margin-right: 10px;
+
+            &:last-child {
+                margin-right: 0;
             }
         }
     }

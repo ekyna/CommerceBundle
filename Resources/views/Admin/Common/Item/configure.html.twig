@@ -3,7 +3,7 @@
 {% set resource = _context[resource_name] %}
 
 {% block title %}
-    <h1>{{ 'ekyna_commerce.order_item.header.add'|trans|raw }}</h1>
+    <h1>{{ 'ekyna_commerce.sale.header.item.configure'|trans|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}
@@ -14,16 +14,7 @@
 {% block main %}
     {{ form_start(form) }}
     <div class="form-body">
-        {{ bootstrap_set_style('horizontal') }}
-        {{ bootstrap_set_col_size('md') }}
-        {{ form_errors(form) }}
-
-        {{ form_widget(form) }}
-
-        {{ form_rest(form) }}
-
-        {#{% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}#}
-        {% include 'EkynaAdminBundle:Form:form_flow_buttons.html.twig' %}
+        {% include 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig' %}
     </div>
     {{ form_end(form) }}
 {% endblock main %}

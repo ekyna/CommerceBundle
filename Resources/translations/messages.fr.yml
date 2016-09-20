@@ -227,27 +227,24 @@ ekyna_commerce:
             edit: Modifier la commande
             remove: Supprimer la commande
         field: # TODO move to ekyna_commerce.sale.*
-            customer: Client
+#            customer: Client
             addresses: Adresses
-            invoice_address: Adresse de facturation
-            delivery_address: Adresse de livraison
-            same_address: Même adresse
+#            invoice_address: Adresse de facturation
+#            delivery_address: Adresse de livraison
+#            same_address: Même adresse
             invoice: Facture
             invoice_pdf: Facture PDF
             no_shipment: Sans livraison
             details: Détail
-            net_unit: Prix Unit. HT
-            net_total: Total HT # TODO rename to base_total ?
-            tax_rate: Taux TVA
-            tax_total: Total TVA
-            adjustment_total: Total remises
-            paid_total: Total réglements
-            grand_total: Total TTC
-            weight_total: Poids total
+#            net_unit: Prix Unit. HT
+#            net_total: Total HT # TODO rename to base_total ?
+#            tax_rate: Taux TVA
+#            tax_total: Total TVA
+#            adjustment_total: Total remises
+#            paid_total: Total réglements
+#            grand_total: Total TTC
+#            weight_total: Poids total
             document_footer: Pied de page des documents
-            state: Statut
-            payment_state: Statut paiement
-            shipment_state: Statut livraison
         form:
             add_item: Ajouter une ligne produit
             remove_item: Supprimer la ligne produit ?
@@ -278,25 +275,6 @@ ekyna_commerce:
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
-    order_item:
-        header:
-            add: Ajouter un article
-            configure: Configurer l'article
-            new: Créer une ligne
-            edit: Modifier la ligne
-            remove: Supprimer la ligne
-        button:
-            add: Ajouter un article
-            configure: Configurer l'article
-            new: Créer une ligne
-            edit: Modifier la ligne
-            remove: Supprimer la ligne
-        field:
-            net_unit_price: Prix unit. H.T.
-            net_total: Total H.T.
-            tax: T.V.A.
-            tax_name: Nom taxe
-            tax_rate: Taux taxe
     payment:
         label:
             singular: Paiement
@@ -419,16 +397,55 @@ ekyna_commerce:
         label:
             singular: Vente
             plural: Ventes
+        header:
+            item:
+                add: Ajouter un article
+                configure: Configurer l'article
+                new: Créer une ligne
+                edit: Modifier la ligne
+                remove: Supprimer la ligne
+            adjustment:
+                new: Ajouter une remise
+                edit: Modifier la remise
+                remove: Supprimer la remise
         button:
-            configure_item: Configurer l'article
-            edit_item: Modifier la ligne
-            remove_item: Supprimer l'article
-            edit_adjustement: Modifier la remise
-            remove_adjustement: Supprimer la remise
+            refresh: Râfraichir
+            recalculate: Recalculer
+            item:
+                add: Ajouter un article
+                new: Ajouter une ligne
+                configure: Configurer l'article
+                edit: Modifier la ligne
+                remove: Supprimer la ligne
+            adjustment:
+                new: Ajouter une remise
+                edit: Modifier la remise
+                remove: Supprimer la remise
         confirm:
-            remove_item: Souhaitez-vous réellement supprimer cette article ?
-            remove_adjustment: Souhaitez-vous réellement supprimer cette remise ?
-        # TODO fiels from order translations
+            item:
+                remove: Souhaitez-vous réellement supprimer cette article ?
+            adjustment:
+                remove: Souhaitez-vous réellement supprimer cette remise ?
+        field:
+            customer: Client
+            invoice_address: Adresse de facturation
+            delivery_address: Adresse de livraison
+            same_address: Même adresse
+            net_unit: PU HT
+            net_total: Total HT
+            tax_name: Taxe
+            tax_amount: Montant
+            tax_rate: Taux TVA
+            tax_total: Total TVA
+            adjustment_total: Total remises
+            paid_total: Total réglements
+            gross_totals: Total avant remise(s)
+            grand_total: Total TTC
+            weight_total: Poids total
+            document_footer: Pied de page des documents
+            state: Statut
+            payment_state: Statut paiement
+            shipment_state: Statut livraison
     shipment:
         label:
             singular: Livraison

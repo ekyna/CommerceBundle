@@ -51,27 +51,13 @@
 <hr>
 <div class="row">
     <div class="col-md-6">
-        {{ show_row(order.grandTotal|localizedcurrency(order.currency.code), 'text', 'ekyna_commerce.order.field.grand_total', {
+        {{ show_row(order.grandTotal|localizedcurrency(order.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
     </div>
     <div class="col-md-6">
-        {{ show_row(order|order_state_badge, 'text', 'ekyna_commerce.order.field.state', {
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        {{ show_row(order.paidTotal|localizedcurrency(order.currency.code), 'text', 'ekyna_commerce.order.field.paid_total', {
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
-    </div>
-    <div class="col-md-6">
-        {{ show_row(order.paymentState|payment_state_badge, 'text', 'ekyna_commerce.order.field.payment_state', {
+        {{ show_row(order|order_state_badge, 'text', 'ekyna_commerce.sale.field.state', {
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -79,7 +65,21 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.order.field.weight_total', {
+        {{ show_row(order.paidTotal|localizedcurrency(order.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(order.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
             'precision': 0,
             'append': 'g',
             'label_nb_col': 4,
@@ -87,7 +87,7 @@
         }) }}
     </div>
     <div class="col-md-6">
-        {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.order.field.shipment_state', {
+        {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -98,7 +98,7 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.order.field.invoice_address'|trans }}
+                {{ 'ekyna_commerce.sale.field.invoice_address'|trans }}
             </div>
             <div class="col-md-8">
                 <div class="panel panel-default">
@@ -118,7 +118,7 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.order.field.invoice_address'|trans }}
+                {{ 'ekyna_commerce.sale.field.invoice_address'|trans }}
             </div>
             <div class="col-md-8">
                 {% if not order.sameAddress %}
@@ -129,7 +129,7 @@
                     </div>
                 {% else %}
                     <div class="show-widget show-widget-inline">
-                        <em>{{ 'ekyna_commerce.order.field.same_address'|trans }}</em>
+                        <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
                     </div>
                 {% endif %}
             </div>

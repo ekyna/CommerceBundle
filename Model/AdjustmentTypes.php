@@ -25,4 +25,12 @@ final class AdjustmentTypes extends AbstractConstants
             Types::TYPE_DISCOUNT    => [$prefix . Types::TYPE_DISCOUNT],
         ];
     }
+
+    /**
+     * @return string
+     */
+    static public function getDefaultChoice()
+    {
+        return Types::TYPE_DISCOUNT;
+    }
 }

@@ -55,11 +55,13 @@ class CartController extends AbstractController
         if (!$item->isConfigurable()) {
             throw new NotFoundHttpException('Item is not configurable.');
         }
+        if ($item->isImmutable()) {
+            throw new NotFoundHttpException('Item is immutable.');
+        }
 
         // TODO if not XHR, redirect to product detail page with itemID for configuration
 
-        $form = $this
-            ->getSaleHelper()
+        $form = $saleHelper
             ->getFormFactory()
             ->create(SaleItemSubjectType::class, $item, [
                 'method' => 'post',
@@ -124,6 +126,8 @@ class CartController extends AbstractController
                 } else {
                     $this->getCartHelper()->getCartProvider()->clearCart();
                 }
+            } else {
+                // TODO Warn about immutable item ?
             }
         } else {
             throw new NotFoundHttpException('Unexpected item identifier.');
@@ -138,12 +142,12 @@ class CartController extends AbstractController
 
     public function removeItemAdjustmentAction(Request $request)
     {
-
+        // TODO implement removeItemAdjustmentAction
     }
 
     public function removeAdjustmentAction(Request $request)
     {
-
+        // TODO implement removeAdjustmentAction
     }
 
     /**
@@ -162,7 +166,7 @@ class CartController extends AbstractController
                 'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
             ]);
 
-            $view = $this->getCartHelper()->buildView($cart);
+            $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
             $view->vars['form'] = $form->createView();
         }
 

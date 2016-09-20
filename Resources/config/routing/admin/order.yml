@@ -42,13 +42,24 @@ ekyna_commerce_order_admin_remove:
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_details_update:
-    path: /{orderId}/details-update
-    defaults: { _controller: "ekyna_commerce.order.controller:detailsUpdateAction" }
+ekyna_commerce_order_admin_refresh:
+    path: /{orderId}/refresh
+    defaults: { _controller: "ekyna_commerce.order.controller:refreshAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_admin_recalculate:
+    path: /{orderId}/recalculate
+    defaults: { _controller: "ekyna_commerce.order.controller:recalculateAction" }
     methods: [POST]
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_item_admin:
+ekyna_commerce_order_admin_item:
     resource: order_item.yml
     prefix: /{orderId}/items
+
+ekyna_commerce_order_admin_adjustment:
+    resource: order_adjustment.yml
+    prefix: /{orderId}/adjustments

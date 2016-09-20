@@ -24,4 +24,12 @@ final class AdjustmentModes extends AbstractConstants
             Modes::MODE_PERCENT => [$prefix . Modes::MODE_PERCENT],
         ];
     }
+
+    /**
+     * @return string
+     */
+    static public function getDefaultChoice()
+    {
+        return Modes::MODE_PERCENT;
+    }
 }
