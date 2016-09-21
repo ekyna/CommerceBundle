@@ -213,7 +213,7 @@
 {% endblock ekyna_commerce_bundle_choice_rule_widget %}
 
 
-{% block ekyna_commerce_quote_items_widget %}
+{% block ekyna_commerce_sale_items_widget %}
     {% spaceless %}
         {% set attr = attr|merge({'class': 'ekyna-collection' }) %}
         {% set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' %}
@@ -304,10 +304,10 @@
             {#{{ form_rest(form) }}#}
         </div>
     {% endspaceless %}
-{% endblock ekyna_commerce_quote_items_widget %}
+{% endblock ekyna_commerce_sale_items_widget %}
 
 
-{% block ekyna_commerce_quote_item_widget %}
+{% block ekyna_commerce_sale_item_widget %}
     {% spaceless %}
         <tbody class="ekyna-collection-child ekyna-sale-item">
         {# TODO {{ form_errors(form) }}#}
@@ -337,7 +337,7 @@
         {#{{ form_rest(form) }}#}
         </tbody>
     {% endspaceless %}
-{% endblock ekyna_commerce_quote_item_widget %}
+{% endblock ekyna_commerce_sale_item_widget %}
 
 
 {% block ekyna_commerce_option_widget %}

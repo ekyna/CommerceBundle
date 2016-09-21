@@ -89,8 +89,8 @@ class SaleItemType extends ResourceFormType
                 'item_adjustment_type' => null,
             ])
             ->setAllowedTypes('with_collections', 'bool')
-            ->setAllowedTypes('with_collections', SaleItemType::class)
-            ->setAllowedTypes('with_collections', AdjustmentType::class);
+            ->setAllowedTypes('item_type', 'string')
+            ->setAllowedTypes('item_adjustment_type', 'string');
     }
 
     /**

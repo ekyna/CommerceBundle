@@ -227,13 +227,45 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Order:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Order')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderController')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\OrderType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\OrderEvent')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('order_item')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Item:_form.html',
+                                    'add.html'       => 'EkynaCommerceBundle:Admin/Common/Item:add.html',
+                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Item:new.html',
+                                    'configure.html' => 'EkynaCommerceBundle:Admin/Common/Item:configure.html',
+                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Item:edit.html',
+                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Item:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderItem')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('order_adjustment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderAdjustment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAdjustmentType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
                             ->end()
                         ->end()
                         ->arrayNode('product')
@@ -271,13 +303,45 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Quote:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Quote')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\QuoteController')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\QuoteType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\QuoteEvent')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('quote_item')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Item:_form.html',
+                                    'add.html'       => 'EkynaCommerceBundle:Admin/Common/Item:add.html',
+                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Item:new.html',
+                                    'configure.html' => 'EkynaCommerceBundle:Admin/Common/Item:configure.html',
+                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Item:edit.html',
+                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Item:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteItem')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('quote_adjustment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteAdjustment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAdjustmentType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
                             ->end()
                         ->end()
                         ->arrayNode('tax')

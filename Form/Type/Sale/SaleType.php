@@ -53,15 +53,16 @@ class SaleType extends ResourceFormType
             ])
             ->add('customer', EntitySearchType::class, [
                 'label'           => 'ekyna_commerce.customer.label.singular',
-                'class'          => $this->customerClass,
+                'class'           => $this->customerClass,
                 'search_route'    => 'ekyna_commerce_customer_admin_search',
                 'find_route'      => 'ekyna_commerce_customer_admin_find',
                 'allow_clear'     => false,
-                'choice_label' => function(CustomerInterface $data) {
+                'choice_label'    => function (CustomerInterface $data) {
                     $output = $data->getFirstName() . ' ' . $data->getLastName() . ' &lt;<em>' . $data->getEmail() . '</em>&gt;';
                     if (0 < strlen($data->getCompany())) {
                         $output = '[<strong>' . $data->getCompany() . '</strong>] ' . $output;
                     }
+
                     return '<span>' . $output . '</span>';
                 },
                 'format_function' =>
@@ -75,7 +76,9 @@ class SaleType extends ResourceFormType
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
             ])
-            ->add('identity', IdentityType::class)
+            ->add('identity', IdentityType::class, [
+                'required' => false,
+            ])
             ->add('email', Type\EmailType::class, [
                 'label'    => 'ekyna_core.field.email',
                 'required' => false,
@@ -93,13 +96,13 @@ class SaleType extends ResourceFormType
             ->add('deliveryAddress', $options['address_type'], [
                 'label'    => 'ekyna_commerce.sale.field.delivery_address',
                 'required' => false,
-            ])
-            /*->add('items', OrderItemsType::class)
+            ])/*->add('items', OrderItemsType::class)
             ->add('adjustments', AdjustmentsType::class, [
                 'entry_type'            => OrderAdjustmentType::class,
                 'add_button_text'       => 'ekyna_commerce.sale.form.add_adjustment',
                 'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_adjustment',
-            ])*/;
+            ])*/
+        ;
     }
 
     /**
@@ -111,6 +114,6 @@ class SaleType extends ResourceFormType
 
         $resolver
             ->setRequired(['address_type'])
-            ->setAllowedTypes('address_type', AbstractType::class);
+            ->setAllowedTypes('address_type', 'string');
     }
 }

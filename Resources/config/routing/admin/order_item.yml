@@ -1,37 +1,37 @@
-ekyna_commerce_order_admin_item_add:
+ekyna_commerce_order_item_admin_add:
     path: /add
-    defaults: { _controller: "ekyna_commerce.order.controller:itemAddAction" }
+    defaults: { _controller: "ekyna_commerce.order_item.controller:addAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_admin_item_new:
+ekyna_commerce_order_item_admin_new:
     path: /new
-    defaults: { _controller: "ekyna_commerce.order.controller:itemNewAction" }
+    defaults: { _controller: "ekyna_commerce.order_item.controller:newAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_admin_item_configure:
-    path: /{itemId}/configure
-    defaults: { _controller: "ekyna_commerce.order.controller:itemConfigureAction" }
+ekyna_commerce_order_item_admin_configure:
+    path: /{orderItemId}/configure
+    defaults: { _controller: "ekyna_commerce.order_item.controller:configureAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+
-        itemId: \d+
+        orderItemId: \d+
 
-ekyna_commerce_order_admin_item_edit:
-    path: /{itemId}/edit
-    defaults: { _controller: "ekyna_commerce.order.controller:itemEditAction" }
+ekyna_commerce_order_item_admin_edit:
+    path: /{orderItemId}/edit
+    defaults: { _controller: "ekyna_commerce.order_item.controller:editAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+
-        itemId: \d+
+        orderItemId: \d+
 
-ekyna_commerce_order_admin_item_remove:
-    path: /{itemId}/remove
-    defaults: { _controller: "ekyna_commerce.order.controller:itemRemoveAction" }
+ekyna_commerce_order_item_admin_remove:
+    path: /{orderItemId}/remove
+    defaults: { _controller: "ekyna_commerce.order_item.controller:removeAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+
-        itemId: \d+
+        orderItemId: \d+

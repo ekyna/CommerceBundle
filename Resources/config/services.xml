@@ -32,8 +32,8 @@
         <parameter key="ekyna_commerce.option.class">Ekyna\Component\Commerce\Product\Entity\Option</parameter>
 
         <parameter key="ekyna_commerce.order_address.class">Ekyna\Bundle\CommerceBundle\Entity\OrderAddress</parameter>
-        <parameter key="ekyna_commerce.order_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderAdjustment</parameter>
-        <parameter key="ekyna_commerce.order_item.class">Ekyna\Component\Commerce\Order\Entity\OrderItem</parameter>
+        <!--<parameter key="ekyna_commerce.order_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderAdjustment</parameter>-->
+        <!--<parameter key="ekyna_commerce.order_item.class">Ekyna\Component\Commerce\Order\Entity\OrderItem</parameter>-->
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
         <parameter key="ekyna_commerce.order_payment.class">Ekyna\Component\Commerce\Order\Entity\OrderPayment</parameter>
         <parameter key="ekyna_commerce.order.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewVarsBuilder</parameter>

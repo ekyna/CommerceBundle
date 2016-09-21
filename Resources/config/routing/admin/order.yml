@@ -56,10 +56,10 @@ ekyna_commerce_order_admin_recalculate:
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_admin_item:
+ekyna_commerce_order_item_admin:
     resource: order_item.yml
     prefix: /{orderId}/items
 
-ekyna_commerce_order_admin_adjustment:
+ekyna_commerce_order_adjustment_admin:
     resource: order_adjustment.yml
     prefix: /{orderId}/adjustments

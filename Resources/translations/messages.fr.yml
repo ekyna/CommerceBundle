@@ -248,6 +248,14 @@ ekyna_commerce:
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
+    order_item:
+        label:
+            singular: Ligne
+            plural: Lignes
+    order_adjustment:
+        label:
+            singular: Ajustement
+            plural: Ajustements
     payment:
         label:
             singular: Paiement
@@ -397,6 +405,14 @@ ekyna_commerce:
         dashboard:
             title: Devis à traiter
             none: Aucun devis à traiter
+    quote_item:
+        label:
+            singular: Ligne
+            plural: Lignes
+    quote_adjustment:
+        label:
+            singular: Ajustement
+            plural: Ajustements
     sale:
         label:
             singular: Vente

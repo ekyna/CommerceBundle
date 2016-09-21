@@ -35,7 +35,7 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // Add item button
-        $addItemPath = $this->generateUrl('ekyna_commerce_order_admin_item_add', [
+        $addItemPath = $this->generateUrl('ekyna_commerce_order_item_admin_add', [
             'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($addItemPath, 'ekyna_commerce.sale.button.item.add', 'fa fa-plus', [
@@ -45,7 +45,7 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // New item button
-        $newItemPath = $this->generateUrl('ekyna_commerce_order_admin_item_new', [
+        $newItemPath = $this->generateUrl('ekyna_commerce_order_item_admin_new', [
             'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($newItemPath, 'ekyna_commerce.sale.button.item.new', 'fa fa-plus', [
@@ -55,7 +55,7 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // New adjustment button
-        $newAdjustmentPath = $this->generateUrl('ekyna_commerce_order_admin_adjustment_new', [
+        $newAdjustmentPath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_new', [
             'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($newAdjustmentPath, 'ekyna_commerce.sale.button.adjustment.new', 'fa fa-plus', [
@@ -82,9 +82,9 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
 
         // Configure action
         if ($item->isConfigurable()) {
-            $configurePath = $this->generateUrl('ekyna_commerce_order_admin_item_configure', [
-                'orderId' => $item->getSale()->getId(),
-                'itemId'  => $item->getId(),
+            $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
             ]);
             $actions[] = new View\Action($configurePath, 'fa fa-cog', [
                 'title'           => 'ekyna_commerce.sale.button.item.configure',
@@ -93,9 +93,9 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
         }
 
         // Edit action
-        $editPath = $this->generateUrl('ekyna_commerce_order_admin_item_edit', [
-            'orderId' => $item->getSale()->getId(),
-            'itemId'  => $item->getId(),
+        $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
+            'orderId'     => $item->getSale()->getId(),
+            'orderItemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.item.edit',
@@ -103,9 +103,9 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // Remove action
-        $removePath = $this->generateUrl('ekyna_commerce_order_admin_item_remove', [
-            'orderId' => $item->getSale()->getId(),
-            'itemId'  => $item->getId(),
+        $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+            'orderId'     => $item->getSale()->getId(),
+            'orderItemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.item.remove',
@@ -135,18 +135,18 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
 
         $actions = [];
 
-        $editPath = $this->generateUrl('ekyna_commerce_order_admin_adjustment_edit', [
-            'orderId'      => $adjustable->getId(),
-            'adjustmentId' => $adjustment->getId(),
+        $editPath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_edit', [
+            'orderId'           => $adjustable->getId(),
+            'orderAdjustmentId' => $adjustment->getId(),
         ]);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.adjustment.edit',
             'data-sale-modal' => null,
         ]);
 
-        $removePath = $this->generateUrl('ekyna_commerce_order_admin_adjustment_remove', [
-            'orderId'      => $adjustable->getId(),
-            'adjustmentId' => $adjustment->getId(),
+        $removePath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_remove', [
+            'orderId'           => $adjustable->getId(),
+            'orderAdjustmentId' => $adjustment->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.adjustment.remove',

@@ -1,37 +1,37 @@
-ekyna_commerce_quote_admin_item_add:
+ekyna_commerce_quote_item_admin_add:
     path: /add
-    defaults: { _controller: "ekyna_commerce.quote.controller:itemAddAction" }
+    defaults: { _controller: "ekyna_commerce.quote_item.controller:addAction" }
     methods: [GET|POST]
     requirements:
         quoteId: \d+
 
-ekyna_commerce_quote_admin_item_new:
+ekyna_commerce_quote_item_admin_new:
     path: /new
-    defaults: { _controller: "ekyna_commerce.quote.controller:itemNewAction" }
+    defaults: { _controller: "ekyna_commerce.quote_item.controller:newAction" }
     methods: [GET|POST]
     requirements:
         quoteId: \d+
 
-ekyna_commerce_quote_admin_item_configure:
-    path: /{itemId}/configure
-    defaults: { _controller: "ekyna_commerce.quote.controller:itemConfigureAction" }
+ekyna_commerce_quote_item_admin_configure:
+    path: /{quoteItemId}/configure
+    defaults: { _controller: "ekyna_commerce.quote_item.controller:configureAction" }
     methods: [GET|POST]
     requirements:
         quoteId: \d+
-        itemId: \d+
+        quoteItemId: \d+
 
-ekyna_commerce_quote_admin_item_edit:
-    path: /{itemId}/edit
-    defaults: { _controller: "ekyna_commerce.quote.controller:itemEditAction" }
+ekyna_commerce_quote_item_admin_edit:
+    path: /{quoteItemId}/edit
+    defaults: { _controller: "ekyna_commerce.quote_item.controller:editAction" }
     methods: [GET|POST]
     requirements:
         quoteId: \d+
-        itemId: \d+
+        quoteItemId: \d+
 
-ekyna_commerce_quote_admin_item_remove:
-    path: /{itemId}/remove
-    defaults: { _controller: "ekyna_commerce.quote.controller:itemRemoveAction" }
+ekyna_commerce_quote_item_admin_remove:
+    path: /{quoteItemId}/remove
+    defaults: { _controller: "ekyna_commerce.quote_item.controller:removeAction" }
     methods: [GET|POST]
     requirements:
         quoteId: \d+
-        itemId: \d+
+        quoteItemId: \d+
