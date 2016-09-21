@@ -7,15 +7,17 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Bundle\UserBundle\Form\Type\IdentityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class OrderType
+ * Class SaleType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderType extends ResourceFormType
+class SaleType extends ResourceFormType
 {
     /**
      * @var string
@@ -78,7 +80,7 @@ class OrderType extends ResourceFormType
                 'label'    => 'ekyna_core.field.email',
                 'required' => false,
             ])
-            ->add('invoiceAddress', OrderAddressType::class, [
+            ->add('invoiceAddress', $options['address_type'], [
                 'label' => 'ekyna_commerce.sale.field.invoice_address',
             ])
             ->add('sameAddress', Type\CheckboxType::class, [
@@ -88,7 +90,7 @@ class OrderType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
-            ->add('deliveryAddress', OrderAddressType::class, [
+            ->add('deliveryAddress', $options['address_type'], [
                 'label'    => 'ekyna_commerce.sale.field.delivery_address',
                 'required' => false,
             ])
@@ -98,5 +100,17 @@ class OrderType extends ResourceFormType
                 'add_button_text'       => 'ekyna_commerce.sale.form.add_adjustment',
                 'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_adjustment',
             ])*/;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setRequired(['address_type'])
+            ->setAllowedTypes('address_type', AbstractType::class);
     }
 }

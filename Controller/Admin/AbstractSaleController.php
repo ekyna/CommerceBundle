@@ -4,8 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderAdjustmentType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderItemType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAdjustmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

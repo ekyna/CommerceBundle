@@ -45,7 +45,7 @@
 
 {% block line %}
 {% spaceless %}
-    <tr class="level-{{ line.level }}">
+    <tr class="level-{{ line.level }}{% if line.node %} sale-detail-node{% endif %}">
         <td class="sale-detail-number">{{ line.number }}</td>
         <td class="sale-detail-designation">
             {% if line.vars.link_path is defined %}
@@ -149,7 +149,7 @@
         <tr>
             <td class="text-right">{{ view.final.base|localizedcurrency('EUR') }}</td>
             <td class="text-right">{{ view.final.tax|localizedcurrency('EUR') }}</td>
-            <td class="text-right">{{ view.final.total|localizedcurrency('EUR') }}</td>
+            <td class="text-right"><strong>{{ view.final.total|localizedcurrency('EUR') }}</strong></td>
         </tr>
     </tbody>
 {% endspaceless %}

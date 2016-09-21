@@ -24,6 +24,10 @@ class LoadOrderData extends AbstractFixture
      */
     public function load(ObjectManager $om)
     {
+        return;
+
+        // TODO report changes from AppBundle
+
         $dispatcher = $this->container->get('event_dispatcher');
         $repo = $this->container->get('ekyna_commerce.order.repository');
 
@@ -146,7 +150,7 @@ class LoadOrderData extends AbstractFixture
 
         if (0 < $nbChildren) {
             for ($c = 0; $c < $nbChildren; $c++) {
-                $item->addChild($this->generateItem($level + 1));
+                $item->addChild($this->generateItem($c, $level + 1));
             }
 
             return $item;

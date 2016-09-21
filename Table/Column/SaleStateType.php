@@ -39,7 +39,7 @@ class SaleStateType extends TextType
 
         $cell->setVars([
             'type'  => 'text',
-            'value' => $this->constantHelper->renderSaleStateBadge($cell->vars['value']),
+            'value' => $this->constantHelper->renderSaleStateBadge($table->getCurrentRowData()),
         ]);
     }
 

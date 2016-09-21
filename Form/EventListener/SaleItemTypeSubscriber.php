@@ -8,11 +8,11 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 /**
- * Class OrderItemTypeSubscriber
+ * Class SaleItemTypeSubscriber
  * @package Ekyna\Bundle\CommerceBundle\Form\EventListener
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class OrderItemTypeSubscriber implements EventSubscriberInterface
+class SaleItemTypeSubscriber implements EventSubscriberInterface
 {
     /**
      * @var \Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface

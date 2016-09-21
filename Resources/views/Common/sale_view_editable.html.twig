@@ -47,8 +47,8 @@
 {% block line_quantity %}
 {% spaceless %}
     <td class="text-right">
-        {% if view.vars.form['item_' ~ line.id] is defined %}
-            {{ form_widget(view.vars.form['item_' ~ line.id]) }}
+        {% if view.vars.form[line.id] is defined %}
+            {{ form_widget(view.vars.form[line.id]) }}
         {% else %}
             <span class="sale-detail-quantity">{{ line.quantity }}</span>
         {% endif %}
@@ -150,7 +150,7 @@
     <tr>
         <td class="text-right">{{ view.final.base|localizedcurrency('EUR') }}</td>
         <td class="text-right">{{ view.final.tax|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ view.final.total|localizedcurrency('EUR') }}</td>
+        <td class="text-right"><strong>{{ view.final.total|localizedcurrency('EUR') }}</strong></td>
     </tr>
     </tbody>
 {% endspaceless %}

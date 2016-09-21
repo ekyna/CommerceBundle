@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AbstractAdjustmentType extends ResourceFormType
+class AdjustmentType extends ResourceFormType
 {
     /**
      * {@inheritdoc}

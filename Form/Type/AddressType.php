@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AbstractAddressType extends ResourceFormType
+class AddressType extends ResourceFormType
 {
     /**
      * @var string

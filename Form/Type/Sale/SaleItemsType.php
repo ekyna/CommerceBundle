@@ -10,11 +10,11 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class OrderItemsType
+ * Class SaleItemsType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class OrderItemsType extends AbstractType
+class SaleItemsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -24,7 +24,6 @@ class OrderItemsType extends AbstractType
         $resolver
             ->setDefaults([
                 'label'          => false,
-                'entry_type'     => OrderItemType::class,
                 'entry_options'  => ['label' => false],
                 'allow_add'      => true,
                 'allow_delete'   => true,
@@ -69,7 +68,7 @@ class OrderItemsType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'ekyna_commerce_order_items';
+        return 'ekyna_commerce_sale_items';
     }
 
     /**

@@ -3,8 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\EventListener\OrderItemTypeSubscriber;
+use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\AdjustmentsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\AdjustmentType;
 use Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,11 +14,11 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class OrderItemType
+ * Class SaleItemType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class OrderItemType extends ResourceFormType
+class SaleItemType extends ResourceFormType
 {
     /**
      * @var SubjectHelperInterface
@@ -44,25 +45,25 @@ class OrderItemType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['with_collections']) {
-            $builder
-                ->add('items', OrderItemsType::class, [
-                    'property_path' => 'children',
-                    'children_mode' => true,
-                    'entry_options' => [
-                        'label'            => false,
-                        'with_collections' => false,
-                    ],
-                ]);
+            $builder->add('items', SaleItemsType::class, [
+                'property_path' => 'children',
+                'children_mode' => true,
+                'entry_type'    => $options['item_type'],
+                'entry_options' => [
+                    'label'            => false,
+                    'with_collections' => false,
+                ],
+            ]);
         }
 
         $builder->add('adjustments', AdjustmentsType::class, [
             'prototype_name'        => '__item_adjustment__',
-            'entry_type'            => OrderItemAdjustmentType::class,
+            'entry_type'            => $options['item_adjustment_type'],
             'add_button_text'       => 'ekyna_commerce.sale.form.add_item_adjustment',
             'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_item_adjustment',
         ]);
 
-        $subscriber = new OrderItemTypeSubscriber($this->subjectHelper, $this->getFields($options));
+        $subscriber = new SaleItemTypeSubscriber($this->subjectHelper, $this->getFields($options));
         $builder->addEventSubscriber($subscriber);
     }
 
@@ -82,8 +83,14 @@ class OrderItemType extends ResourceFormType
         parent::configureOptions($resolver);
 
         $resolver
-            ->setDefault('with_collections', true)
-            ->setAllowedTypes('with_collections', 'bool');
+            ->setDefaults([
+                'with_collections'     => true,
+                'item_type'            => null,
+                'item_adjustment_type' => null,
+            ])
+            ->setAllowedTypes('with_collections', 'bool')
+            ->setAllowedTypes('with_collections', SaleItemType::class)
+            ->setAllowedTypes('with_collections', AdjustmentType::class);
     }
 
     /**
@@ -91,7 +98,7 @@ class OrderItemType extends ResourceFormType
      */
     public function getBlockPrefix()
     {
-        return 'ekyna_commerce_order_item';
+        return 'ekyna_commerce_sale_item';
     }
 
     /**
@@ -119,23 +126,23 @@ class OrderItemType extends ResourceFormType
                 ],
             ]],
             ['weight', Type\IntegerType::class, [
-                'label'  => 'ekyna_core.field.weight',
-                'sizing' => 'sm',
+                'label'    => 'ekyna_core.field.weight',
+                'sizing'   => 'sm',
                 'required' => false,
-                'attr'   => [
+                'attr'     => [
                     'placeholder' => 'ekyna_core.field.weight',
                     'input_group' => ['append' => 'g'],
                     'min'         => 0,
                 ],
             ]],
             ['netPrice', Type\NumberType::class, [
-                'label'  => 'ekyna_commerce.sale.field.net_unit',
-                'scale'  => 5,
-                'sizing' => 'sm',
+                'label'    => 'ekyna_commerce.sale.field.net_unit',
+                'scale'    => 5,
+                'sizing'   => 'sm',
                 'required' => false,
-                'attr'   => [
+                'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
-                    'input_group' => ['append' => '€'],  // TODO order currency
+                    'input_group' => ['append' => '€'],  // TODO sale currency
                 ],
             ]],
             ['quantity', Type\IntegerType::class, [

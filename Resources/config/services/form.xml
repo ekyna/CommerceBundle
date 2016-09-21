@@ -95,29 +95,29 @@
 
         <!-- Order form types -->
         <service id="ekyna_commerce.order_address.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderAddressType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAddressType">
             <argument>%ekyna_commerce.order_address.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order_adjustment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderAdjustmentType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAdjustmentType">
             <argument>%ekyna_commerce.order_adjustment.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order_item_adjustment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderItemAdjustmentType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemAdjustmentType">
             <argument>%ekyna_commerce.order_item_adjustment.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order_item.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderItemType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemType">
             <argument>%ekyna_commerce.order_item.class%</argument>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType">
             <argument>%ekyna_commerce.order.class%</argument>
             <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
@@ -125,29 +125,29 @@
 
         <!-- Quote form types -->
         <service id="ekyna_commerce.quote_address.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteAddressType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAddressType">
             <argument>%ekyna_commerce.quote_address.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote_adjustment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteAdjustmentType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAdjustmentType">
             <argument>%ekyna_commerce.quote_adjustment.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote_item_adjustment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteItemAdjustmentType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemAdjustmentType">
             <argument>%ekyna_commerce.quote_item_adjustment.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote_item.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteItemType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemType">
             <argument>%ekyna_commerce.quote_item.class%</argument>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType">
             <argument>%ekyna_commerce.quote.class%</argument>
             <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>

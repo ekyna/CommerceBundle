@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CustomerAddressType extends AbstractAddressType
+class CustomerAddressType extends AddressType
 {
     /**
      * @var string

@@ -44,6 +44,9 @@
 .sale-view .sale-detail tbody tr.level-3 .sale-detail-designation {
   padding-left: 56px;
 }
+.sale-view .sale-detail tbody .sale-detail-node.level-0 td {
+  color: #a2afbc;
+}
 .sale-view .sale-detail tbody .sale-detail-actions {
   text-align: right;
 }
