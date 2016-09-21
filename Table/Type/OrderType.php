@@ -29,7 +29,7 @@ class OrderType extends ResourceTableType
                     'orderId' => 'id',
                 ],
             ])
-            ->addColumn('customer', 'ekyna_commerce_order_customer', [
+            ->addColumn('customer', 'ekyna_commerce_sale_customer', [
                 'label'    => 'ekyna_commerce.customer.label.singular',
                 'sortable' => true,
             ])
@@ -38,7 +38,7 @@ class OrderType extends ResourceTableType
                 'sortable'      => true,
                 'currency_path' => 'currency.code',
             ])
-            ->addColumn('state', 'ekyna_commerce_order_state', [
+            ->addColumn('state', 'ekyna_commerce_sale_state', [
                 'label' => 'ekyna_commerce.sale.field.state',
             ])
             ->addColumn('paymentState', 'ekyna_commerce_payment_state', [

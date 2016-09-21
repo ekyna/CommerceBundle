@@ -226,34 +226,11 @@ ekyna_commerce:
             new: Nouvelle commande
             edit: Modifier la commande
             remove: Supprimer la commande
-        field: # TODO move to ekyna_commerce.sale.*
-#            customer: Client
-            addresses: Adresses
-#            invoice_address: Adresse de facturation
-#            delivery_address: Adresse de livraison
-#            same_address: Même adresse
+        field:
             invoice: Facture
             invoice_pdf: Facture PDF
             no_shipment: Sans livraison
-            details: Détail
-#            net_unit: Prix Unit. HT
-#            net_total: Total HT # TODO rename to base_total ?
-#            tax_rate: Taux TVA
-#            tax_total: Total TVA
-#            adjustment_total: Total remises
-#            paid_total: Total réglements
-#            grand_total: Total TTC
-#            weight_total: Poids total
             document_footer: Pied de page des documents
-        form:
-            add_item: Ajouter une ligne produit
-            remove_item: Supprimer la ligne produit ?
-            add_child_item: Ajouter une ligne sous-produit
-            remove_child_item: Supprimer la ligne sous-produit ?
-            add_item_adjustment: Ajouter un ajustement produit
-            remove_item_adjustment: Supprimer l'ajustement produit ?
-            add_adjustment: Ajouter un ajustement
-            remove_adjustment: Supprimer l'ajustement ?
         alert:
             no_item: Aucune commande configuré
         state:
@@ -264,10 +241,6 @@ ekyna_commerce:
             completed: Complétée
             refunded: Remboursée
             cancelled: Annulée
-        type:
-            cart: Panier
-            order: Commande
-            quote: Devis
         message:
             already_paid: La commande est déjà réglée en totalité
             has_payment_cant_deleted: Cette commande a des paiements et ne peut être supprimée.
@@ -393,6 +366,37 @@ ekyna_commerce:
             list: Variantes <small>Liste des variantes</small>
         button:
             new: Nouvelle variante
+    quote:
+        label:
+            singular: Devis
+            plural: Devis
+        header:
+            list: Devis <small>Liste des devis</small>
+            show: Détail du devis <small>%number%</small>
+            new: Créer un nouveau devis
+            edit: Modifier le devis <small>%number%</small>
+            remove: Supprimer le devis <small>%number%</small>
+        button:
+            list: Liste des devis
+            show: Détail du devis
+            new: Nouveau devis
+            edit: Modifier le devis
+            remove: Supprimer le devis
+        alert:
+            no_item: Aucun devis configuré
+        state:
+            new: Création
+            pending: En attente
+            refused: Refusée
+            accepted: Acceptée
+            completed: Complétée
+            refunded: Remboursée
+            cancelled: Annulée
+        message:
+            has_payment_cant_deleted: Ce devis a des paiements et ne peut être supprimée.
+        dashboard:
+            title: Devis à traiter
+            none: Aucun devis à traiter
     sale:
         label:
             singular: Vente
@@ -426,7 +430,18 @@ ekyna_commerce:
                 remove: Souhaitez-vous réellement supprimer cette article ?
             adjustment:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
+        form:
+            add_item: Ajouter une ligne produit
+            remove_item: Supprimer la ligne produit ?
+            add_child_item: Ajouter une ligne sous-produit
+            remove_child_item: Supprimer la ligne sous-produit ?
+            add_item_adjustment: Ajouter un ajustement produit
+            remove_item_adjustment: Supprimer l'ajustement produit ?
+            add_adjustment: Ajouter un ajustement
+            remove_adjustment: Supprimer l'ajustement ?
         field:
+            addresses: Adresses
+            details: Détail
             customer: Client
             invoice_address: Adresse de facturation
             delivery_address: Adresse de livraison

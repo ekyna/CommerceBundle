@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\SaleItemSubjectType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
 use Ekyna\Bundle\CoreBundle\Modal;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

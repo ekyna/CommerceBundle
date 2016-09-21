@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\SaleItemSubjectType;
-use Ekyna\Bundle\CommerceBundle\Helper\SaleHelper;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
+use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Common\View\ViewVarsBuilderInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CartHelper
 {
     /**
-     * @var SaleHelper
+     * @var \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
      */
     protected $saleHelper;
 
@@ -41,10 +41,10 @@ class CartHelper
     /**
      * Constructor.
      *
-     * @param SaleHelper               $saleHelper
-     * @param CartProviderInterface    $cartProvider
-     * @param ViewVarsBuilderInterface $viewVarsBuilder
-     * @param string                   $cartItemClass
+     * @param \Ekyna\Bundle\CommerceBundle\Service\SaleHelper $saleHelper
+     * @param CartProviderInterface                           $cartProvider
+     * @param ViewVarsBuilderInterface                        $viewVarsBuilder
+     * @param string                                          $cartItemClass
      */
     public function __construct(
         SaleHelper $saleHelper,
@@ -61,7 +61,7 @@ class CartHelper
     /**
      * Returns the sale helper.
      *
-     * @return SaleHelper
+     * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
      */
     public function getSaleHelper()
     {

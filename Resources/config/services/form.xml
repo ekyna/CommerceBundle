@@ -1,0 +1,209 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Attribute form types -->
+        <service id="ekyna_commerce.attribute.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\AttributeType">
+            <argument>%ekyna_commerce.attribute.class%</argument>
+            <argument>%ekyna_commerce.attribute_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.attribute_slot.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\AttributeSlotType">
+            <argument>%ekyna_commerce.attribute_slot.class%</argument>
+            <argument>%ekyna_commerce.attribute_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Bundle form types -->
+        <service id="ekyna_commerce.bundle_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleChoiceType">
+            <argument>%ekyna_commerce.bundle_choice.class%</argument>
+            <argument>%ekyna_commerce.product.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.bundle_choice_rule.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleChoiceRuleType">
+            <argument>%ekyna_commerce.bundle_choice_rule.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.bundle_slot.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleSlotType">
+            <argument>%ekyna_commerce.bundle_slot.class%</argument>
+            <argument>%ekyna_commerce.bundle_choice.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Configurable slot form types -->
+        <service id="ekyna_commerce.configurable_slots.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\ConfigurableSlotsType">
+            <argument>%ekyna_commerce.configurable_slot.form_type.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.configurable_slot.form_type"
+                 class="%ekyna_commerce.configurable_slot.form_type.class%">
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-configurable-slot" path="ekyna-commerce/form/configurable-slot" />
+        </service>
+
+        <!-- Country form type -->
+        <service id="ekyna_commerce.country_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CountryChoiceType">
+            <argument>%ekyna_commerce.country.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Currency form type -->
+        <service id="ekyna_commerce.currency_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType">
+            <argument>%ekyna_commerce.currency.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Customer form types -->
+        <service id="ekyna_commerce.customer_address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType">
+            <argument>%ekyna_commerce.customer_address.class%</argument>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.customer.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerType">
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <argument>%ekyna_commerce.customer_group.class%</argument>
+            <argument>%ekyna_user.user.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Option form types -->
+        <service id="ekyna_commerce.option_group.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\OptionGroupType">
+            <argument>%ekyna_commerce.option_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.option.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\OptionType">
+            <argument>%ekyna_commerce.option.class%</argument>
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Order form types -->
+        <service id="ekyna_commerce.order_address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderAddressType">
+            <argument>%ekyna_commerce.order_address.class%</argument>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.order_adjustment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderAdjustmentType">
+            <argument>%ekyna_commerce.order_adjustment.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.order_item_adjustment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderItemAdjustmentType">
+            <argument>%ekyna_commerce.order_item_adjustment.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.order_item.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderItemType">
+            <argument>%ekyna_commerce.order_item.class%</argument>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.order.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderType">
+            <argument>%ekyna_commerce.order.class%</argument>
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Quote form types -->
+        <service id="ekyna_commerce.quote_address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteAddressType">
+            <argument>%ekyna_commerce.quote_address.class%</argument>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.quote_adjustment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteAdjustmentType">
+            <argument>%ekyna_commerce.quote_adjustment.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.quote_item_adjustment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteItemAdjustmentType">
+            <argument>%ekyna_commerce.quote_item_adjustment.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.quote_item.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteItemType">
+            <argument>%ekyna_commerce.quote_item.class%</argument>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.quote.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\QuoteType">
+            <argument>%ekyna_commerce.quote.class%</argument>
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Product form types -->
+        <service id="ekyna_commerce.product.form_type"
+                 class="%ekyna_commerce.product.form_type.class%">
+            <argument type="service" id="ekyna_commerce.product.form_type.event_subscriber"/>
+            <argument>%ekyna_commerce.product.class%</argument>
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.product.form_type.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\Form\EventListener\ProductTypeSubscriber">
+            <argument>%ekyna_commerce.product.class%</argument>
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <argument>%ekyna_commerce.attribute_set.class%</argument>
+        </service>
+
+        <!-- Sale add item form flow -->
+        <service id="ekyna_commerce.add_item.form_flow"
+                 class="Ekyna\Bundle\CommerceBundle\Form\SaleItemAddFlow"
+                 parent="craue.form.flow">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry" />
+        </service>
+
+        <!-- Sale item subject form type -->
+        <service id="ekyna_commerce.sale_item_subject.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Tax form types -->
+        <service id="ekyna_commerce.tax_group.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupType">
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <argument>%ekyna_commerce.tax_rule.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.tax_rule.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType">
+            <argument>%ekyna_commerce.tax_rule.class%</argument>
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <argument>%ekyna_commerce.tax.class%</argument>
+            <argument>%ekyna_commerce.customer_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.tax.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxType">
+            <argument>%ekyna_commerce.tax.class%</argument>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+    </services>
+
+</container>

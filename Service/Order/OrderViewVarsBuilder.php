@@ -2,43 +2,17 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 
+use Ekyna\Bundle\CommerceBundle\Service\AbstractViewVarsBuilder;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View;
-use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class CartViewVarsBuilder
  * @package Ekyna\Bundle\CommerceBundle\Service\Order
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderViewVarsBuilder implements View\ViewVarsBuilderInterface
+class OrderViewVarsBuilder extends AbstractViewVarsBuilder
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var SubjectProviderRegistryInterface
-     */
-    private $subjectProviderRegistry;
-
-
-    /**
-     * Constructor.
-     *
-     * @param UrlGeneratorInterface            $urlGenerator
-     * @param SubjectProviderRegistryInterface $subjectProviderRegistry
-     */
-    public function __construct(
-        UrlGeneratorInterface $urlGenerator,
-        SubjectProviderRegistryInterface $subjectProviderRegistry
-    ) {
-        $this->urlGenerator = $urlGenerator;
-        $this->subjectProviderRegistry = $subjectProviderRegistry;
-    }
-
     /**
      * @inheritDoc
      */
@@ -183,32 +157,5 @@ class OrderViewVarsBuilder implements View\ViewVarsBuilderInterface
         return [
             'actions' => $actions,
         ];
-    }
-
-    /**
-     * Generates the url.
-     *
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return string
-     */
-    protected function generateUrl($name, array $parameters = [])
-    {
-        return $this->urlGenerator->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
-    }
-
-    /**
-     * Resolves the item's subject.
-     *
-     * @param Model\SaleItemInterface $item
-     *
-     * @return mixed|null
-     *
-     * @see SubjectProviderRegistryInterface
-     */
-    protected function resolveItemSubject(Model\SaleItemInterface $item)
-    {
-        return $this->subjectProviderRegistry->resolveItemSubject($item);
     }
 }

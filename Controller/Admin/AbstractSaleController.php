@@ -4,9 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Ekyna\Bundle\CommerceBundle\Form\Type\OrderAdjustmentType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\OrderItemType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\SaleItemSubjectType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderAdjustmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\OrderItemType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
@@ -34,7 +34,7 @@ abstract class AbstractSaleController extends ResourceController
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource();
 
-        $data['order_view'] = $this->buildSaleView($sale);
+        $data['sale_view'] = $this->buildSaleView($sale);
 
         return null;
     }
@@ -204,7 +204,7 @@ abstract class AbstractSaleController extends ResourceController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $saleHelper = $this->get('ekyna_commerce.helper.sale');
+        $saleHelper = $this->get('ekyna_commerce.sale_helper');
 
         $itemId = intval($request->attributes->get('itemId'));
         if (0 >= $itemId) {
@@ -373,7 +373,7 @@ abstract class AbstractSaleController extends ResourceController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $saleHelper = $this->get('ekyna_commerce.helper.sale');
+        $saleHelper = $this->get('ekyna_commerce.sale_helper');
 
         $itemId = intval($request->attributes->get('itemId'));
         if (0 >= $itemId) {
@@ -460,7 +460,7 @@ abstract class AbstractSaleController extends ResourceController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $saleHelper = $this->get('ekyna_commerce.helper.sale');
+        $saleHelper = $this->get('ekyna_commerce.sale_helper');
 
         $itemId = intval($request->attributes->get('itemId'));
         if (0 >= $itemId) {
@@ -603,7 +603,7 @@ abstract class AbstractSaleController extends ResourceController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $saleHelper = $this->get('ekyna_commerce.helper.sale');
+        $saleHelper = $this->get('ekyna_commerce.sale_helper');
 
         $adjustmentId = intval($request->attributes->get('adjustmentId'));
         if (0 >= $adjustmentId) {
@@ -690,7 +690,7 @@ abstract class AbstractSaleController extends ResourceController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $saleHelper = $this->get('ekyna_commerce.helper.sale');
+        $saleHelper = $this->get('ekyna_commerce.sale_helper');
 
         $adjustmentId = intval($request->attributes->get('adjustmentId'));
         if (0 >= $adjustmentId) {
@@ -800,10 +800,10 @@ abstract class AbstractSaleController extends ResourceController
     /**
      * Returns the sale helper.
      *
-     * @return \Ekyna\Bundle\CommerceBundle\Helper\SaleHelper|object
+     * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper|object
      */
     protected function getSaleHelper()
     {
-        return $this->get('ekyna_commerce.helper.sale');
+        return $this->get('ekyna_commerce.sale_helper');
     }
 }

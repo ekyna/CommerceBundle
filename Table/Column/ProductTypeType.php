@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
 use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
 use Ekyna\Component\Table\Table;
 use Ekyna\Component\Table\View\Cell;
@@ -15,7 +15,7 @@ use Ekyna\Component\Table\View\Cell;
 class ProductTypeType extends TextType
 {
     /**
-     * @var ConstantHelper
+     * @var \Ekyna\Bundle\CommerceBundle\Service\ConstantHelper
      */
     private $constantHelper;
 

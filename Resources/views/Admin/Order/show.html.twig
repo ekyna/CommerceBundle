@@ -15,7 +15,7 @@
             <a href="#order-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
         </li>
         <li>
-            <a href="#order-details" data-toggle="tab">{{ 'ekyna_commerce.order.field.details'|trans }}</a>
+            <a href="#order-details" data-toggle="tab">{{ 'ekyna_commerce.sale.field.details'|trans }}</a>
         </li>
         <li>
             <a href="#order-payments" data-toggle="tab">{{ 'ekyna_commerce.payment.label.plural'|trans }}</a>
@@ -30,7 +30,7 @@
                 {% include "EkynaCommerceBundle:Admin/Order/Show:general.html.twig" %}
             </div>
             <div class="tab-pane" id="order-details">
-                {{ render_sale_view(order_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
+                {{ render_sale_view(sale_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
             </div>
             <div class="tab-pane" id="order-payments">
                 {% include "EkynaCommerceBundle:Admin/Order/Show:payments.html.twig" %}

@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Subject helper -->
+        <service id="ekyna_commerce.subject_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\SubjectHelper">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+        </service>
+
+        <!-- Constants helper -->
+        <service id="ekyna_commerce.constant_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\ConstantHelper">
+            <argument type="service" id="translator"/>
+        </service>
+
+        <!-- Sale helper -->
+        <service id="ekyna_commerce.sale_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\SaleHelper">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_commerce.common.view_builder"/>
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="translator"/>
+        </service>
+
+        <!-- Cart helper -->
+        <service id="ekyna_commerce.cart_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper">
+            <argument type="service" id="ekyna_commerce.sale_helper"/>
+            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
+            <argument type="service" id="ekyna_commerce.cart.view_vars_builder"/>
+            <argument>%ekyna_commerce.cart_item.class%</argument>
+        </service>
+
+    </services>
+
+</container>

@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotsType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Product\ConfigurableSlotsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Product\ConfigurableSlotType;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;

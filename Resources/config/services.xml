@@ -3,6 +3,16 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <imports>
+        <import resource="services/form.xml"/>
+        <import resource="services/helper.xml"/>
+        <import resource="services/sale.xml"/>
+        <import resource="services/subject.xml"/>
+        <import resource="services/table.xml"/>
+        <import resource="services/twig.xml"/>
+        <import resource="services/view.xml"/>
+    </imports>
+
     <parameters>
         <parameter key="ekyna_commerce.controller.cart.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController</parameter>
         <parameter key="ekyna_commerce.controller.cart_checkout.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController</parameter>
@@ -25,12 +35,19 @@
         <parameter key="ekyna_commerce.order_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderAdjustment</parameter>
         <parameter key="ekyna_commerce.order_item.class">Ekyna\Component\Commerce\Order\Entity\OrderItem</parameter>
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
+        <parameter key="ekyna_commerce.order_payment.class">Ekyna\Component\Commerce\Order\Entity\OrderPayment</parameter>
         <parameter key="ekyna_commerce.order.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewVarsBuilder</parameter>
 
-        <parameter key="ekyna_commerce.payment.class">Ekyna\Component\Commerce\Payment\Entity\Payment</parameter>
         <parameter key="ekyna_commerce.payment_method.class">Ekyna\Component\Commerce\Payment\Entity\PaymentMethod</parameter>
 
         <parameter key="ekyna_commerce.product.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ProductType</parameter>
+
+        <parameter key="ekyna_commerce.quote_address.class">Ekyna\Bundle\CommerceBundle\Entity\QuoteAddress</parameter>
+        <parameter key="ekyna_commerce.quote_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteAdjustment</parameter>
+        <parameter key="ekyna_commerce.quote_item.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItem</parameter>
+        <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
+        <parameter key="ekyna_commerce.quote_payment.class">Ekyna\Component\Commerce\Quote\Entity\QuotePayment</parameter>
+        <parameter key="ekyna_commerce.quote.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewVarsBuilder</parameter>
 
         <parameter key="ekyna_commerce.shipment.class">Ekyna\Component\Commerce\Shipment\Entity\Shipment</parameter>
         <parameter key="ekyna_commerce.shipment_item.class">Ekyna\Component\Commerce\Shipment\Entity\ShipmentItem</parameter>
@@ -39,7 +56,7 @@
 
     <services>
 
-        <!-- Controllers -->
+        <!-- Abstract cart controller -->
         <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
             <call method="setUrlGenerator">
                 <argument type="service" id="router"/>
@@ -48,142 +65,23 @@
                 <argument type="service" id="templating"/>
             </call>
             <call method="setCartHelper">
-                <argument type="service" id="ekyna_commerce.cart.helper"/>
+                <argument type="service" id="ekyna_commerce.cart_helper"/>
             </call>
         </service>
+
+        <!-- Cart controller -->
         <service id="ekyna_commerce.controller.cart"
                  class="%ekyna_commerce.controller.cart.class%"
                  parent="ekyna_commerce.controller.cart.abstract">
             <argument type="service" id="ekyna_core.modal" />
         </service>
+
+        <!-- Checkout cart controller -->
         <service id="ekyna_commerce.controller.cart_checkout"
                  class="%ekyna_commerce.controller.cart_checkout.class%"
                  parent="ekyna_commerce.controller.cart.abstract"/>
 
-        <!-- Factory -->
-        <service id="ekyna_commerce.sale_factory"
-                 class="Ekyna\Component\Commerce\Common\SaleFactory"/>
-
-        <!-- Adjustment builder -->
-        <service id="ekyna_commerce.adjustment_builder"
-                 class="Ekyna\Component\Commerce\Common\AdjustmentBuilder">
-            <argument type="service" id="ekyna_commerce.sale_factory"/>
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-            <argument type="service" id="ekyna_commerce.tax.resolver"/>
-        </service>
-
-        <!-- Calculator -->
-        <service id="ekyna_commerce.common.calculator"
-                 class="Ekyna\Component\Commerce\Common\Calculator\Calculator"/>
-
-        <!-- Generator -->
-        <service id="ekyna_commerce.order.number_generator"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Order\NumberGenerator">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument>%ekyna_commerce.order.class%</argument>
-        </service>
-
-        <!-- Helpers -->
-        <!-- TODO move to Service\Subject and rename service id -->
-        <service id="ekyna_commerce.helper.subject"
-                 class="Ekyna\Bundle\CommerceBundle\Helper\SubjectHelper">
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-        </service>
-        <service id="ekyna_commerce.helper.constant"
-                 class="Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper">
-            <argument type="service" id="translator"/>
-        </service>
-        <service id="ekyna_commerce.helper.sale"
-                 class="Ekyna\Bundle\CommerceBundle\Helper\SaleHelper">
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-            <argument type="service" id="ekyna_commerce.common.view_builder"/>
-            <argument type="service" id="form.factory"/>
-            <argument type="service" id="router"/>
-            <argument type="service" id="translator"/>
-        </service>
-
-        <!-- View -->
-        <service id="ekyna_commerce.common.view_builder"
-                 class="Ekyna\Component\Commerce\Common\View\ViewBuilder">
-            <argument type="service" id="ekyna_commerce.common.calculator"/>
-        </service>
-
-        <!-- Cart -->
-        <service id="ekyna_commerce.cart.abstract_provider" abstract="true">
-            <call method="setCartRepository">
-                <argument type="service" id="ekyna_commerce.cart.repository"/>
-            </call>
-            <call method="setCartManager">
-                <argument type="service" id="ekyna_commerce.cart.manager"/>
-            </call>
-            <call method="setCustomerProvider">
-                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
-            </call>
-            <call method="setCartRepository">
-                <argument type="service" id="ekyna_commerce.cart.repository"/>
-            </call>
-            <call method="setCurrencyRepository">
-                <argument type="service" id="ekyna_commerce.currency.repository"/>
-            </call>
-        </service>
-        <service id="ekyna_commerce.cart.session_provider"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\SessionCartProvider"
-                 parent="ekyna_commerce.cart.abstract_provider">
-            <argument type="service" id="session"/>
-        </service>
-        <service id="ekyna_commerce.cart.view_vars_builder"
-                 class="%ekyna_commerce.cart.view_vars_builder.class%">
-            <argument type="service" id="router"/>
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-        </service>
-        <service id="ekyna_commerce.cart.helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper">
-            <argument type="service" id="ekyna_commerce.helper.sale"/>
-            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
-            <argument type="service" id="ekyna_commerce.cart.view_vars_builder"/>
-            <argument>%ekyna_commerce.cart_item.class%</argument>
-        </service>
-
-        <!-- Order -->
-        <service id="ekyna_commerce.order.view_vars_builder"
-                 class="%ekyna_commerce.order.view_vars_builder.class%">
-            <argument type="service" id="router"/>
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-        </service>
-
-        <!-- Customer -->
-        <service id="ekyna_commerce.customer.security_provider"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
-            <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="ekyna_commerce.customer.repository"/>
-        </service>
-
-        <!-- Subject provider and resolver registries-->
-        <service id="ekyna_commerce.subject.provider_registry"
-                 class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
-
-        <!-- Product services -->
-        <service id="ekyna_commerce.product.form_builder"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Product\FormBuilder">
-            <argument>%ekyna_commerce.product.class%</argument>
-        </service>
-        <service id="ekyna_commerce.product.item_builder"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Product\ItemBuilder">
-            <argument type="service" id="ekyna_commerce.sale_factory"/>
-            <argument type="service" id="ekyna_commerce.adjustment_builder"/>
-        </service>
-
-        <service id="ekyna_commerce.product.subject_provider"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Product\ProductProvider">
-            <argument type="service" id="ekyna_commerce.product.repository"/>
-            <argument type="service" id="ekyna_commerce.product.item_builder"/>
-            <argument type="service" id="ekyna_commerce.product.form_builder"/>
-            <tag name="ekyna_commerce.subject_provider"/>
-        </service>
-
-        <!-- Resolvers -->
-        <service id="ekyna_commerce.order.state_resolver"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Order\StateResolver"/>
+        <!-- Tax resolver -->
         <service id="ekyna_commerce.tax.resolver"
                  class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
@@ -191,251 +89,17 @@
             <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
         </service>
 
-        <!-- Variant builder -->
-        <service id="ekyna_commerce.product.variant_generator"
-                 class="Ekyna\Component\Commerce\Product\Generator\VariantGenerator">
-            <argument>%ekyna_commerce.product.class%</argument>
+        <!-- Customer security -->
+        <service id="ekyna_commerce.customer.security_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
         </service>
 
-        <!-- Resource event listeners -->
+        <!-- Customer event listener -->
         <service id="ekyna_commerce.customer.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber">
             <tag name="resource.event_subscriber"/>
-        </service>
-        <service id="ekyna_commerce.product.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ProductEventSubscriber">
-            <tag name="resource.event_subscriber"/>
-        </service>
-        <service id="ekyna_commerce.cart.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.calculator"/>
-            <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
-        </service>
-        <service id="ekyna_commerce.order.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">
-            <argument type="service" id="ekyna_commerce.order.number_generator"/>
-            <argument type="service" id="ekyna_commerce.common.calculator"/>
-            <argument type="service" id="ekyna_commerce.order.state_resolver"/>
-            <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
-        </service>
-
-        <!-- Form event listeners -->
-        <service id="ekyna_commerce.product.form_type.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\Form\EventListener\ProductTypeSubscriber">
-            <argument>%ekyna_commerce.product.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
-            <argument>%ekyna_commerce.attribute_set.class%</argument>
-        </service>
-
-        <!-- Form flows -->
-        <service id="ekyna_commerce.add_item.form_flow"
-                 class="Ekyna\Bundle\CommerceBundle\Form\AddItemFlow"
-                 parent="craue.form.flow">
-            <argument type="service" id="ekyna_commerce.subject.provider_registry" />
-        </service>
-
-        <!-- Form types -->
-        <service id="ekyna_commerce.sale_item_subject.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\SaleItemSubjectType">
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.configurable_slots.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotsType">
-            <argument>%ekyna_commerce.configurable_slot.form_type.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.configurable_slot.form_type"
-                 class="%ekyna_commerce.configurable_slot.form_type.class%">
-            <tag name="form.type"/>
-            <tag name="form.js" selector=".commerce-configurable-slot" path="ekyna-commerce/form/configurable-slot" />
-        </service>
-        <service id="ekyna_commerce.attribute.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\AttributeType">
-            <argument>%ekyna_commerce.attribute.class%</argument>
-            <argument>%ekyna_commerce.attribute_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.attribute_slot.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\AttributeSlotType">
-            <argument>%ekyna_commerce.attribute_slot.class%</argument>
-            <argument>%ekyna_commerce.attribute_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.bundle_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\BundleChoiceType">
-            <argument>%ekyna_commerce.bundle_choice.class%</argument>
-            <argument>%ekyna_commerce.product.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.bundle_choice_rule.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\BundleChoiceRuleType">
-            <argument>%ekyna_commerce.bundle_choice_rule.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.bundle_slot.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\BundleSlotType">
-            <argument>%ekyna_commerce.bundle_slot.class%</argument>
-            <argument>%ekyna_commerce.bundle_choice.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.country_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CountryChoiceType">
-            <argument>%ekyna_commerce.country.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.currency_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType">
-            <argument>%ekyna_commerce.currency.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.customer_address.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType">
-            <argument>%ekyna_commerce.customer_address.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.customer.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerType">
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <argument>%ekyna_commerce.customer_group.class%</argument>
-            <argument>%ekyna_user.user.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.option_group.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\OptionGroupType">
-            <argument>%ekyna_commerce.option_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.option.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\OptionType">
-            <argument>%ekyna_commerce.option.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.order_address.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderAddressType">
-            <argument>%ekyna_commerce.order_address.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.order_adjustment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderAdjustmentType">
-            <argument>%ekyna_commerce.order_adjustment.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.order_item_adjustment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderItemAdjustmentType">
-            <argument>%ekyna_commerce.order_item_adjustment.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.order_item.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderItemType">
-            <argument>%ekyna_commerce.order_item.class%</argument>
-            <argument type="service" id="ekyna_commerce.helper.subject"/>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.order.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\OrderType">
-            <argument>%ekyna_commerce.order.class%</argument>
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.product.form_type"
-                 class="%ekyna_commerce.product.form_type.class%">
-            <argument type="service" id="ekyna_commerce.product.form_type.event_subscriber"/>
-            <argument>%ekyna_commerce.product.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.tax_group.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupType">
-            <argument>%ekyna_commerce.tax_group.class%</argument>
-            <argument>%ekyna_commerce.tax_rule.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.tax_rule.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType">
-            <argument>%ekyna_commerce.tax_rule.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
-            <argument>%ekyna_commerce.tax.class%</argument>
-            <argument>%ekyna_commerce.customer_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.tax.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxType">
-            <argument>%ekyna_commerce.tax.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
-            <tag name="form.type"/>
-        </service>
-
-        <!-- Table types -->
-        <service id="ekyna_commerce.customer.table_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType">
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <argument>%ekyna_commerce.customer_group.class%</argument>
-            <tag name="table.type" alias="ekyna_commerce_customer"/>
-        </service>
-
-        <!-- Table column types -->
-        <service id="ekyna_commerce.order_customer.column_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Column\OrderCustomerType">
-            <argument type="service" id="ekyna_user.helper.identity"/>
-            <tag name="table.column_type" alias="ekyna_commerce_order_customer"/>
-        </service>
-        <service id="ekyna_commerce.order_state.column_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Column\OrderStateType">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="table.column_type" alias="ekyna_commerce_order_state"/>
-        </service>
-        <service id="ekyna_commerce.product_type.column_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ProductTypeType">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="table.column_type" alias="ekyna_commerce_product_type"/>
-        </service>
-        <service id="ekyna_commerce.payment_state.column_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="table.column_type" alias="ekyna_commerce_payment_state"/>
-        </service>
-        <service id="ekyna_commerce.shipment_state.column_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="table.column_type" alias="ekyna_commerce_shipment_state"/>
-        </service>
-
-        <!-- Twig extensions -->
-        <service id="ekyna_commerce.twig.address_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension">
-            <tag name="twig.extension"/>
-        </service>
-        <service id="ekyna_commerce.twig.order_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\OrderExtension">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="ekyna_commerce.twig.payment_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="ekyna_commerce.twig.product_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\ProductExtension">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="ekyna_commerce.twig.sale_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension">
-            <argument type="service" id="ekyna_commerce.common.view_builder"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="ekyna_commerce.twig.shipment_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension">
-            <argument type="service" id="ekyna_commerce.helper.constant"/>
-            <tag name="twig.extension"/>
         </service>
 
     </services>

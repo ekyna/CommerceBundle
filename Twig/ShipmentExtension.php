@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
 
 /**
  * Class ShipmentExtension
@@ -12,7 +12,7 @@ use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
 class ShipmentExtension extends \Twig_Extension
 {
     /**
-     * @var ConstantHelper
+     * @var \Ekyna\Bundle\CommerceBundle\Service\ConstantHelper
      */
     private $constantHelper;
 
@@ -20,7 +20,7 @@ class ShipmentExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantHelper $constantHelper
+     * @param \Ekyna\Bundle\CommerceBundle\Service\ConstantHelper $constantHelper
      */
     public function __construct(ConstantHelper $constantHelper)
     {

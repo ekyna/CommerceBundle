@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Twig extensions -->
+        <service id="ekyna_commerce.twig.address_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension">
+            <tag name="twig.extension"/>
+        </service>
+        <service id="ekyna_commerce.twig.payment_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="ekyna_commerce.twig.product_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\ProductExtension">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="ekyna_commerce.twig.sale_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.common.view_builder"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="ekyna_commerce.twig.shipment_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="twig.extension"/>
+        </service>
+
+    </services>
+
+</container>

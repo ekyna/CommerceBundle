@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Sale factory -->
+        <service id="ekyna_commerce.sale_factory"
+                 class="Ekyna\Component\Commerce\Common\SaleFactory"/>
+
+        <!-- Adjustment builder -->
+        <service id="ekyna_commerce.adjustment_builder"
+                 class="Ekyna\Component\Commerce\Common\AdjustmentBuilder">
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_commerce.tax.resolver"/>
+        </service>
+
+        <!-- Calculator -->
+        <service id="ekyna_commerce.common.calculator"
+                 class="Ekyna\Component\Commerce\Common\Calculator\Calculator"/>
+
+        <!-- Generators -->
+        <service id="ekyna_commerce.sale.number_generator"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleNumberGenerator">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+        </service>
+        <service id="ekyna_commerce.sale.key_generator"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleKeyGenerator">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+        </service>
+
+        <!-- ############################## CART ############################## -->
+
+        <!-- Cart abstract provider -->
+        <service id="ekyna_commerce.cart.abstract_provider" abstract="true">
+            <call method="setCartRepository">
+                <argument type="service" id="ekyna_commerce.cart.repository"/>
+            </call>
+            <call method="setCartManager">
+                <argument type="service" id="ekyna_commerce.cart.manager"/>
+            </call>
+            <call method="setCustomerProvider">
+                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            </call>
+            <call method="setCartRepository">
+                <argument type="service" id="ekyna_commerce.cart.repository"/>
+            </call>
+            <call method="setCurrencyRepository">
+                <argument type="service" id="ekyna_commerce.currency.repository"/>
+            </call>
+        </service>
+
+        <!-- Cart session provider -->
+        <service id="ekyna_commerce.cart.session_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\SessionCartProvider"
+                 parent="ekyna_commerce.cart.abstract_provider">
+            <argument type="service" id="session"/>
+        </service>
+
+        <!-- Cart event listener -->
+        <service id="ekyna_commerce.cart.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber">
+            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- ############################## ORDER ############################## -->
+
+        <!-- Order state resolver -->
+        <service id="ekyna_commerce.order.state_resolver"
+                 class="Ekyna\Component\Commerce\Order\Resolver\StateResolver"/>
+
+        <!-- Order event listener -->
+        <service id="ekyna_commerce.order.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">
+            <argument type="service" id="ekyna_commerce.sale.number_generator"/>
+            <argument type="service" id="ekyna_commerce.sale.key_generator"/>
+            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <argument type="service" id="ekyna_commerce.order.state_resolver"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- ############################## QUOTE ############################## -->
+
+        <!-- Quote state resolver -->
+        <service id="ekyna_commerce.quote.state_resolver"
+                 class="Ekyna\Component\Commerce\Quote\Resolver\StateResolver"/>
+
+        <!-- Quote event listener -->
+        <service id="ekyna_commerce.quote.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuoteEventSubscriber">
+            <argument type="service" id="ekyna_commerce.sale.number_generator"/>
+            <argument type="service" id="ekyna_commerce.sale.key_generator"/>
+            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+    </services>
+
+</container>

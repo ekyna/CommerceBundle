@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
 
 /**
  * Class PaymentExtension
@@ -20,7 +20,7 @@ class PaymentExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantHelper $constantHelper
+     * @param \Ekyna\Bundle\CommerceBundle\Service\ConstantHelper $constantHelper
      */
     public function __construct(ConstantHelper $constantHelper)
     {

@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
-use Ekyna\Bundle\CommerceBundle\Helper\SubjectHelperInterface;
+use Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormEvents;
 class OrderItemTypeSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var SubjectHelperInterface
+     * @var \Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface
      */
     private $subjectHelper;
 
@@ -28,8 +28,8 @@ class OrderItemTypeSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param SubjectHelperInterface $subjectHelper
-     * @param array                  $fields
+     * @param \Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface $subjectHelper
+     * @param array                                                       $fields
      */
     public function __construct(SubjectHelperInterface $subjectHelper, array $fields)
     {

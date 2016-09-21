@@ -38,6 +38,13 @@ class AdminMenuPass implements CompilerPassInterface
             'resource' => 'ekyna_commerce_order',
             'position' => 1,
         ]]);
+        $pool->addMethodCall('createEntry', ['sales', [
+            'name'     => 'quotes',
+            'route'    => 'ekyna_commerce_quote_admin_home',
+            'label'    => 'ekyna_commerce.quote.label.plural',
+            'resource' => 'ekyna_commerce_quote',
+            'position' => 2,
+        ]]);
 
         // Customers
         $pool->addMethodCall('createEntry', ['sales', [

@@ -5,7 +5,6 @@ namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
-use Ekyna\Component\Commerce\Subject\Resolver\SubjectResolverRegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -52,20 +51,6 @@ class SaleItemSubjectTypeSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Form post set data event handler.
-     *
-     * @param FormEvent $event
-     */
-//    public function onPostSetData(FormEvent $event)
-//    {
-//        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
-//        $item = $event->getData();
-//        $form = $event->getForm();
-//
-//        $this->getProvider($item)->buildItemForm($form, $item);
-//    }
-
-    /**
      * Form post submit event handler.
      *
      * @param FormEvent $event
@@ -101,7 +86,6 @@ class SaleItemSubjectTypeSubscriber implements EventSubscriberInterface
     {
         return [
             FormEvents::PRE_SET_DATA  => ['onPreSetData', 1024],
-//            FormEvents::POST_SET_DATA => ['onPostSetData', 1024],
             FormEvents::POST_SUBMIT   => ['onPostSubmit', 1024],
         ];
     }

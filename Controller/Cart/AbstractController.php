@@ -128,7 +128,7 @@ class AbstractController
     /**
      * Returns the sale helper.
      *
-     * @return \Ekyna\Bundle\CommerceBundle\Helper\SaleHelper
+     * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
      */
     protected function getSaleHelper()
     {

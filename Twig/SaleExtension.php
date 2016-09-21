@@ -2,10 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
-use Ekyna\Bundle\CommerceBundle\Helper\SaleHelper;
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Common\View\ViewBuilder as ViewBuilder;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
+use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\SaleView;
 
 /**
@@ -16,6 +14,11 @@ use Ekyna\Component\Commerce\Common\View\SaleView;
 class SaleExtension extends \Twig_Extension
 {
     /**
+     * @var ConstantHelper
+     */
+    private $constantHelper;
+
+    /**
      * @var ViewBuilder
      */
     private $viewBuilder;
@@ -24,10 +27,12 @@ class SaleExtension extends \Twig_Extension
     /**
      * Constructor.
      *
+     * @param ConstantHelper $constantHelper
      * @param ViewBuilder $viewBuilder
      */
-    public function __construct(ViewBuilder $viewBuilder)
+    public function __construct(ConstantHelper $constantHelper, ViewBuilder $viewBuilder)
     {
+        $this->constantHelper = $constantHelper;
         $this->viewBuilder = $viewBuilder;
     }
 
@@ -37,6 +42,16 @@ class SaleExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
+            new \Twig_SimpleFilter(
+                'sale_state_label',
+                [$this->constantHelper, 'renderSaleStateLabel'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'sale_state_badge',
+                [$this->constantHelper, 'renderSaleStateBadge'],
+                ['is_safe' => ['html']]
+            ),
             // Builds the sale view form the sale
             new \Twig_SimpleFilter(
                 'sale_view',
@@ -65,7 +80,7 @@ class SaleExtension extends \Twig_Extension
      *
      * @param \Twig_Environment $env
      * @param SaleView          $view
-     * @param string            $template
+     * @param string            $template TODO remove as defined in view vars
      *
      * @return string
      */

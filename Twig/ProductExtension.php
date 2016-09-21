@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Helper\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
 use Ekyna\Bundle\CommerceBundle\Model\ProductTypes;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductTypes as Types;

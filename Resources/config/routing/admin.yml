@@ -30,6 +30,10 @@ ekyna_commerce_product_admin:
     resource: "admin/product.yml"
     prefix:   /products
 
+ekyna_commerce_quote_admin:
+    resource: "admin/quote.yml"
+    prefix:   /quotes
+
 ekyna_commerce_tax_admin:
     resource: "admin/tax.yml"
     prefix:   /taxes

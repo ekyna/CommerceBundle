@@ -1,0 +1,48 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.quote.header.show'|trans({'%number%': quote.number})|raw }}</h1>
+{% endblock title %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(quote, 'edit') }}
+    {{ admin_resource_btn(quote, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#quote-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        </li>
+        <li>
+            <a href="#quote-details" data-toggle="tab">{{ 'ekyna_commerce.sale.field.details'|trans }}</a>
+        </li>
+        <li>
+            <a href="#quote-payments" data-toggle="tab">{{ 'ekyna_commerce.payment.label.plural'|trans }}</a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="quote-general">
+                {% include "EkynaCommerceBundle:Admin/Quote/Show:general.html.twig" %}
+            </div>
+            <div class="tab-pane" id="quote-details">
+                {{ render_sale_view(sale_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
+            </div>
+            <div class="tab-pane" id="quote-payments">
+                {% include "EkynaCommerceBundle:Admin/Quote/Show:payments.html.twig" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
+{% endblock javascripts %}

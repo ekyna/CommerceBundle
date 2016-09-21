@@ -5,7 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use Ekyna\Bundle\AdminBundle\Event\ResourceEventInterface;
 use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Event\OrderEvents;
 use Ekyna\Component\Commerce\Order\Model\OrderEventInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -38,22 +40,26 @@ class OrderEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
-    protected function handleIdentity(OrderInterface $order)
+    protected function handleIdentity(SaleInterface $sale)
     {
+        if (!$sale instanceof OrderInterface) {
+            throw new InvalidArgumentException("Expected instance of OrderInterface.");
+        }
+
         $changed = false;
 
         /**
-         * @var \Ekyna\Bundle\CommerceBundle\Model\OrderInterface $order
+         * @var \Ekyna\Bundle\CommerceBundle\Model\OrderInterface $sale
          * @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer
          */
-        if (null !== $customer = $order->getCustomer()) {
-            if (0 == strlen($order->getGender())) {
-                $order->setGender($customer->getGender());
+        if (null !== $customer = $sale->getCustomer()) {
+            if (0 == strlen($sale->getGender())) {
+                $sale->setGender($customer->getGender());
                 $changed = true;
             }
         }
 
-        return $changed || parent::handleIdentity($order);
+        return $changed || parent::handleIdentity($sale);
     }
 
     /**

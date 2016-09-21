@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Customer table type -->
+        <service id="ekyna_commerce.customer.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType">
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <argument>%ekyna_commerce.customer_group.class%</argument>
+            <tag name="table.type" alias="ekyna_commerce_customer"/>
+        </service>
+
+        <!-- Customer column column type -->
+        <service id="ekyna_commerce.order_customer.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">
+            <argument type="service" id="ekyna_user.helper.identity"/>
+            <tag name="table.column_type" alias="ekyna_commerce_sale_customer"/>
+        </service>
+
+        <!-- Order state column column type -->
+        <service id="ekyna_commerce.order_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleStateType">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="table.column_type" alias="ekyna_commerce_sale_state"/>
+        </service>
+
+        <!-- Product type column column type -->
+        <service id="ekyna_commerce.product_type.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ProductTypeType">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="table.column_type" alias="ekyna_commerce_product_type"/>
+        </service>
+
+        <!-- Payment state column column type -->
+        <service id="ekyna_commerce.payment_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="table.column_type" alias="ekyna_commerce_payment_state"/>
+        </service>
+
+        <!-- Shipment state column column type -->
+        <service id="ekyna_commerce.shipment_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="table.column_type" alias="ekyna_commerce_shipment_state"/>
+        </service>
+
+    </services>
+
+</container>
