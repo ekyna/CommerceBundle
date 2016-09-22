@@ -2,13 +2,14 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Bundle\AdminBundle\Event\ResourceEventInterface;
 use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Cart\Event\CartEvents;
-use Ekyna\Component\Commerce\Cart\Model\CartEventInterface;
-use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Resource\Event\ResourceEventInterface;
 
 /**
  * Class CartEventSubscriber
@@ -18,16 +19,14 @@ use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 class CartEventSubscriber extends BaseSubscriber
 {
     /**
-     * Pre delete event handler.
-     *
-     * @param CartEventInterface $event
+     * @inheritdoc
      */
-    public function onPreDelete(CartEventInterface $event)
+    public function onPreDelete(ResourceEventInterface $event)
     {
         try {
             parent::onPreDelete($event);
         } catch (CommerceExceptionInterface $e) {
-            /** @var ResourceEventInterface $event */
+            /** @var \Ekyna\Bundle\AdminBundle\Event\ResourceEventInterface $event */
             $event->addMessage(new ResourceMessage(
                 'ekyna_commerce.cart.message.cant_be_deleted', // TODO
                 ResourceMessage::TYPE_ERROR
@@ -38,26 +37,30 @@ class CartEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
-    protected function handleIdentity(CartInterface $cart)
+    protected function handleIdentity(SaleInterface $sale)
     {
+        if (!$sale instanceof CartInterface) {
+            throw new InvalidArgumentException("Expected instance of CartInterface.");
+        }
+
         $changed = false;
 
         /**
-         * @var \Ekyna\Bundle\CommerceBundle\Model\CartInterface $cart
+         * @var \Ekyna\Bundle\CommerceBundle\Model\CartInterface     $sale
          * @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer
          */
-        if (null !== $customer = $cart->getCustomer()) {
-            if (0 == strlen($cart->getGender())) {
-                $cart->setGender($customer->getGender());
+        if (null !== $customer = $sale->getCustomer()) {
+            if (0 == strlen($sale->getGender())) {
+                $sale->setGender($customer->getGender());
                 $changed = true;
             }
         }
 
-        return $changed || parent::handleIdentity($cart);
+        return $changed || parent::handleIdentity($sale);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public static function getSubscribedEvents()
     {

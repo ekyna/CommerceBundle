@@ -38,6 +38,36 @@
             <tag name="form.type"/>
         </service>
 
+        <!-- Cart form types -->
+        <service id="ekyna_commerce.cart_address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType">
+            <argument>%ekyna_commerce.cart_address.class%</argument>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.cart_adjustment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAdjustmentType">
+            <argument>%ekyna_commerce.cart_adjustment.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.cart_item_adjustment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemAdjustmentType">
+            <argument>%ekyna_commerce.cart_item_adjustment.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.cart_item.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemType">
+            <argument>%ekyna_commerce.cart_item.class%</argument>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.cart.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType">
+            <argument>%ekyna_commerce.cart.class%</argument>
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
         <!-- Configurable slot form types -->
         <service id="ekyna_commerce.configurable_slots.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\ConfigurableSlotsType">

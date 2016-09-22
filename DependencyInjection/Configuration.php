@@ -133,15 +133,67 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('cart')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue([])->end()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Cart:_form.html',
+                                    'show.html'   => 'EkynaCommerceBundle:Admin/Cart:show.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Cart:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Cart:remove.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Cart')->end()
-                                ->scalarNode('controller')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Bundle\CommerceBundle\Repository\CartRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CartType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\CartEvent')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('cart_item')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Item:_form.html',
+                                    'add.html'       => 'EkynaCommerceBundle:Admin/Common/Item:add.html',
+                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Item:new.html',
+                                    'configure.html' => 'EkynaCommerceBundle:Admin/Common/Item:configure.html',
+                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Item:edit.html',
+                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Item:remove.html',
+                                ])->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemController')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartItem')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('cart_adjustment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartAdjustment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAdjustmentType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('cart_payment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Payment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Payment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Payment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartPayment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
                             ->end()
                         ->end()
                         ->arrayNode('country')
@@ -257,14 +309,29 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAdjustmentType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('order_payment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Payment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Payment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Payment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderPayment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
                             ->end()
                         ->end()
@@ -333,14 +400,29 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAdjustmentType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('quote_payment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Payment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Payment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Payment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuotePayment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuotePaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
                             ->end()
                         ->end()

@@ -63,3 +63,7 @@ ekyna_commerce_order_item_admin:
 ekyna_commerce_order_adjustment_admin:
     resource: order_adjustment.yml
     prefix: /{orderId}/adjustments
+
+ekyna_commerce_order_payment_admin:
+    resource: order_payment.yml
+    prefix: /{orderId}/payments

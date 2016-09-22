@@ -23,7 +23,8 @@
         <parameter key="ekyna_commerce.bundle_choice_rule.class">Ekyna\Component\Commerce\Product\Entity\BundleChoiceRule</parameter>
         <parameter key="ekyna_commerce.bundle_slot.class">Ekyna\Component\Commerce\Product\Entity\BundleSlot</parameter>
 
-        <parameter key="ekyna_commerce.cart_item.class">Ekyna\Component\Commerce\Cart\Entity\CartItem</parameter>
+        <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
+        <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
         <parameter key="ekyna_commerce.cart.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewVarsBuilder</parameter>
 
         <parameter key="ekyna_commerce.configurable_slot.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotType</parameter>
@@ -32,10 +33,7 @@
         <parameter key="ekyna_commerce.option.class">Ekyna\Component\Commerce\Product\Entity\Option</parameter>
 
         <parameter key="ekyna_commerce.order_address.class">Ekyna\Bundle\CommerceBundle\Entity\OrderAddress</parameter>
-        <!--<parameter key="ekyna_commerce.order_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderAdjustment</parameter>-->
-        <!--<parameter key="ekyna_commerce.order_item.class">Ekyna\Component\Commerce\Order\Entity\OrderItem</parameter>-->
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.order_payment.class">Ekyna\Component\Commerce\Order\Entity\OrderPayment</parameter>
         <parameter key="ekyna_commerce.order.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewVarsBuilder</parameter>
 
         <parameter key="ekyna_commerce.payment_method.class">Ekyna\Component\Commerce\Payment\Entity\PaymentMethod</parameter>
@@ -43,10 +41,7 @@
         <parameter key="ekyna_commerce.product.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ProductType</parameter>
 
         <parameter key="ekyna_commerce.quote_address.class">Ekyna\Bundle\CommerceBundle\Entity\QuoteAddress</parameter>
-        <parameter key="ekyna_commerce.quote_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteAdjustment</parameter>
-        <parameter key="ekyna_commerce.quote_item.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItem</parameter>
         <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.quote_payment.class">Ekyna\Component\Commerce\Quote\Entity\QuotePayment</parameter>
         <parameter key="ekyna_commerce.quote.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewVarsBuilder</parameter>
 
         <parameter key="ekyna_commerce.shipment.class">Ekyna\Component\Commerce\Shipment\Entity\Shipment</parameter>

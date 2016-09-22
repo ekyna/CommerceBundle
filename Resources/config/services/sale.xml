@@ -59,10 +59,17 @@
             <argument type="service" id="session"/>
         </service>
 
+        <!-- Cart state resolver -->
+        <service id="ekyna_commerce.cart.state_resolver"
+                 class="Ekyna\Component\Commerce\Cart\Resolver\CartStateResolver"/>
+
         <!-- Cart event listener -->
         <service id="ekyna_commerce.cart.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber">
+            <argument type="service" id="ekyna_commerce.sale.number_generator"/>
+            <argument type="service" id="ekyna_commerce.sale.key_generator"/>
             <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <argument type="service" id="ekyna_commerce.cart.state_resolver"/>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
@@ -71,7 +78,7 @@
 
         <!-- Order state resolver -->
         <service id="ekyna_commerce.order.state_resolver"
-                 class="Ekyna\Component\Commerce\Order\Resolver\StateResolver"/>
+                 class="Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver"/>
 
         <!-- Order event listener -->
         <service id="ekyna_commerce.order.event_subscriber"
@@ -88,7 +95,7 @@
 
         <!-- Quote state resolver -->
         <service id="ekyna_commerce.quote.state_resolver"
-                 class="Ekyna\Component\Commerce\Quote\Resolver\StateResolver"/>
+                 class="Ekyna\Component\Commerce\Quote\Resolver\QuoteStateResolver"/>
 
         <!-- Quote event listener -->
         <service id="ekyna_commerce.quote.event_subscriber"

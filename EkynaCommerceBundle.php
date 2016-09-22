@@ -36,6 +36,7 @@ class EkynaCommerceBundle extends AbstractBundle
     {
         return array_replace(DoctrineBundleMapping::getDefaultImplementations(), [
             Commerce\Cart\Model\CartInterface::class                => 'ekyna_commerce.cart.class',
+            Commerce\Cart\Model\CartAddressInterface::class         => 'ekyna_commerce.cart_address.class',
 
             Commerce\Customer\Model\CustomerInterface::class        => 'ekyna_commerce.customer.class',
             Commerce\Customer\Model\CustomerAddressInterface::class => 'ekyna_commerce.customer_address.class',
@@ -43,18 +44,13 @@ class EkynaCommerceBundle extends AbstractBundle
             Commerce\Product\Model\ProductInterface::class          => 'ekyna_commerce.product.class',
 
             Commerce\Order\Model\OrderInterface::class              => 'ekyna_commerce.order.class',
-            // TODO OrderItem as it is configured as a resource
             Commerce\Order\Model\OrderAddressInterface::class       => 'ekyna_commerce.order_address.class',
-            Commerce\Order\Model\OrderPaymentInterface::class       => 'ekyna_commerce.order_payment.class',
 
             Commerce\Payment\Model\PaymentMethodInterface::class    => 'ekyna_commerce.payment_method.class',
 
             Commerce\Quote\Model\QuoteInterface::class              => 'ekyna_commerce.quote.class',
-            // TODO QuoteItem as it is configured as a resource
             Commerce\Quote\Model\QuoteAddressInterface::class       => 'ekyna_commerce.quote_address.class',
 
-            Commerce\Shipment\Model\ShipmentInterface::class        => 'ekyna_commerce.shipment.class',
-            Commerce\Shipment\Model\ShipmentItemInterface::class    => 'ekyna_commerce.shipment_item.class',
             Commerce\Shipment\Model\ShipmentMethodInterface::class  => 'ekyna_commerce.shipment_method.class',
         ]);
     }

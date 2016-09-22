@@ -2,15 +2,14 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Bundle\AdminBundle\Event\ResourceEventInterface;
 use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Event\OrderEvents;
-use Ekyna\Component\Commerce\Order\Model\OrderEventInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Resource\Event\ResourceEventInterface;
 
 /**
  * Class OrderEventSubscriber
@@ -20,16 +19,14 @@ use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 class OrderEventSubscriber extends BaseSubscriber
 {
     /**
-     * Pre delete event handler.
-     *
-     * @param OrderEventInterface $event
+     * @inheritdoc
      */
-    public function onPreDelete(OrderEventInterface $event)
+    public function onPreDelete(ResourceEventInterface $event)
     {
         try {
             parent::onPreDelete($event);
         } catch (CommerceExceptionInterface $e) {
-            /** @var ResourceEventInterface $event */
+            /** @var \Ekyna\Bundle\AdminBundle\Event\ResourceEventInterface $event */
             $event->addMessage(new ResourceMessage(
                 'ekyna_commerce.order.message.cant_be_deleted', // TODO
                 ResourceMessage::TYPE_ERROR
@@ -63,7 +60,7 @@ class OrderEventSubscriber extends BaseSubscriber
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public static function getSubscribedEvents()
     {

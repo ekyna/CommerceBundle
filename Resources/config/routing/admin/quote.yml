@@ -63,3 +63,7 @@ ekyna_commerce_quote_admin_item:
 ekyna_commerce_quote_admin_adjustment:
     resource: quote_adjustment.yml
     prefix: /{quoteId}/adjustments
+
+ekyna_commerce_quote_admin_payment:
+    resource: quote_payment.yml
+    prefix: /{quoteId}/payments

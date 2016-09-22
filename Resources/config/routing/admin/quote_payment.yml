@@ -1,0 +1,22 @@
+ekyna_commerce_quote_payment_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.quote_payment.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+
+ekyna_commerce_quote_payment_admin_edit:
+    path: /{quotePaymentId}/edit
+    defaults: { _controller: "ekyna_commerce.quote_payment.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+        quotePaymentId: \d+
+
+ekyna_commerce_quote_payment_admin_remove:
+    path: /{quotePaymentId}/remove
+    defaults: { _controller: "ekyna_commerce.quote_payment.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+        quotePaymentId: \d+

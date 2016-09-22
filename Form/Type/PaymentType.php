@@ -9,18 +9,18 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class AdjustmentType
+ * Class PaymentType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AdjustmentType extends ResourceFormType
+class PaymentType extends ResourceFormType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
+        /* TODO $builder
             ->add('designation', Type\TextType::class, [
                 'label' => 'ekyna_core.field.designation',
                 'sizing' => 'sm',
@@ -58,14 +58,14 @@ class AdjustmentType extends ResourceFormType
                 'attr' => [
                     'data-collection-role' => 'position',
                 ],
-            ]);
+            ]);*/
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+    /* TODO public function getBlockPrefix()
     {
-        return 'ekyna_commerce_adjustment';
-    }
+        return 'ekyna_commerce_payment';
+    }*/
 }

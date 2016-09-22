@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class AbstractAddressType
+ * Class AddressType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
