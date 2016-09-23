@@ -1,0 +1,84 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block main %}
+    <div class="actions">
+        {{ admin_resource_btn(method, 'edit') }}
+        {{ admin_resource_btn(method, 'remove') }}
+    </div>
+    <div class="show show-with-tabs">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#shipment-method-general" data-toggle="tab">
+                    {{ 'ekyna_core.field.general'|trans }}
+                </a>
+            </li>
+            <li>
+                <a href="#shipment-method-content" data-toggle="tab">
+                    {{ 'ekyna_core.field.content'|trans }}
+                </a>
+            </li>
+            <li>
+                <a href="#shipment-method-messages" data-toggle="tab">
+                    {{ 'ekyna_commerce.message.label.plural'|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="show-body">
+            <div class="tab-content">
+                <div class="tab-pane active" id="shipment-method-general">
+                    {{ show_row(method.name, 'text', 'ekyna_core.field.name') }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(method.enabled, 'checkbox', 'ekyna_core.field.enabled', {
+                                'label_nb_col': 4
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(method.available, 'checkbox', 'ekyna_commerce.shipment_method.field.available', {
+                                'label_nb_col': 4
+                            }) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="shipment-method-content">
+                    {{ show_row(method.media, 'media', 'ekyna_core.field.image') }}
+                    {# Translations #}
+                </div>
+                <div class="tab-pane" id="shipment-method-messages">
+                    <ul class="nav nav-tabs">
+                        {% for message in method.messages %}
+                            <li{% if loop.first %} class="active"{% endif %}>
+                                <a href="#shipment-method-state-{{ message.state }}" data-toggle="tab">
+                                    {{ message.state|shipment_state_label }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="panel-body" style="border: 1px solid #ddd; border-top: none; padding:15px 15px 1px 15px; margin-bottom: 15px;">
+                        <div class="tab-content">
+                            {% for message in method.messages %}
+                                <div class="tab-pane{% if loop.first %} active{% endif %}"
+                                     id="shipment-method-state-{{ message.state }}">
+                                    <div class="row show-row">
+                                        <div class="col-md-2 show-label">
+                                            {{ 'ekyna_core.field.content'|trans }}
+                                        </div>
+                                        <div class="col-md-10">
+                                            <div class="show-widget show-widget-block">
+                                                {% if message.content is empty %}
+                                                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                                                {% else %}
+                                                    {{ message.content|raw }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main %}

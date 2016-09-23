@@ -1,3 +1,4 @@
+# TODO split commerce / settings
 ekyna_commerce_admin:
     resource: "routing/admin.yml"
     prefix:   /admin/commerce

@@ -69,12 +69,39 @@
         </property>
     </class>
 
+    <!-- PaymentMethod -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod">
+        <property name="factoryName">
+            <constraint name="NotBlank" />
+        </property>
+    </class>
+
     <!-- Quote -->
 
     <class name="Ekyna\Bundle\CommerceBundle\Entity\Quote">
         <property name="gender">
             <constraint name="NotBlank" />
             <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
+        </property>
+    </class>
+
+    <!-- Quote Address -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\QuoteAddress">
+        <property name="gender">
+            <constraint name="NotBlank" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
+        </property>
+        <property name="phone">
+            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
+                <option name="type">fixed_line</option>
+            </constraint>
+        </property>
+        <property name="mobile">
+            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
+                <option name="type">mobile</option>
+            </constraint>
         </property>
     </class>
 

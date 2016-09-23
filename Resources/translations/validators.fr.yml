@@ -12,4 +12,9 @@ ekyna_commerce:
         slot_has_too_many_attributes: Le groupe "%group_name%" ne peut avoir plus d'un attribut sélectionné.
         unexpected_attribute: L'attribut "%attribute_name%" ne correspond à aucun groupe du modèle d'attributs.
         variant_is_not_unique: Une autre variante existe déjà avec cette configuration d'attributs.
+    payment:
+        method:
+            not_null: Veuillez choisir un mode de paiement.
+    message:
+        already_exists: Un message existe déjà pour cette méthode et ce statut.
 

@@ -183,6 +183,30 @@
             <tag name="form.type"/>
         </service>
 
+        <!-- Payment form types -->
+        <service id="ekyna_commerce.payment_method.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\PaymentMethodType">
+            <argument>%ekyna_commerce.payment_method.class%</argument>
+            <argument id="payum" type="service" />
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.payment_method_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType">
+            <argument>%ekyna_commerce.payment_method.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.payment_method_factory_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodFactoryChoiceType">
+            <argument>%ekyna_commerce.payment_method.class%</argument>
+            <tag name="form.type" />
+        </service>
+
+        <!-- Payment method create form flow -->
+        <service id="ekyna_commerce.payment_method_create.form_flow"
+                 class="Ekyna\Bundle\CommerceBundle\Form\PaymentMethodCreateFlow"
+                 parent="craue.form.flow">
+        </service>
+
         <!-- Product form types -->
         <service id="ekyna_commerce.product.form_type"
                  class="%ekyna_commerce.product.form_type.class%">

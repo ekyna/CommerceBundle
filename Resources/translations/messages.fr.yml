@@ -152,10 +152,6 @@ ekyna_commerce:
             new: Nouveau client
             edit: Modifier le client
             remove: Supprimer le client
-#        field:
-#            controller: Gabarit
-#        value:
-#            root: Racine
         alert:
             no_item: Aucun client configuré
     customer_address:
@@ -174,10 +170,6 @@ ekyna_commerce:
             new: Nouvelle adresse
             edit: Modifier l'adresse
             remove: Supprimer l'adresse
-#        field:
-#            controller: Gabarit
-#        value:
-#            root: Racine
         alert:
             no_item: Aucune adresse configuré
     customer_group:
@@ -198,6 +190,13 @@ ekyna_commerce:
             remove: Supprimer le groupe de clients
         alert:
             no_item: Aucun groupe de clients configuré
+    message:
+        label:
+            singular: Message
+            plural: Messages
+        field:
+            flash: Flash
+            email: Email
     option:
         label:
             singular: Option
@@ -250,12 +249,20 @@ ekyna_commerce:
             none: Aucune commande à traiter
     order_item:
         label:
-            singular: Ligne
-            plural: Lignes
+            singular: Ligne de commande
+            plural: Lignes de commande
     order_adjustment:
         label:
-            singular: Ajustement
-            plural: Ajustements
+            singular: Ajustement de commande
+            plural: Ajustements de commande
+    order_payment:
+        label:
+            singular: Paiement de commande
+            plural: Paiements de commande
+    order_shipment:
+        label:
+            singular: Livraison de commande
+            plural: Livraisons de commande
     payment:
         label:
             singular: Paiement
@@ -366,14 +373,6 @@ ekyna_commerce:
             net_price: Prix Net
         alert:
             no_item: Aucun produit configuré
-    variant:
-        label:
-            singular: Variante
-            plural: Variantes
-        header:
-            list: Variantes <small>Liste des variantes</small>
-        button:
-            new: Nouvelle variante
     quote:
         label:
             singular: Devis
@@ -407,12 +406,16 @@ ekyna_commerce:
             none: Aucun devis à traiter
     quote_item:
         label:
-            singular: Ligne
-            plural: Lignes
+            singular: Ligne de devis
+            plural: Lignes de devis
     quote_adjustment:
         label:
-            singular: Ajustement
-            plural: Ajustements
+            singular: Ajustement de devis
+            plural: Ajustements de devis
+    quote_payment:
+        label:
+            singular: Paiement de devis
+            plural: Paiements de devis
     sale:
         label:
             singular: Vente
@@ -586,3 +589,11 @@ ekyna_commerce:
             remove: Supprimer la règle
         alert:
             no_item: Aucune règle de taxes configuré
+    variant:
+        label:
+            singular: Variante
+            plural: Variantes
+        header:
+            list: Variantes <small>Liste des variantes</small>
+        button:
+            new: Nouvelle variante

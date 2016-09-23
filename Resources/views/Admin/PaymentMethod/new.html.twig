@@ -1,0 +1,66 @@
+{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
+
+{% block main %}
+    {{ form_start(form) }}
+
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#payment-method-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+        {% if flow.getCurrentStepNumber() == 2 %}
+            <li>
+                <a href="#payment-method-content" data-toggle="tab">
+                    {{ 'ekyna_core.field.content'|trans }}
+                </a>
+            </li>
+            <li>
+                <a href="#payment-method-messages" data-toggle="tab">
+                    {{ 'ekyna_commerce.message.label.plural'|trans }}
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+
+    <div class="panel-body form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        <div class="tab-content">
+            {{ form_errors(form) }}
+            <div class="tab-pane active" id="payment-method-general">
+                {% if flow.getCurrentStepNumber() == 1 %}
+                    {{ form_row(form.factoryName) }}
+                {% else %}
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.factoryName) }}
+                    {% if form.config is defined %}
+                        {{ form_row(form.config) }}
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.available) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.enabled) }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% if flow.getCurrentStepNumber() == 2 %}
+                <div class="tab-pane" id="payment-method-content">
+                    {{ form_row(form.media) }}
+                    {{ form_row(form.translations) }}
+                </div>
+                <div class="tab-pane" id="payment-method-messages">
+                    {{ form_widget(form.messages) }}
+                </div>
+            {% endif %}
+            {{ form_rest(form) }}
+        </div>
+
+        {% include 'EkynaAdminBundle:Form:form_flow_buttons.html.twig' %}
+    </div>
+
+    {{ form_end(form) }}
+{% endblock main %}

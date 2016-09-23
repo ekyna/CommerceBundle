@@ -32,7 +32,11 @@ class AddressExtension extends \Twig_Extension implements \Twig_Extension_InitRu
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('render_address',   [$this, 'renderAddress'],  ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction(
+                'render_address',
+                [$this, 'renderAddress'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 

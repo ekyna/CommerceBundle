@@ -33,8 +33,16 @@ class ShipmentExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('shipment_state_label', [$this->constantHelper, 'renderShipmentStateLabel'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFilter('shipment_state_badge', [$this->constantHelper, 'renderShipmentStateBadge'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFilter(
+                'shipment_state_label',
+                [$this->constantHelper, 'renderShipmentStateLabel'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'shipment_state_badge',
+                [$this->constantHelper, 'renderShipmentStateBadge'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 

@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
-use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Subject\Helper;
 
 /**
@@ -15,7 +15,7 @@ class SubjectHelper extends Helper implements SubjectHelperInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormOptions(OrderItemInterface $item, $property)
+    public function getFormOptions(SaleItemInterface $item, $property)
     {
         /*if ($item->hasSubjectIdentity() && null !== $resolver = $this->getResolver($item)) {
             /** @var \Ekyna\Bundle\CommerceBundle\Resolver\SubjectResolverInterface $resolver */

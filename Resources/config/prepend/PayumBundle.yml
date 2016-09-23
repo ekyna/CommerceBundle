@@ -1,0 +1,8 @@
+payum:
+    security:
+        token_storage:
+            Ekyna\Bundle\CommerceBundle\Entity\PaymentSecurityToken: { doctrine: orm }
+    dynamic_gateways:
+        sonata_admin: false
+        config_storage:
+            Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod: { doctrine: orm }

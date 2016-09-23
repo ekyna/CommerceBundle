@@ -107,6 +107,23 @@ class AdminMenuPass implements CompilerPassInterface
             'position' => 100,
         ]]);
 
+        // Payment / Shipment methods
+
+        $pool->addMethodCall('createEntry', ['setting', [
+            'name'     => 'payment_method',
+            'route'    => 'ekyna_commerce_payment_method_admin_home',
+            'label'    => 'ekyna_commerce.payment_method.label.plural',
+            'resource' => 'ekyna_commerce_payment_method',
+            'position' => 50,
+        ]]);
+        $pool->addMethodCall('createEntry', ['setting', [
+            'name'     => 'shipment_method',
+            'route'    => 'ekyna_commerce_shipment_method_admin_home',
+            'label'    => 'ekyna_commerce.shipment_method.label.plural',
+            'resource' => 'ekyna_commerce_shipment_method',
+            'position' => 51,
+        ]]);
+
         // Tax groups / Tax rules / Taxes
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'tax_group',

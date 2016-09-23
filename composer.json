@@ -17,9 +17,12 @@
         "MIT"
     ],
     "require" : {
-        "php" : ">=5.4.0",
-        "ekyna/admin-bundle" : "0.6.x-dev",
-        "ekyna/commerce" : "0.6.x-dev"
+        "php" : ">=5.5.9",
+        "ekyna/media-bundle" : "0.6.x-dev",
+        "ekyna/commerce" : "0.6.x-dev",
+        "payum/payum-bundle": "^2.1.1",
+        "payum/offline": "^1.3",
+        "php-http/guzzle6-adapter": "^1.1"
     },
     "autoload" : {
         "psr-4" : {

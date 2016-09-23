@@ -26,6 +26,10 @@ ekyna_commerce_order_admin:
     resource: "admin/order.yml"
     prefix:   /orders
 
+ekyna_commerce_payment_method_admin:
+    resource: "admin/payment_method.yml"
+    prefix:   /payment-methods
+
 ekyna_commerce_product_admin:
     resource: "admin/product.yml"
     prefix:   /products
@@ -33,6 +37,10 @@ ekyna_commerce_product_admin:
 ekyna_commerce_quote_admin:
     resource: "admin/quote.yml"
     prefix:   /quotes
+
+ekyna_commerce_shipment_method_admin:
+    resource: "admin/shipment_method.yml"
+    prefix:   /shipment-methods
 
 ekyna_commerce_tax_admin:
     resource: "admin/tax.yml"

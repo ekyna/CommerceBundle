@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Commerce\Subject\HelperInterface;
 
 /**
@@ -14,12 +14,12 @@ use Ekyna\Component\Commerce\Subject\HelperInterface;
 interface SubjectHelperInterface extends HelperInterface
 {
     /**
-     * Returns the order item form options.
+     * Returns the sale item form options.
      *
-     * @param OrderItemInterface $item
+     * @param SaleItemInterface $item
      * @param string             $property
      * @return array
      * @throws InvalidArgumentException
      */
-    public function getFormOptions(OrderItemInterface $item, $property);
+    public function getFormOptions(SaleItemInterface $item, $property);
 }

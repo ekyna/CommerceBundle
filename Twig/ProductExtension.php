@@ -36,8 +36,16 @@ class ProductExtension extends \Twig_Extension implements \Twig_Extension_Global
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('product_type_label', [$this->constantHelper, 'renderProductTypeLabel'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFilter('product_type_badge', [$this->constantHelper, 'renderProductTypeBadge'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFilter(
+                'product_type_label',
+                [$this->constantHelper, 'renderProductTypeLabel'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'product_type_badge',
+                [$this->constantHelper, 'renderProductTypeBadge'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
@@ -47,7 +55,10 @@ class ProductExtension extends \Twig_Extension implements \Twig_Extension_Global
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('get_product_types', [ProductTypes::class, 'getConstants']),
+            new \Twig_SimpleFunction(
+                'get_product_types',
+                [ProductTypes::class, 'getConstants']
+            ),
         ];
     }
 

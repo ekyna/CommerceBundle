@@ -36,17 +36,14 @@
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
         <parameter key="ekyna_commerce.order.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewVarsBuilder</parameter>
 
-        <parameter key="ekyna_commerce.payment_method.class">Ekyna\Component\Commerce\Payment\Entity\PaymentMethod</parameter>
-
         <parameter key="ekyna_commerce.product.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ProductType</parameter>
 
         <parameter key="ekyna_commerce.quote_address.class">Ekyna\Bundle\CommerceBundle\Entity\QuoteAddress</parameter>
         <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
         <parameter key="ekyna_commerce.quote.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewVarsBuilder</parameter>
 
-        <parameter key="ekyna_commerce.shipment.class">Ekyna\Component\Commerce\Shipment\Entity\Shipment</parameter>
-        <parameter key="ekyna_commerce.shipment_item.class">Ekyna\Component\Commerce\Shipment\Entity\ShipmentItem</parameter>
-        <parameter key="ekyna_commerce.shipment_method.class">Ekyna\Component\Commerce\Shipment\Entity\ShipmentMethod</parameter>
+        <!--<parameter key="ekyna_commerce.shipment.class">Ekyna\Component\Commerce\Shipment\Entity\Shipment</parameter>-->
+        <!--<parameter key="ekyna_commerce.shipment_item.class">Ekyna\Component\Commerce\Shipment\Entity\ShipmentItem</parameter>-->
     </parameters>
 
     <services>

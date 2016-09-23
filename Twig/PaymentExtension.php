@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
 
 /**
@@ -33,9 +34,45 @@ class PaymentExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('payment_state_label', [$this->constantHelper, 'renderPaymentStateLabel'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFilter('payment_state_badge', [$this->constantHelper, 'renderPaymentStateBadge'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFilter(
+                'payment_state_label',
+                [$this->constantHelper, 'renderPaymentStateLabel'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'payment_state_badge',
+                [$this->constantHelper, 'renderPaymentStateBadge'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'payment_method_config',
+                [$this, 'renderMethodConfig'],
+                ['is_safe' => ['html']]
+            ),
         ];
+    }
+
+    /**
+     * Renders the payment method config.
+     *
+     * @param PaymentMethodInterface $method
+     * @return string
+     */
+    public function renderMethodConfig(PaymentMethodInterface $method)
+    {
+        $output = '<dl class="dl-horizontal">';
+
+        foreach ($method->getConfig() as $key => $value) {
+            if (is_array($value)) {
+                continue;
+            }
+
+            $output .= sprintf('<dt>%s</dt><dd>%s</dd>', $key, $value);
+        }
+
+        $output .= '</dl>';
+
+        return $output;
     }
 
     /**
