@@ -2,8 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Bundle\CommerceBundle\Service\StateHelper;
-use Ekyna\Bundle\UserBundle\Helper\IdentityHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
 use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
 use Ekyna\Component\Table\Table;
 use Ekyna\Component\Table\View\Cell;
@@ -16,7 +15,7 @@ use Ekyna\Component\Table\View\Cell;
 class SaleCustomerType extends TextType
 {
     /**
-     * @var IdentityHelper
+     * @var ConstantHelper
      */
     private $helper;
 
@@ -24,9 +23,9 @@ class SaleCustomerType extends TextType
     /**
      * Constructor.
      *
-     * @param IdentityHelper $helper
+     * @param ConstantHelper $helper
      */
-    public function __construct(IdentityHelper $helper)
+    public function __construct(ConstantHelper $helper)
     {
         $this->helper = $helper;
     }

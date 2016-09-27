@@ -1,9 +1,7 @@
 <?php
 
-
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
-use Ekyna\Bundle\UserBundle\Model\IdentityInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface as BaseInterface;
 
@@ -12,7 +10,7 @@ use Ekyna\Component\Commerce\Customer\Model\CustomerInterface as BaseInterface;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-interface CustomerInterface extends BaseInterface, IdentityInterface
+interface CustomerInterface extends BaseInterface
 {
     /**
      * Returns the user.

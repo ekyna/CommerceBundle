@@ -1,0 +1,26 @@
+<div class="form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form) }}
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.amount, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    {{ form_row(form.method) }}
+    {{ form_row(form.description) }}
+
+    {{ form_rest(form) }}
+</div>

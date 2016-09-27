@@ -1,0 +1,22 @@
+ekyna_commerce_order_shipment_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.order_shipment.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_shipment_admin_edit:
+    path: /{orderShipmentId}/edit
+    defaults: { _controller: "ekyna_commerce.order_shipment.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderShipmentId: \d+
+
+ekyna_commerce_order_shipment_admin_remove:
+    path: /{orderShipmentId}/remove
+    defaults: { _controller: "ekyna_commerce.order_shipment.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderShipmentId: \d+

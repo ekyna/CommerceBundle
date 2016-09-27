@@ -18,11 +18,6 @@ class Customer extends BaseCustomer implements CustomerInterface
      */
     private $user;
 
-    /**
-     * @var string
-     */
-    private $gender;
-
 
     /**
      * @inheritdoc
@@ -38,24 +33,6 @@ class Customer extends BaseCustomer implements CustomerInterface
     public function setUser(UserInterface $user = null)
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getGender()
-    {
-        return $this->gender;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setGender($gender)
-    {
-        $this->gender = $gender;
 
         return $this;
     }

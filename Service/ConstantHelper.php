@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Model;
+use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -24,15 +25,22 @@ class ConstantHelper
      */
     private $translator;
 
+    /**
+     * @var string
+     */
+    private $gendersClass;
+
 
     /**
      * Constructor.
      *
      * @param TranslatorInterface $translator
+     * @param string              $gendersClass
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, $gendersClass)
     {
         $this->translator = $translator;
+        $this->gendersClass = $gendersClass;
     }
 
     /**
@@ -278,5 +286,37 @@ class ConstantHelper
         }
 
         return $this->renderBadge($this->renderShipmentStateLabel($stateOrShipment), $theme);
+    }
+
+
+    /**
+     * Renders the identity.
+     *
+     * @param \Ekyna\Component\Commerce\Common\Model\IdentityInterface $identity
+     * @param bool                                                     $long
+     *
+     * @return string
+     */
+    public function renderIdentity(IdentityInterface $identity, $long = false)
+    {
+        return sprintf(
+            '%s %s %s',
+            $this->translator->trans($this->getGenderLabel($identity->getGender(), $long)),
+            $identity->getFirstName(),
+            $identity->getLastName()
+        );
+    }
+
+    /**
+     * Returns the gender label.
+     *
+     * @param string $gender
+     * @param bool $long
+     *
+     * @return mixed
+     */
+    public function getGenderLabel($gender, $long = false)
+    {
+        return call_user_func($this->gendersClass.'::getLabel', $gender, $long);
     }
 }

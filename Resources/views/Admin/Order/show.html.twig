@@ -27,16 +27,46 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="order-general">
-                {% include "EkynaCommerceBundle:Admin/Order/Show:general.html.twig" %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': order} %}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
+                            'precision': 0,
+                            'append': 'g',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
+                <hr>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-details">
                 {{ render_sale_view(sale_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
             </div>
             <div class="tab-pane" id="order-payments">
-                {% include "EkynaCommerceBundle:Admin/Order/Show:payments.html.twig" %}
+                <h4 class="sub-header">
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {'orderId': order.id}) }}" class="btn btn-success btn-xs pull-right">
+                        {{ 'ekyna_commerce.payment.button.new'|trans }}
+                    </a>
+                    {{ 'ekyna_commerce.payment.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-shipments">
-                {% include "EkynaCommerceBundle:Admin/Order/Show:shipments.html.twig" %}
+                <h4 class="sub-header">
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id}) }}" class="btn btn-success btn-xs pull-right">
+                        {{ 'ekyna_commerce.shipment.button.new'|trans }}
+                    </a>
+                    {{ 'ekyna_commerce.shipment.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {'sale': order} %}
             </div>
         </div>
     </div>

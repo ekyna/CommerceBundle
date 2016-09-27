@@ -44,9 +44,6 @@ class QuoteType extends ResourceTableType
             ->addColumn('paymentState', 'ekyna_commerce_payment_state', [
                 'label' => 'ekyna_commerce.sale.field.payment_state',
             ])
-            ->addColumn('shipmentState', 'ekyna_commerce_shipment_state', [
-                'label' => 'ekyna_commerce.sale.field.shipment_state',
-            ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
@@ -93,10 +90,6 @@ class QuoteType extends ResourceTableType
             ->addFilter('paymentState', 'choice', [
                 'label' => 'ekyna_quote.quote.field.payment_state',
                 'choices' => PaymentStates::getChoices(),
-            ])
-            ->addFilter('shipmentState', 'choice', [
-                'label' => 'ekyna_quote.quote.field.shipment_state',
-                'choices' => ShipmentStates::getChoices(),
             ])*/
         ;
     }

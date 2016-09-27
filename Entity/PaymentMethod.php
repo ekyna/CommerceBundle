@@ -94,4 +94,12 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
 
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isManual()
+    {
+        return $this->getFactoryName() === 'offline';
+    }
 }

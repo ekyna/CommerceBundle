@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.number, 'text', 'ekyna_core.field.number', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.currency, 'text', 'ekyna_commerce.currency.label.singular', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.customer, 'entity', 'ekyna_commerce.customer.label.singular', {
+            'route': 'ekyna_commerce_customer_admin_show',
+            'route_params_map': {'customerId': 'id'},
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.company, 'text', 'ekyna_core.field.company', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="row show-row">
+            <div class="col-md-4 show-label">
+                {{ 'ekyna_core.field.identity'|trans }}
+            </div>
+            <div class="col-md-8">
+                <div class="show-widget show-widget-inline">
+                    {{ sale|commerce_identity }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.email, 'text', 'ekyna_core.field.email', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale|sale_state_badge, 'text', 'ekyna_commerce.sale.field.state', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>

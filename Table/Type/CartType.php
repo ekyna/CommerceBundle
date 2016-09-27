@@ -44,9 +44,6 @@ class CartType extends ResourceTableType
             ->addColumn('paymentState', 'ekyna_commerce_payment_state', [
                 'label' => 'ekyna_commerce.order.field.payment_state',
             ])
-            ->addColumn('shipmentState', 'ekyna_commerce_shipment_state', [
-                'label' => 'ekyna_commerce.order.field.shipment_state',
-            ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
@@ -93,10 +90,6 @@ class CartType extends ResourceTableType
             ->addFilter('paymentState', 'choice', [
                 'label' => 'ekyna_order.order.field.payment_state',
                 'choices' => PaymentStates::getChoices(),
-            ])
-            ->addFilter('shipmentState', 'choice', [
-                'label' => 'ekyna_order.order.field.shipment_state',
-                'choices' => ShipmentStates::getChoices(),
             ])*/
         ;
     }

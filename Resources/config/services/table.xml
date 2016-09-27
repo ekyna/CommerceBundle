@@ -16,7 +16,7 @@
         <!-- Customer column column type -->
         <service id="ekyna_commerce.order_customer.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">
-            <argument type="service" id="ekyna_user.helper.identity"/>
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_sale_customer"/>
         </service>
 

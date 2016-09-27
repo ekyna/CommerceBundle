@@ -6,21 +6,17 @@ use Doctrine\Common\DataFixtures\AbstractFixture as BaseFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Ekyna\Bundle\CommerceBundle\Entity\CustomerAddress;
-use Ekyna\Bundle\CommerceBundle\Entity\OrderAddress;
 use Ekyna\Bundle\CommerceBundle\Event\CustomerEvent;
 use Ekyna\Bundle\CommerceBundle\Event\ProductEvent;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-use Ekyna\Bundle\UserBundle\Model\IdentityInterface;
+use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Customer\Event\CustomerEvents;
 use Ekyna\Component\Commerce\Product\Event\ProductEvents;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
-//use Ekyna\Component\Commerce\Product\Model\ProductTypes;
 use Faker\Factory;
 use libphonenumber\PhoneNumberUtil;
 use Nelmio\Alice\Fixtures;
-use Nelmio\Alice\ProcessorInterface;
+//use Nelmio\Alice\ProcessorInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\Event;
@@ -139,8 +135,8 @@ abstract class AbstractFixture
     /**
      * Generates an address.
      *
-     * @param IdentityInterface $owner
-     * @param null|bool         $ownerIdentity
+     * @param \Ekyna\Component\Commerce\Common\Model\IdentityInterface $owner
+     * @param null|bool                                                $ownerIdentity
      *
      * @return OrderAddress|CustomerAddress
      */

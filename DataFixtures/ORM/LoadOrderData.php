@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Ekyna\Bundle\CommerceBundle\Entity\Order;
-use Ekyna\Bundle\CommerceBundle\Event\OrderEvent;
+use Ekyna\Bundle\CommerceBundle\Event\SaleEvent;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes;
 use Ekyna\Component\Commerce\Order\Entity\OrderAdjustment;
@@ -56,7 +56,7 @@ class LoadOrderData extends AbstractFixture
             }
 
             // TODO dispatch pre-create
-            $dispatcher->dispatch(OrderEvents::PRE_CREATE, new OrderEvent($order));
+            $dispatcher->dispatch(OrderEvents::PRE_CREATE, new SaleEvent($order));
 
             $om->persist($order);
             $om->flush();

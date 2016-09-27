@@ -9,6 +9,11 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension">
             <tag name="twig.extension"/>
         </service>
+        <service id="ekyna_commerce.twig.common_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="twig.extension"/>
+        </service>
         <service id="ekyna_commerce.twig.payment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension">
             <argument type="service" id="ekyna_commerce.constant_helper"/>

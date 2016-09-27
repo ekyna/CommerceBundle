@@ -8,7 +8,7 @@
         <!-- View builder -->
         <service id="ekyna_commerce.common.view_builder"
                  class="Ekyna\Component\Commerce\Common\View\ViewBuilder">
-            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
         </service>
 
         <!-- Abstract view vars builder -->

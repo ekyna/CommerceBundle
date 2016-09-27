@@ -57,6 +57,10 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $output->writeln('<info>[Commerce] Installing payment methods:</info>');
         $this->installPaymentMethods($output);
         $output->writeln('');
+
+        $output->writeln('<info>[Commerce] Installing shipment methods:</info>');
+        $this->installShipmentMethods($output);
+        $output->writeln('');
     }
 
     /**
@@ -76,7 +80,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $name = 'Payment method';
 
         $paymentFolder = $folderRepository->findOneBy([
-            'name' => $name,
+            'name'   => $name,
             'parent' => $rootFolder,
         ]);
         if (null !== $paymentFolder) {
@@ -86,8 +90,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $paymentFolder = $folderRepository->createNew();
         $paymentFolder
             ->setName($name)
-            ->setParent($rootFolder)
-        ;
+            ->setParent($rootFolder);
 
         $em->persist($paymentFolder);
         $em->flush();
@@ -99,6 +102,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      * Installs the default payment methods.
      *
      * @param OutputInterface $output
+     *
      * @throws \Exception
      */
     private function installPaymentMethods(OutputInterface $output)
@@ -110,35 +114,35 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $mediaRepository = $this->container->get('ekyna_media.media.repository');
 
         $folder = $this->createImageFolder();
-        $imageDir = realpath(__DIR__.'/../Resources/install/payment-method');
+        $imageDir = realpath(__DIR__ . '/../Resources/install/payment-method');
 
         $methods = [
             'Chèque'   => [
-                'offline',
-                'cheque.png',
-                '<p>Veuillez adresser votre chèque à l\'ordre de ...</p>',
-                true
+                'factory'     => 'offline',
+                'image'       => 'cheque.png',
+                'description' => '<p>Veuillez adresser votre chèque à l\'ordre de ...</p>',
+                'enabled'     => true,
             ],
             'Virement' => [
-                'offline',
-                'virement.png',
-                '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
-                true
+                'factory'     => 'offline',
+                'image'       => 'virement.png',
+                'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
+                'enabled'     => true,
             ],
             /*'Paypal'   => [
-                'paypal_express_checkout_nvp',
-                'paypal.png',
-                '<p>Réglez avec votre compte paypal, ou votre carte bancaire.</p>',
-                false
+                'factory'     => 'paypal_express_checkout_nvp',
+                'image'       => 'paypal.png',
+                'description' => '<p>Réglez avec votre compte paypal, ou votre carte bancaire.</p>',
+                'enabled'     => false,
             ],*/
         ];
 
         /*if (class_exists('Ekyna\Bundle\PayumSipsBundle\EkynaPayumSipsBundle')) {
             $methods['Carte bancaire'] = [
-                'atos_sips',
-                'credit-card.png',
-                '<p>Réglez avec votre carte bancaire.</p>',
-                false
+                'factory'     => 'atos_sips',
+                'image'       => 'credit-card.png',
+                'description' => '<p>Réglez avec votre carte bancaire.</p>',
+                'enabled'     => false,
             ];
         }*/
 
@@ -157,11 +161,11 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 continue;
             }
 
-            $source = $imageDir.'/'.$options[1];
+            $source = $imageDir . '/' . $options['image'];
             if (!file_exists($source)) {
                 throw new \Exception(sprintf('File "%s" does not exists.', $source));
             }
-            $target = sys_get_temp_dir() . '/' . $options[1];
+            $target = sys_get_temp_dir() . '/' . $options['image'];
             if (!copy($source, $target)) {
                 throw new \Exception(sprintf('Failed to copy "%s" into "%s".', $source, $target));
             }
@@ -172,18 +176,97 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 ->setFile(new File($target))
                 ->setFolder($folder)
                 ->setTitle($name)
-                ->setType(MediaTypes::IMAGE)
-            ;
+                ->setType(MediaTypes::IMAGE);
 
             /** @var \Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod $method */
             $method = $methodRepository->createNew();
             $method
                 ->setGatewayName($name)
-                ->setFactoryName($options[0])
+                ->setFactoryName($options['factory'])
                 ->setMedia($image)
                 ->setTitle($name)
-                ->setDescription($options[2])
-                ->setEnabled($options[3])
+                ->setDescription($options['description'])
+                ->setEnabled($options['enabled'])
+                ->setAvailable(true)
+                ->setPosition($position);
+
+            $em->persist($method);
+
+            $output->writeln('created.');
+
+            $position++;
+        }
+        $em->flush();
+    }
+
+    /**
+     * Installs the default shipment methods.
+     *
+     * @param OutputInterface $output
+     *
+     * @throws \Exception
+     */
+    private function installShipmentMethods(OutputInterface $output)
+    {
+        $em = $this->container->get('doctrine.orm.default_entity_manager');
+
+        $methodRepository = $this->container->get('ekyna_commerce.shipment_method.repository');
+        $mediaRepository = $this->container->get('ekyna_media.media.repository');
+
+        $folder = $this->createImageFolder();
+        $imageDir = realpath(__DIR__ . '/../Resources/install/shipment-method');
+
+        $methods = [
+            'Retrait en magasin' => [
+                'image'       => 'in-store.png',
+                'description' => '<p>Vous pourrez retirer votre colis à notre magasin ...</p>',
+                'enabled'     => true,
+            ],
+            /*'Virement' => [
+                'image'       => 'virement.png',
+                'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
+                'enabled'     => true
+            ],*/
+        ];
+
+        $position = 0;
+        foreach ($methods as $name => $options) {
+            $output->write(sprintf(
+                '- <comment>%s</comment> %s ',
+                $name,
+                str_pad('.', 44 - mb_strlen($name), '.', STR_PAD_LEFT)
+            ));
+
+            if (null !== $method = $methodRepository->findOneBy(['name' => $name])) {
+                $output->writeln('already exists.');
+                continue;
+            }
+
+            $source = $imageDir . '/' . $options['image'];
+            if (!file_exists($source)) {
+                throw new \Exception(sprintf('File "%s" does not exists.', $source));
+            }
+            $target = sys_get_temp_dir() . '/' . $options['image'];
+            if (!copy($source, $target)) {
+                throw new \Exception(sprintf('Failed to copy "%s" into "%s".', $source, $target));
+            }
+
+            /** @var \Ekyna\Bundle\MediaBundle\Model\MediaInterface $image */
+            $image = $mediaRepository->createNew();
+            $image
+                ->setFile(new File($target))
+                ->setFolder($folder)
+                ->setTitle($name)
+                ->setType(MediaTypes::IMAGE);
+
+            /** @var \Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod $method */
+            $method = $methodRepository->createNew();
+            $method
+                ->setName($name)
+                ->setMedia($image)
+                ->setTitle($name)
+                ->setDescription($options['description'])
+                ->setEnabled($options['enabled'])
                 ->setAvailable(true)
                 ->setPosition($position);
 

@@ -2,4 +2,4 @@ ekyna_core:
     ui:
         stylesheets:
             forms:
-                - "bundles/ekynacommerce/css/configurable-slot.css"
+                - "bundles/ekynacommerce/css/form.css"

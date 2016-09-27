@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
-use Ekyna\Bundle\UserBundle\Form\Type\IdentityType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -55,7 +54,6 @@ class CustomerType extends ResourceFormType
                 'allow_new' => true,
                 'multiple'     => true,
                 'choice_label' => 'name',
-
             ])
             ->add('parent', ResourceType::class, [
                 'label'    => 'ekyna_core.field.parent',

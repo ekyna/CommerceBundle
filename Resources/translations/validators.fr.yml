@@ -1,20 +1,34 @@
 ekyna_commerce:
+    address:
+        gender_is_mandatory: Veuillez choisir la civilité.
+        first_name_is_mandatory: Veuillez saisir le prénom.
+        last_name_is_mandatory: Veuillez saisir le nom.
+        company_is_mandatory: Veuillez saisir le nom de l'entreprise.
+        phone_is_mandatory: Veuillez saisir le numéro de téléphone.
+        mobile_is_mandatory: Veuillez saisir le numéro de téléphone mobile.
     bundle_choice:
         invalid_quantity_range: La quantité maximum doit être supérieure à la quantité minimum.
         rules_should_be_empty: La liste des règles doit être vide.
     bundle_slot:
         too_many_choices: Un seul produit doit être configuré.
     invalid_product_type: Type de produit non valide.
+    gender:
+        invalid: Ce titre n'est pas un titre valide.
+    message:
+        already_exists: Un message existe déjà pour cette méthode et ce statut.
     option_group:
         unsupported_product_type: Les groupes d'options ne sont pas pris en charge pour ce type de produit.
+    payment:
+        method:
+            not_null: Veuillez choisir un mode de paiement.
     product:
         slot_attribute_is_mandatory: Veuillez sélectionner un attribut pour le groupe "%group_name%".
         slot_has_too_many_attributes: Le groupe "%group_name%" ne peut avoir plus d'un attribut sélectionné.
         unexpected_attribute: L'attribut "%attribute_name%" ne correspond à aucun groupe du modèle d'attributs.
         variant_is_not_unique: Une autre variante existe déjà avec cette configuration d'attributs.
-    payment:
-        method:
-            not_null: Veuillez choisir un mode de paiement.
-    message:
-        already_exists: Un message existe déjà pour cette méthode et ce statut.
+    sale:
+        no_customer:
+            email_is_required: L'email est requis si aucun client n'est sélectionné.
+            identity_is_required: L'identité est requise si aucun client n'est sélectionné.
+        delivery_address_is_required: Veuillez saisir une addresse de livraison.
 

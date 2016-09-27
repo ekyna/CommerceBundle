@@ -61,6 +61,13 @@
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.cart_payment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType">
+            <argument>%ekyna_commerce.cart_payment.class%</argument>
+            <argument>%ekyna_commerce.currency.class%</argument>
+            <argument>%ekyna_commerce.payment_method.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.cart.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType">
             <argument>%ekyna_commerce.cart.class%</argument>
@@ -110,6 +117,18 @@
             <tag name="form.type"/>
         </service>
 
+        <!-- Identity form type -->
+        <service id="ekyna_commerce.gender.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\GenderType">
+            <argument>%ekyna_commerce.genders.class%</argument>
+            <tag name="form.type" />
+        </service>
+        <service id="ekyna_commerce.identity.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType">
+            <argument>%ekyna_commerce.genders.class%</argument>
+            <tag name="form.type" />
+        </service>
+
         <!-- Option form types -->
         <service id="ekyna_commerce.option_group.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\OptionGroupType">
@@ -146,6 +165,19 @@
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.order_payment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType">
+            <argument>%ekyna_commerce.order_payment.class%</argument>
+            <argument>%ekyna_commerce.currency.class%</argument>
+            <argument>%ekyna_commerce.payment_method.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.order_shipment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType">
+            <argument>%ekyna_commerce.order_shipment.class%</argument>
+            <argument>%ekyna_commerce.shipment_method.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.order.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType">
             <argument>%ekyna_commerce.order.class%</argument>
@@ -176,6 +208,13 @@
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.quote_payment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuotePaymentType">
+            <argument>%ekyna_commerce.quote_payment.class%</argument>
+            <argument>%ekyna_commerce.currency.class%</argument>
+            <argument>%ekyna_commerce.payment_method.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.quote.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType">
             <argument>%ekyna_commerce.quote.class%</argument>
@@ -185,7 +224,7 @@
 
         <!-- Payment form types -->
         <service id="ekyna_commerce.payment_method.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\PaymentMethodType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodType">
             <argument>%ekyna_commerce.payment_method.class%</argument>
             <argument id="payum" type="service" />
             <tag name="form.type" />

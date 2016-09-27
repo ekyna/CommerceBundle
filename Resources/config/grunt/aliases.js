@@ -1,7 +1,6 @@
 module.exports = {
     'build:commerce_css': [
         'less:commerce',
-        'cssmin:commerce_css',
         'cssmin:commerce_less',
         'clean:commerce_less'
     ],

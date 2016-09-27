@@ -20,6 +20,7 @@ final class ShipmentStates extends AbstractConstants
         $prefix = 'ekyna_commerce.shipment.state.';
 
         return [
+            States::STATE_NEW         => [$prefix.States::STATE_NEW,    'default'],
             States::STATE_CHECKOUT    => [$prefix.States::STATE_CHECKOUT,    'default'],
             //States::STATE_ONHOLD      => [$prefix.States::STATE_ONHOLD,      'warning'],
             States::STATE_PENDING     => [$prefix.States::STATE_PENDING,     'warning'],

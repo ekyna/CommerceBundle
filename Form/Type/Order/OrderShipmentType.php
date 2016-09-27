@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\ShipmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentType;
 
 /**
  * Class OrderShipmentType

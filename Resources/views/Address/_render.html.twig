@@ -1,9 +1,9 @@
 {% spaceless %}
 <strong>
 {% if address.lastName is not empty and address.firstName is not empty %}
-    {{ render_identity(address) }}
+    {{ address|commerce_identity }}
 {% else %}
-    {{ render_identity(address.user) }}
+    {{ address.customer|commerce_identity }}
 {% endif %}
 </strong><br>
 

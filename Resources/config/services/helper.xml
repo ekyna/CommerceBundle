@@ -15,6 +15,7 @@
         <service id="ekyna_commerce.constant_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\ConstantHelper">
             <argument type="service" id="translator"/>
+            <argument>%ekyna_commerce.genders.class%</argument>
         </service>
 
         <!-- Sale helper -->

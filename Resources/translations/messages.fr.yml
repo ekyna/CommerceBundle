@@ -100,6 +100,21 @@ ekyna_commerce:
         label:
             singular: Panier
             plural: Paniers
+        message:
+            already_paid: Ce panier est déjà réglée en totalité
+            cant_be_deleted: Ce panier a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
+    cart_item:
+        label:
+            singular: Ligne de panier
+            plural: Lignes de panier
+    cart_adjustment:
+        label:
+            singular: Ajustement de panier
+            plural: Ajustements de panier
+    cart_payment:
+        label:
+            singular: Paiement de panier
+            plural: Paiements de panier
     country:
         label:
             singular: Pays
@@ -156,8 +171,8 @@ ekyna_commerce:
             no_item: Aucun client configuré
     customer_address:
         label:
-            singular: Adresse
-            plural: Adresses
+            singular: Adresse de client
+            plural: Adresses de client
         header:
             list: Adresses <small>Liste des adresses</small>
             show: Détail de l'adresse <small>%name%</small>
@@ -190,6 +205,15 @@ ekyna_commerce:
             remove: Supprimer le groupe de clients
         alert:
             no_item: Aucun groupe de clients configuré
+    gender:
+        short:
+            mr: Mr
+            mrs: Mme
+            miss: Melle
+        long:
+            mr: Monsieur
+            mrs: Madame
+            miss: Mademoiselle
     message:
         label:
             singular: Message
@@ -241,9 +265,8 @@ ekyna_commerce:
             refunded: Remboursée
             cancelled: Annulée
         message:
-            already_paid: La commande est déjà réglée en totalité
-            has_payment_cant_deleted: Cette commande a des paiements et ne peut être supprimée.
-            has_shipment_cant_deleted: Cette commande a des livraisons et ne peut être supprimée.
+            already_paid: Cette commande est déjà réglée en totalité
+            cant_be_deleted: Cette commande a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
@@ -271,8 +294,6 @@ ekyna_commerce:
             new: Créer un nouveau paiement
             edit: Modifier le paiement
             remove: Supprimer le paiement
-        field:
-            notes: Notes
         button:
             new: Nouveau paiement
             edit: Modifier le paiement
@@ -281,6 +302,7 @@ ekyna_commerce:
             no_item: Aucun paiement configuré
         message:
             remove_confirm: Souhaitez-vous réellement supprimer ce paiement ?
+            cant_be_deleted: Ce paiement est valide et ne peut être supprimé.
         state:
             new:
                 label: Création
@@ -400,7 +422,8 @@ ekyna_commerce:
             refunded: Remboursée
             cancelled: Annulée
         message:
-            has_payment_cant_deleted: Ce devis a des paiements et ne peut être supprimée.
+            already_paid: Ce devis est déjà réglée en totalité
+            cant_be_deleted: Ce devis a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
         dashboard:
             title: Devis à traiter
             none: Aucun devis à traiter
@@ -494,9 +517,11 @@ ekyna_commerce:
             remove: Supprimer la livraison
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cette livraison ?
+            cant_be_deleted: Cette livraison est valide et ne peut être supprimée.
         alert:
             no_item: Aucune livraison configuré
         state:
+            new: Création
             checkout: Vérification
             onhold: En cours d'envoi
             pending: En attente

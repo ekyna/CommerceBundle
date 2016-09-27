@@ -7,7 +7,9 @@
 
         <!-- Sale factory -->
         <service id="ekyna_commerce.sale_factory"
-                 class="Ekyna\Component\Commerce\Common\SaleFactory"/>
+                 class="Ekyna\Component\Commerce\Common\SaleFactory">
+            <argument type="collection"/>
+        </service>
 
         <!-- Adjustment builder -->
         <service id="ekyna_commerce.adjustment_builder"
@@ -18,16 +20,18 @@
         </service>
 
         <!-- Calculator -->
-        <service id="ekyna_commerce.common.calculator"
-                 class="Ekyna\Component\Commerce\Common\Calculator\Calculator"/>
+        <service id="ekyna_commerce.common.amounts_calculator"
+                 class="Ekyna\Component\Commerce\Common\Calculator\AmountsCalculator"/>
+        <service id="ekyna_commerce.common.weight_calculator"
+                 class="Ekyna\Component\Commerce\Common\Calculator\WeightCalculator"/>
 
         <!-- Generators -->
-        <service id="ekyna_commerce.sale.number_generator"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleNumberGenerator">
+        <service id="ekyna_commerce.common.number_generator"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\NumberGenerator">
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
         </service>
-        <service id="ekyna_commerce.sale.key_generator"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleKeyGenerator">
+        <service id="ekyna_commerce.common.key_generator"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\KeyGenerator">
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
         </service>
 
@@ -66,10 +70,19 @@
         <!-- Cart event listener -->
         <service id="ekyna_commerce.cart.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber">
-            <argument type="service" id="ekyna_commerce.sale.number_generator"/>
-            <argument type="service" id="ekyna_commerce.sale.key_generator"/>
-            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            <argument type="service" id="ekyna_commerce.common.key_generator"/>
+            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
+            <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
             <argument type="service" id="ekyna_commerce.cart.state_resolver"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- Cart payment event listener -->
+        <service id="ekyna_commerce.cart_payment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartPaymentEventSubscriber">
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
@@ -80,13 +93,35 @@
         <service id="ekyna_commerce.order.state_resolver"
                  class="Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver"/>
 
+        <!-- Order shipment state resolver -->
+        <service id="ekyna_commerce.order_shipment.state_resolver"
+                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentStateResolver"/>
+
         <!-- Order event listener -->
         <service id="ekyna_commerce.order.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">
-            <argument type="service" id="ekyna_commerce.sale.number_generator"/>
-            <argument type="service" id="ekyna_commerce.sale.key_generator"/>
-            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            <argument type="service" id="ekyna_commerce.common.key_generator"/>
+            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
+            <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
             <argument type="service" id="ekyna_commerce.order.state_resolver"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- Order payment event listener -->
+        <service id="ekyna_commerce.order_payment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderPaymentEventSubscriber">
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- Order shipment event listener -->
+        <service id="ekyna_commerce.order_shipment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderShipmentEventSubscriber">
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            <argument type="service" id="ekyna_commerce.order_shipment.state_resolver"/>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
@@ -100,10 +135,19 @@
         <!-- Quote event listener -->
         <service id="ekyna_commerce.quote.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\QuoteEventSubscriber">
-            <argument type="service" id="ekyna_commerce.sale.number_generator"/>
-            <argument type="service" id="ekyna_commerce.sale.key_generator"/>
-            <argument type="service" id="ekyna_commerce.common.calculator"/>
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            <argument type="service" id="ekyna_commerce.common.key_generator"/>
+            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
+            <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
             <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
+            <tag name="resource.event_subscriber"/>
+            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- Quote payment event listener -->
+        <service id="ekyna_commerce.quote_payment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuotePaymentEventSubscriber">
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>

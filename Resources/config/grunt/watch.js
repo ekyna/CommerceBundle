@@ -1,12 +1,5 @@
 module.exports = function (grunt, options) {
     return {
-        commerce_css: {
-            files: ['src/Ekyna/Bundle/CommerceBundle/Resources/private/css/**/*.css'],
-            tasks: ['cssmin:commerce_css'],
-            options: {
-                spawn: false
-            }
-        },
         commerce_less: {
             files: ['src/Ekyna/Bundle/CommerceBundle/Resources/private/less/**/*.less'],
             tasks: ['less:commerce', 'copy:commerce_less', 'clean:commerce_less'],

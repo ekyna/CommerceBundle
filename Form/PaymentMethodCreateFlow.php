@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Craue\FormFlowBundle\Form\FormFlow;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodFactoryChoiceType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\PaymentMethodType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodType;
 
 /**
  * Class PaymentMethodCreateFlow

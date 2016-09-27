@@ -5,67 +5,11 @@
         xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
                         http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
-
-    <!-- Cart -->
-
-    <class name="Ekyna\Bundle\CommerceBundle\Entity\Cart">
-        <property name="gender">
-            <constraint name="NotBlank" />
-            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
-        </property>
-    </class>
-
     <!-- Customer -->
 
     <class name="Ekyna\Bundle\CommerceBundle\Entity\Customer">
-        <property name="gender">
-            <constraint name="NotBlank" />
-            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
-        </property>
-    </class>
-
-    <!-- Customer Address -->
-
-    <class name="Ekyna\Bundle\CommerceBundle\Entity\CustomerAddress">
-        <property name="gender">
-            <constraint name="NotBlank" />
-            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
-        </property>
-        <property name="phone">
-            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
-                <option name="type">fixed_line</option>
-            </constraint>
-        </property>
-        <property name="mobile">
-            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
-                <option name="type">mobile</option>
-            </constraint>
-        </property>
-    </class>
-
-    <!-- Order -->
-
-    <class name="Ekyna\Bundle\CommerceBundle\Entity\Order">
-        <property name="gender">
-            <constraint name="NotBlank" />
-            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
-        </property>
-    </class>
-
-    <class name="Ekyna\Bundle\CommerceBundle\Entity\OrderAddress">
-        <property name="gender">
-            <constraint name="NotBlank" />
-            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
-        </property>
-        <property name="phone">
-            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
-                <option name="type">fixed_line</option>
-            </constraint>
-        </property>
-        <property name="mobile">
-            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
-                <option name="type">mobile</option>
-            </constraint>
+        <property name="user">
+            <constraint name="Valid"/>
         </property>
     </class>
 
@@ -75,34 +19,22 @@
         <property name="factoryName">
             <constraint name="NotBlank" />
         </property>
-    </class>
-
-    <!-- Quote -->
-
-    <class name="Ekyna\Bundle\CommerceBundle\Entity\Quote">
-        <property name="gender">
-            <constraint name="NotBlank" />
-            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
-        </property>
-    </class>
-
-    <!-- Quote Address -->
-
-    <class name="Ekyna\Bundle\CommerceBundle\Entity\QuoteAddress">
-        <property name="gender">
-            <constraint name="NotBlank" />
-            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender" />
-        </property>
-        <property name="phone">
-            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
-                <option name="type">fixed_line</option>
-            </constraint>
-        </property>
-        <property name="mobile">
-            <constraint name="Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber">
-                <option name="type">mobile</option>
+        <property name="media">
+            <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaChoice">
+                <option name="types">image</option>
             </constraint>
         </property>
     </class>
+
+    <!-- ShipmentMethod -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod">
+        <property name="media">
+            <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaChoice">
+                <option name="types">image</option>
+            </constraint>
+        </property>
+    </class>
+
 
 </constraint-mapping>

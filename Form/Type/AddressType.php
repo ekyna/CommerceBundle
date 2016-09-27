@@ -2,13 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
-use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
-use Ekyna\Bundle\UserBundle\Form\Type\IdentityType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -44,13 +40,20 @@ class AddressType extends ResourceFormType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('company', Type\TextType::class, [
+        if ($options['company']) {
+            $builder->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
-                'required' => false,
-                'sizing'   => 'sm',
-            ])
-            ->add('identity', IdentityType::class)
+                'required' => $options['company_required'],
+            ]);
+        }
+
+        if ($options['identity']) {
+            $builder->add('identity', IdentityType::class, [
+                'required' => $options['identity_required'],
+            ]);
+        }
+
+        $builder
             ->add('street', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.street',
                 'required' => false,
@@ -79,21 +82,51 @@ class AddressType extends ResourceFormType
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
                 'sizing' => 'sm',
-            ])*/
-            ->add('phone', PhoneNumberType::class, [
-                'label'          => 'ekyna_core.field.phone',
-                'required'       => false,
-                'default_region' => 'FR', // TODO get user locale
-                'format'         => PhoneNumberFormat::NATIONAL,
-                'sizing'         => 'sm',
-            ])
-            ->add('mobile', PhoneNumberType::class, [
-                'label'          => 'ekyna_core.field.mobile',
-                'required'       => false,
-                'default_region' => 'FR', // TODO get user locale
-                'format'         => PhoneNumberFormat::NATIONAL,
-                'sizing'         => 'sm',
-            ]);
+            ])*/;
+
+        if ($options['phones']) {
+            $builder
+                ->add('phone', PhoneNumberType::class, [
+                    'label'          => 'ekyna_core.field.phone',
+                    'required'       => $options['phone_required'],
+                    'default_region' => 'FR', // TODO get user locale
+                    'format'         => PhoneNumberFormat::NATIONAL,
+                ])
+                ->add('mobile', PhoneNumberType::class, [
+                    'label'          => 'ekyna_core.field.mobile',
+                    'required'       => $options['mobile_required'],
+                    'default_region' => 'FR', // TODO get user locale
+                    'format'         => PhoneNumberFormat::NATIONAL,
+                ]);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults([
+            'company'           => true,
+            'identity'          => true,
+            'country'           => true,
+            'phones'            => true,
+            'company_required'  => false,
+            'identity_required' => true,
+            'phone_required'    => false,
+            'mobile_required'   => false,
+        ]);
+
+        $resolver->setAllowedTypes('company', 'bool');
+        $resolver->setAllowedTypes('identity', 'bool');
+        $resolver->setAllowedTypes('country', 'bool');
+        $resolver->setAllowedTypes('phones', 'bool');
+        $resolver->setAllowedTypes('company_required', 'bool');
+        $resolver->setAllowedTypes('identity_required', 'bool');
+        $resolver->setAllowedTypes('phone_required', 'bool');
+        $resolver->setAllowedTypes('mobile_required', 'bool');
     }
 
     /**

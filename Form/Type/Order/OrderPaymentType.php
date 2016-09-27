@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\PaymentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentType;
 
 /**
  * Class OrderPaymentType

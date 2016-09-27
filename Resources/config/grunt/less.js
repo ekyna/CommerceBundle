@@ -5,8 +5,8 @@ module.exports = function (grunt, options) {
             files: {
                 'src/Ekyna/Bundle/CommerceBundle/Resources/public/tmp/css/sale-view.css':
                     'src/Ekyna/Bundle/CommerceBundle/Resources/private/less/sale-view.less',
-                'src/Ekyna/Bundle/CommerceBundle/Resources/public/tmp/css/configurable-slot.css':
-                    'src/Ekyna/Bundle/CommerceBundle/Resources/private/less/configurable-slot.less'
+                'src/Ekyna/Bundle/CommerceBundle/Resources/public/tmp/css/form.css':
+                    'src/Ekyna/Bundle/CommerceBundle/Resources/private/less/form.less'
             }
         }
     }

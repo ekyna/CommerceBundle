@@ -6,8 +6,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
-use Ekyna\Bundle\UserBundle\Form\Type\IdentityType;
-use Symfony\Component\Form\AbstractType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -96,7 +95,8 @@ class SaleType extends ResourceFormType
             ->add('deliveryAddress', $options['address_type'], [
                 'label'    => 'ekyna_commerce.sale.field.delivery_address',
                 'required' => false,
-            ])/*->add('items', OrderItemsType::class)
+            ])
+            /*->add('items', OrderItemsType::class)
             ->add('adjustments', AdjustmentsType::class, [
                 'entry_type'            => OrderAdjustmentType::class,
                 'add_button_text'       => 'ekyna_commerce.sale.form.add_adjustment',

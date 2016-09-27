@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Product;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;

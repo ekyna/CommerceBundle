@@ -62,6 +62,7 @@ class SaleItemController extends AbstractSaleController
             ->get('ekyna_commerce.sale_factory')
             ->createItemForSale($sale);
         $sale->addItem($item); // So that we can access to the sale from the item.
+        $context->addResource($resourceName, $item);
 
         $flow = $this->get('ekyna_commerce.add_item.form_flow');
         $flow->setGenericFormOptions([

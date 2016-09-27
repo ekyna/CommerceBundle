@@ -4,7 +4,6 @@
 {{ form_errors(form) }}
 
 {% if form.configuration is defined %}
-    {% form_theme form.configuration 'EkynaCommerceBundle:Form:configurable_slot.html.twig' %}
     {{ form_widget(form.configuration) }}
 {% endif %}
 
