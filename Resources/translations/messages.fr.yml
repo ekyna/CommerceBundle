@@ -101,6 +101,7 @@ ekyna_commerce:
             singular: Panier
             plural: Paniers
         message:
+            transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
             already_paid: Ce panier est déjà réglée en totalité
             cant_be_deleted: Ce panier a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
     cart_item:
@@ -243,12 +244,14 @@ ekyna_commerce:
             new: Créer une nouvelle commande
             edit: Modifier la commande <small>%number%</small>
             remove: Supprimer la commande <small>%number%</small>
+            transform: Transformer la commande <small>%number%</small>
         button:
             list: Liste des commandes
             show: Détail de la commande
             new: Nouvelle commande
             edit: Modifier la commande
             remove: Supprimer la commande
+            transform: Transformer la commande
         field:
             invoice: Facture
             invoice_pdf: Facture PDF
@@ -405,12 +408,14 @@ ekyna_commerce:
             new: Créer un nouveau devis
             edit: Modifier le devis <small>%number%</small>
             remove: Supprimer le devis <small>%number%</small>
+            transform: Transformer le devis <small>%number%</small>
         button:
             list: Liste des devis
             show: Détail du devis
             new: Nouveau devis
             edit: Modifier le devis
             remove: Supprimer le devis
+            transform: Transform le devis
         alert:
             no_item: Aucun devis configuré
         state:
@@ -422,6 +427,7 @@ ekyna_commerce:
             refunded: Remboursée
             cancelled: Annulée
         message:
+            transformation_to_order_is_ready: Ce devis est prêt à être transformé en commande.
             already_paid: Ce devis est déjà réglée en totalité
             cant_be_deleted: Ce devis a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
         dashboard:
@@ -468,6 +474,8 @@ ekyna_commerce:
                 edit: Modifier la remise
                 remove: Supprimer la remise
         confirm:
+            transform: >
+                Confirmer la transformation en <strong>%target%</strong> ?
             item:
                 remove: Souhaitez-vous réellement supprimer cette article ?
             adjustment:

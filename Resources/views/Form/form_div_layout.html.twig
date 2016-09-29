@@ -311,8 +311,6 @@
 
 {% block ekyna_commerce_option_widget %}
 {% spaceless %}
-    {% set previous_style = bootstrap_get_style() %}
-    {{ bootstrap_set_style('') }}
     {{ form_errors(form) }}
     {{ form_widget(form.designation) }}
     {{ form_widget(form.reference) }}
@@ -326,7 +324,6 @@
     </div>
     {{ form_widget(form.position) }}
     {{ form_rest(form) }}
-    {{ bootstrap_set_style(previous_style) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_option_widget %}
 
@@ -342,7 +339,12 @@
             {{ form_row(form.required, {'label_col': 4, 'widget_col': 8}) }}
         </div>
     </div>
+
+    {% set previous_style = bootstrap_get_style() %}
+    {{ bootstrap_set_style('') }}
     {{ form_row(form.options) }}
+    {{ bootstrap_set_style(previous_style) }}
+
     {{ form_widget(form.position) }}
     {{ form_rest(form) }}
 {% endspaceless %}
@@ -511,3 +513,48 @@
     </tbody>
 {% endspaceless %}
 {% endblock ekyna_commerce_sale_item_widget %}
+
+
+{% block ekyna_commerce_shipment_items_widget %}
+{% spaceless %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                {# TODO <th>{{ 'ekyna_core.field.expected_quantity'|trans }}</th>#}
+                <th>Expected</th>
+                <th>Available</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set previous_style = bootstrap_get_style() %}
+        {{ bootstrap_set_style('') }}
+        {% for child in form -%}
+            {{ form_widget(child) }}
+        {%- endfor %}
+        {{ bootstrap_set_style(previous_style) }}
+        </tbody>
+    </table>
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_items_widget %}
+
+
+{% block ekyna_commerce_shipment_item_widget %}
+{% spaceless %}
+    <tr>
+        <td>{{ form.vars.sale_item.designation }}</td>
+        <td>{{ form.vars.sale_item.reference }}</td>
+        <td>
+            {{ form_errors(form) }}
+            {{ form_widget(form.quantity) }}
+            {{ form_rest(form) }}
+        </td>
+        <td>TODO</td>{# TODO Expected quantity #}
+        <td>TODO</td>{# TODO Available quantity (stock) #}
+        <td>X</td>{# TODO removal #}
+    </tr>
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_item_widget %}

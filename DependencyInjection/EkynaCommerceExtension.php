@@ -41,10 +41,9 @@ class EkynaCommerceExtension extends AbstractExtension
 
         $factoryDefinition->replaceArgument(0, [
             'address'         => [
-//                Customer\Model\CustomerInterface::class => '%ekyna_commerce.customer_address.class%',
-                Cart\Model\CartInterface::class         => '%ekyna_commerce.cart_address.class%',
-                Order\Model\OrderInterface::class       => '%ekyna_commerce.order_address.class%',
-                Quote\Model\QuoteInterface::class       => '%ekyna_commerce.quote_address.class%',
+                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_address.class%',
+                Order\Model\OrderInterface::class => '%ekyna_commerce.order_address.class%',
+                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_address.class%',
             ],
             'item'            => [
                 Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_item.class%',
@@ -60,6 +59,17 @@ class EkynaCommerceExtension extends AbstractExtension
                 Cart\Model\CartItemInterface::class   => '%ekyna_commerce.cart_item_adjustment.class%',
                 Order\Model\OrderItemInterface::class => '%ekyna_commerce.order_item_adjustment.class%',
                 Quote\Model\QuoteItemInterface::class => '%ekyna_commerce.quote_item_adjustment.class%',
+            ],
+            'payment'         => [
+                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_payment.class%',
+                Order\Model\OrderInterface::class => '%ekyna_commerce.order_payment.class%',
+                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_payment.class%',
+            ],
+            'shipment'        => [
+                Order\Model\OrderInterface::class => '%ekyna_commerce.order_shipment.class%',
+            ],
+            'shipment_item'        => [
+                Order\Model\OrderShipmentInterface::class => '%ekyna_commerce.order_shipment_item.class%',
             ],
         ]);
     }

@@ -56,6 +56,14 @@ ekyna_commerce_order_admin_recalculate:
     requirements:
         orderId: \d+
 
+ekyna_commerce_order_admin_transform:
+    path: /{orderId}/transform/{target}
+    defaults: { _controller: "ekyna_commerce.order.controller:transformAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        target: "[a-z]+"
+
 ekyna_commerce_order_item_admin:
     resource: order_item.yml
     prefix: /{orderId}/items

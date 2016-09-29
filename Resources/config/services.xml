@@ -37,6 +37,7 @@
 
         <parameter key="ekyna_commerce.order_address.class">Ekyna\Component\Commerce\Order\Entity\OrderAddress</parameter>
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
+        <parameter key="ekyna_commerce.order_shipment_item.class">Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem</parameter>
         <parameter key="ekyna_commerce.order.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewVarsBuilder</parameter>
 
         <parameter key="ekyna_commerce.product.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ProductType</parameter>
@@ -91,6 +92,7 @@
         <!-- Customer event listener -->
         <service id="ekyna_commerce.customer.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <tag name="resource.event_subscriber"/>
         </service>
 

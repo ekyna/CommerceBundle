@@ -56,6 +56,14 @@ ekyna_commerce_quote_admin_recalculate:
     requirements:
         quoteId: \d+
 
+ekyna_commerce_quote_admin_transform:
+    path: /{quoteId}/transform/{target}
+    defaults: { _controller: "ekyna_commerce.quote.controller:transformAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+        target: "[a-z]+"
+
 ekyna_commerce_quote_admin_item:
     resource: quote_item.yml
     prefix: /{quoteId}/items

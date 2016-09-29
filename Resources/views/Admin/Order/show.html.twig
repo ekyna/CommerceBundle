@@ -6,6 +6,7 @@
 
 {% block main %}
 <div class="actions">
+    {{ sale_transform_btn(order) }}
     {{ admin_resource_btn(order, 'edit') }}
     {{ admin_resource_btn(order, 'remove') }}
 </div>

@@ -2,14 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 
-use Ekyna\Component\Commerce\Common\AdjustmentBuilderInterface;
-use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
-use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes;
+use Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
-use Ekyna\Component\Commerce\Common\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
-use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Ekyna\Component\Commerce\Product\Model\BundleSlotInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductTypes;
@@ -263,7 +260,7 @@ class ItemBuilder
 
         $data = array_replace((array)$item->getSubjectData(), $extraData, [
             SubjectProviderInterface::DATA_KEY => ProductProvider::NAME,
-            'id'       => $product->getId(),
+            'id'                               => $product->getId(),
         ]);
 
         $item->setSubjectData($data);

@@ -7,13 +7,19 @@
 
         <!-- Sale factory -->
         <service id="ekyna_commerce.sale_factory"
-                 class="Ekyna\Component\Commerce\Common\SaleFactory">
+                 class="Ekyna\Component\Commerce\Common\Factory\SaleFactory">
             <argument type="collection"/>
+        </service>
+
+        <!-- Sale transformer -->
+        <service id="ekyna_commerce.sale_transformer"
+                 class="Ekyna\Component\Commerce\Common\Transformer\SaleTransformer">
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 
         <!-- Adjustment builder -->
         <service id="ekyna_commerce.adjustment_builder"
-                 class="Ekyna\Component\Commerce\Common\AdjustmentBuilder">
+                 class="Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <argument type="service" id="ekyna_commerce.tax.resolver"/>
@@ -33,6 +39,60 @@
         <service id="ekyna_commerce.common.key_generator"
                  class="Ekyna\Bundle\CommerceBundle\Service\Common\KeyGenerator">
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
+        </service>
+
+        <!-- Sale abstract listener -->
+        <service id="ekyna_commerce.sale.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setNumberGenerator">
+                <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            </call>
+            <call method="setKeyGenerator">
+                <argument type="service" id="ekyna_commerce.common.key_generator"/>
+            </call>
+            <call method="setAmountsCalculator">
+                <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
+            </call>
+            <call method="setWeightCalculator">
+                <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
+            </call>
+        </service>
+
+        <!-- Payment abstract listener -->
+        <service id="ekyna_commerce.payment.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+            <call method="setNumberGenerator">
+                <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            </call>
+        </service>
+
+        <!-- Shipment abstract listener -->
+        <service id="ekyna_commerce.shipment.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+            <call method="setNumberGenerator">
+                <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            </call>
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.order_shipment.state_resolver"/>
+            </call>
+        </service>
+
+        <!-- Shipment builder -->
+        <service id="ekyna_commerce.shipment.builder"
+                 class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
+            <argument>%ekyna_commerce.order_shipment_item.class%</argument>
         </service>
 
         <!-- ############################## CART ############################## -->
@@ -69,20 +129,19 @@
 
         <!-- Cart event listener -->
         <service id="ekyna_commerce.cart.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.number_generator"/>
-            <argument type="service" id="ekyna_commerce.common.key_generator"/>
-            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
-            <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
-            <argument type="service" id="ekyna_commerce.cart.state_resolver"/>
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber"
+                 parent="ekyna_commerce.sale.abstract_listener">
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.cart.state_resolver"/>
+            </call>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- Cart payment event listener -->
         <service id="ekyna_commerce.cart_payment.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartPaymentEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartPaymentEventSubscriber"
+                 parent="ekyna_commerce.payment.abstract_listener">
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
@@ -93,35 +152,33 @@
         <service id="ekyna_commerce.order.state_resolver"
                  class="Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver"/>
 
-        <!-- Order shipment state resolver -->
-        <service id="ekyna_commerce.order_shipment.state_resolver"
-                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentStateResolver"/>
-
         <!-- Order event listener -->
         <service id="ekyna_commerce.order.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.number_generator"/>
-            <argument type="service" id="ekyna_commerce.common.key_generator"/>
-            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
-            <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
-            <argument type="service" id="ekyna_commerce.order.state_resolver"/>
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber"
+                 parent="ekyna_commerce.sale.abstract_listener">
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.order.state_resolver"/>
+            </call>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- Order payment event listener -->
         <service id="ekyna_commerce.order_payment.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderPaymentEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderPaymentEventSubscriber"
+                 parent="ekyna_commerce.payment.abstract_listener">
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
+        <!-- Order shipment state resolver -->
+        <service id="ekyna_commerce.order_shipment.state_resolver"
+                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentStateResolver"/>
+
         <!-- Order shipment event listener -->
         <service id="ekyna_commerce.order_shipment.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderShipmentEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.number_generator"/>
-            <argument type="service" id="ekyna_commerce.order_shipment.state_resolver"/>
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderShipmentEventSubscriber"
+                 parent="ekyna_commerce.shipment.abstract_listener">
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
@@ -134,20 +191,19 @@
 
         <!-- Quote event listener -->
         <service id="ekyna_commerce.quote.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuoteEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.number_generator"/>
-            <argument type="service" id="ekyna_commerce.common.key_generator"/>
-            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
-            <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
-            <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuoteEventSubscriber"
+                 parent="ekyna_commerce.sale.abstract_listener">
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
+            </call>
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- Quote payment event listener -->
         <service id="ekyna_commerce.quote_payment.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuotePaymentEventSubscriber">
-            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuotePaymentEventSubscriber"
+                 parent="ekyna_commerce.payment.abstract_listener">
             <tag name="resource.event_subscriber"/>
             <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>

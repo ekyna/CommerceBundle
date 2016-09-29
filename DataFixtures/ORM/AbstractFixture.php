@@ -6,13 +6,13 @@ use Doctrine\Common\DataFixtures\AbstractFixture as BaseFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Ekyna\Bundle\CommerceBundle\Event\CustomerEvent;
-use Ekyna\Bundle\CommerceBundle\Event\ProductEvent;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Customer\Event\CustomerEvents;
 use Ekyna\Component\Commerce\Product\Event\ProductEvents;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
+use Ekyna\Component\Resource\Event\ResourceEvent;
+use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Faker\Factory;
 use libphonenumber\PhoneNumberUtil;
 use Nelmio\Alice\Fixtures;
@@ -86,12 +86,12 @@ abstract class AbstractFixture
     public function preProcess($object)
     {
         if ($object instanceof CustomerInterface) {
-            $this->dispatch(CustomerEvents::PRE_CREATE, new CustomerEvent($object));
+            $this->dispatch(CustomerEvents::PRE_CREATE, new ResourceEvent($object));
         } elseif ($object instanceof ProductInterface) {
             /*if ($object->getType() === ProductTypes::TYPE_VARIABLE) {
                 $this->generateProductVariants($object);
             }*/
-            $this->dispatch(ProductEvents::PRE_CREATE, new ProductEvent($object));
+            $this->dispatch(ProductEvents::PRE_CREATE, new ResourceEvent($object));
         }
     }
 
@@ -194,29 +194,29 @@ abstract class AbstractFixture
         $maxPrice = $product->getNetPrice() * 12000;
 
         /** @var ProductInterface $variant */
-        /*$count = 0;
-        foreach ($variants as $variant) {
-            $count++;
-            $variant
-                ->setReference($product->getReference() . '-' . $count)
-                ->setNetPrice(rand($minPrice, $maxPrice) / 10000);
+    /*$count = 0;
+    foreach ($variants as $variant) {
+        $count++;
+        $variant
+            ->setReference($product->getReference() . '-' . $count)
+            ->setNetPrice(rand($minPrice, $maxPrice) / 10000);
 
-            $product->addVariant($variant);
+        $product->addVariant($variant);
 
-            $this->dispatch(ProductEvents::PRE_CREATE, new ProductEvent($variant));
-        }
-    }*/
+        $this->dispatch(ProductEvents::PRE_CREATE, new ProductEvent($variant));
+    }
+}*/
 
     /**
      * Dispatches the entity event.
      *
-     * @param string     $eventName
-     * @param Event|null $event
+     * @param string                 $eventName
+     * @param ResourceEventInterface $event
      */
-    protected function dispatch($eventName, Event $event = null)
+    protected function dispatch($eventName, ResourceEventInterface $event)
     {
         if (null === $this->dispatcher) {
-            $this->dispatcher = $this->container->get('event_dispatcher');
+            $this->dispatcher = $this->container->get('ekyna_resource.event_dispatcher');
         }
 
         $this->dispatcher->dispatch($eventName, $event);

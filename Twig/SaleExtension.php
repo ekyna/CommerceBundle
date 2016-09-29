@@ -3,8 +3,16 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
+use Ekyna\Bundle\CoreBundle\Twig\UiExtension;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\SaleView;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class SaleExtension
@@ -23,17 +31,35 @@ class SaleExtension extends \Twig_Extension
      */
     private $viewBuilder;
 
+    /**
+     * @var UiExtension
+     */
+    private $uiExtension;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
 
     /**
      * Constructor.
      *
-     * @param ConstantHelper $constantHelper
-     * @param ViewBuilder $viewBuilder
+     * @param ConstantHelper        $constantHelper
+     * @param ViewBuilder           $viewBuilder
+     * @param UiExtension           $uiExtension
+     * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(ConstantHelper $constantHelper, ViewBuilder $viewBuilder)
-    {
+    public function __construct(
+        ConstantHelper $constantHelper,
+        ViewBuilder $viewBuilder,
+        UiExtension $uiExtension,
+        UrlGeneratorInterface $urlGenerator
+    ) {
         $this->constantHelper = $constantHelper;
         $this->viewBuilder = $viewBuilder;
+        $this->uiExtension = $uiExtension;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -72,6 +98,12 @@ class SaleExtension extends \Twig_Extension
                 [$this, 'renderSaleView'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
+            // Renders the sale transform button
+            new \Twig_SimpleFunction(
+                'sale_transform_btn',
+                [$this, 'renderSaleTransformButton'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
@@ -88,6 +120,54 @@ class SaleExtension extends \Twig_Extension
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return $env->loadTemplate($template)->renderBlock('sale', ['view' => $view]);
+    }
+
+    /**
+     * Renders the sale transform button.
+     *
+     * @param SaleInterface $sale
+     *
+     * @return string
+     */
+    public function renderSaleTransformButton(SaleInterface $sale)
+    {
+        $actions = [];
+
+        // TODO use constants for target
+
+        $targets = TransformationTargets::getTargetsForSale($sale);
+
+        if ($sale instanceof CartInterface) {
+            foreach ($targets as $target) {
+                $actions['ekyna_commerce.' . $target . '.label.singular'] =
+                    $this->urlGenerator->generate('ekyna_commerce_cart_admin_transform', [
+                        'cartId' => $sale->getId(),
+                        'target' => $target,
+                    ]);
+            }
+        } elseif ($sale instanceof QuoteInterface) {
+            foreach ($targets as $target) {
+                $actions['ekyna_commerce.' . $target . '.label.singular'] =
+                    $this->urlGenerator->generate('ekyna_commerce_quote_admin_transform', [
+                        'quoteId' => $sale->getId(),
+                        'target'  => $target,
+                    ]);
+            }
+        } elseif ($sale instanceof OrderInterface) {
+            foreach ($targets as $target) {
+                $actions['ekyna_commerce.' . $target . '.label.singular'] =
+                    $this->urlGenerator->generate('ekyna_commerce_order_admin_transform', [
+                        'orderId' => $sale->getId(),
+                        'target'  => $target,
+                    ]);
+            }
+        } else {
+            throw new InvalidArgumentException("Unsupported sale type.");
+        }
+
+        return $this
+            ->uiExtension
+            ->renderButtonDropdown('ekyna_core.button.transform', $actions);
     }
 
     /**

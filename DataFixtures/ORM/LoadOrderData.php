@@ -56,7 +56,7 @@ class LoadOrderData extends AbstractFixture
             }
 
             // TODO dispatch pre-create
-            $dispatcher->dispatch(OrderEvents::PRE_CREATE, new SaleEvent($order));
+            $dispatcher->dispatch(OrderEvents::PRE_CREATE, new ResourceEvent($order));
 
             $om->persist($order);
             $om->flush();

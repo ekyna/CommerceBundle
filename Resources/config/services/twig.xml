@@ -28,6 +28,8 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension">
             <argument type="service" id="ekyna_commerce.constant_helper"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
+            <argument type="service" id="ekyna_core.twig.ui_extension" />
+            <argument type="service" id="router" />
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.shipment_extension"

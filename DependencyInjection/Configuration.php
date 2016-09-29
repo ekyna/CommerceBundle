@@ -146,7 +146,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CartType')->end()
                                 ->scalarNode('parent')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\SaleEvent')->end()
+                                ->scalarNode('event')->end()
                             ->end()
                         ->end()
                         ->arrayNode('cart_item')
@@ -194,7 +194,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\PaymentEvent')->end()
+                                ->scalarNode('event')->end()
                             ->end()
                         ->end()
                         ->arrayNode('country')
@@ -253,7 +253,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\CustomerType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType')->end()
                                 ->scalarNode('parent')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\CustomerEvent')->end()
+                                ->scalarNode('event')->end()
                             ->end()
                         ->end()
                         ->arrayNode('customer_group')
@@ -274,10 +274,11 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Order:_form.html',
-                                    'show.html'   => 'EkynaCommerceBundle:Admin/Order:show.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Order:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Order:remove.html',
+                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Order:_form.html',
+                                    'show.html'      => 'EkynaCommerceBundle:Admin/Order:show.html',
+                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Order:edit.html',
+                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Order:remove.html',
+                                    'transform.html' => 'EkynaCommerceBundle:Admin/Order:transform.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\Order')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
@@ -286,7 +287,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\OrderType')->end()
                                 ->scalarNode('parent')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\SaleEvent')->end()
+                                ->scalarNode('event')->end()
                             ->end()
                         ->end()
                         ->arrayNode('order_item')
@@ -334,7 +335,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\PaymentEvent')->end()
+                                ->scalarNode('event')->end()
                             ->end()
                         ->end()
                         ->arrayNode('order_shipment')
@@ -363,7 +364,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Product\ProductType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\ProductType')->end()
                                 ->scalarNode('parent')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\ProductEvent')->end()
+                                ->scalarNode('event')->end()
                                 ->arrayNode('translation')
                                     ->addDefaultsIfNotSet()
                                     ->children()
@@ -438,10 +439,11 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Quote:_form.html',
-                                    'show.html'   => 'EkynaCommerceBundle:Admin/Quote:show.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Quote:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Quote:remove.html',
+                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Quote:_form.html',
+                                    'show.html'      => 'EkynaCommerceBundle:Admin/Quote:show.html',
+                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Quote:edit.html',
+                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Quote:remove.html',
+                                    'transform.html' => 'EkynaCommerceBundle:Admin/Quote:transform.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\Quote')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
@@ -450,7 +452,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\QuoteType')->end()
                                 ->scalarNode('parent')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\SaleEvent')->end()
+                                ->scalarNode('event')->end()
                             ->end()
                         ->end()
                         ->arrayNode('quote_item')
@@ -498,7 +500,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuotePaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
-                                ->scalarNode('event')->defaultValue('Ekyna\Bundle\CommerceBundle\Event\PaymentEvent')->end()
+                                ->scalarNode('event')->end()
                             ->end()
                         ->end()
                         ->arrayNode('tax')

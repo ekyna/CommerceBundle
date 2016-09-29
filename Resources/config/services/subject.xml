@@ -40,6 +40,7 @@
         <!-- Product event listener -->
         <service id="ekyna_commerce.product.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ProductEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <tag name="resource.event_subscriber"/>
         </service>
 
