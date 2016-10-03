@@ -218,16 +218,17 @@
 
 
 {% block ekyna_commerce_configurable_slots_widget %}
-    {% spaceless %}
-        {% for child in form %}
-            {{ form_widget(child) }}
-        {% endfor %}
-    {% endspaceless %}
+{% spaceless %}
+    {% for child in form %}
+        {{ form_widget(child) }}
+    {% endfor %}
+{% endspaceless %}
 {% endblock ekyna_commerce_configurable_slots_widget %}
 
 
 {% block ekyna_commerce_configurable_slot_widget %}
 {% spaceless %}
+    {# TODO form_errors(form) #}
     <div class="row commerce-configurable-slot">
         <div class="col-md-6 col-md-push-6">
             <div class="slot-info">
@@ -476,7 +477,7 @@
             {%- endif %}
             </tfoot>
         </table>
-        {#{{ form_rest(form) }}#}
+        {{ form_rest(form) }}
     </div>
 {% endspaceless %}
 {% endblock ekyna_commerce_sale_items_widget %}
@@ -485,7 +486,13 @@
 {% block ekyna_commerce_sale_item_widget %}
 {% spaceless %}
     <tbody class="ekyna-collection-child commerce-sale-item">
-    {# TODO {{ form_errors(form) }}#}
+    {%- if form.vars.errors|length > 0 -%}
+    <tr>
+        <td colspan="6">
+            {{ form_errors(form) }}
+        </td>
+    </tr>
+    {%- endif -%}
     <tr>
         <td width="30%">{{ form_widget(form.designation) }}</td>
         <td>{{ form_widget(form.reference) }}</td>
@@ -509,7 +516,7 @@
             {{ form_widget(form.adjustments) }}
         </td>
     </tr>
-    {#TODO {{ form_rest(form) }}#}
+    {{ form_rest(form) }}
     </tbody>
 {% endspaceless %}
 {% endblock ekyna_commerce_sale_item_widget %}
@@ -544,17 +551,119 @@
 
 {% block ekyna_commerce_shipment_item_widget %}
 {% spaceless %}
+    {%- if form.vars.errors|length > 0 -%}
+        <tr>
+            <td colspan="6">
+                {{ form_errors(form) }}
+            </td>
+        </tr>
+    {%- endif -%}
     <tr>
         <td>{{ form.vars.sale_item.designation }}</td>
         <td>{{ form.vars.sale_item.reference }}</td>
-        <td>
-            {{ form_errors(form) }}
-            {{ form_widget(form.quantity) }}
-            {{ form_rest(form) }}
-        </td>
+        <td>{{ form_widget(form.quantity) }}</td>
         <td>TODO</td>{# TODO Expected quantity #}
         <td>TODO</td>{# TODO Available quantity (stock) #}
         <td>X</td>{# TODO removal #}
     </tr>
+    {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_shipment_item_widget %}
+
+
+{% block ekyna_commerce_supplier_order_items_widget %}
+{% spaceless %}
+    {% set attr = attr|merge({'class': 'ekyna-collection' }) %}
+    {% set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' %}
+
+    {# Prototype #}
+    {% if prototype is defined %}
+        {# Controls #}
+        {% set controls =
+            '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                    'data-collection="' ~ form.vars.id ~ '" data-field="__id__"' ~ delete_button_confirm ~ '>' ~
+                '<span class="glyphicon glyphicon-remove"></span>' ~
+            '</button>'
+        %}
+        {% set attr = attr|merge({'data-prototype': form.vars.id ~ '_prototype'}) %}
+        {% set attr = attr|merge({'data-prototype-name': prototype_name}) %}
+        <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
+            {{ form_widget(prototype)|replace({'__controls__': controls}) }}
+        </div>
+    {% endif %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        <table class="ekyna-collection-child-container table">
+
+            {# Header #}
+            <thead>
+                <tr>
+                    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                    <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                    <th width="15%">{{ 'ekyna_commerce.supplier_order_item.field.net_price'|trans }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            {# Rows #}
+            {% set previous_style = bootstrap_get_style() %}
+            {{ bootstrap_set_style('') }}
+            {% for child in form -%}
+                {%- set controls =
+                '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                        'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '"' ~
+                        delete_button_confirm ~ '>' ~
+                    '<span class="glyphicon glyphicon-remove"></span>' ~
+                '</button>'
+                -%}
+                {{ form_widget(child)|replace({'__controls__': controls})|raw }}
+            {%- endfor %}
+            {{ bootstrap_set_style(previous_style) }}
+
+            {# Footer #}
+            <tfoot>
+            {% if form.vars.allow_add -%}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                        </button>
+                        &nbsp;<p class="label label-warning">[TODO] Add helper (from supplier catalog)</p>
+                    </td>
+                </tr>
+            {%- endif %}
+            </tfoot>
+
+        </table>
+        {{ form_rest(form) }}
+
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_supplier_order_items_widget %}
+
+
+{% block ekyna_commerce_supplier_order_item_widget %}
+{% spaceless %}
+<tbody class="ekyna-collection-child">
+    {%- if form.vars.errors|length > 0 -%}
+        <tr>
+            <td colspan="6">
+                {{ form_errors(form) }}
+            </td>
+        </tr>
+    {%- endif -%}
+    <tr>
+        <td>{{ form_widget(form.designation) }}</td>
+        <td>{{ form_widget(form.reference) }}</td>
+        <td>{{ form_widget(form.quantity) }}</td>
+        <td>{{ form_widget(form.netPrice) }}</td>
+        <td class="ekyna-collection-controls">
+            <div class="btn-group-vertical">__controls__</div>
+        </td>
+    </tr>
+    {{ form_rest(form) }}
+</tbody>
+{% endspaceless %}
+{% endblock ekyna_commerce_supplier_order_item_widget %}

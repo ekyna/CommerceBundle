@@ -1,0 +1,49 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(supplier, 'edit') }}
+    {{ admin_resource_btn(supplier, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="general">
+                {{ show_row(supplier.name, 'text', 'ekyna_core.field.name') }}
+                <div class="row show-row">
+                    <div class="col-md-2 show-label">
+                        {{ 'ekyna_core.field.identity'|trans }}
+                    </div>
+                    <div class="col-md-10">
+                        <div class="show-widget show-widget-inline">
+                            {{ supplier|commerce_identity }}
+                        </div>
+                    </div>
+                </div>
+                {{ show_row(supplier.email, 'text', 'ekyna_core.field.email') }}
+                <div class="row show-row">
+                    <div class="col-md-2 show-label">
+                        {{ 'ekyna_core.field.address'|trans }}
+                    </div>
+                    <div class="col-md-10">
+                    {% if supplier.address is not same as(null) %}
+                        <div class="show-widget show-widget-block">
+                            {{ supplier.address|commerce_address }}
+                        </div>
+                    {% else %}
+                        <div class="show-widget show-widget-inline">
+                            <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -43,20 +43,4 @@ final class QuoteStates extends AbstractConstants
 
         return static::getConfig()[$state][1];
     }
-
-    /**
-     * Returns the notifiable states.
-     *
-     * @return array
-     */
-    static public function getNotifiableStates()
-    {
-        $states = [];
-        foreach (static::getConfig() as $state => $config) {
-            if ($config[2]) {
-                $states[] = $state;
-            }
-        }
-        return $states;
-    }
 }

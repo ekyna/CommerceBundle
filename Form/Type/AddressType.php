@@ -56,7 +56,7 @@ class AddressType extends ResourceFormType
         $builder
             ->add('street', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.street',
-                'required' => false,
+                'required' => $options['required'],
                 'sizing'   => 'sm',
             ])
             ->add('supplement', Type\TextType::class, [
@@ -66,12 +66,12 @@ class AddressType extends ResourceFormType
             ])
             ->add('city', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.city',
-                'required' => false,
+                'required' => $options['required'],
                 'sizing'   => 'sm',
             ])
             ->add('postalCode', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.postal_code',
-                'required' => false,
+                'required' => $options['required'],
                 'sizing'   => 'sm',
             ])
             ->add('country', CountryChoiceType::class, [

@@ -1,0 +1,77 @@
+ekyna_commerce_supplier_order_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_supplier_order_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_supplier_order_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:newAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_supplier_order_admin_show:
+    path: /{supplierOrderId}/show
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:showAction" }
+    methods: [GET]
+    requirements:
+        supplierOrderId: \d+
+
+ekyna_commerce_supplier_order_admin_edit:
+    path: /{supplierOrderId}/edit
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        supplierOrderId: \d+
+
+#ekyna_commerce_supplier_order_admin_toggle:
+#    path: /{supplierOrderId}/toggle/{field}
+#    defaults: { _controller: "ekyna_commerce.supplier_order.controller:toggleAction", field: enabled }
+#    methods: [GET]
+#    requirements:
+#        supplierOrderId: \d+
+#        field: \w+
+
+ekyna_commerce_supplier_order_admin_remove:
+    path: /{supplierOrderId}/remove
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        supplierOrderId: \d+
+
+#ekyna_commerce_supplier_order_admin_refresh:
+#    path: /{supplierOrderId}/refresh
+#    defaults: { _controller: "ekyna_commerce.supplier_order.controller:refreshAction" }
+#    methods: [GET]
+#    requirements:
+#        supplierOrderId: \d+
+#
+#ekyna_commerce_supplier_order_admin_recalculate:
+#    path: /{supplierOrderId}/recalculate
+#    defaults: { _controller: "ekyna_commerce.supplier_order.controller:recalculateAction" }
+#    methods: [POST]
+#    requirements:
+#        supplierOrderId: \d+
+#
+#ekyna_commerce_supplier_order_admin_transform:
+#    path: /{supplierOrderId}/transform/{target}
+#    defaults: { _controller: "ekyna_commerce.supplier_order.controller:transformAction" }
+#    methods: [GET|POST]
+#    requirements:
+#        supplierOrderId: \d+
+#        target: "[a-z]+"
+#
+#ekyna_commerce_supplier_order_admin_item:
+#    resource: supplier_order_item.yml
+#    prefix: /{supplierOrderId}/items
+#
+#ekyna_commerce_supplier_order_admin_adjustment:
+#    resource: supplier_order_adjustment.yml
+#    prefix: /{supplierOrderId}/adjustments
+#
+#ekyna_commerce_supplier_order_admin_payment:
+#    resource: supplier_order_payment.yml
+#    prefix: /{supplierOrderId}/payments

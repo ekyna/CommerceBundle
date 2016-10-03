@@ -560,6 +560,69 @@ ekyna_commerce:
             available: Partie publique
         alert:
             empty_list: Aucun mode de livraison configuré
+    supplier:
+        label:
+            singular: Fournisseur
+            plural: Fournisseurs
+        header:
+            list: Fournisseurs <small>Liste des fournisseurs</small>
+            show: Détail du fournisseur <small>%name%</small>
+            new: Créer un nouveau fournisseur
+            edit: Modifier le fournisseur <small>%name%</small>
+            remove: Supprimer le fournisseur <small>%name%</small>
+        button:
+            list: Liste des fournisseurs
+            show: Détail du fournisseur
+            new: Nouveau fournisseur
+            edit: Modifier le fournisseur
+            remove: Supprimer le fournisseur
+        alert:
+            no_item: Aucun fournisseur configuré
+    supplier_order:
+        label:
+            singular: Commande fournisseur
+            plural: Commandes fournisseur
+        header:
+            list: Commandes fournisseur <small>Liste des commandes</small>
+            show: Détail de la commande<small>%number%</small>
+            new: Créer une nouvelle commande
+            edit: Modifier la commande <small>%number%</small>
+            remove: Supprimer la commande <small>%number%</small>
+            transform: Transformer la commande <small>%number%</small>
+        button:
+            list: Liste des commandes
+            show: Détail de la commande
+            new: Nouvelle commande
+            edit: Modifier la commande
+            remove: Supprimer la commande
+            transform: Transformer la commande
+            add_item: Ajouter une ligne
+        message:
+            confirm_item_removal: Confirmer la suppression de cette ligne ?
+        field:
+            payment_total: Total réglement
+            payment_date: Date réglement
+            expected_delivery_date: Date de livraison estimée
+#            items: Lignes
+            state: Statut
+        alert:
+            no_item: Aucune commande fournisseur configuré
+        state:
+            new: Création
+            ordered: En attente
+            partial: Partiellement réceptionnée
+            completed: Complétée
+            cancelled: Annulée
+        dashboard:
+            title: Commandes fournisseur à traiter
+            none: Aucune commande fournisseur à traiter
+    supplier_order_item:
+        field:
+            net_price: Prix d'achat net
+    supplier_delivery:
+        label:
+            singular: Livraison fournisseur
+            plural: Livraisons fournisseur
     state:
         label:
             singular: État/Région

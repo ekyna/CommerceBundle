@@ -11,6 +11,7 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -256,7 +257,7 @@ class ConstantHelper
      */
     public function renderShipmentStateLabel($stateOrShipment)
     {
-        if ($stateOrShipment instanceof PaymentInterface) {
+        if ($stateOrShipment instanceof ShipmentInterface) {
             $stateOrShipment = $stateOrShipment->getState();
         }
 
@@ -276,7 +277,7 @@ class ConstantHelper
      */
     public function renderShipmentStateBadge($stateOrShipment)
     {
-        if ($stateOrShipment instanceof PaymentInterface) {
+        if ($stateOrShipment instanceof ShipmentInterface) {
             $stateOrShipment = $stateOrShipment->getState();
         }
 
@@ -286,6 +287,47 @@ class ConstantHelper
         }
 
         return $this->renderBadge($this->renderShipmentStateLabel($stateOrShipment), $theme);
+    }
+
+    /**
+     * Renders the supplier order state label.
+     *
+     * @param SupplierOrderInterface|string $stateOrSupplierOrder
+     *
+     * @return string
+     */
+    public function renderSupplierOrderStateLabel($stateOrSupplierOrder)
+    {
+        if ($stateOrSupplierOrder instanceof SupplierOrderInterface) {
+            $stateOrSupplierOrder = $stateOrSupplierOrder->getState();
+        }
+
+        if (Model\SupplierOrderStates::isValid($stateOrSupplierOrder)) {
+            return $this->renderLabel(Model\SupplierOrderStates::getLabel($stateOrSupplierOrder));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the supplier order state badge.
+     *
+     * @param SupplierOrderInterface|string $stateOrSupplierOrder
+     *
+     * @return string
+     */
+    public function renderSupplierOrderStateBadge($stateOrSupplierOrder)
+    {
+        if ($stateOrSupplierOrder instanceof SupplierOrderInterface) {
+            $stateOrSupplierOrder = $stateOrSupplierOrder->getState();
+        }
+
+        $theme = 'default';
+        if (Model\SupplierOrderStates::isValid($stateOrSupplierOrder)) {
+            $theme = Model\SupplierOrderStates::getTheme($stateOrSupplierOrder);
+        }
+
+        return $this->renderBadge($this->renderSupplierOrderStateLabel($stateOrSupplierOrder), $theme);
     }
 
 
@@ -299,6 +341,10 @@ class ConstantHelper
      */
     public function renderIdentity(IdentityInterface $identity, $long = false)
     {
+        if (0 == strlen($identity->getFirstName()) && 0 == $identity->getLastName()) {
+            return sprintf('<em>%s</em>', $this->translator->trans('ekyna_core.value.undefined'));
+        }
+
         return sprintf(
             '%s %s %s',
             $this->translator->trans($this->getGenderLabel($identity->getGender(), $long)),

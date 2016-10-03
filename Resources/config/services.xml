@@ -45,6 +45,8 @@
         <parameter key="ekyna_commerce.quote_address.class">Ekyna\Component\Commerce\Quote\Entity\QuoteAddress</parameter>
         <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
         <parameter key="ekyna_commerce.quote.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewVarsBuilder</parameter>
+
+        <parameter key="ekyna_commerce.supplier_address.class">Ekyna\Component\Commerce\Supplier\Entity\SupplierAddress</parameter>
     </parameters>
 
     <services>

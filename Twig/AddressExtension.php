@@ -29,14 +29,10 @@ class AddressExtension extends \Twig_Extension implements \Twig_Extension_InitRu
     /**
      * @inheritdoc
      */
-    public function getFunctions()
+    public function getFilters()
     {
         return [
-            new \Twig_SimpleFunction(
-                'render_address',
-                [$this, 'renderAddress'],
-                ['is_safe' => ['html']]
-            ),
+            new \Twig_SimpleFilter('commerce_address', [$this, 'renderAddress'], ['is_safe' => ['html']]),
         ];
     }
 

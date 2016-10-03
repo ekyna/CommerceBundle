@@ -48,7 +48,7 @@ class SaleType extends ResourceFormType
                 'disabled' => true,
             ])
             ->add('currency', CurrencyChoiceType::class, [
-                'sizing' => 'sm',
+                'label' => 'ekyna_commerce.currency.label.singular',
             ])
             ->add('customer', EntitySearchType::class, [
                 'label'           => 'ekyna_commerce.customer.label.singular',

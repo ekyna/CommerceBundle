@@ -48,6 +48,13 @@
             <tag name="table.column_type" alias="ekyna_commerce_shipment_state"/>
         </service>
 
+        <!-- Supplier order state column column type -->
+        <service id="ekyna_commerce.supplier_order_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType">
+            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <tag name="table.column_type" alias="ekyna_commerce_supplier_order_state"/>
+        </service>
+
     </services>
 
 </container>
