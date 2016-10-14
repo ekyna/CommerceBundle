@@ -5,10 +5,13 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Product\Event\ProductEvents;
 use Ekyna\Component\Commerce\Product\Model\BundleSlotInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Product\Model\ProductTypes;
 use Ekyna\Component\Commerce\Product\Repository\ProductRepositoryInterface;
+use Ekyna\Component\Commerce\Stock\Repository\StockUnitRepositoryInterface;
+use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -24,7 +27,12 @@ class ProductProvider implements SubjectProviderInterface
     /**
      * @var ProductRepositoryInterface
      */
-    private $repository;
+    private $productRepository;
+
+    /**
+     * @var StockUnitRepositoryInterface
+     */
+    private $stockUnitRepository;
 
     /**
      * @var ItemBuilder
@@ -40,16 +48,19 @@ class ProductProvider implements SubjectProviderInterface
     /**
      * Constructor.
      *
-     * @param ProductRepositoryInterface $repository
-     * @param ItemBuilder                $itemBuilder
-     * @param FormBuilder                $formBuilder
+     * @param ProductRepositoryInterface   $productRepository
+     * @param StockUnitRepositoryInterface $stockUnitRepository
+     * @param ItemBuilder                  $itemBuilder
+     * @param FormBuilder                  $formBuilder
      */
     public function __construct(
-        ProductRepositoryInterface $repository,
+        ProductRepositoryInterface $productRepository,
+        StockUnitRepositoryInterface $stockUnitRepository,
         ItemBuilder $itemBuilder,
         FormBuilder $formBuilder
     ) {
-        $this->repository = $repository;
+        $this->productRepository = $productRepository;
+        $this->stockUnitRepository = $stockUnitRepository;
         $this->itemBuilder = $itemBuilder;
         $this->formBuilder = $formBuilder;
     }
@@ -180,26 +191,26 @@ class ProductProvider implements SubjectProviderInterface
     /**
      * @inheritdoc
      */
-    public function resolve(SaleItemInterface $item)
+    public function resolve(SubjectRelativeInterface $relative)
     {
-        $this->assertSupportsItem($item);
+        $this->assertSupportsRelative($relative);
 
-        $data = $item->getSubjectData();
+        $data = $relative->getSubjectData();
         if (!array_key_exists('id', $data)) {
             throw new InvalidArgumentException("Unexpected item subject data.");
         }
         $dataId = intval($data['id']);
 
         if (
-            (null !== $product = $item->getSubject())
+            (null !== $product = $relative->getSubject())
             && ($product instanceof ProductInterface)
             && ($product->getId() !== $dataId)
         ) {
             return $product;
         }
 
-        if ((0 < $dataId) && (null !== $product = $this->repository->findOneById($data['id']))) {
-            $item->setSubject($product);
+        if ((0 < $dataId) && (null !== $product = $this->productRepository->findOneById($data['id']))) {
+            $relative->setSubject($product);
         } else {
             // TODO $item->setSubject(null);
             // TODO return null;
@@ -220,22 +231,38 @@ class ProductProvider implements SubjectProviderInterface
     /**
      * @inheritdoc
      */
-    public function supportsItem(SaleItemInterface $item)
+    public function supportsRelative(SubjectRelativeInterface $relative)
     {
-        return $item->getSubjectData(SubjectProviderInterface::DATA_KEY) === self::NAME;
+        return $relative->getSubjectData(SubjectProviderInterface::DATA_KEY) === self::NAME;
     }
 
     /**
-     * Asserts that the sale item is supported.
+     * @inheritdoc
+     */
+    public function getStockUnitRepository()
+    {
+        return $this->stockUnitRepository;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStockUnitChangeEventName()
+    {
+        return ProductEvents::STOCK_UNIT_CHANGE;
+    }
+
+    /**
+     * Asserts that the subject relative is supported.
      *
-     * @param SaleItemInterface $item
+     * @param SubjectRelativeInterface $relative
      *
      * @throws InvalidArgumentException
      */
-    protected function assertSupportsItem(SaleItemInterface $item)
+    protected function assertSupportsRelative(SubjectRelativeInterface $relative)
     {
-        if (!$this->supportsItem($item)) {
-            throw new InvalidArgumentException('Unsupported sale item.');
+        if (!$this->supportsRelative($relative)) {
+            throw new InvalidArgumentException('Unsupported subject relative.');
         }
     }
 

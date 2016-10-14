@@ -573,7 +573,8 @@
 
 {% block ekyna_commerce_supplier_order_items_widget %}
 {% spaceless %}
-    {% set attr = attr|merge({'class': 'ekyna-collection' }) %}
+    {% set class = attr.class|default('') %}
+    {% set attr = attr|merge({'class': ('ekyna-collection ' ~ class)|trim }) %}
     {% set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' %}
 
     {# Prototype #}
@@ -606,6 +607,20 @@
                 </tr>
             </thead>
 
+            {# Footer #}
+            <tfoot>
+            {% if form.vars.allow_add -%}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                        </button>
+                    </td>
+                </tr>
+            {%- endif %}
+            </tfoot>
+
             {# Rows #}
             {% set previous_style = bootstrap_get_style() %}
             {{ bootstrap_set_style('') }}
@@ -621,21 +636,6 @@
             {%- endfor %}
             {{ bootstrap_set_style(previous_style) }}
 
-            {# Footer #}
-            <tfoot>
-            {% if form.vars.allow_add -%}
-                <tr>
-                    <td colspan="5" style="text-align:center;">
-                        <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
-                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
-                        </button>
-                        &nbsp;<p class="label label-warning">[TODO] Add helper (from supplier catalog)</p>
-                    </td>
-                </tr>
-            {%- endif %}
-            </tfoot>
-
         </table>
         {{ form_rest(form) }}
 
@@ -646,24 +646,46 @@
 
 {% block ekyna_commerce_supplier_order_item_widget %}
 {% spaceless %}
-<tbody class="ekyna-collection-child">
-    {%- if form.vars.errors|length > 0 -%}
+    {% set class = attr.class|default('') %}
+    {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
+    <tbody {{ block('widget_container_attributes') }}>
+        {%- if form.vars.errors|length > 0 -%}
+            <tr>
+                <td colspan="6">
+                    {{ form_errors(form) }}
+                </td>
+            </tr>
+        {%- endif -%}
         <tr>
-            <td colspan="6">
-                {{ form_errors(form) }}
+            <td>{{ form_widget(form.designation) }}</td>
+            <td>{{ form_widget(form.reference) }}</td>
+            <td>{{ form_widget(form.quantity) }}</td>
+            <td>
+                {{ form_widget(form.netPrice) }}
+                {{ form_widget(form.product) }}
+            </td>
+            <td class="ekyna-collection-controls">
+                <div class="btn-group-vertical">__controls__</div>
             </td>
         </tr>
-    {%- endif -%}
-    <tr>
-        <td>{{ form_widget(form.designation) }}</td>
-        <td>{{ form_widget(form.reference) }}</td>
-        <td>{{ form_widget(form.quantity) }}</td>
-        <td>{{ form_widget(form.netPrice) }}</td>
-        <td class="ekyna-collection-controls">
-            <div class="btn-group-vertical">__controls__</div>
-        </td>
-    </tr>
-    {{ form_rest(form) }}
-</tbody>
+        {{ form_rest(form) }}
+    </tbody>
 {% endspaceless %}
 {% endblock ekyna_commerce_supplier_order_item_widget %}
+
+
+{% block ekyna_commerce_supplier_order_compose_widget %}
+{% spaceless %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_widget(form.items) }}
+        <div class="row">
+            <div class="col-md-10">
+                {{ form_row(form.quickAddSelect, {'label_col': 3, 'widget_col': 9}) }}
+            </div>
+            <div class="col-md-2">
+                {{ form_row(form.quickAddButton) }}
+            </div>
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_supplier_order_compose_widget %}

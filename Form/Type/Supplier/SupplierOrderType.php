@@ -3,9 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
+use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
+//use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as States;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form;
@@ -18,46 +23,92 @@ use Symfony\Component\Form;
 class SupplierOrderType extends ResourceFormType
 {
     /**
+     * @var string
+     */
+    protected $supplierClass;
+
+
+    /**
+     * Constructor.
+     *
+     * @param string $dataClass
+     * @param string $supplierClass
+     */
+    public function __construct($dataClass, $supplierClass)
+    {
+        parent::__construct($dataClass);
+
+        $this->supplierClass = $supplierClass;
+    }
+
+    /**
      * @inheritdoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('number', Symfony\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'disabled' => true,
-            ])
-            ->add('currency', Commerce\CurrencyChoiceType::class, [
-                'label' => 'ekyna_commerce.currency.label.singular',
-            ])
-            ->add('paymentDate', Symfony\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
-//                'format' => 'dd/MM/yyyy',
-                'required' => false,
-            ])
-            ->add('expectedDeliveryDate', Symfony\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.supplier_order.field.expected_delivery_date',
-//                'format' => 'dd/MM/yyyy',
-                'required' => false,
-            ])
-            ->add('items', SupplierOrderItemsType::class);
-
         $builder->addEventListener(Form\FormEvents::PRE_SET_DATA, function (Form\FormEvent $event) use ($options) {
             $form = $event->getForm();
 
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
             $supplierOrder = $event->getData();
 
+            // Step 1: Supplier is not selected
+            if (null === $supplier = $supplierOrder->getSupplier()) {
+                $form
+                    ->add('supplier', ResourceType::class, [
+                        'label' => 'ekyna_commerce.supplier.label.singular',
+                        'class' => $this->supplierClass,
+                    ]);
+
+                return;
+            }
+
+            // Step 2: Supplier is selected
+            $form
+                ->add('supplier', ResourceType::class, [
+                    'label'    => 'ekyna_commerce.supplier.label.singular',
+                    'class'    => $this->supplierClass,
+                    'disabled' => true,
+                ])
+                ->add('number', Symfony\TextType::class, [
+                    'label'    => 'ekyna_core.field.number',
+                    'required' => false,
+                    'disabled' => true,
+                ])
+                ->add('currency', Commerce\CurrencyChoiceType::class, [
+                    'label' => 'ekyna_commerce.currency.label.singular',
+                ])
+                ->add('state', Symfony\ChoiceType::class, [
+                    'label'    => 'ekyna_core.field.status',
+                    'choices'  => SupplierOrderStates::getChoices(),
+                    'required' => false,
+                    'disabled' => true,
+                ])
+                ->add('estimatedDateOfArrival', Symfony\DateTimeType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
+//                'format' => 'dd/MM/yyyy',
+                    'required' => false,
+                ])
+                ->add('paymentDate', Symfony\DateTimeType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
+//                'format' => 'dd/MM/yyyy',
+                    'required' => false,
+                ]);
+
             /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
             $currency = null !== $supplierOrder ? $supplierOrder->getCurrency() : null;
 
             $adminMode = $options['admin_mode'];
-            $locked = (null !== $supplierOrder) && ($supplierOrder->getState() !== SupplierOrderStates::STATE_NEW);
+            $locked = (null !== $supplierOrder) && ($supplierOrder->getState() !== States::STATE_NEW);
 
             $form->add('paymentTotal', MoneyType::class, [
                 'label'    => 'ekyna_core.field.amount',
                 'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
                 'disabled' => $locked || !$adminMode,
+            ]);
+
+            $form->add('compose', SupplierOrderComposeType::class, [
+                'supplier' => $supplier,
             ]);
         });
     }

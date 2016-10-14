@@ -29,12 +29,4 @@ class PaymentMethodCreateFlow extends FormFlow
             ],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_payment_method_create';
-    }
 }

@@ -10,6 +10,9 @@
         <li class="active">
             <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
         </li>
+        <li>
+            <a href="#catalog" data-toggle="tab">{{ 'ekyna_commerce.supplier.tab.catalog'|trans }}</a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -42,6 +45,15 @@
                     {% endif %}
                     </div>
                 </div>
+            </div>
+            <div class="tab-pane" id="catalog">
+                <div class="actions">
+                    {{ admin_resource_btn('ekyna_commerce.supplier_product', 'new', {
+                        'label': 'ekyna_commerce.supplier_product.button.new',
+                        'path': path('ekyna_commerce_supplier_product_admin_new', {'supplierId': supplier.id})
+                    }) }}
+                </div>
+                {{ ekyna_table_render(supplierProducts) }}
             </div>
         </div>
     </div>

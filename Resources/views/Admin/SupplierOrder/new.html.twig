@@ -1,0 +1,58 @@
+{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
+
+{% block main %}
+    {{ form_start(form) }}
+
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#supplier-order-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+    </ul>
+
+    <div class="panel-body form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        <div class="tab-content">
+            {{ form_errors(form) }}
+            <div class="tab-pane active" id="supplier-order-general">
+                {{ form_row(form.supplier) }}
+                {% if flow.getCurrentStepNumber() == 2 %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.paymentTotal, {'label_col': 4, 'widget_col': 8}) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.paymentDate, {'label_col': 4, 'widget_col': 8}) }}
+                        </div>
+                    </div>
+
+                    <hr>
+                    {{ form_widget(form.compose) }}
+                {% endif %}
+            </div>
+            {{ form_rest(form) }}
+        </div>
+
+        {% include 'EkynaAdminBundle:Form:form_flow_buttons.html.twig' %}
+    </div>
+
+    {{ form_end(form) }}
+{% endblock main %}

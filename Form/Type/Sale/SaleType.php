@@ -50,6 +50,11 @@ class SaleType extends ResourceFormType
             ->add('currency', CurrencyChoiceType::class, [
                 'label' => 'ekyna_commerce.currency.label.singular',
             ])
+            /*->add('state', Type\ChoiceType::class, [
+                'label'    => 'ekyna_core.field.status',
+                'choices'  => PaymentStates::getChoices(),
+                'disabled' => $lockedMethod,
+            ])*/
             ->add('customer', EntitySearchType::class, [
                 'label'           => 'ekyna_commerce.customer.label.singular',
                 'class'           => $this->customerClass,

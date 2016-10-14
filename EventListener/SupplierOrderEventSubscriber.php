@@ -2,17 +2,17 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderShipmentEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierOrderEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
 
 /**
- * Class OrderShipmentEventSubscriber
+ * Class SupplierOrderEventSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderShipmentEventSubscriber extends BaseSubscriber
+class SupplierOrderEventSubscriber extends BaseSubscriber
 {
     /**
      * @inheritdoc
@@ -23,7 +23,7 @@ class OrderShipmentEventSubscriber extends BaseSubscriber
             parent::onPreDelete($event);
         } catch (CommerceExceptionInterface $e) {
             $event->addMessage(new ResourceMessage(
-                'ekyna_commerce.shipment.message.cant_be_deleted',
+                'ekyna_commerce.supplier_order.message.cant_be_deleted',
                 ResourceMessage::TYPE_ERROR
             ));
         }

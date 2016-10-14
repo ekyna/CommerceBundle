@@ -14,34 +14,11 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="general">
+                {{ show_row(supplierOrder.supplier, 'entity', 'ekyna_commerce.supplier.label.singular', {
+                    'route': 'ekyna_commerce_supplier_admin_show',
+                    'route_params_map': {'supplierId': 'id'},
+                }) }}
                 {{ show_row(supplierOrder.number, 'text', 'ekyna_core.field.number') }}
-                <div class="row show-row">
-                    <div class="col-md-2 show-label">
-                        {{ 'ekyna_core.field.identity'|trans }}
-                    </div>
-                    <div class="col-md-10">
-                        <div class="show-widget show-widget-inline">
-                            {{ supplier|commerce_identity }}
-                        </div>
-                    </div>
-                </div>
-                {{ show_row(supplier.email, 'text', 'ekyna_core.field.email') }}
-                <div class="row show-row">
-                    <div class="col-md-2 show-label">
-                        {{ 'ekyna_core.field.address'|trans }}
-                    </div>
-                    <div class="col-md-10">
-                    {% if supplier.address is not same as(null) %}
-                        <div class="show-widget show-widget-block">
-                            {{ supplier.address|commerce_address }}
-                        </div>
-                    {% else %}
-                        <div class="show-widget show-widget-inline">
-                            <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-                        </div>
-                    {% endif %}
-                    </div>
-                </div>
             </div>
         </div>
     </div>

@@ -20,8 +20,8 @@ class SupplierOrderItemsType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'entry_type' => SupplierOrderItemType::class,
-                'add_button_text' => 'ekyna_commerce.supplier_order.button.add_item',
+                'entry_type'            => SupplierOrderItemType::class,
+                'add_button_text'       => 'ekyna_commerce.supplier_order.button.add_item',
                 'delete_button_confirm' => 'ekyna_commerce.supplier_order.message.confirm_item_removal',
             ]);
     }

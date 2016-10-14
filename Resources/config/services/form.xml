@@ -277,6 +277,33 @@
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
+        <!-- Supplier order type -->
+        <service id="ekyna_commerce.supplier_order.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType">
+            <argument>%ekyna_commerce.supplier_order.class%</argument>
+            <argument>%ekyna_commerce.supplier.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <!-- Supplier order item type -->
+        <service id="ekyna_commerce.supplier_order_item.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemType">
+            <argument>%ekyna_commerce.supplier_order_item.class%</argument>
+            <argument>%ekyna_commerce.supplier_product.class%</argument>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-supplier-order-item" path="ekyna-commerce/form/supplier-order-item" />
+        </service>
+        <!-- Supplier order compose type -->
+        <service id="ekyna_commerce.supplier_order_compose.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderComposeType">
+            <argument>%ekyna_commerce.supplier_product.class%</argument>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-supplier-order-compose" path="ekyna-commerce/form/supplier-order-compose" />
+        </service>
+        <!-- Supplier order create form flow -->
+        <service id="ekyna_commerce.supplier_order.create_form_flow"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\CreateSupplierOrderFlow"
+                 parent="craue.form.flow">
+        </service>
 
         <!-- Sale add item form flow -->
         <service id="ekyna_commerce.add_item.form_flow"

@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Supplier product normalizer -->
+        <!--<service id="ekyna_commerce.serializer.normalizer.supplier_product"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierProductNormalizer"
+                 public="false">
+            <tag name="serializer.normalizer" />
+        </service>-->
+
+    </services>
+
+</container>

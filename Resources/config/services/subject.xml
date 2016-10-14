@@ -26,6 +26,7 @@
         <service id="ekyna_commerce.product.subject_provider"
                  class="Ekyna\Bundle\CommerceBundle\Service\Product\ProductProvider">
             <argument type="service" id="ekyna_commerce.product.repository"/>
+            <argument type="service" id="ekyna_commerce.product_stock_unit.repository"/>
             <argument type="service" id="ekyna_commerce.product.item_builder"/>
             <argument type="service" id="ekyna_commerce.product.form_builder"/>
             <tag name="ekyna_commerce.subject_provider"/>
@@ -41,6 +42,7 @@
         <service id="ekyna_commerce.product.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ProductEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_subject_updater"/>
             <tag name="resource.event_subscriber"/>
         </service>
 

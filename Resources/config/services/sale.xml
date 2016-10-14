@@ -85,7 +85,17 @@
                 <argument type="service" id="ekyna_commerce.common.number_generator"/>
             </call>
             <call method="setStateResolver">
-                <argument type="service" id="ekyna_commerce.order_shipment.state_resolver"/>
+                <argument type="service" id="ekyna_commerce.order_shipment.state_resolver"/><!-- TODO !!! -->
+            </call>
+        </service>
+
+        <!-- Shipment item abstract listener -->
+        <service id="ekyna_commerce.shipment_item.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
             </call>
         </service>
 
@@ -135,7 +145,6 @@
                 <argument type="service" id="ekyna_commerce.cart.state_resolver"/>
             </call>
             <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- Cart payment event listener -->
@@ -143,7 +152,6 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\CartPaymentEventSubscriber"
                  parent="ekyna_commerce.payment.abstract_listener">
             <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- ############################## ORDER ############################## -->
@@ -160,7 +168,6 @@
                 <argument type="service" id="ekyna_commerce.order.state_resolver"/>
             </call>
             <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- Order payment event listener -->
@@ -168,7 +175,6 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderPaymentEventSubscriber"
                  parent="ekyna_commerce.payment.abstract_listener">
             <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- Order shipment state resolver -->
@@ -180,7 +186,13 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderShipmentEventSubscriber"
                  parent="ekyna_commerce.shipment.abstract_listener">
             <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- Order shipment item event listener -->
+        <service id="ekyna_commerce.order_shipment_item.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderShipmentItemEventSubscriber"
+                 parent="ekyna_commerce.shipment_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- ############################## QUOTE ############################## -->
@@ -197,7 +209,6 @@
                 <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
             </call>
             <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
         </service>
 
         <!-- Quote payment event listener -->
@@ -205,7 +216,76 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\QuotePaymentEventSubscriber"
                  parent="ekyna_commerce.payment.abstract_listener">
             <tag name="resource.event_subscriber"/>
-            <tag name="kernel.event_subscriber"/> <!-- TODO remove this tag -->
+        </service>
+
+        <!-- ############################## STOCK ############################## -->
+
+        <!-- Stock unit resolver -->
+        <service id="ekyna_commerce.stock_unit.resolver"
+                 class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+        </service>
+
+        <!-- Stock unit state resolver -->
+        <service id="ekyna_commerce.stock_unit.state_resolver"
+                 class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitStateResolver"/>
+
+        <!-- Stock unit updater -->
+        <service id="ekyna_commerce.stock_unit.updater"
+                 class="Ekyna\Component\Commerce\Stock\Updater\StockUnitUpdater">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+        </service>
+
+        <!-- Stock subject updater -->
+        <service id="ekyna_commerce.stock_subject_updater"
+                 class="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater">
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+        </service>
+
+        <!-- ############################## SUPPLIER ############################## -->
+
+        <!-- Supplier order state resolver -->
+        <service id="ekyna_commerce.supplier_order.state_resolver"
+                 class="Ekyna\Component\Commerce\Supplier\Resolver\SupplierOrderStateResolver"/>
+
+        <!-- Supplier* abstract event listener -->
+        <service id="ekyna_commerce.supplier_order.abstract_listener"
+                 abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setStockUnitResolver">
+                <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            </call>
+            <call method="setStockUnitUpdater">
+                <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+        </service>
+
+        <!-- Supplier order event listener -->
+        <service id="ekyna_commerce.supplier_order.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber"
+                 parent="ekyna_commerce.supplier_order.abstract_listener">
+            <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            <argument type="service" id="ekyna_commerce.supplier_order.state_resolver"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Supplier order item event listener -->
+        <service id="ekyna_commerce.supplier_order_item.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderItemEventSubscriber"
+                 parent="ekyna_commerce.supplier_order.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Supplier order event listener -->
+        <service id="ekyna_commerce.supplier_delivery_item.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscriber"
+                 parent="ekyna_commerce.supplier_order.abstract_listener">
+            <tag name="resource.event_subscriber"/>
         </service>
 
     </services>

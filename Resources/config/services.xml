@@ -7,6 +7,7 @@
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
         <import resource="services/sale.xml"/>
+        <!--<import resource="services/serializer.xml"/>-->
         <import resource="services/subject.xml"/>
         <import resource="services/table.xml"/>
         <import resource="services/twig.xml"/>

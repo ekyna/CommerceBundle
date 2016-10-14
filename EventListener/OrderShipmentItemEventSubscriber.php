@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderShipmentEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderShipmentItemEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
@@ -12,7 +12,7 @@ use Ekyna\Component\Resource\Event\ResourceMessage;
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderShipmentEventSubscriber extends BaseSubscriber
+class OrderShipmentItemEventSubscriber extends BaseSubscriber
 {
     /**
      * @inheritdoc

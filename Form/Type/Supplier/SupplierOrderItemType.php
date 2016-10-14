@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface;
-use Symfony\Component\Form\AbstractType;
+use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CoreBundle\Form\Type\HiddenEntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,8 +13,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Supplier
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierOrderItemType extends AbstractType
+class SupplierOrderItemType extends ResourceFormType
 {
+    /**
+     * @var string
+     */
+    protected $supplierProductClass;
+
+
+    /**
+     * Constructor.
+     *
+     * @param string $dataClass
+     * @param string $supplierProductClass
+     */
+    public function __construct($dataClass, $supplierProductClass)
+    {
+        parent::__construct($dataClass);
+
+        $this->supplierProductClass = $supplierProductClass;
+    }
+
     /**
      * @inheritDoc
      */
@@ -23,23 +42,41 @@ class SupplierOrderItemType extends AbstractType
         $builder
             ->add('designation', Symfony\TextType::class, [
                 'label' => 'ekyna_core.field.designation',
+                'attr'  => [
+                    'class' => 'order-item-designation',
+                ],
                 'sizing' => 'sm',
             ])
             ->add('reference', Symfony\TextType::class, [
                 'label' => 'ekyna_core.field.reference',
+                'attr'  => [
+                    'class' => 'order-item-reference',
+                ],
                 'sizing' => 'sm',
             ])
             ->add('quantity', Symfony\NumberType::class, [
                 'label' => 'ekyna_core.field.quantity',
+                'data' => 1,
+                'attr'  => [
+                    'class' => 'order-item-quantity',
+                ],
                 'sizing' => 'sm',
                 // TODO 'scale' => 2, // from packaging mode
             ])
             ->add('netPrice', Symfony\NumberType::class, [
                 'label' => 'ekyna_core.field.designation',
+                'attr'  => [
+                    'class' => 'order-item-net-price',
+                ],
                 'sizing' => 'sm',
                 // TODO 'scale' => 2, // currency option from supplier order
             ])
-            /* TODO ->add('subject', Symfony\HiddenType::class)*/;
+            ->add('product', HiddenEntityType::class, [
+                'class' => $this->supplierProductClass,
+                'attr'  => [
+                    'class' => 'order-item-product',
+                ],
+            ]);
     }
 
     /**
@@ -47,8 +84,12 @@ class SupplierOrderItemType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver->setDefaults([
-            'data_class' => SupplierOrderItemInterface::class,
+            'attr' => [
+                'class' => 'commerce-supplier-order-item',
+            ]
         ]);
     }
 

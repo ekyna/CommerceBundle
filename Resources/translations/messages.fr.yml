@@ -576,6 +576,8 @@ ekyna_commerce:
             new: Nouveau fournisseur
             edit: Modifier le fournisseur
             remove: Supprimer le fournisseur
+        tab:
+            catalog: Catalogue
         alert:
             no_item: Aucun fournisseur configuré
     supplier_order:
@@ -599,10 +601,14 @@ ekyna_commerce:
             add_item: Ajouter une ligne
         message:
             confirm_item_removal: Confirmer la suppression de cette ligne ?
+            cant_be_deleted: Cette commande fournisseur a été réceptionnée et ne peut être supprimée.
+            relative_stock_unit_is_shipped: >
+                Tout ou partie des stocks liés à cette commande ont été livrés à des clients,
+                cette commande et/ou ses lignes ne peuvent donc pas être supprimée(s).
         field:
             payment_total: Total réglement
             payment_date: Date réglement
-            expected_delivery_date: Date de livraison estimée
+            estimated_date_of_arrival: Date de livraison estimée
 #            items: Lignes
             state: Statut
         alert:
@@ -616,6 +622,33 @@ ekyna_commerce:
         dashboard:
             title: Commandes fournisseur à traiter
             none: Aucune commande fournisseur à traiter
+    supplier_product:
+        label:
+            singular: Produit fournisseur
+            plural: Produits fournisseur
+        header:
+            list: Produits fournisseur <small>Liste des produits</small>
+            show: Détail du produit<small>%name%</small>
+            new: Créer un nouveau produit
+            edit: Modifier le produit <small>%name%</small>
+            remove: Supprimer le produit <small>%name%</small>
+        button:
+            list: Liste des produits
+            show: Détail du produit
+            new: Nouveau produit
+            edit: Modifier le produit
+            remove: Supprimer le produit
+        field:
+            net_price: Prix d'achat
+            available_stock: Stock disponible
+            available: Dispo.
+            ordered_stock: Stock réappro.
+            ordered: Réappro.
+            estimated_date_of_arrival: Date réappro.
+            eda: E.D.A.
+            subject: Liaison
+        alert:
+            no_item: Aucune commande fournisseur configuré
     supplier_order_item:
         field:
             net_price: Prix d'achat net

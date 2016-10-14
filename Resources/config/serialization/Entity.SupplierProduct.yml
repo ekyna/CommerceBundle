@@ -1,0 +1,10 @@
+Ekyna\Component\Commerce\Supplier\Entity\SupplierProduct:
+    attributes:
+        id:
+            groups: [Default, Search]
+        designation:
+            groups: [Default, Search]
+        reference:
+            groups: [Default, Search]
+        netPrice:
+            groups: [Default, Search]

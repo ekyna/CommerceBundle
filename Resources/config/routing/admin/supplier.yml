@@ -27,14 +27,6 @@ ekyna_commerce_supplier_admin_edit:
     requirements:
         supplierId: \d+
 
-#ekyna_commerce_supplier_admin_toggle:
-#    path: /{supplierId}/toggle/{field}
-#    defaults: { _controller: "ekyna_commerce.supplier.controller:toggleAction", field: enabled }
-#    methods: [GET]
-#    requirements:
-#        supplierId: \d+
-#        field: \w+
-
 ekyna_commerce_supplier_admin_remove:
     path: /{supplierId}/remove
     defaults: { _controller: "ekyna_commerce.supplier.controller:removeAction" }
@@ -42,36 +34,21 @@ ekyna_commerce_supplier_admin_remove:
     requirements:
         supplierId: \d+
 
-#ekyna_commerce_supplier_admin_refresh:
-#    path: /{supplierId}/refresh
-#    defaults: { _controller: "ekyna_commerce.supplier.controller:refreshAction" }
-#    methods: [GET]
-#    requirements:
-#        supplierId: \d+
-#
-#ekyna_commerce_supplier_admin_recalculate:
-#    path: /{supplierId}/recalculate
-#    defaults: { _controller: "ekyna_commerce.supplier.controller:recalculateAction" }
-#    methods: [POST]
-#    requirements:
-#        supplierId: \d+
-#
-#ekyna_commerce_supplier_admin_transform:
-#    path: /{supplierId}/transform/{target}
-#    defaults: { _controller: "ekyna_commerce.supplier.controller:transformAction" }
-#    methods: [GET|POST]
-#    requirements:
-#        supplierId: \d+
-#        target: "[a-z]+"
-#
-#ekyna_commerce_supplier_admin_item:
-#    resource: supplier_item.yml
-#    prefix: /{supplierId}/items
-#
-#ekyna_commerce_supplier_admin_adjustment:
-#    resource: supplier_adjustment.yml
-#    prefix: /{supplierId}/adjustments
-#
-#ekyna_commerce_supplier_admin_payment:
-#    resource: supplier_payment.yml
-#    prefix: /{supplierId}/payments
+# Supplier product
+ekyna_commerce_supplier_admin_product:
+    resource: supplier_product.yml
+    prefix: /{supplierId}/products
+
+ekyna_commerce_supplier_product_admin_search:
+    path: /search
+    defaults: { _controller: "ekyna_commerce.supplier_product.controller:searchAction" }
+    methods: [GET]
+    options:
+        expose: true
+
+ekyna_commerce_supplier_product_admin_find:
+    path: /find
+    defaults: { _controller: "ekyna_commerce.supplier_product.controller:findAction" }
+    methods: [GET]
+    options:
+        expose: true

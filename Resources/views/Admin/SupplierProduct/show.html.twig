@@ -1,0 +1,74 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block actions %}
+    {{ ui_button('ekyna_core.button.back', {
+        'type': 'link',
+        'icon': 'arrow-up',
+        'path': admin_resource_path(supplierProduct.supplier) ~ '#catalog'
+    }) }}
+    {{ admin_resource_btn(resource, 'new') }}
+{% endblock actions %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(supplierProduct, 'edit') }}
+    {{ admin_resource_btn(supplierProduct, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="general">
+                {{ show_row(supplierProduct.designation, 'text', 'ekyna_core.field.designation') }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplierProduct.reference, 'text', 'ekyna_core.field.reference', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {# TODO use IntlNumberFormatter #}
+                        {{ show_row(supplierProduct.netPrice, 'number', 'ekyna_commerce.supplier_product.field.net_price', {
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
+                            'append': ' €'
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplierProduct.availableStock, 'number', 'ekyna_commerce.supplier_product.field.available_stock', {
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
+                            'precision': 0,
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(supplierProduct.weight, 'number', 'ekyna_core.field.weight', {
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplierProduct.orderedStock, 'number', 'ekyna_commerce.supplier_product.field.ordered_stock', {
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
+                            'precision': 0,
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(supplierProduct.estimatedDateOfArrival, 'date', 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival', {
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -156,7 +156,7 @@ class SaleHelper
      */
     public function resolveItemSubject(Model\SaleItemInterface $item)
     {
-        return $this->subjectProviderRegistry->resolveItemSubject($item);
+        return $this->subjectProviderRegistry->resolveRelativeSubject($item);
     }
 
     /**
