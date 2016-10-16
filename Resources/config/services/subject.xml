@@ -46,6 +46,21 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Quote event listener -->
+        <service id="ekyna_commerce.product_stock_unit.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ProductStockUnitEventSubscriber">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
+            </call>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
     </services>
 
 </container>

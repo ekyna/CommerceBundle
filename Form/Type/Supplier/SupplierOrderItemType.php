@@ -56,7 +56,6 @@ class SupplierOrderItemType extends ResourceFormType
             ])
             ->add('quantity', Symfony\NumberType::class, [
                 'label' => 'ekyna_core.field.quantity',
-                'data' => 1,
                 'attr'  => [
                     'class' => 'order-item-quantity',
                 ],

@@ -12,19 +12,20 @@ define(['jquery'], function($) {
 
             var $this = $(this);
 
-            var inputChangeHandler = function() {
+            function inputChangeHandler() {
                 var productValue = String($this.find('.order-item-product').val()),
                     readyOnly = 0 < productValue.length;
 
                 $this
                     .find('.order-item-designation, .order-item-reference')
                     .prop('readonly', readyOnly);
-            };
+            }
 
             $this.find('input').on('change', inputChangeHandler);
 
             inputChangeHandler();
         });
+
         return this;
     };
 

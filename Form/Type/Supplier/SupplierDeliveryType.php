@@ -3,7 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\SupplierDeliveryItemsTransformer;
+use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class SupplierDeliveryType
@@ -13,12 +17,33 @@ use Symfony\Component\Form\FormBuilderInterface;
 class SupplierDeliveryType extends ResourceFormType
 {
     /**
+     * @var ResourceRepositoryInterface
+     */
+    private $deliveryItemRepository;
+
+
+    /**
+     * Constructor.
+     *
+     * @param string                      $dataClass
+     * @param ResourceRepositoryInterface $deliveryItemRepository
+     */
+    public function __construct($dataClass, ResourceRepositoryInterface $deliveryItemRepository)
+    {
+        parent::__construct($dataClass);
+
+        $this->deliveryItemRepository = $deliveryItemRepository;
+    }
+
+    /**
      * @inheritdoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /* TODO $builder->add('items', Symfony\TextType::class, [
-            'label' => 'ekyna_core.field.name',
-        ]);*/
+        $builder
+            ->add('items', SupplierDeliveryItemsType::class)
+            ->addModelTransformer(
+                new SupplierDeliveryItemsTransformer($this->deliveryItemRepository)
+            );
     }
 }

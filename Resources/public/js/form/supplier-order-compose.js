@@ -32,6 +32,7 @@ define(['jquery', 'ekyna-form/collection'], function($) { // Nee collection to b
                 $form.find('.order-item-product').val(selectorVal).trigger('change');
             });
         });
+
         return this;
     };
 

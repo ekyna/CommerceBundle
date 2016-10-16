@@ -571,6 +571,60 @@
 {% endblock ekyna_commerce_shipment_item_widget %}
 
 
+{% block ekyna_commerce_supplier_delivery_items_widget %}
+{% spaceless %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        <table class="table">
+
+            {# Header #}
+            <thead>
+                <tr>
+                    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                    <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                    <th width="15%">{{ 'ekyna_commerce.supplier_delivery_item.field.remaining'|trans }}</th>
+                </tr>
+            </thead>
+
+            {# Rows #}
+            {% set previous_style = bootstrap_get_style() %}
+            {{ bootstrap_set_style('') }}
+            {% for child in form -%}
+                {{ form_widget(child) }}
+            {%- endfor %}
+            {{ bootstrap_set_style(previous_style) }}
+
+        </table>
+        {{ form_rest(form) }}
+
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_supplier_delivery_items_widget %}
+
+
+{% block ekyna_commerce_supplier_delivery_item_widget %}
+{% spaceless %}
+    <tbody {{ block('widget_container_attributes') }}>
+        {%- if form.vars.errors|length > 0 -%}
+            <tr>
+                <td colspan="3">
+                    {{ form_errors(form) }}
+                </td>
+            </tr>
+        {%- endif -%}
+        <tr>
+            <td>{{ form.vars.designation }}</td>
+            <td>{{ form.vars.reference }}</td>
+            <td class="text-right">{{ form_widget(form.quantity) }}</td>
+            <td class="text-right">{{ form.vars.remaining_quantity|number_format }}</td>{# TODO packaging format #}
+        </tr>
+        {{ form_rest(form) }}
+    </tbody>
+{% endspaceless %}
+{% endblock ekyna_commerce_supplier_delivery_item_widget %}
+
+
 {% block ekyna_commerce_supplier_order_items_widget %}
 {% spaceless %}
     {% set class = attr.class|default('') %}

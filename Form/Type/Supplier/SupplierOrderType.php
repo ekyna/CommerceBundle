@@ -3,14 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
-use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
-//use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as States;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form;

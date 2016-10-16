@@ -580,17 +580,37 @@ ekyna_commerce:
             catalog: Catalogue
         alert:
             no_item: Aucun fournisseur configuré
+    supplier_delivery:
+        label:
+            singular: Livraison fournisseur
+            plural: Livraisons fournisseur
+        header:
+            list: Liste des livraisons
+            show: Détail de la livraison <small>%name%</small>
+            new: Créer une nouvelle livraison
+            edit: Modifier la livraison <small>%name%</small>
+            remove: Supprimer la livraison <small>%name%</small>
+        button:
+            show: Détail de la livraison
+            new: Nouvelle livraison
+            edit: Modifier la livraison
+            remove: Supprimer la livraison
+    supplier_delivery_item:
+        field:
+            remaining: Attendu
     supplier_order:
         label:
             singular: Commande fournisseur
             plural: Commandes fournisseur
         header:
             list: Commandes fournisseur <small>Liste des commandes</small>
-            show: Détail de la commande<small>%number%</small>
+            show: Détail de la commande<small>%name%</small>
             new: Créer une nouvelle commande
-            edit: Modifier la commande <small>%number%</small>
-            remove: Supprimer la commande <small>%number%</small>
-            transform: Transformer la commande <small>%number%</small>
+            edit: Modifier la commande <small>%name%</small>
+            remove: Supprimer la commande <small>%name%</small>
+            transform: Transformer la commande <small>%name%</small>
+        tab:
+            deliveries: Livraisons
         button:
             list: Liste des commandes
             show: Détail de la commande
@@ -622,6 +642,9 @@ ekyna_commerce:
         dashboard:
             title: Commandes fournisseur à traiter
             none: Aucune commande fournisseur à traiter
+    supplier_order_item:
+        field:
+            net_price: Prix d'achat net
     supplier_product:
         label:
             singular: Produit fournisseur
@@ -649,13 +672,6 @@ ekyna_commerce:
             subject: Liaison
         alert:
             no_item: Aucune commande fournisseur configuré
-    supplier_order_item:
-        field:
-            net_price: Prix d'achat net
-    supplier_delivery:
-        label:
-            singular: Livraison fournisseur
-            plural: Livraisons fournisseur
     state:
         label:
             singular: État/Région

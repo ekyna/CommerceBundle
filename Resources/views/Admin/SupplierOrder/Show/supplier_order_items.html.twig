@@ -1,0 +1,39 @@
+<table class="table table-stripped">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+        <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+        <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+        <th>{{ 'ekyna_commerce.supplier_order_item.field.net_price'|trans }}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in supplierOrder.items %}
+    <tr>
+        <td>
+            <a href="{{ path('ekyna_commerce_supplier_product_admin_show', {
+                'supplierId': item.product.supplier.id,
+                'supplierProductId': item.product.id,
+            }) }}">
+                {{ item.designation }}
+            </a>
+        </td>
+        <td>{{ item.reference }}</td>
+        <td class="text-right">{{ item.quantity|number_format }}</td>
+        <td class="text-right">{{ item.netPrice|localizedcurrency(supplierOrder.currency.code) }}</td>
+        <td>
+            {% if item.product is not same as(null) %}
+                [{{ item.product.availableStock|number_format }}]{# TODO packaging format #}
+                {% if 0 < item.product.orderedStock %}
+                    [{{ item.product.orderedStock|number_format }}]{# TODO packaging format #}
+                {% endif %}
+                {% if item.product.estimatedDateOfArrival is not same as(null) %}
+                    ({{ item.product.estimatedDateOfArrival|localizeddate }})
+                {% endif %}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
