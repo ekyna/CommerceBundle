@@ -560,6 +560,35 @@ ekyna_commerce:
             available: Partie publique
         alert:
             empty_list: Aucun mode de livraison configuré
+    shipment_price:
+        label:
+            singular: Mode de livraison
+            plural: Modes de livraison
+        field:
+            weight: Poids max (kg)
+            net_price: Prix net
+        alert:
+            empty_list: Aucun mode de livraison configuré
+    shipment_zone:
+        label:
+            singular: Zone de livraison
+            plural: Zones de livraison
+        header:
+            list: Zones de livraison <small>Liste des zones</small>
+            show: Détail de la zone de livraison <small>%name%</small>
+            new: Créer une nouvelle zone de livraison
+            edit: Modifier la zone de livraison <small>%name%</small>
+            remove: Supprimer la zone de livraison <small>%name%</small>
+        button:
+            list: Liste des zones
+            show: Détail de la zone
+            new: Nouvelle zone
+            edit: Modifier la zone
+            remove: Supprimer la zone
+        field:
+            prices: Tarifs
+        alert:
+            empty_list: Aucune zone de livraison configuré
     supplier:
         label:
             singular: Fournisseur

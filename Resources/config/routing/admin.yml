@@ -42,6 +42,10 @@ ekyna_commerce_shipment_method_admin:
     resource: "admin/shipment_method.yml"
     prefix:   /shipment-methods
 
+ekyna_commerce_shipment_zone_admin:
+    resource: "admin/shipment_zone.yml"
+    prefix:   /shipment-zones
+
 ekyna_commerce_supplier_admin:
     resource: "admin/supplier.yml"
     prefix:   /suppliers

@@ -1,0 +1,22 @@
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#shipment-shipment-zone-general" data-toggle="tab">
+            {{ 'ekyna_core.field.general'|trans }}
+        </a>
+    </li>
+</ul>
+<div class="panel-body form-body commerce-shipment-zone">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    <div class="tab-content">
+        {{ form_errors(form) }}
+        <div class="tab-pane active" id="shipment-shipment-zone-general">
+            {{ form_row(form.name) }}
+            {{ form_row(form.countries) }}
+            <hr>
+            {{ form_row(form.method) }}
+            {{ form_row(form.prices) }}
+        </div>
+        {{ form_rest(form) }}
+    </div>
+</div>

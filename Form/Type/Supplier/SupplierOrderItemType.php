@@ -35,7 +35,7 @@ class SupplierOrderItemType extends ResourceFormType
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -79,7 +79,7 @@ class SupplierOrderItemType extends ResourceFormType
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -93,7 +93,7 @@ class SupplierOrderItemType extends ResourceFormType
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function getBlockPrefix()
     {

@@ -270,6 +270,24 @@
             <argument>%ekyna_commerce.attribute_set.class%</argument>
         </service>
 
+        <!-- Shipment zone type -->
+        <service id="ekyna_commerce.shipment_zone.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentZoneType">
+            <argument>%ekyna_commerce.shipment_zone.class%</argument>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <argument>%ekyna_commerce.shipment_method.class%</argument>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-shipment-zone" path="ekyna-commerce/form/shipment-zone" />
+        </service>
+        <!-- Shipment price type -->
+        <service id="ekyna_commerce.shipment_price.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPriceType">
+            <argument>%ekyna_commerce.shipment_price.class%</argument>
+            <argument>%ekyna_commerce.shipment_zone.class%</argument>
+            <argument>%ekyna_commerce.shipment_method.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
         <!-- Supplier address type -->
         <service id="ekyna_commerce.supplier_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierAddressType">

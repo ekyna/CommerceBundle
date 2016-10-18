@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
-use Ekyna\Component\Commerce\Supplier\Entity\SupplierOrderItem;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,7 +31,7 @@ class SupplierOrderItemsType extends AbstractType
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -45,7 +44,7 @@ class SupplierOrderItemsType extends AbstractType
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function getParent()
     {
@@ -53,7 +52,7 @@ class SupplierOrderItemsType extends AbstractType
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function getBlockPrefix()
     {

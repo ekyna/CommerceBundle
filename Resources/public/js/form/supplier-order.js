@@ -83,8 +83,6 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
             var $this = $(this);
 
-            console.log('test');
-
             // Init order compose widget
             $this
                 .find('.commerce-supplier-order-compose')

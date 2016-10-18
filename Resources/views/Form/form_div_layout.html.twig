@@ -571,6 +571,98 @@
 {% endblock ekyna_commerce_shipment_item_widget %}
 
 
+{% block ekyna_commerce_shipment_prices_widget %}
+{% spaceless %}
+    {% set class = attr.class|default('') %}
+    {% set attr = attr|merge({'class': ('ekyna-collection ' ~ class)|trim }) %}
+    {% set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' %}
+
+    {# Prototype #}
+    {% if prototype is defined %}
+        {# Controls #}
+        {% set controls =
+            '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                'data-collection="' ~ form.vars.id ~ '" data-field="__id__"' ~ delete_button_confirm ~ '>' ~
+                    '<span class="glyphicon glyphicon-remove"></span>' ~
+            '</button>'
+        %}
+        {% set attr = attr|merge({'data-prototype': form.vars.id ~ '_prototype'}) %}
+        {% set attr = attr|merge({'data-prototype-name': prototype_name}) %}
+        <div class="ekyna-collection-prototype" id="{{ form.vars.id }}_prototype">
+            {{ form_widget(prototype)|replace({'__controls__': controls}) }}
+        </div>
+    {% endif %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        {{ form_widget(form.parent.method) }}
+        <table class="ekyna-collection-child-container table">
+
+            {# Header #}
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_commerce.shipment_price.field.weight'|trans }}</th>
+                <th>{{ 'ekyna_commerce.shipment_price.field.net_price'|trans }}</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            {# Footer #}
+            <tfoot>
+            {% if form.vars.allow_add -%}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                        </button>
+                    </td>
+                </tr>
+            {%- endif %}
+            </tfoot>
+
+            {# Body #}
+            <tbody>
+            {# Rows #}
+            {% set previous_style = bootstrap_get_style() %}
+            {{ bootstrap_set_style('') }}
+            {% for child in form -%}
+                {%- set controls =
+                    '<button type="button" class="btn btn-danger btn-xs" data-collection-role="remove" ' ~
+                            'data-collection="' ~ form.vars.id ~ '" data-field="' ~ child.vars.id ~ '"' ~
+                            delete_button_confirm ~ '>' ~
+                        '<span class="glyphicon glyphicon-remove"></span>' ~
+                    '</button>'
+                -%}
+                {{ form_widget(child)|replace({'__controls__': controls})|raw }}
+            {%- endfor %}
+            {{ bootstrap_set_style(previous_style) }}
+            </tbody>
+
+        </table>
+        {{ form_rest(form) }}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_prices_widget %}
+
+
+{% block ekyna_commerce_shipment_price_widget %}
+{% spaceless %}
+    {% set class = attr.class|default('') %}
+    {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
+    <tr {{ block('widget_container_attributes') }}>
+        <td>{{ form_widget(form.weight) }}</td>
+        <td>
+            {{ form_widget(form.netPrice) }}
+            {{ form_widget(form.method) }}
+        </td>
+        <td class="ekyna-collection-controls">
+            <div class="btn-group-vertical">__controls__</div>
+        </td>
+    </tr>
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_price_widget %}
+
+
 {% block ekyna_commerce_supplier_delivery_items_widget %}
 {% spaceless %}
     <div {{ block('widget_container_attributes') }}>
