@@ -7,6 +7,7 @@ use Ekyna\Bundle\CoreBundle\AbstractBundle;
 use Ekyna\Component\Commerce;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler\ConfigureValidatorPass;
+use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler\RegisterProductEventHandlerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -24,6 +25,8 @@ class EkynaCommerceBundle extends AbstractBundle
         parent::build($container);
 
         $container->addCompilerPass(new ConfigureValidatorPass());
+        $container->addCompilerPass(new RegisterProductEventHandlerPass());
+
         $container->addCompilerPass(new Compiler\SubjectProviderPass());
         $container->addCompilerPass(new Compiler\SubjectResolverPass());
         $container->addCompilerPass(new Compiler\AdminMenuPass());
