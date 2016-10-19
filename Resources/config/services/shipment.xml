@@ -19,6 +19,13 @@
             <argument>%ekyna_commerce.shipment_price.list_template%</argument>
         </service>
 
+        <!-- Shipment price resolver -->
+        <service id="ekyna_commerce.shipment_price.resolver"
+                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolver">
+            <argument type="service" id="ekyna_commerce.shipment_method.repository"/>
+            <argument type="service" id="ekyna_commerce.shipment_price.repository"/>
+        </service>
+
     </services>
 
 </container>
