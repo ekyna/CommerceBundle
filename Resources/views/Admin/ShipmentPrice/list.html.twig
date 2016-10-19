@@ -1,0 +1,47 @@
+<hr>
+
+<div class="commerce-shipment-prices">
+    <div class="row show-row">
+        <div class="col-md-2 show-label">
+            <label for="shipment-price-filter">
+                {{ ('ekyna_commerce.shipment_' ~ filter_by ~ '.label.singular')|trans }}
+            </label>
+        </div>
+        <div class="col-md-10">
+            <select class="no-select2 form-control shipment-price-filter"
+                    id="shipment-price-filter" data-filter-by="{{ filter_by }}">
+            {%- for filter in filters %}
+                <option value="{{ filter.id }}">{{ filter }}</option>
+            {%- endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="row show-row">
+        <div class="col-md-2 show-label">
+            {{ 'ekyna_commerce.shipment_price.label.plural'|trans }}
+        </div>
+        <div class="col-md-10">
+            <table class="table table-stripped shipment-price-list">
+                <thead>
+                <tr>
+                    <th width="50%" class="text-right">
+                        {{- 'ekyna_commerce.shipment_price.field.weight'|trans -}}
+                    </th>
+                    <th width="50%" class="text-right">
+                        {{- 'ekyna_commerce.shipment_price.field.net_price'|trans -}}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for price in prices %}
+                    <tr data-{{ filter_by }}="{{ attribute(price, filter_by).id }}">
+                        <td class="text-right">{{ price.weight|localizednumber }} kg</td>
+                        <td class="text-right">{{ price.netPrice|localizedcurrency('EUR') }}</td>{# TODO which currency ? #}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

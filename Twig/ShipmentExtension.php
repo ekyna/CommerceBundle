@@ -2,7 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceRenderer;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
 
 /**
  * Class ShipmentExtension
@@ -12,19 +16,28 @@ use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
 class ShipmentExtension extends \Twig_Extension
 {
     /**
-     * @var \Ekyna\Bundle\CommerceBundle\Service\ConstantHelper
+     * @var ConstantHelper
      */
     private $constantHelper;
+
+    /**
+     * @var PriceRenderer
+     */
+    private $priceRenderer;
 
 
     /**
      * Constructor.
      *
-     * @param \Ekyna\Bundle\CommerceBundle\Service\ConstantHelper $constantHelper
+     * @param ConstantHelper $constantHelper
+     * @param PriceRenderer  $priceRenderer
      */
-    public function __construct(ConstantHelper $constantHelper)
-    {
+    public function __construct(
+        ConstantHelper $constantHelper,
+        PriceRenderer  $priceRenderer
+    ) {
         $this->constantHelper = $constantHelper;
+        $this->priceRenderer = $priceRenderer;
     }
 
     /**
@@ -44,6 +57,40 @@ class ShipmentExtension extends \Twig_Extension
                 ['is_safe' => ['html']]
             ),
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFunctions()
+    {
+        return [
+            new \Twig_SimpleFunction(
+                'display_shipment_prices',
+                [$this, 'renderShipmentPrices'],
+                ['is_safe' => ['html']]
+            ),
+        ];
+    }
+
+    /**
+     * Renders the price list.
+     *
+     * @param ShipmentMethodInterface|ShipmentZoneInterface $source
+     *
+     * @return string
+     */
+    public function renderShipmentPrices($source)
+    {
+        if ($source instanceof ShipmentMethodInterface) {
+            return $this->priceRenderer->renderByMethod($source);
+        } elseif ($source instanceof ShipmentZoneInterface) {
+            return $this->priceRenderer->renderByZone($source);
+        }
+
+        throw new InvalidArgumentException(
+            "Expected instance of ShipmentMethodInterface or ShipmentZoneInterface."
+        );
     }
 
     /**

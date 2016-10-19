@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ShipmentPriceType
@@ -65,19 +66,23 @@ class ShipmentPriceType extends ResourceFormType
                     'placeholder' => 'ekyna_core.field.price',
                     'input_group' => ['append' => '€'],  // TODO by currency
                 ],
-            ])
-            /*->add('zone', HiddenEntityType::class, [
+            ]);
+
+        if ('zone' == $options['filter_by']) {
+            $builder->add('zone', HiddenEntityType::class, [
                 'class' => $this->zoneClass,
                 'attr'  => [
                     'class' => 'shipment-price-zone',
                 ],
-            ])*/
-            ->add('method', HiddenEntityType::class, [
+            ]);
+        } elseif ('method' == $options['filter_by']) {
+            $builder->add('method', HiddenEntityType::class, [
                 'class' => $this->methodClass,
                 'attr'  => [
                     'class' => 'shipment-price-method',
                 ],
             ]);
+        }
     }
 
     /**
@@ -85,12 +90,33 @@ class ShipmentPriceType extends ResourceFormType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        /** @var \Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice $price */
-        if (($price = $form->getData()) && ($method = $price->getMethod())) {
-            $view->vars['attr'] = array_merge($view->vars['attr'], [
-                'data-method' => $method->getId()
-            ]);
+        if (null !== $filterBy = $options['filter_by']) {
+            /** @var \Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice $price */
+            if ($price = $form->getData()) {
+                $filterValue = null;
+                if ($filterBy == 'method') {
+                    $filterValue = $price->getMethod();
+                } else {
+                    $filterValue = $price->getZone();
+                }
+
+                $view->vars['attr'] = array_merge($view->vars['attr'], [
+                    'data-'.$filterBy => $filterValue->getId()
+                ]);
+            }
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setDefault('filter_by', null)
+            ->setAllowedValues('filter_by', [null, 'zone', 'method']);
     }
 
     /**

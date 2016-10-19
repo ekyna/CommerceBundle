@@ -2,8 +2,8 @@
 
 {% block main %}
     <div class="actions">
-        {{ admin_resource_btn(method, 'edit') }}
-        {{ admin_resource_btn(method, 'remove') }}
+        {{ admin_resource_btn(shipmentMethod, 'edit') }}
+        {{ admin_resource_btn(shipmentMethod, 'remove') }}
     </div>
     <div class="show show-with-tabs">
         <ul class="nav nav-tabs">
@@ -26,27 +26,29 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="shipment-method-general">
-                    {{ show_row(method.name, 'text', 'ekyna_core.field.name') }}
+                    {{ show_row(shipmentMethod.name, 'text', 'ekyna_core.field.name') }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(method.enabled, 'checkbox', 'ekyna_core.field.enabled', {
+                            {{ show_row(shipmentMethod.enabled, 'checkbox', 'ekyna_core.field.enabled', {
                                 'label_nb_col': 4
                             }) }}
                         </div>
                         <div class="col-md-6">
-                            {{ show_row(method.available, 'checkbox', 'ekyna_commerce.shipment_method.field.available', {
+                            {{ show_row(shipmentMethod.available, 'checkbox', 'ekyna_commerce.shipment_method.field.available', {
                                 'label_nb_col': 4
                             }) }}
                         </div>
                     </div>
+
+                    {{ display_shipment_prices(shipmentMethod) }}
                 </div>
                 <div class="tab-pane" id="shipment-method-content">
-                    {{ show_row(method.media, 'media', 'ekyna_core.field.image') }}
+                    {{ show_row(shipmentMethod.media, 'media', 'ekyna_core.field.image') }}
                     {# Translations #}
                 </div>
                 <div class="tab-pane" id="shipment-method-messages">
                     <ul class="nav nav-tabs">
-                        {% for message in method.messages %}
+                        {% for message in shipmentMethod.messages %}
                             <li{% if loop.first %} class="active"{% endif %}>
                                 <a href="#shipment-method-state-{{ message.state }}" data-toggle="tab">
                                     {{ message.state|shipment_state_label }}
@@ -56,7 +58,7 @@
                     </ul>
                     <div class="panel-body" style="border: 1px solid #ddd; border-top: none; padding:15px 15px 1px 15px; margin-bottom: 15px;">
                         <div class="tab-content">
-                            {% for message in method.messages %}
+                            {% for message in shipmentMethod.messages %}
                                 <div class="tab-pane{% if loop.first %} active{% endif %}"
                                      id="shipment-method-state-{{ message.state }}">
                                     <div class="row show-row">
@@ -82,3 +84,8 @@
         </div>
     </div>
 {% endblock main %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['bundles/ekynacommerce/js/show/shipment-prices']);</script>
+{% endblock javascripts %}

@@ -2,31 +2,32 @@ define(['jquery', 'ekyna-form/collection'], function($) {
     "use strict";
 
     /**
-     * Supplier order item widget
+     * Shipment pricing widget
      */
-    $.fn.supplierOrderWidget = function(/*config*/) {
+    $.fn.shipmentPricingWidget = function(/*config*/) {
 
         //config = $.extend({}, config);
 
         this.each(function() {
 
             var $this = $(this),
-                $collection = $this.find('.commerce-shipment-zone-prices'),
-                $methodChoice = $this.find('.commerce-shipment-zone-method'),
-                methodId;
+                $collection = $this.find('.commerce-shipment-pricing-prices'),
+                $filter = $this.find('.commerce-shipment-pricing-filter'),
+                filterBy = $filter.data('filter-by'),
+                filterValue;
 
 
             // Prices collection children visibility
             function togglePricesVisibility() {
-                methodId = $methodChoice.val();
+                filterValue = $filter.val();
                 $collection
                     .find('tbody > tr')
                     .hide()
-                    .filter(function() { return $(this).data('method') == methodId; })
+                    .filter(function() { return $(this).data(filterBy) == filterValue; })
                     .show();
             }
 
-            $methodChoice.on('change', togglePricesVisibility);
+            $filter.on('change', togglePricesVisibility);
 
             togglePricesVisibility();
 
@@ -37,22 +38,23 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
                 // Sets the method (currently selected)
                 $priceForm
-                    .data('method', methodId)
-                    .find('.shipment-price-method')
-                    .val(methodId);
+                    .data(filterBy, filterValue)
+                    .find('.shipment-price-' + filterBy)
+                    .val(filterValue);
             });
 
+
             // TODO ...
-            $collection.on('invalid', 'input', function(e) {
+            /*$collection.on('invalid', 'input', function(e) {
                 console.log(e);
                 var $child = $(e.target).eq(0).closest('tr');
                 if ($child.size()) {
-                    $methodChoice.val($child.data('method'));
+                    $filter.val($child.data('method'));
                     togglePricesVisibility();
                     return;
                 }
                 e.preventDefault();
-            });
+            });*/
         });
 
         return this;
@@ -60,7 +62,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
     return {
         init: function($element) {
-            $element.supplierOrderWidget();
+            $element.shipmentPricingWidget();
         }
     };
 });

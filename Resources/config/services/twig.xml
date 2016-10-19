@@ -35,6 +35,7 @@
         <service id="ekyna_commerce.twig.shipment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension">
             <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.shipment_price.renderer"/>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.supplier_extension"

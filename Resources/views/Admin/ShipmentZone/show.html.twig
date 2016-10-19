@@ -18,8 +18,15 @@
                 <div class="tab-pane active" id="shipment-shipment-zone-general">
                     {{ show_row(shipmentZone.name, 'text', 'ekyna_core.field.name') }}
                     {{ show_row(shipmentZone.countries, 'entity', 'ekyna_commerce.country.label.plural') }}
+
+                    {{ display_shipment_prices(shipmentZone) }}
                 </div>
             </div>
         </div>
     </div>
 {% endblock main %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['bundles/ekynacommerce/js/show/shipment-prices']);</script>
+{% endblock javascripts %}

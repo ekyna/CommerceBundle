@@ -571,6 +571,16 @@
 {% endblock ekyna_commerce_shipment_item_widget %}
 
 
+{% block ekyna_commerce_shipment_pricing_widget %}
+{% spaceless %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_row(form.filter, {'label_col': 0, 'widget_col': 12}) }}
+        {{ form_row(form.prices, {'label_col': 0, 'widget_col': 12}) }}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_pricing_widget %}
+
+
 {% block ekyna_commerce_shipment_prices_widget %}
 {% spaceless %}
     {% set class = attr.class|default('') %}
@@ -594,7 +604,6 @@
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
         {{ form_errors(form) }}
-        {{ form_widget(form.parent.method) }}
         <table class="ekyna-collection-child-container table">
 
             {# Header #}
@@ -652,8 +661,12 @@
     <tr {{ block('widget_container_attributes') }}>
         <td>{{ form_widget(form.weight) }}</td>
         <td>
-            {{ form_widget(form.netPrice) }}
-            {{ form_widget(form.method) }}
+            {{- form_widget(form.netPrice) -}}
+            {% if form.method is defined -%}
+                {{ form_widget(form.method) }}
+            {%- else -%}
+                {{ form_widget(form.zone) }}
+            {%- endif -%}
         </td>
         <td class="ekyna-collection-controls">
             <div class="btn-group-vertical">__controls__</div>

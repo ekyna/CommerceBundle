@@ -28,6 +28,9 @@ class ShipmentMethodType extends ResourceFormType
             ->add('name', Type\TextType::class, [
                 'label' => 'ekyna_core.field.name',
             ])
+            ->add('pricing', ShipmentPricingType::class, [
+                'filter_by' => 'zone',
+            ])
             ->add('media', MediaChoiceType::class, [
                 'label' => 'ekyna_core.field.image',
                 'types' => MediaTypes::IMAGE,

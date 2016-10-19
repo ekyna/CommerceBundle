@@ -275,9 +275,15 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentZoneType">
             <argument>%ekyna_commerce.shipment_zone.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <!-- Shipment pricing type -->
+        <service id="ekyna_commerce.shipment_pricing.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPricingType">
+            <argument>%ekyna_commerce.shipment_zone.class%</argument>
             <argument>%ekyna_commerce.shipment_method.class%</argument>
             <tag name="form.type"/>
-            <tag name="form.js" selector=".commerce-shipment-zone" path="ekyna-commerce/form/shipment-zone" />
+            <tag name="form.js" selector=".commerce-shipment-pricing" path="ekyna-commerce/form/shipment-pricing" />
         </service>
         <!-- Shipment price type -->
         <service id="ekyna_commerce.shipment_price.form_type"

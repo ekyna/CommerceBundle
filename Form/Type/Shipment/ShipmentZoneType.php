@@ -19,11 +19,6 @@ class ShipmentZoneType extends ResourceFormType
      */
     private $countryClass;
 
-    /**
-     * @var string
-     */
-    private $methodClass;
-
 
     /**
      * Constructor.
@@ -31,12 +26,11 @@ class ShipmentZoneType extends ResourceFormType
      * @param string $dataClass
      * @param string $countryClass
      */
-    public function __construct($dataClass, $countryClass, $methodClass)
+    public function __construct($dataClass, $countryClass)
     {
         parent::__construct($dataClass);
 
         $this->countryClass = $countryClass;
-        $this->methodClass = $methodClass;
     }
 
     /**
@@ -53,18 +47,8 @@ class ShipmentZoneType extends ResourceFormType
                 'class'    => $this->countryClass,
                 'multiple' => true,
             ])
-            ->add('method', EntityType::class, [
-                'label'    => 'ekyna_commerce.shipment_method.label.singular',
-                'class'    => $this->methodClass,
-                'mapped' => false,
-                'attr' => [
-                    'class' => 'commerce-shipment-zone-method no-select2',
-                ]
-            ])
-            ->add('prices', ShipmentPricesType::class, [
-                'attr' => [
-                    'class' => 'commerce-shipment-zone-prices'
-                ]
+            ->add('pricing', ShipmentPricingType::class, [
+                'filter_by' => 'method',
             ]);
     }
 }

@@ -562,8 +562,8 @@ ekyna_commerce:
             empty_list: Aucun mode de livraison configuré
     shipment_price:
         label:
-            singular: Mode de livraison
-            plural: Modes de livraison
+            singular: Frais de port
+            plural: Frais de port
         field:
             weight: Poids max (kg)
             net_price: Prix net
@@ -585,8 +585,6 @@ ekyna_commerce:
             new: Nouvelle zone
             edit: Modifier la zone
             remove: Supprimer la zone
-        field:
-            prices: Tarifs
         alert:
             empty_list: Aucune zone de livraison configuré
     supplier:
