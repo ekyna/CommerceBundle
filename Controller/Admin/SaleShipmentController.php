@@ -74,10 +74,6 @@ class SaleShipmentController extends AbstractSaleController
             }
 
             if ($isXhr) {
-                // We need to refresh the sale to get proper "id indexed" collections.
-                // TODO move to resource listener : refresh all collections indexed by "id"
-                $this->getOperator()->refresh($sale);
-
                 return $this->buildXhrSaleViewResponse($sale);
             } else {
                 $event->toFlashes($this->getFlashBag());

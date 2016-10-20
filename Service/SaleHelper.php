@@ -272,6 +272,7 @@ class SaleHelper
      * @param int                                         $itemId
      *
      * @return bool
+     * @todo remove as no longer used
      */
     public function removeItemById($saleOrItem, $itemId)
     {
@@ -309,6 +310,7 @@ class SaleHelper
      * @param int                 $adjustmentId
      *
      * @return bool
+     * @todo remove as no longer used
      */
     public function removeSaleAdjustmentById(Model\SaleInterface $sale, $adjustmentId)
     {

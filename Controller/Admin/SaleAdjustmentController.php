@@ -68,25 +68,23 @@ class SaleAdjustmentController extends AbstractSaleController
         $form->handleRequest($request);
         if ($form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->update($sale);
+            $event = $this->getOperator()->create($adjustment);
+            if (!$isXhr) {
+                $event->toFlashes($this->getFlashBag());
+            }
 
-            if ($event->hasErrors()) {
+            if (!$event->hasErrors()) {
+                if ($isXhr) {
+                    return $this->buildXhrSaleViewResponse($sale);
+                }
+
+                return $this->redirect($this->generateResourcePath($sale));
+            } elseif ($isXhr) {
+                // TODO all event messages should be bound to XHR response
                 foreach ($event->getErrors() as $error) {
                     $form->addError(new FormError($error->getMessage()));
                 }
             }
-
-            if ($isXhr) {
-                // We need to refresh the sale to get proper "id indexed" collections.
-                // TODO move to resource listener : refresh all collections indexed by "id"
-                $this->getOperator()->refresh($sale);
-
-                return $this->buildXhrSaleViewResponse($sale);
-            } else {
-                $event->toFlashes($this->getFlashBag());
-            }
-
-            return $this->redirect($this->generateResourcePath($sale));
         }
 
         if ($isXhr) {
@@ -141,21 +139,23 @@ class SaleAdjustmentController extends AbstractSaleController
         $form->handleRequest($request);
         if ($form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->update($sale);
+            $event = $this->getOperator()->update($adjustment);
+            if (!$isXhr) {
+                $event->toFlashes($this->getFlashBag());
+            }
 
-            if ($event->hasErrors()) {
+            if (!$event->hasErrors()) {
+                if ($isXhr) {
+                    return $this->buildXhrSaleViewResponse($sale);
+                }
+
+                return $this->redirect($this->generateResourcePath($sale));
+            } elseif ($isXhr) {
+                // TODO all event messages should be bound to XHR response
                 foreach ($event->getErrors() as $error) {
                     $form->addError(new FormError($error->getMessage()));
                 }
             }
-
-            if ($isXhr) {
-                return $this->buildXhrSaleViewResponse($sale);
-            } else {
-                $event->toFlashes($this->getFlashBag());
-            }
-
-            return $this->redirect($this->generateResourcePath($sale));
         }
 
         if ($isXhr) {
@@ -203,24 +203,26 @@ class SaleAdjustmentController extends AbstractSaleController
 
         // TODO confirmation form
 
-        if ($this->getSaleHelper()->removeSaleAdjustmentById($sale, $adjustment->getId())) {
+        //if ($this->getSaleHelper()->removeSaleAdjustmentById($sale, $adjustment->getId())) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->update($sale);
-
-            /* TODO if ($event->hasErrors()) {
-                foreach ($event->getErrors() as $error) {
-                    $form->addError(new FormError($error->getMessage()));
-                }
-            }*/
-
-            if ($isXhr) {
-                return $this->buildXhrSaleViewResponse($sale);
-            } else {
+            $event = $this->getOperator()->delete($adjustment);
+            if (!$isXhr) {
                 $event->toFlashes($this->getFlashBag());
             }
 
-            return $this->redirect($this->generateResourcePath($sale));
-        }
+            if (!$event->hasErrors()) {
+                if ($isXhr) {
+                    return $this->buildXhrSaleViewResponse($sale);
+                }
+
+                return $this->redirect($this->generateResourcePath($sale));
+            } elseif ($isXhr) {
+                // TODO all event messages should be bound to XHR response
+                /*foreach ($event->getErrors() as $error) {
+                    $form->addError(new FormError($error->getMessage()));
+                }*/
+            }
+        //}
 
         if ($isXhr) {
             return $this->buildXhrSaleViewResponse($sale);

@@ -77,6 +77,11 @@ abstract class AbstractSaleController extends ResourceController
      */
     protected function buildXhrSaleViewResponse(SaleInterface $sale, FormInterface $form = null)
     {
+        // We need to refresh the sale to get proper "id indexed" collections.
+        // TODO move to resource listener : refresh all collections indexed by "id"
+        // TODO get the proper operator through resource registry
+        $this->getOperator()->refresh($sale);
+
         $response = $this->render('EkynaCommerceBundle:Common:response.xml.twig', [
             'sale_view' => $this->buildSaleView($sale, $form),
         ]);

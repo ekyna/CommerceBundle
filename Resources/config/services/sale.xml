@@ -60,6 +60,26 @@
             </call>
         </service>
 
+        <!-- Sale item abstract listener -->
+        <service id="ekyna_commerce.sale_item.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+        </service>
+
+        <!-- Adjustment abstract listener -->
+        <service id="ekyna_commerce.adjustment.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+        </service>
+
         <!-- Payment abstract listener -->
         <service id="ekyna_commerce.payment.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
@@ -147,6 +167,20 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Cart item event listener -->
+        <service id="ekyna_commerce.cart_item.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartItemEventSubscriber"
+                 parent="ekyna_commerce.sale_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Cart adjustment event listener -->
+        <service id="ekyna_commerce.cart_adjustment.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartAdjustmentEventSubscriber"
+                 parent="ekyna_commerce.adjustment.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Cart payment event listener -->
         <service id="ekyna_commerce.cart_payment.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\CartPaymentEventSubscriber"
@@ -167,6 +201,20 @@
             <call method="setStateResolver">
                 <argument type="service" id="ekyna_commerce.order.state_resolver"/>
             </call>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Order item event listener -->
+        <service id="ekyna_commerce.order_item.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderItemEventSubscriber"
+                 parent="ekyna_commerce.sale_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Order adjustment event listener -->
+        <service id="ekyna_commerce.order_adjustment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderAdjustmentEventSubscriber"
+                 parent="ekyna_commerce.adjustment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
@@ -208,6 +256,20 @@
             <call method="setStateResolver">
                 <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
             </call>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Quote item event listener -->
+        <service id="ekyna_commerce.quote_item.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\QuoteItemEventSubscriber"
+                 parent="ekyna_commerce.sale_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Quote adjustment event listener -->
+        <service id="ekyna_commerce.quote_adjustment.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\QuoteAdjustmentEventSubscriber"
+                 parent="ekyna_commerce.adjustment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 

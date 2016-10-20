@@ -75,6 +75,7 @@ class CartController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isValid()) {
+            // TODO use operator to update item (cart will be automatically saved)
             $this->getCartHelper()->getCartProvider()->saveCart();
 
             return $this->buildXhrCartViewResponse();
@@ -120,6 +121,7 @@ class CartController extends AbstractController
 
         $itemId = intval($request->attributes->get('itemId'));
         if (0 < $itemId) {
+            // TODO use operator to delete item (cart will be automatically saved)
             if ($this->getSaleHelper()->removeItemById($cart, $itemId)) {
                 if ($cart->hasItems()) {
                     $this->getCartHelper()->getCartProvider()->saveCart();
