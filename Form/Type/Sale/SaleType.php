@@ -63,12 +63,12 @@ class SaleType extends ResourceFormType
                 'find_route'      => 'ekyna_commerce_customer_admin_find',
                 'allow_clear'     => false,
                 'choice_label'    => function (CustomerInterface $data) {
-                    $output = $data->getFirstName() . ' ' . $data->getLastName() . ' &lt;<em>' . $data->getEmail() . '</em>&gt;';
+                    $output = $data->getFirstName() . ' ' . $data->getLastName() . ' &lt;' . $data->getEmail() . '&gt;';
                     if (0 < strlen($data->getCompany())) {
-                        $output = '[<strong>' . $data->getCompany() . '</strong>] ' . $output;
+                        $output = '[' . $data->getCompany() . '] ' . $output;
                     }
 
-                    return '<span>' . $output . '</span>';
+                    return $output;
                 },
                 'format_function' =>
                     "if(!data.id)return 'Rechercher';" .
