@@ -25,12 +25,23 @@
 .sale-view .sale-detail {
   width: 100%;
 }
+.sale-view .sale-detail > tbody + tbody {
+  border-top: 1px solid #ddd;
+}
 .sale-view .sale-detail th,
 .sale-view .sale-detail td {
   white-space: nowrap;
 }
 .sale-view .sale-detail .sale-detail-number {
   color: #a2afbc;
+}
+.sale-view .sale-detail .sale-detail-gross {
+  color: #12161a;
+  font-weight: normal;
+}
+.sale-view .sale-detail .sale-detail-total {
+  color: #12161a;
+  font-weight: 700;
 }
 .sale-view .sale-detail tbody tr.level-0 .sale-detail-designation {
   padding-left: 8px;
@@ -43,6 +54,10 @@
 }
 .sale-view .sale-detail tbody tr.level-3 .sale-detail-designation {
   padding-left: 56px;
+}
+.sale-view .sale-detail tbody tr.sale-detail-spacer td {
+  font-size: 0;
+  line-height: 0;
 }
 .sale-view .sale-detail tbody .sale-detail-node.level-0 td {
   color: #a2afbc;

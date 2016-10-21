@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
+use Ekyna\Bundle\CoreBundle\Form\Util\FormAttributes;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentPricingType extends AbstractType
+class ShipmentPricingType extends Form\AbstractType
 {
     /**
      * @var string
@@ -40,7 +40,7 @@ class ShipmentPricingType extends AbstractType
     /**
      * @inheritdoc
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(Form\FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('filter', EntityType::class, [
@@ -61,6 +61,14 @@ class ShipmentPricingType extends AbstractType
                     'class' => 'commerce-shipment-pricing-prices',
                 ],
             ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(Form\FormView $view, Form\FormInterface $form, array $options)
+    {
+        FormAttributes::addClass($view, 'commerce-shipment-pricing');
     }
 
     /**

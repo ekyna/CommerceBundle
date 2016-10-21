@@ -1,0 +1,45 @@
+<div class="show-body form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ bootstrap_set_label_col(3) }}
+    {{ bootstrap_set_widget_col(9) }}
+    {{ form_errors(form) }}
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ show_row(form.vars.total_weight, 'number', 'ekyna_commerce.sale.field.weight_total', {
+                'precision': 3,
+                'append': 'kg',
+                'label_nb_col': 6,
+                'widget_nb_col': 6
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ show_row(form.vars.delivery_country, 'text', 'ekyna_commerce.country.label.singular', {
+                'label_nb_col': 6,
+                'widget_nb_col': 6
+            }) }}
+        </div>
+    </div>
+
+    {{ form_row(form.preferredShipmentMethod) }}
+
+    <div class="form-group">
+        {{ form_label(form.shipmentAmount) }}
+        <div class="col-md-9">
+            <div class="input-group">
+                {{ form_widget(form.shipmentAmount) }}
+                <span class="input-group-btn">
+                    <button class="btn btn-default sale-shipment-amount-apply" type="button">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </button>
+                    <button class="btn btn-default sale-shipment-amount-clear" type="button">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {{ form_rest(form) }}
+</div>

@@ -14,7 +14,7 @@ use Ekyna\Component\Commerce\Common\View;
 class OrderViewVarsBuilder extends AbstractViewVarsBuilder
 {
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildSaleViewVars(Model\SaleInterface $sale, array $options = [])
     {
@@ -70,7 +70,7 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildItemViewVars(Model\SaleItemInterface $item, array $options = [])
     {
@@ -119,7 +119,7 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildAdjustmentViewVars(Model\AdjustmentInterface $adjustment, array $options = [])
     {
@@ -152,6 +152,26 @@ class OrderViewVarsBuilder extends AbstractViewVarsBuilder
             'title'         => 'ekyna_commerce.sale.button.adjustment.remove',
             'confirm'       => 'ekyna_commerce.sale.confirm.adjustment.remove',
             'data-sale-xhr' => null,
+        ]);
+
+        return [
+            'actions' => $actions,
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildShipmentViewVars(Model\SaleInterface $sale, array $options = [])
+    {
+        $actions = [];
+
+        $editPath = $this->generateUrl('ekyna_commerce_order_admin_edit_shipment', [
+            'orderId' => $sale->getId(),
+        ]);
+        $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+            'title'           => 'ekyna_commerce.sale.button.shipment.edit',
+            'data-sale-modal' => null,
         ]);
 
         return [

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -45,6 +46,131 @@ class SaleController extends AbstractSaleController
         $data['sale_view'] = $this->buildSaleView($sale);
 
         return null;
+    }
+
+    /**
+     * Edit the sale shipment data.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editShipmentAction(Request $request)
+    {
+        /*
+         * Form with:
+         * - Delivery country
+         * - Estimated shipment price
+         * - Preferred shipment method choice
+         */
+
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource();
+
+        $this->isGranted('EDIT', $sale);
+
+        $isXhr = $request->isXmlHttpRequest();
+        $form = $this->createShipmentEditForm($sale, !$isXhr);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            // TODO use ResourceManager
+            $event = $this->getOperator()->update($sale);
+            if (!$isXhr) {
+                $event->toFlashes($this->getFlashBag());
+            }
+
+            if (!$event->hasErrors()) {
+                if ($isXhr) {
+                    return $this->buildXhrSaleViewResponse($sale);
+                }
+
+                return $this->redirect($this->generateResourcePath($sale));
+            } elseif ($isXhr) {
+                // TODO all event messages should be bound to XHR response
+                foreach ($event->getErrors() as $error) {
+                    $form->addError(new FormError($error->getMessage()));
+                }
+            }
+        }
+
+        $formTemplate = 'EkynaCommerceBundle:Admin/Common/Sale:_form_edit_shipment.html.twig';
+
+        if ($isXhr) {
+            $modal = $this->createModal('edit', 'ekyna_commerce.sale.header.shipment.edit');
+            $modal
+                ->setContent($form->createView())
+                ->setVars($context->getTemplateVars([
+                    'form_template' => $formTemplate,
+                ]));
+
+            return $this->get('ekyna_core.modal')->render($modal);
+        }
+
+        $this->appendBreadcrumb(
+            sprintf('%s_edit_shipment', $sale),
+            'ekyna_commerce.sale.header.shipment.edit'
+        );
+
+        return $this->render(
+            'EkynaCommerceBundle:Admin/Common/Sale:edit_shipment.html.twig',
+            $context->getTemplateVars([
+                'form'          => $form->createView(),
+                'form_template' => $formTemplate,
+            ])
+        );
+    }
+
+    /**
+     * Creates the shipment edit form.
+     *
+     * @param SaleInterface $sale
+     * @param bool          $footer
+     *
+     * @return \Symfony\Component\Form\Form
+     */
+    protected function createShipmentEditForm(SaleInterface $sale, $footer = true)
+    {
+        $action = $this->generateResourcePath($sale, 'edit_shipment');
+
+        $form = $this->createForm(SaleShipmentType::class, $sale, [
+            'action'            => $action,
+            'attr'              => ['class' => 'form-horizontal'],
+            'method'            => 'POST',
+            'admin_mode'        => true,
+            '_redirect_enabled' => true,
+        ]);
+
+        if ($footer) {
+            $form->add('actions', FormActionsType::class, [
+                'buttons' => [
+                    'remove' => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'button_class' => 'warning',
+                            'label'        => 'ekyna_core.button.transform',
+                            'attr'         => ['icon' => 'ok'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\ButtonType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $this->generateResourcePath($sale),
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+        }
+
+        return $form;
     }
 
     /**
@@ -175,7 +301,7 @@ class SaleController extends AbstractSaleController
      * Creates the transform confirm form.
      *
      * @param SaleInterface $sale
-     * @param string $target
+     * @param string        $target
      *
      * @return \Symfony\Component\Form\Form
      */
@@ -185,7 +311,7 @@ class SaleController extends AbstractSaleController
 
         $translator = $this->getTranslator();
         $message = $translator->trans('ekyna_commerce.sale.confirm.transform', [
-            '%target%' => $translator->trans('ekyna_commerce.'. $target . '.label.singular')
+            '%target%' => $translator->trans('ekyna_commerce.' . $target . '.label.singular'),
         ]);
 
         return $this

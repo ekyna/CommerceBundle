@@ -178,7 +178,7 @@ class LoadOrderData extends AbstractFixture
 
         $item
             ->setNetPrice(rand(1000, 10000) / 100)
-            ->setWeight(rand(100, 1000));
+            ->setWeight(rand(1, 10) / 10);  // (kg)
 
         for ($a = $position; $a < rand(0, 2); $a++) {
             $item->addAdjustment($this->generateItemDiscount($a));

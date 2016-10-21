@@ -460,6 +460,8 @@ ekyna_commerce:
                 new: Ajouter une remise
                 edit: Modifier la remise
                 remove: Supprimer la remise
+            shipment:
+                edit: Modifier les frais de port
         button:
             refresh: Râfraichir
             recalculate: Recalculer
@@ -473,6 +475,8 @@ ekyna_commerce:
                 new: Ajouter une remise
                 edit: Modifier la remise
                 remove: Supprimer la remise
+            shipment:
+                edit: Modifier les frais de port
         confirm:
             transform: >
                 Confirmer la transformation en <strong>%target%</strong> ?
@@ -498,6 +502,7 @@ ekyna_commerce:
             same_address: Même adresse
             net_unit: PU HT
             net_total: Total HT
+            shipment_total: Port HT
             tax_name: Taxe
             tax_amount: Montant
             tax_rate: Taux TVA
@@ -566,7 +571,7 @@ ekyna_commerce:
             plural: Frais de port
         field:
             weight: Poids max (kg)
-            net_price: Prix net
+            net_price: Prix d'achat net
         alert:
             empty_list: Aucun mode de livraison configuré
     shipment_zone:

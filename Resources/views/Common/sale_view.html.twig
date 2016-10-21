@@ -67,8 +67,8 @@
     {% set lines = line.lines %}
     {% for line in lines %}
         {{ block('line') }}
+        {# TODO "line" variable has been overridden by childrens #}
     {% endfor %}
-    {# TODO be aware that line_view variable has been overrided #}
 {% endspaceless %}
 {% endblock line %}
 
@@ -80,11 +80,11 @@
             {{ block('lines_headers') }}
         </tr>
     </thead>
-    {% for line in view.items %}
     <tbody>
+    {% for line in view.items %}
         {{ block('line') }}
-    </tbody>
     {% endfor %}
+    </tbody>
 {% endspaceless %}
 {% endblock lines %}
 
@@ -97,9 +97,9 @@
             <th class="text-right" colspan="5">
                 <strong>{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</strong>
             </th>
-            <td class="text-right">{{ view.gross.base|localizedcurrency('EUR') }}</td>
-            <td class="text-right">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
-            <td class="text-right">{{ view.gross.total|localizedcurrency('EUR') }}</td>
+            <td class="text-right sale-detail-gross">{{ view.gross.base|localizedcurrency('EUR') }}</td>
+            <td class="text-right sale-detail-gross">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
+            <td class="text-right sale-detail-gross">{{ view.gross.total|localizedcurrency('EUR') }}</td>
         </tr>
     </tbody>
 {% endspaceless %}
@@ -122,35 +122,47 @@
 {% block discounts %}
 {% spaceless %}
     <tbody>
-        <tr>
-            <td colspan="9">&nbsp;</td>
-        </tr>
-    </tbody>
     {% for discount in view.discounts %}
-    <tbody>
         <tr>
             {{ block('discount') }}
         </tr>
-    </tbody>
     {% endfor %}
+    </tbody>
 {% endspaceless %}
 {% endblock discounts %}
+
+
+{% block shipment %}
+{% spaceless %}
+    <tbody>
+    <tr>
+        <td class="sale-detail-number">{#{{ view.shipment.number }}#}</td>
+        <td class="sale-detail-designation">{{ view.shipment.designation }}</td>
+        <td>{{ view.shipment.reference }}</td>
+        <td class="text-right" colspan="3">&nbsp;</td>
+        <td class="text-right">{{ view.shipment.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.shipment.taxAmount|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ view.shipment.total|localizedcurrency('EUR') }}</td>
+    </tr>
+    </tbody>
+{% endspaceless %}
+{% endblock shipment %}
 
 
 {% block gran_totals %}
 {% spaceless %}
     <tbody>
-        <tr>
-            <th colspan="6" rowspan="2">&nbsp;</th>
-            <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-            <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-            <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
-        </tr>
-        <tr>
-            <td class="text-right">{{ view.final.base|localizedcurrency('EUR') }}</td>
-            <td class="text-right">{{ view.final.tax|localizedcurrency('EUR') }}</td>
-            <td class="text-right"><strong>{{ view.final.total|localizedcurrency('EUR') }}</strong></td>
-        </tr>
+    <tr>
+        <th colspan="6" rowspan="2">&nbsp;</th>
+        <th>{{ 'ekyna_commerce.sale.field.net_total'|trans|upper }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans|upper }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans|upper }}</th>
+    </tr>
+    <tr>
+        <td class="text-right sale-detail-total">{{ view.final.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right sale-detail-total">{{ view.final.tax|localizedcurrency('EUR') }}</td>
+        <td class="text-right sale-detail-total"><strong>{{ view.final.total|localizedcurrency('EUR') }}</strong></td>
+    </tr>
     </tbody>
 {% endspaceless %}
 {% endblock gran_totals %}
@@ -178,6 +190,17 @@
 {% endblock taxes %}
 
 
+{% block spacer %}
+{% spaceless %}
+    <tbody>
+    <tr class="sale-detail-spacer">
+        <td colspan="9">&nbsp;</td>
+    </tr>
+    </tbody>
+{% endspaceless %}
+{% endblock spacer %}
+
+
 {% block sale %}
 {% spaceless %}
     <div class="sale-view">
@@ -187,8 +210,16 @@
 
                 {% if view.discounts is not empty %}
                     {{ block('gross_totals') }}
+                    {{ block('spacer') }}
                     {{ block('discounts') }}
                 {% endif %}
+
+                {% if view.shipment is not same as(null) %}
+                    {{ block('spacer') }}
+                    {{ block('shipment') }}
+                {% endif %}
+
+                {{ block('spacer') }}
 
                 {{ block('gran_totals') }}
             </table>

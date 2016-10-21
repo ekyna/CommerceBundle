@@ -4,7 +4,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
     /**
      * Shipment pricing widget
      */
-    $.fn.shipmentPricingWidget = function(/*config*/) {
+    $.fn.saleShipmentWidget = function(/*config*/) {
 
         //config = $.extend({}, config);
 
@@ -62,7 +62,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
     return {
         init: function($element) {
-            $element.shipmentPricingWidget();
+            $element.saleShipmentWidget();
         }
     };
 });

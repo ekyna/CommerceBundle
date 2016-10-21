@@ -63,6 +63,7 @@ class OptionType extends ResourceFormType
                     'input_group' => ['append' => '€'],
                 ],
             ])
+            // TODO weight
             ->add('taxGroup', ResourceType::class, [
                 'label'    => 'ekyna_commerce.tax_group.label.singular',
                 'sizing' => 'sm',

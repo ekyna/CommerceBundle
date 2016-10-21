@@ -12,15 +12,15 @@
         position: absolute;
         z-index: 9999;
         top: 0;
-        left:0;
-        right:0;
-        bottom:0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background-color: rgba(0, 0, 0, .25);
         display: none;
 
         > div {
             position: absolute;
-            top:50%;
+            top: 50%;
             left: 50%;
             margin-top: -@spinkit-size/2;
             margin-left: -@spinkit-size/2;
@@ -34,6 +34,10 @@
     .sale-detail {
         width: 100%;
 
+        & > tbody + tbody {
+            border-top: 1px solid #ddd;
+        }
+
         th, td {
             white-space: nowrap;
         }
@@ -42,9 +46,18 @@
             color: lighten(@text-color, 30%);
         }
 
+        .sale-detail-gross {
+            color: darken(@text-color, 30%);
+            font-weight: normal;
+        }
+
+        .sale-detail-total {
+            color: darken(@text-color, 30%);
+            font-weight: 700;
+        }
+
         tbody {
             tr {
-
                 &.level-0 {
                     .sale-detail-designation {
                         padding-left: @base-cell-padding;
@@ -68,6 +81,11 @@
                     .sale-detail-designation {
                         padding-left: @base-cell-padding + 48px;
                     }
+                }
+
+                &.sale-detail-spacer td {
+                    font-size: 0;
+                    line-height: 0;
                 }
             }
 
@@ -169,14 +187,22 @@
     }
 
     .generate-circle(@n, @i: 2) when (@i =< @n) {
-        .sk-circle-@{i} { transform: rotate(360deg / @spinkit-circle-count * (@i - 1)); }
-        .sk-circle-@{i}:before { animation-delay: -@spinkit-animation-duration + @spinkit-animation-duration / @spinkit-circle-count * (@i - 1); }
+        .sk-circle-@{i} {
+            transform: rotate(360deg / @spinkit-circle-count * (@i - 1));
+        }
+        .sk-circle-@{i}:before {
+            animation-delay: -@spinkit-animation-duration + @spinkit-animation-duration / @spinkit-circle-count * (@i - 1);
+        }
         .generate-circle(@n, (@i + 1));
     }
     .generate-circle(@spinkit-circle-count);
 }
 
 @keyframes sk-circleFadeDelay {
-    0%, 39%, 100% { opacity: 0 }
-    40% { opacity: 1 }
+    0%, 39%, 100% {
+        opacity: 0
+    }
+    40% {
+        opacity: 1
+    }
 }

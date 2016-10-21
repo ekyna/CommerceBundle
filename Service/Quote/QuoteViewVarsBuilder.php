@@ -14,7 +14,7 @@ use Ekyna\Component\Commerce\Common\View;
 class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
 {
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildSaleViewVars(Model\SaleInterface $sale, array $options = [])
     {
@@ -70,7 +70,7 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildItemViewVars(Model\SaleItemInterface $item, array $options = [])
     {
@@ -83,8 +83,8 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         // Configure action
         if ($item->isConfigurable()) {
             $configurePath = $this->generateUrl('ekyna_commerce_quote_item_admin_configure', [
-                'quoteId' => $item->getSale()->getId(),
-                'quoteItemId'  => $item->getId(),
+                'quoteId'     => $item->getSale()->getId(),
+                'quoteItemId' => $item->getId(),
             ]);
             $actions[] = new View\Action($configurePath, 'fa fa-cog', [
                 'title'           => 'ekyna_commerce.sale.button.item.configure',
@@ -94,8 +94,8 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
 
         // Edit action
         $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
-            'quoteId' => $item->getSale()->getId(),
-            'quoteItemId'  => $item->getId(),
+            'quoteId'     => $item->getSale()->getId(),
+            'quoteItemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.item.edit',
@@ -104,8 +104,8 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
 
         // Remove action
         $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
-            'quoteId' => $item->getSale()->getId(),
-            'quoteItemId'  => $item->getId(),
+            'quoteId'     => $item->getSale()->getId(),
+            'quoteItemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.item.remove',
@@ -119,7 +119,7 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildAdjustmentViewVars(Model\AdjustmentInterface $adjustment, array $options = [])
     {
@@ -136,7 +136,7 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         $actions = [];
 
         $editPath = $this->generateUrl('ekyna_commerce_quote_adjustment_admin_edit', [
-            'quoteId'      => $adjustable->getId(),
+            'quoteId'           => $adjustable->getId(),
             'quoteAdjustmentId' => $adjustment->getId(),
         ]);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
@@ -145,13 +145,33 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         $removePath = $this->generateUrl('ekyna_commerce_quote_adjustment_admin_remove', [
-            'quoteId'      => $adjustable->getId(),
+            'quoteId'           => $adjustable->getId(),
             'quoteAdjustmentId' => $adjustment->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.adjustment.remove',
             'confirm'       => 'ekyna_commerce.sale.confirm.adjustment.remove',
             'data-sale-xhr' => null,
+        ]);
+
+        return [
+            'actions' => $actions,
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildShipmentViewVars(Model\SaleInterface $sale, array $options = [])
+    {
+        $actions = [];
+
+        $editPath = $this->generateUrl('ekyna_commerce_quote_admin_edit_shipment', [
+            'quoteId' => $sale->getId(),
+        ]);
+        $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+            'title'           => 'ekyna_commerce.sale.button.shipment.edit',
+            'data-sale-modal' => null,
         ]);
 
         return [

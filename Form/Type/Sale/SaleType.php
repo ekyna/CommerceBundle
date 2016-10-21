@@ -4,11 +4,14 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -47,9 +50,7 @@ class SaleType extends ResourceFormType
                 'label'    => 'ekyna_core.field.number',
                 'disabled' => true,
             ])
-            ->add('currency', CurrencyChoiceType::class, [
-                'label' => 'ekyna_commerce.currency.label.singular',
-            ])
+            ->add('currency', CurrencyChoiceType::class)
             /*->add('state', Type\ChoiceType::class, [
                 'label'    => 'ekyna_core.field.status',
                 'choices'  => PaymentStates::getChoices(),
@@ -100,14 +101,7 @@ class SaleType extends ResourceFormType
             ->add('deliveryAddress', $options['address_type'], [
                 'label'    => 'ekyna_commerce.sale.field.delivery_address',
                 'required' => false,
-            ])
-            /*->add('items', OrderItemsType::class)
-            ->add('adjustments', AdjustmentsType::class, [
-                'entry_type'            => OrderAdjustmentType::class,
-                'add_button_text'       => 'ekyna_commerce.sale.form.add_adjustment',
-                'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_adjustment',
-            ])*/
-        ;
+            ]);
     }
 
     /**

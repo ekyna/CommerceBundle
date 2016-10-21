@@ -270,11 +270,12 @@
             <argument>%ekyna_commerce.attribute_set.class%</argument>
         </service>
 
-        <!-- Shipment zone type -->
-        <service id="ekyna_commerce.shipment_zone.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentZoneType">
-            <argument>%ekyna_commerce.shipment_zone.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
+
+        <!-- Shipment method choice form type -->
+        <service id="ekyna_commerce.shipment_method_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType">
+            <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
+            <argument type="service" id="ekyna_commerce.shipment_method.repository"/>
             <tag name="form.type"/>
         </service>
         <!-- Shipment pricing type -->
@@ -291,6 +292,13 @@
             <argument>%ekyna_commerce.shipment_price.class%</argument>
             <argument>%ekyna_commerce.shipment_zone.class%</argument>
             <argument>%ekyna_commerce.shipment_method.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <!-- Shipment zone type -->
+        <service id="ekyna_commerce.shipment_zone.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentZoneType">
+            <argument>%ekyna_commerce.shipment_zone.class%</argument>
+            <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
 
@@ -353,6 +361,14 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <tag name="form.type"/>
+        </service>
+
+        <!-- Sale shipment form type -->
+        <service id="ekyna_commerce.sale_shipment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType">
+            <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-sale-shipment" path="ekyna-commerce/form/sale-shipment" />
         </service>
 
         <!-- Tax form types -->

@@ -120,6 +120,7 @@ class ProductTypeSubscriber implements EventSubscriberInterface
                     'input_group' => ['append' => '€'],
                 ],
             ])
+            // TODO weight
             ->add('taxGroup', ResourceType::class, [
                 'label'     => 'ekyna_commerce.tax_group.label.singular',
                 'class'     => $this->taxGroupClass,
@@ -163,6 +164,7 @@ class ProductTypeSubscriber implements EventSubscriberInterface
                     'input_group' => ['append' => '€'],
                 ],
             ])
+            // TODO weight
             ->add('taxGroup', ResourceType::class, [
                 'label'    => 'ekyna_commerce.tax_group.label.singular',
                 'class'    => $this->taxGroupClass,

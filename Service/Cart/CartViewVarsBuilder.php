@@ -15,7 +15,7 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 class CartViewVarsBuilder extends AbstractViewVarsBuilder
 {
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildSaleViewVars(Model\SaleInterface $sale, array $options = [])
     {
@@ -23,7 +23,7 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildItemViewVars(Model\SaleItemInterface $item, array $options = [])
     {
@@ -60,7 +60,7 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildAdjustmentViewVars(Model\AdjustmentInterface $adjustment, array $options = [])
     {
@@ -93,5 +93,13 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
         return [
             'actions' => $actions,
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildShipmentViewVars(Model\SaleInterface $sale, array $options = [])
+    {
+        return [];
     }
 }

@@ -35,6 +35,13 @@ ekyna_commerce_order_admin_edit:
 #        orderId: \d+
 #        field: \w+
 
+ekyna_commerce_order_admin_edit_shipment:
+    path: /{orderId}/edit-shipment
+    defaults: { _controller: "ekyna_commerce.order.controller:editShipmentAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
 ekyna_commerce_order_admin_remove:
     path: /{orderId}/remove
     defaults: { _controller: "ekyna_commerce.order.controller:removeAction" }

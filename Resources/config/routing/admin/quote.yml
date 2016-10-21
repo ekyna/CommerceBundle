@@ -27,6 +27,13 @@ ekyna_commerce_quote_admin_edit:
     requirements:
         quoteId: \d+
 
+ekyna_commerce_quote_admin_edit_shipment:
+    path: /{quoteId}/edit-shipment
+    defaults: { _controller: "ekyna_commerce.quote.controller:editShipmentAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+
 #ekyna_commerce_quote_admin_toggle:
 #    path: /{quoteId}/toggle/{field}
 #    defaults: { _controller: "ekyna_commerce.quote.controller:toggleAction", field: enabled }

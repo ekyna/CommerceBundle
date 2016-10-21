@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormAttributes;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as States;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -108,5 +109,13 @@ class SupplierOrderType extends ResourceFormType
                 'supplier' => $supplier,
             ]);
         });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(Form\FormView $view, Form\FormInterface $form, array $options)
+    {
+        FormAttributes::addClass($view, 'commerce-supplier-order');
     }
 }
