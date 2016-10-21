@@ -54,6 +54,10 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $installer->installCurrencies($currencies);
         $output->writeln('');
 
+        $output->writeln('<info>[Commerce] Installing default tax group:</info>');
+        $installer->installTaxGroups();
+        $output->writeln('');
+
         $output->writeln('<info>[Commerce] Installing payment methods:</info>');
         $this->installPaymentMethods($output);
         $output->writeln('');
@@ -213,6 +217,10 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $methodRepository = $this->container->get('ekyna_commerce.shipment_method.repository');
         $mediaRepository = $this->container->get('ekyna_media.media.repository');
 
+        $defaultTaxGroup = $this->container
+            ->get('ekyna_commerce.tax_group.repository')
+            ->findDefault();
+
         $folder = $this->createImageFolder();
         $imageDir = realpath(__DIR__ . '/../Resources/install/shipment-method');
 
@@ -222,11 +230,6 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 'description' => '<p>Vous pourrez retirer votre colis à notre magasin ...</p>',
                 'enabled'     => true,
             ],
-            /*'Virement' => [
-                'image'       => 'virement.png',
-                'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
-                'enabled'     => true
-            ],*/
         ];
 
         $position = 0;
@@ -264,6 +267,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             $method
                 ->setName($name)
                 ->setMedia($image)
+                ->setTaxGroup($defaultTaxGroup)
                 ->setTitle($name)
                 ->setDescription($options['description'])
                 ->setEnabled($options['enabled'])

@@ -75,7 +75,7 @@ class SaleShipmentType extends AbstractType
         /** @var SaleInterface $sale */
         $sale = $form->getData();
 
-        $deliveryAddress = $sale->getSameAddress()
+        $deliveryAddress = $sale->isSameAddress()
             ? $sale->getInvoiceAddress()
             : $sale->getDeliveryAddress();
 
