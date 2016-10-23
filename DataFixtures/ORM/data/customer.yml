@@ -15,7 +15,7 @@ Ekyna\Bundle\CommerceBundle\Entity\Customer:
         firstName: John
         lastName: Doe
         email: john.doe@example.org
-        customerGroups: ['@cg_customer']
+        customerGroup: '@cg_customer'
         addresses:
             - <generateAddress(@self, true)>
             - <generateAddress(@self, false)>
@@ -24,7 +24,7 @@ Ekyna\Bundle\CommerceBundle\Entity\Customer:
         firstName: <firstName()>
         lastName: <lastName()>
         email: <safeEmail()>
-        customerGroups: ['@cg_customer']
+        customerGroup: '@cg_customer'
         addresses:
             - <generateAddress(@self)>
     c_business_test_main:
@@ -33,7 +33,7 @@ Ekyna\Bundle\CommerceBundle\Entity\Customer:
         firstName: <firstName()>
         lastName: <lastName()>
         email: <safeEmail()>
-        customerGroups: ['@cg_business']
+        customerGroup: '@cg_business'
         addresses:
             - <generateAddress(@self, true)>
     c_business_test_child_{1..2}:
@@ -42,7 +42,7 @@ Ekyna\Bundle\CommerceBundle\Entity\Customer:
         firstName: <firstName()>
         lastName: <lastName()>
         email: <safeEmail()>
-        customerGroups: ['@cg_business']
+        customerGroup: '@cg_business'
         addresses:
             - <generateAddress(@self)>
     c_retailer_test_main:
@@ -51,7 +51,7 @@ Ekyna\Bundle\CommerceBundle\Entity\Customer:
         firstName: <firstName()>
         lastName: <lastName()>
         email: <safeEmail()>
-        customerGroups: ['@cg_retailer']
+        customerGroup: '@cg_retailer'
         addresses:
             - <generateAddress(@self, true)>
     c_retailer_test_child_{1..2}:
@@ -60,6 +60,6 @@ Ekyna\Bundle\CommerceBundle\Entity\Customer:
         firstName: <firstName()>
         lastName: <lastName()>
         email: <safeEmail()>
-        customerGroups: ['@cg_retailer']
+        customerGroup: '@cg_retailer'
         addresses:
             - <generateAddress(@self)>

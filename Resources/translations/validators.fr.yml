@@ -28,6 +28,7 @@ ekyna_commerce:
         variant_is_not_unique: Une autre variante existe déjà avec cette configuration d'attributs.
     sale:
         no_customer:
+            customer_group_is_required: Le groupe de client est requis si aucun client n'est sélectionné.
             email_is_required: L'email est requis si aucun client n'est sélectionné.
             identity_is_required: L'identité est requise si aucun client n'est sélectionné.
         delivery_address_is_required: Veuillez saisir une addresse de livraison.

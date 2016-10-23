@@ -22,13 +22,13 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.sale.field.invoice_address'|trans }}
+                {{ 'ekyna_commerce.sale.field.delivery_address'|trans }}
             </div>
             <div class="col-md-8">
                 {% if not sale.sameAddress %}
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            {{ sale.invoiceAddress|commerce_address }}
+                            {{ sale.deliveryAddress|commerce_address }}
                         </div>
                     </div>
                 {% else %}

@@ -58,6 +58,12 @@
 
         tbody {
             tr {
+                background-color: transparent;
+
+                &:nth-of-type(even) {
+                    background-color: #f9f9f9;
+                }
+
                 &.level-0 {
                     .sale-detail-designation {
                         padding-left: @base-cell-padding;
@@ -83,9 +89,13 @@
                     }
                 }
 
-                &.sale-detail-spacer td {
-                    font-size: 0;
-                    line-height: 0;
+                &.sale-detail-spacer {
+                    background-color: transparent;
+                    td {
+                        font-size: 0;
+                        line-height: 0;
+
+                    }
                 }
             }
 

@@ -22,10 +22,24 @@
 {% endblock line_quantity %}
 
 
+{% block line_tax_rates %}
+{% spaceless %}
+    <td class="text-right">
+        {% for rate in line.taxRates %}
+            {{ rate|localizednumber }}%
+            {% if not loop.last %}, {% endif %}
+        {% else %}
+            &nbsp;
+        {% endfor %}
+    </td>
+{% endspaceless %}
+{% endblock line_tax_rates %}
+
+
 {% block line_leaf %}
 {% spaceless %}
     <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
-    <td class="text-right">{% if line.taxRate is not same as(null) %}{{ line.taxRate|localizednumber }}%{% endif %}</td>
+    {{ block('line_tax_rates') }}
     {{ block('line_quantity') }}
     <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
     <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
@@ -134,15 +148,17 @@
 
 {% block shipment %}
 {% spaceless %}
+    {% set line = view.shipment %}
     <tbody>
     <tr>
-        <td class="sale-detail-number">{#{{ view.shipment.number }}#}</td>
-        <td class="sale-detail-designation">{{ view.shipment.designation }}</td>
-        <td>{{ view.shipment.reference }}</td>
-        <td class="text-right" colspan="3">&nbsp;</td>
-        <td class="text-right">{{ view.shipment.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ view.shipment.taxAmount|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ view.shipment.total|localizedcurrency('EUR') }}</td>
+        <td class="sale-detail-number">{#{{ line.number }}#}</td>
+        <td class="sale-detail-designation">{{ line.designation }}</td>
+        <td class="text-right" colspan="2">&nbsp;</td>
+        {{ block('line_tax_rates') }}
+        <td class="text-right">&nbsp;</td>
+        <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
     </tr>
     </tbody>
 {% endspaceless %}

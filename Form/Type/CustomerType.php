@@ -48,25 +48,24 @@ class CustomerType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('customerGroups', ResourceType::class, [
+            ->add('customerGroup', ResourceType::class, [
                 'label'        => 'ekyna_commerce.customer_group.label.plural',
                 'class'        => $this->customerGroupClass,
-                'allow_new' => true,
-                'multiple'     => true,
+                'allow_new'    => true,
                 'choice_label' => 'name',
             ])
             ->add('parent', ResourceType::class, [
-                'label'    => 'ekyna_core.field.parent',
-                'class'    => $this->dataClass,
+                'label'     => 'ekyna_core.field.parent',
+                'class'     => $this->dataClass,
                 'allow_new' => true,
-                'required' => false,
+                'required'  => false,
             ])
             // TODO Children ?
             ->add('user', ResourceType::class, [
-                'label'    => 'ekyna_user.user.label.singular',
+                'label'     => 'ekyna_user.user.label.singular',
                 'allow_new' => true,
-                'class'    => $this->userClass,
-                'required' => false,
+                'class'     => $this->userClass,
+                'required'  => false,
             ])
             ->add('email', Type\EmailType::class, [
                 'label' => 'ekyna_core.field.email',

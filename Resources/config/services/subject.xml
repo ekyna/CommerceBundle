@@ -19,7 +19,6 @@
         <service id="ekyna_commerce.product.item_builder"
                  class="Ekyna\Bundle\CommerceBundle\Service\Product\ItemBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
-            <argument type="service" id="ekyna_commerce.adjustment_builder"/>
         </service>
 
         <!-- Product subject provider -->

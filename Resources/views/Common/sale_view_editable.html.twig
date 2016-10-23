@@ -132,18 +132,20 @@
 
 {% block shipment %}
 {% spaceless %}
+    {% set line = view.shipment %}
     <tbody>
     <tr>
-        <td class="sale-detail-number">{#{{ view.shipment.number }}#}</td>
-        <td class="sale-detail-designation">{{ view.shipment.designation }}</td>
-        <td>{{ view.shipment.reference }}</td>
-        <td class="text-right" colspan="3">&nbsp;</td>
-        <td class="text-right">{{ view.shipment.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ view.shipment.taxAmount|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ view.shipment.total|localizedcurrency('EUR') }}</td>
+        <td class="sale-detail-number">{#{{ line.number }}#}</td>
+        <td class="sale-detail-designation">{{ line.designation }}</td>
+        <td class="text-right" colspan="2">&nbsp;</td>
+        {{ block('line_tax_rates') }}
+        <td class="text-right">&nbsp;</td>
+        <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
+        <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
         <td class="sale-detail-actions">
-        {% if view.shipment.vars.actions is defined and not view.shipment.immutable %}
-            {% for action in view.shipment.vars.actions %}
+        {% if line.vars.actions is defined and not line.immutable %}
+            {% for action in line.vars.actions %}
                 {{ block('action') }}
             {% endfor %}
         {% endif %}

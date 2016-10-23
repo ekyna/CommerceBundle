@@ -213,7 +213,9 @@ class SaleController extends AbstractSaleController
         $form = $this->buildRecalculateForm($sale);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $event = $this->getOperator()->update($sale);
+            $event = $this->getOperator()->createResourceEvent($sale);
+            $event->setHard(true); // To trigger taxation update
+            $this->getOperator()->update($event);
 
             if ($event->hasErrors()) {
                 foreach ($event->getErrors() as $error) {

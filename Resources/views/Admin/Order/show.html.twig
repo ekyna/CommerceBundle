@@ -2,6 +2,7 @@
 
 {% block title %}
     <h1>{{ 'ekyna_commerce.order.header.show'|trans({'%number%': order.number})|raw }}</h1>
+    {{ order|sale_state_badge }}
 {% endblock title %}
 
 {% block main %}

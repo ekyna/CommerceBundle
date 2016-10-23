@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Product;
 
-use Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -26,22 +25,15 @@ class ItemBuilder
      */
     private $saleFactory;
 
-    /**
-     * @var AdjustmentBuilderInterface
-     */
-    private $adjustmentBuilder;
-
 
     /**
      * Constructor.
      *
      * @param SaleFactoryInterface       $saleFactory
-     * @param AdjustmentBuilderInterface $adjustmentBuilder
      */
-    public function __construct(SaleFactoryInterface $saleFactory, AdjustmentBuilderInterface $adjustmentBuilder)
+    public function __construct(SaleFactoryInterface $saleFactory)
     {
         $this->saleFactory = $saleFactory;
-        $this->adjustmentBuilder = $adjustmentBuilder;
     }
 
     /**
@@ -89,8 +81,6 @@ class ItemBuilder
             ->setReference($product->getReference())
             ->setNetPrice($product->getNetPrice())
             ->setWeight($product->getWeight());
-
-        $this->buildItemAdjustments($item, $product);
     }
 
     /**
@@ -114,8 +104,6 @@ class ItemBuilder
             ->unsetSubjectData(self::DATA_KEY_REMOVE_MISS_MATCH)
             ->setDesignation($product->getDesignation())
             ->setReference($product->getReference());
-
-        $this->buildItemAdjustments($item, $product);
 
         // Every slot must match a single item
         $bundleProducts = [];
@@ -186,8 +174,6 @@ class ItemBuilder
             ->setReference($product->getReference())
             ->setConfigurable(true);
 
-        $this->buildItemAdjustments($item, $product);
-
         // Every slot must match a single item
         $bundleProducts = [];
         foreach ($product->getBundleSlots() as $bundleSlot) {
@@ -228,19 +214,6 @@ class ItemBuilder
                 }
             }
         }
-    }
-
-    /**
-     * Builds the item adjustments.
-     *
-     * @param SaleItemInterface $item
-     * @param ProductInterface  $product
-     */
-    protected function buildItemAdjustments(SaleItemInterface $item, ProductInterface $product)
-    {
-        $this
-            ->adjustmentBuilder
-            ->buildTaxationAdjustmentsForSaleItem($item, $product);
     }
 
     /**

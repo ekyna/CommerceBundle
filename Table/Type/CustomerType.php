@@ -45,7 +45,7 @@ class CustomerType extends ResourceTableType
                 'label' => 'ekyna_core.field.email',
                 'sortable' => true,
             ))
-            /* TODO ->addColumn('customerGroups', 'anchor', [
+            /* TODO ->addColumn('customerGroup', 'anchor', [
                 'label'                => 'ekyna_commerce.customer_group.label.plural',
                 'property_path'        => 'group.name',
                 'sortable'             => false,
@@ -87,7 +87,7 @@ class CustomerType extends ResourceTableType
             ->addFilter('email', 'text', [
                 'label' => 'ekyna_core.field.email',
             ])
-            /* TODO ->addFilter('customerGroups', 'entity', [
+            /* TODO ->addFilter('customerGroup', 'entity', [
                 'label'         => 'ekyna_core.field.group',
                 'class'         => $this->customerGroupClass,
                 'property'      => 'name',

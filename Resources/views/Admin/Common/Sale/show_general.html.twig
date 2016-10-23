@@ -14,9 +14,9 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        {{ show_row(sale.customer, 'entity', 'ekyna_commerce.customer.label.singular', {
+        {{ show_row(sale.customer|commerce_identity, 'entity', 'ekyna_commerce.customer.label.singular', {
             'route': 'ekyna_commerce_customer_admin_show',
-            'route_params_map': {'customerId': 'id'},
+            'route_params': {'customerId': sale.customer.id},
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}

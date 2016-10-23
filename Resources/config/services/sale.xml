@@ -18,11 +18,12 @@
         </service>
 
         <!-- Adjustment builder -->
-        <service id="ekyna_commerce.adjustment_builder"
+        <service id="ekyna_commerce.common.adjustment_builder"
                  class="Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <argument type="service" id="ekyna_commerce.tax.resolver"/>
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
         <!-- Calculator -->
@@ -52,6 +53,9 @@
             <call method="setKeyGenerator">
                 <argument type="service" id="ekyna_commerce.common.key_generator"/>
             </call>
+            <call method="setAdjustmentBuilder">
+                <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
+            </call>
             <call method="setAmountsCalculator">
                 <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
             </call>
@@ -60,10 +64,23 @@
             </call>
         </service>
 
+        <!-- Sale address abstract listener -->
+        <service id="ekyna_commerce.sale_address.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+        </service>
+
         <!-- Sale item abstract listener -->
         <service id="ekyna_commerce.sale_item.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setAdjustmentBuilder">
+                <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
             </call>
             <call method="setDispatcher">
                 <argument type="service" id="ekyna_resource.event_dispatcher"/>
@@ -167,6 +184,13 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Cart address event listener -->
+        <service id="ekyna_commerce.cart_address.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartAddressEventSubscriber"
+                 parent="ekyna_commerce.sale_address.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Cart item event listener -->
         <service id="ekyna_commerce.cart_item.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartItemEventSubscriber"
@@ -201,6 +225,13 @@
             <call method="setStateResolver">
                 <argument type="service" id="ekyna_commerce.order.state_resolver"/>
             </call>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Order address event listener -->
+        <service id="ekyna_commerce.order_address.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderAddressEventSubscriber"
+                 parent="ekyna_commerce.sale_address.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
@@ -256,6 +287,13 @@
             <call method="setStateResolver">
                 <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
             </call>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Quote address event listener -->
+        <service id="ekyna_commerce.quote_address.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\QuoteAddressEventSubscriber"
+                 parent="ekyna_commerce.sale_address.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
