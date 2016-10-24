@@ -2,11 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -22,11 +20,6 @@ class ShipmentType extends ResourceFormType
     /**
      * @var string
      */
-    private $methodClass;
-
-    /**
-     * @var string
-     */
     private $itemClass;
 
     /**
@@ -39,14 +32,12 @@ class ShipmentType extends ResourceFormType
      * Constructor.
      *
      * @param string $dataClass
-     * @param string $methodClass
      * @param string $itemClass
      */
-    public function __construct($dataClass, $methodClass, $itemClass)
+    public function __construct($dataClass, $itemClass)
     {
         parent::__construct($dataClass);
 
-        $this->methodClass = $methodClass;
         $this->itemClass = $itemClass;
     }
 
@@ -73,22 +64,15 @@ class ShipmentType extends ResourceFormType
             ->add('state', Type\ChoiceType::class, [
                 'label'    => 'ekyna_core.field.status',
                 'choices'  => ShipmentStates::getChoices(),
-                'disabled' => true,
             ])
-            ->add('method', EntityType::class, [
-                'label'         => 'ekyna_commerce.shipment_method.label.singular',
-                'class'         => $this->methodClass,
-                'query_builder' => function (EntityRepository $repository) {
-                    $qb = $repository
-                        ->createQueryBuilder('m')
-                        ->andWhere('m.enabled = :enabled')
-                        ->setParameter('enabled', true);
-
-                    return $qb;
-                },
+            ->add('method', ShipmentMethodChoiceType::class)
+            ->add('trackingNumber', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.tracking_number',
+                'required' => false,
             ])
             ->add('description', Type\TextareaType::class, [
-                'label' => 'ekyna_core.field.description',
+                'label'    => 'ekyna_core.field.description',
+                'required' => false,
             ])
             ->add('items', ShipmentItemsType::class, [
                 'label'         => 'Items', // TODO

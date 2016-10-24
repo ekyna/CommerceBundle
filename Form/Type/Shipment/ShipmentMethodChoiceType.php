@@ -65,24 +65,13 @@ class ShipmentMethodChoiceType extends AbstractType
             return $this->availableMethods;
         }
 
-        $sorting = ['position' => 'ASC'];
-
-        if (null !== $sale) { // With price resolution
+        if (null !== $sale) {
             $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale);
-            if ($availableOnly) {
-                // Only methods corresponding to a price
-                $this->availableMethods = [];
-                foreach ($this->availablePrices as $price) {
-                    $this->availableMethods[] = $price->getMethod();
-                }
-            } else { // All methods
-                $this->availableMethods = (array)$this->methodRepository->findBy([], $sorting);
-            }
-        } else { // Without price resolution
-            $criteria = $availableOnly ? ['available' => true, 'enabled' => true] : [];
-
-            $this->availableMethods = (array)$this->methodRepository->findBy($criteria, $sorting);
         }
+
+        $sorting = ['position' => 'ASC'];
+        $criteria = $availableOnly ? ['available' => true, 'enabled' => true] : [];
+        $this->availableMethods = (array)$this->methodRepository->findBy($criteria, $sorting);
 
         return $this->availableMethods;
     }
@@ -163,9 +152,6 @@ class ShipmentMethodChoiceType extends AbstractType
                 'choices'      => $choices,
                 'choice_attr'  => [$this, 'buildChoiceAttr'],
                 'choice_label' => [$this, 'buildChoiceLabel'],
-                'attr'         => [
-                    'class' => 'no-select2',
-                ],
             ])
             ->setAllowedTypes('sale', ['null', SaleInterface::class]);
     }

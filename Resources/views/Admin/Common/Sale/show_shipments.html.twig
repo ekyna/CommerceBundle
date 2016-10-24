@@ -5,7 +5,7 @@
             <th>{{ 'ekyna_core.field.number'|trans }}</th>
             <th>{{ 'ekyna_core.field.method'|trans }}</th>
             <th>{{ 'ekyna_core.field.status'|trans }}</th>
-            <th>{{ 'ekyna_core.field.date'|trans }}</th>
+            <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
             <th>{{ 'ekyna_core.field.description'|trans }}</th>
             <th></th>
         </tr>
@@ -16,7 +16,7 @@
                 <td>{{ shipment.number }}</td>
                 <td>{{ shipment.method }}</td>
                 <td>{{ shipment|shipment_state_badge }}</td>
-                <td>{{ shipment.date|localizeddate('short') }}</td>
+                <td>{{ shipment.createdAt|localizeddate('short') }}</td>
                 <td>{{ shipment.description }}</td>
                 <td class="actions">
                     <a href="{{ admin_resource_path(shipment, 'edit') }}" class="btn btn-warning btn-xs">
@@ -38,4 +38,21 @@
         {% endfor %}
         </tbody>
     </table>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
+            'precision': 0,
+            'append': 'kg',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
 </div>

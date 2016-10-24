@@ -7,7 +7,7 @@
             <th>{{ 'ekyna_core.field.amount'|trans }}</th>
             <th>{{ 'ekyna_core.field.currency'|trans }}</th>
             <th>{{ 'ekyna_core.field.status'|trans }}</th>
-            <th>{{ 'ekyna_core.field.date'|trans }}</th>
+            <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
             <th>{{ 'ekyna_core.field.description'|trans }}</th>
             <th></th>
         </tr>
@@ -42,4 +42,19 @@
         {% endfor %}
         </tbody>
     </table>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
 </div>

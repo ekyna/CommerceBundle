@@ -30,22 +30,6 @@
         <div class="tab-content">
             <div class="tab-pane active" id="order-general">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': order} %}
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
-                            'precision': 0,
-                            'append': 'kg',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                </div>
                 <hr>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': order} %}
             </div>

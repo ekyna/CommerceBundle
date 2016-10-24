@@ -174,7 +174,6 @@
         <service id="ekyna_commerce.order_shipment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType">
             <argument>%ekyna_commerce.order_shipment.class%</argument>
-            <argument>%ekyna_commerce.shipment_method.class%</argument>
             <argument>%ekyna_commerce.order_shipment_item.class%</argument>
             <call method="setShipmentBuilder">
                 <argument type="service" id="ekyna_commerce.shipment.builder"/>

@@ -521,32 +521,35 @@ ekyna_commerce:
             tax_group: Groupe
     shipment:
         label:
-            singular: Livraison
-            plural: Livraisons
+            singular: Expédition
+            plural: Expéditions
         header:
-            new: Créer une nouvelle livraison
-            edit: Modifier la livraison
-            remove: Supprimer la livraison
+            new: Créer une nouvelle expédition
+            edit: Modifier l'expédition
+            remove: Supprimer l'expédition
         button:
-            new: Nouvelle livraison
-            edit: Modifier la livraison
-            remove: Supprimer la livraison
+            new: Nouvelle expédition
+            edit: Modifier l'expédition
+            remove: Supprimer l'expédition
         message:
-            remove_confirm: Souhaitez-vous réellement supprimer cette livraison ?
-            cant_be_deleted: Cette livraison est valide et ne peut être supprimée.
+            remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
+            cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
         alert:
-            no_item: Aucune livraison configuré
+            no_item: Aucune expédition configuré
         state:
             new: Création
-            checkout: Vérification
-            onhold: En cours d'envoi
+#            checkout: Vérification
+#            onhold: En cours d'envoi
             pending: En attente
-            backordered: En réapprovisionnement
+#            backordered: En réapprovisionnement
             ready: Prêt
+            partial: Partiel
             shipped: Expédié
             completed: Complété
             returned: Retourné
             cancelled: Annulé
+        field:
+            tracking_number: Numéro de suivi
     shipment_method:
         label:
             singular: Mode de livraison
