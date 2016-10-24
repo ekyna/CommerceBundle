@@ -17,11 +17,6 @@ class TaxRuleType extends ResourceFormType
     /**
      * @var string
      */
-    private $taxGroupClass;
-
-    /**
-     * @var string
-     */
     private $taxClass;
 
     /**
@@ -34,15 +29,13 @@ class TaxRuleType extends ResourceFormType
      * Constructor.
      *
      * @param string $taxRuleClass
-     * @param string $taxGroupClass
      * @param string $taxClass
      * @param string $customerGroupClass
      */
-    public function __construct($taxRuleClass, $taxGroupClass, $taxClass, $customerGroupClass)
+    public function __construct($taxRuleClass, $taxClass, $customerGroupClass)
     {
         parent::__construct($taxRuleClass);
 
-        $this->taxGroupClass = $taxGroupClass;
         $this->taxClass = $taxClass;
         $this->customerGroupClass = $customerGroupClass;
     }
@@ -59,22 +52,21 @@ class TaxRuleType extends ResourceFormType
             ->add('priority', Type\NumberType::class, [
                 'label' => 'ekyna_core.field.priority',
             ])
-            ->add('taxGroups', ResourceType::class, [
-                'label' => 'ekyna_commerce.tax_group.label.plural',
-                'class' => $this->taxGroupClass,
-                'multiple' => true,
+            ->add('taxGroups', TaxGroupChoiceType::class, [
+                'label'     => 'ekyna_commerce.tax_group.label.plural',
+                'multiple'  => true,
                 'allow_new' => true,
             ])
             ->add('taxes', ResourceType::class, [
-                'label' => 'ekyna_commerce.tax.label.plural',
-                'class' => $this->taxClass,
-                'multiple' => true,
+                'label'     => 'ekyna_commerce.tax.label.plural',
+                'class'     => $this->taxClass,
+                'multiple'  => true,
                 'allow_new' => true,
             ])
             ->add('customerGroups', ResourceType::class, [
-                'label' => 'ekyna_commerce.customer_group.label.plural',
-                'class' => $this->customerGroupClass,
-                'multiple' => true,
+                'label'     => 'ekyna_commerce.customer_group.label.plural',
+                'class'     => $this->customerGroupClass,
+                'multiple'  => true,
                 'allow_new' => true,
             ]);
     }

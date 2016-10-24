@@ -80,7 +80,8 @@ class ItemBuilder
             ->setDesignation($product->getDesignation())
             ->setReference($product->getReference())
             ->setNetPrice($product->getNetPrice())
-            ->setWeight($product->getWeight());
+            ->setWeight($product->getWeight())
+            ->setTaxGroup($product->getTaxGroup());
     }
 
     /**

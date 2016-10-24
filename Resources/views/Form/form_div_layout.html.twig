@@ -127,8 +127,10 @@
 
 {% block ekyna_commerce_adjustment_widget %}
 {% spaceless %}
+    {% set class = attr.class|default('') %}
+    {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
     {# TODO {{ form_errors(form) }}#}
-    <tr class="ekyna-collection-child">
+    <tr {{ block('widget_container_attributes') }}>
         <td width="30%">{{ form_widget(form.designation) }}</td>
         <td>{{ form_widget(form.type) }}</td>
         <td>{{ form_widget(form.mode) }}</td>
@@ -436,6 +438,9 @@
                         {{ 'ekyna_core.field.price'|trans }}
                     </th>
                     <th>
+                        {{ 'ekyna_commerce.sale_item.field.tax_group'|trans }}
+                    </th>
+                    <th>
                         {{ 'ekyna_core.field.quantity'|trans }}
                     </th>
                     <th></th>
@@ -463,21 +468,16 @@
                 {{ form_widget(child)|replace({'__controls__': controls})|raw }}
             {%- endfor %}
 
-            {# Footer #}
-            <tfoot>
-            {% if form.vars.allow_add -%}
-                <tr>
-                    <td colspan="5">
-                        <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
-                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
-                        </button>
-                    </td>
-                </tr>
-            {%- endif %}
-            </tfoot>
         </table>
         {{ form_rest(form) }}
+        {% if form.vars.allow_add -%}
+        <p>
+            <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
+                    data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+            </button>
+        </p>
+        {%- endif %}
     </div>
 {% endspaceless %}
 {% endblock ekyna_commerce_sale_items_widget %}
@@ -485,10 +485,12 @@
 
 {% block ekyna_commerce_sale_item_widget %}
 {% spaceless %}
-    <tbody class="ekyna-collection-child commerce-sale-item">
+    {% set class = attr.class|default('') %}
+    {% set attr = attr|merge({'class': ('ekyna-collection-child commerce-sale-item ' ~ class)|trim }) %}
+    <tbody {{ block('widget_container_attributes') }}>
     {%- if form.vars.errors|length > 0 -%}
     <tr>
-        <td colspan="6">
+        <td colspan="7">
             {{ form_errors(form) }}
         </td>
     </tr>
@@ -498,6 +500,7 @@
         <td>{{ form_widget(form.reference) }}</td>
         <td>{{ form_widget(form.weight) }}</td>
         <td>{{ form_widget(form.netPrice) }}</td>
+        <td>{{ form_widget(form.taxGroup) }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
         <td rowspan="{{ form.vars.with_collections ? 3 : 2 }}" class="ekyna-collection-controls">
             {{ form_widget(form.position) }}
@@ -506,13 +509,13 @@
     </tr>
     {% if form.vars.with_collections %}
         <tr>
-            <td colspan="5" class="commerce-sale-item-children">
+            <td colspan="6" class="commerce-sale-item-children">
                 {{ form_widget(form.items) }}
             </td>
         </tr>
     {% endif %}
     <tr>
-        <td colspan="5" class="commerce-sale-item-children">
+        <td colspan="6" class="commerce-sale-item-children">
             {{ form_widget(form.adjustments) }}
         </td>
     </tr>
@@ -615,20 +618,6 @@
             </tr>
             </thead>
 
-            {# Footer #}
-            <tfoot>
-            {% if form.vars.allow_add -%}
-                <tr>
-                    <td colspan="5" style="text-align:center;">
-                        <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
-                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
-                        </button>
-                    </td>
-                </tr>
-            {%- endif %}
-            </tfoot>
-
             {# Body #}
             <tbody>
             {# Rows #}
@@ -649,6 +638,16 @@
 
         </table>
         {{ form_rest(form) }}
+
+        {# Footer #}
+        {% if form.vars.allow_add -%}
+        <p style="text-align:center;">
+            <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                    data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+            </button>
+        </p>
+        {%- endif %}
     </div>
 {% endspaceless %}
 {% endblock ekyna_commerce_shipment_prices_widget %}
@@ -766,20 +765,6 @@
                 </tr>
             </thead>
 
-            {# Footer #}
-            <tfoot>
-            {% if form.vars.allow_add -%}
-                <tr>
-                    <td colspan="5" style="text-align:center;">
-                        <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
-                                data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                            {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
-                        </button>
-                    </td>
-                </tr>
-            {%- endif %}
-            </tfoot>
-
             {# Rows #}
             {% set previous_style = bootstrap_get_style() %}
             {{ bootstrap_set_style('') }}
@@ -798,6 +783,15 @@
         </table>
         {{ form_rest(form) }}
 
+        {# Footer #}
+        {% if form.vars.allow_add -%}
+        <p style="text-align:center;">
+            <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
+                    data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
+                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+            </button>
+        </p>
+        {%- endif %}
     </div>
 {% endspaceless %}
 {% endblock ekyna_commerce_supplier_order_items_widget %}

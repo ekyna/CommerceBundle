@@ -5,7 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\AdjustmentsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -142,6 +144,15 @@ class SaleItemType extends ResourceFormType
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
                     'input_group' => ['append' => '€'],  // TODO sale currency
+                ],
+            ]],
+            ['taxGroup', TaxGroupChoiceType::class, [
+                'label'    => 'ekyna_commerce.sale_item.field.tax_group',
+                'sizing'   => 'sm',
+                'required' => false,
+                'attr'     => [
+                    'class'       => 'no-select2',
+                    'placeholder' => 'ekyna_commerce.sale_item.field.tax_group',
                 ],
             ]],
             ['quantity', Type\IntegerType::class, [

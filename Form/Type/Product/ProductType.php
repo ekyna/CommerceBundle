@@ -20,25 +20,18 @@ class ProductType extends ResourceFormType
      */
     protected $subscriber;
 
-    /**
-     * @var string
-     */
-    protected $taxGroupClass;
-
 
     /**
      * Constructor.
      *
      * @param ProductTypeSubscriber $subscriber
      * @param string $productClass
-     * @param string $taxGroupClass
      */
-    public function __construct(ProductTypeSubscriber $subscriber, $productClass, $taxGroupClass)
+    public function __construct(ProductTypeSubscriber $subscriber, $productClass)
     {
         parent::__construct($productClass);
 
         $this->subscriber = $subscriber;
-        $this->taxGroupClass = $taxGroupClass;
     }
 
     /**

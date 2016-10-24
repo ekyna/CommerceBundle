@@ -17,10 +17,11 @@ class SubjectHelper extends Helper implements SubjectHelperInterface
      */
     public function getFormOptions(SaleItemInterface $item, $property)
     {
-        /*if ($item->hasSubjectIdentity() && null !== $resolver = $this->getResolver($item)) {
-            /** @var \Ekyna\Bundle\CommerceBundle\Resolver\SubjectResolverInterface $resolver */
-            /*return $resolver->getFormOptions($item, $property);
-        }*/
+        if ($item->hasChildren() && in_array($property, ['netPrice', 'weight', 'taxGroup'])) {
+            return [
+                'disabled' => true,
+            ];
+        }
 
         return [];
     }

@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleSlotsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Product\OptionGroupType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Product\ProductAttributesType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Product\ProductTranslationType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\ProductTypes;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Component\Commerce\Product\Model\ProductInterface;
@@ -30,10 +31,6 @@ class ProductTypeSubscriber implements EventSubscriberInterface
      */
     private $productClass;
 
-    /**
-     * @var string
-     */
-    private $taxGroupClass;
 
     /**
      * @var string
@@ -45,13 +42,11 @@ class ProductTypeSubscriber implements EventSubscriberInterface
      * Constructor.
      *
      * @param string $productClass
-     * @param string $taxGroupClass
      * @param string $attributeSetClass
      */
-    public function __construct($productClass, $taxGroupClass, $attributeSetClass)
+    public function __construct($productClass, $attributeSetClass)
     {
         $this->productClass = $productClass;
-        $this->taxGroupClass = $taxGroupClass;
         $this->attributeSetClass = $attributeSetClass;
     }
 
@@ -121,9 +116,7 @@ class ProductTypeSubscriber implements EventSubscriberInterface
                 ],
             ])
             // TODO weight
-            ->add('taxGroup', ResourceType::class, [
-                'label'     => 'ekyna_commerce.tax_group.label.singular',
-                'class'     => $this->taxGroupClass,
+            ->add('taxGroup', TaxGroupChoiceType::class, [
                 'allow_new' => true,
             ]);
 
@@ -165,9 +158,7 @@ class ProductTypeSubscriber implements EventSubscriberInterface
                 ],
             ])
             // TODO weight
-            ->add('taxGroup', ResourceType::class, [
-                'label'    => 'ekyna_commerce.tax_group.label.singular',
-                'class'    => $this->taxGroupClass,
+            ->add('taxGroup', TaxGroupChoiceType::class, [
                 'required' => false,
                 'disabled' => true,
             ])
@@ -208,9 +199,7 @@ class ProductTypeSubscriber implements EventSubscriberInterface
                     'input_group' => ['append' => '€'],
                 ],
             ])
-            ->add('taxGroup', ResourceType::class, [
-                'label'     => 'ekyna_commerce.tax_group.label.singular',
-                'class'     => $this->taxGroupClass,
+            ->add('taxGroup', TaxGroupChoiceType::class, [
                 'allow_new' => true,
             ])
             ->add('attributeSet', ResourceType::class, [

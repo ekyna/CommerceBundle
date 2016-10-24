@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Product;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -14,25 +14,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class OptionType extends ResourceFormType
 {
-    /**
-     * @var string
-     */
-    private $taxGroupClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $optionClass
-     * @param string $taxGroupClass
-     */
-    public function __construct($optionClass, $taxGroupClass)
-    {
-        parent::__construct($optionClass);
-
-        $this->taxGroupClass = $taxGroupClass;
-    }
-
     /**
      * @inheritDoc
      */
@@ -64,13 +45,8 @@ class OptionType extends ResourceFormType
                 ],
             ])
             // TODO weight
-            ->add('taxGroup', ResourceType::class, [
-                'label'    => 'ekyna_commerce.tax_group.label.singular',
+            ->add('taxGroup', TaxGroupChoiceType::class, [
                 'sizing' => 'sm',
-                'class'    => $this->taxGroupClass,
-                'attr'   => [
-                    'placeholder' => 'ekyna_commerce.tax_group.label.singular',
-                ],
             ])
             ->add('position', Type\HiddenType::class,[
                 'attr' => [

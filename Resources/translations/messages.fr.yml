@@ -516,6 +516,9 @@ ekyna_commerce:
             state: Statut
             payment_state: Statut paiement
             shipment_state: Statut livraison
+    sale_item:
+        field:
+            tax_group: Groupe
     shipment:
         label:
             singular: Livraison

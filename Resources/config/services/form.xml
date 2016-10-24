@@ -138,7 +138,6 @@
         <service id="ekyna_commerce.option.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\OptionType">
             <argument>%ekyna_commerce.option.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
             <tag name="form.type"/>
         </service>
 
@@ -260,13 +259,11 @@
                  class="%ekyna_commerce.product.form_type.class%">
             <argument type="service" id="ekyna_commerce.product.form_type.event_subscriber"/>
             <argument>%ekyna_commerce.product.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.product.form_type.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\Form\EventListener\ProductTypeSubscriber">
             <argument>%ekyna_commerce.product.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
             <argument>%ekyna_commerce.attribute_set.class%</argument>
         </service>
 
@@ -378,20 +375,34 @@
             <argument>%ekyna_commerce.tax_rule.class%</argument>
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.tax_group_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType">
+            <argument>%ekyna_commerce.tax_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.tax_rule.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType">
             <argument>%ekyna_commerce.tax_rule.class%</argument>
-            <argument>%ekyna_commerce.tax_group.class%</argument>
             <argument>%ekyna_commerce.tax.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
             <tag name="form.type"/>
         </service>
+        <!-- TODO <service id="ekyna_commerce.tax_rule_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleChoiceType">
+            <argument>%ekyna_commerce.tax_rule.class%</argument>
+            <tag name="form.type"/>
+        </service>-->
         <service id="ekyna_commerce.tax.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxType">
             <argument>%ekyna_commerce.tax.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
+        <!-- TODO <service id="ekyna_commerce.tax_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxChoiceType">
+            <argument>%ekyna_commerce.tax.class%</argument>
+            <tag name="form.type"/>
+        </service>-->
 
     </services>
 
