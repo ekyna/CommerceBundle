@@ -89,6 +89,7 @@
         </service>
 
         <!-- Product stock unit event listener -->
+        <!-- TODO abstract service -->
         <service id="ekyna_commerce.product_stock_unit.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ProductStockUnitEventSubscriber">
             <call method="setPersistenceHelper">

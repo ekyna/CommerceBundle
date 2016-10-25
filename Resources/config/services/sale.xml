@@ -69,9 +69,6 @@
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
-            <call method="setDispatcher">
-                <argument type="service" id="ekyna_resource.event_dispatcher"/>
-            </call>
         </service>
 
         <!-- Sale item abstract listener -->
@@ -82,9 +79,6 @@
             <call method="setAdjustmentBuilder">
                 <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
             </call>
-            <call method="setDispatcher">
-                <argument type="service" id="ekyna_resource.event_dispatcher"/>
-            </call>
         </service>
 
         <!-- Adjustment abstract listener -->
@@ -92,18 +86,12 @@
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
-            <call method="setDispatcher">
-                <argument type="service" id="ekyna_resource.event_dispatcher"/>
-            </call>
         </service>
 
         <!-- Payment abstract listener -->
         <service id="ekyna_commerce.payment.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            </call>
-            <call method="setDispatcher">
-                <argument type="service" id="ekyna_resource.event_dispatcher"/>
             </call>
             <call method="setNumberGenerator">
                 <argument type="service" id="ekyna_commerce.common.number_generator"/>
@@ -115,14 +103,8 @@
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
-            <call method="setDispatcher">
-                <argument type="service" id="ekyna_resource.event_dispatcher"/>
-            </call>
             <call method="setNumberGenerator">
                 <argument type="service" id="ekyna_commerce.common.number_generator"/>
-            </call>
-            <call method="setStateResolver">
-                <argument type="service" id="ekyna_commerce.order_shipment.state_resolver"/><!-- TODO !!! -->
             </call>
         </service>
 
@@ -130,9 +112,6 @@
         <service id="ekyna_commerce.shipment_item.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            </call>
-            <call method="setDispatcher">
-                <argument type="service" id="ekyna_resource.event_dispatcher"/>
             </call>
         </service>
 
