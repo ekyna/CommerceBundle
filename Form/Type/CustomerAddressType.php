@@ -55,6 +55,8 @@ class CustomerAddressType extends AddressType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setDefault('customer_form', false)
             ->setAllowedTypes('customer_form', 'bool');
