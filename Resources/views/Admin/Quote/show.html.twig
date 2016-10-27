@@ -22,6 +22,9 @@
         <li>
             <a href="#quote-payments" data-toggle="tab">{{ 'ekyna_commerce.payment.label.plural'|trans }}</a>
         </li>
+        <li>
+            <a href="#quote-attachments" data-toggle="tab">{{ 'ekyna_commerce.attachment.label.plural'|trans }}</a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -51,6 +54,15 @@
                     {{ 'ekyna_commerce.payment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': quote} %}
+            </div>
+            <div class="tab-pane" id="quote-attachments">
+                <h4 class="sub-header">
+                    <a href="{{ admin_resource_path('ekyna_commerce.quote_attachment', 'new', {'quoteId': quote.id}) }}" class="btn btn-success btn-xs pull-right">
+                        {{ 'ekyna_commerce.attachment.button.new'|trans }}
+                    </a>
+                    {{ 'ekyna_commerce.attachment.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'sale': quote} %}
             </div>
         </div>
     </div>

@@ -25,6 +25,9 @@
         <li>
             <a href="#order-shipments" data-toggle="tab">{{ 'ekyna_commerce.shipment.label.plural'|trans }}</a>
         </li>
+        <li>
+            <a href="#order-attachments" data-toggle="tab">{{ 'ekyna_commerce.attachment.label.plural'|trans }}</a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -69,6 +72,15 @@
                     {{ 'ekyna_commerce.shipment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {'sale': order} %}
+            </div>
+            <div class="tab-pane" id="order-attachments">
+                <h4 class="sub-header">
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_attachment', 'new', {'orderId': order.id}) }}" class="btn btn-success btn-xs pull-right">
+                        {{ 'ekyna_commerce.attachment.button.new'|trans }}
+                    </a>
+                    {{ 'ekyna_commerce.attachment.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'sale': order} %}
             </div>
         </div>
     </div>

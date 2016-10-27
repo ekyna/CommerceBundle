@@ -1,0 +1,22 @@
+<div class="form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+
+    {{ form_errors(form) }}
+
+    <div class="upload-widget">
+        {{ form_row(form.file) }}
+        {% if form.key is defined %}
+            {{ form_row(form.key) }}
+        {% endif %}
+        {% if form.rename is defined %}
+            {{ form_row(form.rename) }}
+        {% endif %}
+        {% if form.unlink is defined %}
+            {{ form_row(form.unlink) }}
+        {% endif %}
+    </div>
+    {{ form_row(form.internal) }}
+
+    {{ form_rest(form) }}
+</div>

@@ -275,6 +275,10 @@ class SaleController extends AbstractSaleController
             if ($targetEvent->isPropagationStopped() || $targetEvent->hasErrors()) {
                 $targetEvent->toFlashes($this->getFlashBag());
             } else {
+                // Disable the uploadable listener so that files won't be removed.
+                $uploadableListener = $this->get('ekyna_commerce.common.uploadable_listener');
+                $uploadableListener->setEnabled(false);
+
                 // Delete the source sale
                 $sourceEvent = $this->getOperator()->delete($sourceSale, true); // Hard delete
                 if ($sourceEvent->isPropagationStopped() || $sourceEvent->hasErrors()) {
@@ -283,6 +287,8 @@ class SaleController extends AbstractSaleController
                     // Redirect to target sale
                     return $this->redirect($this->generateResourcePath($targetSale));
                 }
+
+                $uploadableListener->setEnabled(true);
             }
         }
 

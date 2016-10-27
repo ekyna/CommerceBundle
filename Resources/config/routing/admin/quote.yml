@@ -71,6 +71,10 @@ ekyna_commerce_quote_admin_transform:
         quoteId: \d+
         target: "[a-z]+"
 
+ekyna_commerce_quote_admin_attachment:
+    resource: quote_attachment.yml
+    prefix: /{quoteId}/attachments
+
 ekyna_commerce_quote_admin_item:
     resource: quote_item.yml
     prefix: /{quoteId}/items

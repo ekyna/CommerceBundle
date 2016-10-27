@@ -170,6 +170,21 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
                             ->end()
                         ->end()
+                        ->arrayNode('cart_attachment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                ])->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAttachmentController')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartAttachment')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAttachmentType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('cart_item')
                             ->addDefaultsIfNotSet()
                             ->children()
@@ -315,6 +330,21 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderAddress')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('order_attachment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderAttachment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAttachmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
                             ->end()
                         ->end()
@@ -608,6 +638,21 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteAddress')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('quote_attachment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteAttachment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAttachmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAttachmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
                             ->end()
                         ->end()

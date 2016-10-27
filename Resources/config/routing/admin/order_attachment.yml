@@ -1,0 +1,30 @@
+ekyna_commerce_order_attachment_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.order_attachment.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_attachment_admin_edit:
+    path: /{orderAttachmentId}/edit
+    defaults: { _controller: "ekyna_commerce.order_attachment.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderAttachmentId: \d+
+
+ekyna_commerce_order_attachment_admin_remove:
+    path: /{orderAttachmentId}/remove
+    defaults: { _controller: "ekyna_commerce.order_attachment.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderAttachmentId: \d+
+
+ekyna_commerce_order_attachment_admin_download:
+    path: /{orderAttachmentId}/download
+    defaults: { _controller: "ekyna_commerce.order_attachment.controller:downloadAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderAttachmentId: \d+

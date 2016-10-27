@@ -13,6 +13,24 @@ ekyna_commerce:
         mode:
             flat: Montant
             percent: Pourcentage
+    attachment:
+        label:
+            singular: Pièce jointe
+            plural: Pièces jointes
+        header:
+            new: Créer un nouvelle pièce jointe
+            edit: Modifier la pièce jointe
+            remove: Supprimer la pièce jointe
+        button:
+            new: Nouvelle pièce jointe
+            edit: Modifier la pièce jointe
+            remove: Supprimer la pièce jointe
+        field:
+            internal: Interne
+        alert:
+            no_item: Aucune pièce jointe configuré
+        message:
+            remove_confirm: Souhaitez-vous réellement supprimer cette pièce jointe ?
     attribute:
         label:
             singular: Attribut
@@ -104,6 +122,10 @@ ekyna_commerce:
             transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
             already_paid: Ce panier est déjà réglée en totalité
             cant_be_deleted: Ce panier a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
+    cart_attachment:
+        label:
+            singular: Pièce jointe
+            plural: Pièce jointes
     cart_item:
         label:
             singular: Ligne de panier
@@ -273,6 +295,10 @@ ekyna_commerce:
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
+    order_attachment:
+        label:
+            singular: Pièce jointe
+            plural: Pièce jointes
     order_item:
         label:
             singular: Ligne de commande
@@ -433,6 +459,10 @@ ekyna_commerce:
         dashboard:
             title: Devis à traiter
             none: Aucun devis à traiter
+    quote_attachment:
+        label:
+            singular: Pièce jointe
+            plural: Pièce jointes
     quote_item:
         label:
             singular: Ligne de devis

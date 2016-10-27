@@ -71,6 +71,10 @@ ekyna_commerce_order_admin_transform:
         orderId: \d+
         target: "[a-z]+"
 
+ekyna_commerce_order_attachment_admin:
+    resource: order_attachment.yml
+    prefix: /{orderId}/attachments
+
 ekyna_commerce_order_item_admin:
     resource: order_item.yml
     prefix: /{orderId}/items

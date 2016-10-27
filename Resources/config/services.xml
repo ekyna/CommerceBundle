@@ -53,6 +53,18 @@
 
     <services>
 
+        <!-- Uploader -->
+        <service id="ekyna_commerce.common.uploader" class="Ekyna\Bundle\CoreBundle\Uploader\Uploader">
+            <argument type="service" id="oneup_flysystem.mount_manager" />
+            <argument>local_commerce</argument>
+        </service>
+
+        <!-- Uploadable listener -->
+        <service id="ekyna_commerce.common.uploadable_listener" class="Ekyna\Component\Commerce\Common\Listener\UploadableListener">
+            <argument type="service" id="ekyna_commerce.common.uploader" />
+            <tag name="doctrine.entity_listener" />
+        </service>
+
         <!-- Abstract cart controller -->
         <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
             <call method="setUrlGenerator">
