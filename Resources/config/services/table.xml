@@ -16,42 +16,35 @@
         <!-- Customer column column type -->
         <service id="ekyna_commerce.order_customer.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_sale_customer"/>
         </service>
 
         <!-- Order state column column type -->
         <service id="ekyna_commerce.order_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleStateType">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_sale_state"/>
-        </service>
-
-        <!-- Product type column column type -->
-        <service id="ekyna_commerce.product_type.column_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ProductTypeType">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_product_type"/>
         </service>
 
         <!-- Payment state column column type -->
         <service id="ekyna_commerce.payment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_payment_state"/>
         </service>
 
         <!-- Shipment state column column type -->
         <service id="ekyna_commerce.shipment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_shipment_state"/>
         </service>
 
         <!-- Supplier order state column column type -->
         <service id="ekyna_commerce.supplier_order_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_supplier_order_state"/>
         </service>
 

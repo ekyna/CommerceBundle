@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
-use Ekyna\Bundle\CoreBundle\Model\AbstractConstants;
+use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates as States;
 
 /**

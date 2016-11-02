@@ -25,7 +25,7 @@ class AdminMenuPass implements CompilerPassInterface
 
         $pool->addMethodCall('createGroup', [[
             'name'     => 'sales',
-            'label'    => 'ekyna_commerce.sales',
+            'label'    => 'ekyna_commerce.sale.label.plural',
             'icon'     => 'file',
             'position' => 10,
         ]]);
@@ -87,42 +87,6 @@ class AdminMenuPass implements CompilerPassInterface
             'label'    => 'ekyna_commerce.supplier_order.label.plural',
             'resource' => 'ekyna_commerce_supplier_order',
             'position' => 1,
-        ]]);
-
-        // ------------------------------------------------------------
-
-        $pool->addMethodCall('createGroup', [[
-            'name'     => 'store',
-            'label'    => 'ekyna_commerce.store',
-            'icon'     => 'file',
-            'position' => 12,
-        ]]);
-
-        // Products
-        $pool->addMethodCall('createEntry', ['store', [
-            'name'     => 'products',
-            'route'    => 'ekyna_commerce_product_admin_home',
-            'label'    => 'ekyna_commerce.product.label.plural',
-            'resource' => 'ekyna_commerce_product',
-            'position' => 1,
-        ]]);
-
-        // Attribute sets
-        $pool->addMethodCall('createEntry', ['store', [
-            'name'     => 'attribute_sets',
-            'route'    => 'ekyna_commerce_attribute_set_admin_home',
-            'label'    => 'ekyna_commerce.attribute_set.label.plural',
-            'resource' => 'ekyna_commerce_attribute_set',
-            'position' => 10,
-        ]]);
-
-        // Attributes
-        $pool->addMethodCall('createEntry', ['store', [
-            'name'     => 'attribute_groups',
-            'route'    => 'ekyna_commerce_attribute_group_admin_home',
-            'label'    => 'ekyna_commerce.attribute_group.label.plural',
-            'resource' => 'ekyna_commerce_attribute_group',
-            'position' => 10,
         ]]);
 
         // ------------------------------------------------------------

@@ -11,22 +11,17 @@
         </service>
         <service id="ekyna_commerce.twig.common_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.payment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="ekyna_commerce.twig.product_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\ProductExtension">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.sale_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <argument type="service" id="ekyna_core.twig.ui_extension" />
             <argument type="service" id="router" />
@@ -34,13 +29,13 @@
         </service>
         <service id="ekyna_commerce.twig.shipment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.shipment_price.renderer"/>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.supplier_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\SupplierExtension">
-            <argument type="service" id="ekyna_commerce.constant_helper"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="twig.extension"/>
         </service>
 

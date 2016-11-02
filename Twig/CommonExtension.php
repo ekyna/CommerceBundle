@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 
 /**
@@ -13,7 +13,7 @@ use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 class CommonExtension extends \Twig_Extension
 {
     /**
-     * @var ConstantHelper
+     * @var ConstantsHelper
      */
     private $constantHelper;
 
@@ -21,9 +21,9 @@ class CommonExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantHelper $constantHelper
+     * @param ConstantsHelper $constantHelper
      */
-    public function __construct(ConstantHelper $constantHelper)
+    public function __construct(ConstantsHelper $constantHelper)
     {
         $this->constantHelper = $constantHelper;
     }

@@ -17,37 +17,6 @@ fos_elastica:
                         listener: ~
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Search\CustomerRepository
-                ekyna_commerce_product:
-                    serializer:
-                        groups: [Search]
-                    dynamic_templates:
-#                        en_title:
-#                            match_mapping_type: string
-#                            path_match: "*.en.title"
-#                            mapping: {type: string, boost: 3, search_analyzer: en_search, index_analyzer: en_index}
-#                        fr_title:
-#                            match_mapping_type: string
-#                            path_match: "*.fr.title"
-#                            mapping: {type: string, boost: 3, search_analyzer: fr_search, index_analyzer: fr_index}
-#                        en_default:
-#                            match_mapping_type: string
-#                            path_match: "*.en.*"
-#                            mapping: {type: string, search_analyzer: en_search, index_analyzer: en_index}
-#                        fr_default:
-#                            match_mapping_type: string
-#                            path_match: "*.fr.*"
-#                            mapping: {type: string, search_analyzer: fr_search, index_analyzer: fr_index}
-                        default:
-                            match_mapping_type: string
-                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
-                    persistence:
-                        driver: orm
-                        model: "%ekyna_commerce.product.class%"
-                        provider:
-                            batch_size: 25
-                        listener: ~
-                        finder: ~
-                        repository: Ekyna\Bundle\CommerceBundle\Search\ProductRepository
                 ekyna_commerce_supplier_product:
                     serializer:
                         groups: [Search]

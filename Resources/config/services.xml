@@ -9,7 +9,6 @@
         <import resource="services/sale.xml"/>
         <!--<import resource="services/serializer.xml"/>-->
         <import resource="services/shipment.xml"/>
-        <import resource="services/subject.xml"/>
         <import resource="services/table.xml"/>
         <import resource="services/twig.xml"/>
         <import resource="services/validators.xml"/>
@@ -20,29 +19,16 @@
         <parameter key="ekyna_commerce.controller.cart.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController</parameter>
         <parameter key="ekyna_commerce.controller.cart_checkout.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController</parameter>
 
-        <parameter key="ekyna_commerce.attribute_slot.class">Ekyna\Component\Commerce\Product\Entity\AttributeSlot</parameter>
-
-        <parameter key="ekyna_commerce.bundle_choice.class">Ekyna\Component\Commerce\Product\Entity\BundleChoice</parameter>
-        <parameter key="ekyna_commerce.bundle_choice_rule.class">Ekyna\Component\Commerce\Product\Entity\BundleChoiceRule</parameter>
-        <parameter key="ekyna_commerce.bundle_slot.class">Ekyna\Component\Commerce\Product\Entity\BundleSlot</parameter>
-
         <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
         <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
         <parameter key="ekyna_commerce.cart.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewVarsBuilder</parameter>
 
-        <parameter key="ekyna_commerce.configurable_slot.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ConfigurableSlotType</parameter>
-
         <parameter key="ekyna_commerce.genders.class">Ekyna\Bundle\CommerceBundle\Model\Genders</parameter>
-
-        <parameter key="ekyna_commerce.option_group.class">Ekyna\Component\Commerce\Product\Entity\OptionGroup</parameter>
-        <parameter key="ekyna_commerce.option.class">Ekyna\Component\Commerce\Product\Entity\Option</parameter>
 
         <parameter key="ekyna_commerce.order_address.class">Ekyna\Component\Commerce\Order\Entity\OrderAddress</parameter>
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
         <parameter key="ekyna_commerce.order_shipment_item.class">Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem</parameter>
         <parameter key="ekyna_commerce.order.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewVarsBuilder</parameter>
-
-        <parameter key="ekyna_commerce.product.form_type.class">Ekyna\Bundle\CommerceBundle\Form\Type\ProductType</parameter>
 
         <parameter key="ekyna_commerce.quote_address.class">Ekyna\Component\Commerce\Quote\Entity\QuoteAddress</parameter>
         <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
@@ -89,6 +75,10 @@
         <service id="ekyna_commerce.controller.cart_checkout"
                  class="%ekyna_commerce.controller.cart_checkout.class%"
                  parent="ekyna_commerce.controller.cart.abstract"/>
+
+        <!-- Subject providers registry-->
+        <service id="ekyna_commerce.subject.provider_registry"
+                 class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
 
         <!-- Tax resolver -->
         <service id="ekyna_commerce.tax.resolver"

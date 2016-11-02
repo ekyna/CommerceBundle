@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
 use Ekyna\Component\Table\Table;
 use Ekyna\Component\Table\View\Cell;
@@ -15,7 +15,7 @@ use Ekyna\Component\Table\View\Cell;
 class SupplierOrderStateType extends TextType
 {
     /**
-     * @var ConstantHelper
+     * @var ConstantsHelper
      */
     private $constantHelper;
 
@@ -23,9 +23,9 @@ class SupplierOrderStateType extends TextType
     /**
      * Constructor.
      *
-     * @param ConstantHelper $constantHelper
+     * @param ConstantsHelper $constantHelper
      */
-    public function __construct(ConstantHelper $constantHelper)
+    public function __construct(ConstantsHelper $constantHelper)
     {
         $this->constantHelper = $constantHelper;
     }

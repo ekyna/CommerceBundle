@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
-use Ekyna\Bundle\CoreBundle\Model\AbstractConstants;
+use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates as States;
 
 /**
@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentStates as States;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-final class PaymentStates extends AbstractConstants
+final class PaymentStates extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
 {
     /**
      * {@inheritdoc}

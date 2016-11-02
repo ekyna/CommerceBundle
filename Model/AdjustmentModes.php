@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as Modes;
-use Ekyna\Bundle\CoreBundle\Model\AbstractConstants;
+use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 
 /**
  * Class AdjustmentModes

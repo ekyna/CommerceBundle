@@ -5,39 +5,6 @@
 
     <services>
 
-        <!-- Attribute form types -->
-        <service id="ekyna_commerce.attribute.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\AttributeType">
-            <argument>%ekyna_commerce.attribute.class%</argument>
-            <argument>%ekyna_commerce.attribute_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.attribute_slot.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\AttributeSlotType">
-            <argument>%ekyna_commerce.attribute_slot.class%</argument>
-            <argument>%ekyna_commerce.attribute_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-
-        <!-- Bundle form types -->
-        <service id="ekyna_commerce.bundle_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleChoiceType">
-            <argument>%ekyna_commerce.bundle_choice.class%</argument>
-            <argument>%ekyna_commerce.product.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.bundle_choice_rule.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleChoiceRuleType">
-            <argument>%ekyna_commerce.bundle_choice_rule.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.bundle_slot.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\BundleSlotType">
-            <argument>%ekyna_commerce.bundle_slot.class%</argument>
-            <argument>%ekyna_commerce.bundle_choice.class%</argument>
-            <tag name="form.type"/>
-        </service>
-
         <!-- Cart form types -->
         <service id="ekyna_commerce.cart_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType">
@@ -73,18 +40,6 @@
             <argument>%ekyna_commerce.cart.class%</argument>
             <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
-        </service>
-
-        <!-- Configurable slot form types -->
-        <service id="ekyna_commerce.configurable_slots.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\ConfigurableSlotsType">
-            <argument>%ekyna_commerce.configurable_slot.form_type.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.configurable_slot.form_type"
-                 class="%ekyna_commerce.configurable_slot.form_type.class%">
-            <tag name="form.type"/>
-            <tag name="form.js" selector=".commerce-configurable-slot" path="ekyna-commerce/form/configurable-slot" />
         </service>
 
         <!-- Country form type -->
@@ -127,18 +82,6 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType">
             <argument>%ekyna_commerce.genders.class%</argument>
             <tag name="form.type" />
-        </service>
-
-        <!-- Option form types -->
-        <service id="ekyna_commerce.option_group.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\OptionGroupType">
-            <argument>%ekyna_commerce.option_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.option.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Product\OptionType">
-            <argument>%ekyna_commerce.option.class%</argument>
-            <tag name="form.type"/>
         </service>
 
         <!-- Order form types -->
@@ -252,20 +195,6 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\PaymentMethodCreateFlow"
                  parent="craue.form.flow">
         </service>
-
-        <!-- Product form types -->
-        <service id="ekyna_commerce.product.form_type"
-                 class="%ekyna_commerce.product.form_type.class%">
-            <argument type="service" id="ekyna_commerce.product.form_type.event_subscriber"/>
-            <argument>%ekyna_commerce.product.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.product.form_type.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\Form\EventListener\ProductTypeSubscriber">
-            <argument>%ekyna_commerce.product.class%</argument>
-            <argument>%ekyna_commerce.attribute_set.class%</argument>
-        </service>
-
 
         <!-- Shipment method choice form type -->
         <service id="ekyna_commerce.shipment_method_choice.form_type"

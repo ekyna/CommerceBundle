@@ -3,14 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Common\Model\Genders as Constants;
-use Ekyna\Bundle\CoreBundle\Model\AbstractConstants;
+use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 
 /**
  * Class Genders
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class Genders extends AbstractConstants
+class Genders extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
 {
     /**
      * {@inheritdoc}

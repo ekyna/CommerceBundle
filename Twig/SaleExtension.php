@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CoreBundle\Twig\UiExtension;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class SaleExtension extends \Twig_Extension
 {
     /**
-     * @var ConstantHelper
+     * @var ConstantsHelper
      */
     private $constantHelper;
 
@@ -45,13 +45,13 @@ class SaleExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantHelper        $constantHelper
+     * @param ConstantsHelper       $constantHelper
      * @param ViewBuilder           $viewBuilder
      * @param UiExtension           $uiExtension
      * @param UrlGeneratorInterface $urlGenerator
      */
     public function __construct(
-        ConstantHelper $constantHelper,
+        ConstantsHelper $constantHelper,
         ViewBuilder $viewBuilder,
         UiExtension $uiExtension,
         UrlGeneratorInterface $urlGenerator

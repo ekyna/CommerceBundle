@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface;
-use Ekyna\Bundle\CommerceBundle\Service\ConstantHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceRenderer;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
@@ -16,7 +16,7 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
 class ShipmentExtension extends \Twig_Extension
 {
     /**
-     * @var ConstantHelper
+     * @var ConstantsHelper
      */
     private $constantHelper;
 
@@ -29,11 +29,11 @@ class ShipmentExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantHelper $constantHelper
-     * @param PriceRenderer  $priceRenderer
+     * @param ConstantsHelper $constantHelper
+     * @param PriceRenderer   $priceRenderer
      */
     public function __construct(
-        ConstantHelper $constantHelper,
+        ConstantsHelper $constantHelper,
         PriceRenderer  $priceRenderer
     ) {
         $this->constantHelper = $constantHelper;

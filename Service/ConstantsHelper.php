@@ -3,29 +3,24 @@
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Model;
+use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
-use Ekyna\Component\Commerce\Product\Model\ProductInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class ConstantHelper
+ * Class ConstantsHelper
  * @package Ekyna\Bundle\CommerceBundle\Service
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ConstantHelper
+class ConstantsHelper extends AbstractConstantsHelper
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
     /**
      * @var string
      */
@@ -40,53 +35,9 @@ class ConstantHelper
      */
     public function __construct(TranslatorInterface $translator, $gendersClass)
     {
-        $this->translator = $translator;
+        parent::__construct($translator);
+
         $this->gendersClass = $gendersClass;
-    }
-
-    /**
-     * Renders the state label.
-     *
-     * @param string $label
-     *
-     * @return string
-     */
-    private function renderLabel($label = 'ekyna_core.value.unknown')
-    {
-        return $this->translator->trans($label);
-    }
-
-    /**
-     * Renders the state badge.
-     *
-     * @param string $label
-     * @param string $theme
-     *
-     * @return string
-     */
-    private function renderBadge($label, $theme = 'default')
-    {
-        return sprintf('<span class="label label-%s">%s</span>', $theme, $label);
-    }
-
-    /**
-     * Renders the product type label.
-     *
-     * @param ProductInterface|string $typeOrProduct
-     *
-     * @return string
-     */
-    public function renderProductTypeLabel($typeOrProduct)
-    {
-        if ($typeOrProduct instanceof ProductInterface) {
-            $typeOrProduct = $typeOrProduct->getType();
-        }
-
-        if (Model\ProductTypes::isValid($typeOrProduct)) {
-            return $this->renderLabel(Model\ProductTypes::getLabel($typeOrProduct));
-        }
-
-        return $this->renderLabel();
     }
 
     /**

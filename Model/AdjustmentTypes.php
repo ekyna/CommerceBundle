@@ -3,14 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes as Types;
-use Ekyna\Bundle\CoreBundle\Model\AbstractConstants;
+use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 
 /**
  * Class AdjustmentTypes
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-final class AdjustmentTypes extends AbstractConstants
+final class AdjustmentTypes extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
 {
     /**
      * {@inheritdoc}

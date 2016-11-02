@@ -1,7 +1,6 @@
 ekyna_commerce:
     label: Commerce
-    sales: Ventes # TODO replace by ekyna_commerce.sale.label.plural
-    store: Catalogue
+
     adjustment:
         label:
             singular: Ajustement
@@ -13,6 +12,7 @@ ekyna_commerce:
         mode:
             flat: Montant
             percent: Pourcentage
+
     attachment:
         label:
             singular: Pièce jointe
@@ -31,89 +31,7 @@ ekyna_commerce:
             no_item: Aucune pièce jointe configuré
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cette pièce jointe ?
-    attribute:
-        label:
-            singular: Attribut
-            plural: Attributs
-        header:
-            list: Attributs <small>Liste des attribut</small>
-            show: Détail de l'attribut <small>%name%</small>
-            new: Créer un nouvel attribut
-            edit: Modifier l'attribut <small>%name%</small>
-            remove: Supprimer l'attribut <small>%name%</small>
-        button:
-            list: Liste des attributs
-            show: Détail de l'attribut
-            new: Nouvel attribut
-            edit: Modifier l'attribut
-            remove: Supprimer l'attribut
-        alert:
-            no_item: Aucun attribut configuré
-    attribute_group:
-        label:
-            singular: Groupe d'attributs
-            plural: Groupes d'attributs
-        header:
-            list: Groupes d'attributs <small>Liste des groupes</small>
-            show: Détail du groupe <small>%name%</small>
-            new: Créer un nouveau groupe
-            edit: Modifier le groupe <small>%name%</small>
-            remove: Supprimer le groupe <small>%name%</small>
-        button:
-            list: Liste des groupes
-            show: Détail du groupe
-            new: Nouveau groupe
-            edit: Modifier le groupe
-            remove: Supprimer le groupe
-        alert:
-            no_item: Aucun groupe configuré
-    attribute_set:
-        label:
-            singular: Modèle d'attributs
-            plural: Modèles d'attributs
-        header:
-            list: Modèles d'attributs <small>Liste des modèles</small>
-            show: Détail du modèle <small>%name%</small>
-            new: Créer un nouveau modèle
-            edit: Modifier le modèle <small>%name%</small>
-            remove: Supprimer le modèle <small>%name%</small>
-        button:
-            list: Liste des modèles
-            show: Détail du modèle
-            new: Nouveau modèle
-            edit: Modifier le modèle
-            remove: Supprimer le modèle
-        field:
-            multiple: Choix multiple
-        alert:
-            no_item: Aucun modèle configuré
-    bundle_slot:
-        label:
-            singular: Emplacement
-            plural: Emplacements
-        button:
-            add: Ajouter un produit
-            add_configurable: Ajouter un emplacement
-    bundle_choice:
-        label:
-            singular: Produit
-            plural: Choix
-        field:
-            min_quantity: Qte. min.
-            max_quantity: Qte. max.
-        button:
-            add: Ajouter un choix
-    bundle_choice_rule:
-        label:
-            singular: Règle
-            plural: Règles
-        type:
-            disabled: Désactivé
-            optional: Optionnel
-        field:
-            expression: Expression
-        button:
-            add: Ajouter une règle
+
     cart:
         label:
             singular: Panier
@@ -122,22 +40,27 @@ ekyna_commerce:
             transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
             already_paid: Ce panier est déjà réglée en totalité
             cant_be_deleted: Ce panier a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
+
     cart_attachment:
         label:
             singular: Pièce jointe
             plural: Pièce jointes
+
     cart_item:
         label:
             singular: Ligne de panier
             plural: Lignes de panier
+
     cart_adjustment:
         label:
             singular: Ajustement de panier
             plural: Ajustements de panier
+
     cart_payment:
         label:
             singular: Paiement de panier
             plural: Paiements de panier
+
     country:
         label:
             singular: Pays
@@ -156,6 +79,7 @@ ekyna_commerce:
             remove: Supprimer le pays
         alert:
             no_item: Aucun pays configuré
+
     currency:
         label:
             singular: Devise
@@ -174,6 +98,7 @@ ekyna_commerce:
             remove: Supprimer la devise
         alert:
             no_item: Aucune devise configuré
+
     customer:
         label:
             singular: Client
@@ -192,6 +117,7 @@ ekyna_commerce:
             remove: Supprimer le client
         alert:
             no_item: Aucun client configuré
+
     customer_address:
         label:
             singular: Adresse de client
@@ -210,6 +136,7 @@ ekyna_commerce:
             remove: Supprimer l'adresse
         alert:
             no_item: Aucune adresse configuré
+
     customer_group:
         label:
             singular: Groupe de clients
@@ -228,6 +155,7 @@ ekyna_commerce:
             remove: Supprimer le groupe de clients
         alert:
             no_item: Aucun groupe de clients configuré
+
     gender:
         short:
             mr: Mr
@@ -237,6 +165,7 @@ ekyna_commerce:
             mr: Monsieur
             mrs: Madame
             miss: Mademoiselle
+
     message:
         label:
             singular: Message
@@ -244,18 +173,7 @@ ekyna_commerce:
         field:
             flash: Flash
             email: Email
-    option:
-        label:
-            singular: Option
-            plural: Options
-        button:
-            add: Ajouter une options
-    option_group:
-        label:
-            singular: Groupe d'options
-            plural: Groupes d'options
-        button:
-            add: Ajouter un groupe d'options
+
     order:
         label:
             singular: Commande
@@ -295,26 +213,32 @@ ekyna_commerce:
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
+
     order_attachment:
         label:
             singular: Pièce jointe
             plural: Pièce jointes
+
     order_item:
         label:
             singular: Ligne de commande
             plural: Lignes de commande
+
     order_adjustment:
         label:
             singular: Ajustement de commande
             plural: Ajustements de commande
+
     order_payment:
         label:
             singular: Paiement de commande
             plural: Paiements de commande
+
     order_shipment:
         label:
             singular: Livraison de commande
             plural: Livraisons de commande
+
     payment:
         label:
             singular: Paiement
@@ -375,6 +299,7 @@ ekyna_commerce:
             expire: Expirer
             void: Néant
         impossible_transition: Impossible d'appliquer le changement de statut du paiement demandé.
+
     payment_method:
         label:
             singular: Mode de paiement
@@ -397,33 +322,7 @@ ekyna_commerce:
             available: Partie publique
         alert:
             empty_list: Aucun mode de paiement configuré
-    product:
-        label:
-            singular: Produit
-            plural: Produits
-        header:
-            list: Produits <small>Liste des produits</small>
-            show: Détail du produit <small>%name%</small>
-            new: Créer un nouveau produit
-            edit: Modifier le produit <small>%name%</small>
-            remove: Supprimer le produit <small>%name%</small>
-        button:
-            list: Liste des produits
-            show: Détail du produit
-            new: Nouveau produit
-            edit: Modifier le produit
-            remove: Supprimer le produit
-        type:
-            simple: Simple
-            variable: Variable
-            variant: Variante
-            bundle: Pack
-            configurable: Pack personnalisable
-        field:
-            parent: Parent
-            net_price: Prix Net
-        alert:
-            no_item: Aucun produit configuré
+
     quote:
         label:
             singular: Devis
@@ -459,22 +358,27 @@ ekyna_commerce:
         dashboard:
             title: Devis à traiter
             none: Aucun devis à traiter
+
     quote_attachment:
         label:
             singular: Pièce jointe
             plural: Pièce jointes
+
     quote_item:
         label:
             singular: Ligne de devis
             plural: Lignes de devis
+
     quote_adjustment:
         label:
             singular: Ajustement de devis
             plural: Ajustements de devis
+
     quote_payment:
         label:
             singular: Paiement de devis
             plural: Paiements de devis
+
     sale:
         label:
             singular: Vente
@@ -546,9 +450,11 @@ ekyna_commerce:
             state: Statut
             payment_state: Statut paiement
             shipment_state: Statut livraison
+
     sale_item:
         field:
             tax_group: Groupe
+
     shipment:
         label:
             singular: Expédition
@@ -580,6 +486,7 @@ ekyna_commerce:
             cancelled: Annulé
         field:
             tracking_number: Numéro de suivi
+
     shipment_method:
         label:
             singular: Mode de livraison
@@ -601,6 +508,7 @@ ekyna_commerce:
             available: Partie publique
         alert:
             empty_list: Aucun mode de livraison configuré
+
     shipment_price:
         label:
             singular: Frais de port
@@ -610,6 +518,7 @@ ekyna_commerce:
             net_price: Prix d'achat net
         alert:
             empty_list: Aucun mode de livraison configuré
+
     shipment_zone:
         label:
             singular: Zone de livraison
@@ -628,6 +537,7 @@ ekyna_commerce:
             remove: Supprimer la zone
         alert:
             empty_list: Aucune zone de livraison configuré
+
     supplier:
         label:
             singular: Fournisseur
@@ -648,6 +558,7 @@ ekyna_commerce:
             catalog: Catalogue
         alert:
             no_item: Aucun fournisseur configuré
+
     supplier_delivery:
         label:
             singular: Livraison fournisseur
@@ -663,9 +574,11 @@ ekyna_commerce:
             new: Nouvelle livraison
             edit: Modifier la livraison
             remove: Supprimer la livraison
+
     supplier_delivery_item:
         field:
             remaining: Attendu
+
     supplier_order:
         label:
             singular: Commande fournisseur
@@ -710,9 +623,11 @@ ekyna_commerce:
         dashboard:
             title: Commandes fournisseur à traiter
             none: Aucune commande fournisseur à traiter
+
     supplier_order_item:
         field:
             net_price: Prix d'achat net
+
     supplier_product:
         label:
             singular: Produit fournisseur
@@ -740,10 +655,12 @@ ekyna_commerce:
             subject: Liaison
         alert:
             no_item: Aucune commande fournisseur configuré
+
     state:
         label:
             singular: État/Région
             plural: États/Régions
+
     tax:
         label:
             singular: Taxe
@@ -764,6 +681,7 @@ ekyna_commerce:
             postal_code_match: Masque code postal
         alert:
             no_item: Aucune tax configuré
+
     tax_group:
         label:
             singular: Groupe de taxes
@@ -784,6 +702,7 @@ ekyna_commerce:
             default: Par défaut
         alert:
             no_item: Aucun groupe de taxes configuré
+
     tax_rule:
         label:
             singular: Règle de taxes
@@ -802,11 +721,3 @@ ekyna_commerce:
             remove: Supprimer la règle
         alert:
             no_item: Aucune règle de taxes configuré
-    variant:
-        label:
-            singular: Variante
-            plural: Variantes
-        header:
-            list: Variantes <small>Liste des variantes</small>
-        button:
-            new: Nouvelle variante

@@ -12,8 +12,8 @@
         </service>
 
         <!-- Constants helper -->
-        <service id="ekyna_commerce.constant_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\ConstantHelper">
+        <service id="ekyna_commerce.constants_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper">
             <argument type="service" id="translator"/>
             <argument>%ekyna_commerce.genders.class%</argument>
         </service>

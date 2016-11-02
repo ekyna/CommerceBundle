@@ -7,7 +7,6 @@ use Ekyna\Bundle\CoreBundle\AbstractBundle;
 use Ekyna\Component\Commerce;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler\ConfigureValidatorPass;
-use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler\RegisterProductEventHandlerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -25,7 +24,6 @@ class EkynaCommerceBundle extends AbstractBundle
         parent::build($container);
 
         $container->addCompilerPass(new ConfigureValidatorPass());
-        $container->addCompilerPass(new RegisterProductEventHandlerPass());
 
         $container->addCompilerPass(new Compiler\SubjectProviderPass());
         $container->addCompilerPass(new Compiler\SubjectResolverPass());
@@ -43,8 +41,6 @@ class EkynaCommerceBundle extends AbstractBundle
 
             Commerce\Customer\Model\CustomerInterface::class        => 'ekyna_commerce.customer.class',
             Commerce\Customer\Model\CustomerAddressInterface::class => 'ekyna_commerce.customer_address.class',
-
-            Commerce\Product\Model\ProductInterface::class          => 'ekyna_commerce.product.class',
 
             Commerce\Order\Model\OrderInterface::class              => 'ekyna_commerce.order.class',
             Commerce\Order\Model\OrderAddressInterface::class       => 'ekyna_commerce.order_address.class',
