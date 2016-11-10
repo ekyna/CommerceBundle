@@ -515,7 +515,7 @@ ekyna_commerce:
             plural: Frais de port
         field:
             weight: Poids max (kg)
-            net_price: Prix d'achat net
+            net_price: Prix d'achat HT
         alert:
             empty_list: Aucun mode de livraison configuré
 
@@ -626,7 +626,7 @@ ekyna_commerce:
 
     supplier_order_item:
         field:
-            net_price: Prix d'achat net
+            net_price: Prix d'achat HT
 
     supplier_product:
         label:
@@ -645,7 +645,7 @@ ekyna_commerce:
             edit: Modifier le produit
             remove: Supprimer le produit
         field:
-            net_price: Prix d'achat
+            net_price: Prix d'achat HT
             available_stock: Stock disponible
             available: Dispo.
             ordered_stock: Stock réappro.
