@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentStates as States;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-final class PaymentStates extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
+final class PaymentStates extends AbstractConstants
 {
     /**
      * {@inheritdoc}

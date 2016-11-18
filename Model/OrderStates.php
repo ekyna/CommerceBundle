@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Order\Model\OrderStates as States;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-final class OrderStates extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
+final class OrderStates extends AbstractConstants
 {
     /**
      * {@inheritdoc}

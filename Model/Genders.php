@@ -10,7 +10,7 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class Genders extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
+class Genders extends AbstractConstants
 {
     /**
      * {@inheritdoc}
@@ -25,22 +25,6 @@ class Genders extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
             Constants::GENDER_MRS  => [$short.Constants::GENDER_MRS,  $long.Constants::GENDER_MRS],
             Constants::GENDER_MISS => [$short.Constants::GENDER_MISS, $long.Constants::GENDER_MISS],
         ];
-    }
-
-    /**
-     * Returns the constant choices.
-     *
-     * @param bool $long
-     * @return array
-     */
-    public static function getChoices($long = false)
-    {
-        $offset = $long ? 1 : 0;
-        $choices = [];
-        foreach (static::getConfig() as $constant => $config) {
-            $choices[$config[$offset]] = $constant;
-        }
-        return $choices;
     }
 
     /**

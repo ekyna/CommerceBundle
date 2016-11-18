@@ -27,13 +27,13 @@ ekyna_commerce_payment_method_admin_edit:
     requirements:
         paymentMethodId: \d+
 
-ekyna_commerce_payment_method_admin_tinymce:
-    path: /{paymentMethodId}/tinymce
-    defaults: { _controller: "ekyna_commerce.payment_method.controller:tinymceAction", field: description }
-    methods: [GET]
-    requirements:
-        paymentMethodId: \d+
-        field: "[a-zA-Z0-9]+"
+#ekyna_commerce_payment_method_admin_tinymce:
+#    path: /{paymentMethodId}/tinymce
+#    defaults: { _controller: "ekyna_commerce.payment_method.controller:tinymceAction", field: description }
+#    methods: [GET]
+#    requirements:
+#        paymentMethodId: \d+
+#        field: "[a-zA-Z0-9]+"
 
 ekyna_commerce_payment_method_admin_move_up:
     path: /{paymentMethodId}/moveup

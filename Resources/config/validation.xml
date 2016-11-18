@@ -20,7 +20,7 @@
             <constraint name="NotBlank" />
         </property>
         <property name="media">
-            <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaChoice">
+            <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaTypes">
                 <option name="types">image</option>
             </constraint>
         </property>
@@ -30,7 +30,7 @@
 
     <class name="Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod">
         <property name="media">
-            <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaChoice">
+            <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaTypes">
                 <option name="types">image</option>
             </constraint>
         </property>

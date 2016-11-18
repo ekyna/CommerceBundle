@@ -10,7 +10,7 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-final class AdjustmentTypes extends \Ekyna\Bundle\ResourceBundle\Model\AbstractConstants
+final class AdjustmentTypes extends AbstractConstants
 {
     /**
      * {@inheritdoc}
