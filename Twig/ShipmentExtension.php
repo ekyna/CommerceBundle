@@ -4,9 +4,10 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
+use Twig_Environment;
 
 /**
  * Class ShipmentExtension
@@ -21,23 +22,39 @@ class ShipmentExtension extends \Twig_Extension
     private $constantHelper;
 
     /**
-     * @var PriceRenderer
+     * @var PriceListBuilder
      */
-    private $priceRenderer;
+    private $priceListBuilder;
+
+    /**
+     * @var \Twig_Template
+     */
+    private $template;
 
 
     /**
      * Constructor.
      *
-     * @param ConstantsHelper $constantHelper
-     * @param PriceRenderer   $priceRenderer
+     * @param ConstantsHelper  $constantHelper
+     * @param PriceListBuilder $priceListBuilder
+     * @param string           $template
      */
     public function __construct(
         ConstantsHelper $constantHelper,
-        PriceRenderer  $priceRenderer
+        PriceListBuilder $priceListBuilder,
+        $template = 'EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig'
     ) {
         $this->constantHelper = $constantHelper;
-        $this->priceRenderer = $priceRenderer;
+        $this->priceListBuilder = $priceListBuilder;
+        $this->template = $template;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function initRuntime(Twig_Environment $environment)
+    {
+        $this->template = $environment->loadTemplate($this->template);
     }
 
     /**
@@ -83,14 +100,18 @@ class ShipmentExtension extends \Twig_Extension
     public function renderShipmentPrices($source)
     {
         if ($source instanceof ShipmentMethodInterface) {
-            return $this->priceRenderer->renderByMethod($source);
+            $list = $this->priceListBuilder->buildByMethod($source);
         } elseif ($source instanceof ShipmentZoneInterface) {
-            return $this->priceRenderer->renderByZone($source);
+            $list = $this->priceListBuilder->buildByZone($source);
+        } else {
+            throw new InvalidArgumentException(
+                "Expected instance of ShipmentMethodInterface or ShipmentZoneInterface."
+            );
         }
 
-        throw new InvalidArgumentException(
-            "Expected instance of ShipmentMethodInterface or ShipmentZoneInterface."
-        );
+        return $this->template->render([
+            'list' => $list,
+        ]);
     }
 
     /**

@@ -2,16 +2,16 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
+use Ekyna\Bundle\CommerceBundle\Model\ShipmentPriceList;
 use Ekyna\Component\Commerce\Shipment\Model;
 use Ekyna\Component\Commerce\Shipment\Repository;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 /**
- * Class PriceRenderer
+ * Class PriceListBuilder
  * @package Ekyna\Bundle\CommerceBundle\Service\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PriceRenderer
+class PriceListBuilder
 {
     /**
      * @var Repository\ShipmentZoneRepositoryInterface
@@ -28,16 +28,6 @@ class PriceRenderer
      */
     private $priceRepository;
 
-    /**
-     * @var EngineInterface
-     */
-    private $engine;
-
-    /**
-     * @var \Twig_Template
-     */
-    private $template;
-
 
     /**
      * Constructor.
@@ -45,31 +35,25 @@ class PriceRenderer
      * @param Repository\ShipmentZoneRepositoryInterface   $zoneRepository
      * @param Repository\ShipmentMethodRepositoryInterface $methodRepository
      * @param Repository\ShipmentPriceRepositoryInterface  $priceRepository
-     * @param EngineInterface                              $engine
-     * @param string                                       $template
      */
     public function __construct(
         Repository\ShipmentZoneRepositoryInterface $zoneRepository,
         Repository\ShipmentMethodRepositoryInterface $methodRepository,
-        Repository\ShipmentPriceRepositoryInterface $priceRepository,
-        EngineInterface $engine,
-        $template
+        Repository\ShipmentPriceRepositoryInterface $priceRepository
     ) {
         $this->zoneRepository = $zoneRepository;
         $this->methodRepository = $methodRepository;
         $this->priceRepository = $priceRepository;
-        $this->engine = $engine;
-        $this->template = $template;
     }
 
     /**
-     * Renders the price list by zone.
+     * Builds the price list by zone.
      *
      * @param Model\ShipmentZoneInterface $zone
      *
      * @return string
      */
-    public function renderByZone(Model\ShipmentZoneInterface $zone)
+    public function buildByZone(Model\ShipmentZoneInterface $zone)
     {
         $filters = $this->methodRepository->findAll();
 
@@ -78,24 +62,17 @@ class PriceRenderer
             ['method' => 'ASC', 'weight' => 'ASC']
         );
 
-        return $this->engine->render(
-            $this->template,
-            [
-                'filter_by' => 'method',
-                'filters'   => $filters,
-                'prices'    => $prices,
-            ]
-        );
+        return new ShipmentPriceList('method', $filters, $prices);
     }
 
     /**
-     * Renders the price list by method.
+     * Builds the price list by method.
      *
      * @param Model\ShipmentMethodInterface $method
      *
      * @return string
      */
-    public function renderByMethod(Model\ShipmentMethodInterface $method)
+    public function buildByMethod(Model\ShipmentMethodInterface $method)
     {
         $filters = $this->zoneRepository->findAll();
 
@@ -104,13 +81,6 @@ class PriceRenderer
             ['zone' => 'ASC', 'weight' => 'ASC']
         );
 
-        return $this->engine->render(
-            $this->template,
-            [
-                'filter_by' => 'zone',
-                'filters'   => $filters,
-                'prices'    => $prices,
-            ]
-        );
+        return new ShipmentPriceList('zone', $filters, $prices);
     }
 }

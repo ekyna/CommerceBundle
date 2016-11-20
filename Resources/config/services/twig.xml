@@ -3,6 +3,10 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="ekyna_commerce.shipment_price.list_template">EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig</parameter>
+    </parameters>
+
     <services>
         <!-- Twig extensions -->
         <service id="ekyna_commerce.twig.address_extension"
@@ -30,7 +34,8 @@
         <service id="ekyna_commerce.twig.shipment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <argument type="service" id="ekyna_commerce.shipment_price.renderer"/>
+            <argument type="service" id="ekyna_commerce.shipment_price.list_builder"/>
+            <argument>%ekyna_commerce.shipment_price.list_template%</argument>
             <tag name="twig.extension"/>
         </service>
         <service id="ekyna_commerce.twig.supplier_extension"
