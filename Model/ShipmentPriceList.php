@@ -3,8 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
+use Ekyna\Component\Commerce\Shipment\Model as CModel;
 
 /**
  * Class ShipmentPriceList
@@ -19,7 +18,7 @@ class ShipmentPriceList
     private $filterBy;
 
     /**
-     * @var ShipmentMethodInterface[]|ShipmentZoneInterface[]
+     * @var CModel\ShipmentMethodInterface[]|CModel\ShipmentZoneInterface[]
      */
     private $filters;
 

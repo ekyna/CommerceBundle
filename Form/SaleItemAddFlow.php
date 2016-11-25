@@ -42,6 +42,13 @@ class SaleItemAddFlow extends FormFlow
                     'provider_registry' => $this->providerRegistry,
                     'validation_groups' => ['add_item_flow_step_1'],
                 ],
+                'skip'         => function ($estimatedCurrentStepNumber, FormFlowInterface $flow) {
+                    if ($estimatedCurrentStepNumber == 0) {
+                        return false;
+                    }
+
+                    return false; // TODO return if ony one provider choice (and set data)
+                },
             ],
             [
                 'label'        => 'choice',

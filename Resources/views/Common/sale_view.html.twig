@@ -25,9 +25,9 @@
 {% block line_tax_rates %}
 {% spaceless %}
     <td class="text-right">
-        {% for rate in line.taxRates %}
+        {% for rate in line.taxRates -%}
             {{ rate|localizednumber }}%
-            {% if not loop.last %}, {% endif %}
+            {%- if not loop.last %}, {% endif -%}
         {% else %}
             &nbsp;
         {% endfor %}

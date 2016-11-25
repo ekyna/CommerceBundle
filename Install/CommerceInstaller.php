@@ -58,6 +58,10 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $installer->installTaxGroups();
         $output->writeln('');
 
+        $output->writeln('<info>[Commerce] Installing default customer group:</info>');
+        $installer->installCustomerGroups();
+        $output->writeln('');
+
         $output->writeln('<info>[Commerce] Installing payment methods:</info>');
         $this->installPaymentMethods($output);
         $output->writeln('');

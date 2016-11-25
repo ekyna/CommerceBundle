@@ -217,7 +217,10 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('customer_group')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->end()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/CustomerGroup:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/CustomerGroup:show.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerGroup')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerGroupController')->end()
                                 ->scalarNode('operator')->end()

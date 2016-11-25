@@ -23,8 +23,12 @@ class CustomerGroupType extends ResourceFormType
                 'label'    => 'ekyna_core.field.name',
                 'required' => false,
             ])
-            // TODO default
-            // TODO priceLists
-        ;
+            ->add('default', Type\CheckboxType::class, [
+                'label'    => 'ekyna_core.field.default',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ]);
     }
 }

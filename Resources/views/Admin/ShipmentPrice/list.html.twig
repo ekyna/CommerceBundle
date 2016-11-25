@@ -4,13 +4,13 @@
     <div class="row show-row">
         <div class="col-md-2 show-label">
             <label for="shipment-price-filter">
-                {{ ('ekyna_commerce.shipment_' ~ filter_by ~ '.label.singular')|trans }}
+                {{ ('ekyna_commerce.shipment_' ~ list.filterBy ~ '.label.singular')|trans }}
             </label>
         </div>
         <div class="col-md-10">
             <select class="no-select2 form-control shipment-price-filter"
-                    id="shipment-price-filter" data-filter-by="{{ filter_by }}">
-            {%- for filter in filters %}
+                    id="shipment-price-filter" data-filter-by="{{ list.filterBy }}">
+            {%- for filter in list.filters %}
                 <option value="{{ filter.id }}">{{ filter }}</option>
             {%- endfor %}
             </select>
@@ -34,8 +34,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for price in prices %}
-                    <tr data-{{ filter_by }}="{{ attribute(price, filter_by).id }}">
+                {% for price in list.prices %}
+                    <tr data-{{ list.filterBy }}="{{ attribute(price, list.filterBy).id }}">
                         <td class="text-right">{{ price.weight|localizednumber }} kg</td>
                         <td class="text-right">{{ price.netPrice|localizedcurrency('EUR') }}</td>{# TODO which currency ? #}
                     </tr>

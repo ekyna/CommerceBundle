@@ -698,8 +698,6 @@ ekyna_commerce:
             new: Nouveau groupe
             edit: Modifier le groupe
             remove: Supprimer le groupe
-        field:
-            default: Par défaut
         alert:
             no_item: Aucun groupe de taxes configuré
 

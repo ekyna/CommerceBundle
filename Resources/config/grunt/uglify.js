@@ -12,7 +12,7 @@ module.exports = function (grunt, options) {
             files: [{
                 expand: true,
                 cwd: 'src/Ekyna/Bundle/CommerceBundle/Resources/private/js',
-                src: '*.js',
+                src: ['*.js', '**/*.js'],
                 dest: 'src/Ekyna/Bundle/CommerceBundle/Resources/public/js'
             }]
         }
