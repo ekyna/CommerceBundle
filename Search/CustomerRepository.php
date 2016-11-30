@@ -2,36 +2,25 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Search;
 
-use Ekyna\Bundle\AdminBundle\Search\SearchRepositoryInterface;
-use Elastica\Query;
-use FOS\ElasticaBundle\Repository;
+use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
 
 /**
  * Class CustomerRepository
  * @package Ekyna\Bundle\CommerceBundle\Search
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class CustomerRepository extends Repository implements SearchRepositoryInterface
+class CustomerRepository extends ResourceRepository
 {
     /**
-     * Search customers.
-     *
-     * @param string  $expression
-     * @param integer $limit
-     *
-     * @return \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface[]
+     * @inheritdoc
      */
-    public function defaultSearch($expression, $limit = 10)
+    protected function getDefaultMatchFields()
     {
-        if (0 == strlen($expression)) {
-            $query = new Query\MatchAll();
-        } else {
-            $query = new Query\MultiMatch();
-            $query
-                ->setQuery($expression)
-                ->setFields(array('email', 'first_name', 'last_name', 'company'));
-        }
-
-        return $this->find($query, $limit);
+        return [
+            'email',
+            'first_name',
+            'last_name',
+            'company',
+        ];
     }
 }
