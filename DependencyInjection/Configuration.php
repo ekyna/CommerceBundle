@@ -158,7 +158,10 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('country')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue([])->end()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/Country:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/Country:show.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Common\Entity\Country')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CountryController')->end()
                                 ->scalarNode('operator')->end()
@@ -172,7 +175,10 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('currency')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue([])->end()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/Currency:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/Currency:show.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Common\Entity\Currency')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CurrencyController')->end()
                                 ->scalarNode('operator')->end()

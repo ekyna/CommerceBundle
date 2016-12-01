@@ -27,6 +27,14 @@ ekyna_commerce_customer_group_admin_edit:
     requirements:
         customerGroupId: \d+
 
+ekyna_commerce_customer_group_admin_toggle:
+    path: /{customerGroupId}/toggle/{field}
+    defaults: { _controller: "ekyna_commerce.customer_group.controller:toggleAction", field: default }
+    methods: [GET]
+    requirements:
+        customerGroupId: \d+
+        field: \w+
+
 ekyna_commerce_customer_group_admin_remove:
     path: /{customerGroupId}/remove
     defaults: { _controller: "ekyna_commerce.customer_group.controller:removeAction" }

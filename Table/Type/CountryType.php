@@ -28,16 +28,26 @@ class CountryType extends ResourceTableType
                 'route_name'           => 'ekyna_commerce_country_admin_show',
                 'route_parameters_map' => ['countryId' => 'id'],
             ])
-            ->addColumn('code', 'text', array(
-                'label' => 'ekyna_core.field.code',
+            ->addColumn('code', 'text', [
+                'label'    => 'ekyna_core.field.code',
                 'sortable' => true,
-            ))
+            ])
             ->addColumn('enabled', 'boolean', [
                 'label'                => 'ekyna_core.field.enabled',
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_country_admin_toggle',
                 'route_parameters'     => ['field' => 'enabled'],
                 'route_parameters_map' => ['countryId' => 'id'],
+            ])
+            ->addColumn('default', 'boolean', [
+                'label'                 => 'ekyna_core.field.default',
+                'sortable'              => true,
+                'route_name'            => 'ekyna_commerce_country_admin_toggle',
+                'route_parameters'      => ['field' => 'default'],
+                'route_parameters_map'  => ['countryId' => 'id'],
+                'true_class'            => 'label-primary',
+                'false_class'           => 'label-default',
+                'disable_property_path' => 'default',
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -66,6 +76,9 @@ class CountryType extends ResourceTableType
             ])
             ->addFilter('enabled', 'boolean', [
                 'label' => 'ekyna_core.field.enabled',
+            ])
+            ->addFilter('default', 'boolean', [
+                'label' => 'ekyna_core.field.default',
             ]);
     }
 

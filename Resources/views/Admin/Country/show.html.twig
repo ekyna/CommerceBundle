@@ -1,0 +1,37 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(country, 'edit') }}
+    {{ admin_resource_btn(country, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#country-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="country-general">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(country.name, 'text', 'ekyna_core.field.name', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(country.code, 'text', 'ekyna_core.field.code', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(country.enabled, 'checkbox', 'ekyna_core.field.enabled', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(country.default, 'checkbox', 'ekyna_core.field.default', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

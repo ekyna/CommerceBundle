@@ -21,13 +21,23 @@ class CustomerGroupType extends ResourceTableType
             ->addColumn('id', 'number', [
                 'sortable' => true,
             ])
-            ->addColumn('name', 'anchor', array(
+            ->addColumn('name', 'anchor', [
                 'label'                => 'ekyna_core.field.name',
                 'property_path'        => null,
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_customer_group_admin_show',
                 'route_parameters_map' => ['customerGroupId' => 'id'],
-            ))
+            ])
+            ->addColumn('default', 'boolean', [
+                'label'                 => 'ekyna_core.field.default',
+                'sortable'              => true,
+                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
+                'route_parameters'      => ['field' => 'default'],
+                'route_parameters_map'  => ['customerGroupId' => 'id'],
+                'true_class'            => 'label-primary',
+                'false_class'           => 'label-default',
+                'disable_property_path' => 'default',
+            ])
             // TODO default
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [

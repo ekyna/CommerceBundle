@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
+use Ekyna\Bundle\AdminBundle\Controller\Resource as RC;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 
 /**
@@ -11,5 +12,5 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
  */
 class CustomerGroupController extends ResourceController
 {
-
+    use RC\ToggleableTrait;
 }
