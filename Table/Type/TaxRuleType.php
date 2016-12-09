@@ -19,42 +19,46 @@ class TaxRuleType extends ResourceTableType
     {
         $builder
             ->addColumn('name', 'anchor', [
-                'label' => 'ekyna_core.field.name',
-                'route_name' => 'ekyna_commerce_tax_rule_admin_show',
+                'label'                => 'ekyna_core.field.name',
+                'route_name'           => 'ekyna_commerce_tax_rule_admin_show',
                 'route_parameters_map' => [
-                    'taxRuleId' => 'id'
+                    'taxRuleId' => 'id',
                 ],
+                'position'             => 10,
             ])
             ->addColumn('priority', 'number', [
-                'label' => 'ekyna_core.field.priority',
+                'label'    => 'ekyna_core.field.priority',
+                'position' => 20,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
-                        'label' => 'ekyna_core.button.edit',
-                        'class' => 'warning',
-                        'route_name' => 'ekyna_commerce_tax_rule_admin_edit',
+                        'label'                => 'ekyna_core.button.edit',
+                        'class'                => 'warning',
+                        'route_name'           => 'ekyna_commerce_tax_rule_admin_edit',
                         'route_parameters_map' => [
-                            'taxRuleId' => 'id'
+                            'taxRuleId' => 'id',
                         ],
-                        'permission' => 'edit',
+                        'permission'           => 'edit',
                     ],
                     [
-                        'label' => 'ekyna_core.button.remove',
-                        'class' => 'danger',
-                        'route_name' => 'ekyna_commerce_tax_rule_admin_remove',
+                        'label'                => 'ekyna_core.button.remove',
+                        'class'                => 'danger',
+                        'route_name'           => 'ekyna_commerce_tax_rule_admin_remove',
                         'route_parameters_map' => [
-                            'taxRuleId' => 'id'
+                            'taxRuleId' => 'id',
                         ],
-                        'permission' => 'delete',
+                        'permission'           => 'delete',
                     ],
                 ],
             ])
             ->addFilter('name', 'text', [
-                'label' => 'ekyna_core.field.name',
+                'label'    => 'ekyna_core.field.name',
+                'position' => 10,
             ])
             ->addFilter('priority', 'number', [
-                'label' => 'ekyna_core.field.priority',
+                'label'    => 'ekyna_core.field.priority',
+                'position' => 20,
             ]);
     }
 

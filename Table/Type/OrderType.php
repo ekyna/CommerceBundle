@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,7 +19,7 @@ class OrderType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('number', 'anchor', [
@@ -28,24 +29,30 @@ class OrderType extends ResourceTableType
                 'route_parameters_map' => [
                     'orderId' => 'id',
                 ],
+                'position'             => 10,
             ])
             ->addColumn('customer', 'ekyna_commerce_sale_customer', [
                 'label'    => 'ekyna_commerce.customer.label.singular',
-                'sortable' => true,
+                //'sortable' => true,
+                'position' => 20,
             ])
             ->addColumn('grandTotal', 'price', [
                 'label'         => 'ekyna_commerce.sale.field.grand_total',
                 'sortable'      => true,
                 'currency_path' => 'currency.code',
+                'position'      => 30,
             ])
             ->addColumn('state', 'ekyna_commerce_sale_state', [
-                'label' => 'ekyna_commerce.sale.field.state',
+                'label'    => 'ekyna_commerce.sale.field.state',
+                'position' => 40,
             ])
             ->addColumn('paymentState', 'ekyna_commerce_payment_state', [
-                'label' => 'ekyna_commerce.sale.field.payment_state',
+                'label'    => 'ekyna_commerce.sale.field.payment_state',
+                'position' => 50,
             ])
             ->addColumn('shipmentState', 'ekyna_commerce_shipment_state', [
-                'label' => 'ekyna_commerce.sale.field.shipment_state',
+                'label'    => 'ekyna_commerce.sale.field.shipment_state',
+                'position' => 60,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -70,35 +77,44 @@ class OrderType extends ResourceTableType
                 ],
             ])
             ->addFilter('number', 'text', [
-                'label' => 'ekyna_core.field.number',
+                'label'    => 'ekyna_core.field.number',
+                'position' => 10,
             ])
             ->addFilter('email', 'text', [
-                'label' => 'ekyna_core.field.email',
+                'label'    => 'ekyna_core.field.email',
+                'position' => 20,
             ])
             ->addFilter('company', 'text', [
-                'label' => 'ekyna_core.field.company',
+                'label'    => 'ekyna_core.field.company',
+                'position' => 30,
             ])
             ->addFilter('firstName', 'text', [
-                'label' => 'ekyna_core.field.first_name',
+                'label'    => 'ekyna_core.field.first_name',
+                'position' => 40,
             ])
             ->addFilter('lastName', 'text', [
-                'label' => 'ekyna_core.field.last_name',
-            ])/*->addFilter('atiTotal', 'number', [
-                'label' => 'ekyna_order.order.field.ati_total',
+                'label'    => 'ekyna_core.field.last_name',
+                'position' => 50,
+            ])
+            ->addFilter('granTotal', 'number', [
+                'label'    => 'ekyna_commerce.sale.field.grand_total',
+                'position' => 60,
             ])
             ->addFilter('state', 'choice', [
-                'label' => 'ekyna_order.order.field.state',
-                'choices' => OrderStates::getChoices(),
+                'label'    => 'ekyna_commerce.sale.field.state',
+                'choices'  => Model\OrderStates::getChoices(),
+                'position' => 70,
             ])
             ->addFilter('paymentState', 'choice', [
-                'label' => 'ekyna_order.order.field.payment_state',
-                'choices' => PaymentStates::getChoices(),
+                'label'    => 'ekyna_commerce.sale.field.payment_state',
+                'choices'  => Model\PaymentStates::getChoices(),
+                'position' => 80,
             ])
             ->addFilter('shipmentState', 'choice', [
-                'label' => 'ekyna_order.order.field.shipment_state',
-                'choices' => ShipmentStates::getChoices(),
-            ])*/
-        ;
+                'label'    => 'ekyna_commerce.sale.field.shipment_state',
+                'choices'  => Model\ShipmentStates::getChoices(),
+                'position' => 90,
+            ]);
     }
 
     /**

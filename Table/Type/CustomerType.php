@@ -12,8 +12,18 @@ use Ekyna\Component\Table\TableBuilderInterface;
  */
 class CustomerType extends ResourceTableType
 {
+    /**
+     * @var string
+     */
     private $customerGroupClass;
 
+
+    /**
+     * Constructor.
+     *
+     * @param string $customerClass
+     * @param string $customerGroupClass
+     */
     public function __construct($customerClass, $customerGroupClass)
     {
         parent::__construct($customerClass);
@@ -22,12 +32,12 @@ class CustomerType extends ResourceTableType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('name', 'anchor', [
@@ -36,25 +46,30 @@ class CustomerType extends ResourceTableType
 //                'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_customer_admin_show',
                 'route_parameters_map' => ['customerId' => 'id'],
+                'position'             => 10,
             ])
-            ->addColumn('company', 'text', array(
-                'label' => 'ekyna_core.field.company',
+            ->addColumn('company', 'text', [
+                'label'    => 'ekyna_core.field.company',
                 'sortable' => true,
-            ))
-            ->addColumn('email', 'text', array(
-                'label' => 'ekyna_core.field.email',
+                'position' => 20,
+            ])
+            ->addColumn('email', 'text', [
+                'label'    => 'ekyna_core.field.email',
                 'sortable' => true,
-            ))
-            /* TODO ->addColumn('customerGroup', 'anchor', [
-                'label'                => 'ekyna_commerce.customer_group.label.plural',
-                'property_path'        => 'group.name',
+                'position' => 30,
+            ])
+            ->addColumn('customerGroup', 'anchor', [
+                'label'                => 'ekyna_commerce.customer_group.label.singular',
+                'property_path'        => 'customerGroup.name',
                 'sortable'             => false,
                 'route_name'           => 'ekyna_commerce_customer_group_admin_show',
-                'route_parameters_map' => ['groupId' => 'group.id'],
-            ])*/
+                'route_parameters_map' => ['customerGroupId' => 'customerGroup.id'],
+                'position'             => 40,
+            ])
             ->addColumn('createdAt', 'datetime', [
                 'label'    => 'ekyna_core.field.created_at',
                 'sortable' => true,
+                'position' => 50,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -76,47 +91,35 @@ class CustomerType extends ResourceTableType
             ])
             ->addFilter('id', 'number')
             ->addFilter('firstName', 'text', [
-                'label' => 'ekyna_core.field.first_name',
+                'label'    => 'ekyna_core.field.first_name',
+                'position' => 10,
             ])
             ->addFilter('lastName', 'text', [
-                'label' => 'ekyna_core.field.last_name',
+                'label'    => 'ekyna_core.field.last_name',
+                'position' => 20,
             ])
             ->addFilter('company', 'text', [
-                'label' => 'ekyna_core.field.company',
+                'label'    => 'ekyna_core.field.company',
+                'position' => 30,
             ])
             ->addFilter('email', 'text', [
-                'label' => 'ekyna_core.field.email',
+                'label'    => 'ekyna_core.field.email',
+                'position' => 40,
             ])
-            /* TODO ->addFilter('customerGroup', 'entity', [
-                'label'         => 'ekyna_core.field.group',
-                'class'         => $this->customerGroupClass,
-                'property'      => 'name',
-            ])*/
+            ->addFilter('customerGroup', 'entity', [
+                'label'    => 'ekyna_core.field.group',
+                'class'    => $this->customerGroupClass,
+                'property' => 'name',
+                'position' => 50,
+            ])
             ->addFilter('createdAt', 'datetime', [
-                'label' => 'ekyna_core.field.created_at',
+                'label'    => 'ekyna_core.field.created_at',
+                'position' => 60,
             ]);
     }
 
     /**
-     * {@inheritdoc}
-     */
-    /*public function configureOptions(OptionsResolver $resolver)
-    {
-        parent::configureOptions($resolver);
-
-        if (null !== $group = $this->getUserGroup()) {
-            $resolver->setDefaults([
-                'customize_qb' => function (QueryBuilder $qb, $alias) use ($group) {
-                    $qb
-                        ->join($alias . '.group', 'g')
-                        ->andWhere($qb->expr()->gte('g.position', $group->getPosition()));
-                },
-            ]);
-        }
-    }*/
-
-    /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getName()
     {

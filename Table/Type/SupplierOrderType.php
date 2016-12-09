@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,7 +19,7 @@ class SupplierOrderType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('number', 'anchor', [
@@ -28,9 +29,11 @@ class SupplierOrderType extends ResourceTableType
                 'route_parameters_map' => [
                     'supplierOrderId' => 'id',
                 ],
+                'position'             => 10,
             ])
             ->addColumn('state', 'ekyna_commerce_supplier_order_state', [
-                'label' => 'ekyna_commerce.supplier_order.field.state',
+                'label'    => 'ekyna_commerce.supplier_order.field.state',
+                'position' => 20,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -55,13 +58,14 @@ class SupplierOrderType extends ResourceTableType
                 ],
             ])
             ->addFilter('number', 'text', [
-                'label' => 'ekyna_core.field.number',
-            ])/*
+                'label'    => 'ekyna_core.field.number',
+                'position' => 10,
+            ])
             ->addFilter('state', 'choice', [
-                'label' => 'ekyna_order.order.field.state',
-                'choices' => OrderStates::getChoices(),
-            ])*/
-        ;
+                'label'    => 'ekyna_commerce.supplier_order.field.state',
+                'choices'  => SupplierOrderStates::getChoices(),
+                'position' => 20,
+            ]);
     }
 
     /**

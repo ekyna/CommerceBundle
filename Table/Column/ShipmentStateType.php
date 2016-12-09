@@ -23,7 +23,7 @@ class ShipmentStateType extends TextType
     /**
      * Constructor.
      *
-     * @param ConstantsHelper $stateHelper
+     * @param ConstantsHelper $constantHelper
      */
     public function __construct(ConstantsHelper $constantHelper)
     {

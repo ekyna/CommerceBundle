@@ -18,7 +18,7 @@ class CurrencyType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('name', 'anchor', [
@@ -27,10 +27,12 @@ class CurrencyType extends ResourceTableType
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_currency_admin_show',
                 'route_parameters_map' => ['currencyId' => 'id'],
+                'position'             => 10,
             ])
             ->addColumn('code', 'text', [
                 'label'    => 'ekyna_core.field.code',
                 'sortable' => true,
+                'position' => 20,
             ])
             ->addColumn('enabled', 'boolean', [
                 'label'                => 'ekyna_core.field.enabled',
@@ -38,6 +40,7 @@ class CurrencyType extends ResourceTableType
                 'route_name'           => 'ekyna_commerce_currency_admin_toggle',
                 'route_parameters'     => ['field' => 'enabled'],
                 'route_parameters_map' => ['currencyId' => 'id'],
+                'position'             => 30,
             ])
             ->addColumn('default', 'boolean', [
                 'label'                 => 'ekyna_core.field.default',
@@ -48,6 +51,7 @@ class CurrencyType extends ResourceTableType
                 'true_class'            => 'label-primary',
                 'false_class'           => 'label-default',
                 'disable_property_path' => 'default',
+                'position'              => 40,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -69,16 +73,20 @@ class CurrencyType extends ResourceTableType
             ])
             ->addFilter('id', 'number')
             ->addFilter('name', 'text', [
-                'label' => 'ekyna_core.field.name',
+                'label'    => 'ekyna_core.field.name',
+                'position' => 10,
             ])
             ->addFilter('code', 'text', [
-                'label' => 'ekyna_core.field.code',
+                'label'    => 'ekyna_core.field.code',
+                'position' => 20,
             ])
             ->addFilter('enabled', 'boolean', [
-                'label' => 'ekyna_core.field.enabled',
+                'label'    => 'ekyna_core.field.enabled',
+                'position' => 30,
             ])
             ->addFilter('default', 'boolean', [
-                'label' => 'ekyna_core.field.default',
+                'label'    => 'ekyna_core.field.default',
+                'position' => 40,
             ]);
     }
 

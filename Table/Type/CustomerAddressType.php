@@ -18,7 +18,7 @@ class CustomerAddressType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
 //                'sortable' => true,
             ])
             ->addColumn('street', 'text', [

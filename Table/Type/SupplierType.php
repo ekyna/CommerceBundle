@@ -18,7 +18,7 @@ class SupplierType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('name', 'anchor', [
@@ -28,6 +28,7 @@ class SupplierType extends ResourceTableType
                 'route_parameters_map' => [
                     'supplierId' => 'id',
                 ],
+                'position'             => 10,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -46,6 +47,10 @@ class SupplierType extends ResourceTableType
                         'permission'           => 'delete',
                     ],
                 ],
+            ])
+            ->addFilter('name', 'text', [
+                'label'    => 'ekyna_core.field.name',
+                'position' => 10,
             ]);
     }
 

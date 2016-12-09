@@ -18,7 +18,7 @@ class ShipmentZoneType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('name', 'anchor', [
@@ -28,6 +28,7 @@ class ShipmentZoneType extends ResourceTableType
                 'route_parameters_map' => [
                     'shipmentZoneId' => 'id',
                 ],
+                'position'             => 10,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [

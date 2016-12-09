@@ -18,7 +18,7 @@ class CustomerGroupType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('name', 'anchor', [
@@ -27,6 +27,7 @@ class CustomerGroupType extends ResourceTableType
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_customer_group_admin_show',
                 'route_parameters_map' => ['customerGroupId' => 'id'],
+                'position'             => 10,
             ])
             ->addColumn('default', 'boolean', [
                 'label'                 => 'ekyna_core.field.default',
@@ -37,6 +38,7 @@ class CustomerGroupType extends ResourceTableType
                 'true_class'            => 'label-primary',
                 'false_class'           => 'label-default',
                 'disable_property_path' => 'default',
+                'position'              => 20,
             ])
             // TODO default
             ->addColumn('actions', 'admin_actions', [
@@ -59,7 +61,8 @@ class CustomerGroupType extends ResourceTableType
             ])
             ->addFilter('id', 'number')
             ->addFilter('name', 'text', [
-                'label' => 'ekyna_core.field.name',
+                'label'    => 'ekyna_core.field.name',
+                'position' => 10,
             ]);
     }
 

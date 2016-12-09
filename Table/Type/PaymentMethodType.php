@@ -19,7 +19,7 @@ class PaymentMethodType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('name', 'anchor', [
@@ -29,18 +29,21 @@ class PaymentMethodType extends ResourceTableType
                 'route_parameters_map' => [
                     'paymentMethodId' => 'id',
                 ],
+                'position' => 10,
             ])
             ->addColumn('enabled', 'boolean', [
                 'label'                => 'ekyna_core.field.enabled',
                 'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'enabled'],
                 'route_parameters_map' => ['paymentMethodId' => 'id'],
+                'position' => 20,
             ])
             ->addColumn('available', 'boolean', [
                 'label'                => 'ekyna_commerce.payment_method.field.available',
                 'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'available'],
                 'route_parameters_map' => ['paymentMethodId' => 'id'],
+                'position' => 30,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [

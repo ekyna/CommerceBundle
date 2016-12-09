@@ -19,7 +19,7 @@ class ShipmentMethodType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'number', [
+            ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
             ->addColumn('name', 'anchor', [
@@ -29,18 +29,21 @@ class ShipmentMethodType extends ResourceTableType
                 'route_parameters_map' => [
                     'shipmentMethodId' => 'id',
                 ],
+                'position'             => 10,
             ])
             ->addColumn('enabled', 'boolean', [
                 'label'                => 'ekyna_core.field.enabled',
                 'route_name'           => 'ekyna_commerce_shipment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'enabled'],
                 'route_parameters_map' => ['shipmentMethodId' => 'id'],
+                'position'             => 20,
             ])
             ->addColumn('available', 'boolean', [
                 'label'                => 'ekyna_commerce.shipment_method.field.available',
                 'route_name'           => 'ekyna_commerce_shipment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'available'],
                 'route_parameters_map' => ['shipmentMethodId' => 'id'],
+                'position'             => 30,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -85,10 +88,10 @@ class ShipmentMethodType extends ResourceTableType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults(array(
-            'default_sorts' => array('position asc'),
-            'max_per_page' => 100,
-        ));
+        $resolver->setDefaults([
+            'default_sorts' => ['position asc'],
+            'max_per_page'  => 100,
+        ]);
     }
 
     /**

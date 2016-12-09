@@ -19,53 +19,64 @@ class TaxType extends ResourceTableType
     {
         $builder
             ->addColumn('name', 'anchor', [
-                'label' => 'ekyna_core.field.name',
-                'sortable' => true,
-                'route_name' => 'ekyna_commerce_tax_admin_show',
+                'label'                => 'ekyna_core.field.name',
+                'sortable'             => true,
+                'route_name'           => 'ekyna_commerce_tax_admin_show',
                 'route_parameters_map' => [
-                    'taxId' => 'id'
+                    'taxId' => 'id',
                 ],
+                'position'             => 10,
             ])
             ->addColumn('rate', 'number', [
-                'label' => 'ekyna_core.field.rate',
+                'label'    => 'ekyna_core.field.rate',
                 'sortable' => true,
+                'position' => 20,
             ])
             ->addColumn('country', 'anchor', [
-                'label' => 'ekyna_core.field.country',
-                'sortable' => true,
-                'route_name' => 'ekyna_commerce_country_admin_show',
+                'label'                => 'ekyna_core.field.country',
+                'sortable'             => true,
+                'route_name'           => 'ekyna_commerce_country_admin_show',
                 'route_parameters_map' => [
-                    'countryId' => 'country.id'
+                    'countryId' => 'country.id',
                 ],
+                'position'             => 30,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
-                        'label' => 'ekyna_core.button.edit',
-                        'class' => 'warning',
-                        'route_name' => 'ekyna_commerce_tax_admin_edit',
+                        'label'                => 'ekyna_core.button.edit',
+                        'class'                => 'warning',
+                        'route_name'           => 'ekyna_commerce_tax_admin_edit',
                         'route_parameters_map' => [
-                            'taxId' => 'id'
+                            'taxId' => 'id',
                         ],
-                        'permission' => 'edit',
+                        'permission'           => 'edit',
                     ],
                     [
-                        'label' => 'ekyna_core.button.remove',
-                        'class' => 'danger',
-                        'route_name' => 'ekyna_commerce_tax_admin_remove',
+                        'label'                => 'ekyna_core.button.remove',
+                        'class'                => 'danger',
+                        'route_name'           => 'ekyna_commerce_tax_admin_remove',
                         'route_parameters_map' => [
-                            'taxId' => 'id'
+                            'taxId' => 'id',
                         ],
-                        'permission' => 'delete',
+                        'permission'           => 'delete',
                     ],
                 ],
             ])
             ->addFilter('name', 'text', [
-                'label' => 'ekyna_core.field.name',
+                'label'    => 'ekyna_core.field.name',
+                'position' => 10,
             ])
             ->addFilter('rate', 'number', [
-                'label' => 'ekyna_core.field.rate',
-            ]);
+                'label'    => 'ekyna_core.field.rate',
+                'position' => 20,
+            ])
+            /* TODO ->addFilter('country', 'entity', [
+                'label'    => 'ekyna_core.field.country',
+                'class'    => $this->countryClass,
+                'property' => 'name',
+                'position' => 30,
+            ])*/;
     }
 
     /**

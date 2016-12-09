@@ -41,11 +41,22 @@ class SaleCustomerType extends TextType
             $value = sprintf('<strong>%s</strong> %s', $company, $value);
         }
 
-        $cell->setVars([
-            'type'   => 'text',
-            'value'  => $value,
-            'sorted' => $options['sorted'],
-        ]);
+        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+        if (null !== $customer = $table->getCurrentRowData('customer')) {
+            $cell->setVars([
+                'type'       => 'anchor',
+                'value'      => $value,
+                'sorted'     => $options['sorted'],
+                'route'      => 'ekyna_commerce_customer_admin_show',
+                'parameters' => ['customerId' => $customer->getId()],
+            ]);
+        } else {
+            $cell->setVars([
+                'type'   => 'text',
+                'value'  => $value,
+                'sorted' => $options['sorted'],
+            ]);
+        }
     }
 
     /**
