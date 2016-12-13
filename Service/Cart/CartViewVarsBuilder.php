@@ -39,7 +39,7 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
                 'itemId' => $item->getId(),
             ]);
             $actions[] = new View\Action($configurePath, 'fa fa-cog', [
-                'title'           => 'ekyna_commerce.sale.button.configure_item',
+                'title'           => 'ekyna_commerce.sale.button.item.configure',
                 'data-sale-modal' => null,
             ]);
         }
@@ -49,8 +49,8 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
             'itemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
-            'title'         => 'ekyna_commerce.sale.button.remove_item',
-            'confirm'       => 'ekyna_commerce.sale.confirm.remove_item',
+            'title'         => 'ekyna_commerce.sale.button.item.remove',
+            'confirm'       => 'ekyna_commerce.sale.confirm.item.remove',
             'data-sale-xhr' => null,
         ]);
 
@@ -85,8 +85,8 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
         }
 
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
-            'title'         => 'ekyna_commerce.sale.button.remove_adjustment',
-            'confirm'       => 'ekyna_commerce.sale.confirm.remove_adjustment',
+            'title'         => 'ekyna_commerce.sale.button.adjustment.remove',
+            'confirm'       => 'ekyna_commerce.sale.confirm.adjustment.remove',
             'data-sale-xhr' => null,
         ]);
 

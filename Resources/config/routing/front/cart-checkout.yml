@@ -5,7 +5,7 @@ ekyna_commerce_cart_checkout_index:
     options:
         _cms:
             name: Mon panier
-            menus: [main, footer]
+            menus: [footer]
             locked: true
             advanced: false
             position: 50
