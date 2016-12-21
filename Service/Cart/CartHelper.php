@@ -119,7 +119,8 @@ class CartHelper
         ], $options);
 
         return $this
-            ->saleHelper->getFormFactory()
+            ->saleHelper
+            ->getFormFactory()
             ->create(SaleItemSubjectType::class, $item, $options);
     }
 

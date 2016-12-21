@@ -22,6 +22,7 @@
         <service id="ekyna_commerce.sale_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\SaleHelper">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_commerce.sale_updater"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>

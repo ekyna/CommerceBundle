@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleQuantitiesType;
 use Ekyna\Component\Commerce\Common\Model;
+use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
@@ -24,6 +25,11 @@ class SaleHelper
      * @var SubjectProviderRegistryInterface
      */
     private $subjectProviderRegistry;
+
+    /**
+     * @var SaleUpdaterInterface
+     */
+    private $saleUpdater;
 
     /**
      * @var ViewBuilder
@@ -50,6 +56,7 @@ class SaleHelper
      * Constructor.
      *
      * @param SubjectProviderRegistryInterface $subjectProviderRegistry
+     * @param SaleUpdaterInterface             $saleUpdater
      * @param ViewBuilder                      $viewBuilder
      * @param FormFactoryInterface             $formFactory
      * @param UrlGeneratorInterface            $urlGenerator
@@ -57,12 +64,14 @@ class SaleHelper
      */
     public function __construct(
         SubjectProviderRegistryInterface $subjectProviderRegistry,
+        SaleUpdaterInterface $saleUpdater,
         ViewBuilder $viewBuilder,
         FormFactoryInterface $formFactory,
         UrlGeneratorInterface $urlGenerator,
         TranslatorInterface $translator
     ) {
         $this->subjectProviderRegistry = $subjectProviderRegistry;
+        $this->saleUpdater = $saleUpdater;
         $this->viewBuilder = $viewBuilder;
         $this->formFactory = $formFactory;
         $this->urlGenerator = $urlGenerator;
@@ -97,6 +106,18 @@ class SaleHelper
     public function getSubjectProviderRegistry()
     {
         return $this->subjectProviderRegistry;
+    }
+
+    /**
+     * Recalculate the whole sale.
+     *
+     * @param Model\SaleInterface $sale
+     *
+     * @return bool Whether the sale has been changed or not.
+     */
+    public function recalculate(Model\SaleInterface $sale)
+    {
+        return $this->saleUpdater->recalculate($sale, true);
     }
 
     /**
@@ -175,6 +196,11 @@ class SaleHelper
             ->add('submit', Type\SubmitType::class, [
                 'label' => 'ekyna_commerce.sale.button.recalculate',
             ]);
+    }
+
+    public function addItemToSale(Model\SaleItemInterface $item, Model\SaleInterface $sale)
+    {
+        // TODO
     }
 
     /**

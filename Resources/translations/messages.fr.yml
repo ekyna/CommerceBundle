@@ -41,6 +41,11 @@ ekyna_commerce:
             already_paid: Ce panier est déjà réglée en totalité
             cant_be_deleted: Ce panier a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
 
+    cart_address:
+        label:
+            singular: Addresse panier
+            plural: Addresses panier
+
     cart_attachment:
         label:
             singular: Pièce jointe
@@ -214,6 +219,11 @@ ekyna_commerce:
             title: Commandes à traiter
             none: Aucune commande à traiter
 
+    order_address:
+        label:
+            singular: Adresse commande
+            plural: Adresses commande
+
     order_attachment:
         label:
             singular: Pièce jointe
@@ -238,6 +248,11 @@ ekyna_commerce:
         label:
             singular: Livraison de commande
             plural: Livraisons de commande
+
+    order_shipment_item:
+        label:
+            singular: Ligne de livraison de commande
+            plural: Lignes de livraisons de commande
 
     payment:
         label:
@@ -358,6 +373,11 @@ ekyna_commerce:
         dashboard:
             title: Devis à traiter
             none: Aucun devis à traiter
+
+    quote_address:
+        label:
+            singular: Adresse devis
+            plural: Adresses devis
 
     quote_attachment:
         label:
@@ -576,6 +596,9 @@ ekyna_commerce:
             remove: Supprimer la livraison
 
     supplier_delivery_item:
+        label:
+            singular: Ligne de livraison fournisseur
+            plural: Lignes de livraison fournisseur
         field:
             remaining: Attendu
 
@@ -625,6 +648,9 @@ ekyna_commerce:
             none: Aucune commande fournisseur à traiter
 
     supplier_order_item:
+        label:
+            singular: Ligne de commande fournisseur
+            plural: Lignes de commande fournisseur
         field:
             net_price: Prix d'achat HT
 

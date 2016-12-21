@@ -144,12 +144,12 @@ class CartController extends AbstractController
 
     public function removeItemAdjustmentAction(Request $request)
     {
-        // TODO implement removeItemAdjustmentAction
+        throw new \Exception('Not yet implemented.'); // TODO
     }
 
     public function removeAdjustmentAction(Request $request)
     {
-        // TODO implement removeAdjustmentAction
+        throw new \Exception('Not yet implemented.'); // TODO
     }
 
     /**

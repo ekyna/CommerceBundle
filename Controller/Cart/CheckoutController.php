@@ -37,6 +37,7 @@ class CheckoutController extends AbstractController
             $form = $saleHelper->createQuantitiesForm($cart, $formOptions);
             $form->handleRequest($request);
             if ($form->isValid()) {
+                $saleHelper->recalculate($cart);
                 $this->getCartHelper()->getCartProvider()->saveCart();
             }
 

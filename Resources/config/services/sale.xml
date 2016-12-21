@@ -17,6 +17,14 @@
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 
+        <!-- Sale updater -->
+        <service id="ekyna_commerce.sale_updater"
+                 class="Ekyna\Component\Commerce\Common\Updater\SaleUpdater">
+            <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
+            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
+            <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
+        </service>
+
         <!-- Adjustment builder -->
         <service id="ekyna_commerce.common.adjustment_builder"
                  class="Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder">
@@ -53,14 +61,8 @@
             <call method="setKeyGenerator">
                 <argument type="service" id="ekyna_commerce.common.key_generator"/>
             </call>
-            <call method="setAdjustmentBuilder">
-                <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
-            </call>
-            <call method="setAmountsCalculator">
-                <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
-            </call>
-            <call method="setWeightCalculator">
-                <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
+            <call method="setSaleUpdater">
+                <argument type="service" id="ekyna_commerce.sale_updater"/>
             </call>
         </service>
 
