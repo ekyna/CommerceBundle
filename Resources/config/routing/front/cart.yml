@@ -27,6 +27,11 @@ ekyna_commerce_cart_remove_adjustment:
     requirements:
         adjustmentId: \d+
 
+ekyna_commerce_cart_information:
+    path: /information
+    defaults: { _controller: "ekyna_commerce.controller.cart:informationAction" }
+    methods: [GET, POST]
+
 ekyna_commerce_cart_invoice_address:
     path: /invoice-address
     defaults: { _controller: "ekyna_commerce.controller.cart:invoiceAddressAction" }

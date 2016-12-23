@@ -1,12 +1,30 @@
+{% import 'EkynaCommerceBundle:Cart:macros.html.twig' as macros -%}
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8"?>
 <repsonse>
     <view>
-    <![CDATA[
-    {% if cart_view is not same as(null) %}
-        {{ render_sale_view(cart_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
-    {% else %}
-        <p>Votre panier est vide.</p>
-    {% endif %}
-    ]]>
+        <![CDATA[
+        {% if cart_view is not same as(null) %}
+            {{ render_sale_view(cart_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
+        {% else %}
+            <p>Votre panier est vide.</p>
+        {% endif %}
+        ]]>
     </view>
+
+    <information>
+        <![CDATA[
+        {{ macros.cart_information(cart) }}
+        ]]>
+    </information>
+
+    <invoice-address><![CDATA[
+        {{ macros.cart_invoice_address(cart) }}
+    ]]></invoice-address>
+
+    <delivery-address><![CDATA[
+        {{ macros.cart_delivery_address(cart) }}
+    ]]></delivery-address>
+
 </repsonse>
+{% endspaceless %}

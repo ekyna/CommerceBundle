@@ -142,8 +142,8 @@
             <call method="setCustomerProvider">
                 <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             </call>
-            <call method="setCartRepository">
-                <argument type="service" id="ekyna_commerce.cart.repository"/>
+            <call method="setCustomerGroupRepository">
+                <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             </call>
             <call method="setCurrencyRepository">
                 <argument type="service" id="ekyna_commerce.currency.repository"/>

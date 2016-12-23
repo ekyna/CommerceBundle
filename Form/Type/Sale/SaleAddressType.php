@@ -118,7 +118,7 @@ class SaleAddressType extends AbstractType
                     'class' => 'sale-address-choice',
                 ],
             ]);
-        });
+        }, 2048);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $sale = $event->getData();
@@ -133,7 +133,7 @@ class SaleAddressType extends AbstractType
 
                 $event->setData($sale);
             }
-        });
+        }, 2048);
     }
 
     /**

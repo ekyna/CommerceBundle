@@ -2,6 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\InformationType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
 use Ekyna\Bundle\CoreBundle\Modal;
 use Symfony\Component\HttpFoundation\Request;
@@ -143,19 +146,21 @@ class CartController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function invoiceAddressAction(Request $request)
+    public function informationAction(Request $request)
     {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented.');
+        }
+
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
         }
 
         $form = $this
             ->getFormFactory()
-            ->create(SaleItemSubjectType::class, $cart, [
+            ->create(InformationType::class, $cart, [
                 'method' => 'post',
-                'action' => $this->generateUrl('ekyna_commerce_cart_invoice_address', [
-                    'itemId' => $item->getId(),
-                ]),
+                'action' => $this->generateUrl('ekyna_commerce_cart_information'),
                 'attr'   => [
                     'class' => 'form-horizontal',
                 ],
@@ -163,17 +168,54 @@ class CartController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            // TODO use operator to update item (cart will be automatically saved)
             $this->getCartHelper()->getCartProvider()->saveCart();
 
             return $this->buildXhrCartViewResponse();
         }
 
         // TODO title trans
-        $modal = $this->createModal('Configurer l\'article', $form->createView());
-        $modal->setVars([
-            'form_template' => 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig',
-        ]);
+        $modal = $this->createModal('Modifier vos informations', $form->createView());
+
+        return $this->modalRenderer->render($modal);
+    }
+
+    /**
+     * Edit invoice address action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function invoiceAddressAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented.');
+        }
+
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+        $form = $this
+            ->getFormFactory()
+            ->create(SaleAddressType::class, $cart, [
+                'method'       => 'post',
+                'action'       => $this->generateUrl('ekyna_commerce_cart_invoice_address'),
+                'address_type' => CartAddressType::class,
+                'attr'         => [
+                    'class' => 'form-horizontal',
+                ],
+            ]);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $this->getCartHelper()->getCartProvider()->saveCart();
+
+            return $this->buildXhrCartViewResponse();
+        }
+
+        // TODO title trans
+        $modal = $this->createModal('Modifier l\'adresse de facturation', $form->createView());
 
         return $this->modalRenderer->render($modal);
     }
@@ -187,10 +229,37 @@ class CartController extends AbstractController
      */
     public function deliveryAddressAction(Request $request)
     {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented.');
+        }
+
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
         }
 
+        $form = $this
+            ->getFormFactory()
+            ->create(SaleAddressType::class, $cart, [
+                'method'       => 'post',
+                'action'       => $this->generateUrl('ekyna_commerce_cart_delivery_address'),
+                'address_type' => CartAddressType::class,
+                'delivery'     => true,
+                'attr'         => [
+                    'class' => 'form-horizontal',
+                ],
+            ]);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $this->getCartHelper()->getCartProvider()->saveCart();
+
+            return $this->buildXhrCartViewResponse();
+        }
+
+        // TODO title trans
+        $modal = $this->createModal('Modifier l\'adresse de livraison', $form->createView());
+
+        return $this->modalRenderer->render($modal);
     }
 
     /**
@@ -246,6 +315,7 @@ class CartController extends AbstractController
         }
 
         $response = $this->render('EkynaCommerceBundle:Cart:response.xml.twig', [
+            'cart'      => $cart,
             'cart_view' => $view,
         ]);
 

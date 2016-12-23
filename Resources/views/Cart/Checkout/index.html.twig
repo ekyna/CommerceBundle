@@ -1,5 +1,6 @@
 {% extends "EkynaCommerceBundle:Cart:layout.html.twig" %}
 
+{% import 'EkynaCommerceBundle:Cart:macros.html.twig' as macros %}
 
 {% block metas %}
     {{ cms_metas() }}
@@ -32,7 +33,7 @@
                             </p>
                         </div>
                         <div class="col-md-4">
-                            <div class="btn-group">
+                            <div class="btn-group btn-group-sm">
                                 <a href="javascript: void(0)" class="btn btn-primary">
                                     Connexion
                                 </a>
@@ -48,72 +49,54 @@
             <hr>
         {% endif %}
 
-        <div class="container">
+        <div class="container cart-checkout">
             <div class="row">
-                {% set address_column_size = 6 %}
-
                 {# Information #}
-                {% if cart.email is not same as(null) %}
-                    {% set address_column_size = 4 %}
-                    <div class="col-md-4">
-                        <h3>{{ 'ekyna_commerce.checkout.index.information'|trans }}</h3>
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <p>
-                                    {% if cart.company is not same as(null) %}
-                                    <strong>{{ cart.company }}</strong><br>
-                                    {% endif %}
-                                    {{ cart|commerce_identity }}<br>
-                                    <em>{{ cart.email }}</em>
-                                </p>
-                            </div>
+                <div class="col-md-4">
+                    <h3>
+                        <a href="{{ path('ekyna_commerce_cart_information') }}"
+                           class="btn btn-default btn-sm pull-right" data-cart-modal>
+                            {{- 'ekyna_core.button.edit'|trans -}}
+                        </a>
+                        {{ 'ekyna_commerce.checkout.index.information'|trans }}
+                    </h3>
+                    <div class="panel panel-default">
+                        <div class="panel-body cart-checkout-information">
+                            {{ macros.cart_information(cart) }}
                         </div>
-                        <p class="text-center">
-                            <a href="javascript: void(0)" class="btn btn-default">
-                                Modifier
-                            </a>
-                        </p>
                     </div>
-                {% endif %}
+                </div>
 
                 {# Invoice #}
-                <div class="col-md-{{ address_column_size }}">
-                    <h3>{{ 'ekyna_commerce.checkout.index.invoice'|trans }}</h3>
+                <div class="col-md-4">
+                    <h3>
+                        <a href="{{ path('ekyna_commerce_cart_invoice_address') }}"
+                           class="btn btn-default btn-sm pull-right" data-cart-modal>
+                            {{- 'ekyna_core.button.edit'|trans -}}
+                        </a>
+                        {{ 'ekyna_commerce.checkout.index.invoice'|trans }}
+                    </h3>
                     <div class="panel panel-default">
-                        <div class="panel-body">
-                            {% if cart.invoiceAddress is not same as(null) %}
-                                {{ cart.invoiceAddress|commerce_address }}
-                            {% else %}
-                                {{ 'ekyna_core.value.undefined'|trans }}
-                            {% endif %}
+                        <div class="panel-body cart-checkout-invoice-address">
+                            {{ macros.cart_invoice_address(cart) }}
                         </div>
                     </div>
-                    <p class="text-center">
-                        <a href="javascript: void(0)" class="btn btn-default">
-                            Choisir ou modifier
-                        </a>
-                    </p>
                 </div>
 
                 {# Delivery#}
-                <div class="col-md-{{ address_column_size }}">
-                    <h3>{{ 'ekyna_commerce.checkout.index.delivery'|trans }}</h3>
+                <div class="col-md-4">
+                    <h3>
+                        <a href="{{ path('ekyna_commerce_cart_delivery_address') }}"
+                           class="btn btn-default btn-sm pull-right" data-cart-modal>
+                            {{- 'ekyna_core.button.edit'|trans -}}
+                        </a>
+                        {{ 'ekyna_commerce.checkout.index.delivery'|trans }}
+                    </h3>
                     <div class="panel panel-default">
-                        <div class="panel-body">
-                            {% if cart.sameAddress %}
-                                {{ 'ekyna_commerce.sale.field.same_address'|trans }}
-                            {% elseif cart.deliveryAddress is not same as(null) %}
-                                {{ cart.deliveryAddress|commerce_address }}
-                            {% else %}
-                                {{ 'ekyna_core.value.undefined'|trans }}
-                            {% endif %}
+                        <div class="panel-body cart-checkout-delivery-address">
+                            {{ macros.cart_delivery_address(cart) }}
                         </div>
                     </div>
-                    <p class="text-center">
-                        <a href="javascript: void(0)" class="btn btn-default">
-                            Choisir ou modifier
-                        </a>
-                    </p>
                 </div>
             </div>
         </div>
@@ -159,4 +142,5 @@
 {% block javascripts -%}
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
+    <script type="text/javascript">require(['ekyna-commerce/checkout']);</script>
 {%- endblock javascripts %}

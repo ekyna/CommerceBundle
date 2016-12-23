@@ -36,6 +36,10 @@ define(['jquery'], function($) {
                     }
                 };
 
+            console.log($sameCheckbox.length);
+            console.log($choiceSelect.length);
+            console.log($addressForm.length);
+
             $choiceSelect.on('change', function() {
                 clearForm();
 
@@ -62,9 +66,15 @@ define(['jquery'], function($) {
             if (1 == $sameCheckbox.length) {
                 var $wrapper = $this.find('.sale-address-wrap'),
                     toggleAddress = function () {
+                        console.log('toggle address: ' + $sameCheckbox.prop('checked'));
+
                         if ($sameCheckbox.prop('checked')) {
                             $wrapper.slideUp(function() {
-                                $choiceSelect.val(null).trigger('change');
+                                if ($choiceSelect.length) {
+                                    $choiceSelect.val(null).trigger('change');
+                                } else {
+                                    clearForm();
+                                }
                             });
                         } else {
                             $wrapper.slideDown();
