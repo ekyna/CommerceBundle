@@ -61,14 +61,14 @@ class CartController extends AbstractController
 
         // TODO if not XHR, redirect to product detail page with itemID for configuration
 
-        $form = $saleHelper
+        $form = $this
             ->getFormFactory()
             ->create(SaleItemSubjectType::class, $item, [
                 'method' => 'post',
                 'action' => $this->generateUrl('ekyna_commerce_cart_configure_item', [
                     'itemId' => $item->getId(),
                 ]),
-                'attr' => [
+                'attr'   => [
                     'class' => 'form-horizontal',
                 ],
             ]);
@@ -81,27 +81,11 @@ class CartController extends AbstractController
             return $this->buildXhrCartViewResponse();
         }
 
-        $modal = new Modal\Modal('Configurer l\'article'); // TODO translation
-        $modal
-            ->setContent($form->createView())
-            ->setVars([
-                'form_template' => 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig',
-            ])
-            ->setButtons([
-                [
-                    'id'       => 'submit',
-                    'label'    => 'ekyna_core.button.save',
-                    'icon'     => 'glyphicon glyphicon-ok',
-                    'cssClass' => 'btn-success',
-                    'autospin' => true,
-                ],
-                [
-                    'id'       => 'close',
-                    'label'    => 'ekyna_core.button.cancel',
-                    'icon'     => 'glyphicon glyphicon-remove',
-                    'cssClass' => 'btn-default',
-                ],
-            ]);
+        // TODO title trans
+        $modal = $this->createModal('Configurer l\'article', $form->createView());
+        $modal->setVars([
+            'form_template' => 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig',
+        ]);
 
         return $this->modalRenderer->render($modal);
     }
@@ -150,6 +134,95 @@ class CartController extends AbstractController
     public function removeAdjustmentAction(Request $request)
     {
         throw new \Exception('Not yet implemented.'); // TODO
+    }
+
+    /**
+     * Edit invoice address action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function invoiceAddressAction(Request $request)
+    {
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+        $form = $this
+            ->getFormFactory()
+            ->create(SaleItemSubjectType::class, $cart, [
+                'method' => 'post',
+                'action' => $this->generateUrl('ekyna_commerce_cart_invoice_address', [
+                    'itemId' => $item->getId(),
+                ]),
+                'attr'   => [
+                    'class' => 'form-horizontal',
+                ],
+            ]);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            // TODO use operator to update item (cart will be automatically saved)
+            $this->getCartHelper()->getCartProvider()->saveCart();
+
+            return $this->buildXhrCartViewResponse();
+        }
+
+        // TODO title trans
+        $modal = $this->createModal('Configurer l\'article', $form->createView());
+        $modal->setVars([
+            'form_template' => 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig',
+        ]);
+
+        return $this->modalRenderer->render($modal);
+    }
+
+    /**
+     * Edit delivery address action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function deliveryAddressAction(Request $request)
+    {
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+    }
+
+    /**
+     * Creates a modal.
+     *
+     * @param string $title
+     * @param mixed  $content
+     * @param array  $buttons
+     *
+     * @return Modal\Modal
+     */
+    protected function createModal($title, $content = null, $buttons = [])
+    {
+        if (empty($buttons)) {
+            $buttons = [
+                [
+                    'id'       => 'submit',
+                    'label'    => 'ekyna_core.button.save',
+                    'icon'     => 'glyphicon glyphicon-ok',
+                    'cssClass' => 'btn-success',
+                    'autospin' => true,
+                ],
+                [
+                    'id'       => 'close',
+                    'label'    => 'ekyna_core.button.cancel',
+                    'icon'     => 'glyphicon glyphicon-remove',
+                    'cssClass' => 'btn-default',
+                ],
+            ];
+        }
+
+        return new Modal\Modal($title, $content, $buttons);
     }
 
     /**

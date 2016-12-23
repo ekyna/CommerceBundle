@@ -1,0 +1,26 @@
+ekyna_commerce_account_order_index:
+    path: ""
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:index
+    methods: [GET]
+    options:
+        _cms:
+            name: Mes commandes
+            parent: ekyna_user_account_index
+            position: 30
+            seo:
+                follow: false
+                index: false
+
+#ekyna_commerce_account_order_edit:
+#    path: /edit
+#    defaults:
+#        _controller: EkynaCommerceBundle:Account/Order:edit
+#    methods: [GET|POST]
+#    options:
+#        _cms:
+#            name: Modifiez vos commandes
+#            parent: ekyna_commerce_account_order_index
+#            seo:
+#                follow: false
+#                index: false

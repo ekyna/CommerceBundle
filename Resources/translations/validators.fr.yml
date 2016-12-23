@@ -1,4 +1,7 @@
 ekyna_commerce:
+    account:
+        email:
+            mismatch: Les deux adresses email ne sont pas identiques
     address:
         gender_is_mandatory: Veuillez choisir la civilité.
         first_name_is_mandatory: Veuillez saisir le prénom.
@@ -18,5 +21,7 @@ ekyna_commerce:
             customer_group_is_required: Le groupe de client est requis si aucun client n'est sélectionné.
             email_is_required: L'email est requis si aucun client n'est sélectionné.
             identity_is_required: L'identité est requise si aucun client n'est sélectionné.
-        delivery_address_is_required: Veuillez saisir une addresse de livraison.
+        delivery_address:
+            is_required: Veuillez saisir une addresse de livraison.
+            should_be_null: L'adresse de livraison devrait être vide.
 

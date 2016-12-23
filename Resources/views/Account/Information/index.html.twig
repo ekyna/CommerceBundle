@@ -1,0 +1,36 @@
+{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+
+{% block account %}
+    <h3>{{ 'ekyna_commerce.account.information.title'|trans }}</h3>
+
+    <hr>
+
+    <dl class="dl-horizontal">
+        <dt>{{ 'ekyna_core.field.email'|trans }}</dt>
+        <dd>{{ customer.email }}</dd>
+
+        <dt>{{ 'ekyna_core.field.company'|trans }}</dt>
+        <dd>{{ customer.company }}</dd>
+
+        <dt>{{ 'ekyna_core.field.identity'|trans }}</dt>
+        <dd>{{ customer|commerce_identity }}</dd>
+
+        {% if customer.phone is not same as(null) %}
+        <dt>{{ 'ekyna_core.field.phone'|trans }}</dt>
+        <dd>{{ phone_number_format(customer.phone) }}</dd>
+        {% endif %}
+
+        {% if customer.mobile is not same as(null) %}
+        <dt>{{ 'ekyna_core.field.mobile'|trans }}</dt>
+        <dd>{{ phone_number_format(customer.mobile) }}</dd>
+        {% endif %}
+    </dl>
+
+    <hr>
+
+    <p style="text-align:center">
+        <a href="{{ path('ekyna_commerce_account_information_edit') }}" class="btn btn-primary">
+            {{ 'ekyna_core.button.edit'|trans }}
+        </a>
+    </p>
+{% endblock account %}

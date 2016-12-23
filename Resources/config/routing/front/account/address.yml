@@ -1,0 +1,35 @@
+ekyna_commerce_account_address_index:
+    path: ""
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Address:index
+    methods: [GET]
+    options:
+        _cms:
+            name: Mes adresses
+            parent: ekyna_user_account_index
+            position: 20
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_address_add:
+    path: /add
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Address:add
+    methods: [GET|POST]
+
+ekyna_commerce_account_address_edit:
+    path: /edit/{addressId}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Address:edit
+    methods: [GET|POST]
+    requirements:
+        addressId: \d+
+
+ekyna_commerce_account_address_remove:
+    path: /remove/{addressId}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Address:remove
+    methods: [GET|POST]
+    requirements:
+        addressId: \d+

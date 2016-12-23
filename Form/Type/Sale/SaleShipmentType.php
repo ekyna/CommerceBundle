@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormAttributes;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Symfony\Component\Form\AbstractType;
@@ -99,7 +99,7 @@ class SaleShipmentType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        FormAttributes::addClass($view, 'commerce-sale-shipment');
+        FormUtil::addClass($view, 'commerce-sale-shipment');
     }
 
     /**

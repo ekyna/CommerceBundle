@@ -1,0 +1,26 @@
+ekyna_commerce_account_information_index:
+    path: ""
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Information:index
+    methods: [GET]
+    options:
+        _cms:
+            name: Mes informations
+            parent: ekyna_user_account_index
+            position: 10
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_information_edit:
+    path: /edit
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Information:edit
+    methods: [GET|POST]
+    options:
+        _cms:
+            name: Modifiez vos informations
+            parent: ekyna_commerce_account_information_index
+            seo:
+                follow: false
+                index: false

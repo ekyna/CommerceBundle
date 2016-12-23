@@ -9,7 +9,6 @@
         <service id="ekyna_commerce.cart_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType">
             <argument>%ekyna_commerce.cart_address.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.cart_adjustment.form_type"
@@ -60,7 +59,6 @@
         <service id="ekyna_commerce.customer_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType">
             <argument>%ekyna_commerce.customer_address.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
             <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
         </service>
@@ -88,7 +86,6 @@
         <service id="ekyna_commerce.order_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAddressType">
             <argument>%ekyna_commerce.order_address.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order_adjustment.form_type"
@@ -139,7 +136,6 @@
         <service id="ekyna_commerce.quote_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAddressType">
             <argument>%ekyna_commerce.quote_address.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote_adjustment.form_type"
@@ -231,7 +227,6 @@
         <service id="ekyna_commerce.supplier_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierAddressType">
             <argument>%ekyna_commerce.supplier_address.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
         <!-- Supplier delivery item type -->
@@ -279,6 +274,15 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\SaleItemAddFlow"
                  parent="craue.form.flow">
             <argument type="service" id="ekyna_commerce.subject.provider_registry" />
+        </service>
+
+        <!-- Sale item subject form type -->
+        <service id="ekyna_commerce.sale_address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType">
+            <argument type="service" id="serializer"/>
+            <argument type="service" id="ekyna_commerce.customer_address.repository"/>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-sale-address" path="ekyna-commerce/form/sale-address" />
         </service>
 
         <!-- Sale item subject form type -->

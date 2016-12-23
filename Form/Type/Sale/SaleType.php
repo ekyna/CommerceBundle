@@ -4,10 +4,10 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -88,20 +88,26 @@ class SaleType extends ResourceFormType
                 'label'    => 'ekyna_core.field.email',
                 'required' => false,
             ])
-            ->add('invoiceAddress', $options['address_type'], [
-                'label' => 'ekyna_commerce.sale.field.invoice_address',
+            ->add('invoiceAddress', SaleAddressType::class, [
+                'label'        => 'ekyna_commerce.sale.field.invoice_address',
+                'address_type' => $options['address_type'],
+                'inherit_data' => true,
             ])
-            ->add('sameAddress', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale.field.same_address',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
-            ->add('deliveryAddress', $options['address_type'], [
-                'label'    => 'ekyna_commerce.sale.field.delivery_address',
-                'required' => false,
+            ->add('deliveryAddress', SaleAddressType::class, [
+                'label'        => 'ekyna_commerce.sale.field.delivery_address',
+                'address_type' => $options['address_type'],
+                'inherit_data' => true,
+                'delivery'     => true,
             ]);
+
+        FormUtil::bindFormEventsToChildren(
+            $builder,
+            [
+                FormEvents::PRE_SET_DATA => 2048,
+                FormEvents::POST_SUBMIT  => 2048,
+            ],
+            ['invoiceAddress', 'deliveryAddress']
+        );
     }
 
     /**
@@ -113,6 +119,6 @@ class SaleType extends ResourceFormType
 
         $resolver
             ->setRequired(['address_type'])
-            ->setAllowedTypes('address_type', 'string');
+            ->setAllowedTypes('address_type', 'string'); // TODO validation
     }
 }

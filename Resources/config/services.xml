@@ -4,10 +4,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
+        <import resource="services/customer.xml"/>
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
         <import resource="services/sale.xml"/>
-        <!--<import resource="services/serializer.xml"/>-->
+        <import resource="services/serializer.xml"/>
         <import resource="services/shipment.xml"/>
         <import resource="services/table.xml"/>
         <import resource="services/twig.xml"/>
@@ -40,13 +41,15 @@
     <services>
 
         <!-- Uploader -->
-        <service id="ekyna_commerce.common.uploader" class="Ekyna\Bundle\CoreBundle\Uploader\Uploader">
+        <service id="ekyna_commerce.common.uploader"
+                 class="Ekyna\Bundle\CoreBundle\Uploader\Uploader">
             <argument type="service" id="oneup_flysystem.mount_manager" />
             <argument>local_commerce</argument>
         </service>
 
         <!-- Uploadable listener -->
-        <service id="ekyna_commerce.common.uploadable_listener" class="Ekyna\Component\Commerce\Common\Listener\UploadableListener">
+        <service id="ekyna_commerce.common.uploadable_listener"
+                 class="Ekyna\Component\Commerce\Common\Listener\UploadableListener">
             <argument type="service" id="ekyna_commerce.common.uploader" />
             <tag name="doctrine.entity_listener" />
         </service>
@@ -61,6 +64,9 @@
             </call>
             <call method="setCartHelper">
                 <argument type="service" id="ekyna_commerce.cart_helper"/>
+            </call>
+            <call method="setCustomerProvider">
+                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             </call>
         </service>
 

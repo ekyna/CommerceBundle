@@ -43,11 +43,15 @@ class IdentityType extends AbstractType
                 'choices'        => $options['gender_choices'],
                 'placeholder'    => 'ekyna_core.value.choose',
                 'error_bubbling' => true,
+                'attr'           => [
+                    'class' => 'inline no-select2 identity-gender',
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label'          => false,
                 'required'       => $options['required'],
                 'attr'           => [
+                    'class'       => 'identity-last-name',
                     'placeholder' => 'ekyna_core.field.last_name',
                 ],
                 'error_bubbling' => true,
@@ -56,6 +60,7 @@ class IdentityType extends AbstractType
                 'label'          => false,
                 'required'       => $options['required'],
                 'attr'           => [
+                    'class'       => 'identity-first-name',
                     'placeholder' => 'ekyna_core.field.first_name',
                 ],
                 'error_bubbling' => true,

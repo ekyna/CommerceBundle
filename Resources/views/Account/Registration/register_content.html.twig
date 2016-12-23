@@ -1,0 +1,74 @@
+{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ bootstrap_set_label_col(2) }}
+        {{ bootstrap_set_widget_col(10) }}
+
+        {{ form_errors(form) }}
+
+        <div class="row">
+            <div class="col-md-10 col-md-push-2">
+                <h3>Identifiants</h3>
+            </div>
+        </div>
+
+        {#{% if form.username is defined -%}
+            {{ form_row(form.username) }}
+        {%- endif %}#}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.email.first, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.email.second, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.plainPassword.first, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.plainPassword.second, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-10 col-md-push-2">
+                <h3>Informations</h3>
+            </div>
+        </div>
+
+        {{ form_row(form.company) }}
+        {{ form_row(form.identity) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-10 col-md-push-2">
+                <h3>Adresse de facturation</h3>
+            </div>
+        </div>
+
+        {{ form_row(form.invoice, {'widget_col': 12}) }}
+
+        {# TODO {% if form.captcha is defined -%}
+        <hr>
+        <div class="form-group row">
+            <div class="col-sm-offset-2 col-sm-10">
+                {{ form_row(form.captcha) }}
+            </div>
+        </div>
+        {% endif %}#}
+
+        {{ form_rest(form) }}
+    </div>
+{{ form_end(form) }}

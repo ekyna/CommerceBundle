@@ -9,3 +9,47 @@ ekyna_commerce_cart_checkout_index:
             locked: true
             advanced: false
             position: 50
+
+ekyna_commerce_cart_checkout_information:
+    path: /information
+    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:informationAction" }
+    methods: [GET, POST]
+    options:
+        _cms:
+            name: Informations
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false
+
+ekyna_commerce_cart_checkout_shipment:
+    path: /shipment
+    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:shipmentAction" }
+    methods: [GET, POST]
+    options:
+        _cms:
+            name: Livraison
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false
+
+ekyna_commerce_cart_checkout_payment:
+    path: /payment
+    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:paymentAction" }
+    methods: [GET, POST]
+    options:
+        _cms:
+            name: Paiement
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false
+
+ekyna_commerce_cart_checkout_confirmation:
+    path: /confirmation/{orderKey}
+    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:confirmationAction" }
+    methods: [GET]
+    options:
+        _cms:
+            name: Confirmation
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false

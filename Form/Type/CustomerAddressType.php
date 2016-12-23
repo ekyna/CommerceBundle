@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
+use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CustomerAddressType extends AddressType
+class CustomerAddressType extends ResourceFormType
 {
     /**
      * @var string
@@ -23,12 +24,11 @@ class CustomerAddressType extends AddressType
      * Constructor.
      *
      * @param string $addressClass
-     * @param string $countryClass
      * @param string $customerClass
      */
-    public function __construct($addressClass, $countryClass, $customerClass)
+    public function __construct($addressClass, $customerClass)
     {
-        parent::__construct($addressClass, $countryClass);
+        parent::__construct($addressClass);
 
         $this->customerClass = $customerClass;
     }
@@ -60,5 +60,13 @@ class CustomerAddressType extends AddressType
         $resolver
             ->setDefault('customer_form', false)
             ->setAllowedTypes('customer_form', 'bool');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getParent()
+    {
+        return AddressType::class;
     }
 }

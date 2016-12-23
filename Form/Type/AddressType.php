@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,27 +14,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AddressType extends ResourceFormType
+class AddressType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $countryClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $addressClass
-     * @param string $countryClass
-     */
-    public function __construct($addressClass, $countryClass)
-    {
-        parent::__construct($addressClass);
-
-        $this->countryClass = $countryClass;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -44,12 +25,19 @@ class AddressType extends ResourceFormType
             $builder->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => $options['company_required'],
+                // todo constraint if required ?
+                'attr'     => [
+                    'class' => 'address-company',
+                ],
             ]);
         }
 
         if ($options['identity']) {
             $builder->add('identity', IdentityType::class, [
                 'required' => $options['identity_required'],
+                'attr'     => [
+                    'class' => 'address-identity',
+                ],
             ]);
         }
 
@@ -58,31 +46,49 @@ class AddressType extends ResourceFormType
                 'label'    => 'ekyna_core.field.street',
                 'required' => $options['required'],
                 'sizing'   => 'sm',
+                'attr'     => [
+                    'class' => 'address-street',
+                ],
             ])
             ->add('supplement', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.supplement',
                 'required' => false,
                 'sizing'   => 'sm',
+                'attr'     => [
+                    'class' => 'address-supplement',
+                ],
             ])
             ->add('city', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.city',
                 'required' => $options['required'],
                 'sizing'   => 'sm',
+                'attr'     => [
+                    'class' => 'address-city',
+                ],
             ])
             ->add('postalCode', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.postal_code',
                 'required' => $options['required'],
                 'sizing'   => 'sm',
+                'attr'     => [
+                    'class' => 'address-postal-code',
+                ],
             ])
             ->add('country', CountryChoiceType::class, [
                 'sizing'   => 'sm',
                 'required' => $options['required'],
-            ])
-            /*->add('state', Type\TextType::class, [
+                'attr'     => [
+                    'class' => 'address-country',
+                ],
+            ])/*->add('state', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
                 'sizing' => 'sm',
-            ])*/;
+                'attr' => [
+                    'class' => 'address-state',
+                ]
+            ])*/
+        ;
 
         if ($options['phones']) {
             $builder
@@ -91,12 +97,18 @@ class AddressType extends ResourceFormType
                     'required'       => $options['phone_required'],
                     'default_region' => 'FR', // TODO get user locale
                     'format'         => PhoneNumberFormat::NATIONAL,
+                    'attr'           => [
+                        'class' => 'address-phone',
+                    ],
                 ])
                 ->add('mobile', PhoneNumberType::class, [
                     'label'          => 'ekyna_core.field.mobile',
                     'required'       => $options['mobile_required'],
                     'default_region' => 'FR', // TODO get user locale
                     'format'         => PhoneNumberFormat::NATIONAL,
+                    'attr'           => [
+                        'class' => 'address-mobile',
+                    ],
                 ]);
         }
     }

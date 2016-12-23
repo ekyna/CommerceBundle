@@ -23,6 +23,11 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
      */
     private $customerRepository;
 
+    /**
+     * @var bool
+     */
+    private $initialized = false;
+
 
     /**
      * Constructor.
@@ -40,20 +45,38 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
      */
     public function hasCustomer()
     {
-        if (!parent::hasCustomer()) {
+        $this->initialize();
+
+        return parent::hasCustomer();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCustomer()
+    {
+        $this->initialize();
+
+        return parent::getCustomer();
+    }
+
+    /**
+     * Loads the customer once.
+     */
+    private function initialize()
+    {
+        if (!$this->initialized) {
             if (null === $token = $this->tokenStorage->getToken()) {
-                return false;
+                return;
             }
 
             if (!is_object($user = $token->getUser())) {
-                return false;
+                return;
             }
 
-            if (null !== $this->customer = $this->customerRepository->findOneByUser($user)) {
-                return true;
-            }
+            $this->customer = $this->customerRepository->findOneByUser($user);
+
+            $this->initialized = true;
         }
-
-        return false;
     }
 }

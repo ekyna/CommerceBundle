@@ -37,15 +37,7 @@
         <div class="tab-pane" id="order-addresses">
             {{ form_row(form.invoiceAddress) }}
             <hr>
-            <div class="form-group">
-                {{ form_label(form.deliveryAddress) }}
-                <div class="col-md-10">
-                    {{ form_row(form.sameAddress) }}
-                    <div id="delivery-address">
-                        {{ form_widget(form.deliveryAddress) }}
-                    </div>
-                </div>
-            </div>
+            {{ form_row(form.deliveryAddress) }}
         </div>
         {#<div class="tab-pane" id="order-details">
             {{ form_row(form.items) }}

@@ -1,0 +1,14 @@
+{% extends 'EkynaCommerceBundle:Account:layout.html.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {{ cms_title('h3') }}
+                {{ cms_content() }}
+                <hr>
+                {% include "EkynaCommerceBundle:Account/Registration:register_content.html.twig" %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

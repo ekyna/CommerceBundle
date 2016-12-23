@@ -1,1 +1,39 @@
-define(["jquery","ekyna-form/collection"],function(a){"use strict";return a.fn.saleShipmentWidget=function(){return this.each(function(){function b(){var a=d.find('option[value="'+d.val()+'"]');e.val(a.data("price"))}var c=a(this),d=c.find("select.sale-shipment-method"),e=c.find("input.sale-shipment-amount");d.on("change",b),c.on("click",".sale-shipment-amount-apply",b).on("click",".sale-shipment-amount-clear",function(){e.val("")})}),this},{init:function(a){a.saleShipmentWidget()}}});
+define(['jquery', 'ekyna-form/collection'], function($) {
+    "use strict";
+
+    /**
+     * Sale shipment widget
+     */
+    $.fn.saleShipmentWidget = function(/*config*/) {
+
+        //config = $.extend({}, config);
+
+        this.each(function() {
+
+            var $this = $(this),
+                $methodSelect = $this.find('select.sale-shipment-method'),
+                $amountInput = $this.find('input.sale-shipment-amount');
+
+            function applyAmountFromSelectedMethod() {
+                var $methodOption = $methodSelect.find('option[value="' + $methodSelect.val() + '"]');
+                $amountInput.val($methodOption.data('price'));
+            }
+
+            $methodSelect.on('change', applyAmountFromSelectedMethod);
+
+            $this
+                .on('click', '.sale-shipment-amount-apply', applyAmountFromSelectedMethod)
+                .on('click', '.sale-shipment-amount-clear', function() {
+                    $amountInput.val('');
+                });
+        });
+
+        return this;
+    };
+
+    return {
+        init: function($element) {
+            $element.saleShipmentWidget();
+        }
+    };
+});

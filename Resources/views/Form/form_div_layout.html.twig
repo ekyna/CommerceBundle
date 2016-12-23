@@ -220,6 +220,27 @@
 {% endblock ekyna_commerce_payment_method_choice_widget %}
 
 
+{% block ekyna_commerce_sale_address_widget %}
+{% spaceless %}
+    <div class="commerce-sale-address">
+        {{ form_errors(form)}}
+        {% if form.sameAddress is defined %}
+            {{ form_row(form.sameAddress) }}
+        {% endif %}
+        <div class="sale-address-wrap">
+            {% if form.choice is defined %}
+                {{ form_row(form.choice) }}
+            {% endif %}
+            <div class="sale-address">
+                {{ form_row(form.address) }}
+            </div>
+        </div>
+        {{ form_rest(form)}}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_sale_address_widget %}
+
+
 {% block ekyna_commerce_sale_items_widget %}
 {% spaceless %}
     {% set attr = attr|merge({'class': 'ekyna-collection' }) %}

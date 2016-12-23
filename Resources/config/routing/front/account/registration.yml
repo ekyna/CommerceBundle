@@ -1,0 +1,44 @@
+fos_user_registration_register:
+    path: ""
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Registration:register
+    methods: [GET|POST]
+    options:
+        _cms:
+            name: "Créer un compte client"
+            parent: ekyna_user_account_index
+            seo:
+                follow: false
+                index: false
+
+fos_user_registration_check_email:
+    path: /check-email
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Registration:checkEmail
+    methods: [GET]
+    options:
+        _cms:
+            name: "Consultez votre boite mail"
+            parent: fos_user_registration_register
+            seo:
+                follow: false
+                index: false
+
+fos_user_registration_confirm:
+    path: /confirm/{token}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Registration:confirm
+    methods: [GET]
+
+fos_user_registration_confirmed:
+    path: /confirmed
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Registration:confirmed
+    methods: [GET]
+    options:
+        _cms:
+            name: "Confirmation"
+            parent: fos_user_registration_register
+            seo:
+                follow: false
+                index: false

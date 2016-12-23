@@ -1,1 +1,17 @@
 ekyna_commerce_cart_checkout_index: /my-cart
+ekyna_commerce_cart_checkout_information: /my-cart/information
+ekyna_commerce_cart_checkout_shipment: /my-cart/shipment
+ekyna_commerce_cart_checkout_payment: /my-cart/payment
+ekyna_commerce_cart_checkout_confirmation: /my-cart/confirmation/{orderKey}
+
+ekyna_commerce_account_information_index: /my-account/information
+ekyna_commerce_account_information_edit: /my-account/information/edit
+
+ekyna_commerce_account_address_index: /my-account/addresses
+ekyna_commerce_account_address_add: /my-account/addresses/add
+ekyna_commerce_account_address_edit: /my-account/addresses/edit/{addressId}
+ekyna_commerce_account_address_remove: /my-account/addresses/remove/{addressId}
+
+ekyna_commerce_account_quote_index: /my-account/quotes
+
+ekyna_commerce_account_order_index: /my-account/orders

@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Bundle\CoreBundle\Form\Util\FormAttributes;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -68,7 +68,7 @@ class ShipmentPricingType extends Form\AbstractType
      */
     public function finishView(Form\FormView $view, Form\FormInterface $form, array $options)
     {
-        FormAttributes::addClass($view, 'commerce-shipment-pricing');
+        FormUtil::addClass($view, 'commerce-shipment-pricing');
     }
 
     /**

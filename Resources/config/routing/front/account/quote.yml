@@ -1,0 +1,26 @@
+ekyna_commerce_account_quote_index:
+    path: ""
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:index
+    methods: [GET]
+    options:
+        _cms:
+            name: Mes devis
+            parent: ekyna_user_account_index
+            position: 40
+            seo:
+                follow: false
+                index: false
+
+#ekyna_commerce_account_quote_edit:
+#    path: /edit
+#    defaults:
+#        _controller: EkynaCommerceBundle:Account/Quote:edit
+#    methods: [GET|POST]
+#    options:
+#        _cms:
+#            name: Modifiez vos devis
+#            parent: ekyna_commerce_account_quote_index
+#            seo:
+#                follow: false
+#                index: false

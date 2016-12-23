@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
+use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\AddressType;
 
 /**
@@ -9,7 +10,13 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\AddressType;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Supplier
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierAddressType extends AddressType
+class SupplierAddressType extends ResourceFormType
 {
-
+    /**
+     * @inheritdoc
+     */
+    public function getParent()
+    {
+        return AddressType::class;
+    }
 }

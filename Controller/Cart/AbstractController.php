@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,9 +32,14 @@ class AbstractController
      */
     private $cartHelper;
 
+    /**
+     * @var CustomerProviderInterface
+     */
+    private $customerProvider;
+
 
     /**
-     * Sets the urlGenerator.
+     * Sets the url generator.
      *
      * @param UrlGeneratorInterface $urlGenerator
      */
@@ -53,13 +59,23 @@ class AbstractController
     }
 
     /**
-     * Sets the cartHelper.
+     * Sets the cart helper.
      *
      * @param CartHelper $cartHelper
      */
     public function setCartHelper(CartHelper $cartHelper)
     {
         $this->cartHelper = $cartHelper;
+    }
+
+    /**
+     * Sets the customer provider.
+     *
+     * @param CustomerProviderInterface $customerProvider
+     */
+    public function setCustomerProvider(CustomerProviderInterface $customerProvider)
+    {
+        $this->customerProvider = $customerProvider;
     }
 
     /**
@@ -116,11 +132,21 @@ class AbstractController
     }
 
     /**
+     * Returns the current (logged in) customer.
+     *
+     * @return \Ekyna\Component\Commerce\Customer\Model\CustomerInterface|null
+     */
+    protected function getCustomer()
+    {
+        return $this->customerProvider->getCustomer();
+    }
+
+    /**
      * Returns the cartHelper.
      *
      * @return CartHelper
      */
-    public function getCartHelper()
+    protected function getCartHelper()
     {
         return $this->cartHelper;
     }
@@ -133,5 +159,15 @@ class AbstractController
     protected function getSaleHelper()
     {
         return $this->cartHelper->getSaleHelper();
+    }
+
+    /**
+     * Returns the form factory.
+     *
+     * @return \Symfony\Component\Form\FormFactoryInterface
+     */
+    protected function getFormFactory()
+    {
+        return $this->getSaleHelper()->getFormFactory();
     }
 }

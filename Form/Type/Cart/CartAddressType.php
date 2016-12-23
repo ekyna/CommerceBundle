@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Cart;
 
+use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\AddressType;
 
 /**
@@ -9,6 +10,13 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\AddressType;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Cart
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CartAddressType extends AddressType
+class CartAddressType extends ResourceFormType
 {
+    /**
+     * @inheritdoc
+     */
+    public function getParent()
+    {
+        return AddressType::class;
+    }
 }
