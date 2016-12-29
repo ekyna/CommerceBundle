@@ -5,26 +5,26 @@
 {% else %}
     {{ address.customer|commerce_identity }}
 {% endif %}
-</strong><br>
+</strong>
 
 {% if address.company != '' %}
-    <strong><em>{{ address.company }}</em></strong><br>
+    <br><strong><em>{{ address.company }}</em></strong>
 {% endif %}
 
-{{ address.street }}<br>
+<br>{{ address.street }}
 {% if address.supplement != '' %}
-    {{ address.supplement }}<br>
+    <br>{{ address.supplement }}
 {% endif %}
 
-{{ address.postalCode }} {{ address.city }}<br>
-{{ address.country.code|country }}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}<br>
+<br>{{ address.postalCode }} {{ address.city }}
+<br>{{ address.country.code|country }}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}
 
 {% if display_phones %}
     {% if address.phone != '' %}
-        <abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ phone_number_format(address.phone, 'NATIONAL') }}<br>
+        <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address.phone|phone_number_format }}
     {% endif %}
     {% if address.mobile != '' %}
-        <abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ phone_number_format(address.mobile, 'NATIONAL') }}<br>
+        <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address.mobile|phone_number_format }}
     {% endif %}
 {% endif %}
 {% endspaceless %}

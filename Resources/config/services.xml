@@ -40,6 +40,20 @@
 
     <services>
 
+        <!-- Security listener -->
+        <service id="ekyna_commerce.security_listener"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SecurityListener">
+            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+        <!-- Security logout handler -->
+        <service id="ekyna_commerce.security.logout_handler"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Security\LogoutHandler">
+            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+        </service>
+
         <!-- Uploader -->
         <service id="ekyna_commerce.common.uploader"
                  class="Ekyna\Bundle\CoreBundle\Uploader\Uploader">

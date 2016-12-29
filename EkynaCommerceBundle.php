@@ -28,6 +28,7 @@ class EkynaCommerceBundle extends AbstractBundle
         $container->addCompilerPass(new Compiler\SubjectProviderPass());
         $container->addCompilerPass(new Compiler\SubjectResolverPass());
         $container->addCompilerPass(new Compiler\AdminMenuPass());
+        $container->addCompilerPass(new Compiler\SecurityPass());
     }
 
     /**

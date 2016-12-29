@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -39,6 +40,22 @@ class CustomerAddressType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
+
+        $builder
+            ->add('invoiceDefault', CheckboxType::class, [
+                'label' => 'ekyna_commerce.customer_address.field.invoice_default',
+                'required' => false,
+                'attr' => [
+                    'align_with_widget' => true,
+                ]
+            ])
+            ->add('deliveryDefault', CheckboxType::class, [
+                'label' => 'ekyna_commerce.customer_address.field.delivery_default',
+                'required' => false,
+                'attr' => [
+                    'align_with_widget' => true,
+                ]
+            ]);
 
         if ($options['customer_form']) {
             $builder

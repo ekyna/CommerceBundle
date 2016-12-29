@@ -14,6 +14,7 @@
     </div>
 
     {% if cart is defined %}
+     <div class="cart-checkout" data-refresh-url="{{ path('ekyna_commerce_cart_checkout_index') }}">
 
         {# Cart view #}
         <div class="container cart-view">
@@ -22,7 +23,7 @@
 
         {# Login #}
         {% if customer is not defined %}
-            <div style="padding: 20px 0; background-color: #e6e6e6">
+            <div style="padding: 20px 0; background-color: #e6e6e6" class="cart-sign-in-or-register">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-8">
@@ -34,10 +35,10 @@
                         </div>
                         <div class="col-md-4">
                             <div class="btn-group btn-group-sm">
-                                <a href="javascript: void(0)" class="btn btn-primary">
+                                <a href="{{ path('fos_user_security_login', {'target_path': 'ekyna_commerce_cart_checkout_index'}) }}" class="btn btn-primary">
                                     Connexion
                                 </a>
-                                <a href="javascript: void(0)" class="btn btn-default">
+                                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">
                                     Ouverture de compte
                                 </a>
                             </div>
@@ -49,7 +50,7 @@
             <hr>
         {% endif %}
 
-        <div class="container cart-checkout">
+        <div class="container">
             <div class="row">
                 {# Information #}
                 <div class="col-md-4">
@@ -129,6 +130,7 @@
         </div>
 
     {% endif %}
+    </div>
 
 {% endblock content %}
 

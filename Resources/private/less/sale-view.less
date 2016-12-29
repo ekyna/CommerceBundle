@@ -1,29 +1,17 @@
 @base-cell-padding: 8px;
 @text-color: #526273;
-
-@spinkit-size: 120px;
-@spinkit-spinner-color: #fff;
+@spinner-size: 120px;
 
 .sale-view {
     position: relative;
     padding: 30px 0;
 
-    .sale-detail-loading {
-        position: absolute;
-        z-index: 9999;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, .25);
-        display: none;
-
-        > div {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-top: -@spinkit-size/2;
-            margin-left: -@spinkit-size/2;
+    &.ui-loading {
+        .ui-loading-spinner {
+            width: @spinner-size;
+            height: @spinner-size;
+            margin-top: -@spinner-size/2;
+            margin-left: -@spinner-size/2;
         }
     }
 
@@ -166,53 +154,5 @@
 
     .taxes-view {
         max-width: 200px;
-    }
-}
-
-.sk-fading-circle {
-    @spinkit-circle-count: 12;
-    @spinkit-animation-duration: 1.2s;
-
-    width: @spinkit-size;
-    height: @spinkit-size;
-    position: relative;
-
-    .sk-circle {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-
-    .sk-circle:before {
-        content: '';
-        display: block;
-        margin: 0 auto;
-        width: 15%;
-        height: 15%;
-        background-color: @spinkit-spinner-color;
-        border-radius: 100%;
-        animation: sk-circleFadeDelay @spinkit-animation-duration infinite ease-in-out both;
-    }
-
-    .generate-circle(@n, @i: 2) when (@i =< @n) {
-        .sk-circle-@{i} {
-            transform: rotate(360deg / @spinkit-circle-count * (@i - 1));
-        }
-        .sk-circle-@{i}:before {
-            animation-delay: -@spinkit-animation-duration + @spinkit-animation-duration / @spinkit-circle-count * (@i - 1);
-        }
-        .generate-circle(@n, (@i + 1));
-    }
-    .generate-circle(@spinkit-circle-count);
-}
-
-@keyframes sk-circleFadeDelay {
-    0%, 39%, 100% {
-        opacity: 0
-    }
-    40% {
-        opacity: 1
     }
 }

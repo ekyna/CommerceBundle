@@ -1,4 +1,4 @@
-define(['jquery', 'ekyna-modal', 'jquery/form'], function($, Modal) {
+define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, Modal, Dispatcher) {
     "use strict";
 
     var parseResponse = function(response) {
@@ -29,6 +29,41 @@ define(['jquery', 'ekyna-modal', 'jquery/form'], function($, Modal) {
 
         return false;
     };
+
+    var $checkout = $('.cart-checkout'),
+        $signInOrRegister = $('.cart-sign-in-or-register'),
+        refreshXHR;
+
+    function refreshCheckout() {
+        if (refreshXHR) {
+            refreshXHR.abort();
+        }
+
+        $checkout.loadingSpinner();
+
+        refreshXHR = $.ajax({
+            url: $checkout.data('refresh-url'),
+            dataType: 'xml',
+            cache: false
+        });
+
+        refreshXHR.done(function(data) {
+            parseResponse(data);
+
+            $checkout.loadingSpinner('off');
+        });
+
+        refreshXHR.fail(function() {
+            console.log('Failed to update cart checkout content.');
+        });
+    }
+
+    Dispatcher.on('ekyna_user.user_status', function(e) {
+        if (e.authenticated) {
+            refreshCheckout();
+            $signInOrRegister.slideUp();
+        }
+    });
 
     $(document).on('click', '.cart-checkout [data-cart-modal]', function(e) {
         e.preventDefault();

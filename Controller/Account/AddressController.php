@@ -27,10 +27,7 @@ class AddressController extends AbstractController
 
         $addresses = $this
             ->get('ekyna_commerce.customer_address.repository')
-            ->findBy(
-                ['customer' => $customer],
-                ['invoiceDefault' => 'DESC', 'deliveryDefault' => 'DESC']
-            );
+            ->findByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Address:index.html.twig', [
             'addresses' => $addresses,

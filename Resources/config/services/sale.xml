@@ -20,9 +20,18 @@
         <!-- Sale updater -->
         <service id="ekyna_commerce.sale_updater"
                  class="Ekyna\Component\Commerce\Common\Updater\SaleUpdater">
+            <argument type="service" id="ekyna_commerce.common.address_builder"/>
             <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
             <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
             <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+        </service>
+
+        <!-- Address builder -->
+        <service id="ekyna_commerce.common.address_builder"
+                 class="Ekyna\Component\Commerce\Common\Builder\AddressBuilder">
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
         <!-- Adjustment builder -->

@@ -171,6 +171,9 @@ ekyna_commerce:
             new: Nouvelle adresse
             edit: Modifier l'adresse
             remove: Supprimer l'adresse
+        field:
+            invoice_default: Par défaut pour la facturation
+            delivery_default: Par défaut pour la livraison
         alert:
             no_item: Aucune adresse configuré
 

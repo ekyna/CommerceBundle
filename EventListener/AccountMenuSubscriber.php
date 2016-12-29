@@ -48,7 +48,7 @@ class AccountMenuSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            MenuEvent::CONFIGURE => ['onMenuConfigure', 0],
+            MenuEvent::CONFIGURE_ACCOUNT => ['onMenuConfigure', 0],
         ];
     }
 }

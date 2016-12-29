@@ -1,6 +1,7 @@
 {% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
 
 {% block account %}
+{% spaceless %}
     <h3>{{ 'ekyna_commerce.account.address.title'|trans }}</h3>
 
     <hr>
@@ -11,15 +12,27 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     {{ address|commerce_address }}
+
+                    {% if address.invoiceDefault %}
+                    <br><span class="label label-default">
+                        {{- 'ekyna_commerce.customer_address.field.invoice_default'|trans -}}
+                    </span>
+                    {% endif %}
+
+                    {% if address.deliveryDefault %}
+                    <br><span class="label label-default">
+                        {{- 'ekyna_commerce.customer_address.field.delivery_default'|trans -}}
+                    </span>
+                    {% endif %}
                 </div>
                 <div class="panel-footer">
                     <a href="{{ path('ekyna_commerce_account_address_edit', {'addressId': address.id}) }}"
                        class="btn btn-xs btn-default">
-                        {{ 'ekyna_core.button.edit'|trans }}
+                        {{- 'ekyna_core.button.edit'|trans -}}
                     </a>
                     <a href="{{ path('ekyna_commerce_account_address_remove', {'addressId': address.id}) }}"
                        class="btn btn-xs btn-default pull-right">
-                        {{ 'ekyna_core.button.remove'|trans }}
+                        {{- 'ekyna_core.button.remove'|trans -}}
                     </a>
                 </div>
             </div>
@@ -34,5 +47,5 @@
             {{ 'ekyna_commerce.account.address.add.title'|trans }}
         </a>
     </p>
-
+{% endspaceless %}
 {% endblock account %}

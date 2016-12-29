@@ -1,4 +1,4 @@
-define(['jquery', 'ekyna-modal', 'jquery/form'], function($, Modal) {
+define(['jquery', 'ekyna-modal', 'ekyna-ui', 'jquery/form'], function($, Modal) {
     "use strict";
 
     var parseResponse = function(response, $saleView) {
@@ -42,7 +42,7 @@ define(['jquery', 'ekyna-modal', 'jquery/form'], function($, Modal) {
             return false;
         }
 
-        var $saleView = $this.closest('.sale-view').addClass('loading'),
+        var $saleView = $this.closest('.sale-view').loadingSpinner(),
             method = $this.data('sale-xhr');
 
         var xhr = $.ajax({
@@ -60,14 +60,14 @@ define(['jquery', 'ekyna-modal', 'jquery/form'], function($, Modal) {
     $(document).on('submit', '.sale-view', function(e) {
         e.preventDefault();
 
-        var $saleView = $(e.target).closest('.sale-view').addClass('loading');
+        var $saleView = $(e.target).closest('.sale-view').loadingSpinner();
 
         $saleView.ajaxSubmit({
-                dataType: 'xml',
-                success: function(response) {
-                    parseResponse(response, $saleView);
-                }
-            });
+            dataType: 'xml',
+            success: function(response) {
+                parseResponse(response, $saleView);
+            }
+        });
 
         return false;
     });

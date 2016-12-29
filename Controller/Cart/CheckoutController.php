@@ -23,10 +23,6 @@ class CheckoutController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        if ($request->isXmlHttpRequest() && ($request->getMethod() != 'POST')) {
-            throw new NotFoundHttpException();
-        }
-
         $parameters = [];
 
         // Customer
@@ -58,10 +54,10 @@ class CheckoutController extends AbstractController
             $view->vars['form'] = $saleForm->createView();
 
             $parameters['view'] = $view;
+        }
 
-            if ($request->isXmlHttpRequest()) {
-                return $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
-            }
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
         }
 
         return $this->render('EkynaCommerceBundle:Cart/Checkout:index.html.twig', $parameters);
@@ -79,6 +75,7 @@ class CheckoutController extends AbstractController
         $customer = $this->getCustomer();
 
         if (null === $customer) {
+            // TODO Set form login redirection
             $request->getSession()->set('_ekyna.login_success.target_path', 'ekyna_commerce_cart_checkout_information');
 
             return $this->redirect($this->generateUrl('fos_user_security_login'));
