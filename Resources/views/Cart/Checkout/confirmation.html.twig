@@ -13,6 +13,12 @@
     </div>
     <div class="container">
 
+        {{ order.payments|last|payment_state_message|raw }}
+
+        <p>Statut de votre commande : {{ order|sale_state_badge }}</p>
+
+        <p>Statut de dernier paiement : {{ order.payments|last|payment_state_badge }}</p>
+
     </div>
 {% endblock content %}
 

@@ -57,6 +57,8 @@ class Configuration implements ConfigurationInterface
      * Adds `pools` section.
      *
      * @param ArrayNodeDefinition $node
+     *
+     * @TODO Split
      */
     private function addPoolsSection(ArrayNodeDefinition $node)
     {
@@ -149,6 +151,7 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartPayment')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CartPaymentRepository')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
@@ -250,7 +253,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\Order')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
                                 ->scalarNode('operator')->end()
-                                ->scalarNode('repository')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\OrderType')->end()
                                 ->scalarNode('parent')->end()
@@ -321,6 +324,7 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderPayment')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderPaymentRepository')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
@@ -349,6 +353,19 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order_shipment')->end()
                             ->end()
                         ->end()
+                        ->arrayNode('payment_message')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Payment\Entity\PaymentMessage')->end()
+                                ->arrayNode('translation')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Payment\Entity\PaymentMessageTranslation')->end()
+                                        ->arrayNode('fields')->prototype('scalar')->end()->defaultValue(['content'])->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('payment_method')
                             ->addDefaultsIfNotSet()
                             ->children()
@@ -374,6 +391,20 @@ class Configuration implements ConfigurationInterface
                                             ->prototype('scalar')->end()
                                             ->defaultValue(['title', 'description'])
                                         ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('shipment_message')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Shipment\Entity\ShipmentMessage')->end()
+                                ->arrayNode('translation')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Shipment\Entity\ShipmentMessageTranslation')->end()
+                                        ->scalarNode('repository')->end()
+                                        ->arrayNode('fields')->prototype('scalar')->end()->defaultValue(['content'])->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -525,7 +556,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\Quote')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
                                 ->scalarNode('operator')->end()
-                                ->scalarNode('repository')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\QuoteRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\QuoteType')->end()
                                 ->scalarNode('parent')->end()
@@ -596,6 +627,7 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuotePayment')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\QuotePaymentRepository')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SalePaymentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuotePaymentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()

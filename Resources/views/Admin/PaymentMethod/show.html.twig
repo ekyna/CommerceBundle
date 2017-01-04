@@ -28,16 +28,6 @@
                 <div class="tab-pane active" id="payment-method-general">
                     {{ show_row(paymentMethod.name, 'text', 'ekyna_core.field.name') }}
                     {{ show_row(paymentMethod.factoryName, 'text', 'ekyna_commerce.payment_method.field.factory_name') }}
-                    {% if paymentMethod.config is not empty %}
-                        <div class="row show-row">
-                            <div class="col-md-2 show-label">{{ 'ekyna_core.field.config'|trans }}</div>
-                            <div class="col-md-10">
-                                <div class="show-widget show-widget-block">
-                                    {{ paymentMethod|payment_method_config }}
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
                     <div class="row">
                         <div class="col-md-6">
                             {{ show_row(paymentMethod.enabled, 'checkbox', 'ekyna_core.field.enabled', {
@@ -50,6 +40,16 @@
                             }) }}
                         </div>
                     </div>
+                    {% if paymentMethod.config is not empty %}
+                        <div class="row show-row">
+                            <div class="col-md-2 show-label">{{ 'ekyna_core.field.config'|trans }}</div>
+                            <div class="col-md-10">
+                                <div class="show-widget show-widget-block">
+                                    {{ paymentMethod|payment_method_config }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="tab-pane" id="payment-method-content">
                     {{ show_row(paymentMethod.media, 'media', 'ekyna_core.field.image') }}

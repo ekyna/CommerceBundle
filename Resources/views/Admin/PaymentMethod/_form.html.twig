@@ -23,9 +23,6 @@
         <div class="tab-pane active" id="payment-method-general">
             {{ form_row(form.name) }}
             {{ form_row(form.factoryName) }}
-            {% if form.config is defined %}
-                {{ form_row(form.config) }}
-            {% endif %}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.available, {'label_col': 4, 'widget_col': 8}) }}
@@ -34,6 +31,9 @@
                     {{ form_row(form.enabled, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            {% if form.config is defined %}
+                {{ form_row(form.config) }}
+            {% endif %}
         </div>
         <div class="tab-pane" id="payment-method-content">
             {{ form_row(form.media) }}

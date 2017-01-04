@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class AbstractController
@@ -17,11 +18,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class AbstractController
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
     /**
      * @var EngineInterface
      */
@@ -37,16 +33,6 @@ class AbstractController
      */
     private $customerProvider;
 
-
-    /**
-     * Sets the url generator.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     */
-    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
-    {
-        $this->urlGenerator = $urlGenerator;
-    }
 
     /**
      * Sets the templating.
@@ -87,11 +73,11 @@ class AbstractController
      *
      * @return string The generated URL
      *
-     * @see UrlGeneratorInterface
+     * @see UrlGeneratorInterface::generate()
      */
-    protected function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    protected function generateUrl($route, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        return $this->urlGenerator->generate($route, $parameters, $referenceType);
+        return $this->getSaleHelper()->generateUrl($route, $parameters, $referenceType);
     }
 
     /**
@@ -108,6 +94,23 @@ class AbstractController
     }
 
     /**
+     * Translates the message.
+     *
+     * @param string $id
+     * @param array  $parameters
+     * @param null   $domain
+     * @param null   $locale
+     *
+     * @return string
+     *
+     * @see TranslatorInterface::trans()
+     */
+    protected function translate($id, array $parameters = [], $domain = null, $locale = null)
+    {
+        return $this->getSaleHelper()->translate($id, $parameters, $domain, $locale);
+    }
+
+    /**
      * Renders the template and returns the response.
      *
      * @param string        $view
@@ -116,7 +119,7 @@ class AbstractController
      *
      * @return Response
      */
-    protected function render($view, array $parameters = array(), Response $response = null)
+    protected function render($view, array $parameters = [], Response $response = null)
     {
         return $this->templating->renderResponse($view, $parameters, $response);
     }
@@ -129,6 +132,14 @@ class AbstractController
     protected function getCart()
     {
         return $this->cartHelper->getCartProvider()->getCart();
+    }
+
+    /**
+     * Saves the cart.
+     */
+    protected function saveCart()
+    {
+        $this->cartHelper->getCartProvider()->saveCart();
     }
 
     /**
@@ -159,6 +170,16 @@ class AbstractController
     protected function getSaleHelper()
     {
         return $this->cartHelper->getSaleHelper();
+    }
+
+    /**
+     * Returns the sale factory.
+     *
+     * @return \Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface
+     */
+    protected function getSaleFactory()
+    {
+        return $this->getSaleHelper()->getSaleFactory();
     }
 
     /**

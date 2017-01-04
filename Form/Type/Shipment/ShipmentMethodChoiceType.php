@@ -120,7 +120,7 @@ class ShipmentMethodChoiceType extends AbstractType
      *
      * @param ShipmentMethodInterface $method
      *
-     * @return array
+     * @return string
      */
     public function buildChoiceLabel(ShipmentMethodInterface $method)
     {
@@ -162,5 +162,13 @@ class ShipmentMethodChoiceType extends AbstractType
     public function getParent()
     {
         return ChoiceType::class;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBlockPrefix()
+    {
+        return 'ekyna_commerce_shipment_method_choice';
     }
 }

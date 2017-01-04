@@ -8,38 +8,54 @@
     </parameters>
 
     <services>
-        <!-- Twig extensions -->
+        <!-- Address extension -->
         <service id="ekyna_commerce.twig.address_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension">
+                 class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension"
+                 public="false">
             <tag name="twig.extension"/>
         </service>
+
+        <!-- Common extension -->
         <service id="ekyna_commerce.twig.common_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension">
+                 class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension"
+                 public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="twig.extension"/>
         </service>
+
+        <!-- Payment extension -->
         <service id="ekyna_commerce.twig.payment_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension">
+                 class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension"
+                 public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="twig.extension"/>
         </service>
+
+        <!-- Sale extension -->
         <service id="ekyna_commerce.twig.sale_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension">
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension"
+                 public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <argument type="service" id="ekyna_core.twig.ui_extension" />
             <argument type="service" id="router" />
             <tag name="twig.extension"/>
         </service>
+
+        <!-- Shipment extension -->
         <service id="ekyna_commerce.twig.shipment_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension">
+                 class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension"
+                 public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.shipment_price.list_builder"/>
             <argument>%ekyna_commerce.shipment_price.list_template%</argument>
             <tag name="twig.extension"/>
         </service>
+
+        <!-- Supplier extension -->
         <service id="ekyna_commerce.twig.supplier_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\SupplierExtension">
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SupplierExtension"
+                 public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="twig.extension"/>
         </service>

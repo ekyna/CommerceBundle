@@ -34,9 +34,6 @@
                 {% else %}
                     {{ form_row(form.name) }}
                     {{ form_row(form.factoryName) }}
-                    {% if form.config is defined %}
-                        {{ form_row(form.config) }}
-                    {% endif %}
                     <div class="row">
                         <div class="col-md-6">
                             {{ form_row(form.available) }}
@@ -45,6 +42,9 @@
                             {{ form_row(form.enabled) }}
                         </div>
                     </div>
+                    {% if form.config is defined %}
+                        {{ form_row(form.config) }}
+                    {% endif %}
                 {% endif %}
             </div>
             {% if flow.getCurrentStepNumber() == 2 %}

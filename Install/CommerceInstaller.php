@@ -145,14 +145,21 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             ],*/
         ];
 
-        /*if (class_exists('Ekyna\Bundle\PayumSipsBundle\EkynaPayumSipsBundle')) {
-            $methods['Carte bancaire'] = [
-                'factory'     => 'atos_sips',
-                'image'       => 'credit-card.png',
-                'description' => '<p>Réglez avec votre carte bancaire.</p>',
-                'enabled'     => false,
-            ];
-        }*/
+        $ccGateways = [
+            'payzen'    => 'Ekyna\Bundle\PayumPayzenBundle\EkynaPayumPayzenBundle',
+            'atos_sips' => 'Ekyna\Bundle\PayumSipsBundle\EkynaPayumSipsBundle',
+        ];
+        foreach ($ccGateways as $factory => $class) {
+            if (class_exists($class)) {
+                $methods['Carte bancaire'] = [
+                    'factory'     => $factory,
+                    'image'       => 'credit-card.png',
+                    'description' => '<p>Réglez avec votre carte bancaire.</p>',
+                    'enabled'     => true,
+                ];
+                break;
+            }
+        }
 
         $position = 0;
         foreach ($methods as $name => $options) {
@@ -189,9 +196,9 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             /** @var \Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod $method */
             $method = $methodRepository->createNew();
             $method
-                ->setGatewayName($name)
-                ->setFactoryName($options['factory'])
                 ->setMedia($image)
+                ->setName($name)
+                ->setFactoryName($options['factory'])
                 ->setTitle($name)
                 ->setDescription($options['description'])
                 ->setEnabled($options['enabled'])
@@ -269,8 +276,8 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             /** @var \Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod $method */
             $method = $methodRepository->createNew();
             $method
-                ->setName($name)
                 ->setMedia($image)
+                ->setName($name)
                 ->setTaxGroup($defaultTaxGroup)
                 ->setTitle($name)
                 ->setDescription($options['description'])

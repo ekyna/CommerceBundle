@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Payment controllers -->
+        <service id="ekyna_commerce.payment.abstract_controller"
+                 abstract="true">
+            <argument type="service" id="payum"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="router"/>
+            <argument>%kernel.debug%</argument>
+        </service>
+        <service id="ekyna_commerce.payment.cart_controller"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Payment\CartPaymentController"
+                 parent="ekyna_commerce.payment.abstract_controller">
+            <call method="setRepository">
+                <argument type="service" id="ekyna_commerce.cart_payment.repository"/>
+            </call>
+            <call method="setSaleTransformer">
+                <argument type="service" id="ekyna_commerce.sale_transformer"/>
+            </call>
+        </service>
+        <service id="ekyna_commerce.payment.quote_controller"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Payment\QuotePaymentController"
+                 parent="ekyna_commerce.payment.abstract_controller">
+            <call method="setRepository">
+                <argument type="service" id="ekyna_commerce.quote_payment.repository"/>
+            </call>
+        </service>
+        <service id="ekyna_commerce.payment.order_controller"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Payment\OrderPaymentController"
+                 parent="ekyna_commerce.payment.abstract_controller">
+            <call method="setRepository">
+                <argument type="service" id="ekyna_commerce.order_payment.repository"/>
+            </call>
+        </service>
+
+        <!-- Payment method listener -->
+        <service id="ekyna_commerce.payment_method.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\PaymentMethodEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Payum Sips actions -->
+        <service id="ekyna_commerce.payum.action.sips.convert_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Sips\ConvertPaymentAction">
+            <tag name="payum.action" factory="atos_sips" prepend="true" />
+        </service>
+
+        <!-- Payum Payzen actions -->
+        <service id="ekyna_commerce.payum.action.payzen.convert_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Payzen\ConvertPaymentAction">
+            <tag name="payum.action" factory="payzen" prepend="true" />
+        </service>
+
+        <!-- Payum Offline actions -->
+        <service id="ekyna_commerce.payum.action.offline.capture"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Offline\CaptureAction">
+            <tag name="payum.action" factory="offline" gateway="offline" prepend="true" />
+        </service>
+        <service id="ekyna_commerce.payum.action.offline.sync"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Offline\SyncAction">
+            <tag name="payum.action" factory="offline" gateway="offline" prepend="true" />
+        </service>
+
+        <!-- Payum actions -->
+        <service id="ekyna_commerce.payum.action.capture_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\CapturePaymentAction">
+            <tag name="payum.action" all="true" prepend="true" />
+        </service>
+        <!-- TODO
+        Register theses actions through PayumBuilder method calls,
+        instead of defining services (if there is no dependency)
+        -->
+        <service id="ekyna_commerce.payum.action.abstract_action" abstract="true" /><!-- TODO Remove if no DI -->
+        <service id="ekyna_commerce.payum.action.done_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\DonePaymentAction"
+                 parent="ekyna_commerce.payum.action.abstract_action">
+            <tag name="payum.action" all="true" prepend="true" />
+        </service>
+        <service id="ekyna_commerce.payum.action.notify_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\NotifyPaymentAction"
+                 parent="ekyna_commerce.payum.action.abstract_action">
+            <tag name="payum.action" all="true" prepend="true" />
+        </service>
+        <service id="ekyna_commerce.payum.action.sync_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\SyncPaymentAction"
+                 parent="ekyna_commerce.payum.action.abstract_action">
+            <tag name="payum.action" all="true" prepend="true" />
+        </service>
+
+    </services>
+
+</container>

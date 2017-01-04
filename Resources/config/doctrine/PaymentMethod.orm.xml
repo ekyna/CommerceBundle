@@ -8,7 +8,8 @@
     <entity name="Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod"
             table="commerce_payment_method">
 
-        <field name="factoryName" column="factory_name" type="string" length="64" />
+        <field name="gatewayName" column="gateway_name" type="string" length="32" unique="true" nullable="false" />
+        <field name="factoryName" column="factory_name" type="string" length="32" nullable="false" />
         <field name="config" column="config" type="json_array" />
 
     </entity>

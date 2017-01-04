@@ -2,10 +2,14 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
+use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
+use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Class CheckoutController
@@ -14,6 +18,31 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class CheckoutController extends AbstractController
 {
+    /**
+     * @var SaleStepValidatorInterface
+     */
+    protected $stepValidator;
+
+    /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
+
+
+    /**
+     * Constructor.
+     *
+     * @param SaleStepValidatorInterface $stepValidator
+     * @param OrderRepositoryInterface $orderRepository
+     */
+    public function __construct(
+        SaleStepValidatorInterface $stepValidator,
+        OrderRepositoryInterface $orderRepository
+    ) {
+        $this->stepValidator = $stepValidator;
+        $this->orderRepository = $orderRepository;
+    }
+
     /**
      * Cart index action.
      *
@@ -46,7 +75,8 @@ class CheckoutController extends AbstractController
             if ($saleForm->isSubmitted()) {
                 if ($saleForm->isValid()) {
                     $saleHelper->recalculate($cart);
-                    $this->getCartHelper()->getCartProvider()->saveCart();
+
+                    $this->saveCart();
                 }
             }
 
@@ -66,13 +96,13 @@ class CheckoutController extends AbstractController
     /**
      * Information action.
      *
-     * @param Request $request
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function informationAction(Request $request)
+    public function informationAction()
     {
-        $customer = $this->getCustomer();
+        throw new AccessDeniedHttpException('Deprecated');
+
+        /*$customer = $this->getCustomer();
 
         if (null === $customer) {
             // TODO Set form login redirection
@@ -81,10 +111,9 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
 
-
         return $this->render('EkynaCommerceBundle:Cart/Checkout:information.html.twig', [
             'customer' => $customer,
-        ]);
+        ]);*/
     }
 
     /**
@@ -96,7 +125,33 @@ class CheckoutController extends AbstractController
      */
     public function shipmentAction(Request $request)
     {
+        if (null === $cart = $this->getCart()) {
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        if (!$this->stepValidator->validate($cart, SaleStepValidatorInterface::SHIPMENT_STEP)) {
+            $this->violationToFlashes($this->stepValidator->getViolationList(), $request);
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        $form = $this
+            ->getFormFactory()
+            ->create(ShipmentType::class, $cart, [
+                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_shipment'),
+                'method' => 'POST',
+            ]);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $this->saveCart();
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
+        }
+
         return $this->render('EkynaCommerceBundle:Cart/Checkout:shipment.html.twig', [
+            'cart' => $cart,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -109,7 +164,40 @@ class CheckoutController extends AbstractController
      */
     public function paymentAction(Request $request)
     {
+        if (null === $cart = $this->getCart()) {
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        if (!$this->stepValidator->validate($cart, SaleStepValidatorInterface::PAYMENT_STEP)) {
+            $this->violationToFlashes($this->stepValidator->getViolationList(), $request);
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        $payment = $this
+            ->getSaleFactory()
+            ->createPaymentForSale($cart);
+
+        $form = $this
+            ->getFormFactory()
+            ->create(CartPaymentType::class, $payment, [
+                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_payment'),
+                'method' => 'POST',
+            ]);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $cart->addPayment($payment);
+            $this->saveCart();
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_payment_cart_prepare', [
+                'key' => $payment->getKey(),
+            ]));
+        }
+
         return $this->render('EkynaCommerceBundle:Cart/Checkout:payment.html.twig', [
+            'cart' => $cart,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -122,7 +210,45 @@ class CheckoutController extends AbstractController
      */
     public function confirmationAction(Request $request)
     {
+        $order = $this->orderRepository->findOneByKey($request->attributes->get('orderKey'));
+
+        if (null === $order) {
+            throw new NotFoundHttpException('Order not found.');
+        }
+
+        $orderCustomer = $order->getCustomer();
+        $currentCustomer = $this->getCustomer();
+
+        if ($orderCustomer && $currentCustomer && $orderCustomer != $currentCustomer) {
+            throw new AccessDeniedHttpException();
+        }
+
         return $this->render('EkynaCommerceBundle:Cart/Checkout:confirmation.html.twig', [
+            'order' => $order,
         ]);
+    }
+
+    /**
+     * Transforms the constraint violation list to session flashes.
+     *
+     * @param ConstraintViolationListInterface $list
+     * @param Request                          $request
+     */
+    protected function violationToFlashes(ConstraintViolationListInterface $list, Request $request)
+    {
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session = $request->getSession();
+        $flashes = $session->getFlashBag();
+
+        $messages = [];
+
+        /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+        foreach ($list as $violation) {
+            $messages[] = $violation->getMessage();
+        }
+
+        if (!empty($messages)) {
+            $flashes->add('danger', implode('<br>', $messages));
+        }
     }
 }

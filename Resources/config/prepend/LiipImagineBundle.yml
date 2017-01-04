@@ -1,7 +1,7 @@
 # Liip Imagine
 liip_imagine:
     filter_sets:
-        payment_method:
+        commerce_method:
             quality: 70
             cache: local_media
             data_loader: local_media

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
 use Payum\Core\Registry\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -43,21 +44,21 @@ class PaymentMethodTypeSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $propertyPath = is_array($data) ? '[factoryName]' : 'factoryName';
+        $propertyPath = is_array($data) ? '[factory_name]' : 'factoryName';
         $factoryName = PropertyAccess::createPropertyAccessor()->getValue($data, $propertyPath);
         if (empty($factoryName)) {
             return;
         }
 
-        $paymentFactory = $this->registry->getGatewayFactory($factoryName);
-        $config = $paymentFactory->createConfig();
+        $gatewayFactory = $this->registry->getGatewayFactory($factoryName);
+        $config = $gatewayFactory->createConfig();
 
         if (empty($config['payum.default_options'])) {
             return;
         }
 
         $form = $event->getForm();
-        $form->add('config', 'form', [
+        $form->add('config', Type\FormType::class, [
             'label' => 'ekyna_core.field.config',
         ]);
         $configForm = $form->get('config');
@@ -70,13 +71,13 @@ class PaymentMethodTypeSubscriber implements EventSubscriberInterface
                 PropertyAccess::createPropertyAccessor()->setValue($data, $propertyPath, $value);
             }
 
-            $type = 'text';
-            $options = array();
+            $type = Type\TextType::class;
+            $options = [];
             if (is_bool($value)) {
-                $type = 'checkbox';
+                $type = Type\CheckboxType::class;
                 $options['attr'] = ['align_with_widget' => true];
-            } elseif(is_numeric($value)) {
-                $type = is_float($value) ? 'number' : 'integer';
+            } elseif (is_numeric($value)) {
+                $type = is_float($value) ? Type\NumberType::class : Type\IntegerType::class;
             } elseif (is_array($value)) {
                 continue;
             }

@@ -22,6 +22,7 @@
         <service id="ekyna_commerce.sale_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\SaleHelper">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.sale_updater"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <argument type="service" id="form.factory"/>
@@ -36,6 +37,12 @@
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument type="service" id="ekyna_commerce.cart.view_vars_builder"/>
             <argument>%ekyna_commerce.cart_item.class%</argument>
+        </service>
+
+        <!-- Sale step validator -->
+        <service id="ekyna_commerce.sale_step_validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidator">
+            <argument type="service" id="validator"/>
         </service>
 
     </services>

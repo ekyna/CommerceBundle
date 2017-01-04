@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleQuantitiesType;
+use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
@@ -25,6 +26,11 @@ class SaleHelper
      * @var SubjectProviderRegistryInterface
      */
     private $subjectProviderRegistry;
+
+    /**
+     * @var SaleFactoryInterface
+     */
+    private $saleFactory;
 
     /**
      * @var SaleUpdaterInterface
@@ -56,6 +62,7 @@ class SaleHelper
      * Constructor.
      *
      * @param SubjectProviderRegistryInterface $subjectProviderRegistry
+     * @param SaleFactoryInterface             $saleFactory
      * @param SaleUpdaterInterface             $saleUpdater
      * @param ViewBuilder                      $viewBuilder
      * @param FormFactoryInterface             $formFactory
@@ -64,6 +71,7 @@ class SaleHelper
      */
     public function __construct(
         SubjectProviderRegistryInterface $subjectProviderRegistry,
+        SaleFactoryInterface $saleFactory,
         SaleUpdaterInterface $saleUpdater,
         ViewBuilder $viewBuilder,
         FormFactoryInterface $formFactory,
@@ -71,6 +79,7 @@ class SaleHelper
         TranslatorInterface $translator
     ) {
         $this->subjectProviderRegistry = $subjectProviderRegistry;
+        $this->saleFactory = $saleFactory;
         $this->saleUpdater = $saleUpdater;
         $this->viewBuilder = $viewBuilder;
         $this->formFactory = $formFactory;
@@ -86,6 +95,16 @@ class SaleHelper
     public function getViewBuilder()
     {
         return $this->viewBuilder;
+    }
+
+    /**
+     * Returns the sale factory.
+     *
+     * @return SaleFactoryInterface
+     */
+    public function getSaleFactory()
+    {
+        return $this->saleFactory;
     }
 
     /**

@@ -35,7 +35,8 @@
                         </div>
                         <div class="col-md-4">
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ path('fos_user_security_login', {'target_path': 'ekyna_commerce_cart_checkout_index'}) }}" class="btn btn-primary">
+                                <a href="{{ path('fos_user_security_login', {'target_path': 'ekyna_commerce_cart_checkout_index'}) }}"
+                                   class="btn btn-primary" data-user-modal>
                                     Connexion
                                 </a>
                                 <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">
@@ -109,7 +110,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <p class="text-center">
-                        <a href="{{ path('ekyna_commerce_cart_checkout_information') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}" class="btn btn-primary btn-lg">
                             {{ 'ekyna_commerce.checkout.index.place_order'|trans }}
                             <span class="glyphicon glyphicon-chevron-right"></span>
                         </a>

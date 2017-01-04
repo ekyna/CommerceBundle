@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -42,19 +43,20 @@ class PaymentMethodChoiceType extends AbstractType
                 if ($options['available']) {
                     $qb->andWhere($qb->expr()->eq('m.available', true));
                 }
+
                 return $qb;
             };
         };
+
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'label'         => false,
                 'expanded'      => true,
                 'available'     => true,
                 'class'         => $this->dataClass,
                 'query_builder' => $queryBuilder,
-            ))
-            ->setAllowedTypes('available', 'bool')
-        ;
+            ])
+            ->setAllowedTypes('available', 'bool');
     }
 
     /**
@@ -62,7 +64,7 @@ class PaymentMethodChoiceType extends AbstractType
      */
     public function getParent()
     {
-        return 'entity';
+        return EntityType::class;
     }
 
     /**

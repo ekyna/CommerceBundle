@@ -24,4 +24,7 @@ ekyna_commerce:
         delivery_address:
             is_required: Veuillez saisir une addresse de livraison.
             should_be_null: L'adresse de livraison devrait être vide.
-
+        identity_must_be_set: Veuillez saisir vos informations client.
+        invoice_address_must_be_set: Veuillez saisir une adresse de facturation.
+        delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
+        shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.

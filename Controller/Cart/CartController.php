@@ -315,8 +315,8 @@ class CartController extends AbstractController
         }
 
         $response = $this->render('EkynaCommerceBundle:Cart:response.xml.twig', [
-            'cart'      => $cart,
-            'cart_view' => $view,
+            'cart' => $cart,
+            'view' => $view,
         ]);
 
         $response->headers->set('Content-type', 'application/xml');

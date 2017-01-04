@@ -47,6 +47,8 @@ ekyna_commerce_cart_checkout_confirmation:
     path: /confirmation/{orderKey}
     defaults: { _controller: "ekyna_commerce.controller.cart_checkout:confirmationAction" }
     methods: [GET]
+    requirements:
+        orderKey: "[a-zA-Z0-9]+"
     options:
         _cms:
             name: Confirmation

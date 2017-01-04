@@ -8,13 +8,17 @@
         <!-- Sale factory -->
         <service id="ekyna_commerce.sale_factory"
                  class="Ekyna\Component\Commerce\Common\Factory\SaleFactory">
-            <argument type="collection"/>
+            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
+            <argument type="service" id="ekyna_commerce.currency.repository"/>
+            <argument type="collection"/><!-- Replaced by DI extension -->
         </service>
 
         <!-- Sale transformer -->
         <service id="ekyna_commerce.sale_transformer"
-                 class="Ekyna\Component\Commerce\Common\Transformer\SaleTransformer">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformer">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="ekyna_commerce.order.repository"/>
         </service>
 
         <!-- Sale updater -->
@@ -104,8 +108,8 @@
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
-            <call method="setNumberGenerator">
-                <argument type="service" id="ekyna_commerce.common.number_generator"/>
+            <call method="setKeyGenerator">
+                <argument type="service" id="ekyna_commerce.common.key_generator"/>
             </call>
         </service>
 
@@ -113,9 +117,6 @@
         <service id="ekyna_commerce.shipment.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            </call>
-            <call method="setNumberGenerator">
-                <argument type="service" id="ekyna_commerce.common.number_generator"/>
             </call>
         </service>
 
@@ -148,14 +149,11 @@
             <call method="setCartManager">
                 <argument type="service" id="ekyna_commerce.cart.manager"/>
             </call>
+            <call method="setSaleFactory">
+                <argument type="service" id="ekyna_commerce.sale_factory"/>
+            </call>
             <call method="setCustomerProvider">
                 <argument type="service" id="ekyna_commerce.customer.security_provider"/>
-            </call>
-            <call method="setCustomerGroupRepository">
-                <argument type="service" id="ekyna_commerce.customer_group.repository"/>
-            </call>
-            <call method="setCurrencyRepository">
-                <argument type="service" id="ekyna_commerce.currency.repository"/>
             </call>
         </service>
 

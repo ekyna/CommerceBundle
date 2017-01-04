@@ -1,0 +1,16 @@
+ekyna_commerce_payment_quote_prepare:
+    path: /prepare/{key}
+    defaults:
+        _controller: ekyna_commerce.payment.quote_controller:prepareAction
+    requirements:
+        key: "[a-zA-Z0-9]+"
+
+ekyna_commerce_payment_quote_notify:
+    path: /notify
+    defaults:
+        _controller: ekyna_commerce.payment.quote_controller:notifyAction
+
+ekyna_commerce_payment_quote_done:
+    path: /done
+    defaults:
+        _controller: ekyna_commerce.payment.quote_controller:doneAction

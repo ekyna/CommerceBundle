@@ -7,6 +7,7 @@
         <import resource="services/customer.xml"/>
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
+        <import resource="services/payment.xml"/>
         <import resource="services/sale.xml"/>
         <import resource="services/serializer.xml"/>
         <import resource="services/shipment.xml"/>
@@ -17,9 +18,8 @@
     </imports>
 
     <parameters>
-        <parameter key="ekyna_commerce.controller.cart.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController</parameter>
-        <parameter key="ekyna_commerce.controller.cart_checkout.class">Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController</parameter>
 
+        <!-- TODO remove parameters (some are defined by configuration, other are useless : view builders) -->
         <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
         <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
         <parameter key="ekyna_commerce.cart.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewVarsBuilder</parameter>
@@ -65,14 +65,11 @@
         <service id="ekyna_commerce.common.uploadable_listener"
                  class="Ekyna\Component\Commerce\Common\Listener\UploadableListener">
             <argument type="service" id="ekyna_commerce.common.uploader" />
-            <tag name="doctrine.entity_listener" />
+            <tag name="doctrine.orm.entity_listener" />
         </service>
 
         <!-- Abstract cart controller -->
         <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
-            <call method="setUrlGenerator">
-                <argument type="service" id="router"/>
-            </call>
             <call method="setTemplating">
                 <argument type="service" id="templating"/>
             </call>
@@ -86,15 +83,18 @@
 
         <!-- Cart controller -->
         <service id="ekyna_commerce.controller.cart"
-                 class="%ekyna_commerce.controller.cart.class%"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController"
                  parent="ekyna_commerce.controller.cart.abstract">
             <argument type="service" id="ekyna_core.modal" />
         </service>
 
         <!-- Checkout cart controller -->
         <service id="ekyna_commerce.controller.cart_checkout"
-                 class="%ekyna_commerce.controller.cart_checkout.class%"
-                 parent="ekyna_commerce.controller.cart.abstract"/>
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController"
+                 parent="ekyna_commerce.controller.cart.abstract">
+            <argument type="service" id="ekyna_commerce.sale_step_validator"/>
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+        </service>
 
         <!-- Subject providers registry-->
         <service id="ekyna_commerce.subject.provider_registry"

@@ -10,8 +10,35 @@
     <div class="container">
         {{ cms_title() }}
         {{ cms_content() }}
-    </div>
-    <div class="container">
+
+        <hr>
+
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+            {{ bootstrap_set_style('horizontal') }}
+            {{ bootstrap_set_col_size('md') }}
+            {{ bootstrap_set_label_col(2) }}
+            {{ bootstrap_set_widget_col(10) }}
+
+            <div class="form-body">
+                {{ form_errors(form, {'global_errors': true}) }}
+                {{ form_row(form.amount) }}
+                {{ form_row(form.method) }}
+                {{ form_rest(form) }}
+
+                <div class="form-footer">
+                    <div class="form-group text-center">
+                        <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}" class="btn btn-default btn-lg">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                            {{ 'ekyna_core.button.previous_step'|trans }}
+                        </a>&nbsp;&nbsp;
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            {{ 'ekyna_core.button.next_step'|trans }}
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
 
     </div>
 {% endblock content %}

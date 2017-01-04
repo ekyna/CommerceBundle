@@ -15,7 +15,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
                 var $node = $xml.find(key);
 
                 if (1 == $node.length) {
-                    $(mapping[key]).html($($node.text()));
+                    $(mapping[key]).html($node.text());
                 }
             }
         }

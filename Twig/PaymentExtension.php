@@ -4,6 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Common\Model\MessageInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 
 /**
  * Class PaymentExtension
@@ -45,6 +47,11 @@ class PaymentExtension extends \Twig_Extension
                 ['is_safe' => ['html']]
             ),
             new \Twig_SimpleFilter(
+                'payment_state_message',
+                [$this, 'renderPaymentStateMessage'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
                 'payment_method_config',
                 [$this, 'renderMethodConfig'],
                 ['is_safe' => ['html']]
@@ -73,6 +80,28 @@ class PaymentExtension extends \Twig_Extension
         $output .= '</dl>';
 
         return $output;
+    }
+
+    /**
+     * Renders the payment state message.
+     *
+     * @param PaymentInterface $payment
+     *
+     * @return null|string
+     */
+    public function renderPaymentStateMessage(PaymentInterface $payment)
+    {
+        $state = $payment->getState();
+        $method = $payment->getMethod();
+
+        foreach ($method->getMessages() as $message) {
+            if ($message->getState() === $state) {
+                $content = $message->getContent();
+                return $content;
+            }
+        }
+
+        return null;
     }
 
     /**

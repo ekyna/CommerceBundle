@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Common\View\ViewVarsBuilderInterface;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -76,6 +77,33 @@ class CartHelper
     public function getCartProvider()
     {
         return $this->cartProvider;
+    }
+
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createPayment()
+    {
+        if (!$this->getCartProvider()->hasCart()) {
+            throw new RuntimeException('Payment should not be created while there is no cart.');
+        }
+
+        $cart = $this->getCartProvider()->getCart();
+
+        $payment = $this
+            ->getSaleHelper()
+            ->getSaleFactory()
+            ->createPaymentForSale($cart);
+
+        $payment
+            ->setCurrency($this->currencyRepository->findDefault())
+            ->setAmount($cart->getGrandTotal() - $cart->getPaidTotal());
+
+        $cart->addPayment($payment);
+
+        return $payment;
     }
 
     /**

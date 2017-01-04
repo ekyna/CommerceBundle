@@ -16,6 +16,16 @@ use Ekyna\Component\Resource\Model as ResourceModel;
  */
 class NumberGenerator implements NumberGeneratorInterface
 {
+    const SELECT_QUERY = <<<DQL
+SELECT o.number FROM %s o 
+WHERE YEAR(o.createdAt) = :year 
+  AND MONTH(o.createdAt) = :month 
+  AND o.number IS NOT NULL 
+  %s 
+ORDER BY o.number DESC
+DQL;
+
+
     /**
      * @var EntityManagerInterface
      */
@@ -57,19 +67,13 @@ class NumberGenerator implements NumberGeneratorInterface
         $class = get_class($subject);
         $notThisIdClause = null !== $subject->getId() ? 'AND o.id != :id' : '';
 
-        $query = $this->manager->createQuery(
-            "SELECT o.number " .
-            "FROM $class o " .
-            "WHERE YEAR(o.createdAt) = :year " .
-            "  AND MONTH(o.createdAt) = :month " .
-            "  AND o.number IS NOT NULL " .
-            "  $notThisIdClause " .
-            "ORDER BY o.number DESC"
-        );
-        $query
+        $query = $this->manager
+            ->createQuery(sprintf(static::SELECT_QUERY, $class, $notThisIdClause))
             ->setMaxResults(1)
-            ->setParameter('year', $date->format('Y'))
-            ->setParameter('month', $date->format('m'));
+            ->setParameters([
+                'month' => $date->format('m'),
+                'year' => $date->format('Y'),
+            ]);
 
         if (null !== $subject->getId()) {
             $query->setParameter('id', $subject->getId());

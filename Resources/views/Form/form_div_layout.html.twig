@@ -172,7 +172,7 @@
     <div class="panel-body" style="border: 1px solid #ddd; border-top: none; padding:15px 15px 1px 15px; margin-bottom: 15px;">
         <div class="tab-content">
         {% for child in form %}
-            <div class="tab-pane{% if loop.first %} active{% endif %}" id="#method-message-state-{{ child.vars.state }}">
+            <div class="tab-pane{% if loop.first %} active{% endif %}" id="method-message-state-{{ child.vars.state }}">
                 {{ form_errors(child) }}
                 {{ form_row(child.translations, {'label_col': 0, 'widget_col': 12}) }}
                 {{ form_rest(child) }}
@@ -186,27 +186,55 @@
 
 {% block ekyna_commerce_payment_method_choice_widget %}
 {% spaceless %}
+    {% with %}
+    {% set button_message = 'ekyna_commerce.payment_method.button.choose' %}
+    {% set default_image_path = 'bundles/ekynacommerce/img/money.png' %}
+    {% set default_image_alt = 'Payment' %}
+
+    {{ block('ekyna_commerce_method_choice_widget') }}
+    {% endwith %}
+{% endspaceless %}
+{% endblock ekyna_commerce_payment_method_choice_widget %}
+
+
+{% block ekyna_commerce_shipment_method_choice_widget %}
+{% spaceless %}
+    {% with %}
+    {% set button_message = 'ekyna_commerce.shipment_method.button.choose' %}
+    {% set default_image_path = 'bundles/ekynacommerce/img/money.png' %}
+    {% set default_image_alt = 'Shipment' %}
+
+    {{ block('ekyna_commerce_method_choice_widget') }}
+    {% endwith %}
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_method_choice_widget %}
+
+
+{% block ekyna_commerce_method_choice_widget %}
+{% spaceless %}
     {% if compound %}
-        <div class="payment-method-choice">
+        <div class="commerce-method-choice">
             {% for child in form %}
                 {% set method = form.vars.choices[child.vars.value].data %}
                 <div class="row">
                     <div class="col-sm-3 commerce-method-choice-visual">
                         {{ form_widget(child) }}
                         <label for="{{ child.vars.id }}">
-                        {% if method.media.path %}
-                            <img src="{{ method.media.path|imagine_filter('payment_method') }}" alt="{{ method.media.title }}" class="img-responsive">
-                        {% else %}
-                            <img src="{{ asset('bundles/ekynacommerce/img/money.png') }}" alt="Payment" class="img-responsive">
-                        {% endif %}
+                            {% if method.media is not same as (null) %}
+                                <img src="{{ method.media.path|imagine_filter('commerce_method') }}"
+                                     alt="{{ method.media.title }}" class="img-responsive">
+                            {% else %}
+                                <img src="{{ asset(default_image_path) }}" alt="{{ default_image_alt|trans }}"
+                                     class="img-responsive">
+                            {% endif %}
                         </label>
                     </div>
                     <div class="col-sm-9 commerce-method-choice-description">
-                        <p>{{ method.gatewayName }}</p>
+                        <p>{{ method.title }}</p>
                         {{ method.description|raw }}
                         <p>
                             <label for="{{ child.vars.id }}" class="btn btn-xs btn-primary">
-                                {{ 'ekyna_commerce.payment_method.button.choose'|trans({'%gateway_name%': method.gatewayName}) }}
+                                {{ button_message|trans({'%gateway_name%': method.title}) }}
                             </label>
                         </p>
                     </div>
@@ -217,7 +245,7 @@
         {{ block('form_widget_simple') }}
     {% endif %}
 {% endspaceless %}
-{% endblock ekyna_commerce_payment_method_choice_widget %}
+{% endblock ekyna_commerce_method_choice_widget %}
 
 
 {% block ekyna_commerce_sale_address_widget %}

@@ -2,6 +2,12 @@ payum:
     security:
         token_storage:
             Ekyna\Bundle\CommerceBundle\Entity\PaymentSecurityToken: { doctrine: orm }
+
+    storages:
+        Ekyna\Component\Commerce\Cart\Entity\CartPayment: { doctrine: orm }
+        Ekyna\Component\Commerce\Quote\Entity\QuotePayment: { doctrine: orm }
+        Ekyna\Component\Commerce\Order\Entity\OrderPayment: { doctrine: orm }
+
     dynamic_gateways:
         sonata_admin: false
         config_storage:

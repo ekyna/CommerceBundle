@@ -265,8 +265,6 @@ class SaleController extends AbstractSaleController
             $this->get('ekyna_commerce.sale_transformer')
                 ->copySale($sourceSale, $targetSale);
 
-            // TODO dispatch transform event ?
-
             /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $targetOperator */
             $targetOperator = $this->get('ekyna_commerce.' . $target . '.operator');
 

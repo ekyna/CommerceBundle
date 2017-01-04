@@ -16,6 +16,10 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
  */
 class KeyGenerator implements KeyGeneratorInterface
 {
+    const SELECT_QUERY = <<<DQL
+SELECT o.id FROM %s o WHERE o.key = :key
+DQL;
+
     /**
      * @var EntityManagerInterface
      */
@@ -45,15 +49,12 @@ class KeyGenerator implements KeyGeneratorInterface
 
         $class = get_class($subject);
 
-        $query = $this->manager->createQuery(
-            "SELECT o.id " .
-            "FROM $class o " .
-            "WHERE o.key = :key"
-        );
-        $query->setMaxResults(1);
+        $query = $this->manager
+            ->createQuery(sprintf(static::SELECT_QUERY, $class))
+            ->setMaxResults(1);
 
         do {
-            $key = substr(preg_replace('~[^a-zA-Z\d]~', '', base64_encode(random_bytes(64))), 0, 32);
+            $key = substr(preg_replace('~[^a-zA-Z0-9]~', '', base64_encode(random_bytes(64))), 0, 32);
             $result = $query
                 ->setParameter('key', $key)
                 ->getOneOrNullResult(Query::HYDRATE_SCALAR);

@@ -1,0 +1,16 @@
+ekyna_commerce_payment_cart_prepare:
+    path: /prepare/{key}
+    defaults:
+        _controller: ekyna_commerce.payment.cart_controller:prepareAction
+    requirements:
+        key: "[a-zA-Z0-9]+"
+
+ekyna_commerce_payment_cart_notify:
+    path: /notify
+    defaults:
+        _controller: ekyna_commerce.payment.cart_controller:notifyAction
+
+ekyna_commerce_payment_cart_done:
+    path: /done
+    defaults:
+        _controller: ekyna_commerce.payment.cart_controller:doneAction

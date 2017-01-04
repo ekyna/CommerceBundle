@@ -18,6 +18,11 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     /**
      * @var string
      */
+    protected $gatewayName;
+
+    /**
+     * @var string
+     */
     protected $factoryName;
 
     /**
@@ -38,21 +43,22 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
 
     /**
      * @inheritdoc
-     * @see \Ekyna\Component\Commerce\Common\Model\MethodInterface::getName
      */
     public function getGatewayName()
     {
-        return $this->getName();
+        return $this->gatewayName;
     }
 
     /**
      * @inheritdoc
-     * @see \Ekyna\Component\Commerce\Common\Model\MethodInterface::setName
+     *
      * @return $this|PaymentMethodInterface
      */
     public function setGatewayName($gatewayName)
     {
-        return $this->setName($gatewayName);
+        $this->gatewayName = $gatewayName;
+
+        return $this;
     }
 
     /**
@@ -80,7 +86,9 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
      */
     public function getConfig()
     {
-        return $this->config;
+        return array_replace($this->config, [
+            'factory' => $this->factoryName,
+        ]);
     }
 
     /**
