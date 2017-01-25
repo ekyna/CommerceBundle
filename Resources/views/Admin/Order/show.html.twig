@@ -7,6 +7,11 @@
 
 {% block main %}
 <div class="actions">
+    {{ ui_button('Facture', {
+        'theme': 'default',
+        'type': 'link',
+        'path': admin_resource_path(order, 'invoice')
+    }, {'target': '_blank'}) }}
     {{ sale_transform_btn(order) }}
     {{ admin_resource_btn(order, 'edit') }}
     {{ admin_resource_btn(order, 'remove') }}

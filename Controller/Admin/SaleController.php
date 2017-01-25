@@ -15,6 +15,8 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints;
 
@@ -46,6 +48,55 @@ class SaleController extends AbstractSaleController
         $data['sale_view'] = $this->buildSaleView($sale);
 
         return null;
+    }
+
+    public function invoiceAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource();
+
+        $this->isGranted('VIEW', $sale);
+
+        $response = new Response();
+        if (!$this->getParameter('kernel.debug')) {
+            $response->setLastModified($sale->getUpdatedAt());
+            if ($response->isNotModified($request)) {
+                return $response;
+            }
+        }
+
+        $view = $this->getSaleHelper()->buildView($sale, [
+            'private'      => false,
+            'editable'     => false,
+            'vars_builder' => $this->getSaleViewVarsBuilder(),
+        ]);
+
+        $content = $this->renderView('EkynaCommerceBundle:Document:invoice.html.twig', [
+            'sale' => $sale,
+            'view' => $view,
+        ]);
+
+        $format = $request->attributes->get('_format', 'html');
+        if ('html' === $format) {
+            $response->setContent($content);
+        } elseif ('pdf' === $format) {
+            $response->setContent($this->get('knp_snappy.pdf')->getOutputFromHtml($content));
+            $response->headers->add(['Content-Type' => 'application/pdf']);
+        } else {
+            throw new NotFoundHttpException('Unsupported format.');
+        }
+
+        if ($request->query->get('_download', false)) {
+            $filename = sprintf('order-%s.%s', $sale->getNumber(), $format);
+            $contentDisposition = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename
+            );
+            $response->headers->set('Content-Disposition', $contentDisposition);
+        }
+
+        return $response;
     }
 
     /**
@@ -309,7 +360,7 @@ class SaleController extends AbstractSaleController
      * @param SaleInterface $sale
      * @param string        $target
      *
-     * @return \Symfony\Component\Form\Form
+     * @return \Symfony\Component\Form\FormInterface
      */
     protected function createTransformConfirmForm(SaleInterface $sale, $target)
     {

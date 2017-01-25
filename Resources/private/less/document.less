@@ -1,0 +1,159 @@
+.sale-document {
+    font-family: Herlvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 21px;
+    color: #333333;
+    max-width: 1200px;
+    margin: auto;
+
+    h1 {
+        font-variant: small-caps;
+        color: #999999;
+        font-size: 1.6em;
+    }
+
+    .header {
+        width: 100%;
+
+        table td {
+            width: 32%;
+        }
+
+        .logo {
+            width: 36%;
+            max-width: 36%;
+            vertical-align: middle;
+
+            img {
+                height: auto;
+                max-width: 100%;
+            }
+        }
+
+        .address {
+            padding-left: 30px;
+            vertical-align: top;
+        }
+
+        .customer {
+            padding-left: 30px;
+            text-align: right;
+            vertical-align: bottom;
+        }
+    }
+
+    .title {
+        border-top: 1px dotted #ddd;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 3px;
+        width: 100%;
+    }
+
+    .bloc {
+        margin-bottom: 40px;
+        width: 100%;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .table {
+        width: 100%;
+
+        &.addresses {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        th {
+            text-transform: uppercase;
+            color: #999999;
+        }
+
+        thead {
+            th {
+                padding: 0 8px;
+                position: relative;
+                text-align: left;
+                font-size: 12px;
+                line-height: 21px !important;
+                border-bottom: 1px solid #dddddd;
+                position: relative;
+
+                &:before {
+                    position: absolute;
+                    display: block;
+                    bottom: 0;
+                    left: 0;
+                    height: 7px;
+                    width: 1px;
+                    border-left: 1px solid #dddddd;
+                    content: "";
+                }
+
+                &:last-child:after {
+                    position: absolute;
+                    display: block;
+                    bottom: 0;
+                    right: 0;
+                    height: 7px;
+                    width: 1px;
+                    border-right: 1px solid #dddddd;
+                    content: "";
+                }
+
+                &.blank {
+                    border-bottom: 0;
+                }
+            }
+        }
+
+        tbody {
+            td {
+                padding: 5px 8px;
+                line-height: 18px;
+                vertical-align: top;
+            }
+
+            > tr:nth-child(even) > td {
+                background: #e6e6e6;
+            }
+
+            &.address {
+                width: 42%;
+                max-width: 42%;
+                padding-top: 10px;
+                line-height: 20px;
+            }
+        }
+    }
+
+    .sale-detail {
+        width: 100%;
+    }
+}
+
+/*.order-doc-item-options {
+    font-size: 12px;
+}
+
+.order-doc-number {
+    text-align: right;
+}
+
+
+.order-doc-mentions {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 60px;
+    padding-top: 12px;
+    border-top: 1px dotted #ddd;
+}*/
