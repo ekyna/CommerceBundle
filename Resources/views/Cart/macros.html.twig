@@ -6,7 +6,7 @@
         {% if cart.company is not same as(null) %}
             <strong>{{ cart.company }}</strong><br>
         {% endif %}
-        {{ cart|commerce_identity }}<br>
+        {{ cart|identity }}<br>
         <em>{{ cart.email }}</em>
     {% endif %}
 {% endspaceless %}

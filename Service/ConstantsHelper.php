@@ -11,6 +11,8 @@ use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -241,6 +243,129 @@ class ConstantsHelper extends AbstractConstantsHelper
     }
 
     /**
+     * Renders the stock subject state label.
+     *
+     * @param StockSubjectInterface|string $stateOrStockSubject
+     *
+     * @return string
+     */
+    public function renderStockSubjectStateLabel($stateOrStockSubject)
+    {
+        if ($stateOrStockSubject instanceof StockSubjectInterface) {
+            $stateOrStockSubject = $stateOrStockSubject->getStockState();
+        }
+
+        if (Model\StockSubjectStates::isValid($stateOrStockSubject)) {
+            return $this->renderLabel(Model\StockSubjectStates::getLabel($stateOrStockSubject));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the stock subject state badge.
+     *
+     * @param StockSubjectInterface|string $stateOrStockSubject
+     *
+     * @return string
+     */
+    public function renderStockSubjectStateBadge($stateOrStockSubject)
+    {
+        if ($stateOrStockSubject instanceof StockSubjectInterface) {
+            $stateOrStockSubject = $stateOrStockSubject->getStockState();
+        }
+
+        $theme = 'default';
+        if (Model\StockSubjectStates::isValid($stateOrStockSubject)) {
+            $theme = Model\StockSubjectStates::getTheme($stateOrStockSubject);
+        }
+
+        return $this->renderBadge($this->renderStockSubjectStateLabel($stateOrStockSubject), $theme);
+    }
+
+    /**
+     * Renders the stock subject mode label.
+     *
+     * @param StockSubjectInterface|string $modeOrStockSubject
+     *
+     * @return string
+     */
+    public function renderStockSubjectModeLabel($modeOrStockSubject)
+    {
+        if ($modeOrStockSubject instanceof StockSubjectInterface) {
+            $modeOrStockSubject = $modeOrStockSubject->getStockMode();
+        }
+
+        if (Model\StockSubjectModes::isValid($modeOrStockSubject)) {
+            return $this->renderLabel(Model\StockSubjectModes::getLabel($modeOrStockSubject));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the stock subject mode badge.
+     *
+     * @param StockSubjectInterface|string $modeOrStockSubject
+     *
+     * @return string
+     */
+    public function renderStockSubjectModeBadge($modeOrStockSubject)
+    {
+        if ($modeOrStockSubject instanceof StockSubjectInterface) {
+            $modeOrStockSubject = $modeOrStockSubject->getStockMode();
+        }
+
+        $theme = 'default';
+        if (Model\StockSubjectModes::isValid($modeOrStockSubject)) {
+            $theme = Model\StockSubjectModes::getTheme($modeOrStockSubject);
+        }
+
+        return $this->renderBadge($this->renderStockSubjectModeLabel($modeOrStockSubject), $theme);
+    }
+
+    /**
+     * Renders the stock unit state label.
+     *
+     * @param StockUnitInterface|string $stateOrStockUnit
+     *
+     * @return string
+     */
+    public function renderStockUnitStateLabel($stateOrStockUnit)
+    {
+        if ($stateOrStockUnit instanceof StockUnitInterface) {
+            $stateOrStockUnit = $stateOrStockUnit->getState();
+        }
+
+        if (Model\StockUnitStates::isValid($stateOrStockUnit)) {
+            return $this->renderLabel(Model\StockUnitStates::getLabel($stateOrStockUnit));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the stock unit state badge.
+     *
+     * @param StockUnitInterface|string $stateOrStockUnit
+     *
+     * @return string
+     */
+    public function renderStockUnitStateBadge($stateOrStockUnit)
+    {
+        if ($stateOrStockUnit instanceof StockUnitInterface) {
+            $stateOrStockUnit = $stateOrStockUnit->getState();
+        }
+
+        $theme = 'default';
+        if (Model\StockUnitStates::isValid($stateOrStockUnit)) {
+            $theme = Model\StockUnitStates::getTheme($stateOrStockUnit);
+        }
+
+        return $this->renderBadge($this->renderStockUnitStateLabel($stateOrStockUnit), $theme);
+    }
+
+    /**
      * Renders the supplier order state label.
      *
      * @param SupplierOrderInterface|string $stateOrSupplierOrder
@@ -302,6 +427,38 @@ class ConstantsHelper extends AbstractConstantsHelper
             $identity->getFirstName(),
             $identity->getLastName()
         );
+    }
+
+    /**
+     * Renders the adjustment type label.
+     *
+     * @param string $type
+     *
+     * @return string
+     */
+    public function getAdjustmentTypeLabel($type)
+    {
+        if (Model\AdjustmentTypes::isValid($type)) {
+            return $this->renderLabel(Model\AdjustmentTypes::getLabel($type));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the adjustment mode label.
+     *
+     * @param string $mode
+     *
+     * @return string
+     */
+    public function getAdjustmentModeLabel($mode)
+    {
+        if (Model\AdjustmentModes::isValid($mode)) {
+            return $this->renderLabel(Model\AdjustmentModes::getLabel($mode));
+        }
+
+        return $this->renderLabel();
     }
 
     /**

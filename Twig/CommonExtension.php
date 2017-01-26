@@ -29,13 +29,15 @@ class CommonExtension extends \Twig_Extension
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('commerce_gender', [$this, 'getGenderLabel']),
-            new \Twig_SimpleFilter('commerce_identity', [$this, 'renderIdentity'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFilter('identity',              [$this, 'renderIdentity'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFilter('gender',                [$this, 'getGenderLabel']),
+            new \Twig_SimpleFilter('adjustment_type_label', [$this, 'getAdjustmentTypeLabel']),
+            new \Twig_SimpleFilter('adjustment_mode_label', [$this, 'getAdjustmentModeLabel']),
         ];
     }
 
@@ -63,6 +65,30 @@ class CommonExtension extends \Twig_Extension
     public function getGenderLabel($gender, $long = false)
     {
         return $this->constantHelper->getGenderLabel($gender, $long);
+    }
+
+    /**
+     * Returns the adjustment type label.
+     *
+     * @param string $type
+     *
+     * @return string
+     */
+    public function getAdjustmentTypeLabel($type)
+    {
+        return $this->constantHelper->getAdjustmentTypeLabel($type);
+    }
+
+    /**
+     * Returns the adjustment mode label.
+     *
+     * @param string $mode
+     *
+     * @return string
+     */
+    public function getAdjustmentModeLabel($mode)
+    {
+        return $this->constantHelper->getAdjustmentModeLabel($mode);
     }
 
     /**

@@ -1,9 +1,9 @@
 {% spaceless %}
 <strong>
 {% if address.lastName is not empty and address.firstName is not empty %}
-    {{ address|commerce_identity }}
+    {{ address|identity }}
 {% else %}
-    {{ address.customer|commerce_identity }}
+    {{ address.customer|identity }}
 {% endif %}
 </strong>
 

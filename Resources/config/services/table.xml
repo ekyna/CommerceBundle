@@ -13,35 +13,49 @@
             <tag name="table.type" alias="ekyna_commerce_customer"/>
         </service>
 
-        <!-- Customer column column type -->
+        <!-- Customer column type -->
         <service id="ekyna_commerce.order_customer.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_sale_customer"/>
         </service>
 
-        <!-- Order state column column type -->
+        <!-- Order state column type -->
         <service id="ekyna_commerce.order_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_sale_state"/>
         </service>
 
-        <!-- Payment state column column type -->
+        <!-- Payment state column type -->
         <service id="ekyna_commerce.payment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_payment_state"/>
         </service>
 
-        <!-- Shipment state column column type -->
+        <!-- Shipment state column type -->
         <service id="ekyna_commerce.shipment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_shipment_state"/>
         </service>
 
-        <!-- Supplier order state column column type -->
+        <!-- Stock subject state column type -->
+        <service id="ekyna_commerce.stock_subject_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\StockSubjectStateType">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type" alias="ekyna_commerce_stock_subject_state"/>
+        </service>
+
+        <!-- Stock subject mode column type -->
+        <service id="ekyna_commerce.stock_subject_mode.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\StockSubjectModeType">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type" alias="ekyna_commerce_stock_subject_mode"/>
+        </service>
+
+        <!-- Supplier order state column type -->
         <service id="ekyna_commerce.supplier_order_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>

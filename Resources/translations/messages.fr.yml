@@ -594,6 +594,37 @@ ekyna_commerce:
         alert:
             empty_list: Aucune zone de livraison configuré
 
+    stock_unit:
+        state:
+            new: Nouveau
+            pending: En attente
+            opened: Ouverte
+            closed: Fermée
+        field:
+            geocode: Geocode
+            estimated_date_of_arrival: Date de livraison estimée
+            ordered_quantity: Qte commandée
+            delivered_quantity: Qte livrée
+            shipped_quantity: Qte expediée
+            net_price: Prix d'achat HT
+
+    stock_subject:
+        field:
+            mode: Mode stock
+            state: État stock
+            in_stock: Qte en stock
+            ordered_stock: Qte commandée
+            shipped_stock: Qte expediée
+            estimated_date_of_arrival: Date de livraison estimée
+        mode:
+            disabled: Désactivé
+            enabled: Activé
+            just_in_time: Flux tendu
+        state:
+            in_stock: En stock
+            pre_order: Pré-commande
+            out_of_stock: En rupture
+
     supplier:
         label:
             singular: Fournisseur

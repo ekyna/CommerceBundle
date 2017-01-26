@@ -13,7 +13,7 @@
         <dd>{{ customer.company }}</dd>
 
         <dt>{{ 'ekyna_core.field.identity'|trans }}</dt>
-        <dd>{{ customer|commerce_identity }}</dd>
+        <dd>{{ customer|identity }}</dd>
 
         {% if customer.phone is not same as(null) %}
         <dt>{{ 'ekyna_core.field.phone'|trans }}</dt>

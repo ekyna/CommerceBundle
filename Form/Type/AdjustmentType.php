@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentTypes;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class AdjustmentType
@@ -16,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 class AdjustmentType extends ResourceFormType
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -30,7 +31,7 @@ class AdjustmentType extends ResourceFormType
             ])
             ->add('type', Type\ChoiceType::class, [
                 'label' => 'ekyna_core.field.type',
-                'choices' => AdjustmentTypes::getChoices(),
+                'choices' => AdjustmentTypes::getChoices($options['types'], AdjustmentTypes::FILTER_RESTRICT),
                 'sizing' => 'sm',
                 'attr'   => [
                     'class' => 'no-select2',
@@ -39,7 +40,7 @@ class AdjustmentType extends ResourceFormType
             ])
             ->add('mode', Type\ChoiceType::class, [
                 'label' => 'ekyna_core.field.mode',
-                'choices' => AdjustmentModes::getChoices(),
+                'choices' => AdjustmentModes::getChoices($options['modes'], AdjustmentTypes::FILTER_RESTRICT),
                 'sizing' => 'sm',
                 'attr'   => [
                     'class' => 'no-select2',
@@ -62,7 +63,23 @@ class AdjustmentType extends ResourceFormType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setDefaults([
+                'types' => [],
+                'modes' => [],
+            ])
+            ->setAllowedTypes('types', 'array')
+            ->setAllowedTypes('modes', 'array');
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getBlockPrefix()
     {

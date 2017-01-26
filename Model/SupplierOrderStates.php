@@ -6,7 +6,7 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as States;
 
 /**
- * Class OrderStates
+ * Class SupplierOrderStates
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */

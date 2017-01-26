@@ -28,3 +28,8 @@ ekyna_commerce:
         invoice_address_must_be_set: Veuillez saisir une adresse de facturation.
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
+    stock_unit:
+        delivered_must_be_lower_than_ordered: |
+            La quantité livrée doit être inférieure ou égale à la quantité commandée.
+        shipped_must_be_lower_than_delivered: |
+            La quantité expédiée doit être inférieure ou égale à la quantité livrée.

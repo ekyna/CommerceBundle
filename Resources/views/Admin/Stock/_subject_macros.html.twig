@@ -1,0 +1,40 @@
+{% macro show_stock_mode(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject|stock_subject_mode_badge, 'text', 'ekyna_core.field.mode', options) }}
+{% endspaceless %}
+{% endmacro show_stock_mode %}
+
+
+{% macro show_stock_state(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject|stock_subject_state_badge, 'text', 'ekyna_core.field.status', options) }}
+{% endspaceless %}
+{% endmacro show_stock_state %}
+
+
+{% macro show_in_stock(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.inStock, 'number', 'ekyna_commerce.stock_subject.field.in_stock', options) }}
+{% endspaceless %}
+{% endmacro show_in_stock %}
+
+
+{% macro show_ordered_stock(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.orderedStock, 'number', 'ekyna_commerce.stock_subject.field.ordered_stock', options) }}
+{% endspaceless %}
+{% endmacro show_ordered_stock %}
+
+
+{% macro show_shipped_stock(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.shippedStock, 'number', 'ekyna_commerce.stock_subject.field.shipped_stock', options) }}
+{% endspaceless %}
+{% endmacro show_shipped_stock %}
+
+
+{% macro show_eta(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.estimatedDateOfArrival, 'datetime', 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival', options) }}
+{% endspaceless %}
+{% endmacro show_eta %}
