@@ -22,18 +22,18 @@
         <!-- TODO remove parameters (some are defined by configuration, other are useless : view builders) -->
         <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
         <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.cart.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewVarsBuilder</parameter>
+        <parameter key="ekyna_commerce.cart.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewType</parameter>
 
         <parameter key="ekyna_commerce.genders.class">Ekyna\Bundle\CommerceBundle\Model\Genders</parameter>
 
         <parameter key="ekyna_commerce.order_address.class">Ekyna\Component\Commerce\Order\Entity\OrderAddress</parameter>
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
         <parameter key="ekyna_commerce.order_shipment_item.class">Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem</parameter>
-        <parameter key="ekyna_commerce.order.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewVarsBuilder</parameter>
+        <parameter key="ekyna_commerce.order.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewType</parameter>
 
         <parameter key="ekyna_commerce.quote_address.class">Ekyna\Component\Commerce\Quote\Entity\QuoteAddress</parameter>
         <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.quote.view_vars_builder.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewVarsBuilder</parameter>
+        <parameter key="ekyna_commerce.quote.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewType</parameter>
 
         <parameter key="ekyna_commerce.supplier_address.class">Ekyna\Component\Commerce\Supplier\Entity\SupplierAddress</parameter>
     </parameters>
@@ -68,10 +68,23 @@
             <tag name="doctrine.orm.entity_listener" />
         </service>
 
+        <!-- Load metadata listener -->
+        <service id="ekyna_commerce.doctrine.orm.listener.load_metadata_listener"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Listener\LoadMetadataListener"
+                 public="false">
+            <tag name="doctrine.event_subscriber" connection="default" priority="99"/>
+        </service>
+
         <!-- Abstract cart controller -->
         <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
             <call method="setTemplating">
                 <argument type="service" id="templating"/>
+            </call>
+            <call method="setUrlGenerator">
+                <argument type="service" id="router"/>
+            </call>
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
             </call>
             <call method="setCartHelper">
                 <argument type="service" id="ekyna_commerce.cart_helper"/>
@@ -99,6 +112,19 @@
         <!-- Subject providers registry-->
         <service id="ekyna_commerce.subject.provider_registry"
                  class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
+
+        <!-- Abstract stock unit listener -->
+        <service id="ekyna_commerce.stock_unit.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
+            </call>
+        </service>
 
         <!-- Tax resolver -->
         <service id="ekyna_commerce.tax.resolver"

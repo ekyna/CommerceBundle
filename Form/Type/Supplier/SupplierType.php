@@ -23,12 +23,10 @@ class SupplierType extends ResourceFormType
             ->add('name', Symfony\TextType::class, [
                 'label' => 'ekyna_core.field.name',
             ])
-            ->add('identity', Commerce\IdentityType::class, [
-                'required' => false,
-            ])
+            ->add('currency', Commerce\CurrencyChoiceType::class)
+            ->add('identity', Commerce\IdentityType::class)
             ->add('email', Symfony\EmailType::class, [
                 'label'    => 'ekyna_core.field.email',
-                'required' => false,
             ])
             ->add('address', SupplierAddressType::class, [
                 'label' => 'ekyna_core.field.address',

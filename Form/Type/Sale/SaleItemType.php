@@ -6,8 +6,6 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\AdjustmentsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType;
-use Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -21,25 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleItemType extends ResourceFormType
 {
-    /**
-     * @var SubjectHelperInterface
-     */
-    protected $subjectHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string                 $itemClass
-     * @param SubjectHelperInterface $itemHelper
-     */
-    public function __construct($itemClass, SubjectHelperInterface $itemHelper)
-    {
-        parent::__construct($itemClass);
-
-        $this->subjectHelper = $itemHelper;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -64,7 +43,7 @@ class SaleItemType extends ResourceFormType
             'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_item_adjustment',
         ]);
 
-        $subscriber = new SaleItemTypeSubscriber($this->subjectHelper, $this->getFields($options));
+        $subscriber = new SaleItemTypeSubscriber($this->getFields($options));
         $builder->addEventSubscriber($subscriber);
     }
 
@@ -150,8 +129,8 @@ class SaleItemType extends ResourceFormType
                 'label'    => 'ekyna_commerce.sale_item.field.tax_group',
                 'sizing'   => 'sm',
                 'required' => false,
+                'select2'  => false,
                 'attr'     => [
-                    'class'       => 'no-select2',
                     'placeholder' => 'ekyna_commerce.sale_item.field.tax_group',
                 ],
             ]],

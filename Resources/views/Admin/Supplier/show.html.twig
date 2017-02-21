@@ -17,7 +17,20 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="general">
-                {{ show_row(supplier.name, 'text', 'ekyna_core.field.name') }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplier.name, 'text', 'ekyna_core.field.name', {
+                            'label_nb_col': 4, 'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(supplier.currency, 'entity', 'ekyna_commerce.currency.label.singular', {
+                            'route': 'ekyna_commerce_currency_admin_show',
+                            'route_params_map': {'currencyId': 'id'},
+                            'label_nb_col': 4, 'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
                 <div class="row show-row">
                     <div class="col-md-2 show-label">
                         {{ 'ekyna_core.field.identity'|trans }}

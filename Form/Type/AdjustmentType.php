@@ -23,33 +23,33 @@ class AdjustmentType extends ResourceFormType
     {
         $builder
             ->add('designation', Type\TextType::class, [
-                'label' => 'ekyna_core.field.designation',
+                'label'  => 'ekyna_core.field.designation',
                 'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.designation',
                 ],
             ])
             ->add('type', Type\ChoiceType::class, [
-                'label' => 'ekyna_core.field.type',
+                'label'   => 'ekyna_core.field.type',
                 'choices' => AdjustmentTypes::getChoices($options['types'], AdjustmentTypes::FILTER_RESTRICT),
-                'sizing' => 'sm',
-                'attr'   => [
-                    'class' => 'no-select2',
+                'sizing'  => 'sm',
+                'select2' => false,
+                'attr'    => [
                     'placeholder' => 'ekyna_core.field.type',
                 ],
             ])
             ->add('mode', Type\ChoiceType::class, [
-                'label' => 'ekyna_core.field.mode',
+                'label'   => 'ekyna_core.field.mode',
                 'choices' => AdjustmentModes::getChoices($options['modes'], AdjustmentTypes::FILTER_RESTRICT),
-                'sizing' => 'sm',
-                'attr'   => [
-                    'class' => 'no-select2',
+                'sizing'  => 'sm',
+                'select2' => false,
+                'attr'    => [
                     'placeholder' => 'ekyna_core.field.mode',
                 ],
             ])
             ->add('amount', Type\NumberType::class, [
-                'label' => 'ekyna_core.field.value',
-                'scale' => 2,
+                'label'  => 'ekyna_core.field.value',
+                'scale'  => 2,
                 'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.value',

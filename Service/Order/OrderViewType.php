@@ -1,32 +1,33 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Service\Quote;
+namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 
-use Ekyna\Bundle\CommerceBundle\Service\AbstractViewVarsBuilder;
-use Ekyna\Component\Commerce\Common\Model;
+use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
+use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
+use Ekyna\Component\Commerce\Order\Model as Order;
 
 /**
- * Class CartViewVarsBuilder
- * @package Ekyna\Bundle\CommerceBundle\Service\Quote
+ * Class OrderViewType
+ * @package Ekyna\Bundle\CommerceBundle\Service\Order
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
+class OrderViewType extends AbstractViewType
 {
     /**
      * @inheritdoc
      */
-    public function buildSaleViewVars(Model\SaleInterface $sale, array $options = [])
+    public function buildSaleView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
     {
         if ((!$options['editable']) || (!$options['private'])) {
-            return [];
+            return;
         }
 
         $buttons = [];
 
         // Refresh button
-        $refreshPath = $this->generateUrl('ekyna_commerce_quote_admin_refresh', [
-            'quoteId' => $sale->getId(),
+        $refreshPath = $this->generateUrl('ekyna_commerce_order_admin_refresh', [
+            'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($refreshPath, 'ekyna_commerce.sale.button.refresh', 'fa fa-refresh', [
             'title'         => 'ekyna_commerce.sale.button.refresh',
@@ -35,8 +36,8 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // Add item button
-        $addItemPath = $this->generateUrl('ekyna_commerce_quote_item_admin_add', [
-            'quoteId' => $sale->getId(),
+        $addItemPath = $this->generateUrl('ekyna_commerce_order_item_admin_add', [
+            'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($addItemPath, 'ekyna_commerce.sale.button.item.add', 'fa fa-plus', [
             'title'           => 'ekyna_commerce.sale.button.item.add',
@@ -45,8 +46,8 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // New item button
-        $newItemPath = $this->generateUrl('ekyna_commerce_quote_item_admin_new', [
-            'quoteId' => $sale->getId(),
+        $newItemPath = $this->generateUrl('ekyna_commerce_order_item_admin_new', [
+            'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($newItemPath, 'ekyna_commerce.sale.button.item.new', 'fa fa-plus', [
             'title'           => 'ekyna_commerce.sale.button.item.new',
@@ -55,8 +56,8 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // New adjustment button
-        $newAdjustmentPath = $this->generateUrl('ekyna_commerce_quote_adjustment_admin_new', [
-            'quoteId' => $sale->getId(),
+        $newAdjustmentPath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_new', [
+            'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($newAdjustmentPath, 'ekyna_commerce.sale.button.adjustment.new', 'fa fa-plus', [
             'title'           => 'ekyna_commerce.sale.button.adjustment.new',
@@ -64,27 +65,25 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
             'data-sale-modal' => null,
         ]);
 
-        return [
-            'buttons' => $buttons,
-        ];
+        $view->vars['buttons'] = $buttons;
     }
 
     /**
      * @inheritdoc
      */
-    public function buildItemViewVars(Model\SaleItemInterface $item, array $options = [])
+    public function buildItemView(Common\SaleItemInterface $item, View\AbstractView $view, array $options)
     {
         if ($item->isImmutable() || (!$options['editable']) || (!$options['private'])) {
-            return [];
+            return;
         }
 
         $actions = [];
 
         // Configure action
         if ($item->isConfigurable()) {
-            $configurePath = $this->generateUrl('ekyna_commerce_quote_item_admin_configure', [
-                'quoteId'     => $item->getSale()->getId(),
-                'quoteItemId' => $item->getId(),
+            $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
             ]);
             $actions[] = new View\Action($configurePath, 'fa fa-cog', [
                 'title'           => 'ekyna_commerce.sale.button.item.configure',
@@ -93,9 +92,9 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         }
 
         // Edit action
-        $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
-            'quoteId'     => $item->getSale()->getId(),
-            'quoteItemId' => $item->getId(),
+        $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
+            'orderId'     => $item->getSale()->getId(),
+            'orderItemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.item.edit',
@@ -103,9 +102,9 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
         ]);
 
         // Remove action
-        $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
-            'quoteId'     => $item->getSale()->getId(),
-            'quoteItemId' => $item->getId(),
+        $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+            'orderId'     => $item->getSale()->getId(),
+            'orderItemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.item.remove',
@@ -113,40 +112,38 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
             'data-sale-xhr' => null,
         ]);
 
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
     }
 
     /**
      * @inheritdoc
      */
-    public function buildAdjustmentViewVars(Model\AdjustmentInterface $adjustment, array $options = [])
+    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\AbstractView $view, array $options)
     {
         if ($adjustment->isImmutable() || (!$options['editable']) || (!$options['private'])) {
-            return [];
+            return;
         }
 
         // Only for sale adjustments
         $adjustable = $adjustment->getAdjustable();
-        if (!$adjustable instanceof Model\SaleInterface) {
-            return [];
+        if (!$adjustable instanceof Order\OrderAdjustmentInterface) {
+            return;
         }
 
         $actions = [];
 
-        $editPath = $this->generateUrl('ekyna_commerce_quote_adjustment_admin_edit', [
-            'quoteId'           => $adjustable->getId(),
-            'quoteAdjustmentId' => $adjustment->getId(),
+        $editPath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_edit', [
+            'orderId'           => $adjustable->getId(),
+            'orderAdjustmentId' => $adjustment->getId(),
         ]);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.adjustment.edit',
             'data-sale-modal' => null,
         ]);
 
-        $removePath = $this->generateUrl('ekyna_commerce_quote_adjustment_admin_remove', [
-            'quoteId'           => $adjustable->getId(),
-            'quoteAdjustmentId' => $adjustment->getId(),
+        $removePath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_remove', [
+            'orderId'           => $adjustable->getId(),
+            'orderAdjustmentId' => $adjustment->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.adjustment.remove',
@@ -154,28 +151,40 @@ class QuoteViewVarsBuilder extends AbstractViewVarsBuilder
             'data-sale-xhr' => null,
         ]);
 
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
     }
 
     /**
      * @inheritdoc
      */
-    public function buildShipmentViewVars(Model\SaleInterface $sale, array $options = [])
+    public function buildShipmentView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
     {
         $actions = [];
 
-        $editPath = $this->generateUrl('ekyna_commerce_quote_admin_edit_shipment', [
-            'quoteId' => $sale->getId(),
+        $editPath = $this->generateUrl('ekyna_commerce_order_admin_edit_shipment', [
+            'orderId' => $sale->getId(),
         ]);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.shipment.edit',
             'data-sale-modal' => null,
         ]);
 
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function supportsSale(Common\SaleInterface $sale)
+    {
+        return $sale instanceof Order\OrderInterface;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return 'ekyna_commerce_order';
     }
 }

@@ -554,6 +554,24 @@
 {% endblock ekyna_commerce_shipment_price_widget %}
 
 
+{% block ekyna_commerce_subject_choice_widget %}
+{% spaceless %}
+    {{ form_errors(form) }}
+    {#<div class="input-group">#}
+    <div class="row commerce-subject-choice">
+        <div class="col-md-3">
+            {{ form_widget(form.provider) }}
+            {{ form_widget(form.identifier) }}
+        </div>
+        <div class="col-md-9">
+            {{ form_widget(form.subject) }}
+        </div>
+    </div>
+    {{ form_rest(form) }}
+{% endspaceless %}
+{% endblock ekyna_commerce_subject_choice_widget %}
+
+
 {% block ekyna_commerce_supplier_delivery_items_widget %}
 {% spaceless %}
     <div {{ block('widget_container_attributes') }}>

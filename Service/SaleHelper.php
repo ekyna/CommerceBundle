@@ -8,12 +8,10 @@ use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class SaleHelper
@@ -23,9 +21,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 class SaleHelper
 {
     /**
-     * @var SubjectProviderRegistryInterface
+     * @var SubjectHelperInterface
      */
-    private $subjectProviderRegistry;
+    private $subjectHelper;
 
     /**
      * @var SaleFactoryInterface
@@ -47,50 +45,35 @@ class SaleHelper
      */
     private $formFactory;
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
 
     /**
      * Constructor.
      *
-     * @param SubjectProviderRegistryInterface $subjectProviderRegistry
-     * @param SaleFactoryInterface             $saleFactory
-     * @param SaleUpdaterInterface             $saleUpdater
-     * @param ViewBuilder                      $viewBuilder
-     * @param FormFactoryInterface             $formFactory
-     * @param UrlGeneratorInterface            $urlGenerator
-     * @param TranslatorInterface              $translator
+     * @param SubjectHelperInterface $subjectHelper
+     * @param SaleFactoryInterface   $saleFactory
+     * @param SaleUpdaterInterface   $saleUpdater
+     * @param ViewBuilder            $viewBuilder
+     * @param FormFactoryInterface   $formFactory
      */
     public function __construct(
-        SubjectProviderRegistryInterface $subjectProviderRegistry,
+        SubjectHelperInterface $subjectHelper,
         SaleFactoryInterface $saleFactory,
         SaleUpdaterInterface $saleUpdater,
         ViewBuilder $viewBuilder,
-        FormFactoryInterface $formFactory,
-        UrlGeneratorInterface $urlGenerator,
-        TranslatorInterface $translator
+        FormFactoryInterface $formFactory
     ) {
-        $this->subjectProviderRegistry = $subjectProviderRegistry;
+        $this->subjectHelper = $subjectHelper;
         $this->saleFactory = $saleFactory;
         $this->saleUpdater = $saleUpdater;
         $this->viewBuilder = $viewBuilder;
         $this->formFactory = $formFactory;
-        $this->urlGenerator = $urlGenerator;
-        $this->translator = $translator;
     }
 
     /**
      * Returns the view builder.
      *
      * @return ViewBuilder
+     * @deprecated
      */
     public function getViewBuilder()
     {
@@ -101,6 +84,7 @@ class SaleHelper
      * Returns the sale factory.
      *
      * @return SaleFactoryInterface
+     * @deprecated
      */
     public function getSaleFactory()
     {
@@ -111,20 +95,11 @@ class SaleHelper
      * Returns the form factory.
      *
      * @return FormFactoryInterface
+     * @deprecated
      */
     public function getFormFactory()
     {
         return $this->formFactory;
-    }
-
-    /**
-     * Returns the subject provider registry.
-     *
-     * @return SubjectProviderRegistryInterface
-     */
-    public function getSubjectProviderRegistry()
-    {
-        return $this->subjectProviderRegistry;
     }
 
     /**
@@ -140,39 +115,6 @@ class SaleHelper
     }
 
     /**
-     * Generates a URL from the given parameters.
-     *
-     * @param string $route         The name of the route
-     * @param mixed  $parameters    An array of parameters
-     * @param int    $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
-     *
-     * @return string The generated URL
-     *
-     * @see UrlGeneratorInterface
-     */
-    public function generateUrl($route, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_URL)
-    {
-        return $this->urlGenerator->generate($route, $parameters, $referenceType);
-    }
-
-    /**
-     * Translate the given message.
-     *
-     * @param string $id
-     * @param array  $parameters
-     * @param null   $domain
-     * @param null   $locale
-     *
-     * @return string
-     *
-     * @see TranslatorInterface
-     */
-    public function translate($id, array $parameters = [], $domain = null, $locale = null)
-    {
-        return $this->translator->trans($id, $parameters, $domain, $locale);
-    }
-
-    /**
      * Builds the sale view.
      *
      * @param Model\SaleInterface $sale
@@ -183,20 +125,6 @@ class SaleHelper
     public function buildView(Model\SaleInterface $sale, array $options = [])
     {
         return $this->viewBuilder->buildSaleView($sale, $options);
-    }
-
-    /**
-     * Resolves the item's subject.
-     *
-     * @param Model\SaleItemInterface $item
-     *
-     * @return mixed|null
-     *
-     * @see SubjectProviderRegistryInterface
-     */
-    public function resolveItemSubject(Model\SaleItemInterface $item)
-    {
-        return $this->subjectProviderRegistry->resolveRelativeSubject($item);
     }
 
     /**
@@ -215,11 +143,6 @@ class SaleHelper
             ->add('submit', Type\SubmitType::class, [
                 'label' => 'ekyna_commerce.sale.button.recalculate',
             ]);
-    }
-
-    public function addItemToSale(Model\SaleItemInterface $item, Model\SaleInterface $sale)
-    {
-        // TODO
     }
 
     /**

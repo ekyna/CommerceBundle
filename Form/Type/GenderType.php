@@ -2,8 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -30,6 +33,14 @@ class GenderType extends AbstractType
     }
 
     /**
+     * @inheritDoc
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'inline');
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -38,9 +49,7 @@ class GenderType extends AbstractType
             'label'    => 'ekyna_core.field.gender',
             'expanded' => true,
             'choices'  => call_user_func($this->genderClass . '::getChoices'),
-            'attr'     => [
-                'class' => 'inline no-select2',
-            ],
+            'select2'  => false,
         ]);
     }
 

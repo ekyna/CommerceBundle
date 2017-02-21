@@ -2,12 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
-use Ekyna\Component\Commerce\Common\View\ViewVarsBuilderInterface;
-use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,6 +18,11 @@ use Symfony\Component\HttpFoundation\Request;
 class CartHelper
 {
     /**
+     * @var SubjectHelperInterface
+     */
+    private $subjectHelper;
+
+    /**
      * @var \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
      */
     protected $saleHelper;
@@ -29,11 +33,6 @@ class CartHelper
     protected $cartProvider;
 
     /**
-     * @var ViewVarsBuilderInterface
-     */
-    protected $viewVarsBuilder;
-
-    /**
      * @var string
      */
     protected $cartItemClass;
@@ -42,20 +41,20 @@ class CartHelper
     /**
      * Constructor.
      *
-     * @param \Ekyna\Bundle\CommerceBundle\Service\SaleHelper $saleHelper
-     * @param CartProviderInterface                           $cartProvider
-     * @param ViewVarsBuilderInterface                        $viewVarsBuilder
-     * @param string                                          $cartItemClass
+     * @param SubjectHelperInterface $subjectHelper
+     * @param SaleHelper             $saleHelper
+     * @param CartProviderInterface  $cartProvider
+     * @param string                 $cartItemClass
      */
     public function __construct(
+        SubjectHelperInterface $subjectHelper,
         SaleHelper $saleHelper,
         CartProviderInterface $cartProvider,
-        ViewVarsBuilderInterface $viewVarsBuilder,
         $cartItemClass
     ) {
+        $this->subjectHelper = $subjectHelper;
         $this->saleHelper = $saleHelper;
         $this->cartProvider = $cartProvider;
-        $this->viewVarsBuilder = $viewVarsBuilder;
         $this->cartItemClass = $cartItemClass;
     }
 
@@ -79,33 +78,6 @@ class CartHelper
         return $this->cartProvider;
     }
 
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createPayment()
-    {
-        if (!$this->getCartProvider()->hasCart()) {
-            throw new RuntimeException('Payment should not be created while there is no cart.');
-        }
-
-        $cart = $this->getCartProvider()->getCart();
-
-        $payment = $this
-            ->getSaleHelper()
-            ->getSaleFactory()
-            ->createPaymentForSale($cart);
-
-        $payment
-            ->setCurrency($this->currencyRepository->findDefault())
-            ->setAmount($cart->getGrandTotal() - $cart->getPaidTotal());
-
-        $cart->addPayment($payment);
-
-        return $payment;
-    }
-
     /**
      * Builds the cart view.
      *
@@ -116,9 +88,7 @@ class CartHelper
      */
     public function buildView(CartInterface $cart, array $options = [])
     {
-        return $this->saleHelper->buildView($cart, array_replace([
-            'vars_builder' => $this->viewVarsBuilder,
-        ], $options));
+        return $this->saleHelper->buildView($cart, $options);
     }
 
     /**
@@ -132,10 +102,11 @@ class CartHelper
     public function createAddSubjectToCartForm($subject, array $options = [])
     {
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
-        $item = new $this->cartItemClass;
-        $item->setSubject($subject);
+        $item = new $this->cartItemClass; // TODO Use sale factory (create methods to use interface: SaleInterface, etc)
 
-        // Set cart if available for taxes resolution
+        $this->subjectHelper->assign($item, $subject);
+
+        // Set cart if available for taxes resolution TODO wtf ?
         if ($this->cartProvider->hasCart()) {
             $item->setSale($this->cartProvider->getCart());
         }
@@ -149,7 +120,7 @@ class CartHelper
         return $this
             ->saleHelper
             ->getFormFactory()
-            ->create(SaleItemSubjectType::class, $item, $options);
+            ->create(SaleItemSubjectConfigureType::class, $item, $options);
     }
 
     /**

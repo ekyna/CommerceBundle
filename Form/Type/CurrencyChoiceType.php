@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -42,6 +43,9 @@ class CurrencyChoiceType extends AbstractType
                 $qb = $er->createQueryBuilder('o');
 
                 return $qb->andWhere($qb->expr()->eq('o.enabled', true));
+            },
+            'preferred_choices' => function (CurrencyInterface $currency) {
+                return $currency->isDefault();
             },
         ]);
     }

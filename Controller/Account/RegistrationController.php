@@ -41,9 +41,15 @@ class RegistrationController extends BaseController
         $customer = $this->get('ekyna_commerce.customer.repository')->createNew();
         $customer->setUser($user);
 
+        // Default customer group
+        $customer->setCustomerGroup(
+            $this->get('ekyna_commerce.customer_group.repository')->findDefault()
+        );
+
         /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface $address */
         $address = $this->get('ekyna_commerce.customer_address.repository')->createNew();
         $address->setInvoiceDefault(true);
+        $address->setDeliveryDefault(true);
         $customer->addAddress($address);
 
         $event = new GetResponseUserEvent($user, $request);

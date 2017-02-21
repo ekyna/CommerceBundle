@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\InformationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType;
 use Ekyna\Bundle\CoreBundle\Modal;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -66,7 +66,7 @@ class CartController extends AbstractController
 
         $form = $this
             ->getFormFactory()
-            ->create(SaleItemSubjectType::class, $item, [
+            ->create(SaleItemSubjectConfigureType::class, $item, [
                 'method' => 'post',
                 'action' => $this->generateUrl('ekyna_commerce_cart_configure_item', [
                     'itemId' => $item->getId(),

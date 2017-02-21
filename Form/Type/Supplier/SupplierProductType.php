@@ -4,8 +4,12 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Class SupplierProductType
@@ -49,9 +53,9 @@ class SupplierProductType extends ResourceFormType
                 'label'    => 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',
                 'required' => false,
             ])
-            /* TODO ->add('subject', Commerce\RelativeSubjectType::class, [
-                'label'    => 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',
-                'required' => false,
-            ])*/;
+            ->add('subjectIdentity', Commerce\Subject\SubjectChoiceType::class, [
+                'lock_mode' => true,
+                'required'  => false,
+            ]);
     }
 }

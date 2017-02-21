@@ -3,16 +3,18 @@
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Component\Commerce\Common\Model;
-use Ekyna\Component\Commerce\Common\View\ViewVarsBuilderInterface;
+use Ekyna\Component\Commerce\Common\View\AbstractView;
+use Ekyna\Component\Commerce\Common\View\ViewTypeInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class AbstractViewVarsBuilder
+ * Class AbstractViewType
  * @package Ekyna\Bundle\CommerceBundle\Service
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-abstract class AbstractViewVarsBuilder implements ViewVarsBuilderInterface
+abstract class AbstractViewType implements ViewTypeInterface
 {
     /**
      * @var UrlGeneratorInterface
@@ -20,9 +22,9 @@ abstract class AbstractViewVarsBuilder implements ViewVarsBuilderInterface
     private $urlGenerator;
 
     /**
-     * @var SubjectProviderRegistryInterface
+     * @var SubjectHelperInterface
      */
-    private $subjectProviderRegistry;
+    private $subjectHelper;
 
 
     /**
@@ -30,7 +32,7 @@ abstract class AbstractViewVarsBuilder implements ViewVarsBuilderInterface
      *
      * @param UrlGeneratorInterface $urlGenerator
      */
-    public function setUrlGenerator($urlGenerator)
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
     }
@@ -38,35 +40,43 @@ abstract class AbstractViewVarsBuilder implements ViewVarsBuilderInterface
     /**
      * Sets the subject provider registry.
      *
-     * @param SubjectProviderRegistryInterface $subjectProviderRegistry
+     * @param SubjectHelperInterface $subjectHelper
      */
-    public function setSubjectProviderRegistry($subjectProviderRegistry)
+    public function setSubjectHelper(SubjectHelperInterface $subjectHelper)
     {
-        $this->subjectProviderRegistry = $subjectProviderRegistry;
+        $this->subjectHelper = $subjectHelper;
     }
 
     /**
      * @inheritDoc
      */
-    public function buildSaleViewVars(Model\SaleInterface $sale, array $options = [])
+    public function buildSaleView(Model\SaleInterface $sale, AbstractView $view, array $options)
     {
-        return [];
+
     }
 
     /**
      * @inheritDoc
      */
-    public function buildItemViewVars(Model\SaleItemInterface $item, array $options = [])
+    public function buildItemView(Model\SaleItemInterface $item, AbstractView $view, array $options)
     {
-        return [];
+
     }
 
     /**
      * @inheritDoc
      */
-    public function buildAdjustmentViewVars(Model\AdjustmentInterface $adjustment, array $options = [])
+    public function buildAdjustmentView(Model\AdjustmentInterface $adjustment, AbstractView $view, array $options)
     {
-        return [];
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildShipmentView(Model\SaleInterface $sale, AbstractView $view, array $options)
+    {
+
     }
 
     /**
@@ -87,12 +97,12 @@ abstract class AbstractViewVarsBuilder implements ViewVarsBuilderInterface
      *
      * @param Model\SaleItemInterface $item
      *
-     * @return mixed|null
+     * @return mixed
      *
      * @see SubjectProviderRegistryInterface
      */
     protected function resolveItemSubject(Model\SaleItemInterface $item)
     {
-        return $this->subjectProviderRegistry->resolveRelativeSubject($item);
+        return $this->subjectHelper->resolve($item);
     }
 }

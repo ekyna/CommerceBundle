@@ -45,9 +45,8 @@ class SaleItemSubjectTypeSubscriber implements EventSubscriberInterface
         $form = $event->getForm();
 
         $provider = $this->getProvider($item);
-
-        $provider->prepareItem($item);
-        $provider->buildItemForm($form, $item);
+        $provider->getItemBuilder()->initializeItem($item);
+        $provider->getFormBuilder()->buildItemForm($form, $item);
     }
 
     /**
@@ -60,7 +59,8 @@ class SaleItemSubjectTypeSubscriber implements EventSubscriberInterface
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
         $item = $event->getData();
 
-        $this->getProvider($item)->handleItemSubmit($item);
+        $provider = $this->getProvider($item);
+        $provider->getItemBuilder()->buildItem($item);
     }
 
     /**

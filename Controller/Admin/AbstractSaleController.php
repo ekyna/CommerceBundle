@@ -60,7 +60,6 @@ abstract class AbstractSaleController extends ResourceController
         $view = $this->getSaleHelper()->buildView($sale, [
             'private'      => true,
             'editable'     => true,
-            'vars_builder' => $this->getSaleViewVarsBuilder(),
         ]);
         $view->vars['form'] = $form->createView();
 
@@ -99,22 +98,5 @@ abstract class AbstractSaleController extends ResourceController
     protected function getSaleHelper()
     {
         return $this->get('ekyna_commerce.sale_helper');
-    }
-
-    /**
-     * Returns the view vars builder.
-     *
-     * @return \Ekyna\Component\Commerce\Common\View\ViewVarsBuilderInterface
-     */
-    protected function getSaleViewVarsBuilder()
-    {
-        if ($this->hasParent()) {
-            $prefix = $this->config->getParentId();
-        } else {
-            $prefix = $this->config->getResourceId();
-        }
-
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get(sprintf('%s.view_vars_builder', $prefix));
     }
 }

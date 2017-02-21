@@ -10,11 +10,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class SaleItemSubjectType
+ * Class SaleItemSubjectConfigureType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleItemSubjectType extends AbstractType
+class SaleItemSubjectConfigureType extends AbstractType
 {
     /**
      * @var SubjectProviderRegistryInterface

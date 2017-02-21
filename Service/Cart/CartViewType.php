@@ -2,22 +2,23 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Service\AbstractViewVarsBuilder;
-use Ekyna\Component\Commerce\Common\Model;
+use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
+use Ekyna\Component\Commerce\Cart\Model as Cart;
+use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 
 /**
- * Class CartViewVarsBuilder
+ * Class CartViewType
  * @package Ekyna\Bundle\CommerceBundle\Service\Cart
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CartViewVarsBuilder extends AbstractViewVarsBuilder
+class CartViewType extends AbstractViewType
 {
     /**
      * @inheritdoc
      */
-    public function buildSaleViewVars(Model\SaleInterface $sale, array $options = [])
+    public function buildSaleView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
     {
         return [];
     }
@@ -25,10 +26,10 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
     /**
      * @inheritdoc
      */
-    public function buildItemViewVars(Model\SaleItemInterface $item, array $options = [])
+    public function buildItemView(Common\SaleItemInterface $item, View\AbstractView $view, array $options)
     {
         if ($item->isImmutable() || !$options['editable']) {
-            return [];
+            return;
         }
 
         $actions = [];
@@ -54,28 +55,26 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
             'data-sale-xhr' => null,
         ]);
 
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
     }
 
     /**
      * @inheritdoc
      */
-    public function buildAdjustmentViewVars(Model\AdjustmentInterface $adjustment, array $options = [])
+    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\AbstractView $view, array $options)
     {
         if ($adjustment->isImmutable() || !$options['editable']) {
-            return [];
+            return;
         }
 
         $actions = [];
 
         $adjustable = $adjustment->getAdjustable();
-        if ($adjustable instanceof Model\SaleInterface) {
+        if ($adjustable instanceof Cart\CartAdjustmentInterface) {
             $removePath = $this->generateUrl('ekyna_commerce_cart_remove_adjustment', [
                 'adjustmentId' => $adjustment->getId(),
             ]);
-        } elseif ($adjustable instanceof Model\SaleItemInterface) {
+        } elseif ($adjustable instanceof Cart\CartItemAdjustmentInterface) {
             $removePath = $this->generateUrl('ekyna_commerce_cart_remove_item_adjustment', [
                 'itemId'       => $adjustable->getId(),
                 'adjustmentId' => $adjustment->getId(),
@@ -90,16 +89,22 @@ class CartViewVarsBuilder extends AbstractViewVarsBuilder
             'data-sale-xhr' => null,
         ]);
 
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
     }
 
     /**
      * @inheritdoc
      */
-    public function buildShipmentViewVars(Model\SaleInterface $sale, array $options = [])
+    public function supportsSale(Common\SaleInterface $sale)
     {
-        return [];
+        return $sale instanceof Cart\CartInterface;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return 'ekyna_commerce_cart';
     }
 }

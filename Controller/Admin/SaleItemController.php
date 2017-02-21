@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,7 +64,7 @@ class SaleItemController extends AbstractSaleController
         $sale->addItem($item); // So that we can access to the sale from the item.
         $context->addResource($resourceName, $item);
 
-        $flow = $this->get('ekyna_commerce.add_item.form_flow');
+        $flow = $this->get('ekyna_commerce.sale_item_create.form_flow');
         $flow->setGenericFormOptions([
             'action'            => $this->generateResourcePath($item, 'add'),
             'method'            => 'POST',
@@ -234,7 +234,7 @@ class SaleItemController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $form = $this->createForm(SaleItemSubjectType::class, $item, [
+        $form = $this->createForm(SaleItemSubjectConfigureType::class, $item, [
             'method' => 'post',
             'action' => $this->generateResourcePath($item, 'configure'),
             'attr'   => [

@@ -5,37 +5,49 @@
 
     <services>
 
+        <!-- View vars builder registry -->
+        <service id="ekyna_commerce.common.view_type_registry"
+                 class="Ekyna\Component\Commerce\Common\View\ViewTypeRegistry"/>
+
         <!-- View builder -->
         <service id="ekyna_commerce.common.view_builder"
-                 class="Ekyna\Component\Commerce\Common\View\ViewBuilder">
+                 class="Ekyna\Component\Commerce\Common\View\ViewBuilder"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.common.view_type_registry"/>
             <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
         </service>
 
         <!-- Abstract view vars builder -->
-        <service id="ekyna_commerce.abstract_view_vars_builder"
+        <service id="ekyna_commerce.abstract_view_type"
                  abstract="true">
             <call method="setUrlGenerator">
                 <argument type="service" id="router"/>
             </call>
-            <call method="setSubjectProviderRegistry">
-                <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <call method="setSubjectHelper">
+                <argument type="service" id="ekyna_commerce.subject_helper"/>
             </call>
         </service>
 
         <!-- Cart view vars builder -->
-        <service id="ekyna_commerce.cart.view_vars_builder"
-                 class="%ekyna_commerce.cart.view_vars_builder.class%"
-                 parent="ekyna_commerce.abstract_view_vars_builder"/>
+        <service id="ekyna_commerce.cart.view_type"
+                 class="%ekyna_commerce.cart.view_type.class%"
+                 parent="ekyna_commerce.abstract_view_type">
+            <tag name="ekyna_commerce.view_type"/>
+        </service>
 
         <!-- Order view vars builder -->
-        <service id="ekyna_commerce.order.view_vars_builder"
-                 class="%ekyna_commerce.order.view_vars_builder.class%"
-                 parent="ekyna_commerce.abstract_view_vars_builder"/>
+        <service id="ekyna_commerce.order.view_type"
+                 class="%ekyna_commerce.order.view_type.class%"
+                 parent="ekyna_commerce.abstract_view_type">
+            <tag name="ekyna_commerce.view_type"/>
+        </service>
 
         <!-- Quote view vars builder -->
-        <service id="ekyna_commerce.quote.view_vars_builder"
-                 class="%ekyna_commerce.quote.view_vars_builder.class%"
-                 parent="ekyna_commerce.abstract_view_vars_builder"/>
+        <service id="ekyna_commerce.quote.view_type"
+                 class="%ekyna_commerce.quote.view_type.class%"
+                 parent="ekyna_commerce.abstract_view_type">
+            <tag name="ekyna_commerce.view_type"/>
+        </service>
 
     </services>
 

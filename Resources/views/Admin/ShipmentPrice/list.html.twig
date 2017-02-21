@@ -8,7 +8,7 @@
             </label>
         </div>
         <div class="col-md-10">
-            <select class="no-select2 form-control shipment-price-filter"
+            <select class="form-control shipment-price-filter"
                     id="shipment-price-filter" data-filter-by="{{ list.filterBy }}">
             {%- for filter in list.filters %}
                 <option value="{{ filter.id }}">{{ filter }}</option>

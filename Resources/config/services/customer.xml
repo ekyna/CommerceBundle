@@ -12,14 +12,14 @@
         </service>
 
         <!-- Customer repository -->
-        <service id="ekyna_commerce.customer.repository"
+        <!--<service id="ekyna_commerce.customer.repository"
                  class="Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository">
             <factory service="ekyna_commerce.customer.manager" method="getRepository" />
             <argument>%ekyna_commerce.customer.class%</argument>
             <call method="setGroupRepository">
                 <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             </call>
-        </service>
+        </service>-->
 
         <!-- Form types -->
         <service id="ekyna_commerce.account.registration.form_type"

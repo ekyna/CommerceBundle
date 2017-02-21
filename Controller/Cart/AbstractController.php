@@ -24,6 +24,16 @@ class AbstractController
     private $templating;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * @var CartHelper
      */
     private $cartHelper;
@@ -42,6 +52,26 @@ class AbstractController
     public function setTemplating(EngineInterface $templating)
     {
         $this->templating = $templating;
+    }
+
+    /**
+     * Sets the url generator.
+     *
+     * @param UrlGeneratorInterface $urlGenerator
+     */
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
+     * Sets the translator.
+     *
+     * @param TranslatorInterface $translator
+     */
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
     }
 
     /**
@@ -77,7 +107,7 @@ class AbstractController
      */
     protected function generateUrl($route, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        return $this->getSaleHelper()->generateUrl($route, $parameters, $referenceType);
+        return $this->urlGenerator->generate($route, $parameters, $referenceType);
     }
 
     /**
@@ -107,7 +137,7 @@ class AbstractController
      */
     protected function translate($id, array $parameters = [], $domain = null, $locale = null)
     {
-        return $this->getSaleHelper()->translate($id, $parameters, $domain, $locale);
+        return $this->translator->trans($id, $parameters, $domain, $locale);
     }
 
     /**
@@ -166,6 +196,7 @@ class AbstractController
      * Returns the sale helper.
      *
      * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
+     * @deprecated
      */
     protected function getSaleHelper()
     {
@@ -176,6 +207,7 @@ class AbstractController
      * Returns the sale factory.
      *
      * @return \Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface
+     * @deprecated
      */
     protected function getSaleFactory()
     {
@@ -186,6 +218,7 @@ class AbstractController
      * Returns the form factory.
      *
      * @return \Symfony\Component\Form\FormFactoryInterface
+     * @deprecated
      */
     protected function getFormFactory()
     {

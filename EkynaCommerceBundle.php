@@ -2,11 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle;
 
-use Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler;
-use Ekyna\Bundle\CoreBundle\AbstractBundle;
+use Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler as BundlePass;
+use Ekyna\Bundle\ResourceBundle\AbstractBundle;
 use Ekyna\Component\Commerce;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
-use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler\ConfigureValidatorPass;
+use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler as ComponentPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -23,12 +23,12 @@ class EkynaCommerceBundle extends AbstractBundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new ConfigureValidatorPass());
+        $container->addCompilerPass(new ComponentPass\ConfigureValidatorPass());
+        $container->addCompilerPass(new ComponentPass\SubjectProviderPass());
+        $container->addCompilerPass(new ComponentPass\RegisterViewTypePass());
 
-        $container->addCompilerPass(new Compiler\SubjectProviderPass());
-        $container->addCompilerPass(new Compiler\SubjectResolverPass());
-        $container->addCompilerPass(new Compiler\AdminMenuPass());
-        $container->addCompilerPass(new Compiler\SecurityPass());
+        $container->addCompilerPass(new BundlePass\AdminMenuPass());
+        $container->addCompilerPass(new BundlePass\SecurityPass());
     }
 
     /**

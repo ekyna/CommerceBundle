@@ -44,7 +44,7 @@ class IdentityType extends AbstractType
                 'placeholder'    => 'ekyna_core.value.choose',
                 'error_bubbling' => true,
                 'attr'           => [
-                    'class' => 'inline no-select2 identity-gender',
+                    'class' => 'identity-gender',
                 ],
             ])
             ->add('lastName', TextType::class, [

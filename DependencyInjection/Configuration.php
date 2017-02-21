@@ -481,10 +481,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('supplier_product')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/SupplierProduct:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/SupplierProduct:show.html',
-                                ])->end()
+                                ->variableNode('templates')->defaultValue('EkynaCommerceBundle:Admin/SupplierProduct')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierProduct')->end()
                                 ->scalarNode('controller')->end()
                                 ->scalarNode('operator')->end()

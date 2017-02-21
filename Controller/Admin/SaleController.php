@@ -70,7 +70,6 @@ class SaleController extends AbstractSaleController
         $view = $this->getSaleHelper()->buildView($sale, [
             'private'      => false,
             'editable'     => false,
-            'vars_builder' => $this->getSaleViewVarsBuilder(),
         ]);
 
         $content = $this->renderView('EkynaCommerceBundle:Document:invoice.html.twig', [

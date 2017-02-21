@@ -48,9 +48,10 @@ class ShipmentPricingType extends Form\AbstractType
                 'label'  => false,
                 'class'  => $this->{$options['filter_by'] . 'Class'},
                 'mapped' => false,
+                'select2' => false,
                 'attr'   => [
                     'data-filter-by' => $options['filter_by'],
-                    'class'          => 'commerce-shipment-pricing-filter no-select2',
+                    'class'          => 'commerce-shipment-pricing-filter',
                 ],
             ])
             ->add('prices', ShipmentPricesType::class, [

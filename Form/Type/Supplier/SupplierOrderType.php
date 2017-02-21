@@ -73,9 +73,7 @@ class SupplierOrderType extends ResourceFormType
                     'required' => false,
                     'disabled' => true,
                 ])
-                ->add('currency', Commerce\CurrencyChoiceType::class, [
-                    'label' => 'ekyna_commerce.currency.label.singular',
-                ])
+                ->add('currency', Commerce\CurrencyChoiceType::class)
                 ->add('state', Symfony\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'choices'  => SupplierOrderStates::getChoices(),
@@ -84,12 +82,12 @@ class SupplierOrderType extends ResourceFormType
                 ])
                 ->add('estimatedDateOfArrival', Symfony\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
-//                'format' => 'dd/MM/yyyy',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                 ])
                 ->add('paymentDate', Symfony\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
-//                'format' => 'dd/MM/yyyy',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                 ]);
 

@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
-use Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -15,11 +15,6 @@ use Symfony\Component\Form\FormEvents;
 class SaleItemTypeSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var \Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface
-     */
-    private $subjectHelper;
-
-    /**
      * @var array
      */
     private $fields;
@@ -28,12 +23,10 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param \Ekyna\Bundle\CommerceBundle\Service\SubjectHelperInterface $subjectHelper
-     * @param array                                                       $fields
+     * @param array $fields
      */
-    public function __construct(SubjectHelperInterface $subjectHelper, array $fields)
+    public function __construct(array $fields)
     {
-        $this->subjectHelper = $subjectHelper;
         $this->fields = $fields;
     }
 
@@ -50,10 +43,24 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
         foreach ($this->fields as $field) {
             list ($name, $type, $options) = $field;
             if (null !== $item) {
-                $options = array_replace($options, $this->subjectHelper->getFormOptions($item, $name));
+                $options = array_replace($options, $this->getFormOptions($item, $name));
             }
             $form->add($name, $type, $options);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    private function getFormOptions(SaleItemInterface $item, $property)
+    {
+        if ($item->hasChildren() && in_array($property, ['netPrice', 'weight', 'taxGroup'])) {
+            return [
+                'disabled' => true,
+            ];
+        }
+
+        return [];
     }
 
     /**

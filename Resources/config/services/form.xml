@@ -5,6 +5,8 @@
 
     <services>
 
+        <!-- TODO remove forms defined by resources di builder -->
+
         <!-- Cart form types -->
         <service id="ekyna_commerce.cart_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType">
@@ -24,7 +26,6 @@
         <service id="ekyna_commerce.cart_item.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemType">
             <argument>%ekyna_commerce.cart_item.class%</argument>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.cart_payment.form_type"
@@ -101,7 +102,6 @@
         <service id="ekyna_commerce.order_item.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemType">
             <argument>%ekyna_commerce.order_item.class%</argument>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order_payment.form_type"
@@ -151,7 +151,6 @@
         <service id="ekyna_commerce.quote_item.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemType">
             <argument>%ekyna_commerce.quote_item.class%</argument>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote_payment.form_type"
@@ -223,6 +222,16 @@
             <tag name="form.type"/>
         </service>
 
+        <!-- (Relative) Subject choice type -->
+        <service id="ekyna_commerce.subject_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Subject\SubjectChoiceType">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_resource.configuration_registry"/>
+            <argument type="service" id="router"/>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-subject-choice" path="ekyna-commerce/form/subject-choice" />
+        </service>
+
         <!-- Supplier address type -->
         <service id="ekyna_commerce.supplier_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierAddressType">
@@ -270,11 +279,9 @@
         </service>
 
         <!-- Sale add item form flow -->
-        <service id="ekyna_commerce.add_item.form_flow"
-                 class="Ekyna\Bundle\CommerceBundle\Form\SaleItemAddFlow"
-                 parent="craue.form.flow">
-            <argument type="service" id="ekyna_commerce.subject.provider_registry" />
-        </service>
+        <service id="ekyna_commerce.sale_item_create.form_flow"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow"
+                 parent="craue.form.flow"/>
 
         <!-- Sale item subject form type -->
         <service id="ekyna_commerce.sale_address.form_type"
@@ -286,8 +293,8 @@
         </service>
 
         <!-- Sale item subject form type -->
-        <service id="ekyna_commerce.sale_item_subject.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType">
+        <service id="ekyna_commerce.sale_item_subject_configure.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <tag name="form.type"/>
         </service>

@@ -28,7 +28,8 @@
     },
     "autoload" : {
         "psr-4" : {
-            "Ekyna\\Bundle\\CommerceBundle\\" : ""
+            "Ekyna\\Bundle\\CommerceBundle\\" : "",
+            "Acme\\ProductBundle\\": "src/Ekyna/Bundle/CommerceBundle/Behat/app/Acme/ProductBundle"
         }
     }
 }
