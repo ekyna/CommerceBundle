@@ -5,9 +5,20 @@
 
     <parameters>
         <parameter key="ekyna_commerce.shipment_price.list_template">EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig</parameter>
+        <parameter key="ekyna_commerce.stock_unit.list_template">EkynaCommerceBundle:Admin/Stock:stock_unit_list.html.twig</parameter>
     </parameters>
 
     <services>
+
+        <!-- Stock renderer -->
+        <service id="ekyna_commerce.stock.stock_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="templating"/>
+            <argument>%ekyna_commerce.stock_unit.list_template%</argument>
+        </service>
+
         <!-- Address extension -->
         <service id="ekyna_commerce.twig.address_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension"
@@ -57,6 +68,15 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\StockExtension"
                  public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_commerce.stock.stock_renderer"/>
+            <tag name="twig.extension"/>
+        </service>
+
+        <!-- Subject extension -->
+        <service id="ekyna_commerce.twig.subject_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SubjectExtension"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="twig.extension"/>
         </service>
 

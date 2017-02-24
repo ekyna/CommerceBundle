@@ -595,6 +595,15 @@ ekyna_commerce:
             empty_list: Aucune zone de livraison configuré
 
     stock_unit:
+        label:
+            singular: Unitée de stock
+            plural: Unitées de stock
+        header:
+            list: Liste des unitées de stock
+            show: Détail de l'unité
+            new: Créer une nouvelle unité
+            edit: Modifier l'unité
+            remove: Supprimer l'unité
         state:
             new: Nouveau
             pending: En attente
@@ -607,6 +616,9 @@ ekyna_commerce:
             delivered_quantity: Qte livrée
             shipped_quantity: Qte expediée
             net_price: Prix d'achat HT
+            supplier_order: Cde. Four.
+        button:
+            new: Créer une unité de stock
 
     stock_subject:
         field:
@@ -624,6 +636,9 @@ ekyna_commerce:
             in_stock: En stock
             pre_order: Pré-commande
             out_of_stock: En rupture
+
+    subject:
+        label: Sujet
 
     supplier:
         label:
@@ -679,7 +694,8 @@ ekyna_commerce:
             new: Créer une nouvelle commande
             edit: Modifier la commande <small>%name%</small>
             remove: Supprimer la commande <small>%name%</small>
-            transform: Transformer la commande <small>%name%</small>
+            #transform: Transformer la commande <small>%name%</small>
+            submit: Soumettre la commande <small>%name%</small>
         tab:
             deliveries: Livraisons
         button:
@@ -688,8 +704,9 @@ ekyna_commerce:
             new: Nouvelle commande
             edit: Modifier la commande
             remove: Supprimer la commande
-            transform: Transformer la commande
+            #transform: Transformer la commande
             add_item: Ajouter une ligne
+            submit: Soumettre au fournisseur
         message:
             confirm_item_removal: Confirmer la suppression de cette ligne ?
             cant_be_deleted: Cette commande fournisseur a été réceptionnée et ne peut être supprimée.
@@ -720,6 +737,8 @@ ekyna_commerce:
             plural: Lignes de commande fournisseur
         field:
             net_price: Prix d'achat HT
+            supplier_data: Données Four.
+            subject: Liaison
 
     supplier_product:
         label:

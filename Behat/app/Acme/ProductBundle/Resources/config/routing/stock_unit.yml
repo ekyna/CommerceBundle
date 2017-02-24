@@ -1,0 +1,30 @@
+acme_product_stock_unit_admin_new:
+    path: /new
+    defaults: { _controller: "acme_product.stock_unit.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        productId: \d+
+
+#acme_product_stock_unit_admin_show:
+#    path: /{stockUnitId}/show
+#    defaults: { _controller: "acme_product.stock_unit.controller:showAction" }
+#    methods: [GET]
+#    requirements:
+#        productId: \d+
+#        stockUnitId: \d+
+
+acme_product_stock_unit_admin_edit:
+    path: /{stockUnitId}/edit
+    defaults: { _controller: "acme_product.stock_unit.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        productId: \d+
+        stockUnitId: \d+
+
+acme_product_stock_unit_admin_remove:
+    path: /{stockUnitId}/remove
+    defaults: { _controller: "acme_product.stock_unit.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        productId: \d+
+        stockUnitId: \d+

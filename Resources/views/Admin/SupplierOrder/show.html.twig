@@ -2,33 +2,44 @@
 
 {% block main %}
 <div class="actions">
+    {{ ui_button('ekyna_commerce.supplier_order.button.submit', {
+        'path': path('ekyna_commerce_supplier_order_admin_submit', {'supplierOrderId': supplierOrder.id}),
+        'type': 'link'
+    }) }}
     {{ admin_resource_btn(supplierOrder, 'edit') }}
     {{ admin_resource_btn(supplierOrder, 'remove') }}
 </div>
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+            <a href="#supplier-order-general" id="toggle-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#deliveries" data-toggle="tab">{{ 'ekyna_commerce.supplier_order.tab.deliveries'|trans }}</a>
+            <a href="#supplier-order-deliveries" id="toggle-deliveries" data-toggle="tab">
+                {{ 'ekyna_commerce.supplier_order.tab.deliveries'|trans }}
+            </a>
         </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
-            <div class="tab-pane active" id="general">
+            <div class="tab-pane active" id="supplier-order-general">
                 {{ show_row(supplierOrder.supplier, 'entity', 'ekyna_commerce.supplier.label.singular', {
+                    'id': 'order_supplier',
                     'route': 'ekyna_commerce_supplier_admin_show',
                     'route_params_map': {'supplierId': 'id'},
                 }) }}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(supplierOrder.number, 'text', 'ekyna_core.field.number', {
+                            'id': 'order_number',
                             'label_nb_col': 4, 'widget_nb_col': 8
                         }) }}
                     </div>
                     <div class="col-md-6">
                         {{ show_row(supplierOrder.currency, 'entity', 'ekyna_commerce.currency.label.singular', {
+                            'id': 'order_currency',
                             'route': 'ekyna_commerce_currency_admin_show',
                             'route_params_map': {'currencyId': 'id'},
                             'label_nb_col': 4, 'widget_nb_col': 8
@@ -37,12 +48,14 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(supplierOrder.state, 'text', 'ekyna_commerce.supplier_order.field.state', {
+                        {{ show_row(supplierOrder.state|supplier_order_state_badge, 'text', 'ekyna_commerce.supplier_order.field.state', {
+                            'id': 'order_state',
                             'label_nb_col': 4, 'widget_nb_col': 8
                         }) }}
                     </div>
                     <div class="col-md-6">
                         {{ show_row(supplierOrder.paymentTotal, 'number', 'ekyna_commerce.supplier_order.field.payment_total', {
+                            'id': 'order_paymentTotal',
                             'label_nb_col': 4, 'widget_nb_col': 8, 'append': ' €'
                         }) }}
                     </div>
@@ -50,11 +63,13 @@
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(supplierOrder.estimatedDateOfArrival, 'date', 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival', {
+                            'id': 'order_estimatedDateOfArrival',
                             'label_nb_col': 4, 'widget_nb_col': 8
                         }) }}
                     </div>
                     <div class="col-md-6">
                         {{ show_row(supplierOrder.paymentDate, 'date', 'ekyna_commerce.supplier_order.field.payment_date', {
+                            'id': 'order_paymentDate',
                             'label_nb_col': 4, 'widget_nb_col': 8
                         }) }}
                     </div>
@@ -62,7 +77,7 @@
                 <hr>
                 {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:supplier_order_items.html.twig" %}
             </div>
-            <div class="tab-pane" id="deliveries">
+            <div class="tab-pane" id="supplier-order-deliveries">
                 {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:supplier_order_deliveries.html.twig" %}
             </div>
         </div>

@@ -46,24 +46,33 @@ class SupplierProductContext implements Context, KernelAwareContext
         $supplierProductRepository = $this->getContainer()->get('ekyna_commerce.supplier_product.repository');
 
         $supplierProducts = [];
-        foreach ($table->getHash() as $hash) {
-            if (null === $supplier = $supplierRepository->findOneBy(['name' => $hash['supplier']])) {
-                throw new \InvalidArgumentException("Failed to find the supplier named '{$hash['supplier']}'.");
+        foreach ($table as $row) {
+            if (null === $supplier = $supplierRepository->findOneBy(['name' => $row['supplier']])) {
+                throw new \InvalidArgumentException("Failed to find the supplier named '{$row['supplier']}'.");
             }
 
-            $eda = 0 < strlen($hash['eda']) ? new \DateTime($hash['eda']) : null;
+            $eda = 0 < strlen($row['eda']) ? new \DateTime($row['eda']) : null;
 
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $product */
             $product = $supplierProductRepository->createNew();
             $product
                 ->setSupplier($supplier)
-                ->setDesignation($hash['designation'])
-                ->setReference($hash['reference'])
-                ->setNetPrice($hash['price'])
-                ->setWeight($hash['weight'])
-                ->setAvailableStock($hash['available'])
-                ->setOrderedStock($hash['ordered'])
+                ->setDesignation($row['designation'])
+                ->setReference($row['reference'])
+                ->setNetPrice($row['price'])
+                ->setWeight($row['weight'])
+                ->setAvailableStock($row['available'])
+                ->setOrderedStock($row['ordered'])
                 ->setEstimatedDateOfArrival($eda);
+
+            $provider = isset($row['provider']) ? $row['provider'] : null;
+            $identifier = isset($row['identifier']) ? $row['identifier'] : null;
+            if (!(empty($provider) && empty($identifier))) {
+                $product
+                    ->getSubjectIdentity()
+                    ->setProvider($provider)
+                    ->setIdentifier($identifier);
+            }
 
             $supplierProducts[] = $product;
         }

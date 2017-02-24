@@ -2,7 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
+use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -29,7 +33,6 @@ class SupplierOrderController extends ResourceController
         $resource = $this->createNew($context);
         $resourceName = $this->config->getResourceName();
         $context->addResource($resourceName, $resource);
-
 
         $flow = $this->get('ekyna_commerce.supplier_order.create_form_flow');
         $flow->setGenericFormOptions([
@@ -63,12 +66,100 @@ class SupplierOrderController extends ResourceController
             }
         }
 
-        $this->appendBreadcrumb(sprintf('%s_new', $resourceName), 'ekyna_core.button.create');
+        $this->appendBreadcrumb(
+            sprintf('%s_new', $resourceName),
+            'ekyna_core.button.create'
+        );
 
         return $this->render(
             $this->config->getTemplate('new.html'),
             $context->getTemplateVars([
                 'flow' => $flow,
+                'form' => $form->createView()
+            ])
+        );
+    }
+
+    /**
+     * Supplier order submit action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function submitAction(Request $request)
+    {
+        $this->isGranted('EDIT');
+
+        $context = $this->loadContext($request);
+
+        $resourceName = $this->config->getResourceName();
+        /** @var SupplierOrderInterface $resource */
+        $resource = $context->getResource($resourceName);
+
+        //$data = ['confirm' => false];
+
+        // TODO Use Symfony WorkFlow Component
+
+        $form = $this->createForm(SupplierOrderSubmitType::class);
+
+        $cancelPath = $this->generateUrl(
+            $this->config->getRoute('show'),
+            $context->getIdentifiers(true)
+        );
+
+        $form->add('actions', FormActionsType::class, [
+            'buttons' => [
+                'send' => [
+                    'type'    => Type\SubmitType::class,
+                    'options' => [
+                        'button_class' => 'warning',
+                        'label'        => 'ekyna_core.button.send',
+                        'attr'         => ['icon' => 'envelope'],
+                    ],
+                ],
+                'cancel' => [
+                    'type'    => Type\ButtonType::class,
+                    'options' => [
+                        'label'        => 'ekyna_core.button.cancel',
+                        'button_class' => 'default',
+                        'as_link'      => true,
+                        'attr'         => [
+                            'class' => 'form-cancel-btn',
+                            'icon'  => 'remove',
+                            'href'  => $cancelPath,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $resource->setOrderedAt(new \DateTime());
+
+            // TODO use ResourceManager
+            $event = $this->getOperator()->update($resource);
+
+            $event->toFlashes($this->getFlashBag());
+
+            if (!$event->hasErrors()) {
+                return $this->redirect($this->generateUrl(
+                    $this->config->getRoute('show'),
+                    $context->getIdentifiers(true)
+                ));
+            }
+        }
+
+        $this->appendBreadcrumb(
+            sprintf('%s_submit', $resourceName),
+            'ekyna_commerce.supplier_order.button.submit'
+        );
+
+        return $this->render(
+            $this->config->getTemplate('submit.html'),
+            $context->getTemplateVars([
                 'form' => $form->createView()
             ])
         );

@@ -42,6 +42,24 @@ class Product implements ResourceInterface, StockSubjectInterface
 
 
     /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->initializeStock();
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getDesignation();
+    }
+
+    /**
      * Returns the id.
      *
      * @return int
@@ -150,7 +168,7 @@ class Product implements ResourceInterface, StockSubjectInterface
     /**
      * @inheritDoc
      */
-    public function getStockUnitClass()
+    public static function getStockUnitClass()
     {
         return StockUnit::class;
     }

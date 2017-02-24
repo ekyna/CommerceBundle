@@ -317,7 +317,8 @@
         <!-- Stock unit resolver -->
         <service id="ekyna_commerce.stock_unit.resolver"
                  class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver">
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
         </service>
 
         <!-- Stock unit state resolver -->
@@ -333,6 +334,7 @@
         <!-- Stock subject updater -->
         <service id="ekyna_commerce.stock_subject_updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
         </service>
 

@@ -1,22 +1,17 @@
-<div class="row sub-header">
-    <div class="col-md-8">
-        <h2>{{ 'ekyna_commerce.supplier_delivery.header.list'|trans }}</h2>
-    </div>
-    <div class="col-md-4">
-        <div class="actions">
-            {{ ui_button('ekyna_commerce.supplier_delivery.button.new', {
-                'type': 'link',
-                'path': path('ekyna_commerce_supplier_delivery_admin_new', {
-                    'supplierOrderId': supplierOrder.id
-                }),
-                'theme': 'primary',
-                'icon': 'plus'
-            }) }}
-        </div>
-    </div>
+{% spaceless %}
+<div class="actions">
+    {{ ui_button('ekyna_commerce.supplier_delivery.button.new', {
+        'type': 'link',
+        'path': path('ekyna_commerce_supplier_delivery_admin_new', {
+            'supplierOrderId': supplierOrder.id
+        }),
+        'theme': 'primary',
+        'icon': 'plus',
+        'size': 'sm',
+    }) }}
 </div>
-
 {% for delivery in supplierOrder.deliveries %}
+    {% set deliveryId = 'delivery_' ~ loop.index0 ~ '_' -%}
     <table class="table table-stripped">
         <thead>
         <tr>
@@ -28,17 +23,21 @@
         <tbody>
         {% for item in delivery.items %}
         <tr>
-            {% set orderItem = item.orderItem %}
-            <td>
+            {% set itemId = deliveryId ~ 'item_' ~ loop.index0 ~ '_' %}
+            <td id="{{ itemId ~ 'designation' }}">
                 <a href="{{ path('ekyna_commerce_supplier_product_admin_show', {
-                    'supplierId': orderItem.product.supplier.id,
-                    'supplierProductId': orderItem.product.id,
+                    'supplierId': item.orderItem.product.supplier.id,
+                    'supplierProductId': item.orderItem.product.id,
                 }) }}">
-                    {{ orderItem.designation }}
+                    {{ item.orderItem.designation }}
                 </a>
             </td>
-            <td>{{ orderItem.reference }}</td>
-            <td class="text-right">{{ item.quantity|number_format }}{# TODO packaging format #}</td>
+            <td id="{{ itemId ~ 'reference' }}">
+                {{ item.orderItem.reference }}
+            </td>
+            <td id="{{ itemId ~ 'quantity' }}" class="text-right">
+                {{ item.quantity|number_format }}{# TODO packaging format #}
+            </td>
         </tr>
         {% endfor %}
         </tbody>
@@ -49,3 +48,4 @@
     </div>
     {% if not loop.last %}<hr>{% endif %}
 {% endfor %}
+{% endspaceless %}

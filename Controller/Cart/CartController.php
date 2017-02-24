@@ -77,7 +77,8 @@ class CartController extends AbstractController
             ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use operator to update item (cart will be automatically saved)
             $this->getCartHelper()->getCartProvider()->saveCart();
 
@@ -167,7 +168,8 @@ class CartController extends AbstractController
             ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getCartHelper()->getCartProvider()->saveCart();
 
             return $this->buildXhrCartViewResponse();
@@ -208,7 +210,8 @@ class CartController extends AbstractController
             ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getCartHelper()->getCartProvider()->saveCart();
 
             return $this->buildXhrCartViewResponse();
@@ -250,7 +253,8 @@ class CartController extends AbstractController
             ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getCartHelper()->getCartProvider()->saveCart();
 
             return $this->buildXhrCartViewResponse();

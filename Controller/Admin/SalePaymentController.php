@@ -67,7 +67,8 @@ class SalePaymentController extends AbstractSaleController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->create($payment);
 
@@ -130,7 +131,8 @@ class SalePaymentController extends AbstractSaleController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
             $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
@@ -191,7 +193,8 @@ class SalePaymentController extends AbstractSaleController
         $form = $this->createRemoveResourceForm($context, null, !$isXhr);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->delete($resource);
             if (!$isXhr) {

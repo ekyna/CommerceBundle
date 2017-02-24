@@ -8,15 +8,19 @@
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+            <a href="#supplier-general" id="toggle-supplier-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#catalog" data-toggle="tab">{{ 'ekyna_commerce.supplier.tab.catalog'|trans }}</a>
+            <a href="#supplier-catalog" id="toggle-supplier-catalog" data-toggle="tab">
+                {{ 'ekyna_commerce.supplier.tab.catalog'|trans }}
+            </a>
         </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
-            <div class="tab-pane active" id="general">
+            <div class="tab-pane active" id="supplier-general">
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(supplier.name, 'text', 'ekyna_core.field.name', {
@@ -59,7 +63,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane" id="catalog">
+            <div class="tab-pane" id="supplier-catalog">
                 <div class="actions">
                     {{ admin_resource_btn('ekyna_commerce.supplier_product', 'new', {
                         'label': 'ekyna_commerce.supplier_product.button.new',

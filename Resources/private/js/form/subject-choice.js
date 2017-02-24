@@ -12,6 +12,8 @@ define(['jquery', 'routing', 'select2'], function($, router) {
 
         this.each(function() {
 
+            console.log('subjectChoiceWidget');
+
             var $this = $(this),
                 select2initialized = false,
                 $provider = $this.find('.provider'),
@@ -23,8 +25,11 @@ define(['jquery', 'routing', 'select2'], function($, router) {
             }
 
             var providerChangeHandler = function() {
-                $subject.prop('disabled', true);
-                $identifier.val(null).off('change');
+
+                console.log('providerChangeHandler');
+
+                $subject.prop('disabled', true).off('change');
+                $identifier.val(null);
 
                 if (select2initialized) {
                     $subject.select2('destroy');
@@ -60,6 +65,7 @@ define(['jquery', 'routing', 'select2'], function($, router) {
                     .select2({
                         placeholder: 'Rechercher ...',
                         allowClear: true,
+                        selectOnClose: true,
                         minimumInputLength: 3,
                         templateResult: formatter,
                         templateSelection: formatter,

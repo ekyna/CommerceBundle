@@ -11,14 +11,29 @@
         <service id="acme_product.product.subject_provider"
                  class="Acme\ProductBundle\Service\Commerce\ProductProvider">
             <argument type="service" id="acme_product.product.repository"/>
-            <argument type="service" id="acme_product.stock_unit.repository"/>
             <tag name="ekyna_commerce.subject_provider"/>
         </service>
+
+        <!-- Serialization -->
+        <service id="acme_product.product.normalizer"
+                 class="Acme\ProductBundle\Serializer\ProductNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer">
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Table -->
+        <!--<service id="acme_product.product.table_type"
+                 class="Acme\ProductBundle\Table\Type\ProductType">
+            <argument>Acme\Product\Bundle\Entity\Product</argument>
+            <tag name="table.type" alias="acme_product_product"/>
+        </service>-->
 
         <!-- Product event listener -->
         <service id="acme_product.product.event_subscriber"
                  class="Acme\ProductBundle\EventListener\ProductEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_subject_updater"/>
             <tag name="resource.event_subscriber"/>
         </service>
 

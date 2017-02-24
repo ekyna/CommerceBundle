@@ -72,12 +72,11 @@ class CheckoutController extends AbstractController
             ]);
 
             $saleForm->handleRequest($request);
-            if ($saleForm->isSubmitted()) {
-                if ($saleForm->isValid()) {
-                    $saleHelper->recalculate($cart);
 
-                    $this->saveCart();
-                }
+            if ($saleForm->isSubmitted() && $saleForm->isValid()) {
+                $saleHelper->recalculate($cart);
+
+                $this->saveCart();
             }
 
             $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
@@ -143,7 +142,8 @@ class CheckoutController extends AbstractController
             ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->saveCart();
 
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
@@ -186,7 +186,8 @@ class CheckoutController extends AbstractController
             ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $cart->addPayment($payment);
             $this->saveCart();
 

@@ -66,7 +66,8 @@ class SaleAdjustmentController extends AbstractSaleController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->create($adjustment);
             if (!$isXhr) {
@@ -137,7 +138,8 @@ class SaleAdjustmentController extends AbstractSaleController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->update($adjustment);
             if (!$isXhr) {

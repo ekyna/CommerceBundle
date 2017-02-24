@@ -88,7 +88,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 .find('.commerce-supplier-order-compose')
                 .supplierOrderComposeWidget();
 
-            function stringToFloat(value) {
+            /*function stringToFloat(value) {
                 return parseFloat(String(value).replace(',', '.'));
             }
 
@@ -108,7 +108,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
             $this.on('change blur', '.ekyna-collection-child input', changeHandler);
 
-            changeHandler();
+            changeHandler();*/
         });
 
         return this;

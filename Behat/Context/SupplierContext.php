@@ -46,20 +46,20 @@ class SupplierContext implements Context, KernelAwareContext
         $supplierRepository = $this->getContainer()->get('ekyna_commerce.supplier.repository');
 
         $suppliers = [];
-        foreach ($table->getHash() as $hash) {
-            if (null === $currency = $currencyRepository->findOneByCode($hash['currency'])) {
-                throw new \InvalidArgumentException("Failed to find the currency with code '{$hash['currency']}'.");
+        foreach ($table as $row) {
+            if (null === $currency = $currencyRepository->findOneByCode($row['currency'])) {
+                throw new \InvalidArgumentException("Failed to find the currency with code '{$row['currency']}'.");
             }
 
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierInterface $supplier */
             $supplier = $supplierRepository->createNew();
             $supplier
-                ->setName($hash['name'])
+                ->setName($row['name'])
                 ->setCurrency($currency)
-                ->setEmail($hash['email'])
-                ->setGender($hash['gender'])
-                ->setLastName($hash['lastName'])
-                ->setFirstName($hash['firstName']);
+                ->setEmail($row['email'])
+                ->setGender($row['gender'])
+                ->setLastName($row['lastName'])
+                ->setFirstName($row['firstName']);
 
             $suppliers[] = $supplier;
         }

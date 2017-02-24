@@ -9,6 +9,7 @@ use Ekyna\Component\Table\TableBuilderInterface;
  * Class AbstractStockUnitType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ * @deprecated Use the StockRenderer
  */
 abstract class AbstractStockUnitType extends ResourceTableType
 {

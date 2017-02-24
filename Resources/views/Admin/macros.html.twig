@@ -1,0 +1,14 @@
+{% macro show_subject(relative, label) %}
+{% spaceless %}
+    <div class="row show-row">
+        <div class="col-md-2 show-label">
+            {{ label|default('ekyna_commerce.subject.label')|trans }}
+        </div>
+        <div class="col-md-10">
+            <div class="show-widget show-widget-inline">
+                {{ relative|subject_admin_link }}
+            </div>
+        </div>
+    </div>
+{% endspaceless %}
+{% endmacro show_subject %}

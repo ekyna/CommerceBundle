@@ -134,7 +134,8 @@ class CartHelper
     public function handleAddSubjectToCartForm(FormInterface $form, Request $request)
     {
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $item = $form->getData();
 
             if ($this->cartProvider->hasCart()) {

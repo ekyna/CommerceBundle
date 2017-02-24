@@ -5,6 +5,7 @@ namespace Acme\ProductBundle\EventListener;
 use Acme\ProductBundle\Entity\Product;
 use Acme\ProductBundle\Event\ProductEvents;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Persistence\PersistenceHelperInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -21,15 +22,24 @@ class ProductEventSubscriber implements EventSubscriberInterface
      */
     protected $persistenceHelper;
 
+    /**
+     * @var StockSubjectUpdaterInterface
+     */
+    private $stockUpdater;
+
 
     /**
      * Constructor.
      *
-     * @param PersistenceHelperInterface $persistenceHelper
+     * @param PersistenceHelperInterface   $persistenceHelper
+     * @param StockSubjectUpdaterInterface $stockUpdater
      */
-    public function __construct(PersistenceHelperInterface $persistenceHelper)
-    {
+    public function __construct(
+        PersistenceHelperInterface $persistenceHelper,
+        StockSubjectUpdaterInterface $stockUpdater
+    ) {
         $this->persistenceHelper = $persistenceHelper;
+        $this->stockUpdater = $stockUpdater;
     }
 
     /**
@@ -37,28 +47,37 @@ class ProductEventSubscriber implements EventSubscriberInterface
      *
      * @param ResourceEventInterface $event
      */
-    /*public function onInsert(ResourceEventInterface $event)
+    public function onInsert(ResourceEventInterface $event)
     {
         $product = $this->getProductFromEvent($event);
+
+        $changed = $this->stockUpdater->update($product);
 
         if ($changed) {
             $this->persistenceHelper->persistAndRecompute($product);
         }
-    }*/
+    }
 
     /**
      * Update event handler.
      *
      * @param ResourceEventInterface $event
      */
-    /*public function onUpdate(ResourceEventInterface $event)
+    public function onUpdate(ResourceEventInterface $event)
     {
         $product = $this->getProductFromEvent($event);
+
+        $changed = false;
+
+        $properties = ['inStock', 'orderedStock', 'shippedStock', 'estimatedDateOfArrival'];
+        if ($this->persistenceHelper->isChanged($product, $properties)) {
+            $changed = $this->stockUpdater->updateStockState($product);
+        }
 
         if ($changed) {
             $this->persistenceHelper->persistAndRecompute($product);
         }
-    }*/
+    }
 
     /**
      * Delete event handler.
@@ -79,9 +98,13 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
         $product = $this->getProductFromEvent($event);
 
-        // TODO Use stock updater
+        if (null !== $stockUnit = $event->getData('stock_unit')) {
+            $changed = $this->stockUpdater->updateFromStockUnitChange($product, $stockUnit);
+        } else {
+            $changed = $this->stockUpdater->update($product);
+        }
 
-        if (false) {
+        if ($changed) {
             $this->persistenceHelper->persistAndRecompute($product);
         }
     }
@@ -95,9 +118,13 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
         $product = $this->getProductFromEvent($event);
 
-        // TODO Use stock updater
+        if (null !== $stockUnit = $event->getData('stock_unit')) {
+            $changed = $this->stockUpdater->updateFromStockUnitRemoval($product, $stockUnit);
+        } else {
+            $changed = $this->stockUpdater->update($product);
+        }
 
-        if (false) {
+        if ($changed) {
             $this->persistenceHelper->persistAndRecompute($product);
         }
     }
@@ -126,12 +153,11 @@ class ProductEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            //ProductEvents::INSERT             => ['onInsert', 0],
-            //ProductEvents::UPDATE             => ['onUpdate', 0],
+            ProductEvents::INSERT             => ['onInsert', 0],
+            ProductEvents::UPDATE             => ['onUpdate', 0],
             //ProductEvents::DELETE             => ['onDelete', 0],
             ProductEvents::STOCK_UNIT_CHANGE  => ['onStockUnitChange', 0],
             ProductEvents::STOCK_UNIT_REMOVAL => ['onStockUnitRemoval', 0],
-            //ProductEvents::CHILD_STOCK_CHANGE => ['onChildStockChange', 0],
         ];
     }
 }

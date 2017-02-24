@@ -7,8 +7,9 @@
 
         <!-- Subject helper -->
         <service id="ekyna_commerce.subject_helper"
-                 class="Ekyna\Component\Commerce\Subject\SubjectHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="ekyna_admin.helper.resource_helper"/>
         </service>
 
         <!-- Constants helper -->

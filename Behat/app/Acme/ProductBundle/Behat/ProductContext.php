@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 
 /**
  * Class ProductContext
@@ -53,6 +54,7 @@ class ProductContext implements Context, KernelAwareContext
                 ->setReference($hash['reference'])
                 ->setNetPrice($hash['price'])
                 ->setWeight($hash['weight'])
+                ->setStockMode(StockSubjectModes::MODE_ENABLED)
             ;
 
             $products[] = $product;

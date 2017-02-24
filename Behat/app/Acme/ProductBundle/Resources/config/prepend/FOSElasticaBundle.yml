@@ -1,0 +1,19 @@
+fos_elastica:
+    indexes:
+        search:
+            types:
+                acme_product_product:
+                    serializer:
+                        groups: [Search]
+                    dynamic_templates:
+                        default:
+                            match_mapping_type: string
+                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                    persistence:
+                        driver: orm
+                        model: Acme\ProductBundle\Entity\Product
+                        provider:
+                            batch_size: 25
+                        listener: ~
+                        finder: ~
+                        repository: Acme\ProductBundle\Service\Search\ProductRepository

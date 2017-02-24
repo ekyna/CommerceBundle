@@ -44,7 +44,7 @@ class FormBuilder implements FormBuilderInterface
 
         $form->add('subject', ResourceSearchType::class, [
             'label'    => false,
-            'class'    => $this->provider->getProductRepository()->getClassName(),
+            'class'    => $this->provider->getSubjectClass(),
             'required' => false,
         ]);
     }

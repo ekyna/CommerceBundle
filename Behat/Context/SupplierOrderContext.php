@@ -47,19 +47,25 @@ class SupplierOrderContext implements Context, KernelAwareContext
         $supplierOrderRepository = $this->getContainer()->get('ekyna_commerce.supplier_order.repository');
 
         $supplierOrders = [];
-        foreach ($table->getHash() as $hash) {
-            if (null === $supplier = $supplierRepository->findOneBy(['name' => $hash['supplier']])) {
-                throw new \InvalidArgumentException("Failed to find the supplier named '{$hash['supplier']}'.");
+        foreach ($table as $row) {
+            if (null === $supplier = $supplierRepository->findOneBy(['name' => $row['supplier']])) {
+                throw new \InvalidArgumentException("Failed to find the supplier named '{$row['supplier']}'.");
             }
-            if (null === $currency = $currencyRepository->findOneBy(['code' => $hash['currency']])) {
-                throw new \InvalidArgumentException("Failed to find the currency for code '{$hash['currency']}'.");
+            if (null === $currency = $currencyRepository->findOneBy(['code' => $row['currency']])) {
+                throw new \InvalidArgumentException("Failed to find the currency for code '{$row['currency']}'.");
             }
 
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
             $supplierOrder = $supplierOrderRepository->createNew();
             $supplierOrder
                 ->setSupplier($supplier)
-                ->setCurrency($currency);
+                ->setCurrency($currency)
+                ->setNumber($row['number'])
+                ->setPaymentTotal($row['paymentTotal']);
+
+            if (isset($row['state'])) {
+                $supplierOrder->setState($row['state']);
+            }
 
             $supplierOrders[] = $supplierOrder;
         }

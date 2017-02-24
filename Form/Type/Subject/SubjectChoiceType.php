@@ -68,15 +68,19 @@ class SubjectChoiceType extends AbstractType
             /** @var SubjectIdentity $identity */
             $identity = $event->getData();
 
-            $choices = [];
+            $subjectChoices = [];
+            $subjectRequired = $options['required'];
 
             /** @noinspection PhpInternalEntityUsedInspection */
-            if (!empty($name = $identity->getProvider())) {
+            if ($identity->hasIdentity()) {
                 $subject = $this->registry
-                    ->getProviderByName($name)
+                    ->getProviderByName($identity->getProvider())
                     ->reverseTransform($identity);
 
-                $choices[(string)$subject] = $subject->getId();
+                $subjectChoices[(string)$subject] = $subject;
+                $subjectRequired = true;
+
+                //$event->setData($identity);
             }
 
             $disabled = $options['lock_mode'] && $identity->hasIdentity();
@@ -95,16 +99,16 @@ class SubjectChoiceType extends AbstractType
                 ])
                 ->add('identifier', HiddenType::class, [
                     'disabled' => $disabled,
-                    'required'    => $options['required'],
+                    'required' => $options['required'],
                     'attr'     => [
                         'class' => 'identifier',
                     ],
                 ])
                 ->add('subject', ChoiceType::class, [
                     'label'    => false,
+                    'choices'  => $subjectChoices,
+                    'required' => $subjectRequired,
                     'disabled' => true,
-                    'required' => $options['required'],
-                    'choices'  => $choices,
                     'select2'  => false,
                     'attr'     => [
                         'class' => 'subject',
@@ -141,12 +145,17 @@ class SubjectChoiceType extends AbstractType
         return function ($val) {
             $config = [];
 
-            if ($val == 'product') {
+            $mapping = [
+                'product'      => 'ekyna',
+                'acme_product' => 'acme',
+            ];
+
+            if (isset($mapping[$val])) {
                 // TODO Provider method to provide this config.
                 // TODO Product : search only for Simple/Variant
                 $config = [
-                    'search' => $this->urlGenerator->generate('ekyna_product_product_admin_search'),
-                    'find'   => $this->urlGenerator->generate('ekyna_product_product_admin_find'),
+                    'search' => $this->urlGenerator->generate($mapping[$val] . '_product_product_admin_search'),
+                    'find'   => $this->urlGenerator->generate($mapping[$val] . '_product_product_admin_find'),
                 ];
             }
 

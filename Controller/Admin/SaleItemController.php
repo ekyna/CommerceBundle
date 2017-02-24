@@ -166,7 +166,8 @@ class SaleItemController extends AbstractSaleController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->create($item);
             if (!$isXhr) {
@@ -246,7 +247,8 @@ class SaleItemController extends AbstractSaleController
         }
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->update($item);
             if (!$isXhr) {
@@ -315,7 +317,8 @@ class SaleItemController extends AbstractSaleController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->update($item);
             if (!$isXhr) {

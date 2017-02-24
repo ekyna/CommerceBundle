@@ -34,6 +34,13 @@ ekyna_commerce_supplier_order_admin_remove:
     requirements:
         supplierOrderId: \d+
 
+ekyna_commerce_supplier_order_admin_submit:
+    path: /{supplierOrderId}/submit
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:submitAction" }
+    methods: [GET|POST]
+    requirements:
+        supplierOrderId: \d+
+
 ekyna_commerce_supplier_delivery_admin:
     resource: supplier_delivery.yml
     prefix: /{supplierOrderId}/deliveries

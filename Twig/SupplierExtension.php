@@ -20,7 +20,7 @@ class SupplierExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param \Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper $constantHelper
+     * @param ConstantsHelper $constantHelper
      */
     public function __construct(ConstantsHelper $constantHelper)
     {

@@ -124,7 +124,8 @@ class SaleController extends AbstractSaleController
         $form = $this->createShipmentEditForm($sale, !$isXhr);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
             $event = $this->getOperator()->update($sale);
             if (!$isXhr) {
@@ -261,8 +262,10 @@ class SaleController extends AbstractSaleController
         $sale = $context->getResource();
 
         $form = $this->buildRecalculateForm($sale);
+
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $event = $this->getOperator()->createResourceEvent($sale);
             $event->setHard(true); // To trigger taxation update
             $this->getOperator()->update($event);
@@ -302,8 +305,10 @@ class SaleController extends AbstractSaleController
         }
 
         $form = $this->createTransformConfirmForm($sourceSale, $target);
+
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface $targetRepository */
             $targetRepository = $this->get('ekyna_commerce.' . $target . '.repository');
 

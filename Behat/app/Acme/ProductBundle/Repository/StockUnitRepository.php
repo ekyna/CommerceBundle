@@ -58,21 +58,23 @@ class StockUnitRepository extends ResourceRepository implements StockUnitReposit
     /**
      * @inheritDoc
      */
-    public function findOneBySupplierOrderItem(SupplierOrderItemInterface $item)
+    public function findNotClosedSubject(StockSubjectInterface $subject)
     {
-        if (!$item->getId()) {
-            return null;
+        if (!$subject->getId()) {
+            return [];
         }
 
+        $alias = $this->getAlias();
         $qb = $this->getQueryBuilder();
 
         return $qb
-            ->andWhere($qb->expr()->eq('su.supplierOrderItem', ':item'))
-            ->setParameter('item', $item)
+            ->andWhere($qb->expr()->in($alias . '.product', ':product'))
+            ->andWhere($qb->expr()->notIn($alias . '.state', ':state'))
+            ->setParameter('product', $subject)
+            ->setParameter('state', StockUnitStates::STATE_CLOSED)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
-
 
     /**
      * @inheritDoc

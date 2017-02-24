@@ -94,13 +94,13 @@ class SupplierOrderType extends ResourceFormType
             /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
             $currency = null !== $supplierOrder ? $supplierOrder->getCurrency() : null;
 
-            $adminMode = $options['admin_mode'];
-            $locked = (null !== $supplierOrder) && ($supplierOrder->getState() !== States::STATE_NEW);
+            //$adminMode = $options['admin_mode'];
+            //$locked = (null !== $supplierOrder) && ($supplierOrder->getState() !== States::STATE_NEW);
 
             $form->add('paymentTotal', MoneyType::class, [
                 'label'    => 'ekyna_core.field.amount',
                 'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
-                'disabled' => $locked || !$adminMode,
+                //'disabled' => $locked || !$adminMode,
             ]);
 
             $form->add('compose', SupplierOrderComposeType::class, [

@@ -1,0 +1,22 @@
+{% extends "EkynaAdminBundle:Entity:sided.html.twig" %}
+
+{% set resource = _context[resource_name] %}
+
+{% block title %}
+    <h1>{{ (resource_id ~ '.header.submit')|trans({'%name%': resource})|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {{ admin_resource_btn(resource, 'list') }}
+    {{ admin_resource_btn(resource, 'new') }}
+{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ form_widget(form) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}

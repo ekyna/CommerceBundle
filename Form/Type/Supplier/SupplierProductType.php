@@ -31,13 +31,19 @@ class SupplierProductType extends ResourceFormType
                 'label' => 'ekyna_core.field.reference',
             ])
             ->add('netPrice', Symfony\NumberType::class, [
-                'label'    => 'ekyna_core.field.price',
-                'scale'    => 2,
+                'label' => 'ekyna_core.field.price',
+                'scale' => 2,
+                'attr' => [
+                    'input_group' => ['append' => '€'], // TODO currency
+                ]
             ])
             ->add('weight', Symfony\NumberType::class, [
                 'label'    => 'ekyna_core.field.weight',
                 'scale'    => 2,
                 'required' => false,
+                'attr' => [
+                    'input_group' => ['append' => 'Kg'],
+                ]
             ])
             ->add('availableStock', Symfony\NumberType::class, [
                 'label'    => 'ekyna_commerce.supplier_product.field.available_stock',
@@ -54,6 +60,7 @@ class SupplierProductType extends ResourceFormType
                 'required' => false,
             ])
             ->add('subjectIdentity', Commerce\Subject\SubjectChoiceType::class, [
+                'label'     => 'ekyna_commerce.supplier_product.field.subject',
                 'lock_mode' => true,
                 'required'  => false,
             ]);

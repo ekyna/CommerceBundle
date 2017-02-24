@@ -1,40 +1,111 @@
 {% macro show_stock_mode(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject|stock_subject_mode_badge, 'text', 'ekyna_core.field.mode', options) }}
+    {{ show_row(subject|stock_subject_mode_badge, 'text', 'ekyna_core.field.mode', {
+        'id': 'subject_stockMode'
+    }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_stock_mode %}
 
 
 {% macro show_stock_state(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject|stock_subject_state_badge, 'text', 'ekyna_core.field.status', options) }}
+    {{ show_row(subject|stock_subject_state_badge, 'text', 'ekyna_core.field.status', {
+        'id': 'subject_stockState'
+    }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_stock_state %}
 
 
 {% macro show_in_stock(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.inStock, 'number', 'ekyna_commerce.stock_subject.field.in_stock', options) }}
+    {{ show_row(subject.inStock, 'number', 'ekyna_commerce.stock_subject.field.in_stock', {
+        'id': 'subject_inStock',
+        'precision': 0
+    }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_in_stock %}
 
 
 {% macro show_ordered_stock(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.orderedStock, 'number', 'ekyna_commerce.stock_subject.field.ordered_stock', options) }}
+    {{ show_row(subject.orderedStock, 'number', 'ekyna_commerce.stock_subject.field.ordered_stock', {
+        'id': 'subject_orderedStock',
+        'precision': 0
+    }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_ordered_stock %}
 
 
 {% macro show_shipped_stock(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.shippedStock, 'number', 'ekyna_commerce.stock_subject.field.shipped_stock', options) }}
+    {{ show_row(subject.shippedStock, 'number', 'ekyna_commerce.stock_subject.field.shipped_stock', {
+        'id': 'subject_shippedStock',
+        'precision': 0
+    }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_shipped_stock %}
 
 
 {% macro show_eta(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.estimatedDateOfArrival, 'datetime', 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival', options) }}
+    {{ show_row(subject.estimatedDateOfArrival, 'datetime', 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival', {
+        'id': 'subject_estimatedDateOfArrival'
+    }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_eta %}
+
+
+{% macro show_stock_view(subject, prefix) %}
+{% spaceless %}
+    {% set prefix = prefix|default('subject') %}
+    <div class="row">
+        <div class="col-md-6">
+            {{ _self.show_stock_mode(subject, {
+                'id': prefix ~'_stockMode',
+                'label_nb_col': 4,
+                'widget_nb_col': 8
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ _self.show_stock_state(subject, {
+                'id': prefix ~'_stockState',
+                'label_nb_col': 4,
+                'widget_nb_col': 8
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ _self.show_in_stock(subject, {
+                'id': prefix ~'_inStock',
+                'label_nb_col': 4,
+                'widget_nb_col': 8
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ _self.show_ordered_stock(subject, {
+                'id': prefix ~'_orderedStock',
+                'label_nb_col': 4,
+                'widget_nb_col': 8
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ _self.show_shipped_stock(subject, {
+                'id': prefix ~'_shippedStock',
+                'label_nb_col': 4,
+                'widget_nb_col': 8
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ _self.show_eta(subject, {
+                'id': prefix ~'_estimatedDateOfArrival',
+                'label_nb_col': 4,
+                'widget_nb_col': 8
+            }) }}
+        </div>
+    </div>
+{% endspaceless %}
+{% endmacro show_stock_view %}
+

@@ -1,14 +1,14 @@
 default:
     suites:
         admin_supplier_features:
-            paths:    [ "%paths.base%/features/admin/supplier" ]
+            paths: [ "%paths.base%/features/admin/supplier" ]
             contexts:
                 - Ekyna\Behat\Context\ResetContext
                 - Ekyna\Behat\Context\SecurityContext
                 - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
         admin_supplier_product_features:
-            paths:    [ "%paths.base%/features/admin/supplier_product" ]
+            paths: [ "%paths.base%/features/admin/supplier_product" ]
             contexts:
                 - Ekyna\Behat\Context\ResetContext
                 - Ekyna\Behat\Context\SecurityContext
@@ -17,7 +17,7 @@ default:
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
         admin_supplier_order_features:
-            paths:    [ "%paths.base%/features/admin/supplier_order" ]
+            paths: [ "%paths.base%/features/admin/supplier_order" ]
             contexts:
                 - Ekyna\Behat\Context\ResetContext
                 - Ekyna\Behat\Context\SecurityContext
@@ -26,18 +26,17 @@ default:
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
-#        admin_attribute_group_features:
-#            paths:    [ "%paths.base%/features/admin/attribute_group" ]
-#            contexts:
-#                - Ekyna\Behat\Context\BaseContext
-#                - Ekyna\Behat\Context\ResetContext
-#                - Ekyna\Behat\Context\SecurityContext
-#                - Ekyna\Bundle\ProductBundle\Behat\Context\AttributeGroupContext
-#        admin_product_features:
-#            paths:    [ "%paths.base%/features/admin/product" ]
-#            contexts:
-#                - Ekyna\Behat\Context\BaseContext
-#                - Ekyna\Behat\Context\ResetContext
-#                - Ekyna\Behat\Context\SecurityContext
-#                - Ekyna\Bundle\ProductBundle\Behat\Context\BrandContext
-#                - Ekyna\Bundle\ProductBundle\Behat\Context\CategoryContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext
+        admin_supplier_delivery_features:
+            paths: [ "%paths.base%/features/admin/supplier_delivery" ]
+            contexts:
+                - Ekyna\Behat\Context\ResetContext
+                - Ekyna\Behat\Context\SecurityContext
+                - Acme\ProductBundle\Behat\ProductContext
+                - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryItemContext

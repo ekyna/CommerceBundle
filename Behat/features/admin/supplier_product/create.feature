@@ -6,12 +6,12 @@ Feature: Create supplier products
 
     Background:
         Given I am logged in as an administrator
-        And The following suppliers:
-            | name     | currency | email                | gender | lastName | firstName |
-            | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
         And The following acme products:
             | designation | reference | price | weight |
             | iPad Air    | IPAD-AIR  | 290   | 0.8    |
+        And The following suppliers:
+            | name     | currency | email                | gender | lastName | firstName |
+            | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
 
     @supplier-product
     Scenario: Create a supplier product
@@ -24,9 +24,10 @@ Feature: Create supplier products
         And I press "supplier_product_actions_save"
         Then I should see the resource saved confirmation message
         And I should see "TechData"
+        And I show the "supplier-catalog" tab
         And I should see "Samsung Galaxy Tab A"
 
-    @supplier-product @subject
+    @javascript @supplier-product @subject
     Scenario: Create a supplier product with subject
         When I go to "ekyna_commerce_supplier_product_admin_new" route with "supplierId:1"
         And I fill in "supplier_product[designation]" with "iPar Air"
@@ -34,9 +35,11 @@ Feature: Create supplier products
         And I fill in "supplier_product[netPrice]" with "200"
         And I fill in "supplier_product[availableStock]" with "40"
         And I fill in "supplier_product[weight]" with "0.8"
-        And I fill in "supplier_product[subjectIdentity][provider]" with "acme_product"
-        And I fill in hidden "supplier_product[subjectIdentity][identifier]" with "1"
+        And I select "Acme Product" from "supplier_product[subjectIdentity][provider]"
+        And I wait for Select2 initialization on "supplier_product[subjectIdentity][subject]"
+        And I search "iPad" in "supplier_product[subjectIdentity][subject]" and select the first result
         And I press "supplier_product_actions_save"
         Then I should see the resource saved confirmation message
         And I should see "TechData"
+        And I show the "supplier-catalog" tab
         And I should see "IPAD-AIR"

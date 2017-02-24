@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 
 /**
  * Class StockExtension
@@ -16,15 +17,22 @@ class StockExtension extends \Twig_Extension
      */
     private $constantHelper;
 
+    /**
+     * @var StockRenderer
+     */
+    private $stockRenderer;
+
 
     /**
      * Constructor.
      *
-     * @param \Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper $constantHelper
+     * @param ConstantsHelper $constantHelper
+     * @param StockRenderer   $stockRenderer
      */
-    public function __construct(ConstantsHelper $constantHelper)
+    public function __construct(ConstantsHelper $constantHelper, StockRenderer $stockRenderer)
     {
         $this->constantHelper = $constantHelper;
+        $this->stockRenderer = $stockRenderer;
     }
 
     /**
@@ -61,6 +69,20 @@ class StockExtension extends \Twig_Extension
             new \Twig_SimpleFilter(
                 'stock_subject_mode_badge',
                 [$this->constantHelper, 'renderStockSubjectModeBadge'],
+                ['is_safe' => ['html']]
+            ),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFunctions()
+    {
+        return [
+            new \Twig_SimpleFunction(
+                'render_stock_unit_list',
+                [$this->stockRenderer, 'renderSubjectStockUnitList'],
                 ['is_safe' => ['html']]
             ),
         ];

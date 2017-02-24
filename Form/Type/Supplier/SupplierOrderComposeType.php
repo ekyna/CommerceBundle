@@ -51,15 +51,12 @@ class SupplierOrderComposeType extends AbstractType
                 ->setParameter('supplier', $options['supplier']);
         };
 
-        /** @noinspection PhpUnusedParameterInspection */
         /**
          * @param \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $value
-         * @param mixed                                                             $key
-         * @param int                                                               $index
          *
          * @return string
          */
-        $choiceLabel = function ($value, $key, $index) {
+        $choiceLabel = function ($value) {
             return sprintf(
                 '[%s] %s (%s - %s€) ',
                 $value->getReference(),
@@ -69,15 +66,12 @@ class SupplierOrderComposeType extends AbstractType
             );
         };
 
-        /** @noinspection PhpUnusedParameterInspection */
         /**
          * @param \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $value
-         * @param mixed                                                             $key
-         * @param int                                                               $index
          *
-         * @return string
+         * @return array
          */
-        $choiceAttributes = function ($value, $key, $index) {
+        $choiceAttributes = function ($value) {
             return [
                 'data-designation'  => $value->getDesignation(),
                 'data-reference'    => $value->getReference(),
@@ -112,7 +106,7 @@ class SupplierOrderComposeType extends AbstractType
             ]);
 
         /*$builder
-            ->add('quickAdd', EntitySearchType::class, [
+            ->add('quickAddSelect', EntitySearchType::class, [ // ResourceSearchType
                 'label'           => 'ekyna_commerce.supplier_product.label.singular',
                 'class'           => $this->supplierProductClass,
                 'search_route'    => 'ekyna_commerce_supplier_product_admin_search',

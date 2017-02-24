@@ -556,7 +556,6 @@
 
 {% block ekyna_commerce_subject_choice_widget %}
 {% spaceless %}
-    {{ form_errors(form) }}
     {#<div class="input-group">#}
     <div class="row commerce-subject-choice">
         <div class="col-md-3">
@@ -567,6 +566,10 @@
             {{ form_widget(form.subject) }}
         </div>
     </div>
+    {{ form_errors(form.provider) }}
+    {{ form_errors(form.identifier) }}
+    {{ form_errors(form.subject) }}
+    {{ form_errors(form) }}
     {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_subject_choice_widget %}
