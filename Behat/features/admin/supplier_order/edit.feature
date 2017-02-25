@@ -19,6 +19,8 @@ Feature: Edit supplier orders
         And I fill in "supplier_order[estimatedDateOfArrival]" with "01/01/2020"
         And I press "supplier_order_actions_save"
         Then I should see the resource saved confirmation message
+        And I should see "TechData" in the "#order_supplier" element
+        And I should see "249,17 €" in the "#order_paymentTotal" element
         And I should see "01/01/2020" in the "#order_estimatedDateOfArrival" element
 
     # TODO

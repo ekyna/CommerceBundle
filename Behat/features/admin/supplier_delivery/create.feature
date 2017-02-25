@@ -33,7 +33,7 @@ Feature: Create supplier deliveries
         And I should see "TechData" in the "#order_supplier" element
         And I should see "249,17" in the "#order_paymentTotal" element
         And I should see "Completed" in the "#order_state" element
-        # TODO And I should see "01/01/2020" in the "#order_estimatedDateOfArrival" element
+        And I should see "01/01/2020" in the "#order_estimatedDateOfArrival" element
         # TODO And I should not see "Soumettre au fournisseur"
 
         # Items assertions

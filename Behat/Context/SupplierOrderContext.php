@@ -66,6 +66,9 @@ class SupplierOrderContext implements Context, KernelAwareContext
             if (isset($row['state'])) {
                 $supplierOrder->setState($row['state']);
             }
+            /* TODO if (isset($row['estimatedDateOfArrival'])) {
+                $supplierOrder->setEstimatedDateOfArrival($row['state']);
+            }*/
 
             $supplierOrders[] = $supplierOrder;
         }
