@@ -17,6 +17,31 @@ class SupplierOrderContext implements Context, KernelAwareContext
     use KernelDictionary;
 
     /**
+     * @Given /^The supplier order with number "(?P<number>[^"]+)" is submitted$/
+     *
+     * @param string $number
+     */
+    public function setSupplierOrderState($number)
+    {
+        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $order */
+        $order = $this->getContainer()
+            ->get('ekyna_commerce.supplier_order.repository')
+            ->findOneBy(['number' => $number]);
+
+        if (null === $order) {
+            throw new \InvalidArgumentException("Supplier order with number '$number' not found.");
+        }
+
+        // TODO use a service (workflow ?) (same in admin controller)
+        $order->setOrderedAt(new \DateTime());
+
+        $manager = $this->getContainer()->get('ekyna_commerce.supplier_order.manager');
+        $manager->persist($order);
+        $manager->flush();
+        $manager->clear();
+    }
+
+    /**
      * @Given The following supplier orders:
      *
      * @param TableNode $table
@@ -63,12 +88,9 @@ class SupplierOrderContext implements Context, KernelAwareContext
                 ->setNumber($row['number'])
                 ->setPaymentTotal($row['paymentTotal']);
 
-            if (isset($row['state'])) {
-                $supplierOrder->setState($row['state']);
+            if (isset($row['estimatedDateOfArrival'])) {
+                $supplierOrder->setEstimatedDateOfArrival(new \DateTime($row['estimatedDateOfArrival']));
             }
-            /* TODO if (isset($row['estimatedDateOfArrival'])) {
-                $supplierOrder->setEstimatedDateOfArrival($row['state']);
-            }*/
 
             $supplierOrders[] = $supplierOrder;
         }

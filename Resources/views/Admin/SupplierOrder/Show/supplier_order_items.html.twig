@@ -8,7 +8,6 @@
         <th>{{ 'ekyna_commerce.supplier_order_item.field.net_price'|trans }}</th>
         <th>{{ 'ekyna_commerce.supplier_order_item.field.supplier_data'|trans }}</th>
         <th>{{ 'ekyna_commerce.supplier_order_item.field.subject'|trans }}</th>
-        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -39,7 +38,7 @@
                     [{{ item.product.orderedStock|number_format }}]{# TODO packaging format #}
                 {% endif %}
                 {% if item.product.estimatedDateOfArrival is not same as(null) %}
-                    ({{ item.product.estimatedDateOfArrival|localizeddate }})
+                    ({{ item.product.estimatedDateOfArrival|localizeddate('short', 'none') }})
                 {% endif %}
             {% endif %}
         </td>

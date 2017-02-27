@@ -8,9 +8,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as States;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form;
 
 /**
@@ -42,7 +40,7 @@ class SupplierOrderType extends ResourceFormType
     /**
      * @inheritdoc
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(Form\FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(Form\FormEvents::PRE_SET_DATA, function (Form\FormEvent $event) use ($options) {
             $form = $event->getForm();

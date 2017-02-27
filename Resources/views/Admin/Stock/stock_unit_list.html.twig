@@ -48,7 +48,7 @@
             </td>
             <td id="{{ stockUnitId ~ '_estimatedDateOfArrival' }}">
                 {%- if stockUnit.estimatedDateOfArrival is not empty -%}
-                    {{ stockUnit.estimatedDateOfArrival|localizeddate }}
+                    {{ stockUnit.estimatedDateOfArrival|localizeddate('short', 'none') }}
                 {%- else -%}
                     <em>{{ 'ekyna_core.value.unknown'|trans }}</em>
                 {%- endif -%}

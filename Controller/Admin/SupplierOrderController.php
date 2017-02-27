@@ -75,7 +75,7 @@ class SupplierOrderController extends ResourceController
             $this->config->getTemplate('new.html'),
             $context->getTemplateVars([
                 'flow' => $flow,
-                'form' => $form->createView()
+                'form' => $form->createView(),
             ])
         );
     }
@@ -97,11 +97,16 @@ class SupplierOrderController extends ResourceController
         /** @var SupplierOrderInterface $resource */
         $resource = $context->getResource($resourceName);
 
-        //$data = ['confirm' => false];
+        $data = [
+            'order'   => $resource,
+            'emails'  => [$resource->getSupplier()->getEmail()],
+            'message' => null,
+            'confirm' => false,
+        ];
 
-        // TODO Use Symfony WorkFlow Component
+        // TODO Use Symfony WorkFlow Component (can 'transition')
 
-        $form = $this->createForm(SupplierOrderSubmitType::class);
+        $form = $this->createForm(SupplierOrderSubmitType::class, $data);
 
         $cancelPath = $this->generateUrl(
             $this->config->getRoute('show'),
@@ -110,7 +115,7 @@ class SupplierOrderController extends ResourceController
 
         $form->add('actions', FormActionsType::class, [
             'buttons' => [
-                'send' => [
+                'send'   => [
                     'type'    => Type\SubmitType::class,
                     'options' => [
                         'button_class' => 'warning',
@@ -137,6 +142,7 @@ class SupplierOrderController extends ResourceController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // TODO use a service (workflow ?) (same in behat supplier order context)
             $resource->setOrderedAt(new \DateTime());
 
             // TODO use ResourceManager
@@ -145,6 +151,8 @@ class SupplierOrderController extends ResourceController
             $event->toFlashes($this->getFlashBag());
 
             if (!$event->hasErrors()) {
+                // TODO Send message
+
                 return $this->redirect($this->generateUrl(
                     $this->config->getRoute('show'),
                     $context->getIdentifiers(true)
@@ -160,7 +168,7 @@ class SupplierOrderController extends ResourceController
         return $this->render(
             $this->config->getTemplate('submit.html'),
             $context->getTemplateVars([
-                'form' => $form->createView()
+                'form' => $form->createView(),
             ])
         );
     }

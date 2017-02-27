@@ -16,7 +16,7 @@
                 <td>{{ shipment.number }}</td>
                 <td>{{ shipment.method }}</td>
                 <td>{{ shipment|shipment_state_badge }}</td>
-                <td>{{ shipment.createdAt|localizeddate('short') }}</td>
+                <td>{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td>{{ shipment.description }}</td>
                 <td class="actions">
                     <a href="{{ admin_resource_path(shipment, 'edit') }}" class="btn btn-warning btn-xs">
