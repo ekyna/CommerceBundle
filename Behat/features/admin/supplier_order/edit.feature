@@ -1,4 +1,4 @@
-@commerce
+@commerce @supplier-order
 Feature: Edit supplier orders
     In order to manage products supply
     As an administrator
@@ -13,7 +13,6 @@ Feature: Edit supplier orders
             | number | supplier | currency | paymentTotal |
             | SO-001 | TechData | EUR      | 249.16667    |
 
-    @supplier-order
     Scenario: Edit the supplier order
         When I go to "ekyna_commerce_supplier_order_admin_edit" route with "supplierOrderId:1"
         And I fill in "supplier_order[estimatedDateOfArrival]" with "01/01/2020"

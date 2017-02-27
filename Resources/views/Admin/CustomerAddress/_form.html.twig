@@ -37,6 +37,14 @@
                     {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.invoiceDefault, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.deliveryDefault, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
         </div>
     </div>
     {{ form_rest(form) }}

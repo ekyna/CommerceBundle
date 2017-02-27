@@ -1,4 +1,4 @@
-@commerce
+@commerce @supplier-product
 Feature: Create supplier products
     In order to manage products supply
     As an administrator
@@ -13,7 +13,6 @@ Feature: Create supplier products
             | name     | currency | email                | gender | lastName | firstName |
             | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
 
-    @supplier-product
     Scenario: Create a supplier product
         When I go to "ekyna_commerce_supplier_product_admin_new" route with "supplierId:1"
         And I fill in "supplier_product[designation]" with "Samsung Galaxy Tab A"
@@ -27,7 +26,7 @@ Feature: Create supplier products
         And I show the "supplier-catalog" tab
         And I should see "Samsung Galaxy Tab A"
 
-    @javascript @supplier-product @subject
+    @javascript @subject
     Scenario: Create a supplier product with subject
         When I go to "ekyna_commerce_supplier_product_admin_new" route with "supplierId:1"
         And I fill in "supplier_product[designation]" with "iPar Air"

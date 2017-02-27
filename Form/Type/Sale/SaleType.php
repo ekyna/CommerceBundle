@@ -47,6 +47,7 @@ class SaleType extends ResourceFormType
         $builder
             ->add('number', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.number',
+                'required' => false,
                 'disabled' => true,
             ])
             ->add('currency', CurrencyChoiceType::class)
@@ -58,6 +59,7 @@ class SaleType extends ResourceFormType
             ->add('customer', EntitySearchType::class, [
                 'label'           => 'ekyna_commerce.customer.label.singular',
                 'class'           => $this->customerClass,
+                'required'        => false,
                 'search_route'    => 'ekyna_commerce_customer_admin_search',
                 'find_route'      => 'ekyna_commerce_customer_admin_find',
                 'allow_clear'     => false,
@@ -74,7 +76,6 @@ class SaleType extends ResourceFormType
                     "var output=data.first_name+' '+data.last_name+' &lt;<em>'+data.email+'</em>&gt;';" .
                     "if(data.company)output='[<strong>'+data.company+'</strong>] '+output;" .
                     "return $('<span>'+output+'</span>');",
-                'required'        => false,
             ])
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',

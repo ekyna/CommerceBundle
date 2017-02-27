@@ -1,12 +1,14 @@
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale.number, 'text', 'ekyna_core.field.number', {
+            'id': 'sale_number',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
     </div>
     <div class="col-md-6">
         {{ show_row(sale.currency, 'text', 'ekyna_commerce.currency.label.singular', {
+            'id': 'sale_currency',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -14,15 +16,25 @@
 </div>
 <div class="row">
     <div class="col-md-6">
+    {% if sale.customer is not same as (null) %}
         {{ show_row(sale.customer|identity, 'entity', 'ekyna_commerce.customer.label.singular', {
+            'id': 'sale_customer',
             'route': 'ekyna_commerce_customer_admin_show',
             'route_params': {'customerId': sale.customer.id},
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
+    {% else %}
+        {{ show_row(null, 'text', 'ekyna_commerce.customer.label.singular', {
+            'id': 'sale_customer',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    {% endif %}
     </div>
     <div class="col-md-6">
         {{ show_row(sale.company, 'text', 'ekyna_core.field.company', {
+            'id': 'sale_company',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -35,7 +47,7 @@
                 {{ 'ekyna_core.field.identity'|trans }}
             </div>
             <div class="col-md-8">
-                <div class="show-widget show-widget-inline">
+                <div class="show-widget show-widget-inline" id="sale_identity">
                     {{ sale|identity }}
                 </div>
             </div>
@@ -43,6 +55,7 @@
     </div>
     <div class="col-md-6">
         {{ show_row(sale.email, 'text', 'ekyna_core.field.email', {
+            'id': 'sale_email',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -52,12 +65,14 @@
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
+            'id': 'sale_grandTotal',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
     </div>
     <div class="col-md-6">
         {{ show_row(sale|sale_state_badge, 'text', 'ekyna_commerce.sale.field.state', {
+            'id': 'sale_state',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -66,12 +81,14 @@
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
+            'id': 'sale_paidTotal',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
     </div>
     <div class="col-md-6">
         {{ show_row(sale.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
+            'id': 'sale_paymentState',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}

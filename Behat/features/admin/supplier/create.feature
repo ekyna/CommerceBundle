@@ -1,4 +1,4 @@
-@commerce
+@commerce @supplier
 Feature: Create suppliers
     In order to manage products supply
     As an administrator

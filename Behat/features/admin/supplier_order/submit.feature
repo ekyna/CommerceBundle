@@ -1,4 +1,4 @@
-@commerce
+@commerce @supplier-order
 Feature: Edit supplier orders
     In order to manage products supply
     As an administrator
@@ -22,7 +22,6 @@ Feature: Edit supplier orders
             | reference | quantity |
             | IPAD-AIR  | 2        |
 
-    @supplier-order
     Scenario: Submit the supplier order
         When I go to "ekyna_commerce_supplier_order_admin_submit" route with "supplierOrderId:1"
         And I fill in "supplier_order_submit[order][estimatedDateOfArrival]" with "01/01/2020"

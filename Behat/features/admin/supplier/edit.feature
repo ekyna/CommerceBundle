@@ -1,4 +1,4 @@
-@commerce
+@commerce @supplier
 Feature: Edit suppliers
     In order to manage products supply
     As an administrator

@@ -1,4 +1,4 @@
-@commerce
+@commerce @supplier-delivery
 Feature: Create supplier deliveries
     In order to manage products supply
     As an administrator
@@ -26,8 +26,6 @@ Feature: Create supplier deliveries
             | GALA-TAB  | 4        |
         And The supplier order with number "SO-001" is submitted
 
-
-    @supplier-delivery @current
     Scenario: Create the supplier partial delivery
         When I go to "ekyna_commerce_supplier_delivery_admin_new" route with "supplierOrderId:1"
         And I fill in "supplier_delivery[items][0][quantity]" with "0"
@@ -77,7 +75,6 @@ Feature: Create supplier deliveries
         Then I should see "2" in the "#product_stockUnit_0_deliveredQuantity" element
 
 
-    @supplier-delivery
     Scenario: Create the supplier complete delivery
         When I go to "ekyna_commerce_supplier_delivery_admin_new" route with "supplierOrderId:1"
         And I fill in "supplier_delivery[items][0][quantity]" with "2"
@@ -126,4 +123,3 @@ Feature: Create supplier deliveries
         Then I should see "Ouverte" in the "#product_stockUnit_0_state" element
         Then I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
         Then I should see "4" in the "#product_stockUnit_0_deliveredQuantity" element
-

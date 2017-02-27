@@ -5,7 +5,7 @@
                 {{ 'ekyna_commerce.sale.field.invoice_address'|trans }}
             </div>
             <div class="col-md-8">
-                <div class="panel panel-default">
+                <div class="panel panel-default" id="sale_invoiceAddress">
                     <div class="panel-body">
                         {{ sale.invoiceAddress|commerce_address }}
                     </div>
@@ -27,12 +27,12 @@
             <div class="col-md-8">
                 {% if not sale.sameAddress %}
                     <div class="panel panel-default">
-                        <div class="panel-body">
+                        <div class="panel-body" id="sale_deliveryAddress">
                             {{ sale.deliveryAddress|commerce_address }}
                         </div>
                     </div>
                 {% else %}
-                    <div class="show-widget show-widget-inline">
+                    <div class="show-widget show-widget-inline" id="sale_deliveryAddress">
                         <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
                     </div>
                 {% endif %}

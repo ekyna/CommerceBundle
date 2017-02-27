@@ -1,4 +1,4 @@
-@commerce
+@commerce @supplier-order
 Feature: Create supplier orders
     In order to manage products supply
     As an administrator
@@ -16,7 +16,7 @@ Feature: Create supplier orders
             | supplier | designation | reference | price     | weight | available | ordered | eda  | provider     | identifier |
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |      | acme_product | 1          |
 
-    @javascript @supplier-order
+    @javascript
     Scenario: Create a supplier order
         When I go to "ekyna_commerce_supplier_order_admin_new" route
         And I select "TechData" from "supplier_order[supplier]"

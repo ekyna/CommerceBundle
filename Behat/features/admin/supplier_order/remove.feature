@@ -1,4 +1,5 @@
-@commerce
+@commerce    @supplier-order
+
 Feature: Remove supplier orders
     In order to manage products supply
     As an administrator
@@ -13,7 +14,6 @@ Feature: Remove supplier orders
             | number | supplier | currency | paymentTotal |
             | SO-001 | TechData | EUR      | 249.16667    |
 
-    @supplier-order
     Scenario: Remove the supplier order
         When I go to "ekyna_commerce_supplier_order_admin_remove" route with "supplierOrderId:1"
         And I check "form[confirm]"
