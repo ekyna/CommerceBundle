@@ -35,50 +35,59 @@
             <argument>%ekyna_commerce.payment_method.class%</argument>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.cart.form_type"
+        <!--<service id="ekyna_commerce.cart.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType">
             <argument>%ekyna_commerce.cart.class%</argument>
-            <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
-        </service>
+        </service>-->
 
         <!-- Country form type -->
         <service id="ekyna_commerce.country_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CountryChoiceType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType">
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
         </service>
 
         <!-- Currency form type -->
         <service id="ekyna_commerce.currency_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType">
             <argument>%ekyna_commerce.currency.class%</argument>
             <tag name="form.type"/>
         </service>
 
         <!-- Customer form types -->
-        <service id="ekyna_commerce.customer_address.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType">
-            <argument>%ekyna_commerce.customer_address.class%</argument>
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <tag name="form.type"/>
-        </service>
         <service id="ekyna_commerce.customer.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\CustomerType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType">
             <argument>%ekyna_commerce.customer.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
             <argument>%ekyna_user.user.class%</argument>
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.customer_address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType">
+            <argument>%ekyna_commerce.customer_address.class%</argument>
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.customer_search.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType">
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.customer_group_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType">
+            <argument>%ekyna_commerce.customer_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
 
         <!-- Identity form type -->
         <service id="ekyna_commerce.gender.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\GenderType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\GenderType">
             <argument>%ekyna_commerce.genders.class%</argument>
             <tag name="form.type" />
         </service>
         <service id="ekyna_commerce.identity.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType">
             <argument>%ekyna_commerce.genders.class%</argument>
             <tag name="form.type" />
         </service>
@@ -125,12 +134,11 @@
             <argument>%ekyna_commerce.order_shipment_item.class%</argument>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.order.form_type"
+        <!--<service id="ekyna_commerce.order.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType">
             <argument>%ekyna_commerce.order.class%</argument>
-            <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
-        </service>
+        </service>-->
 
         <!-- Quote form types -->
         <service id="ekyna_commerce.quote_address.form_type"
@@ -160,12 +168,11 @@
             <argument>%ekyna_commerce.payment_method.class%</argument>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.quote.form_type"
+        <!--<service id="ekyna_commerce.quote.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType">
             <argument>%ekyna_commerce.quote.class%</argument>
-            <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
-        </service>
+        </service>-->
 
         <!-- Payment form types -->
         <service id="ekyna_commerce.payment_method.form_type"
@@ -293,6 +300,7 @@
         <service id="ekyna_commerce.sale_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType">
             <argument type="service" id="serializer"/>
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
             <argument type="service" id="ekyna_commerce.customer_address.repository"/>
             <tag name="form.type"/>
             <tag name="form.js" selector=".commerce-sale-address" path="ekyna-commerce/form/sale-address" />

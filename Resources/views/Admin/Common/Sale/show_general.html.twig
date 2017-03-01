@@ -14,27 +14,30 @@
         }) }}
     </div>
 </div>
+{% if sale.customer is not same as (null) %}
+    {{ show_row(sale.customer|identity, 'entity', 'ekyna_commerce.customer.label.singular', {
+        'id': 'sale_customer',
+        'route': 'ekyna_commerce_customer_admin_show',
+        'route_params': {'customerId': sale.customer.id}
+    }) }}
+{% else %}
+    {{ show_row(null, 'text', 'ekyna_commerce.customer.label.singular', {
+        'id': 'sale_customer'
+    }) }}
+{% endif %}
 <div class="row">
-    <div class="col-md-6">
-    {% if sale.customer is not same as (null) %}
-        {{ show_row(sale.customer|identity, 'entity', 'ekyna_commerce.customer.label.singular', {
-            'id': 'sale_customer',
-            'route': 'ekyna_commerce_customer_admin_show',
-            'route_params': {'customerId': sale.customer.id},
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
-    {% else %}
-        {{ show_row(null, 'text', 'ekyna_commerce.customer.label.singular', {
-            'id': 'sale_customer',
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
-    {% endif %}
-    </div>
     <div class="col-md-6">
         {{ show_row(sale.company, 'text', 'ekyna_core.field.company', {
             'id': 'sale_company',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.customerGroup, 'entity', 'ekyna_commerce.customer_group.label.singular', {
+            'id': 'sale_customerGroup',
+            'route': 'ekyna_commerce_customer_group_admin_show',
+            'route_params': {'customerGroupId': sale.customerGroup.id},
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}

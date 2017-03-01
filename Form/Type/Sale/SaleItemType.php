@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemTypeSubscriber;
-use Ekyna\Bundle\CommerceBundle\Form\Type\AdjustmentsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AdjustmentsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;

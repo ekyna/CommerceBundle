@@ -1,0 +1,121 @@
+<?php
+
+namespace Ekyna\Bundle\CommerceBundle\Behat\Context;
+
+use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\TableNode;
+use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Behat\Symfony2Extension\Context\KernelDictionary;
+
+/**
+ * Class OrderContext
+ * @package Ekyna\Bundle\CommerceBundle\Behat\Context
+ * @author  Etienne Dauvergne <contact@ekyna.com>
+ */
+class OrderContext implements Context, KernelAwareContext
+{
+    use KernelDictionary;
+
+    /**
+     * @Given The following orders:
+     *
+     * @param TableNode $table
+     */
+    public function createOrders(TableNode $table)
+    {
+        $orders = $this->castOrdersTable($table);
+
+        $manager = $this->getContainer()->get('ekyna_commerce.order.manager');
+
+        foreach ($orders as $order) {
+            $manager->persist($order);
+        }
+
+        $manager->flush();
+        $manager->clear();
+    }
+
+    /**
+     * @param TableNode $table
+     *
+     * @return array
+     */
+    private function castOrdersTable(TableNode $table)
+    {
+        $saleFactory = $this->getContainer()->get('ekyna_commerce.sale_factory');
+        $orderRepository = $this->getContainer()->get('ekyna_commerce.order.repository');
+        $countryRepository = $this->getContainer()->get('ekyna_commerce.country.repository');
+        $currencyRepository = $this->getContainer()->get('ekyna_commerce.currency.repository');
+        $shipmentMethodRepository = $this->getContainer()->get('ekyna_commerce.shipment_method.repository');
+        $customerRepository = $this->getContainer()->get('ekyna_commerce.customer.repository');
+        $customerGroupRepository = $this->getContainer()->get('ekyna_commerce.customer_group.repository');
+
+        $orders = [];
+        foreach ($table as $row) {
+            /** @var \Ekyna\Component\Commerce\Order\Model\OrderInterface $order */
+            $order = $orderRepository->createNew();
+
+            if (isset($row['currency'])) {
+                if (null === $currency = $currencyRepository->findOneByCode($row['currency'])) {
+                    throw new \InvalidArgumentException("Failed to find the currency with code '{$row['currency']}'.");
+                }
+                $order->setCurrency($currency);
+            } else {
+                $order->setCurrency($currencyRepository->findDefault());
+            }
+
+            /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+            $customer = null;
+            if (isset($row['customer'])) {
+                if (null === $customer = $customerRepository->findOneBy(['email' => $row['customer']])) {
+                    throw new \InvalidArgumentException("Failed to find the customer with email '{$row['customer']}'.");
+                }
+                $order->setCustomer($customer);
+            } else {
+                if (isset($row['company'])) {
+                    $order->setCompany($row['company']);
+                }
+                $order
+                    ->setEmail($row['email'])
+                    ->setGender(isset($row['gender']) ? $row['gender'] : 'mr')
+                    ->setLastName($row['lastName'])
+                    ->setFirstName($row['firstName']);
+
+                if (isset($row['customerGroup'])) {
+                    if (null === $customerGroup = $customerGroupRepository->findOneBy(['name' => $row['name']])) {
+                        throw new \InvalidArgumentException("Failed to find the customer with email '{$row['customer']}'.");
+                    }
+                    $order->setCustomerGroup($customerGroup);
+                } else {
+                    $order->setCustomerGroup($customerGroupRepository->findDefault());
+                }
+            }
+
+            // Invoice address
+            $country = isset($row['country'])
+                ? $countryRepository->findOneByCode($row['country'])
+                : $countryRepository->findDefault();
+
+            $invoiceAddress = $saleFactory->createAddressForSale($order);
+            $invoiceAddress
+                ->setGender($customer ? $customer->getGender() : (isset($row['gender']) ? $row['gender'] : 'mr'))
+                ->setLastName($customer ? $customer->getLastName() : $row['lastName'])
+                ->setFirstName($customer ? $customer->getFirstName() : $row['firstName'])
+                ->setStreet($row['street'])
+                ->setPostalCode($row['postalCode'])
+                ->setCity($row['city'])
+                ->setCountry($country);
+
+            $order->setInvoiceAddress($invoiceAddress);
+
+            $orders[] = $order;
+        }
+
+        return $orders;
+    }
+
+    public function setDeliveryAddress()
+    {
+        // TODO
+    }
+}

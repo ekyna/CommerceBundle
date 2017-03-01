@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Account;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;

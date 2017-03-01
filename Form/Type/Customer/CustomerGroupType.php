@@ -1,17 +1,17 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class CountryType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type
+ * Class CustomerGroupType
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Customer
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CountryType extends ResourceFormType
+class CustomerGroupType extends ResourceFormType
 {
     /**
      * {@inheritdoc}
@@ -20,17 +20,8 @@ class CountryType extends ResourceFormType
     {
         $builder
             ->add('name', Type\TextType::class, [
-                'label' => 'ekyna_core.field.name',
-            ])
-            ->add('code', Type\TextType::class, [
-                'label' => 'ekyna_core.field.code',
-            ])
-            ->add('enabled', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.enabled',
+                'label'    => 'ekyna_core.field.name',
                 'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
             ])
             ->add('default', Type\CheckboxType::class, [
                 'label'    => 'ekyna_core.field.default',

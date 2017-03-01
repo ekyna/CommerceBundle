@@ -1,4 +1,4 @@
-@commerce @customer
+@commerce @customer-address
 Feature: Create customers
     In order to create orders
     As an administrator
@@ -10,6 +10,7 @@ Feature: Create customers
             | email              | company        | gender | lastName | firstName |
             | contact@dupont.com | Dupont et fils | mr     | Dupont   | Jean      |
 
+    @javascript
     Scenario: Create a customer address
         When I go to "ekyna_commerce_customer_address_admin_new" route with "{customerId:1}"
         And I fill in "customer_address[company]" with "Dupont et fils"
@@ -19,6 +20,7 @@ Feature: Create customers
         And I fill in "customer_address[street]" with "10 rue de la paix"
         And I fill in "customer_address[postalCode]" with "12345"
         And I fill in "customer_address[city]" with "Paris"
+        And I select "France" from "customer_address[country]"
         And I fill in "customer_address[phone]" with "0298765432"
         And I fill in "customer_address[mobile]" with "0612345678"
 

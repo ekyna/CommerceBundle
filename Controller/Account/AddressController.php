@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\CustomerAddressType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,11 +17,9 @@ class AddressController extends AbstractController
     /**
      * Address index action.
      *
-     * @param Request $request
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $customer = $this->getCustomer();
 

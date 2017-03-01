@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Symfony\Component\Form\AbstractType;
@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Class MessageTranslationType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 class MessageTranslationType extends AbstractType
@@ -19,10 +19,11 @@ class MessageTranslationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('content', TinymceType::class, array(
-                'label'        => 'ekyna_core.field.content',
+            ->add('content', TinymceType::class, [
+                'label'    => 'ekyna_core.field.content',
 //                'admin_helper' => 'CMS_PAGE_CONTENT',
-                'theme'        => 'front'
-            ));
+                'theme'    => 'front',
+                'required' => false,
+            ]);
     }
 }

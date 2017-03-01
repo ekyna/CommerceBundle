@@ -8,7 +8,9 @@
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#customer-group-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+            <a href="#customer-group-general" data-toggle="tab">
+                {{- 'ekyna_core.field.general'|trans -}}
+            </a>
         </li>
     </ul>
     <div class="show-body">
@@ -16,10 +18,18 @@
             <div class="tab-pane active" id="customer-group-general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customerGroup.name, 'text', 'ekyna_core.field.name', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                        {{ show_row(customerGroup.name, 'text', 'ekyna_core.field.name', {
+                            'id': 'customer_group_name',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customerGroup.default, 'checkbox', 'ekyna_core.field.default', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                        {{ show_row(customerGroup.default, 'checkbox', 'ekyna_core.field.default', {
+                            'id': 'customer_group_default',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
                     </div>
                 </div>
             </div>

@@ -1,16 +1,16 @@
 <ul class="nav nav-tabs">
     <li class="active">
-        <a href="#shipment-method-general" data-toggle="tab">
+        <a href="#shipment-method-general" id="toggle-general" data-toggle="tab">
             {{ 'ekyna_core.field.general'|trans }}
         </a>
     </li>
     <li>
-        <a href="#shipment-method-content" data-toggle="tab">
+        <a href="#shipment-method-content" id="toggle-content" data-toggle="tab">
             {{ 'ekyna_core.field.content'|trans }}
         </a>
     </li>
     <li>
-        <a href="#shipment-method-messages" data-toggle="tab">
+        <a href="#shipment-method-messages" id="toggle-messages" data-toggle="tab">
             {{ 'ekyna_commerce.message.label.plural'|trans }}
         </a>
     </li>
@@ -22,6 +22,7 @@
         {{ form_errors(form) }}
         <div class="tab-pane active" id="shipment-method-general">
             {{ form_row(form.name) }}
+            {{ form_row(form.taxGroup) }}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.available, {'label_col': 4, 'widget_col': 8}) }}

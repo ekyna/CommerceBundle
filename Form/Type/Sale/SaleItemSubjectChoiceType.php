@@ -23,7 +23,7 @@ class SaleItemSubjectChoiceType extends AbstractType
         $builder
             ->add('subjectIdentity', SubjectChoiceType::class, [
                 'lock_mode' => true,
-                'required'  => false,
+                'required'  => $options['required'],
             ]);
     }
 
@@ -35,6 +35,7 @@ class SaleItemSubjectChoiceType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => SaleItemInterface::class,
+                'required'   => false,
             ]);
     }
 }

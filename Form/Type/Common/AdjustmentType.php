@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class AdjustmentType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 class AdjustmentType extends ResourceFormType

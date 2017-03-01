@@ -9,15 +9,19 @@
         <ul class="nav nav-tabs">
             <li class="active">
                 <a href="#shipment-shipment-zone-general" data-toggle="tab">
-                    {{ 'ekyna_core.field.general'|trans }}
+                    {{- 'ekyna_core.field.general'|trans -}}
                 </a>
             </li>
         </ul>
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="shipment-shipment-zone-general">
-                    {{ show_row(shipmentZone.name, 'text', 'ekyna_core.field.name') }}
-                    {{ show_row(shipmentZone.countries, 'entity', 'ekyna_commerce.country.label.plural') }}
+                    {{ show_row(shipmentZone.name, 'text', 'ekyna_core.field.name', {
+                        'id': 'shipment_zone_name'
+                    }) }}
+                    {{ show_row(shipmentZone.countries, 'entity', 'ekyna_commerce.country.label.plural', {
+                        'id': 'shipment_zone_countries'
+                    }) }}
 
                     {{ display_shipment_prices(shipmentZone) }}
                 </div>

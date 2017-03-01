@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\AttachmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AttachmentType;
 
 /**
  * Class CartAttachmentType

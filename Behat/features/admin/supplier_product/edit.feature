@@ -13,6 +13,7 @@ Feature: Edit supplier products
             | supplier | designation          | reference | price     | weight | available | ordered | eda  |
             | TechData | Samsung Galaxy Tab A | S-GTAB-A  | 249.16667 | 0.5    | 40        | 0       |      |
 
+    @javascript
     Scenario: Edit the supplier product
         When I go to "ekyna_commerce_supplier_product_admin_edit" route with "supplierId:1,supplierProductId:1"
         And I fill in "supplier_product[designation]" with "Samsung Galaxy Tab B"

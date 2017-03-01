@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CoreBundle\Form\Type\UploadType;
@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Class AttachmentType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 class AttachmentType extends ResourceFormType

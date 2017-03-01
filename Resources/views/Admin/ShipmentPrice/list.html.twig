@@ -1,18 +1,19 @@
+{% spaceless %}
 <hr>
 
 <div class="commerce-shipment-prices">
     <div class="row show-row">
         <div class="col-md-2 show-label">
             <label for="shipment-price-filter">
-                {{ ('ekyna_commerce.shipment_' ~ list.filterBy ~ '.label.singular')|trans }}
+                {{- ('ekyna_commerce.shipment_' ~ list.filterBy ~ '.label.singular')|trans -}}
             </label>
         </div>
         <div class="col-md-10">
             <select class="form-control shipment-price-filter"
                     id="shipment-price-filter" data-filter-by="{{ list.filterBy }}">
-            {%- for filter in list.filters %}
+            {%- for filter in list.filters -%}
                 <option value="{{ filter.id }}">{{ filter }}</option>
-            {%- endfor %}
+            {%- endfor -%}
             </select>
         </div>
     </div>
@@ -34,14 +35,19 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for price in list.prices %}
+                {%- for price in list.prices -%}
                     <tr data-{{ list.filterBy }}="{{ attribute(price, list.filterBy).id }}">
-                        <td class="text-right">{{ price.weight|localizednumber }} kg</td>
-                        <td class="text-right">{{ price.netPrice|localizedcurrency('EUR') }}</td>{# TODO which currency ? #}
+                        <td class="text-right" id="shipment_price_{{ loop.index0 }}_weight">
+                            {{- price.weight|localizednumber ~ ' kg' -}}{# TODO packging format #}
+                        </td>
+                        <td class="text-right" id="shipment_price_{{ loop.index0 }}_netPrice">
+                            {{- price.netPrice|localizedcurrency('EUR') -}} {# TODO currency #}
+                        </td>
                     </tr>
-                {% endfor %}
+                {%- endfor -%}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+{% endspaceless %}

@@ -3,7 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerAddressRepositoryInterface;
+use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,6 +29,11 @@ class SaleAddressType extends AbstractType
     private $serializer;
 
     /**
+     * @var ResourceRepositoryInterface
+     */
+    private $customerRepository;
+
+    /**
      * @var CustomerAddressRepositoryInterface
      */
     private $customerAddressRepository;
@@ -36,13 +43,16 @@ class SaleAddressType extends AbstractType
      * Constructor.
      *
      * @param SerializerInterface                $serializer
+     * @param ResourceRepositoryInterface        $customerRepository
      * @param CustomerAddressRepositoryInterface $customerAddressRepository
      */
     public function __construct(
         SerializerInterface $serializer,
+        ResourceRepositoryInterface $customerRepository,
         CustomerAddressRepositoryInterface $customerAddressRepository
     ) {
         $this->serializer = $serializer;
+        $this->customerRepository = $customerRepository;
         $this->customerAddressRepository = $customerAddressRepository;
     }
 
@@ -77,49 +87,41 @@ class SaleAddressType extends AbstractType
             ],
         ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $sale = $event->getData();
             $form = $event->getForm();
+
+            // Remove the choice filed
+            if ($form->has('choice')) {
+                $form->remove('choice');
+            }
 
             // Check if data (sale) is set.
             if (!$sale instanceof SaleInterface) {
                 return;
             }
-            // Check if customer is set.
-            if (null === $customer = $sale->getCustomer()) {
+
+            $this->buildChoiceField($form, $sale->getCustomer(), $options);
+        }, 2048);
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+            $data = $event->getData();
+            $form = $event->getForm();
+
+            // Abort if the data does not come from the parent form.
+            if (!isset($data['customer'])) {
                 return;
             }
 
-            $addresses = $this->customerAddressRepository->findByCustomer($customer);
-            if (empty($addresses)) {
-                return;
+            // Remove the choice filed
+            if ($form->has('choice')) {
+                $form->remove('choice');
             }
 
-            $choices = [];
-            foreach ($addresses as $address) {
-                $choices[(string)$address] = $address->getId();
-            }
+            /** @var CustomerInterface $customer */
+            $customer = $this->customerRepository->find($data['customer']);
 
-            $form->add('choice', Type\ChoiceType::class, [
-                'label'       => 'ekyna_commerce.sale.field.address_choice',
-                'choices'     => $choices,
-                'choice_attr' => function ($val, $key, $index) use ($addresses) {
-                    if (!isset($addresses[$val])) {
-                        return [];
-                    }
-
-                    $data = $this
-                        ->serializer
-                        ->serialize($addresses[$val], 'json', ['groups' => ['Default']]);
-
-                    return ['data-address' => $data];
-                },
-                'required'    => false,
-                'mapped'      => false,
-                'attr'        => [
-                    'class' => 'sale-address-choice',
-                ],
-            ]);
+            $this->buildChoiceField($form, $customer, $options);
         }, 2048);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -139,17 +141,81 @@ class SaleAddressType extends AbstractType
     }
 
     /**
+     * Builds the choice field.
+     *
+     * @param FormInterface     $form
+     * @param CustomerInterface $customer
+     * @param array             $options
+     */
+    private function buildChoiceField(FormInterface $form, CustomerInterface $customer = null, array $options)
+    {
+        if (!$options['customer_field'] && !$customer) {
+            return;
+        }
+
+        $choiceOptions = [
+            'label'    => 'ekyna_commerce.sale.field.address_choice',
+            'choices'  => [],
+            'disabled' => true,
+            'required' => false,
+            'mapped'   => false,
+            'attr'     => [
+                'class' => 'sale-address-choice',
+            ],
+        ];
+
+        // Check if customer is set.
+        if ($customer) {
+            $addresses = $this->customerAddressRepository->findByCustomer($customer);
+            if (!empty($addresses)) {
+                $choices = [];
+                foreach ($addresses as $address) {
+                    $choices[(string)$address] = $address->getId();
+                }
+
+                $choiceOptions['disabled'] = false;
+                $choiceOptions['choices'] = $choices;
+                $choiceOptions['choice_attr'] = function ($val) use ($addresses) {
+                    if (!isset($addresses[$val])) {
+                        return [];
+                    }
+
+                    $data = $this
+                        ->serializer
+                        ->serialize($addresses[$val], 'json', ['groups' => ['Default']]);
+
+                    return ['data-address' => $data];
+                };
+            }
+        }
+
+        $form->add('choice', Type\ChoiceType::class, $choiceOptions);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        if (0 < strlen($options['customer_field'])) {
+            $view->vars['attr']['data-customer-field'] = $view->parent->vars['id'] . '_' . $options['customer_field'];
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
-                'delivery'     => false,
-                'data_class'   => SaleInterface::class,
-                'address_type' => null,
+                'delivery'       => false,
+                'data_class'     => SaleInterface::class,
+                'address_type'   => null,
+                'customer_field' => null,
             ])
-            ->setAllowedTypes('address_type', 'string'); // TODO validate
+            ->setAllowedTypes('address_type', 'string')// TODO validate
+            ->setAllowedTypes('customer_field', ['null', 'string']);
     }
 
     /**

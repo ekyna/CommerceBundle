@@ -43,6 +43,7 @@ class ProductContext implements Context, KernelAwareContext
      */
     private function castProductsTable(TableNode $table)
     {
+        $taxGroupRepository = $this->getContainer()->get('ekyna_commerce.tax_group.repository');
         $productRepository = $this->getContainer()->get('acme_product.product.repository');
 
         $products = [];
@@ -56,6 +57,15 @@ class ProductContext implements Context, KernelAwareContext
                 ->setWeight($hash['weight'])
                 ->setStockMode(StockSubjectModes::MODE_ENABLED)
             ;
+
+            if (isset($row['taxGroup'])) {
+                if (null === $taxGroup = $taxGroupRepository->findOneBy(['name' => $row['taxGroup']])) {
+                    throw new \InvalidArgumentException("Failed to find the tax group with name '{$row['taxGroup']}'.");
+                }
+                $product->setTaxGroup($taxGroup);
+            } else {
+                $product->setTaxGroup($taxGroupRepository->findDefault());
+            }
 
             $products[] = $product;
         }

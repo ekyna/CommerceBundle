@@ -19,19 +19,29 @@
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#order-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+            <a href="#order-general" id="toggle-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#order-details" data-toggle="tab">{{ 'ekyna_commerce.sale.field.details'|trans }}</a>
+            <a href="#order-details" id="toggle-details" data-toggle="tab">
+                {{ 'ekyna_commerce.sale.field.details'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#order-payments" data-toggle="tab">{{ 'ekyna_commerce.payment.label.plural'|trans }}</a>
+            <a href="#order-payments" id="toggle-payments" data-toggle="tab">
+                {{ 'ekyna_commerce.payment.label.plural'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#order-shipments" data-toggle="tab">{{ 'ekyna_commerce.shipment.label.plural'|trans }}</a>
+            <a href="#order-shipments" id="toggle-shipments" data-toggle="tab">
+                {{ 'ekyna_commerce.shipment.label.plural'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#order-attachments" data-toggle="tab">{{ 'ekyna_commerce.attachment.label.plural'|trans }}</a>
+            <a href="#order-attachments" id="toggle-attachments" data-toggle="tab">
+                {{ 'ekyna_commerce.attachment.label.plural'|trans }}
+            </a>
         </li>
     </ul>
     <div class="show-body">
@@ -41,6 +51,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
+                            'id': 'order_weightTotal',
                             'precision': 0,
                             'append': 'kg',
                             'label_nb_col': 4,
@@ -49,6 +60,7 @@
                     </div>
                     <div class="col-md-6">
                         {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
+                            'id': 'order_shipmentState',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
                         }) }}

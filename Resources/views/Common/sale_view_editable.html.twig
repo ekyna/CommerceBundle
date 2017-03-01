@@ -47,10 +47,10 @@
 {% block line_quantity %}
 {% spaceless %}
     <td class="text-right">
-        {% if view.vars.form[line.id] is defined %}
-            {{ form_widget(view.vars.form[line.id]) }}
+        {% if view.vars.form[line.formId] is defined %}
+            {{ form_widget(view.vars.form[line.formId]) }}
         {% else %}
-            <span class="sale-detail-quantity">{{ line.quantity }}</span>
+            <span class="sale-detail-quantity" id="{{ line.id }}_quantity">{{ line.quantity }}</span>
         {% endif %}
     </td>
 {% endspaceless %}
@@ -88,14 +88,20 @@
 {% block gross_totals %}
 {% spaceless %}
     <tbody>
-    <tr>
+    <tr id="sale_gross">
         <th>&nbsp;</th>
         <th class="text-right" colspan="5">
             <strong>{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</strong>
         </th>
-        <th class="text-right sale-detail-gross">{{ view.gross.base|localizedcurrency('EUR') }}</th>
-        <th class="text-right sale-detail-gross">{{ view.gross.tax|localizedcurrency('EUR') }}</th>
-        <th class="text-right sale-detail-gross">{{ view.gross.total|localizedcurrency('EUR') }}</th>
+        <th class="text-right sale-detail-gross" id="gross_base">
+            {{- view.gross.base|localizedcurrency('EUR') -}}
+        </th>
+        <th class="text-right sale-detail-gross" id="gross_tax">
+            {{- view.gross.tax|localizedcurrency('EUR') -}}
+        </th>
+        <th class="text-right sale-detail-gross" id="gross_total">
+            {{- view.gross.total|localizedcurrency('EUR') -}}
+        </th>
         <th>&nbsp;</th>
     </tr>
     </tbody>
@@ -117,7 +123,7 @@
 {% endblock discount %}
 
 
-{% block discounts %}
+{#{% block discounts %}
 {% spaceless %}
     <tbody>
     {% for discount in view.discounts %}
@@ -127,7 +133,7 @@
     {% endfor %}
     </tbody>
 {% endspaceless %}
-{% endblock discounts %}
+{% endblock discounts %}#}
 
 
 {% block shipment %}
@@ -136,13 +142,13 @@
     <tbody>
     <tr>
         <td class="sale-detail-number">{#{{ line.number }}#}</td>
-        <td class="sale-detail-designation">{{ line.designation }}</td>
+        <td class="sale-detail-designation" id="{{ line.id }}_designation">{{ line.designation }}</td>
         <td class="text-right" colspan="2">&nbsp;</td>
         {{ block('line_tax_rates') }}
         <td class="text-right">&nbsp;</td>
-        <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
+        <td class="text-right" id="{{ line.id }}_base">{{ line.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right" id="{{ line.id }}_tax">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
+        <td class="text-right" id="{{ line.id }}_total">{{ line.total|localizedcurrency('EUR') }}</td>
         <td class="sale-detail-actions">
         {% if line.vars.actions is defined and not line.immutable %}
             {% for action in line.vars.actions %}
@@ -168,10 +174,16 @@
         <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans|upper }}</th>
         <th rowspan="2">&nbsp;</th>
     </tr>
-    <tr>
-        <td class="text-right sale-detail-total">{{ view.final.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right sale-detail-total">{{ view.final.tax|localizedcurrency('EUR') }}</td>
-        <td class="text-right sale-detail-total">{{ view.final.total|localizedcurrency('EUR') }}</td>
+    <tr id="sale_final">
+        <td class="text-right sale-detail-total" id="final_base">
+            {{- view.final.base|localizedcurrency('EUR') -}}
+        </td>
+        <td class="text-right sale-detail-total" id="final_tax">
+            {{- view.final.tax|localizedcurrency('EUR') -}}
+        </td>
+        <td class="text-right sale-detail-total" id="final_total">
+            {{- view.final.total|localizedcurrency('EUR') -}}
+        </td>
     </tr>
     </tbody>
 {% endspaceless %}
@@ -224,22 +236,6 @@
                         {{ block('button') }}
                     {% endfor %}
                 {% endif %}
-            </div>
-        </div>
-        <div class="sale-detail-loading">
-            <div class="sk-fading-circle">
-                <div class="sk-circle-1 sk-circle"></div>
-                <div class="sk-circle-2 sk-circle"></div>
-                <div class="sk-circle-3 sk-circle"></div>
-                <div class="sk-circle-4 sk-circle"></div>
-                <div class="sk-circle-5 sk-circle"></div>
-                <div class="sk-circle-6 sk-circle"></div>
-                <div class="sk-circle-7 sk-circle"></div>
-                <div class="sk-circle-8 sk-circle"></div>
-                <div class="sk-circle-9 sk-circle"></div>
-                <div class="sk-circle-10 sk-circle"></div>
-                <div class="sk-circle-11 sk-circle"></div>
-                <div class="sk-circle-12 sk-circle"></div>
             </div>
         </div>
     {{ form_end(view.vars.form) }}

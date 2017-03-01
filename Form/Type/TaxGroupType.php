@@ -43,15 +43,15 @@ class TaxGroupType extends ResourceFormType
                 'label' => 'ekyna_core.field.name',
             ])
             ->add('default', Type\CheckboxType::class, [
-                'label' => 'ekyna_commerce.tax_group.field.default',
+                'label'    => 'ekyna_core.field.default',
                 'required' => false,
-                'attr' => [
+                'attr'     => [
                     'align_with_widget' => true,
-                ]
+                ],
             ])
             ->add('taxRules', ResourceType::class, [
-                'label' => 'ekyna_commerce.tax_rule.label.plural',
-                'class' => $this->taxRuleClass,
+                'label'    => 'ekyna_commerce.tax_rule.label.plural',
+                'class'    => $this->taxRuleClass,
                 'multiple' => true,
                 'required' => false,
             ]);

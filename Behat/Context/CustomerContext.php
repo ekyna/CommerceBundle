@@ -69,7 +69,6 @@ class CustomerContext implements Context, KernelAwareContext
                 if (null === $parent = $customerRepository->find($id)) {
                     throw new \InvalidArgumentException("Failed to find the parent customer with id '{$id}'.");
                 }
-
                 $customer->setParent($parent);
             }
 
@@ -78,8 +77,9 @@ class CustomerContext implements Context, KernelAwareContext
                 if (null === $group = $groupRepository->findOneByName($name)) {
                     throw new \InvalidArgumentException("Failed to find the customer group with name '{$name}'.");
                 }
-
                 $customer->setCustomerGroup($group);
+            } else {
+                $customer->setCustomerGroup($groupRepository->findDefault());
             }
 
             $customers[] = $customer;

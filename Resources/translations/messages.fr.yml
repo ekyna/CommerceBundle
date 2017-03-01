@@ -529,6 +529,7 @@ ekyna_commerce:
         alert:
             no_item: Aucune expédition configuré
         state:
+            none: Aucun
             new: Création
 #            checkout: Vérification
 #            onhold: En cours d'envoi

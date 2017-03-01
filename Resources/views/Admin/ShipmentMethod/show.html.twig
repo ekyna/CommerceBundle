@@ -8,17 +8,17 @@
     <div class="show show-with-tabs">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a href="#shipment-method-general" data-toggle="tab">
+                <a href="#shipment-method-general" id="toggle-general" data-toggle="tab">
                     {{ 'ekyna_core.field.general'|trans }}
                 </a>
             </li>
             <li>
-                <a href="#shipment-method-content" data-toggle="tab">
+                <a href="#shipment-method-content" id="toggle-content" data-toggle="tab">
                     {{ 'ekyna_core.field.content'|trans }}
                 </a>
             </li>
             <li>
-                <a href="#shipment-method-messages" data-toggle="tab">
+                <a href="#shipment-method-messages" id="toggle-messages" data-toggle="tab">
                     {{ 'ekyna_commerce.message.label.plural'|trans }}
                 </a>
             </li>
@@ -26,15 +26,24 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="shipment-method-general">
-                    {{ show_row(shipmentMethod.name, 'text', 'ekyna_core.field.name') }}
+                    {{ show_row(shipmentMethod.name, 'text', 'ekyna_core.field.name', {
+                        'id': 'shipment_method_name',
+                    }) }}
+                    {{ show_row(shipmentMethod.taxGroup, 'entity', 'ekyna_commerce.tax_group.label.singular', {
+                        'id': 'shipment_method_taxGroup',
+                        'route': 'ekyna_commerce_tax_group_admin_show',
+                        'route_params_map': {'taxGroupId': 'id'}
+                    }) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(shipmentMethod.enabled, 'checkbox', 'ekyna_core.field.enabled', {
+                            {{ show_row(shipmentMethod.available, 'checkbox', 'ekyna_commerce.shipment_method.field.available', {
+                                'id': 'shipment_method_available',
                                 'label_nb_col': 4
                             }) }}
                         </div>
                         <div class="col-md-6">
-                            {{ show_row(shipmentMethod.available, 'checkbox', 'ekyna_commerce.shipment_method.field.available', {
+                            {{ show_row(shipmentMethod.enabled, 'checkbox', 'ekyna_core.field.enabled', {
+                                'id': 'shipment_method_enabled',
                                 'label_nb_col': 4
                             }) }}
                         </div>
@@ -43,14 +52,22 @@
                     {{ display_shipment_prices(shipmentMethod) }}
                 </div>
                 <div class="tab-pane" id="shipment-method-content">
-                    {{ show_row(shipmentMethod.media, 'media', 'ekyna_core.field.image') }}
-                    {# Translations #}
+                    {{ show_row(shipmentMethod.media, 'media', 'ekyna_core.field.image', {
+                        'id': 'shipment_method_image',
+                    }) }}
+                    {{ show_translations_row(shipmentMethod.translations, {
+                        'id': 'shipmentMethod_translations',
+                        'fields': {
+                            'title': {'label': 'ekyna_core.field.title'},
+                            'description': {'label': 'ekyna_core.field.description', 'style': 'block'},
+                        }
+                    }) }}
                 </div>
                 <div class="tab-pane" id="shipment-method-messages">
                     <ul class="nav nav-tabs">
                         {% for message in shipmentMethod.messages %}
                             <li{% if loop.first %} class="active"{% endif %}>
-                                <a href="#shipment-method-state-{{ message.state }}" data-toggle="tab">
+                                <a href="#shipment-method-state-{{ message.state }}" id="toggle-state-{{ message.state }}" data-toggle="tab">
                                     {{ message.state|shipment_state_label }}
                                 </a>
                             </li>
@@ -66,7 +83,7 @@
                                             {{ 'ekyna_core.field.content'|trans }}
                                         </div>
                                         <div class="col-md-10">
-                                            <div class="show-widget show-widget-block">
+                                            <div class="show-widget show-widget-block" id="shipment_method_message_{{ message.state }}_content">
                                                 {% if message.content is empty %}
                                                     <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
                                                 {% else %}

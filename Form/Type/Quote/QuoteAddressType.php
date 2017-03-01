@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Quote;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\AddressType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
 
 /**
  * Class QuoteAddressType

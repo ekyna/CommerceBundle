@@ -17,14 +17,14 @@
 
 {% block line_quantity %}
 {% spaceless %}
-    <td class="text-right">{{ line.quantity }}</td>
+    <td class="text-right" id="{{ line.id }}_quantity">{{ line.quantity }}</td>
 {% endspaceless %}
 {% endblock line_quantity %}
 
 
 {% block line_tax_rates %}
 {% spaceless %}
-    <td class="text-right">
+    <td class="text-right" id="{{ line.id }}_taxes">
         {% for rate in line.taxRates -%}
             {{ rate|localizednumber }}%
             {%- if not loop.last %}, {% endif -%}
@@ -38,12 +38,20 @@
 
 {% block line_leaf %}
 {% spaceless %}
-    <td class="text-right">{% if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif %}</td>
-    {{ block('line_tax_rates') }}
-    {{ block('line_quantity') }}
-    <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
-    <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
-    <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
+    <td class="text-right" id="{{ line.id }}_unit">
+        {%- if line.unit is not sameas(null) %}{{ line.unit|localizedcurrency('EUR') }}{% endif -%}
+    </td>
+    {{- block('line_tax_rates') -}}
+    {{- block('line_quantity') -}}
+    <td class="text-right" id="{{ line.id }}_base">
+        {{- line.base|localizedcurrency('EUR') -}}
+    </td>
+    <td class="text-right" id="{{ line.id }}_tax">
+        {{- line.taxAmount|localizedcurrency('EUR') -}}
+    </td>
+    <td class="text-right" id="{{ line.id }}_total">
+        {{- line.total|localizedcurrency('EUR') -}}
+    </td>
 {% endspaceless %}
 {% endblock line_leaf %}
 
@@ -61,28 +69,28 @@
 {% spaceless %}
     <tr class="level-{{ line.level }}{% if line.node %} sale-detail-node{% endif %}">
         <td class="sale-detail-number">{{ line.number }}</td>
-        <td class="sale-detail-designation">
-            {% if line.vars.link_path is defined %}
+        <td class="sale-detail-designation" id="{{ line.id }}_designation">
+            {%- if line.vars.link_path is defined -%}
                 <a href="{{ line.vars.link_path }}"
                     {% if line.vars.link_title is defined %} title="{{ line.vars.link_title }}"{% endif %}>
                     {{ line.designation }}
                 </a>
-            {% else %}
+            {%- else -%}
                 {{ line.designation }}
-            {% endif %}
+            {%- endif -%}
         </td>
-        <td>{{ line.reference }}</td>
-        {% if line.node %}
+        <td id="{{ line.id }}_reference">{{ line.reference }}</td>
+        {%- if line.node -%}
             {{ block('line_node') }}
-        {% else %}
+        {%- else -%}
             {{ block('line_leaf') }}
-        {% endif %}
+        {%- endif -%}
     </tr>
-    {% set lines = line.lines %}
-    {% for line in lines %}
+    {% set lines = line.lines -%}
+    {% for line in lines -%}
         {{ block('line') }}
-        {# TODO "line" variable has been overridden by childrens #}
-    {% endfor %}
+    {%- endfor %}
+    {# "line" variable has been overridden by childrens #}
 {% endspaceless %}
 {% endblock line %}
 
@@ -95,9 +103,9 @@
         </tr>
     </thead>
     <tbody>
-    {% for line in view.items %}
+    {%- for line in view.items -%}
         {{ block('line') }}
-    {% endfor %}
+    {%- endfor -%}
     </tbody>
 {% endspaceless %}
 {% endblock lines %}
@@ -111,9 +119,15 @@
             <th class="text-right" colspan="5">
                 <strong>{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</strong>
             </th>
-            <td class="text-right sale-detail-gross">{{ view.gross.base|localizedcurrency('EUR') }}</td>
-            <td class="text-right sale-detail-gross">{{ view.gross.tax|localizedcurrency('EUR') }}</td>
-            <td class="text-right sale-detail-gross">{{ view.gross.total|localizedcurrency('EUR') }}</td>
+            <td class="text-right sale-detail-gross" id="gross_base">
+                {{- view.gross.base|localizedcurrency('EUR') -}}
+            </td>
+            <td class="text-right sale-detail-gross" id="gross_tax">
+                {{- view.gross.tax|localizedcurrency('EUR') -}}
+            </td>
+            <td class="text-right sale-detail-gross" id="gross_total">
+                {{- view.gross.total|localizedcurrency('EUR') -}}
+            </td>
         </tr>
     </tbody>
 {% endspaceless %}
@@ -123,12 +137,22 @@
 {% block discount %}
 {% spaceless %}
     <td class="sale-detail-number">{#{{ discount.number }}#}</td>
-    <td class="sale-detail-designation">{{ discount.designation }}</td>
-    <td>{{ discount.reference }}</td>
+    <td class="sale-detail-designation" id="{{ line.id }}_designation">
+        {{- discount.designation -}}
+    </td>
+    <td class="line-reference" id="{{ line.id }}_reference">
+        {{- discount.reference -}}
+    </td>
     <td class="text-right" colspan="3">&nbsp;</td>
-    <td class="text-right">{{ discount.base|localizedcurrency('EUR') }}</td>
-    <td class="text-right">{{ discount.taxAmount|localizedcurrency('EUR') }}</td>
-    <td class="text-right">{{ discount.total|localizedcurrency('EUR') }}</td>
+    <td class="text-right" id="{{ line.id }}_base">
+        {{- discount.base|localizedcurrency('EUR') -}}
+    </td>
+    <td class="text-right" id="{{ line.id }}_tax">
+        {{- discount.taxAmount|localizedcurrency('EUR') -}}
+    </td>
+    <td class="text-right" id="{{ line.id }}_total">
+        {{- discount.total|localizedcurrency('EUR') -}}
+    </td>
 {% endspaceless %}
 {% endblock discount %}
 
@@ -152,13 +176,21 @@
     <tbody>
     <tr>
         <td class="sale-detail-number">{#{{ line.number }}#}</td>
-        <td class="sale-detail-designation">{{ line.designation }}</td>
+        <td class="sale-detail-designation" id="{{ line.id }}_designation">
+            {{- line.designation -}}
+        </td>
         <td class="text-right" colspan="2">&nbsp;</td>
         {{ block('line_tax_rates') }}
         <td class="text-right">&nbsp;</td>
-        <td class="text-right">{{ line.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
-        <td class="text-right">{{ line.total|localizedcurrency('EUR') }}</td>
+        <td class="text-right" id="{{ line.id }}_base">
+            {{- line.base|localizedcurrency('EUR') -}}
+        </td>
+        <td class="text-right" id="{{ line.id }}_tax">
+            {{- line.taxAmount|localizedcurrency('EUR') -}}
+        </td>
+        <td class="text-right" id="{{ line.id }}_total">
+            {{- line.total|localizedcurrency('EUR') -}}
+        </td>
     </tr>
     </tbody>
 {% endspaceless %}
@@ -174,10 +206,18 @@
         <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans|upper }}</th>
         <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans|upper }}</th>
     </tr>
-    <tr>
-        <td class="text-right sale-detail-total">{{ view.final.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right sale-detail-total">{{ view.final.tax|localizedcurrency('EUR') }}</td>
-        <td class="text-right sale-detail-total"><strong>{{ view.final.total|localizedcurrency('EUR') }}</strong></td>
+    <tr id="sale_final">
+        <td class="text-right sale-detail-total" id="final_base">
+            {{- view.final.base|localizedcurrency('EUR') -}}
+        </td>
+        <td class="text-right sale-detail-total" id="final_tax">
+            {{- view.final.tax|localizedcurrency('EUR') -}}
+        </td>
+        <td class="text-right sale-detail-total" id="final_total">
+            <strong>
+                {{- view.final.total|localizedcurrency('EUR') -}}
+            </strong>
+        </td>
     </tr>
     </tbody>
 {% endspaceless %}

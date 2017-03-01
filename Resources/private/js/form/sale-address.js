@@ -1,4 +1,4 @@
-define(['jquery'], function($) {
+define(['jquery', 'routing'], function($, router) {
     "use strict";
 
     /**
@@ -11,6 +11,7 @@ define(['jquery'], function($) {
         this.each(function() {
 
             var $this = $(this),
+                $customerChoice = $('#' + $this.data('customer-field')),
                 $sameCheckbox = $this.find('.sale-address-same'),
                 $choiceSelect = $this.find('.sale-address-choice'),
                 $addressForm = $this.find('.sale-address'),
@@ -36,13 +37,42 @@ define(['jquery'], function($) {
                     }
                 };
 
-            console.log($sameCheckbox.length);
-            console.log($choiceSelect.length);
-            console.log($addressForm.length);
+            if ($customerChoice.length) {
+                $customerChoice.on('change', function() {
+                    $choiceSelect
+                        .empty()
+                        .append(
+                            $('<option value></option>')
+                        )
+                        .prop('disabled', true);
+
+                    var customerId = $(this).val();
+                    if (customerId) {
+                        var xhr = $.get(router.generate(
+                            'ekyna_commerce_customer_address_admin_choice_list',
+                            {customerId: customerId}
+                        ));
+                        xhr.done(function (data) {
+                            if (typeof data.choices !== 'undefined') {
+                                for (var i in data.choices) {
+                                    if (data.choices.hasOwnProperty(i)) {
+                                        $choiceSelect.append(
+                                            $('<option />')
+                                                .attr('value', data.choices[i].id)
+                                                .text(data.choices[i].choice_label)
+                                                .data('address', data.choices[i])
+                                        );
+                                    }
+                                }
+                                $choiceSelect.prop('disabled', false);
+                            }
+                            $choiceSelect.trigger('form_choices_loaded', data);
+                        });
+                    }
+                });
+            }
 
             $choiceSelect.on('change', function() {
-                clearForm();
-
                 var val = $choiceSelect.val();
                 if (!val) {
                     return;
@@ -55,6 +85,8 @@ define(['jquery'], function($) {
 
                 var data = $option.data('address');
                 if (data && data.hasOwnProperty('id')) {
+                    clearForm();
+
                     for (var key in mapping) {
                         if (mapping.hasOwnProperty(key)) {
                             $addressForm.find(mapping[key]).val(data[key]).trigger("change");

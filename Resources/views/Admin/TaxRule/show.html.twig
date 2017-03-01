@@ -16,21 +16,32 @@
             <div class="tab-pane active" id="general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(taxRule.name, 'text', 'ekyna_core.field.name', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                        {{ show_row(taxRule.name, 'text', 'ekyna_core.field.name', {
+                            'id': 'tax_rule_name',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(taxRule.priority, 'number', 'ekyna_core.field.priority', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                        {{ show_row(taxRule.priority, 'number', 'ekyna_core.field.priority', {
+                            'id': 'tax_rule_priority',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
                     </div>
                 </div>
                 {{ show_row(taxRule.taxGroups, 'entity', 'ekyna_commerce.tax_group.label.plural', {
+                    'id': 'tax_rule_taxGroups',
                     'route': 'ekyna_commerce_tax_group_admin_show',
                     'route_params_map': {'taxGroupId': 'id'}
                 }) }}
                 {{ show_row(taxRule.customerGroups, 'entity', 'ekyna_commerce.customer_group.label.plural', {
+                    'id': 'tax_rule_customerGroups',
                     'route': 'ekyna_commerce_customer_group_admin_show',
                     'route_params_map': {'customerGroupId': 'id'}
                 }) }}
                 {{ show_row(taxRule.taxes, 'entity', 'ekyna_commerce.tax.label.plural', {
+                    'id': 'tax_rule_taxes',
                     'route': 'ekyna_commerce_tax_admin_show',
                     'route_params_map': {'taxId': 'id'}
                 }) }}

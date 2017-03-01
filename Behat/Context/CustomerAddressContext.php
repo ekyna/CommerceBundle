@@ -17,20 +17,20 @@ class CustomerAddressContext implements Context, KernelAwareContext
     use KernelDictionary;
 
     /**
-     * @Given /^The customer with id "(?P<id>[^"]+)" has the following addresses:$/
+     * @Given /^The customer "(?P<email>[^"]+)" has the following addresses:$/
      *
-     * @param int       $id
+     * @param string    $email
      * @param TableNode $table
      */
-    public function createAddresses($id, TableNode $table)
+    public function createAddresses($email, TableNode $table)
     {
         /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
         $customer = $this->getContainer()
             ->get('ekyna_commerce.customer.repository')
-            ->find($id);
+            ->findOneBy(['email' => $email]);
 
         if (null === $customer) {
-            throw new \InvalidArgumentException("Customer with id '$id' not found.");
+            throw new \InvalidArgumentException("Customer with email '$email' not found.");
         }
 
         $addresses = $this->castAddressesTable($table);

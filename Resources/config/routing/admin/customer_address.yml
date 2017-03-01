@@ -42,3 +42,12 @@ ekyna_commerce_customer_address_admin_remove:
     requirements:
         customerId: \d+
         customerAddressId: \d+
+
+ekyna_commerce_customer_address_admin_choice_list:
+    path: /choice-list
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:choiceListAction" }
+    methods: [GET]
+    requirements:
+        customerId: \d+
+    options:
+        expose: true

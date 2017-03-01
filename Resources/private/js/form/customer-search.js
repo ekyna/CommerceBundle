@@ -1,6 +1,8 @@
 define(['jquery', 'routing'], function($, router) {
     "use strict";
 
+    // TODO Remove as not used ?
+
     /**
      * Entity search widget
      */
@@ -34,6 +36,7 @@ define(['jquery', 'routing'], function($, router) {
                 placeholder: 'Rechercher ...',
                 allowClear: allowClear,
                 minimumInputLength: 3,
+                selectOnClose: true, // For tests
                 ajax: {
                     delay: 300,
                     url: searchUrl,

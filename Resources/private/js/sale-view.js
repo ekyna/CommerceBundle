@@ -5,7 +5,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-ui', 'jquery/form'], function($, Modal) 
         var $xml = $(response),
             $view = $xml.find('view');
 
-        if (1 == $view.length) {
+        if (1 == $view.size()) {
             $saleView.replaceWith($($view.text()));
             return true;
         }
@@ -25,6 +25,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-ui', 'jquery/form'], function($, Modal) 
         $(modal).on('ekyna.modal.response', function (modalEvent) {
             if (modalEvent.contentType == 'xml') {
                 if (parseResponse(modalEvent.content, $saleView)) {
+
                     modalEvent.preventDefault();
                     modal.close();
                 }

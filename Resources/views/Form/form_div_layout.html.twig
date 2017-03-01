@@ -164,7 +164,13 @@
     {% for child in form %}
         <li{% if loop.first %} class="active"{% endif %}>
             <a href="#method-message-state-{{ child.vars.state }}" data-toggle="tab">
+            {% if translation_type == 'shipment' %}
+                {{ child.vars.state|shipment_state_label }}
+            {% elseif translation_type == 'payment' %}
                 {{ child.vars.state|payment_state_label }}
+            {% else %}
+                {{ child.vars.state|trans }}
+            {% endif %}
             </a>
         </li>
     {% endfor %}
@@ -242,7 +248,7 @@
             {% endfor %}
         </div>
     {% else %}
-        {{ block('form_widget_simple') }}
+        {{ block('choice_widget') }}
     {% endif %}
 {% endspaceless %}
 {% endblock ekyna_commerce_method_choice_widget %}
@@ -250,7 +256,7 @@
 
 {% block ekyna_commerce_sale_address_widget %}
 {% spaceless %}
-    <div class="commerce-sale-address">
+    <div class="commerce-sale-address"{{ block('widget_container_attributes') }}>
         {{ form_errors(form)}}
         {% if form.sameAddress is defined %}
             {{ form_row(form.sameAddress) }}

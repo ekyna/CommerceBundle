@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\AdjustmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AdjustmentType;
 
 /**
  * Class CartItemAdjustmentType

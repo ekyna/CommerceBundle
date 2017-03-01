@@ -30,6 +30,7 @@ class OrderViewType extends AbstractViewType
             'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($refreshPath, 'ekyna_commerce.sale.button.refresh', 'fa fa-refresh', [
+            'id'            => 'order_refresh',
             'title'         => 'ekyna_commerce.sale.button.refresh',
             'class'         => 'btn btn-sm btn-default',
             'data-sale-xhr' => 'get',
@@ -40,6 +41,7 @@ class OrderViewType extends AbstractViewType
             'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($addItemPath, 'ekyna_commerce.sale.button.item.add', 'fa fa-plus', [
+            'id'              => 'order_item_add',
             'title'           => 'ekyna_commerce.sale.button.item.add',
             'class'           => 'btn btn-sm btn-primary',
             'data-sale-modal' => null,
@@ -50,6 +52,7 @@ class OrderViewType extends AbstractViewType
             'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($newItemPath, 'ekyna_commerce.sale.button.item.new', 'fa fa-plus', [
+            'id'              => 'order_item_new',
             'title'           => 'ekyna_commerce.sale.button.item.new',
             'class'           => 'btn btn-sm btn-default',
             'data-sale-modal' => null,
@@ -60,6 +63,7 @@ class OrderViewType extends AbstractViewType
             'orderId' => $sale->getId(),
         ]);
         $buttons[] = new View\Button($newAdjustmentPath, 'ekyna_commerce.sale.button.adjustment.new', 'fa fa-plus', [
+            'id'              => 'order_adjustment_new',
             'title'           => 'ekyna_commerce.sale.button.adjustment.new',
             'class'           => 'btn btn-sm btn-default',
             'data-sale-modal' => null,

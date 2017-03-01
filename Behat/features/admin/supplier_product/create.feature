@@ -13,6 +13,7 @@ Feature: Create supplier products
             | name     | currency | email                | gender | lastName | firstName |
             | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
 
+    @javascript
     Scenario: Create a supplier product
         When I go to "ekyna_commerce_supplier_product_admin_new" route with "supplierId:1"
         And I fill in "supplier_product[designation]" with "Samsung Galaxy Tab A"
@@ -35,7 +36,6 @@ Feature: Create supplier products
         And I fill in "supplier_product[availableStock]" with "40"
         And I fill in "supplier_product[weight]" with "0.8"
         And I select "Acme Product" from "supplier_product[subjectIdentity][provider]"
-        And I wait for Select2 initialization on "supplier_product[subjectIdentity][subject]"
         And I search "iPad" in "supplier_product[subjectIdentity][subject]" and select the first result
         And I press "supplier_product_actions_save"
         Then I should see the resource saved confirmation message

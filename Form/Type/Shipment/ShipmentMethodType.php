@@ -4,8 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\MessagesType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\MethodTranslationType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MessagesType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MethodTranslationType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
 use Ekyna\Component\Commerce\Shipment\Entity;
@@ -28,6 +29,9 @@ class ShipmentMethodType extends ResourceFormType
             ->add('name', Type\TextType::class, [
                 'label' => 'ekyna_core.field.name',
             ])
+            ->add('taxGroup', TaxGroupChoiceType::class, [
+                'label' => 'ekyna_commerce.tax_group.label.singular',
+            ])
             ->add('pricing', ShipmentPricingType::class, [
                 'filter_by' => 'zone',
             ])
@@ -41,7 +45,6 @@ class ShipmentMethodType extends ResourceFormType
                     'data_class' => Entity\ShipmentMethodTranslation::class,
                 ],
                 'label'          => false,
-                'error_bubbling' => false,
             ])
             ->add('messages', MessagesType::class, [
                 'message_class'     => Entity\ShipmentMessage::class,

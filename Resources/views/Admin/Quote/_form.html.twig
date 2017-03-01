@@ -1,11 +1,11 @@
 <ul class="nav nav-tabs">
     <li class="active">
-        <a href="#quote-general" data-toggle="tab">
+        <a href="#quote-general" id="toggle-general" data-toggle="tab">
             {{ 'ekyna_core.field.general'|trans }}
         </a>
     </li>
     <li>
-        <a href="#quote-addresses" data-toggle="tab">
+        <a href="#quote-addresses" id="toggle-addresses" data-toggle="tab">
             {{ 'ekyna_commerce.sale.field.addresses'|trans }}
         </a>
     </li>
@@ -30,22 +30,21 @@
                 </div>
             </div>
             {{ form_row(form.customer) }}
-            {{ form_row(form.company) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
             {{ form_row(form.identity) }}
             {{ form_row(form.email) }}
         </div>
         <div class="tab-pane" id="quote-addresses">
             {{ form_row(form.invoiceAddress) }}
             <hr>
-            <div class="form-group">
-                {{ form_label(form.deliveryAddress) }}
-                <div class="col-md-10">
-                    {{ form_row(form.sameAddress) }}
-                    <div id="delivery-address">
-                        {{ form_widget(form.deliveryAddress) }}
-                    </div>
-                </div>
-            </div>
+            {{ form_row(form.deliveryAddress) }}
         </div>
         {#<div class="tab-pane" id="quote-details">
             {{ form_row(form.items) }}

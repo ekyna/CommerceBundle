@@ -22,14 +22,20 @@ class SaleItemCreateFlow extends FormFlow
                 'label'        => 'choice',
                 'form_type'    => Type\Sale\SaleItemSubjectChoiceType::class,
                 'form_options' => [
-                    'validation_groups' => ['sale_item_create_flow_choice'],
+                    'required' => true,
+                    'validation_groups' => [
+                        'sale_item_create_flow_choice'
+                    ],
                 ],
             ],
             [
                 'label'        => 'configure',
                 'form_type'    => Type\Sale\SaleItemSubjectConfigureType::class,
                 'form_options' => [
-                    'validation_groups' => ['sale_item_create_flow_configure'],
+                    'validation_groups' => [
+                        'sale_item_create_flow_configure',
+                        'Default',
+                    ],
                 ],
             ],
         ];

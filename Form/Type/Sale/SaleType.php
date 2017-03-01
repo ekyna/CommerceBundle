@@ -3,10 +3,12 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\CurrencyChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,25 +22,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleType extends ResourceFormType
 {
-    /**
-     * @var string
-     */
-    private $customerClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $orderClass
-     * @param string $customerClass
-     */
-    public function __construct($orderClass, $customerClass)
-    {
-        parent::__construct($orderClass);
-
-        $this->customerClass = $customerClass;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -56,26 +39,11 @@ class SaleType extends ResourceFormType
                 'choices'  => PaymentStates::getChoices(),
                 'disabled' => $lockedMethod,
             ])*/
-            ->add('customer', EntitySearchType::class, [
-                'label'           => 'ekyna_commerce.customer.label.singular',
-                'class'           => $this->customerClass,
-                'required'        => false,
-                'search_route'    => 'ekyna_commerce_customer_admin_search',
-                'find_route'      => 'ekyna_commerce_customer_admin_find',
-                'allow_clear'     => false,
-                'choice_label'    => function (CustomerInterface $data) {
-                    $output = $data->getFirstName() . ' ' . $data->getLastName() . ' &lt;' . $data->getEmail() . '&gt;';
-                    if (0 < strlen($data->getCompany())) {
-                        $output = '[' . $data->getCompany() . '] ' . $output;
-                    }
-
-                    return $output;
-                },
-                'format_function' =>
-                    "if(!data.id)return 'Rechercher';" .
-                    "var output=data.first_name+' '+data.last_name+' &lt;<em>'+data.email+'</em>&gt;';" .
-                    "if(data.company)output='[<strong>'+data.company+'</strong>] '+output;" .
-                    "return $('<span>'+output+'</span>');",
+            ->add('customer', CustomerSearchType::class, [
+                'required' => false,
+            ])
+            ->add('customerGroup', CustomerGroupChoiceType::class, [
+                'required' => false,
             ])
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
@@ -89,21 +57,24 @@ class SaleType extends ResourceFormType
                 'required' => false,
             ])
             ->add('invoiceAddress', SaleAddressType::class, [
-                'label'        => 'ekyna_commerce.sale.field.invoice_address',
-                'address_type' => $options['address_type'],
-                'inherit_data' => true,
+                'label'          => 'ekyna_commerce.sale.field.invoice_address',
+                'address_type'   => $options['address_type'],
+                'inherit_data'   => true,
+                'customer_field' => 'customer',
             ])
             ->add('deliveryAddress', SaleAddressType::class, [
-                'label'        => 'ekyna_commerce.sale.field.delivery_address',
-                'address_type' => $options['address_type'],
-                'inherit_data' => true,
-                'delivery'     => true,
+                'label'          => 'ekyna_commerce.sale.field.delivery_address',
+                'address_type'   => $options['address_type'],
+                'inherit_data'   => true,
+                'delivery'       => true,
+                'customer_field' => 'customer',
             ]);
 
         FormUtil::bindFormEventsToChildren(
             $builder,
             [
                 FormEvents::PRE_SET_DATA => 2048,
+                FormEvents::PRE_SUBMIT   => 2048,
                 FormEvents::POST_SUBMIT  => 2048,
             ],
             ['invoiceAddress', 'deliveryAddress']

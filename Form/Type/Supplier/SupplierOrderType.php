@@ -71,7 +71,7 @@ class SupplierOrderType extends ResourceFormType
                     'required' => false,
                     'disabled' => true,
                 ])
-                ->add('currency', Commerce\CurrencyChoiceType::class)
+                ->add('currency', Commerce\Common\CurrencyChoiceType::class)
                 ->add('state', Symfony\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'choices'  => SupplierOrderStates::getChoices(),
