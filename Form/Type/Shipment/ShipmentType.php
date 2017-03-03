@@ -63,7 +63,7 @@ class ShipmentType extends ResourceFormType
             ])
             ->add('state', Type\ChoiceType::class, [
                 'label'    => 'ekyna_core.field.status',
-                'choices'  => ShipmentStates::getChoices(),
+                'choices'  => ShipmentStates::getFormChoices(),
             ])
             ->add('method', ShipmentMethodChoiceType::class)
             ->add('trackingNumber', Type\TextType::class, [

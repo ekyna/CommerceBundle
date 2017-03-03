@@ -6,7 +6,6 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 
 /**
  * Class SupplierOrderItemContext
@@ -18,60 +17,53 @@ class SupplierOrderItemContext implements Context, KernelAwareContext
     use KernelDictionary;
 
     /**
-     * @Given /^The supplier order with number "(?P<number>[^"]+)" has the following items:$/
+     * @Given /^The following supplier order items:$/
      *
-     * @param string    $number
      * @param TableNode $table
      */
-    public function createSupplierOrderItems($number, TableNode $table)
+    public function createSupplierOrderItems(TableNode $table)
     {
-        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
-        $supplierOrder = $this->getContainer()
-            ->get('ekyna_commerce.supplier_order.repository')
-            ->findOneBy(['number' => $number]);
-
-        if (null === $supplierOrder) {
-            throw new \InvalidArgumentException("Supplier order with number '$number' not found.");
-        }
-
-        $items = $this->castSupplierOrderItemsTable($table, $supplierOrder->getSupplier());
-
-        foreach ($items as $item) {
-            $supplierOrder->addItem($item);
-        }
+        $items = $this->castSupplierOrderItemsTable($table);
 
         $manager = $this->getContainer()->get('ekyna_commerce.supplier_order.manager');
 
-        $manager->persist($supplierOrder);
+        foreach ($items as $item) {
+            $manager->persist($item);
+        }
+
         $manager->flush();
         $manager->clear();
     }
 
     /**
      * @param TableNode $table
-     * @param SupplierInterface $supplier
      *
      * @return array
      */
-    private function castSupplierOrderItemsTable(TableNode $table, SupplierInterface $supplier)
+    private function castSupplierOrderItemsTable(TableNode $table)
     {
+        $orderRepository = $this->getContainer()->get('ekyna_commerce.supplier_order.repository');
         $itemRepository = $this->getContainer()->get('ekyna_commerce.supplier_order_item.repository');
         $productRepository = $this->getContainer()->get('ekyna_commerce.supplier_product.repository');
 
         $items = [];
         foreach ($table as $row) {
+            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $order */
+            $order = $orderRepository->findOneBy(['number' => $row['order']]);
+            if (null === $order) {
+                throw new \InvalidArgumentException("Failed to find supplier order with number '{$row['order']}'.");
+            }
+
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $product */
-            $product = $productRepository->findOneBy([
-                'supplier'  => $supplier,
-                'reference' => $reference = $row['reference'],
-            ]);
+            $product = $productRepository->findOneBy(['supplier'  => $order->getSupplier(), 'reference' => $row['reference']]);
             if (null === $product) {
-                throw new \InvalidArgumentException("Supplier product with reference '$reference' not found.");
+                throw new \InvalidArgumentException("Supplier product with reference '{$row['reference']}' not found.");
             }
 
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface $item */
             $item = $itemRepository->createNew();
             $item
+                ->setOrder($order)
                 ->setProduct($product)
                 ->setDesignation($product->getDesignation())
                 ->setReference($product->getReference())

@@ -2,19 +2,18 @@
 
 namespace Acme\ProductBundle\Entity;
 
-use Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface;
-use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
-use Ekyna\Component\Commerce\Stock\Model\StockSubjectTrait;
-use Ekyna\Component\Resource\Model\ResourceInterface;
+use Ekyna\Component\Commerce\Pricing\Model as Pricing;
+use Ekyna\Component\Commerce\Stock\Model as Stock;
 
 /**
  * Class Product
  * @package Acme\ProductBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class Product implements ResourceInterface, StockSubjectInterface
+class Product implements Pricing\TaxableInterface, Stock\StockSubjectInterface
 {
-    use StockSubjectTrait;
+    use Pricing\TaxableTrait,
+        Stock\StockSubjectTrait;
 
     /**
      * @var int
@@ -40,11 +39,6 @@ class Product implements ResourceInterface, StockSubjectInterface
      * @var float
      */
     private $weight;
-
-    /**
-     * @var TaxGroupInterface
-     */
-    private $taxGroup;
 
 
     /**
@@ -167,30 +161,6 @@ class Product implements ResourceInterface, StockSubjectInterface
     public function setWeight($weight)
     {
         $this->weight = $weight;
-
-        return $this;
-    }
-
-    /**
-     * Returns the taxGroup.
-     *
-     * @return TaxGroupInterface
-     */
-    public function getTaxGroup()
-    {
-        return $this->taxGroup;
-    }
-
-    /**
-     * Sets the taxGroup.
-     *
-     * @param TaxGroupInterface $taxGroup
-     *
-     * @return Product
-     */
-    public function setTaxGroup(TaxGroupInterface $taxGroup)
-    {
-        $this->taxGroup = $taxGroup;
 
         return $this;
     }

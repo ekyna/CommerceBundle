@@ -9,24 +9,24 @@ Feature: Create supplier deliveries
         And The following acme products:
             | designation | reference | price     | weight |
             | iPad Air    | IPAD-AIR  | 266.66667 | 0.8    |
-            | Galaxy Tab  | GALA-TAB  | 249.16667 | 0.8    |
+            | Galaxy Tab  | GALA-TAB  | 249.16667 | 0.7    |
         And The following suppliers:
             | name     | currency | email                | gender | lastName | firstName |
             | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
         And The following supplier products:
-            | supplier | designation | reference | price     | weight | available | ordered | eda  | provider     | identifier |
-            | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |      | acme_product | 1          |
-            | TechData | Galaxy Tab  | GALA-TAB  | 207.5     | 0.8    | 20        | 0       |      | acme_product | 2          |
+            | supplier | designation | reference | price     | weight | available | ordered | eda  | acme_product |
+            | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |      | IPAD-AIR     |
+            | TechData | Galaxy Tab  | GALA-TAB  | 207.5     | 0.7    | 20        | 0       |      | GALA-TAB     |
         And The following supplier orders:
             | number | supplier | currency | paymentTotal | estimatedDateOfArrival |
             | SO-001 | TechData | EUR      | 1328.33334   | 2020-01-01             |
-        And The supplier order with number "SO-001" has the following items:
-            | reference | quantity |
-            | IPAD-AIR  | 2        |
-            | GALA-TAB  | 4        |
+        And The following supplier order items:
+            | order  | reference | quantity |
+            | SO-001 | IPAD-AIR  | 2        |
+            | SO-001 | GALA-TAB  | 4        |
         And The supplier order with number "SO-001" is submitted
 
-    @javascript
+    @javascript @current
     Scenario: Create the supplier partial delivery
         When I go to "ekyna_commerce_supplier_delivery_admin_new" route with "supplierOrderId:1"
         And I fill in "supplier_delivery[items][0][quantity]" with "0"
@@ -75,7 +75,7 @@ Feature: Create supplier deliveries
         Then I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
         Then I should see "2" in the "#product_stockUnit_0_deliveredQuantity" element
 
-    @javascript
+    @javascript @current
     Scenario: Create the supplier complete delivery
         When I go to "ekyna_commerce_supplier_delivery_admin_new" route with "supplierOrderId:1"
         And I fill in "supplier_delivery[items][0][quantity]" with "2"

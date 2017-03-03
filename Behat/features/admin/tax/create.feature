@@ -15,7 +15,7 @@ Feature: Create taxes
         And I press "tax_actions_save"
         Then I should see the resource saved confirmation message
         And I should see "TVA 20%" in the "#tax_name" element
-        And I should see "20%" in the "#tax_rate" element
+        And I should see "20,00 %" in the "#tax_rate" element
         And I should see "France" in the "#tax_country" element
 
         # TODO

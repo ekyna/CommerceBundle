@@ -18,14 +18,6 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildSaleView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
-    {
-        return [];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function buildItemView(Common\SaleItemInterface $item, View\AbstractView $view, array $options)
     {
         if ($item->isImmutable() || !$options['editable']) {

@@ -2,11 +2,15 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
-use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemSubjectTypeSubscriber;
+use Ekyna\Bundle\CommerceBundle\Event\SaleItemFormEvent;
+use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
+use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
-use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -17,19 +21,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SaleItemSubjectConfigureType extends AbstractType
 {
     /**
-     * @var SubjectProviderRegistryInterface
+     * @var EventDispatcherInterface
      */
-    private $providerRegistry;
+    private $eventDispatcher;
 
 
     /**
      * Constructor.
      *
-     * @param SubjectProviderRegistryInterface $providerRegistry
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(SubjectProviderRegistryInterface $providerRegistry)
+    public function __construct(EventDispatcherInterface $eventDispatcher)
     {
-        $this->providerRegistry = $providerRegistry;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -37,9 +41,33 @@ class SaleItemSubjectConfigureType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(
-            new SaleItemSubjectTypeSubscriber($this->providerRegistry)
-        );
+        $builder
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+                if (null === $item = $event->getData()) {
+                    // TODO throw exception ?
+
+                    return;
+                }
+
+                // Initialize the item
+                $this->eventDispatcher->dispatch(
+                    SaleItemEvents::INITIALIZE,
+                    new SaleItemEvent($item)
+                );
+
+                // Build the form
+                $this->eventDispatcher->dispatch(
+                    SaleItemFormEvent::BUILD_FORM,
+                    new SaleItemFormEvent($item, $event->getForm())
+                );
+            }, 1024)
+            ->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+                // Build the item
+                $this->eventDispatcher->dispatch(
+                    SaleItemEvents::BUILD,
+                    new SaleItemEvent($event->getData())
+                );
+            }, 1024);
     }
 
     /**

@@ -21,7 +21,7 @@ class SupplierProductContext implements Context, KernelAwareContext
      *
      * @param TableNode $table
      */
-    public function createSupplierProduct(TableNode $table)
+    public function createSupplierProducts(TableNode $table)
     {
         $supplierProducts = $this->castSupplierProductsTable($table);
 
@@ -42,6 +42,9 @@ class SupplierProductContext implements Context, KernelAwareContext
      */
     private function castSupplierProductsTable(TableNode $table)
     {
+        /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface $acmeProductRepository */
+        $acmeProductRepository = $this->getContainer()->get('acme_product.product.repository');
+        $subjectHelper = $this->getContainer()->get('ekyna_commerce.subject_helper');
         $supplierRepository = $this->getContainer()->get('ekyna_commerce.supplier.repository');
         $supplierProductRepository = $this->getContainer()->get('ekyna_commerce.supplier_product.repository');
 
@@ -51,10 +54,33 @@ class SupplierProductContext implements Context, KernelAwareContext
                 throw new \InvalidArgumentException("Failed to find the supplier named '{$row['supplier']}'.");
             }
 
-            $eda = 0 < strlen($row['eda']) ? new \DateTime($row['eda']) : null;
-
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $product */
             $product = $supplierProductRepository->createNew();
+
+            if (isset($row['acme_product'])) {
+                $acmeProduct = $acmeProductRepository->findOneBy(['reference' => $row['acme_product']]);
+                if (null === $acmeProduct) {
+                    throw new \InvalidArgumentException(
+                        "Failed to find the acme product with reference '{$row['acme_product']}'."
+                    );
+                }
+                $subjectHelper->assign($product, $acmeProduct);
+            }
+
+            /*$provider = isset($row['provider']) ? $row['provider'] : null;
+            $identifier = isset($row['identifier']) ? $row['identifier'] : null;
+            if (!empty($provider) && !empty($identifier)) {
+                $product
+                    ->getSubjectIdentity()
+                    ->setProvider($provider)
+                    ->setIdentifier($identifier);
+            }*/
+
+            $eda = null;
+            if (isset($row['eda']) && 0 < strlen($row['eda'])) {
+                $eda = new \DateTime($row['eda']);
+            }
+
             $product
                 ->setSupplier($supplier)
                 ->setDesignation($row['designation'])
@@ -64,15 +90,6 @@ class SupplierProductContext implements Context, KernelAwareContext
                 ->setAvailableStock($row['available'])
                 ->setOrderedStock($row['ordered'])
                 ->setEstimatedDateOfArrival($eda);
-
-            $provider = isset($row['provider']) ? $row['provider'] : null;
-            $identifier = isset($row['identifier']) ? $row['identifier'] : null;
-            if (!(empty($provider) && empty($identifier))) {
-                $product
-                    ->getSubjectIdentity()
-                    ->setProvider($provider)
-                    ->setIdentifier($identifier);
-            }
 
             $supplierProducts[] = $product;
         }

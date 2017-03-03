@@ -9,9 +9,10 @@
         </thead>
         <tbody>
         {% for attachment in sale.attachments %}
+            {% set attachmentId = 'attachment_' ~ loop.index0 %}
             <tr data-id="{{ attachment.id }}">
-                <td>{{ attachment }}</td>
-                <td>
+                <td id="{{ attachmentId }}_filename">{{ attachment }}</td>
+                <td id="{{ attachmentId }}_internal">
                     {% if attachment.internal %}
                         <span class="label label-success">
                             {{ 'ekyna_core.value.yes'|trans }}

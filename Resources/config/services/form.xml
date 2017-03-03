@@ -309,7 +309,7 @@
         <!-- Sale item subject form type -->
         <service id="ekyna_commerce.sale_item_subject_configure.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType">
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="event_dispatcher"/>
             <tag name="form.type"/>
         </service>
 

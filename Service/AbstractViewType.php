@@ -96,13 +96,14 @@ abstract class AbstractViewType implements ViewTypeInterface
      * Resolves the item's subject.
      *
      * @param Model\SaleItemInterface $item
+     * @param bool                    $throw
      *
      * @return mixed
      *
      * @see SubjectProviderRegistryInterface
      */
-    protected function resolveItemSubject(Model\SaleItemInterface $item)
+    protected function resolveItemSubject(Model\SaleItemInterface $item, $throw = true)
     {
-        return $this->subjectHelper->resolve($item);
+        return $this->subjectHelper->resolve($item, $throw);
     }
 }

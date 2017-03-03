@@ -113,8 +113,8 @@
 {% spaceless %}
     {{ parent() }}
     <td class="sale-detail-actions">
-    {% if discount.vars.actions is defined and not discount.immutable %}
-        {% for action in discount.vars.actions %}
+    {% if line.vars.actions is defined and not line.immutable %}
+        {% for action in line.vars.actions %}
             {{ block('action') }}
         {% endfor %}
     {% endif %}

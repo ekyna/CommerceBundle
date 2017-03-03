@@ -1,5 +1,5 @@
 @commerce @customer-address
-Feature: Create customers
+Feature: Create customer addresses
     In order to create orders
     As an administrator
     I need to be able to create new customers

@@ -23,10 +23,11 @@
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(tax.rate + '%', 'number', 'ekyna_core.field.rate', {
+                        {{ show_row(tax.rate, 'number', 'ekyna_core.field.rate', {
                             'id': 'tax_rate',
                             'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'widget_nb_col': 8,
+                            'append': '%'
                         }) }}
                     </div>
                 </div>

@@ -14,14 +14,15 @@
         </thead>
         <tbody>
         {% for payment in sale.payments %}
+            {% set paymentId = 'payment_' ~ loop.index0 %}
             <tr data-id="{{ payment.id }}">
-                <td>{{ payment }}</td>
-                <td>{{ payment.method }}</td>
-                <td>{{ payment.amount|localizedcurrency(payment.currency.code) }}</td>
-                <td>{{ payment.currency }}</td>
-                <td>{{ payment|payment_state_badge }}</td>
-                <td>{{ payment.createdAt|localizeddate('short', 'none') }}</td>
-                <td>{{ payment.description }}</td>
+                <td id="{{ paymentId }}_number">{{ payment.number }}</td>
+                <td id="{{ paymentId }}_method">{{ payment.method }}</td>
+                <td id="{{ paymentId }}_amount">{{ payment.amount|localizedcurrency(payment.currency.code) }}</td>
+                <td id="{{ paymentId }}_currency">{{ payment.currency }}</td>
+                <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
+                <td id="{{ paymentId }}_createdAt">{{ payment.createdAt|localizeddate('short', 'none') }}</td>
+                <td id="{{ paymentId }}_description">{{ payment.description }}</td>
                 <td class="actions">
                     <a href="{{ admin_resource_path(payment, 'edit') }}" class="btn btn-warning btn-xs">
                         {{ 'ekyna_core.button.edit'|trans }}

@@ -136,22 +136,22 @@
 
 {% block discount %}
 {% spaceless %}
-    <td class="sale-detail-number">{#{{ discount.number }}#}</td>
+    <td class="sale-detail-number">{#{{ line.number }}#}</td>
     <td class="sale-detail-designation" id="{{ line.id }}_designation">
-        {{- discount.designation -}}
+        {{- line.designation -}}
     </td>
     <td class="line-reference" id="{{ line.id }}_reference">
-        {{- discount.reference -}}
+        {{- line.reference -}}
     </td>
     <td class="text-right" colspan="3">&nbsp;</td>
     <td class="text-right" id="{{ line.id }}_base">
-        {{- discount.base|localizedcurrency('EUR') -}}
+        {{- line.base|localizedcurrency('EUR') -}}
     </td>
     <td class="text-right" id="{{ line.id }}_tax">
-        {{- discount.taxAmount|localizedcurrency('EUR') -}}
+        {{- line.taxAmount|localizedcurrency('EUR') -}}
     </td>
     <td class="text-right" id="{{ line.id }}_total">
-        {{- discount.total|localizedcurrency('EUR') -}}
+        {{- line.total|localizedcurrency('EUR') -}}
     </td>
 {% endspaceless %}
 {% endblock discount %}
@@ -160,7 +160,7 @@
 {% block discounts %}
 {% spaceless %}
     <tbody>
-    {% for discount in view.discounts %}
+    {% for line in view.discounts %}
         <tr>
             {{ block('discount') }}
         </tr>

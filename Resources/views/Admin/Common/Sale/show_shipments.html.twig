@@ -12,12 +12,13 @@
         </thead>
         <tbody>
         {% for shipment in sale.shipments %}
+            {% set shipmentId = 'shipment_' ~ loop.index0 %}
             <tr data-id="{{ shipment.id }}">
-                <td>{{ shipment.number }}</td>
-                <td>{{ shipment.method }}</td>
-                <td>{{ shipment|shipment_state_badge }}</td>
-                <td>{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
-                <td>{{ shipment.description }}</td>
+                <td id="{{ shipmentId }}_number">{{ shipment.number }}</td>
+                <td id="{{ shipmentId }}_method">{{ shipment.method }}</td>
+                <td id="{{ shipmentId }}_state">{{ shipment|shipment_state_badge }}</td>
+                <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
+                <td id="{{ shipmentId }}_description">{{ shipment.description }}</td>
                 <td class="actions">
                     <a href="{{ admin_resource_path(shipment, 'edit') }}" class="btn btn-warning btn-xs">
                         {{ 'ekyna_core.button.edit'|trans }}

@@ -5,8 +5,6 @@ namespace Acme\ProductBundle\Service\Commerce;
 use Acme\ProductBundle\Entity\Product;
 use Acme\ProductBundle\Repository\ProductRepository;
 use Ekyna\Component\Commerce\Exception\SubjectException;
-use Ekyna\Component\Commerce\Subject\Builder\FormBuilderInterface;
-use Ekyna\Component\Commerce\Subject\Builder\ItemBuilderInterface;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
@@ -24,16 +22,6 @@ class ProductProvider implements SubjectProviderInterface
      * @var ProductRepository
      */
     private $productRepository;
-
-    /**
-     * @var ItemBuilder
-     */
-    private $itemBuilder;
-
-    /**
-     * @var FormBuilder
-     */
-    private $formBuilder;
 
 
     /**
@@ -133,34 +121,6 @@ class ProductProvider implements SubjectProviderInterface
     {
         /** @noinspection PhpInternalEntityUsedInspection */
         return $relative->getSubjectIdentity()->getProvider() === self::NAME;
-    }
-
-    /**
-     * Returns the item builder.
-     *
-     * @return ItemBuilderInterface
-     */
-    public function getItemBuilder()
-    {
-        if (null !== $this->itemBuilder) {
-            return $this->itemBuilder;
-        }
-
-        return $this->itemBuilder = new ItemBuilder($this);
-    }
-
-    /**
-     * Returns the form builder.
-     *
-     * @return FormBuilderInterface
-     */
-    public function getFormBuilder()
-    {
-        if (null !== $this->formBuilder) {
-            return $this->formBuilder;
-        }
-
-        return $this->formBuilder = new FormBuilder($this);
     }
 
     /**

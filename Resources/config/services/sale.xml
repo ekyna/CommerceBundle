@@ -44,6 +44,7 @@
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <argument type="service" id="ekyna_commerce.tax.resolver"/>
+            <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
@@ -136,7 +137,7 @@
         <!-- Shipment builder -->
         <service id="ekyna_commerce.shipment.builder"
                  class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
-            <argument>%ekyna_commerce.order_shipment_item.class%</argument>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 
         <!-- ############################## CART ############################## -->

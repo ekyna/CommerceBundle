@@ -37,6 +37,13 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Sale item event listener -->
+        <service id="acme_product.sale_item.event_subscriber"
+                 class="Acme\ProductBundle\EventListener\SaleItemEventSubscriber">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <!-- Stock unit event listener -->
         <service id="acme_product.stock_unit.event_subscriber"
                  class="Acme\ProductBundle\EventListener\StockUnitEventSubscriber"

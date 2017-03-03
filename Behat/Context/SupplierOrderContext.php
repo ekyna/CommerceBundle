@@ -29,7 +29,7 @@ class SupplierOrderContext implements Context, KernelAwareContext
             ->findOneBy(['number' => $number]);
 
         if (null === $order) {
-            throw new \InvalidArgumentException("Supplier order with number '$number' not found.");
+            throw new \InvalidArgumentException("Failed to find supplier order with number '$number'.");
         }
 
         // TODO use a service (workflow ?) (same in admin controller)

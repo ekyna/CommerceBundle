@@ -151,7 +151,7 @@ class SubjectChoiceType extends AbstractType
             ];
 
             if (isset($mapping[$val])) {
-                // TODO Provider method to provide this config.
+                // TODO Use event dispatcher to get this config.
                 // TODO Product : search only for Simple/Variant
                 $config = [
                     'search' => $this->urlGenerator->generate($mapping[$val] . '_product_product_admin_search'),
