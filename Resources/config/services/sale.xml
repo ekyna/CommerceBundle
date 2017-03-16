@@ -220,6 +220,9 @@
             <call method="setStateResolver">
                 <argument type="service" id="ekyna_commerce.order.state_resolver"/>
             </call>
+            <call method="setStockAssigner">
+                <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
+            </call>
             <tag name="resource.event_subscriber"/>
         </service>
 
@@ -234,6 +237,9 @@
         <service id="ekyna_commerce.order_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderItemEventSubscriber"
                  parent="ekyna_commerce.sale_item.abstract_listener">
+            <call method="setStockAssigner">
+                <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
+            </call>
             <tag name="resource.event_subscriber"/>
         </service>
 
@@ -330,6 +336,15 @@
         <service id="ekyna_commerce.stock_unit.updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockUnitUpdater">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+        </service>
+
+        <!-- Stock unit assigner -->
+        <service id="ekyna_commerce.stock_unit.assigner"
+                 class="Ekyna\Component\Commerce\Stock\Assigner\StockUnitAssigner">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 
         <!-- Stock subject updater -->
