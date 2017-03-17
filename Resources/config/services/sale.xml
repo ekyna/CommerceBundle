@@ -342,6 +342,7 @@
         <service id="ekyna_commerce.stock_unit.assigner"
                  class="Ekyna\Component\Commerce\Stock\Assigner\StockUnitAssigner">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>

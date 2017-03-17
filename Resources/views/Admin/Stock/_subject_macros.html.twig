@@ -26,24 +26,14 @@
 {% endmacro show_in_stock %}
 
 
-{% macro show_ordered_stock(subject, options = {}) %}
+{% macro show_virtual_stock(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.orderedStock, 'number', 'ekyna_commerce.stock_subject.field.ordered_stock', {
-        'id': 'subject_orderedStock',
+    {{ show_row(subject.virtualStock, 'number', 'ekyna_commerce.stock_subject.field.virtual_stock', {
+        'id': 'subject_virtualStock',
         'precision': 0
     }|merge(options)) }}
 {% endspaceless %}
-{% endmacro show_ordered_stock %}
-
-
-{% macro show_shipped_stock(subject, options = {}) %}
-{% spaceless %}
-    {{ show_row(subject.shippedStock, 'number', 'ekyna_commerce.stock_subject.field.shipped_stock', {
-        'id': 'subject_shippedStock',
-        'precision': 0
-    }|merge(options)) }}
-{% endspaceless %}
-{% endmacro show_shipped_stock %}
+{% endmacro show_virtual_stock %}
 
 
 {% macro show_eta(subject, options = {}) %}
@@ -75,34 +65,25 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             {{ _self.show_in_stock(subject, {
                 'id': prefix ~'_inStock',
-                'label_nb_col': 4,
-                'widget_nb_col': 8
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
-        <div class="col-md-6">
-            {{ _self.show_ordered_stock(subject, {
-                'id': prefix ~'_orderedStock',
-                'label_nb_col': 4,
-                'widget_nb_col': 8
+        <div class="col-md-4">
+            {{ _self.show_virtual_stock(subject, {
+                'id': prefix ~'_virtualStock',
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            {{ _self.show_shipped_stock(subject, {
-                'id': prefix ~'_shippedStock',
-                'label_nb_col': 4,
-                'widget_nb_col': 8
-            }) }}
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             {{ _self.show_eta(subject, {
                 'id': prefix ~'_estimatedDateOfArrival',
-                'label_nb_col': 4,
-                'widget_nb_col': 8
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
     </div>

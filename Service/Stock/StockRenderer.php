@@ -58,7 +58,7 @@ class StockRenderer
     {
         $repository = $this->resolver->getRepositoryBySubject($subject);
 
-        $stockUnits = $repository->findNotClosedSubject($subject);
+        $stockUnits = $repository->findNotClosedBySubject($subject);
         $resource = $repository->getClassName();
 
         $template = isset($options['template']) ? $options['template'] : $this->defaultTemplate;

@@ -18,58 +18,52 @@ class StockUnitRepository extends ResourceRepository implements StockUnitReposit
     /**
      * @inheritdoc
      */
-    public function findAvailableOrPendingBySubject(StockSubjectInterface $subject)
-    {
-        if (!$subject instanceof Product) {
-            throw new \InvalidArgumentException('Expected instance of ' . Product::class);
-        }
-
-        if (!$subject->getId()) {
-            return [];
-        }
-
-        $qb = $this->getQueryBuilder();
-
-        return $qb
-            ->andWhere($qb->expr()->eq('su.product', ':product'))
-            ->andWhere($qb->expr()->in('su.state', ':state'))
-            ->setParameter('product', $subject)
-            ->setParameter('state', [StockUnitStates::STATE_OPENED, StockUnitStates::STATE_PENDING])
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function findNewBySubject(StockSubjectInterface $subject)
     {
-        if (!$subject instanceof Product) {
-            throw new \InvalidArgumentException('Expected instance of ' . Product::class);
-        }
-
-        if (!$subject->getId()) {
-            return [];
-        }
-
-        $qb = $this->getQueryBuilder();
-
-        return $qb
-            ->andWhere($qb->expr()->eq('su.product', ':product'))
-            ->andWhere($qb->expr()->eq('su.state', ':state'))
-            ->setParameter('product', $subject)
-            ->setParameter('state', StockUnitStates::STATE_NEW)
-            ->getQuery()
-            ->getResult();
+        return $this->findBySubjectAndStates($subject, [
+            StockUnitStates::STATE_NEW
+        ]);
     }
 
     /**
      * @inheritdoc
      */
-    public function findNotClosedSubject(StockSubjectInterface $subject)
+    public function findPendingOrReadyBySubject(StockSubjectInterface $subject)
+    {
+        return $this->findBySubjectAndStates($subject, [
+            StockUnitStates::STATE_PENDING,
+            StockUnitStates::STATE_READY
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findNotClosedBySubject(StockSubjectInterface $subject)
+    {
+        return $this->findBySubjectAndStates($subject, [
+            StockUnitStates::STATE_NEW,
+            StockUnitStates::STATE_PENDING,
+            StockUnitStates::STATE_READY
+        ]);
+    }
+
+    /**
+     * Finds stock units by subject and states.
+     *
+     * @param StockSubjectInterface $subject
+     * @param array                 $states
+     *
+     * @return array
+     */
+    private function findBySubjectAndStates(StockSubjectInterface $subject, array $states)
     {
         if (!$subject instanceof Product) {
             throw new \InvalidArgumentException('Expected instance of ' . Product::class);
+        }
+
+        if (empty($states)) {
+            throw new \InvalidArgumentException('Expected at least one state.');
         }
 
         if (!$subject->getId()) {
@@ -79,11 +73,19 @@ class StockUnitRepository extends ResourceRepository implements StockUnitReposit
         $alias = $this->getAlias();
         $qb = $this->getQueryBuilder();
 
+        if (1 == count($states)) {
+            $qb
+                ->andWhere($qb->expr()->eq($alias . '.state', ':state'))
+                ->setParameter('state', current($states));
+        } else {
+            $qb
+                ->andWhere($qb->expr()->in($alias . '.state', ':states'))
+                ->setParameter('states', $states);
+        }
+
         return $qb
             ->andWhere($qb->expr()->eq($alias . '.product', ':product'))
-            ->andWhere($qb->expr()->neq($alias . '.state', ':state'))
             ->setParameter('product', $subject)
-            ->setParameter('state', StockUnitStates::STATE_CLOSED)
             ->getQuery()
             ->getResult();
     }

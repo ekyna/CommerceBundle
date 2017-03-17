@@ -608,7 +608,7 @@ ekyna_commerce:
         state:
             new: Nouveau
             pending: En attente
-            opened: Ouverte
+            ready: Prête
             closed: Fermée
         field:
             geocode: Geocode
@@ -625,10 +625,9 @@ ekyna_commerce:
         field:
             mode: Mode stock
             state: État stock
-            in_stock: Qte en stock
-            ordered_stock: Qte commandée
-            shipped_stock: Qte expediée
-            estimated_date_of_arrival: Date de livraison estimée
+            in_stock: Stock réel
+            virtual_stock: Stock prévisionnel
+            estimated_date_of_arrival: Date de réappro.
         mode:
             disabled: Désactivé
             enabled: Activé
