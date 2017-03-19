@@ -1,5 +1,4 @@
-@commerce    @supplier-order
-
+@commerce @stock @supplier-order
 Feature: Remove supplier orders
     In order to manage products supply
     As an administrator
@@ -23,4 +22,4 @@ Feature: Remove supplier orders
 
     # TODO
     # - Removing a submitted order should be prevented
-    #- stock units impact
+    # - stock impact

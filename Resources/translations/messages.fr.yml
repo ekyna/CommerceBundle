@@ -614,7 +614,8 @@ ekyna_commerce:
             geocode: Geocode
             estimated_date_of_arrival: Date de livraison estimée
             ordered_quantity: Qte commandée
-            delivered_quantity: Qte livrée
+            delivered_quantity: Qte reçue
+            reserved_quantity: Qte vendue
             shipped_quantity: Qte expediée
             net_price: Prix d'achat HT
             supplier_order: Cde. Four.
@@ -667,15 +668,17 @@ ekyna_commerce:
             plural: Livraisons fournisseur
         header:
             list: Liste des livraisons
-            show: Détail de la livraison <small>%name%</small>
+            show: Détail de la livraison du <strong>%date%</strong>
             new: Créer une nouvelle livraison
-            edit: Modifier la livraison <small>%name%</small>
-            remove: Supprimer la livraison <small>%name%</small>
+            edit: Modifier la livraison du <small>%date%</small>
+            remove: Supprimer la livraison du <small>%date%</small>
         button:
             show: Détail de la livraison
             new: Nouvelle livraison
             edit: Modifier la livraison
             remove: Supprimer la livraison
+        alert:
+            no_item: Aucune livraison fournisseur configuré
 
     supplier_delivery_item:
         label:
@@ -694,7 +697,6 @@ ekyna_commerce:
             new: Créer une nouvelle commande
             edit: Modifier la commande <small>%name%</small>
             remove: Supprimer la commande <small>%name%</small>
-            #transform: Transformer la commande <small>%name%</small>
             submit: Soumettre la commande <small>%name%</small>
         tab:
             deliveries: Livraisons
@@ -704,12 +706,12 @@ ekyna_commerce:
             new: Nouvelle commande
             edit: Modifier la commande
             remove: Supprimer la commande
-            #transform: Transformer la commande
             add_item: Ajouter une ligne
             submit: Soumettre au fournisseur
         message:
             confirm_item_removal: Confirmer la suppression de cette ligne ?
             cant_be_deleted: Cette commande fournisseur a été réceptionnée et ne peut être supprimée.
+            cant_be_submitted: Cette commande a déjà été soumise au fournisseur.
             relative_stock_unit_is_shipped: >
                 Tout ou partie des stocks liés à cette commande ont été livrés à des clients,
                 cette commande et/ou ses lignes ne peuvent donc pas être supprimée(s).

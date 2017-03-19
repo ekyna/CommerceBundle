@@ -16,6 +16,9 @@
                 {{- 'ekyna_commerce.stock_unit.field.delivered_quantity'|trans -}}
             </th>
             <th>
+                {{- 'ekyna_commerce.stock_unit.field.reserved_quantity'|trans -}}
+            </th>
+            <th>
                 {{- 'ekyna_commerce.stock_unit.field.shipped_quantity'|trans -}}
             </th>
             <th>
@@ -42,6 +45,9 @@
             </td>
             <td id="{{ stockUnitId ~ '_deliveredQuantity' }}" class="text-right">
                 {{- stockUnit.deliveredQuantity|localizednumber -}}
+            </td>
+            <td id="{{ stockUnitId ~ '_reservedQuantity' }}" class="text-right">
+                {{- stockUnit.reservedQuantity|localizednumber -}}
             </td>
             <td id="{{ stockUnitId ~ '_shippedQuantity' }}" class="text-right">
                 {{- stockUnit.shippedQuantity|localizednumber -}}

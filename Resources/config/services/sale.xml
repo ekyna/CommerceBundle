@@ -391,7 +391,14 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
-        <!-- Supplier order event listener -->
+        <!-- Supplier delivery event listener -->
+        <service id="ekyna_commerce.supplier_delivery.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryEventSubscriber"
+                 parent="ekyna_commerce.supplier_order.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Supplier delivery item event listener -->
         <service id="ekyna_commerce.supplier_delivery_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscriber"
                  parent="ekyna_commerce.supplier_order.abstract_listener">

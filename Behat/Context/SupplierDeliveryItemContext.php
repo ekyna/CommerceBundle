@@ -18,47 +18,46 @@ class SupplierDeliveryItemContext implements Context, KernelAwareContext
     use KernelDictionary;
 
     /**
-     * @Given /^The supplier delivery with id "(?P<id>[^"]+)" has the following items:$/
+     * @Given /^The following supplier delivery items:$/
      *
-     * @param int       $id
      * @param TableNode $table
      */
-    public function createSupplierDeliveryItems($id, TableNode $table)
+    public function createSupplierDeliveryItems(TableNode $table)
     {
-        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface $delivery */
-        $delivery = $this->getContainer()
-            ->get('ekyna_commerce.supplier_delivery.repository')
-            ->find($id);
+        $items = $this->castSupplierDeliveryItemsTable($table);
 
-        if (null === $delivery) {
-            throw new \InvalidArgumentException("Supplier delivery with id '$id' not found.");
-        }
-
-        $items = $this->castSupplierDeliveryItemsTable($table, $delivery->getOrder());
+        $manager = $this->getContainer()->get('ekyna_commerce.supplier_delivery_item.manager');
 
         foreach ($items as $item) {
-            $delivery->addItem($item);
+            $manager->persist($item);
         }
 
-        $manager = $this->getContainer()->get('ekyna_commerce.supplier_delivery.manager');
-
-        $manager->persist($delivery);
         $manager->flush();
         $manager->clear();
     }
 
     /**
      * @param TableNode              $table
-     * @param SupplierOrderInterface $order
      *
      * @return array
      */
-    private function castSupplierDeliveryItemsTable(TableNode $table, SupplierOrderInterface $order)
+    private function castSupplierDeliveryItemsTable(TableNode $table)
     {
+        $orderRepository = $this->getContainer()->get('ekyna_commerce.supplier_order.repository');
         $itemRepository = $this->getContainer()->get('ekyna_commerce.supplier_delivery_item.repository');
 
         $items = [];
         foreach ($table as $row) {
+            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $order */
+            $order = $orderRepository->findOneBy(['number' => $row['order']]);
+            if (null === $order) {
+                throw new \InvalidArgumentException("Failed to find supplier order with number '{$row['order']}'.");
+            }
+
+            if (null === $delivery = $order->getDeliveries()->get($row['delivery'])) {
+                throw new \InvalidArgumentException("Failed to fetch supplier delivery at index '{$row['delivery']}'.");
+            }
+
             $reference = $row['reference'];
 
             $orderItem = null;
@@ -68,7 +67,6 @@ class SupplierDeliveryItemContext implements Context, KernelAwareContext
                     break;
                 }
             }
-
             if (null === $orderItem) {
                 throw new \InvalidArgumentException("Supplier order item not found for reference '$reference'.");
             }
@@ -76,6 +74,7 @@ class SupplierDeliveryItemContext implements Context, KernelAwareContext
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface $item */
             $item = $itemRepository->createNew();
             $item
+                ->setDelivery($delivery)
                 ->setOrderItem($orderItem)
                 ->setQuantity($row['quantity']);
 

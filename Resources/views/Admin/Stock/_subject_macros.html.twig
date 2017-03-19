@@ -39,7 +39,8 @@
 {% macro show_eta(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.estimatedDateOfArrival, 'datetime', 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival', {
-        'id': 'subject_estimatedDateOfArrival'
+        'id': 'subject_estimatedDateOfArrival',
+        'time': false
     }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_eta %}

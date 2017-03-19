@@ -1,18 +1,25 @@
 {% spaceless %}
 <div class="actions">
-    {{ ui_button('ekyna_commerce.supplier_delivery.button.new', {
-        'type': 'link',
-        'path': path('ekyna_commerce_supplier_delivery_admin_new', {
-            'supplierOrderId': supplierOrder.id
-        }),
-        'theme': 'primary',
-        'icon': 'plus',
-        'size': 'sm',
-    }) }}
+    {%- if supplierOrder is ordered_supplier_order or supplierOrder is partial_supplier_order -%}
+        {{- ui_button('ekyna_commerce.supplier_delivery.button.new', {
+            'type': 'link',
+            'path': path('ekyna_commerce_supplier_delivery_admin_new', {
+                'supplierOrderId': supplierOrder.id
+            }),
+            'theme': 'primary',
+            'icon': 'plus',
+            'size': 'sm',
+        }) -}}
+    {% endif -%}
 </div>
 {% for delivery in supplierOrder.deliveries %}
     {% set deliveryId = 'delivery_' ~ loop.index0 ~ '_' -%}
-    <table class="table table-stripped">
+    <h5 class="sub-header">
+        {{ 'ekyna_commerce.supplier_delivery.header.show'|trans({
+            '%date%': delivery.createdAt|localizeddate('short', 'none')
+        })|raw }}
+    </h5>
+    <table class="table table-stripped table-condensed">
         <thead>
         <tr>
             <th>{{ 'ekyna_core.field.designation'|trans }}</th>
@@ -46,6 +53,9 @@
         {{ admin_resource_btn(delivery, 'edit', {'size': 'xs'}) }}
         {{ admin_resource_btn(delivery, 'remove', {'size': 'xs'}) }}
     </div>
-    {% if not loop.last %}<hr>{% endif %}
+{% else %}
+    <p>
+        <em>{{ 'ekyna_commerce.supplier_delivery.alert.no_item'|trans }}</em>
+    </p>
 {% endfor %}
 {% endspaceless %}

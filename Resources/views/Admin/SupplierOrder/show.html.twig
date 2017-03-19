@@ -1,13 +1,16 @@
 {% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
 
 {% block main %}
+{% spaceless %}
 <div class="actions">
-    {{ ui_button('ekyna_commerce.supplier_order.button.submit', {
-        'path': path('ekyna_commerce_supplier_order_admin_submit', {'supplierOrderId': supplierOrder.id}),
-        'type': 'link'
-    }) }}
-    {{ admin_resource_btn(supplierOrder, 'edit') }}
-    {{ admin_resource_btn(supplierOrder, 'remove') }}
+    {% if supplierOrder is new_supplier_order -%}
+        {{- ui_button('ekyna_commerce.supplier_order.button.submit', {
+            'path': path('ekyna_commerce_supplier_order_admin_submit', {'supplierOrderId': supplierOrder.id}),
+            'type': 'link'
+        }) -}}
+    {% endif -%}
+    {{- admin_resource_btn(supplierOrder, 'edit') -}}
+    {{- admin_resource_btn(supplierOrder, 'remove') -}}
 </div>
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
@@ -83,4 +86,5 @@
         </div>
     </div>
 </div>
+{% endspaceless %}
 {% endblock %}

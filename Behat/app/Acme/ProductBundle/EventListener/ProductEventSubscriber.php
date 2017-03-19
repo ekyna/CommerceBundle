@@ -5,6 +5,7 @@ namespace Acme\ProductBundle\EventListener;
 use Acme\ProductBundle\Entity\Product;
 use Acme\ProductBundle\Event\ProductEvents;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Stock\Event\SubjectStockUnitEvent;
 use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Persistence\PersistenceHelperInterface;
@@ -92,13 +93,13 @@ class ProductEventSubscriber implements EventSubscriberInterface
     /**
      * Stock unit change event handler.
      *
-     * @param ResourceEventInterface $event
+     * @param SubjectStockUnitEvent $event
      */
-    public function onStockUnitChange(ResourceEventInterface $event)
+    public function onStockUnitChange(SubjectStockUnitEvent $event)
     {
         $product = $this->getProductFromEvent($event);
 
-        if (null !== $stockUnit = $event->getData('stock_unit')) {
+        if (null !== $stockUnit = $event->getStockUnit()) {
             $changed = $this->stockUpdater->updateFromStockUnitChange($product, $stockUnit);
         } else {
             $changed = $this->stockUpdater->update($product);
@@ -112,13 +113,13 @@ class ProductEventSubscriber implements EventSubscriberInterface
     /**
      * Stock unit delete event handler.
      *
-     * @param ResourceEventInterface $event
+     * @param SubjectStockUnitEvent $event
      */
-    public function onStockUnitRemoval(ResourceEventInterface $event)
+    public function onStockUnitRemoval(SubjectStockUnitEvent $event)
     {
         $product = $this->getProductFromEvent($event);
 
-        if (null !== $stockUnit = $event->getData('stock_unit')) {
+        if (null !== $stockUnit = $event->getStockUnit()) {
             $changed = $this->stockUpdater->updateFromStockUnitRemoval($product, $stockUnit);
         } else {
             $changed = $this->stockUpdater->update($product);

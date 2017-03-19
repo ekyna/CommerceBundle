@@ -6,6 +6,7 @@ use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -97,14 +98,18 @@ class SupplierOrderController extends ResourceController
         /** @var SupplierOrderInterface $resource */
         $resource = $context->getResource($resourceName);
 
+        // TODO Use Symfony WorkFlow Component ? (can 'transition') (Sf 3.2)
+        if ($resource->getState() !== SupplierOrderStates::STATE_NEW) {
+            $this->addFlash('warning', 'ekyna_commerce.supplier_order.message.cant_be_submitted');
+            return $this->redirect($this->generateResourcePath($resource));
+        }
+
         $data = [
             'order'   => $resource,
             'emails'  => [$resource->getSupplier()->getEmail()],
             'message' => null,
             'confirm' => false,
         ];
-
-        // TODO Use Symfony WorkFlow Component (can 'transition')
 
         $form = $this->createForm(SupplierOrderSubmitType::class, $data);
 

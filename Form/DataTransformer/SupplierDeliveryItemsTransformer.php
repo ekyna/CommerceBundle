@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
 use Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface;
+use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
@@ -55,7 +56,7 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
             }
 
             // Get the remaining delivery quantity
-            $remainingQuantity = $orderItem->getDeliveryRemainingQuantity($delivery);
+            $remainingQuantity = SupplierUtil::calculateDeliveryRemainingQuantity($orderItem);
 
             // Create a new delivery item if remaining quantity is greater than zero
             if (0 < $remainingQuantity) {

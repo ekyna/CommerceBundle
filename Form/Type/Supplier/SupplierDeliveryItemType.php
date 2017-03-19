@@ -3,10 +3,12 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class SupplierDeliveryItemType
@@ -26,13 +28,14 @@ class SupplierDeliveryItemType extends ResourceFormType
                 'class' => 'text-right'
             ],
             // TODO 'scale' => 2, // from packaging mode
+            'error_bubbling' => true,
         ]);
     }
 
     /**
      * @inheritdoc
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options)
     {
         /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface $deliveryItem */
         $deliveryItem = $form->getData();
@@ -40,7 +43,17 @@ class SupplierDeliveryItemType extends ResourceFormType
 
         $view->vars['designation'] = $orderItem->getDesignation();
         $view->vars['reference'] = $orderItem->getReference();
-        $view->vars['remaining_quantity'] = $orderItem->getDeliveryRemainingQuantity($deliveryItem->getDelivery());
+        $view->vars['remaining_quantity'] = SupplierUtil::calculateDeliveryRemainingQuantity($deliveryItem);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefault('error_bubbling', false);
     }
 
     /**

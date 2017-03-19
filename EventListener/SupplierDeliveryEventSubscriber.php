@@ -2,17 +2,17 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierDeliveryItemEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierDeliveryEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Exception\IllegalOperationException;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
 
 /**
- * Class SupplierOrderItemEventSubscriber
+ * Class SupplierOrderEventSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierDeliveryItemEventSubscriber extends BaseSubscriber
+class SupplierDeliveryEventSubscriber extends BaseSubscriber
 {
     /**
      * @inheritdoc

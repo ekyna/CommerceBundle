@@ -1,4 +1,4 @@
-@commerce @supplier-order
+@commerce @stock @supplier-order
 Feature: Edit supplier orders
     In order to manage products supply
     As an administrator
@@ -48,9 +48,13 @@ Feature: Edit supplier orders
 
         # Product assertions
         When I go to "acme_product_product_admin_show" route with "productId:1"
-        Then I should see "2" in the "#product_orderedStock" element
         Then I should see "Pré-commande" in the "#product_stockState" element
+        Then I should see "0" in the "#product_inStock" element
+        Then I should see "2" in the "#product_virtualStock" element
+        Then I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
 
         # Stock units assertions
         Then I should see "En attente" in the "#product_stockUnit_0_state" element
         Then I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
+        Then I should see "0" in the "#product_stockUnit_0_deliveredQuantity" element
+        Then I should see "01/01/2020" in the "#product_stockUnit_0_estimatedDateOfArrival" element

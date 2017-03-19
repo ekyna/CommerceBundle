@@ -37,3 +37,9 @@ ekyna_commerce:
             La quantité expédiée doit être inférieure ou égale à la quantité livrée.
         shipped_must_be_lower_than_delivered: |
             La quantité expédiée doit être inférieure ou égale à la quantité réservée.
+    supplier_order_item:
+        quantity_must_be_greater_or_equal_than_delivered: |
+            La quantité commandée doit être supérieure ou égale à la quantité livrée (%min%).
+    supplier_delivery_item:
+        quantity_must_be_lower_or_equal_than_ordered: |
+            La quantité livrée doit être inférieure ou égale à la quantité commandée (%max%).

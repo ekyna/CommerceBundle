@@ -616,19 +616,19 @@
 {% block ekyna_commerce_supplier_delivery_item_widget %}
 {% spaceless %}
     <tbody {{ block('widget_container_attributes') }}>
-        {%- if form.vars.errors|length > 0 -%}
-            <tr>
-                <td colspan="3">
-                    {{ form_errors(form) }}
-                </td>
-            </tr>
-        {%- endif -%}
-        <tr>
+        <tr{% if errors|length > 0 %} class="has-error"{% endif %}>
             <td>{{ form.vars.designation }}</td>
             <td>{{ form.vars.reference }}</td>
             <td class="text-right">{{ form_widget(form.quantity) }}</td>
             <td class="text-right">{{ form.vars.remaining_quantity|number_format }}</td>{# TODO packaging format #}
         </tr>
+        {%- if errors|length > 0 -%}
+            <tr class="has-error">
+                <td colspan="4">
+                    {{ form_errors(form) }}
+                </td>
+            </tr>
+        {%- endif -%}
         {{ form_rest(form) }}
     </tbody>
 {% endspaceless %}
@@ -708,14 +708,7 @@
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
     <tbody {{ block('widget_container_attributes') }}>
-        {%- if form.vars.errors|length > 0 -%}
-            <tr>
-                <td colspan="6">
-                    {{ form_errors(form) }}
-                </td>
-            </tr>
-        {%- endif -%}
-        <tr>
+        <tr{% if errors|length > 0 %} class="has-error"{% endif %}>
             <td>{{ form_widget(form.designation) }}</td>
             <td>{{ form_widget(form.reference) }}</td>
             <td>{{ form_widget(form.quantity) }}</td>
@@ -727,6 +720,13 @@
                 <div class="btn-group-vertical">__controls__</div>
             </td>
         </tr>
+        {%- if errors|length > 0 -%}
+            <tr>
+                <td colspan="5" class="has-error">
+                    {{ form_errors(form) }}
+                </td>
+            </tr>
+        {%- endif -%}
         {{ form_rest(form) }}
     </tbody>
 {% endspaceless %}

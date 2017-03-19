@@ -33,6 +33,10 @@ Feature: Create supplier orders
         And I should see "TechData" in the "#order_supplier" element
         And I should see "249,17 €" in the "#order_paymentTotal" element
         And I should see "Création" in the "#order_state" element
+        And I should see "Soumettre au fournisseur"
+        And I show the "deliveries" tab
+        And I should not see "Nouvelle livraison"
+        And I should see "Aucune livraison fournisseur configuré"
         # TODO order number
         # TODO order paymentDate
         # TODO order estimatedDateOfArrival
@@ -40,4 +44,3 @@ Feature: Create supplier orders
     # TODO
     # - set items
     # - set items from order products
-    # - test total
