@@ -54,6 +54,8 @@ default:
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryItemContext
         admin_supplier_delivery_features:
             paths: [ "%paths.base%/features/admin/supplier_delivery" ]
             contexts:

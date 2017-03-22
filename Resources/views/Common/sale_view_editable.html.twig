@@ -61,7 +61,7 @@
 {% spaceless %}
     {{ parent() }}
     <td class="sale-detail-actions">
-    {% if line.vars.actions is defined and not line.immutable %}
+    {% if line.vars.actions is defined %}
         {% for action in line.vars.actions %}
             {{ block('action') }}
         {% endfor %}
@@ -75,7 +75,7 @@
 {% spaceless %}
     {{ parent() }}
     <td class="sale-detail-actions">
-    {% if line.vars.actions is defined and not line.immutable %}
+    {% if line.vars.actions is defined %}
         {% for action in line.vars.actions %}
             {{ block('action') }}
         {% endfor %}
@@ -83,6 +83,14 @@
     </td>
 {% endspaceless %}
 {% endblock line_node %}
+
+
+{% block line_information %}
+{% spaceless %}
+    {{ parent() }}
+    <td class="sale-detail-actions">&nbsp;</td>
+{% endspaceless %}
+{% endblock line_information %}
 
 
 {% block gross_totals %}
@@ -113,7 +121,7 @@
 {% spaceless %}
     {{ parent() }}
     <td class="sale-detail-actions">
-    {% if line.vars.actions is defined and not line.immutable %}
+    {% if line.vars.actions is defined %}
         {% for action in line.vars.actions %}
             {{ block('action') }}
         {% endfor %}
@@ -150,7 +158,7 @@
         <td class="text-right" id="{{ line.id }}_tax">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
         <td class="text-right" id="{{ line.id }}_total">{{ line.total|localizedcurrency('EUR') }}</td>
         <td class="sale-detail-actions">
-        {% if line.vars.actions is defined and not line.immutable %}
+        {% if line.vars.actions is defined %}
             {% for action in line.vars.actions %}
                 {{ block('action') }}
             {% endfor %}

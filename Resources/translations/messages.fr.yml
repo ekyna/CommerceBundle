@@ -460,6 +460,7 @@ ekyna_commerce:
                 configure: Configurer l'article
                 edit: Modifier la ligne
                 remove: Supprimer la ligne
+                information: Afficher les information
             adjustment:
                 new: Ajouter une remise
                 edit: Modifier la remise

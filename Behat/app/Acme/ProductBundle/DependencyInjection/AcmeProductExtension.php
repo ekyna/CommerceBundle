@@ -38,6 +38,9 @@ class AcmeProductExtension extends Extension implements PrependExtensionInterfac
                         'repository' => 'Acme\ProductBundle\Repository\ProductRepository',
                         'form'       => 'Acme\ProductBundle\Form\Type\ProductType',
                         'table'      => 'Acme\ProductBundle\Table\Type\ProductType',
+                        'event' => [
+                            'priority' => 1024,
+                        ],
                         'templates'  => [
                             'show.html' => 'AcmeProductBundle:Admin/Product:show.html',
                         ],
@@ -46,6 +49,9 @@ class AcmeProductExtension extends Extension implements PrependExtensionInterfac
                         'entity'     => 'Acme\ProductBundle\Entity\StockUnit',
                         'repository' => 'Acme\ProductBundle\Repository\StockUnitRepository',
                         'form'       => 'Acme\ProductBundle\Form\Type\StockUnitType',
+                        'event' => [
+                            'priority' => 1280
+                        ],
                         'templates'  => 'AcmeProductBundle:Admin/StockUnit',
                         'parent'     => 'acme_product.product',
                     ],

@@ -3,8 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Component\Commerce\Common\Model;
-use Ekyna\Component\Commerce\Common\View\AbstractView;
-use Ekyna\Component\Commerce\Common\View\ViewTypeInterface;
+use Ekyna\Component\Commerce\Common\View\AbstractViewType as BaseType;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @package Ekyna\Bundle\CommerceBundle\Service
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-abstract class AbstractViewType implements ViewTypeInterface
+abstract class AbstractViewType extends BaseType
 {
     /**
      * @var UrlGeneratorInterface
@@ -45,38 +44,6 @@ abstract class AbstractViewType implements ViewTypeInterface
     public function setSubjectHelper(SubjectHelperInterface $subjectHelper)
     {
         $this->subjectHelper = $subjectHelper;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildSaleView(Model\SaleInterface $sale, AbstractView $view, array $options)
-    {
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildItemView(Model\SaleItemInterface $item, AbstractView $view, array $options)
-    {
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildAdjustmentView(Model\AdjustmentInterface $adjustment, AbstractView $view, array $options)
-    {
-
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildShipmentView(Model\SaleInterface $sale, AbstractView $view, array $options)
-    {
-
     }
 
     /**

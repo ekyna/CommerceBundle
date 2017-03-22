@@ -81,7 +81,7 @@ class StockExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction(
-                'render_stock_unit_list',
+                'render_subject_stock_unit_list',
                 [$this->stockRenderer, 'renderSubjectStockUnitList'],
                 ['is_safe' => ['html']]
             ),

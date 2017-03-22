@@ -34,13 +34,18 @@ Feature: Create supplier orders
         And I should see "249,17 €" in the "#order_paymentTotal" element
         And I should see "Création" in the "#order_state" element
         And I should see "Soumettre au fournisseur"
+
+        # Items assertions
+        And I should see "iPad Air" in the "#item_0_designation" element
+        And I should see "IPAD-AIR" in the "#item_0_reference" element
+        And I should see "1" in the "#item_0_quantity" element
+        And I should see "249,17" in the "#item_0_netPrice" element
+        And I should see "iPad Air" in the "#item_0_subject" element
+
+        # Deliveries
         And I show the "deliveries" tab
         And I should not see "Nouvelle livraison"
         And I should see "Aucune livraison fournisseur configuré"
         # TODO order number
         # TODO order paymentDate
         # TODO order estimatedDateOfArrival
-
-    # TODO
-    # - set items
-    # - set items from order products

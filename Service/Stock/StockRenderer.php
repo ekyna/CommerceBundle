@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolverInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -47,6 +48,25 @@ class StockRenderer
     }
 
     /**
+     * Renders the stock units list.
+     *
+     * @param StockUnitInterface[] $stockUnits
+     * @param array                $options
+     *
+     * @return string
+     */
+    public function renderStockUnitList($stockUnits, array $options = [])
+    {
+        $template = isset($options['template']) ? $options['template'] : $this->defaultTemplate;
+        $id = isset($options['id']) ? $options['id'] : 'stockUnit';
+
+        return $this->templating->render($template, [
+            'stockUnits' => $stockUnits,
+            'prefix'     => $id,
+        ]);
+    }
+
+    /**
      * Renders the subject's stock units list.
      *
      * @param StockSubjectInterface $subject
@@ -56,18 +76,8 @@ class StockRenderer
      */
     public function renderSubjectStockUnitList(StockSubjectInterface $subject, array $options = [])
     {
-        $repository = $this->resolver->getRepositoryBySubject($subject);
+        $stockUnits = $this->resolver->findNotClosed($subject);
 
-        $stockUnits = $repository->findNotClosedBySubject($subject);
-        $resource = $repository->getClassName();
-
-        $template = isset($options['template']) ? $options['template'] : $this->defaultTemplate;
-        $id = isset($options['id']) ? $options['id'] : 'stockUnit';
-
-        return $this->templating->render($template, [
-            'stockUnits' => $stockUnits,
-            'resource'   => $resource,
-            'prefix'     => $id,
-        ]);
+        return $this->renderStockUnitList($stockUnits, $options);
     }
 }

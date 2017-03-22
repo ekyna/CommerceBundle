@@ -3,7 +3,25 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="ekyna_commerce.genders.class">Ekyna\Bundle\CommerceBundle\Model\Genders</parameter>
+    </parameters>
+
     <services>
+
+        <!-- Customer security -->
+        <service id="ekyna_commerce.customer.security_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
+        </service>
+
+        <!-- Customer event listener -->
+        <service id="ekyna_commerce.customer.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
 
         <!-- Account menu -->
         <service id="ekyna_commerce.account.menu_subscriber"

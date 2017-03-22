@@ -5,6 +5,27 @@
 
     <services>
 
+        <!-- Payment number generator -->
+        <service id="ekyna_commerce.payment.number_generator"
+                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+            <argument>%kernel.data_dir%/payment_number</argument>
+            <argument>ym</argument>
+            <argument>10</argument>
+        </service>
+
+        <!-- Payment abstract listener -->
+        <service id="ekyna_commerce.payment.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setNumberGenerator">
+                <argument type="service" id="ekyna_commerce.payment.number_generator"/>
+            </call>
+            <call method="setKeyGenerator">
+                <argument type="service" id="ekyna_commerce.common.key_generator"/>
+            </call>
+        </service>
+
         <!-- Payment controllers -->
         <service id="ekyna_commerce.payment.abstract_controller"
                  abstract="true">

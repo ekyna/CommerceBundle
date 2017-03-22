@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
+use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Order\Model as Order;
@@ -15,9 +16,25 @@ use Ekyna\Component\Commerce\Order\Model as Order;
 class OrderViewType extends AbstractViewType
 {
     /**
+     * @var StockRenderer
+     */
+    private $stockRenderer;
+
+
+    /**
+     * Sets the stockRenderer.
+     *
+     * @param StockRenderer $stockRenderer
+     */
+    public function setStockRenderer($stockRenderer)
+    {
+        $this->stockRenderer = $stockRenderer;
+    }
+
+    /**
      * @inheritdoc
      */
-    public function buildSaleView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
+    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options)
     {
         if ((!$options['editable']) || (!$options['private'])) {
             return;
@@ -75,46 +92,72 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildItemView(Common\SaleItemInterface $item, View\AbstractView $view, array $options)
+    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
     {
-        if ($item->isImmutable() || (!$options['editable']) || (!$options['private'])) {
+        if (!$options['editable'] || !$options['private']) {
             return;
         }
 
         $actions = [];
 
-        // Configure action
-        if ($item->isConfigurable()) {
-            $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
+        if (!$item->isImmutable()) {
+            // Configure action
+            if ($item->isConfigurable()) {
+                $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
+                    'orderId'     => $item->getSale()->getId(),
+                    'orderItemId' => $item->getId(),
+                ]);
+                $actions[] = new View\Action($configurePath, 'fa fa-cog', [
+                    'title'           => 'ekyna_commerce.sale.button.item.configure',
+                    'data-sale-modal' => null,
+                ]);
+            }
+
+            // Edit action
+            $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
                 'orderId'     => $item->getSale()->getId(),
                 'orderItemId' => $item->getId(),
             ]);
-            $actions[] = new View\Action($configurePath, 'fa fa-cog', [
-                'title'           => 'ekyna_commerce.sale.button.item.configure',
+            $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+                'title'           => 'ekyna_commerce.sale.button.item.edit',
                 'data-sale-modal' => null,
+            ]);
+
+            // Remove action
+            $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $actions[] = new View\Action($removePath, 'fa fa-remove', [
+                'title'         => 'ekyna_commerce.sale.button.item.remove',
+                'confirm'       => 'ekyna_commerce.sale.confirm.item.remove',
+                'data-sale-xhr' => null,
             ]);
         }
 
-        // Edit action
-        $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
-            'orderId'     => $item->getSale()->getId(),
-            'orderItemId' => $item->getId(),
-        ]);
-        $actions[] = new View\Action($editPath, 'fa fa-pencil', [
-            'title'           => 'ekyna_commerce.sale.button.item.edit',
-            'data-sale-modal' => null,
-        ]);
+        // Information
+        if ($item->isImmutable()) {
+            if (!$item instanceof Order\OrderItemInterface) {
+                throw new \Exception("Unexpected sale item type.");
+            }
 
-        // Remove action
-        $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
-            'orderId'     => $item->getSale()->getId(),
-            'orderItemId' => $item->getId(),
-        ]);
-        $actions[] = new View\Action($removePath, 'fa fa-remove', [
-            'title'         => 'ekyna_commerce.sale.button.item.remove',
-            'confirm'       => 'ekyna_commerce.sale.confirm.item.remove',
-            'data-sale-xhr' => null,
-        ]);
+            $stockUnits = [];
+            foreach ($item->getStockAssignments() as $assignment) {
+                $stockUnits[] = $assignment->getStockUnit();
+            }
+
+            if (!empty($stockUnits)) {
+                $view->vars['information'] = $this->stockRenderer->renderStockUnitList($stockUnits, [
+                    'template' => 'EkynaCommerceBundle:Common:sale_stock_unit_list.html.twig',
+                    'prefix'   => $view->getId() . '_su',
+                ]);
+
+                $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
+                    'title'       => 'ekyna_commerce.sale.button.item.information',
+                    'data-toggle' => '#' . $view->getId() . '_information',
+                ]);
+            }
+        }
 
         $view->vars['actions'] = $actions;
     }
@@ -122,7 +165,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\AbstractView $view, array $options)
+    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options)
     {
         if ($adjustment->isImmutable() || (!$options['editable']) || (!$options['private'])) {
             return;
@@ -161,7 +204,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildShipmentView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
+    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options)
     {
         $actions = [];
 

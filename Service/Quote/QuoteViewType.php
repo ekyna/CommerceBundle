@@ -17,7 +17,7 @@ class QuoteViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildSaleView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
+    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options)
     {
         if ((!$options['editable']) || (!$options['private'])) {
             return;
@@ -71,7 +71,7 @@ class QuoteViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildItemView(Common\SaleItemInterface $item, View\AbstractView $view, array $options)
+    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
     {
         if ($item->isImmutable() || (!$options['editable']) || (!$options['private'])) {
             return [];
@@ -120,7 +120,7 @@ class QuoteViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\AbstractView $view, array $options)
+    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options)
     {
         if ($adjustment->isImmutable() || (!$options['editable']) || (!$options['private'])) {
             return [];
@@ -161,7 +161,7 @@ class QuoteViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildShipmentView(Common\SaleInterface $sale, View\AbstractView $view, array $options)
+    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options)
     {
         $actions = [];
 

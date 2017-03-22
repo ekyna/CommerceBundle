@@ -4,40 +4,26 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
+        <import resource="services/cart.xml"/>
         <import resource="services/customer.xml"/>
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
+        <import resource="services/order.xml"/>
         <import resource="services/payment.xml"/>
+        <import resource="services/quote.xml"/>
         <import resource="services/sale.xml"/>
         <import resource="services/serializer.xml"/>
         <import resource="services/shipment.xml"/>
+        <import resource="services/stock.xml"/>
+        <import resource="services/supplier.xml"/>
         <import resource="services/table.xml"/>
         <import resource="services/twig.xml"/>
         <import resource="services/validators.xml"/>
         <import resource="services/view.xml"/>
     </imports>
 
-    <parameters>
-
-        <!-- TODO remove parameters (some are defined by configuration, other are useless : view builders) -->
-        <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
-        <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.cart.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewType</parameter>
-
-        <parameter key="ekyna_commerce.genders.class">Ekyna\Bundle\CommerceBundle\Model\Genders</parameter>
-
-        <parameter key="ekyna_commerce.order_address.class">Ekyna\Component\Commerce\Order\Entity\OrderAddress</parameter>
-        <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.order_shipment_item.class">Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem</parameter>
-        <parameter key="ekyna_commerce.order.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewType</parameter>
-
-        <parameter key="ekyna_commerce.quote_address.class">Ekyna\Component\Commerce\Quote\Entity\QuoteAddress</parameter>
-        <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.quote.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewType</parameter>
-
-        <parameter key="ekyna_commerce.supplier_address.class">Ekyna\Component\Commerce\Supplier\Entity\SupplierAddress</parameter>
-    </parameters>
-
+    <!-- TODO remove parameters (some are defined by configuration, other are useless : view builders) -->
+    
     <services>
 
         <!-- Security listener -->
@@ -47,6 +33,7 @@
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <tag name="kernel.event_subscriber" />
         </service>
+
         <!-- Security logout handler -->
         <service id="ekyna_commerce.security.logout_handler"
                  class="Ekyna\Bundle\CommerceBundle\Service\Security\LogoutHandler">
@@ -75,56 +62,9 @@
             <tag name="doctrine.event_subscriber" connection="default" priority="99"/>
         </service>
 
-        <!-- Abstract cart controller -->
-        <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
-            <call method="setTemplating">
-                <argument type="service" id="templating"/>
-            </call>
-            <call method="setUrlGenerator">
-                <argument type="service" id="router"/>
-            </call>
-            <call method="setTranslator">
-                <argument type="service" id="translator"/>
-            </call>
-            <call method="setCartHelper">
-                <argument type="service" id="ekyna_commerce.cart_helper"/>
-            </call>
-            <call method="setCustomerProvider">
-                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
-            </call>
-        </service>
-
-        <!-- Cart controller -->
-        <service id="ekyna_commerce.controller.cart"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController"
-                 parent="ekyna_commerce.controller.cart.abstract">
-            <argument type="service" id="ekyna_core.modal" />
-        </service>
-
-        <!-- Checkout cart controller -->
-        <service id="ekyna_commerce.controller.cart_checkout"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController"
-                 parent="ekyna_commerce.controller.cart.abstract">
-            <argument type="service" id="ekyna_commerce.sale_step_validator"/>
-            <argument type="service" id="ekyna_commerce.order.repository"/>
-        </service>
-
         <!-- Subject providers registry-->
         <service id="ekyna_commerce.subject.provider_registry"
                  class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
-
-        <!-- Abstract stock unit listener -->
-        <service id="ekyna_commerce.stock_unit.abstract_listener" abstract="true">
-            <call method="setPersistenceHelper">
-                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            </call>
-            <call method="setDispatcher">
-                <argument type="service" id="ekyna_resource.event_dispatcher"/>
-            </call>
-            <call method="setStateResolver">
-                <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
-            </call>
-        </service>
 
         <!-- Tax resolver -->
         <service id="ekyna_commerce.tax.resolver"
@@ -132,20 +72,6 @@
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument type="service" id="ekyna_commerce.country.repository"/>
             <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
-        </service>
-
-        <!-- Customer security -->
-        <service id="ekyna_commerce.customer.security_provider"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
-            <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="ekyna_commerce.customer.repository"/>
-        </service>
-
-        <!-- Customer event listener -->
-        <service id="ekyna_commerce.customer.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber">
-            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <tag name="resource.event_subscriber"/>
         </service>
 
     </services>

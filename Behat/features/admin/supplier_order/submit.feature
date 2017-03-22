@@ -17,7 +17,7 @@ Feature: Edit supplier orders
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |      | IPAD-AIR     |
         And The following supplier orders:
             | number | supplier | currency | paymentTotal |
-            | SO-001 | TechData | EUR      | 249.16667    |
+            | SO-001 | TechData | EUR      | 498.34       |
         And The following supplier order items:
             | order  | reference | quantity |
             | SO-001 | IPAD-AIR  | 2        |
@@ -34,7 +34,7 @@ Feature: Edit supplier orders
 
         # Order assertions
         And I should see "TechData" in the "#order_supplier" element
-        And I should see "249,17" in the "#order_paymentTotal" element
+        And I should see "498,34 €" in the "#order_paymentTotal" element
         And I should see "En attente" in the "#order_state" element
         And I should see "01/01/2020" in the "#order_estimatedDateOfArrival" element
         # TODO And I should not see "Soumettre au fournisseur"

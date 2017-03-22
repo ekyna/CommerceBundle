@@ -5,6 +5,43 @@
 
     <services>
 
+        <!-- Shipment number generator -->
+        <service id="ekyna_commerce.shipment.number_generator"
+                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+            <argument>%kernel.data_dir%/shipment_number</argument>
+            <argument>ym</argument>
+            <argument>10</argument>
+        </service>
+
+        <!-- Shipment abstract listener -->
+        <service id="ekyna_commerce.shipment.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setNumberGenerator">
+                <argument type="service" id="ekyna_commerce.shipment.number_generator"/>
+            </call>
+        </service>
+
+        <!-- Shipment item abstract listener -->
+        <service id="ekyna_commerce.shipment_item.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setStockUnitResolver">
+                <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            </call>
+            <call method="setStockUnitUpdater">
+                <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            </call>
+        </service>
+
+        <!-- Shipment builder -->
+        <service id="ekyna_commerce.shipment.builder"
+                 class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+        </service>
+
         <!-- Shipment price renderer -->
         <service id="ekyna_commerce.shipment_price.list_builder"
                  class="Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder">

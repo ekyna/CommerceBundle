@@ -1,0 +1,127 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+
+    <parameters>
+        <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
+        <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
+        <parameter key="ekyna_commerce.cart.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewType</parameter>
+    </parameters>
+
+    <services>
+
+        <!-- Cart abstract provider -->
+        <service id="ekyna_commerce.cart.abstract_provider" abstract="true">
+            <call method="setCartRepository">
+                <argument type="service" id="ekyna_commerce.cart.repository"/>
+            </call>
+            <call method="setCartManager">
+                <argument type="service" id="ekyna_commerce.cart.manager"/>
+            </call>
+            <call method="setSaleFactory">
+                <argument type="service" id="ekyna_commerce.sale_factory"/>
+            </call>
+            <call method="setCustomerProvider">
+                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            </call>
+        </service>
+
+        <!-- Cart session provider -->
+        <service id="ekyna_commerce.cart.session_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\SessionCartProvider"
+                 parent="ekyna_commerce.cart.abstract_provider">
+            <argument type="service" id="session"/>
+        </service>
+
+        <!-- Cart number generator -->
+        <service id="ekyna_commerce.cart.number_generator"
+                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+            <argument>%kernel.data_dir%/cart_number</argument>
+            <argument>\Cym</argument>
+            <argument>10</argument>
+        </service>
+
+        <!-- Cart state resolver -->
+        <service id="ekyna_commerce.cart.state_resolver"
+                 class="Ekyna\Component\Commerce\Cart\Resolver\CartStateResolver"/>
+
+        <!-- Cart event listener -->
+        <service id="ekyna_commerce.cart.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartEventSubscriber"
+                 parent="ekyna_commerce.sale.abstract_listener">
+            <call method="setNumberGenerator">
+                <argument type="service" id="ekyna_commerce.cart.number_generator"/>
+            </call>
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.cart.state_resolver"/>
+            </call>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Cart address event listener -->
+        <service id="ekyna_commerce.cart_address.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartAddressEventSubscriber"
+                 parent="ekyna_commerce.sale_address.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Cart item event listener -->
+        <service id="ekyna_commerce.cart_item.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartItemEventSubscriber"
+                 parent="ekyna_commerce.sale_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Cart adjustment event listener -->
+        <service id="ekyna_commerce.cart_adjustment.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartAdjustmentEventSubscriber"
+                 parent="ekyna_commerce.adjustment.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Cart payment event listener -->
+        <service id="ekyna_commerce.cart_payment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartPaymentEventSubscriber"
+                 parent="ekyna_commerce.payment.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Abstract cart controller -->
+        <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
+            <call method="setTemplating">
+                <argument type="service" id="templating"/>
+            </call>
+            <call method="setUrlGenerator">
+                <argument type="service" id="router"/>
+            </call>
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
+            <call method="setCartHelper">
+                <argument type="service" id="ekyna_commerce.cart_helper"/>
+            </call>
+            <call method="setCustomerProvider">
+                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            </call>
+        </service>
+
+        <!-- Cart controller -->
+        <service id="ekyna_commerce.controller.cart"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController"
+                 parent="ekyna_commerce.controller.cart.abstract">
+            <argument type="service" id="ekyna_core.modal" />
+        </service>
+
+        <!-- Checkout cart controller -->
+        <service id="ekyna_commerce.controller.cart_checkout"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController"
+                 parent="ekyna_commerce.controller.cart.abstract">
+            <argument type="service" id="ekyna_commerce.sale_step_validator"/>
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+        </service>
+
+    </services>
+
+</container>

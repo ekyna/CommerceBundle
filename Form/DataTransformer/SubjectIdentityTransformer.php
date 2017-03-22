@@ -38,7 +38,6 @@ class SubjectIdentityTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        /** @noinspection PhpInternalEntityUsedInspection */
         if (!empty($name = $value->getProvider())) {
             $provider = $this->registry->getProviderByName($name);
 
@@ -59,13 +58,11 @@ class SubjectIdentityTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        /** @noinspection PhpInternalEntityUsedInspection */
         $subject = $value->getSubject();
 
         $value->clear();
 
         if (null !== $subject) {
-            /** @noinspection PhpInternalEntityUsedInspection */
             $value->setSubject(null);
 
             try {

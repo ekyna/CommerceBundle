@@ -24,13 +24,12 @@ class SubjectHelper extends BaseHelper
      * Constructor.
      *
      * @param SubjectProviderRegistryInterface $providerRegistry
-     * @param ResourceHelper $resourceHelper
+     * @param ResourceHelper                   $resourceHelper
      */
     public function __construct(
         SubjectProviderRegistryInterface $providerRegistry,
         ResourceHelper $resourceHelper
-    )
-    {
+    ) {
         parent::__construct($providerRegistry);
 
         $this->resourceHelper = $resourceHelper;
@@ -42,6 +41,8 @@ class SubjectHelper extends BaseHelper
      * @param SubjectRelativeInterface $relative
      *
      * @return null|string
+     *
+     * @deprecated Use UrlGenerator
      */
     public function generateSubjectAdminUrl(SubjectRelativeInterface $relative)
     {

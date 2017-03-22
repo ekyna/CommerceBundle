@@ -27,7 +27,6 @@
             <th>
                 {{- 'ekyna_commerce.stock_unit.field.net_price'|trans -}}
             </th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -61,24 +60,6 @@
             </td>
             <td id="{{ stockUnitId ~ '_netPrice' }}" class="text-right">
                 {{- stockUnit.netPrice|localizedcurrency('EUR') -}} {# TODO currency #}
-            </td>
-            <td class="actions">
-                {% if stockUnit.supplierOrderItem is not same as(null) %}
-                    <a href="{{ admin_resource_path(stockUnit.supplierOrderItem.order) }}"
-                       class="btn btn-xs btn-default">
-                        {{ 'ekyna_commerce.stock_unit.field.supplier_order'|trans }}
-                        {{ stockUnit.supplierOrderItem.order.number }}
-                    </a>
-                {% else %}
-                    <a href="{{ admin_resource_path(stockUnit, 'edit') }}"
-                       class="btn btn-xs btn-warning">
-                        {{- 'ekyna_core.button.edit'|trans -}}
-                    </a>
-                    <a href="{{ admin_resource_path(stockUnit, 'remove') }}"
-                       class="btn btn-xs btn-danger">
-                        {{- 'ekyna_core.button.remove'|trans -}}
-                    </a>
-                {% endif %}
             </td>
         </tr>
         {%- endfor %}

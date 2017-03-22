@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Abstract stock unit listener -->
+        <service id="ekyna_commerce.stock_unit.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setDispatcher">
+                <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            </call>
+            <call method="setStateResolver">
+                <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
+            </call>
+        </service>
+
+        <!-- Stock unit resolver -->
+        <service id="ekyna_commerce.stock_unit.resolver"
+                 class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+        </service>
+
+        <!-- Stock unit state resolver -->
+        <service id="ekyna_commerce.stock_unit.state_resolver"
+                 class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitStateResolver"/>
+
+        <!-- Stock unit updater -->
+        <service id="ekyna_commerce.stock_unit.updater"
+                 class="Ekyna\Component\Commerce\Stock\Updater\StockUnitUpdater">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+        </service>
+
+        <!-- Stock unit assigner -->
+        <service id="ekyna_commerce.stock_unit.assigner"
+                 class="Ekyna\Component\Commerce\Stock\Assigner\StockUnitAssigner">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+        </service>
+
+        <!-- Stock subject updater -->
+        <service id="ekyna_commerce.stock_subject_updater"
+                 class="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+        </service>
+
+    </services>
+
+</container>

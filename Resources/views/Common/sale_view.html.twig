@@ -86,6 +86,13 @@
             {{ block('line_leaf') }}
         {%- endif -%}
     </tr>
+    {%- if line.vars.information is defined -%}
+    <tr class="level-{{ line.level }}{% if line.node %} sale-detail-node{% endif %}"
+        id="{{ line.id }}_information" style="display: none">
+        <td class="sale-detail-number">&nbsp;</td>
+        {{ block('line_information') }}
+    </tr>
+    {% endif %}
     {% set lines = line.lines -%}
     {% for line in lines -%}
         {{ block('line') }}
@@ -93,6 +100,15 @@
     {# "line" variable has been overridden by childrens #}
 {% endspaceless %}
 {% endblock line %}
+
+
+{% block line_information %}
+{% spaceless %}
+    <td class="sale-detail-information" colspan="8">
+        {{ line.vars.information|raw }}
+    </td>
+{% endspaceless %}
+{% endblock line_information %}
 
 
 {% block lines %}

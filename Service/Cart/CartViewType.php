@@ -18,7 +18,7 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildItemView(Common\SaleItemInterface $item, View\AbstractView $view, array $options)
+    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
     {
         if ($item->isImmutable() || !$options['editable']) {
             return;
@@ -53,7 +53,7 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\AbstractView $view, array $options)
+    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options)
     {
         if ($adjustment->isImmutable() || !$options['editable']) {
             return;

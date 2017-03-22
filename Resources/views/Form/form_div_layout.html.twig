@@ -3,7 +3,6 @@
 
 {% block ekyna_commerce_address_widget %}
 {% spaceless %}
-    {{ form_errors(form) }}
     {% if form.customer is defined -%}
         {{ form_row(form.customer) }}
     {%- endif %}
@@ -43,6 +42,7 @@
         </div>
     </div>
     {%- endif %}
+    {{ form_errors(form) }}
     {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_address_widget %}
@@ -76,7 +76,6 @@
         </div>
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
-        {{ form_errors(form) }}
         <table class="table">
             {# Header #}
             {#<thead>
@@ -111,6 +110,7 @@
             {% endfor %}
             </tbody>
         </table>
+        {{ form_errors(form) }}
         {% if form.vars.allow_add %}
         <p>
             <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
@@ -129,7 +129,6 @@
 {% spaceless %}
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
-    {# TODO {{ form_errors(form) }}#}
     <tr {{ block('widget_container_attributes') }}>
         <td width="30%">{{ form_widget(form.designation) }}</td>
         <td>{{ form_widget(form.type) }}</td>
@@ -140,7 +139,14 @@
             <div class="btn-group">__controls__</div>
         </td>
     </tr>
-    {# TODO {{ form_rest(form) }}#}
+    {%- if errors|length > 0 -%}
+    <tr>
+        <td colspan="5">
+            {{ form_errors(form) }}
+        </td>
+    </tr>
+    {%- endif -%}
+    {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_adjustment_widget %}
 
@@ -179,8 +185,8 @@
         <div class="tab-content">
         {% for child in form %}
             <div class="tab-pane{% if loop.first %} active{% endif %}" id="method-message-state-{{ child.vars.state }}">
-                {{ form_errors(child) }}
                 {{ form_row(child.translations, {'label_col': 0, 'widget_col': 12}) }}
+                {{ form_errors(child) }}
                 {{ form_rest(child) }}
             </div>
         {% endfor %}
@@ -257,7 +263,6 @@
 {% block ekyna_commerce_sale_address_widget %}
 {% spaceless %}
     <div class="commerce-sale-address"{{ block('widget_container_attributes') }}>
-        {{ form_errors(form)}}
         {% if form.sameAddress is defined %}
             {{ form_row(form.sameAddress) }}
         {% endif %}
@@ -269,6 +274,7 @@
                 {{ form_row(form.address) }}
             </div>
         </div>
+        {{ form_errors(form)}}
         {{ form_rest(form)}}
     </div>
 {% endspaceless %}
@@ -304,7 +310,6 @@
         </div>
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
-        {{ form_errors(form) }}
         <table class="ekyna-collection-child-container table">
             {% if not form.vars.children_mode -%}
                 {# Header #}
@@ -354,6 +359,7 @@
             {%- endfor %}
 
         </table>
+        {{ form_errors(form) }}
         {{ form_rest(form) }}
         {% if form.vars.allow_add -%}
         <p>
@@ -373,13 +379,6 @@
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child commerce-sale-item ' ~ class)|trim }) %}
     <tbody {{ block('widget_container_attributes') }}>
-    {%- if form.vars.errors|length > 0 -%}
-    <tr>
-        <td colspan="7">
-            {{ form_errors(form) }}
-        </td>
-    </tr>
-    {%- endif -%}
     <tr>
         <td width="30%">{{ form_widget(form.designation) }}</td>
         <td>{{ form_widget(form.reference) }}</td>
@@ -392,6 +391,13 @@
             <div class="btn-group-vertical">__controls__</div>
         </td>
     </tr>
+    {%- if errors|length > 0 -%}
+        <tr>
+            <td colspan="7">
+                {{ form_errors(form) }}
+            </td>
+        </tr>
+    {%- endif -%}
     {% if form.vars.with_collections %}
         <tr>
             <td colspan="6" class="commerce-sale-item-children">
@@ -439,13 +445,6 @@
 
 {% block ekyna_commerce_shipment_item_widget %}
 {% spaceless %}
-    {%- if form.vars.errors|length > 0 -%}
-        <tr>
-            <td colspan="6">
-                {{ form_errors(form) }}
-            </td>
-        </tr>
-    {%- endif -%}
     <tr>
         <td>{{ form.vars.sale_item.designation }}</td>
         <td>{{ form.vars.sale_item.reference }}</td>
@@ -454,6 +453,13 @@
         <td>TODO</td>{# TODO Available quantity (stock) #}
         <td>X</td>{# TODO removal #}
     </tr>
+    {%- if errors|length > 0 -%}
+        <tr>
+            <td colspan="6">
+                {{ form_errors(form) }}
+            </td>
+        </tr>
+    {%- endif -%}
     {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_shipment_item_widget %}
@@ -491,7 +497,6 @@
         </div>
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
-        {{ form_errors(form) }}
         <table class="ekyna-collection-child-container table">
 
             {# Header #}
@@ -522,6 +527,7 @@
             </tbody>
 
         </table>
+        {{ form_errors(form) }}
         {{ form_rest(form) }}
 
         {# Footer #}
@@ -572,9 +578,9 @@
             {{ form_widget(form.subject) }}
         </div>
     </div>
-    {{ form_errors(form.provider) }}
+    {#{{ form_errors(form.provider) }}
     {{ form_errors(form.identifier) }}
-    {{ form_errors(form.subject) }}
+    {{ form_errors(form.subject) }}#}
     {{ form_errors(form) }}
     {{ form_rest(form) }}
 {% endspaceless %}
@@ -584,7 +590,6 @@
 {% block ekyna_commerce_supplier_delivery_items_widget %}
 {% spaceless %}
     <div {{ block('widget_container_attributes') }}>
-        {{ form_errors(form) }}
         <table class="table">
 
             {# Header #}
@@ -606,6 +611,7 @@
             {{ bootstrap_set_style(previous_style) }}
 
         </table>
+        {{ form_errors(form) }}
         {{ form_rest(form) }}
 
     </div>
@@ -623,7 +629,7 @@
             <td class="text-right">{{ form.vars.remaining_quantity|number_format }}</td>{# TODO packaging format #}
         </tr>
         {%- if errors|length > 0 -%}
-            <tr class="has-error">
+            <tr>
                 <td colspan="4">
                     {{ form_errors(form) }}
                 </td>
@@ -657,7 +663,6 @@
         </div>
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
-        {{ form_errors(form) }}
         <table class="ekyna-collection-child-container table">
 
             {# Header #}
@@ -687,6 +692,7 @@
             {{ bootstrap_set_style(previous_style) }}
 
         </table>
+        {{ form_errors(form) }}
         {{ form_rest(form) }}
 
         {# Footer #}
@@ -722,7 +728,7 @@
         </tr>
         {%- if errors|length > 0 -%}
             <tr>
-                <td colspan="5" class="has-error">
+                <td colspan="5">
                     {{ form_errors(form) }}
                 </td>
             </tr>

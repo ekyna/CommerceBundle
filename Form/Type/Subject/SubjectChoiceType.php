@@ -71,7 +71,6 @@ class SubjectChoiceType extends AbstractType
             $subjectChoices = [];
             $subjectRequired = $options['required'];
 
-            /** @noinspection PhpInternalEntityUsedInspection */
             if ($identity->hasIdentity()) {
                 $subject = $this->registry
                     ->getProviderByName($identity->getProvider())
@@ -87,33 +86,36 @@ class SubjectChoiceType extends AbstractType
 
             $form
                 ->add('provider', ChoiceType::class, [
-                    'label'       => false,
-                    'choices'     => $this->getProviderChoices(),
-                    'choice_attr' => $this->getProviderChoiceAttrClosure(),
-                    'select2'     => false,
-                    'disabled'    => $disabled,
-                    'required'    => $options['required'],
-                    'attr'        => [
+                    'label'          => false,
+                    'choices'        => $this->getProviderChoices(),
+                    'choice_attr'    => $this->getProviderChoiceAttrClosure(),
+                    'select2'        => false,
+                    'disabled'       => $disabled,
+                    'required'       => $options['required'],
+                    'attr'           => [
                         'class' => 'provider',
                     ],
+                    'error_bubbling' => true,
                 ])
                 ->add('identifier', HiddenType::class, [
-                    'disabled' => $disabled,
-                    'required' => $options['required'],
-                    'attr'     => [
+                    'disabled'       => $disabled,
+                    'required'       => $options['required'],
+                    'attr'           => [
                         'class' => 'identifier',
                     ],
+                    'error_bubbling' => true,
                 ])
                 ->add('subject', ChoiceType::class, [
-                    'label'    => false,
-                    'choices'  => $subjectChoices,
-                    'required' => $subjectRequired,
-                    'disabled' => true,
-                    'select2'  => false,
-                    'attr'     => [
+                    'label'          => false,
+                    'choices'        => $subjectChoices,
+                    'required'       => $subjectRequired,
+                    'disabled'       => true,
+                    'select2'        => false,
+                    'attr'           => [
                         'class' => 'subject',
                     ],
-                    'mapped'   => false,
+                    'mapped'         => false,
+                    'error_bubbling' => true,
                 ]);
         });
     }
@@ -170,9 +172,10 @@ class SubjectChoiceType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'label'      => 'subject',
-                'lock_mode'  => false,
-                'data_class' => SubjectIdentity::class,
+                'label'          => 'subject',
+                'lock_mode'      => false,
+                'data_class'     => SubjectIdentity::class,
+                'error_bubbling' => false,
             ])
             ->setAllowedTypes('lock_mode', 'bool');
     }
