@@ -13,6 +13,13 @@ default:
                 - Ekyna\Behat\Context\SecurityContext
                 - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentZoneContext
+        admin_payment_term_features:
+            paths: [ "%paths.base%/features/admin/payment_term" ]
+            contexts:
+                - Ekyna\Behat\Context\ResetContext
+                - Ekyna\Behat\Context\SecurityContext
+                - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
+                #- Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentZoneContext
         admin_tax_features:
             paths: [ "%paths.base%/features/admin/tax" ]
             contexts:

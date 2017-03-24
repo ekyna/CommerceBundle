@@ -69,6 +69,28 @@
                     'route': 'ekyna_user_user_admin_show',
                     'route_params_map': {'userId': 'id'}
                 }) }}
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customer.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
+                            'id': 'payment_term',
+                            'route': 'ekyna_commerce_payment_term_admin_show',
+                            'route_params_map': {'paymentTermId': 'id'},
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(customer.creditLimit, 'number', 'ekyna_commerce.customer.field.credit_limit', {
+                            'id': 'customer_mobile',
+                            'precision': 2,
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
+                            'append' => ' €'
+                        }) }}
+                        {# TODO € => default currency ? #}
+                    </div>
+                </div>
             </div>
             <div class="tab-pane" id="customer-addresses">
                 <div class="actions">

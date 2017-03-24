@@ -22,6 +22,10 @@ ekyna_commerce_payment_method_admin:
     resource: "admin/payment_method.yml"
     prefix:   /payment-methods
 
+ekyna_commerce_payment_term_admin:
+    resource: "admin/payment_term.yml"
+    prefix:   /payment-terms
+
 ekyna_commerce_quote_admin:
     resource: "admin/quote.yml"
     prefix:   /quotes

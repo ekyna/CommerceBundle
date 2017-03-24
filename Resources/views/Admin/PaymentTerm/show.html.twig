@@ -1,0 +1,51 @@
+{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+
+{% block main %}
+    <div class="actions">
+        {{ admin_resource_btn(paymentTerm, 'edit') }}
+        {{ admin_resource_btn(paymentTerm, 'remove') }}
+    </div>
+    <div class="show show-with-tabs">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#payment-term-general" data-toggle="tab">
+                    {{ 'ekyna_core.field.general'|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="show-body">
+            <div class="tab-content">
+                <div class="tab-pane active" id="payment-term-general">
+                    {{ show_row(paymentTerm.name, 'text', 'ekyna_core.field.name', {
+                        'id': 'payment_term_name'
+                    }) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(paymentTerm.days, 'number', 'ekyna_commerce.payment_term.field.days', {
+                                'id': 'payment_term_days',
+                                'label_nb_col': 4,
+                                'precision': 0
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(paymentTerm.endOfMonth, 'checkbox', 'ekyna_commerce.payment_term.field.end_of_month', {
+                                'id': 'payment_term_endOfMonth',
+                                'label_nb_col': 4
+                            }) }}
+                        </div>
+                    </div>
+                    {{ show_translations_row(paymentTerm.translations, {
+                        'id': 'payment_term_translations',
+                        'fields': {
+                            'title': {'label': 'ekyna_core.field.title'},
+                            'description': {
+                                'label': 'ekyna_core.field.description',
+                                'type': 'textarea'
+                            }
+                        }
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main %}

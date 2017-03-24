@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -55,7 +56,6 @@ class SaleType extends ResourceFormType
                 'label'    => 'ekyna_core.field.email',
                 'required' => false,
             ])
-            ->add('preferredShipmentMethod', ShipmentMethodChoiceType::class)
             ->add('invoiceAddress', SaleAddressType::class, [
                 'label'          => 'ekyna_commerce.sale.field.invoice_address',
                 'address_type'   => $options['address_type'],
@@ -68,7 +68,9 @@ class SaleType extends ResourceFormType
                 'inherit_data'   => true,
                 'delivery'       => true,
                 'customer_field' => 'customer',
-            ]);
+            ])
+            ->add('preferredShipmentMethod', ShipmentMethodChoiceType::class)
+            ->add('paymentTerm', PaymentTermChoiceType::class);
 
         FormUtil::bindFormEventsToChildren(
             $builder,

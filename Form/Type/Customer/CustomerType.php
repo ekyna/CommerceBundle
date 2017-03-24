@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -87,6 +88,11 @@ class CustomerType extends ResourceFormType
                 'required'       => false,
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
+            ])
+            ->add('paymentTerm', PaymentTermChoiceType::class)
+            ->add('creditLimit', Type\NumberType::class, [
+                'label' => 'ekyna_commerce.customer.field.credit_limit',
+                'scale' => 2,
             ]);
     }
 }

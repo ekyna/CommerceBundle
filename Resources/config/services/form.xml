@@ -181,6 +181,11 @@
             <argument id="payum" type="service" />
             <tag name="form.type" />
         </service>
+        <service id="ekyna_commerce.payment_term_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType">
+            <argument>%ekyna_commerce.payment_term.class%</argument>
+            <tag name="form.type" />
+        </service>
         <service id="ekyna_commerce.payment_method_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType">
             <argument>%ekyna_commerce.payment_method.class%</argument>

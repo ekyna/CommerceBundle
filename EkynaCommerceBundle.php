@@ -37,26 +37,27 @@ class EkynaCommerceBundle extends AbstractBundle
     protected function getModelInterfaces()
     {
         return array_replace(DoctrineBundleMapping::getDefaultImplementations(), [
-            Commerce\Cart\Model\CartInterface::class                => 'ekyna_commerce.cart.class',
-            Commerce\Cart\Model\CartAddressInterface::class         => 'ekyna_commerce.cart_address.class',
+            Commerce\Cart\Model\CartInterface::class                 => 'ekyna_commerce.cart.class',
+            Commerce\Cart\Model\CartAddressInterface::class          => 'ekyna_commerce.cart_address.class',
 
-            Commerce\Customer\Model\CustomerInterface::class        => 'ekyna_commerce.customer.class',
-            Commerce\Customer\Model\CustomerAddressInterface::class => 'ekyna_commerce.customer_address.class',
+            Commerce\Customer\Model\CustomerInterface::class         => 'ekyna_commerce.customer.class',
+            Commerce\Customer\Model\CustomerAddressInterface::class  => 'ekyna_commerce.customer_address.class',
 
-            Commerce\Order\Model\OrderInterface::class              => 'ekyna_commerce.order.class',
-            Commerce\Order\Model\OrderAddressInterface::class       => 'ekyna_commerce.order_address.class',
+            Commerce\Order\Model\OrderInterface::class               => 'ekyna_commerce.order.class',
+            Commerce\Order\Model\OrderAddressInterface::class        => 'ekyna_commerce.order_address.class',
 
-            Commerce\Payment\Model\PaymentMethodInterface::class    => 'ekyna_commerce.payment_method.class',
+            Commerce\Payment\Model\PaymentMethodInterface::class     => 'ekyna_commerce.payment_method.class',
+            Commerce\Payment\Model\PaymentTermInterface::class       => 'ekyna_commerce.payment_term.class',
 
-            Commerce\Quote\Model\QuoteInterface::class              => 'ekyna_commerce.quote.class',
-            Commerce\Quote\Model\QuoteAddressInterface::class       => 'ekyna_commerce.quote_address.class',
+            Commerce\Quote\Model\QuoteInterface::class               => 'ekyna_commerce.quote.class',
+            Commerce\Quote\Model\QuoteAddressInterface::class        => 'ekyna_commerce.quote_address.class',
 
-            Commerce\Shipment\Model\ShipmentMethodInterface::class  => 'ekyna_commerce.shipment_method.class',
+            Commerce\Shipment\Model\ShipmentMethodInterface::class   => 'ekyna_commerce.shipment_method.class',
 
-            Commerce\Supplier\Model\SupplierInterface::class          => 'ekyna_commerce.supplier.class',
-            Commerce\Supplier\Model\SupplierDeliveryInterface::class  => 'ekyna_commerce.supplier_delivery.class',
-            Commerce\Supplier\Model\SupplierOrderInterface::class     => 'ekyna_commerce.supplier_order.class',
-            Commerce\Supplier\Model\SupplierProductInterface::class   => 'ekyna_commerce.supplier_product.class',
+            Commerce\Supplier\Model\SupplierInterface::class         => 'ekyna_commerce.supplier.class',
+            Commerce\Supplier\Model\SupplierDeliveryInterface::class => 'ekyna_commerce.supplier_delivery.class',
+            Commerce\Supplier\Model\SupplierOrderInterface::class    => 'ekyna_commerce.supplier_order.class',
+            Commerce\Supplier\Model\SupplierProductInterface::class  => 'ekyna_commerce.supplier_product.class',
         ]);
     }
 }

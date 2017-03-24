@@ -9,11 +9,6 @@
             {{ 'ekyna_commerce.sale.field.addresses'|trans }}
         </a>
     </li>
-    {#<li>
-        <a href="#order-details" data-toggle="tab">
-            {{ 'ekyna_commerce.sale.field.details'|trans }}
-        </a>
-    </li>#}
 </ul>
 <div class="panel-body form-body">
     {{ bootstrap_set_style('horizontal') }}
@@ -40,17 +35,21 @@
             </div>
             {{ form_row(form.identity) }}
             {{ form_row(form.email) }}
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.preferredShipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
         </div>
         <div class="tab-pane" id="order-addresses">
-            {{ form_row(form.preferredShipmentMethod) }}
             {{ form_row(form.invoiceAddress) }}
             <hr>
             {{ form_row(form.deliveryAddress) }}
         </div>
-        {#<div class="tab-pane" id="order-details">
-            {{ form_row(form.items) }}
-            {{ form_row(form.adjustments) }}
-        </div>#}
     </div>
     {{ form_rest(form) }}
 </div>

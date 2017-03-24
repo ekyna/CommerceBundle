@@ -152,6 +152,8 @@ ekyna_commerce:
             new: Nouveau client
             edit: Modifier le client
             remove: Supprimer le client
+        field:
+            credit_limit: Limite d'encours
         alert:
             no_item: Aucun client configuré
 
@@ -372,6 +374,28 @@ ekyna_commerce:
             available: Partie publique
         alert:
             empty_list: Aucun mode de paiement configuré
+
+    payment_term:
+        label:
+            singular: Condition de paiement
+            plural: Conditions de paiement
+        header:
+            list: Conditions de paiement <small>Liste des conditions</small>
+            show: Détail de la condition de paiement <small>%name%</small>
+            new: Créer une nouvelle condition de paiement
+            edit: Modifier la condition de paiement <small>%name%</small>
+            remove: Supprimer la condition de paiement <small>%name%</small>
+        button:
+            list: Liste des conditions
+            show: Détail de la condition
+            new: Nouvelle condition
+            edit: Modifier la condition
+            remove: Supprimer la condition
+        field:
+            days: Nombre de jours
+            end_of_month: Fin de mois
+        alert:
+            empty_list: Aucune condition de paiement configuré
 
     quote:
         label:
