@@ -59,6 +59,7 @@ class ShipmentType extends ResourceFormType
         $builder
             ->add('number', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.number',
+                'required' => false,
                 'disabled' => true,
             ])
             ->add('state', Type\ChoiceType::class, [
@@ -82,14 +83,27 @@ class ShipmentType extends ResourceFormType
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $data */
-            $data = $event->getData();
+            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+            $shipment = $event->getData();
 
-            if (null === $data->getId()) {
-                $this->shipmentBuilder->build($data);
+            if (null === $shipment->getId()) {
+                $this->shipmentBuilder->build($shipment);
             }
 
-            $event->setData($data); // TODO ?
+            $event->setData($shipment); // TODO ?
+        });
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+            $shipment = $event->getData();
+
+            foreach ($shipment->getItems() as $item) {
+                if (0 == $item->getQuantity()) {
+                    $shipment->removeItem($item);
+                }
+            }
+
+            $event->setData($shipment); // TODO ?
         });
     }
 }

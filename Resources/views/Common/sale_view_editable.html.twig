@@ -1,5 +1,16 @@
 {% extends 'EkynaCommerceBundle:Common:sale_view.html.twig' %}
 
+{% block integer_widget %}
+{% spaceless %}
+    <div class="sale-detail-quantity{% if errors|length > 0 %} has-error{% endif %}">
+        {% set type = type|default('number') %}
+        {% if errors|length > 0 %}
+            {% set attr = attr|merge({'title': errors}) %}
+        {% endif %}
+        {{ block('form_widget_simple') }}
+    </div>
+{% endspaceless %}
+{% endblock %}
 
 {% block attributes %}
 {% spaceless %}
@@ -48,6 +59,7 @@
 {% spaceless %}
     <td class="text-right">
         {% if view.vars.form[line.formId] is defined %}
+            {% form_theme view.vars.form[line.formId] _self %}
             {{ form_widget(view.vars.form[line.formId]) }}
         {% else %}
             <span class="sale-detail-quantity" id="{{ line.id }}_quantity">{{ line.quantity }}</span>
@@ -212,6 +224,7 @@
 {% block sale %}
 {% spaceless %}
     {{ form_start(view.vars.form, {'attr': {'class': 'sale-view'}}) }}
+        {{ form_errors(view.vars.form) }}
         <div class="table-responsive">
             <table class="table table-striped sale-detail">
                 {{ block('lines') }}

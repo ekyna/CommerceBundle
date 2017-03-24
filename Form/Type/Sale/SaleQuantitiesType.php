@@ -25,7 +25,7 @@ class SaleQuantitiesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 /**
                  * Model data.
                  * @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale
@@ -33,14 +33,13 @@ class SaleQuantitiesType extends AbstractType
                 $sale = $event->getData();
                 $form = $event->getForm();
 
-                $createItemQuantityForm = function(SaleItemInterface $item, $path = 'items') use ($form, &$createItemQuantityForm) {
+                $createItemQuantityForm = function (SaleItemInterface $item, $path = 'items') use ($form, &$createItemQuantityForm) {
                     if (!$item->isImmutable()) {
                         $form->add('item_' . $item->getId(), IntegerType::class, [
-                            'label' => false,
+                            'label'         => false,
                             'property_path' => $path . '[' . $item->getId() . '].quantity',
-                            'attr' => [
-                                'class' => 'sale-detail-quantity',
-                                'min' => 1,
+                            'attr'          => [
+                                'min'   => 1,
                             ],
                             'constraints'   => [
                                 new Constraints\NotBlank(),

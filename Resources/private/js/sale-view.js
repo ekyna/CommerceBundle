@@ -58,22 +58,6 @@ define(['jquery', 'ekyna-modal', 'ekyna-ui', 'jquery/form'], function($, Modal) 
         return false;
     });
 
-    $(document).on('click', '.sale-view [data-toggle]', function(e) {
-        e.preventDefault();
-
-        var $this = $(this), $information = $($this.data('toggle'));
-
-        if (1 == $information.size()) {
-            if ($information.is(':visible')) {
-                $information.hide();
-            } else {
-                $information.show();
-            }
-        }
-
-        return false;
-    });
-
     $(document).on('submit', '.sale-view', function(e) {
         e.preventDefault();
 

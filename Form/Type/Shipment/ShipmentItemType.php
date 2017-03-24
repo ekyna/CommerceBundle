@@ -2,15 +2,15 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Ekyna\Component\Commerce\Shipment\Util\ShipmentUtil;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ShipmentItemType
@@ -25,26 +25,50 @@ class ShipmentItemType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('quantity', Type\NumberType::class, [
-            'label'    => 'ekyna_core.field.quantity',
+            'label' => 'ekyna_core.field.quantity',
             'attr' => [
-                'data-max' => '', // TODO
-            ]
+                'class' => 'input-sm',
+            ],
+            'error_bubbling' => true,
         ]);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        /** @var ShipmentItemInterface $data */
-        $data = $form->getData();
+        /** @var ShipmentItemInterface $item */
+        $item = $form->getData();
 
-        $view->vars['sale_item'] = $data->getSaleItem();
+        $saleItem = $item->getSaleItem();
+
+        $expected = ShipmentUtil::calculateExpectedQuantity($item);
+        $available = ShipmentUtil::calculateAvailableQuantity($item);
+
+        if ($available < $expected) {
+            FormUtil::addClass($view, 'danger');
+        }
+
+        $view->vars['designation'] = $saleItem->getDesignation();
+        $view->vars['reference'] = $saleItem->getReference();
+
+        $view->vars['expected_quantity'] = $expected;
+        $view->vars['available_quantity'] = $available;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefault('error_bubbling', false);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getBlockPrefix()
     {

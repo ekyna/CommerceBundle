@@ -43,6 +43,12 @@ class SupplierDeliveryItemContext implements Context, KernelAwareContext
      */
     private function castSupplierDeliveryItemsTable(TableNode $table)
     {
+        // TODO use other context
+        /**
+         * @see SupplierOrderContext::findOrderByNumber
+         * @see http://behat.org/en/latest/cookbooks/accessing_contexts_from_each_other.html
+         */
+
         $orderRepository = $this->getContainer()->get('ekyna_commerce.supplier_order.repository');
         $itemRepository = $this->getContainer()->get('ekyna_commerce.supplier_delivery_item.repository');
 

@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 
 /**
  * Class OrderContext
@@ -31,6 +32,48 @@ class OrderContext implements Context, KernelAwareContext
             $manager->persist($order);
         }
 
+        $manager->flush();
+        $manager->clear();
+    }
+
+    /**
+     * @Given /^The order with number "(?P<number>[^"]+)" is paid$/
+     *
+     * @param string $number
+     */
+    public function orderIsPaid($number)
+    {
+        /** @var \Ekyna\Component\Commerce\Order\Model\OrderInterface $order */
+        $order = $this
+            ->getContainer()
+            ->get('ekyna_commerce.order.repository')
+            ->findOneBy(['number' => $number]);
+
+        if (null === $order) {
+            throw new \InvalidArgumentException("Failed to find order with number '$number'.");
+        }
+
+        $methods = $this
+            ->getContainer()->get('ekyna_commerce.payment_method.repository')
+            ->findBy(['enabled' => true, 'factoryName' => 'offline']);
+
+        if (empty($methods)) {
+            throw new \InvalidArgumentException("Failed to find a payment method.");
+        }
+
+        $payment = $this
+            ->getContainer()
+            ->get('ekyna_commerce.sale_factory')
+            ->createPaymentForSale($order);
+
+        $payment
+            ->setMethod($methods[0])
+            ->setState(PaymentStates::STATE_CAPTURED);
+
+        $order->addPayment($payment);
+
+        $manager = $this->getContainer()->get('ekyna_commerce.order_payment.manager');
+        $manager->persist($payment);
         $manager->flush();
         $manager->clear();
     }

@@ -19,7 +19,8 @@ class ShipmentItemsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'entry_type' => ShipmentItemType::class,
+            'entry_type'     => ShipmentItemType::class,
+            'error_bubbling' => false,
         ]);
     }
 

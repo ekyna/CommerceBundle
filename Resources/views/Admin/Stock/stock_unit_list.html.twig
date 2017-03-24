@@ -81,6 +81,12 @@
                 {% endif %}
             </td>
         </tr>
+        {% else %}
+        <tr>
+            <td colspan="9" class="text-center">
+                <em>{{ 'ekyna_commerce.stock_unit.alert.empty_list'|trans }}</em>
+            </td>
+        </tr>
         {%- endfor %}
         </tbody>
     </table>

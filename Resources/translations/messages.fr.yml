@@ -545,6 +545,11 @@ ekyna_commerce:
         field:
             tracking_number: Numéro de suivi
 
+    shipment_item:
+        field:
+            expected: Attendu
+            available: Disponible
+
     shipment_method:
         label:
             singular: Mode de livraison
@@ -598,10 +603,10 @@ ekyna_commerce:
 
     stock_unit:
         label:
-            singular: Unitée de stock
-            plural: Unitées de stock
+            singular: Unité de stock
+            plural: Unitée de stock
         header:
-            list: Liste des unitées de stock
+            list: Liste des unité de stock
             show: Détail de l'unité
             new: Créer une nouvelle unité
             edit: Modifier l'unité
@@ -622,6 +627,8 @@ ekyna_commerce:
             supplier_order: Cde. Four.
         button:
             new: Créer une unité de stock
+        alert:
+            empty_list: Aucune unité de stock disponible
 
     stock_subject:
         field:

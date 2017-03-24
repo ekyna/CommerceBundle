@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use Ekyna\Component\Commerce\Supplier\Model as Supplier;
 
 /**
  * Class SupplierOrderContext
@@ -21,24 +22,19 @@ class SupplierOrderContext implements Context, KernelAwareContext
      *
      * @param string $number
      */
-    public function setSupplierOrderState($number)
+    public function orderIsSubmitted($number)
     {
-        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $order */
-        $order = $this->getContainer()
-            ->get('ekyna_commerce.supplier_order.repository')
-            ->findOneBy(['number' => $number]);
+        $this->submitOrder($this->findOrderByNumber($number));
+    }
 
-        if (null === $order) {
-            throw new \InvalidArgumentException("Failed to find supplier order with number '$number'.");
-        }
-
-        // TODO use a service (workflow ?) (same in admin controller)
-        $order->setOrderedAt(new \DateTime());
-
-        $manager = $this->getContainer()->get('ekyna_commerce.supplier_order.manager');
-        $manager->persist($order);
-        $manager->flush();
-        $manager->clear();
+    /**
+     * @Given /^The supplier order with number "(?P<number>[^"]+)" is delivered$/
+     *
+     * @param string $number
+     */
+    public function orderIsDelivered($number)
+    {
+        $this->deliverOrder($this->findOrderByNumber($number));
     }
 
     /**
@@ -46,9 +42,9 @@ class SupplierOrderContext implements Context, KernelAwareContext
      *
      * @param TableNode $table
      */
-    public function createSupplierOrders(TableNode $table)
+    public function createOrders(TableNode $table)
     {
-        $supplierOrders = $this->castSupplierOrdersTable($table);
+        $supplierOrders = $this->castOrdersTable($table);
 
         $manager = $this->getContainer()->get('ekyna_commerce.supplier_order.manager');
 
@@ -61,11 +57,79 @@ class SupplierOrderContext implements Context, KernelAwareContext
     }
 
     /**
+     * Finds the order by its number.
+     *
+     * @param string $number
+     *
+     * @return Supplier\SupplierOrderInterface
+     */
+    public function findOrderByNumber($number)
+    {
+        /** @var Supplier\SupplierOrderInterface $order */
+        $order = $this->getContainer()
+            ->get('ekyna_commerce.supplier_order.repository')
+            ->findOneBy(['number' => $number]);
+
+        if (null === $order) {
+            throw new \InvalidArgumentException("Failed to find supplier order with number '$number'.");
+        }
+
+        return $order;
+    }
+
+    /**
+     * Submit the given order.
+     *
+     * @param Supplier\SupplierOrderInterface $order
+     */
+    private function submitOrder(Supplier\SupplierOrderInterface $order)
+    {
+        // TODO use a service (workflow ?) (same in admin controller)
+        $order->setOrderedAt(new \DateTime());
+
+        $manager = $this->getContainer()->get('ekyna_commerce.supplier_order.manager');
+        $manager->persist($order);
+        $manager->flush();
+        $manager->clear();
+    }
+
+    /**
+     * Deliver the given order.
+     *
+     * @param Supplier\SupplierOrderInterface $order
+     */
+    private function deliverOrder(Supplier\SupplierOrderInterface $order)
+    {
+        $class = $this->getContainer()->getParameter('ekyna_commerce.supplier_delivery.class');
+        $itemClass = $this->getContainer()->getParameter('ekyna_commerce.supplier_delivery_item.class');
+
+        /** @var Supplier\SupplierDeliveryInterface $delivery */
+        $delivery = new $class;
+
+        foreach ($order->getItems() as $item) {
+            /** @var Supplier\SupplierDeliveryItemInterface $deliveryItem */
+            $deliveryItem = new $itemClass;
+            $deliveryItem
+                ->setOrderItem($item)
+                ->setQuantity($item->getQuantity());
+
+            $delivery->addItem($deliveryItem);
+        }
+
+        $order->addDelivery($delivery);
+
+        $manager = $this->getContainer()->get('ekyna_commerce.supplier_delivery.manager');
+        $manager->persist($delivery);
+        $manager->flush();
+        $manager->clear();
+    }
+
+    /**
      * @param TableNode $table
      *
      * @return array
      */
-    private function castSupplierOrdersTable(TableNode $table)
+    private function castOrdersTable(TableNode $table)
     {
         $supplierRepository = $this->getContainer()->get('ekyna_commerce.supplier.repository');
         $currencyRepository = $this->getContainer()->get('ekyna_commerce.currency.repository');

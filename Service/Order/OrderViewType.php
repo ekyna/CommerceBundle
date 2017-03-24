@@ -150,11 +150,12 @@ class OrderViewType extends AbstractViewType
                 $view->vars['information'] = $this->stockRenderer->renderStockUnitList($stockUnits, [
                     'template' => 'EkynaCommerceBundle:Common:sale_stock_unit_list.html.twig',
                     'prefix'   => $view->getId() . '_su',
+                    'class'    => 'table-alt',
                 ]);
 
                 $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
-                    'title'       => 'ekyna_commerce.sale.button.item.information',
-                    'data-toggle' => '#' . $view->getId() . '_information',
+                    'title'               => 'ekyna_commerce.sale.button.item.information',
+                    'data-toggle-details' => $view->getId() . '_information',
                 ]);
             }
         }

@@ -60,9 +60,14 @@ class StockRenderer
         $template = isset($options['template']) ? $options['template'] : $this->defaultTemplate;
         $id = isset($options['id']) ? $options['id'] : 'stockUnit';
 
+        $classes = ['table', 'table-striped', 'table-hover'];
+        if (isset($options['class'])) {
+            $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
+        }
         return $this->templating->render($template, [
             'stockUnits' => $stockUnits,
             'prefix'     => $id,
+            'classes' => implode(' ', $classes)
         ]);
     }
 

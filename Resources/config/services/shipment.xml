@@ -21,6 +21,9 @@
             <call method="setNumberGenerator">
                 <argument type="service" id="ekyna_commerce.shipment.number_generator"/>
             </call>
+            <call method="setStockUnitAssigner">
+                <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
+            </call>
         </service>
 
         <!-- Shipment item abstract listener -->
@@ -28,11 +31,8 @@
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
-            <call method="setStockUnitResolver">
-                <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
-            </call>
-            <call method="setStockUnitUpdater">
-                <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            <call method="setStockUnitAssigner">
+                <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
             </call>
         </service>
 

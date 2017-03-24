@@ -49,26 +49,26 @@
                 }
 
                 &.level-0 {
-                    .sale-detail-designation {
+                    .sale-detail-designation, .sale-detail-information {
                         padding-left: @base-cell-padding;
                     }
                 }
 
                 &.level-1 {
-                    .sale-detail-designation {
+                    .sale-detail-designation, .sale-detail-information {
                         padding-left: @base-cell-padding + 16px;
                     }
 
                 }
 
                 &.level-2 {
-                    .sale-detail-designation {
+                    .sale-detail-designation, .sale-detail-information {
                         padding-left: @base-cell-padding + 32px;
                     }
                 }
 
                 &.level-3 {
-                    .sale-detail-designation {
+                    .sale-detail-designation, .sale-detail-information {
                         padding-left: @base-cell-padding + 48px;
                     }
                 }
@@ -116,21 +116,21 @@
                 font-size: 11px;
             }
 
-            input.sale-detail-quantity {
-                display: inline-block;
-                width: 56px;
-                text-align: right;
-                padding: 0;
-                border: 0;
-                height: auto;
-                box-shadow: none;
-            }
-
             span.sale-detail-quantity {
                 display: inline-block;
                 width: 100%;
                 text-align: right;
                 padding-right: 15px;
+            }
+
+            div.sale-detail-quantity {
+                input {
+                    display: inline-block;
+                    width: 56px;
+                    text-align: right;
+                    padding: 0;
+                    height: auto;
+                }
             }
         }
     }

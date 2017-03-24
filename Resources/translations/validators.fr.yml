@@ -28,6 +28,9 @@ ekyna_commerce:
         invoice_address_must_be_set: Veuillez saisir une adresse de facturation.
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
+    sale_item:
+        tax_group_must_not_be_null: Le groupe de taxe doit être défini.
+        shipment_integrity: Le quantité doit être supérieure ou égale à la quantité expédiée.
     subject:
         identity_subject_must_be_selected: Veuillez sélectionner un sujet.
     stock_unit:
@@ -37,6 +40,11 @@ ekyna_commerce:
             La quantité expédiée doit être inférieure ou égale à la quantité livrée.
         shipped_must_be_lower_than_delivered: |
             La quantité expédiée doit être inférieure ou égale à la quantité réservée.
+    shipment_item:
+        quantity_must_be_lower_than_or_equal_expected: |
+            La quantité expédiée doit être inférieure ou égale à la quantité attendue (%max%).
+        quantity_must_be_lower_than_or_equal_available: |
+            La quantité expédiée doit être inférieure ou égale à la quantité disponible (%max%).
     supplier_order:
         duplicate_subject_identity: |
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.
@@ -45,10 +53,10 @@ ekyna_commerce:
         payment_total_is_too_low: |
             Le total réglement doit être supérieur ou égal au total des lignes (%min%).
     supplier_order_item:
-        quantity_must_be_greater_or_equal_than_delivered: |
+        quantity_must_be_greater_than_or_equal_delivered: |
             La quantité commandée doit être supérieure ou égale à la quantité livrée (%min%).
     supplier_delivery_item:
-        quantity_must_be_lower_or_equal_than_ordered: |
+        quantity_must_be_lower_than_or_equal_ordered: |
             La quantité livrée doit être inférieure ou égale à la quantité commandée (%max%).
         order_item_miss_match:
             Cette ligne ne correspond à aucune ligne de la commande fournisseur.

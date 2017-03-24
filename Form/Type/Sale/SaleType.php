@@ -6,9 +6,8 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -56,6 +55,7 @@ class SaleType extends ResourceFormType
                 'label'    => 'ekyna_core.field.email',
                 'required' => false,
             ])
+            ->add('preferredShipmentMethod', ShipmentMethodChoiceType::class)
             ->add('invoiceAddress', SaleAddressType::class, [
                 'label'          => 'ekyna_commerce.sale.field.invoice_address',
                 'address_type'   => $options['address_type'],

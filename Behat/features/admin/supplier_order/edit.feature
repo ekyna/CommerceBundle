@@ -18,7 +18,7 @@ Feature: Edit supplier orders
         And The following supplier orders:
             | number | supplier | currency | paymentTotal |
             | SO-001 | TechData | EUR      | 2491.70      |
-        Given The following supplier order items:
+        And The following supplier order items:
             | order  | reference | quantity |
             | SO-001 | IPAD-AIR  | 10       |
 
@@ -37,7 +37,7 @@ Feature: Edit supplier orders
         And I should see "Aucune livraison fournisseur configuré"
 
     Scenario: Setting ordered quantity as lower than the delivered quantity
-        And The supplier order with number "SO-001" is submitted
+        Given The supplier order with number "SO-001" is submitted
         And The following supplier deliveries:
             | order |
             | SO-001 |
@@ -47,10 +47,10 @@ Feature: Edit supplier orders
         When I go to "ekyna_commerce_supplier_order_admin_edit" route with "supplierOrderId:1"
         And I fill in "supplier_order[compose][items][0][quantity]" with "9"
         And I press "supplier_order_actions_save"
-        And I should see "La quantité commandée doit être supérieure ou égale à la quantité livrée"
+        Then I should see "La quantité commandée doit être supérieure ou égale à la quantité livrée"
 
     Scenario: Removing a delivered item
-        And The supplier order with number "SO-001" is submitted
+        Given The supplier order with number "SO-001" is submitted
         And The following supplier deliveries:
             | order |
             | SO-001 |
@@ -60,7 +60,7 @@ Feature: Edit supplier orders
         When I go to "ekyna_commerce_supplier_order_admin_edit" route with "supplierOrderId:1"
         And I remove element with index "0" from collection field "supplier_order_compose_items"
         And I press "supplier_order_actions_save"
-        And I should see "Au moins une ligne de la commande ne correspond pas aux lignes des livraisons"
+        Then I should see "Au moins une ligne de la commande ne correspond pas aux lignes des livraisons"
 
 
     # TODO

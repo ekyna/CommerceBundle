@@ -20,15 +20,50 @@
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ shipmentId }}_description">{{ shipment.description }}</td>
                 <td class="actions">
-                    <a href="{{ admin_resource_path(shipment, 'edit') }}" class="btn btn-warning btn-xs">
+                    <a href="javascript:void(0)"
+                       id="{{ shipmentId }}_toggle_details"
+                       class="btn btn-default btn-xs"
+                       data-toggle-details="{{ shipmentId ~ '_details' }}">
+                        <span class="fa fa-info-circle"></span>
+                    </a>
+                    <a href="{{ admin_resource_path(shipment, 'edit') }}"
+                       id="{{ shipmentId }}_edit"
+                       class="btn btn-warning btn-xs">
                         {{ 'ekyna_core.button.edit'|trans }}
                     </a>
                     {% if shipment.state == 'new' %}
-                        <a href="{{ admin_resource_path(shipment, 'remove') }}" class="btn btn-danger btn-xs">
+                        <a href="{{ admin_resource_path(shipment, 'remove') }}"
+                           id="{{ shipmentId }}_remove"
+                           class="btn btn-danger btn-xs">
                             {{ 'ekyna_core.button.remove'|trans }}
                         </a>
                     {% endif %}
                 </td>
+            </tr>
+            <tr style="display:none;" id="{{ shipmentId ~ '_details' }}">
+                <td>&nbsp;</td>
+                <td colspan="4">
+                    <table class="table table-alt table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in shipment.items %}
+                            {% set itemId = shipmentId ~ '_item_' ~ loop.index0 %}
+                            <tr>
+                                <td id="{{ itemId ~ '_designation' }}">{{ item.saleItem|subject_admin_link }}</td>
+                                <td id="{{ itemId ~ '_reference' }}">{{ item.saleItem.reference }}</td>
+                                <td id="{{ itemId ~ '_quantity' }}">{{ item.quantity|localizednumber }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+                <td>&nbsp;</td>
             </tr>
         {% else %}
             <tr>

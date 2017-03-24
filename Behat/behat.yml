@@ -111,24 +111,24 @@ default:
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\CustomerContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\OrderContext
                 - Acme\ProductBundle\Behat\ProductContext
-#        admin_order_shipment_features:
-#            paths: [ "%paths.base%/features/admin/order_shipment" ]
-#            contexts:
-#                - Ekyna\Behat\Context\ResetContext
-#                - Ekyna\Behat\Context\SecurityContext
-#                - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\TaxContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\TaxRuleContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentZoneContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentMethodContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentPriceContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\CustomerContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\OrderContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\OrderItemContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryContext
-#                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryItemContext
-#                - Acme\ProductBundle\Behat\ProductContext
+        admin_order_shipment_features:
+            paths: [ "%paths.base%/features/admin/order_shipment" ]
+            contexts:
+                - Ekyna\Behat\Context\ResetContext
+                - Ekyna\Behat\Context\SecurityContext
+                - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\TaxContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\TaxRuleContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentZoneContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentMethodContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\ShipmentPriceContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\CustomerContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\OrderContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\OrderItemContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierDeliveryItemContext
+                - Acme\ProductBundle\Behat\ProductContext
