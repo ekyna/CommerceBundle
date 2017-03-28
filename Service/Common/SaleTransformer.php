@@ -77,6 +77,9 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
         return $order;
     }
 
+    /**
+     * Disables some problematic listeners :-°
+     */
     protected function disableListeners()
     {
         $eventManager = $this->manager->getEventManager();
@@ -90,6 +93,9 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
         }
     }
 
+    /**
+     * Enables some problematic listeners :-°
+     */
     protected function enableListeners()
     {
         $eventManager = $this->manager->getEventManager();

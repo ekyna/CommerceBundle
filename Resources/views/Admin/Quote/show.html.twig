@@ -14,16 +14,29 @@
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#quote-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+            <a href="#quote-general" id="toggle-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#quote-details" data-toggle="tab">{{ 'ekyna_commerce.sale.field.details'|trans }}</a>
+            <a href="#quote-details" id="toggle-details" data-toggle="tab">
+                {{ 'ekyna_commerce.sale.field.details'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#quote-payments" data-toggle="tab">{{ 'ekyna_commerce.payment.label.plural'|trans }}</a>
+            <a href="#quote-payments" id="toggle-payments" data-toggle="tab">
+                {{ 'ekyna_commerce.payment.label.plural'|trans }}
+            </a>
         </li>
         <li>
-            <a href="#quote-attachments" data-toggle="tab">{{ 'ekyna_commerce.attachment.label.plural'|trans }}</a>
+            <a href="#quote-attachments" id="toggle-attachments" data-toggle="tab">
+                {{ 'ekyna_commerce.attachment.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#quote-informations" id="toggle-informations" data-toggle="tab">
+                {{ 'ekyna_core.field.informations'|trans }}
+            </a>
         </li>
     </ul>
     <div class="show-body">
@@ -33,8 +46,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(quote.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
-                            'precision': 0,
-                            'append': 'g',
+                            'precision': 3,
+                            'append': 'kg',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
                         }) }}
@@ -63,6 +76,9 @@
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'sale': quote} %}
+            </div>
+            <div class="tab-pane" id="quote-informations">
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': quote} %}
             </div>
         </div>
     </div>

@@ -40,23 +40,26 @@ class CustomerType extends ResourceTableType
             ->addColumn('id', 'id', [
                 'sortable' => true,
             ])
-            ->addColumn('name', 'anchor', [
-                'label'                => 'ekyna_core.field.name',
-                'property_path'        => null,
-//                'sortable'             => true,
+            ->addColumn('number', 'anchor', [
+                'label'                => 'ekyna_core.field.number',
                 'route_name'           => 'ekyna_commerce_customer_admin_show',
                 'route_parameters_map' => ['customerId' => 'id'],
                 'position'             => 10,
             ])
+            ->addColumn('name', 'text', [
+                'label'                => 'ekyna_core.field.name',
+                'property_path'        => null,
+                'position'             => 20,
+            ])
             ->addColumn('company', 'text', [
                 'label'    => 'ekyna_core.field.company',
                 'sortable' => true,
-                'position' => 20,
+                'position' => 30,
             ])
             ->addColumn('email', 'text', [
                 'label'    => 'ekyna_core.field.email',
                 'sortable' => true,
-                'position' => 30,
+                'position' => 40,
             ])
             ->addColumn('customerGroup', 'anchor', [
                 'label'                => 'ekyna_commerce.customer_group.label.singular',
@@ -64,12 +67,12 @@ class CustomerType extends ResourceTableType
                 'sortable'             => false,
                 'route_name'           => 'ekyna_commerce_customer_group_admin_show',
                 'route_parameters_map' => ['customerGroupId' => 'customerGroup.id'],
-                'position'             => 40,
+                'position'             => 50,
             ])
             ->addColumn('createdAt', 'datetime', [
                 'label'    => 'ekyna_core.field.created_at',
                 'sortable' => true,
-                'position' => 50,
+                'position' => 60,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -90,13 +93,17 @@ class CustomerType extends ResourceTableType
                 ],
             ])
             ->addFilter('id', 'number')
+            ->addFilter('number', 'text', [
+                'label'    => 'ekyna_core.field.number',
+                'position' => 10,
+            ])
             ->addFilter('firstName', 'text', [
                 'label'    => 'ekyna_core.field.first_name',
-                'position' => 10,
+                'position' => 20,
             ])
             ->addFilter('lastName', 'text', [
                 'label'    => 'ekyna_core.field.last_name',
-                'position' => 20,
+                'position' => 25,
             ])
             ->addFilter('company', 'text', [
                 'label'    => 'ekyna_core.field.company',

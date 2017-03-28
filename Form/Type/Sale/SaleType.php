@@ -70,7 +70,21 @@ class SaleType extends ResourceFormType
                 'customer_field' => 'customer',
             ])
             ->add('preferredShipmentMethod', ShipmentMethodChoiceType::class)
-            ->add('paymentTerm', PaymentTermChoiceType::class);
+            ->add('paymentTerm', PaymentTermChoiceType::class, [
+                'disabled' => true,
+            ])
+            ->add('voucherNumber', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                'required' => false,
+            ])
+            ->add('originNumber', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.sale.field.origin_number',
+                'required' => false,
+            ])
+            ->add('description', Type\TextareaType::class, [
+                'label'    => 'ekyna_core.field.description',
+                'required' => false,
+            ]);
 
         FormUtil::bindFormEventsToChildren(
             $builder,

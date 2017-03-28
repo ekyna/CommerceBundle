@@ -19,7 +19,7 @@ class QuoteViewType extends AbstractViewType
      */
     public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options)
     {
-        if ((!$options['editable']) || (!$options['private'])) {
+        if (!$options['editable'] || !$options['private']) {
             return;
         }
 
@@ -73,48 +73,48 @@ class QuoteViewType extends AbstractViewType
      */
     public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
     {
-        if ($item->isImmutable() || (!$options['editable']) || (!$options['private'])) {
-            return [];
+        if (!$options['editable'] || !$options['private']) {
+            return;
         }
 
         $actions = [];
 
-        // Configure action
-        if ($item->isConfigurable()) {
-            $configurePath = $this->generateUrl('ekyna_commerce_quote_item_admin_configure', [
+        if (!$item->isImmutable()) {
+            // Configure action
+            if ($item->isConfigurable()) {
+                $configurePath = $this->generateUrl('ekyna_commerce_quote_item_admin_configure', [
+                    'quoteId'     => $item->getSale()->getId(),
+                    'quoteItemId' => $item->getId(),
+                ]);
+                $actions[] = new View\Action($configurePath, 'fa fa-cog', [
+                    'title'           => 'ekyna_commerce.sale.button.item.configure',
+                    'data-sale-modal' => null,
+                ]);
+            }
+
+            // Edit action
+            $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
                 'quoteId'     => $item->getSale()->getId(),
                 'quoteItemId' => $item->getId(),
             ]);
-            $actions[] = new View\Action($configurePath, 'fa fa-cog', [
-                'title'           => 'ekyna_commerce.sale.button.item.configure',
+            $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+                'title'           => 'ekyna_commerce.sale.button.item.edit',
                 'data-sale-modal' => null,
+            ]);
+
+            // Remove action
+            $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
+                'quoteId'     => $item->getSale()->getId(),
+                'quoteItemId' => $item->getId(),
+            ]);
+            $actions[] = new View\Action($removePath, 'fa fa-remove', [
+                'title'         => 'ekyna_commerce.sale.button.item.remove',
+                'confirm'       => 'ekyna_commerce.sale.confirm.item.remove',
+                'data-sale-xhr' => null,
             ]);
         }
 
-        // Edit action
-        $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
-            'quoteId'     => $item->getSale()->getId(),
-            'quoteItemId' => $item->getId(),
-        ]);
-        $actions[] = new View\Action($editPath, 'fa fa-pencil', [
-            'title'           => 'ekyna_commerce.sale.button.item.edit',
-            'data-sale-modal' => null,
-        ]);
-
-        // Remove action
-        $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
-            'quoteId'     => $item->getSale()->getId(),
-            'quoteItemId' => $item->getId(),
-        ]);
-        $actions[] = new View\Action($removePath, 'fa fa-remove', [
-            'title'         => 'ekyna_commerce.sale.button.item.remove',
-            'confirm'       => 'ekyna_commerce.sale.confirm.item.remove',
-            'data-sale-xhr' => null,
-        ]);
-
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
     }
 
     /**
@@ -122,14 +122,14 @@ class QuoteViewType extends AbstractViewType
      */
     public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options)
     {
-        if ($adjustment->isImmutable() || (!$options['editable']) || (!$options['private'])) {
-            return [];
+        if ($adjustment->isImmutable() || !$options['editable'] || !$options['private']) {
+            return;
         }
 
         // Only for sale adjustments
         $adjustable = $adjustment->getAdjustable();
         if (!$adjustable instanceof Quote\QuoteAdjustmentInterface) {
-            return [];
+            return;
         }
 
         $actions = [];
@@ -153,9 +153,7 @@ class QuoteViewType extends AbstractViewType
             'data-sale-xhr' => null,
         ]);
 
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
     }
 
     /**
@@ -163,6 +161,10 @@ class QuoteViewType extends AbstractViewType
      */
     public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options)
     {
+        if (!$options['editable'] || !$options['private']) {
+            return;
+        }
+
         $actions = [];
 
         $editPath = $this->generateUrl('ekyna_commerce_quote_admin_edit_shipment', [
@@ -173,9 +175,7 @@ class QuoteViewType extends AbstractViewType
             'data-sale-modal' => null,
         ]);
 
-        return [
-            'actions' => $actions,
-        ];
+        $view->vars['actions'] = $actions;
     }
 
     /**

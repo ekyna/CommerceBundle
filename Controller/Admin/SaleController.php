@@ -39,9 +39,9 @@ class SaleController extends AbstractSaleController
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource();
 
-        if ($sale instanceof CartInterface && $sale->getState() === CartStates::STATE_COMPLETED) {
+        if ($sale instanceof CartInterface && $sale->getState() === CartStates::STATE_ACCEPTED) {
             $this->addFlash('ekyna_commerce.cart.message.transformation_to_order_is_ready');
-        } elseif ($sale instanceof QuoteInterface && $sale->getState() === QuoteStates::STATE_COMPLETED) {
+        } elseif ($sale instanceof QuoteInterface && $sale->getState() === QuoteStates::STATE_ACCEPTED) {
             $this->addFlash('ekyna_commerce.quote.message.transformation_to_order_is_ready');
         }
 
@@ -266,13 +266,16 @@ class SaleController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->getOperator()->createResourceEvent($sale);
-            $event->setHard(true); // To trigger taxation update
-            $this->getOperator()->update($event);
+            if ($this->get('ekyna_commerce.sale_updater')->recalculate($sale)) {
+                $event = $this->getOperator()->createResourceEvent($sale);
+                $this->getOperator()->update($event);
 
-            if ($event->hasErrors()) {
-                foreach ($event->getErrors() as $error) {
-                    $form->addError(new FormError($error->getMessage()));
+                // TODO Some important information to display may have changed (state, etc)
+
+                if ($event->hasErrors()) {
+                    foreach ($event->getErrors() as $error) {
+                        $form->addError(new FormError($error->getMessage()));
+                    }
                 }
             }
         }

@@ -36,19 +36,30 @@ class QuoteType extends ResourceTableType
                 //'sortable' => true,
                 'position' => 20,
             ])
+            ->addColumn('voucherNumber', 'text', [
+                'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                'sortable' => true,
+                'position' => 30,
+            ])
             ->addColumn('grandTotal', 'price', [
                 'label'         => 'ekyna_commerce.sale.field.grand_total',
                 'sortable'      => true,
                 'currency_path' => 'currency.code',
-                'position'      => 30,
+                'position'      => 40,
+            ])
+            ->addColumn('paidTotal', 'price', [
+                'label'         => 'ekyna_commerce.sale.field.paid_total',
+                'sortable'      => true,
+                'currency_path' => 'currency.code',
+                'position'      => 50,
             ])
             ->addColumn('state', 'ekyna_commerce_sale_state', [
                 'label'    => 'ekyna_commerce.sale.field.state',
-                'position' => 40,
+                'position' => 60,
             ])
             ->addColumn('paymentState', 'ekyna_commerce_payment_state', [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
-                'position' => 50,
+                'position' => 70,
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -82,29 +93,37 @@ class QuoteType extends ResourceTableType
             ])
             ->addFilter('company', 'text', [
                 'label'    => 'ekyna_core.field.company',
-                'position' => 30,
+                'position' => 21,
             ])
             ->addFilter('firstName', 'text', [
                 'label'    => 'ekyna_core.field.first_name',
-                'position' => 40,
+                'position' => 22,
             ])
             ->addFilter('lastName', 'text', [
                 'label'    => 'ekyna_core.field.last_name',
-                'position' => 50,
+                'position' => 23,
+            ])
+            ->addFilter('voucherNumber', 'text', [
+                'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                'position' => 30,
             ])
             ->addFilter('granTotal', 'number', [
                 'label'    => 'ekyna_commerce.sale.field.grand_total',
-                'position' => 60,
+                'position' => 40,
+            ])
+            ->addFilter('paidTotal', 'number', [
+                'label'    => 'ekyna_commerce.sale.field.paid_total',
+                'position' => 50,
             ])
             ->addFilter('state', 'choice', [
                 'label'    => 'ekyna_commerce.sale.field.state',
                 'choices'  => Model\OrderStates::getChoices(),
-                'position' => 70,
+                'position' => 60,
             ])
             ->addFilter('paymentState', 'choice', [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'choices'  => Model\PaymentStates::getChoices(),
-                'position' => 80,
+                'position' => 70,
             ]);
     }
 

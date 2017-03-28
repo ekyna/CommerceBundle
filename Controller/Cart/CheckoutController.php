@@ -60,10 +60,8 @@ class CheckoutController extends AbstractController
         }
 
         // Cart
-        $cart = $this->getCart();
+        $parameters['cart'] = $cart = $this->getCart();
         if (null !== $cart) {
-            $parameters['cart'] = $cart;
-
             $saleHelper = $this->getSaleHelper();
 
             $saleForm = $saleHelper->createQuantitiesForm($cart, [

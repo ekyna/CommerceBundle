@@ -20,8 +20,8 @@ final class CartStates extends AbstractConstants
         $prefix = 'ekyna_commerce.cart.state.';
 
         return [
-            States::STATE_NEW       => [$prefix . States::STATE_NEW,       'default', false],
-            States::STATE_COMPLETED => [$prefix . States::STATE_COMPLETED, 'success', true],
+            States::STATE_NEW      => [$prefix . States::STATE_NEW,       'default', false],
+            States::STATE_ACCEPTED => [$prefix . States::STATE_ACCEPTED, 'success', true],
         ];
     }
 

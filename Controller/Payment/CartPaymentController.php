@@ -87,7 +87,7 @@ final class CartPaymentController extends AbstractController
         $cart = $payment->getCart();
 
         // If cart is completed, transforms and redirect to order confirmation
-        if (in_array($cart->getState(), [CartStates::STATE_COMPLETED])) {
+        if (in_array($cart->getState(), [CartStates::STATE_ACCEPTED])) {
             $order = $this->saleTransformer->transformCartToOrder($cart, true);
 
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [

@@ -153,7 +153,8 @@ ekyna_commerce:
             edit: Modifier le client
             remove: Supprimer le client
         field:
-            credit_limit: Limite d'encours
+            outstanding_limit: Limite d'encours
+            outstanding_balance: Encours utilisé
         alert:
             no_item: Aucun client configuré
 
@@ -245,6 +246,7 @@ ekyna_commerce:
             new: Création
             pending: En attente
             refused: Refusée
+            outstanding: Impayé
             accepted: Acceptée
             completed: Complétée
             refunded: Remboursée
@@ -523,7 +525,11 @@ ekyna_commerce:
             tax_rate: Taux TVA
             tax_total: Total TVA
             adjustment_total: Total remises
-            paid_total: Total réglements
+            paid_total: Total réglé
+            outstanding_amount: Encours utilisé
+            outstanding_date: Dale limite
+            voucher_number: N° bon d'achat
+            origin_number: N° d'origine
             gross_totals: Total avant remise(s)
             grand_total: Total TTC
             weight_total: Poids total

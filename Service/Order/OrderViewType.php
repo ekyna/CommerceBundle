@@ -36,7 +36,7 @@ class OrderViewType extends AbstractViewType
      */
     public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options)
     {
-        if ((!$options['editable']) || (!$options['private'])) {
+        if (!$options['editable'] || !$options['private']) {
             return;
         }
 
@@ -100,6 +100,31 @@ class OrderViewType extends AbstractViewType
 
         $actions = [];
 
+        // Information
+        if (!$item->hasChildren()) {
+            if (!$item instanceof Order\OrderItemInterface) {
+                throw new \Exception("Unexpected sale item type.");
+            }
+
+            $stockUnits = [];
+            foreach ($item->getStockAssignments() as $assignment) {
+                $stockUnits[] = $assignment->getStockUnit();
+            }
+
+            if (!empty($stockUnits)) {
+                $view->vars['information'] = $this->stockRenderer->renderStockUnitList($stockUnits, [
+                    'template' => 'EkynaCommerceBundle:Common:sale_stock_unit_list.html.twig',
+                    'prefix'   => $view->getId() . '_su',
+                    'class'    => 'table-alt',
+                ]);
+
+                $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
+                    'title'               => 'ekyna_commerce.sale.button.item.information',
+                    'data-toggle-details' => $view->getId() . '_information',
+                ]);
+            }
+        }
+
         if (!$item->isImmutable()) {
             // Configure action
             if ($item->isConfigurable()) {
@@ -133,31 +158,6 @@ class OrderViewType extends AbstractViewType
                 'confirm'       => 'ekyna_commerce.sale.confirm.item.remove',
                 'data-sale-xhr' => null,
             ]);
-        }
-
-        // Information
-        if ($item->isImmutable()) {
-            if (!$item instanceof Order\OrderItemInterface) {
-                throw new \Exception("Unexpected sale item type.");
-            }
-
-            $stockUnits = [];
-            foreach ($item->getStockAssignments() as $assignment) {
-                $stockUnits[] = $assignment->getStockUnit();
-            }
-
-            if (!empty($stockUnits)) {
-                $view->vars['information'] = $this->stockRenderer->renderStockUnitList($stockUnits, [
-                    'template' => 'EkynaCommerceBundle:Common:sale_stock_unit_list.html.twig',
-                    'prefix'   => $view->getId() . '_su',
-                    'class'    => 'table-alt',
-                ]);
-
-                $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
-                    'title'               => 'ekyna_commerce.sale.button.item.information',
-                    'data-toggle-details' => $view->getId() . '_information',
-                ]);
-            }
         }
 
         $view->vars['actions'] = $actions;
@@ -207,6 +207,10 @@ class OrderViewType extends AbstractViewType
      */
     public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options)
     {
+        if (!$options['editable'] || !$options['private']) {
+            return;
+        }
+
         $actions = [];
 
         $editPath = $this->generateUrl('ekyna_commerce_order_admin_edit_shipment', [

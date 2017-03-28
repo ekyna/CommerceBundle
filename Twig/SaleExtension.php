@@ -119,6 +119,7 @@ class SaleExtension extends \Twig_Extension
     public function renderSaleView(\Twig_Environment $env, SaleView $view, $template = 'EkynaCommerceBundle:Common:sale_view.html.twig')
     {
         /** @noinspection PhpUndefinedMethodInspection */
+        /** @noinspection PhpInternalEntityUsedInspection */
         return $env->loadTemplate($template)->renderBlock('sale', ['view' => $view]);
     }
 

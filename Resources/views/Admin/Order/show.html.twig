@@ -43,6 +43,11 @@
                 {{ 'ekyna_commerce.attachment.label.plural'|trans }}
             </a>
         </li>
+        <li>
+            <a href="#order-informations" id="toggle-informations" data-toggle="tab">
+                {{ 'ekyna_core.field.informations'|trans }}
+            </a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -52,7 +57,7 @@
                     <div class="col-md-6">
                         {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
                             'id': 'order_weightTotal',
-                            'precision': 0,
+                            'precision': 3,
                             'append': 'kg',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
@@ -98,6 +103,9 @@
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'sale': order} %}
+            </div>
+            <div class="tab-pane" id="order-informations">
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': order} %}
             </div>
         </div>
     </div>

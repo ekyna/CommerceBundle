@@ -90,8 +90,8 @@ class CustomerType extends ResourceFormType
                 'format'         => PhoneNumberFormat::NATIONAL,
             ])
             ->add('paymentTerm', PaymentTermChoiceType::class)
-            ->add('creditLimit', Type\NumberType::class, [
-                'label' => 'ekyna_commerce.customer.field.credit_limit',
+            ->add('outstandingLimit', Type\NumberType::class, [
+                'label' => 'ekyna_commerce.customer.field.outstanding_limit',
                 'scale' => 2,
             ]);
     }

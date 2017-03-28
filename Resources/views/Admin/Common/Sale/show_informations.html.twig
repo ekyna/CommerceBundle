@@ -1,0 +1,23 @@
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.voucherNumber, 'text', 'ekyna_commerce.sale.field.voucher_number', {
+            'id': 'sale_voucherNumber',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.originNumber, 'text', 'ekyna_commerce.sale.field.origin_number', {
+            'id': 'sale_originNumber',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {{ show_row(sale.description, 'textarea', 'ekyna_core.field.description', {
+            'id': 'sale_description',
+        }) }}
+    </div>
+</div>

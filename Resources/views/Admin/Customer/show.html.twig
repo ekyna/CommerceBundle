@@ -21,9 +21,22 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="customer-general">
-                {{ show_row(customer.email, 'text', 'ekyna_core.field.email', {
-                    'id': 'customer_email'
-                }) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customer.number, 'text', 'ekyna_core.field.number', {
+                            'id': 'customer_phone',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(customer.email, 'text', 'ekyna_core.field.email', {
+                            'id': 'customer_email',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
                 {{ show_row(customer.company, 'text', 'ekyna_core.field.company', {
                     'id': 'customer_company'
                 }) }}
@@ -71,22 +84,32 @@
                 }) }}
                 <hr>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         {{ show_row(customer.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
-                            'id': 'payment_term',
+                            'id': 'customer_payment_term',
                             'route': 'ekyna_commerce_payment_term_admin_show',
                             'route_params_map': {'paymentTermId': 'id'},
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_nb_col': 6,
+                            'widget_nb_col': 6
                         }) }}
                     </div>
-                    <div class="col-md-6">
-                        {{ show_row(customer.creditLimit, 'number', 'ekyna_commerce.customer.field.credit_limit', {
-                            'id': 'customer_mobile',
+                    <div class="col-md-4">
+                        {{ show_row(customer.outstandingLimit, 'number', 'ekyna_commerce.customer.field.outstanding_limit', {
+                            'id': 'customer_outstanding_limit',
                             'precision': 2,
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8,
-                            'append' => ' €'
+                            'label_nb_col': 6,
+                            'widget_nb_col': 6,
+                            'append': ' €'
+                        }) }}
+                        {# TODO € => default currency ? #}
+                    </div>
+                    <div class="col-md-4">
+                        {{ show_row(customer.outstandingBalance, 'number', 'ekyna_commerce.customer.field.outstanding_balance', {
+                            'id': 'customer_outstanding_balance',
+                            'precision': 2,
+                            'label_nb_col': 6,
+                            'widget_nb_col': 6,
+                            'append': ' €'
                         }) }}
                         {# TODO € => default currency ? #}
                     </div>
