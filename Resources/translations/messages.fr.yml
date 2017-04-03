@@ -103,6 +103,7 @@ ekyna_commerce:
             information: Informations
             invoice: Facturation
             delivery: Livraison
+            comment: Commentaire
             place_order: Commander
 
     country:

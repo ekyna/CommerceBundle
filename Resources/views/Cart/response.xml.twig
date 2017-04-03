@@ -3,6 +3,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <response>
 {% if cart is not same as(null) %}
+
     <view><![CDATA[
         {{ render_sale_view(view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
     ]]></view>
@@ -19,6 +20,10 @@
         {{ macros.cart_delivery_address(cart) }}
     ]]></delivery-address>
 
+    <comment><![CDATA[
+        {{ macros.cart_comment(cart) }}
+    ]]></comment>
+
 {% else %}
 
     <view><![CDATA[
@@ -26,6 +31,5 @@
     ]]></view>
 
 {% endif %}
-
 </response>
 {% endspaceless %}

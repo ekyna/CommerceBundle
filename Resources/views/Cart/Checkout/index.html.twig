@@ -13,7 +13,7 @@
         {{ cms_content() }}
     </div>
 
-    {% if cart is defined %}
+    {% if cart is not same as(null) %}
      <div class="cart-checkout" data-refresh-url="{{ path('ekyna_commerce_cart_checkout_index') }}">
 
         {# Cart view #}
@@ -102,6 +102,26 @@
                 </div>
             </div>
         </div>
+
+         <div class="container">
+             <div class="row">
+                 {# Delivery#}
+                 <div class="col-md-12">
+                     <h3>
+                         <a href="{{ path('ekyna_commerce_cart_comment') }}"
+                            class="btn btn-default btn-sm pull-right" data-cart-modal>
+                             {{- 'ekyna_core.button.edit'|trans -}}
+                         </a>
+                         {{ 'ekyna_commerce.checkout.index.comment'|trans }}
+                     </h3>
+                     <div class="panel panel-default">
+                         <div class="panel-body cart-checkout-comment">
+                             {{ macros.cart_comment(cart) }}
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
 
         <hr>
 

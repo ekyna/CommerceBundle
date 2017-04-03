@@ -128,7 +128,7 @@ class QuoteViewType extends AbstractViewType
 
         // Only for sale adjustments
         $adjustable = $adjustment->getAdjustable();
-        if (!$adjustable instanceof Quote\QuoteAdjustmentInterface) {
+        if (!$adjustable instanceof Quote\QuoteInterface) {
             return;
         }
 

@@ -174,7 +174,7 @@ class OrderViewType extends AbstractViewType
 
         // Only for sale adjustments
         $adjustable = $adjustment->getAdjustable();
-        if (!$adjustable instanceof Order\OrderAdjustmentInterface) {
+        if (!$adjustable instanceof Order\OrderInterface) {
             return;
         }
 

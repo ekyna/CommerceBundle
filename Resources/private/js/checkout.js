@@ -6,7 +6,8 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
             mapping = {
                 'information': '.cart-checkout-information',
                 'invoice-address': '.cart-checkout-invoice-address',
-                'delivery-address': '.cart-checkout-delivery-address'
+                'delivery-address': '.cart-checkout-delivery-address',
+                'comment': '.cart-checkout-comment'
             };
 
         // Information, invoice address and delivery address
@@ -14,7 +15,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
             if (mapping.hasOwnProperty(key)) {
                 var $node = $xml.find(key);
 
-                if (1 == $node.length) {
+                if (1 === $node.size()) {
                     $(mapping[key]).html($node.text());
                 }
             }
@@ -22,7 +23,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
 
         // Sale view
         var $view = $xml.find('view');
-        if (1 == $view.length) {
+        if (1 === $view.size()) {
             $('.sale-view').replaceWith($($view.text()));
             return true;
         }
@@ -74,7 +75,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         modal.load({url: $this.attr('href')});
 
         $(modal).on('ekyna.modal.response', function (modalEvent) {
-            if (modalEvent.contentType == 'xml') {
+            if (modalEvent.contentType === 'xml') {
                 if (parseResponse(modalEvent.content)) {
                     modalEvent.preventDefault();
                     modal.close();

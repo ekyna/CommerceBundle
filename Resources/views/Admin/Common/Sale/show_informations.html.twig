@@ -16,6 +16,11 @@
 </div>
 <div class="row">
     <div class="col-md-12">
+        {{ show_row(sale.comment, 'textarea', 'ekyna_core.field.comment', {
+            'id': 'sale_comment',
+        }) }}
+    </div>
+    <div class="col-md-12">
         {{ show_row(sale.description, 'textarea', 'ekyna_core.field.description', {
             'id': 'sale_description',
         }) }}

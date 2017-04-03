@@ -5,6 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentTypes;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as AM;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes as AT;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -30,20 +32,22 @@ class AdjustmentType extends ResourceFormType
                 ],
             ])
             ->add('type', Type\ChoiceType::class, [
-                'label'   => 'ekyna_core.field.type',
-                'choices' => AdjustmentTypes::getChoices($options['types'], AdjustmentTypes::FILTER_RESTRICT),
-                'sizing'  => 'sm',
-                'select2' => false,
-                'attr'    => [
+                'label'             => 'ekyna_core.field.type',
+                'choices'           => AdjustmentTypes::getChoices($options['types'], AdjustmentTypes::FILTER_RESTRICT),
+                'preferred_choices' => [AT::TYPE_DISCOUNT],
+                'sizing'            => 'sm',
+                'select2'           => false,
+                'attr'              => [
                     'placeholder' => 'ekyna_core.field.type',
                 ],
             ])
             ->add('mode', Type\ChoiceType::class, [
-                'label'   => 'ekyna_core.field.mode',
-                'choices' => AdjustmentModes::getChoices($options['modes'], AdjustmentTypes::FILTER_RESTRICT),
-                'sizing'  => 'sm',
-                'select2' => false,
-                'attr'    => [
+                'label'             => 'ekyna_core.field.mode',
+                'choices'           => AdjustmentModes::getChoices($options['modes'], AdjustmentTypes::FILTER_RESTRICT),
+                'preferred_choices' => [AM::MODE_PERCENT],
+                'sizing'            => 'sm',
+                'select2'           => false,
+                'attr'              => [
                     'placeholder' => 'ekyna_core.field.mode',
                 ],
             ])
