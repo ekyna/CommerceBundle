@@ -57,12 +57,11 @@ class CustomerType extends ResourceFormType
                 'choice_label' => 'name',
             ])
             ->add('parent', ResourceType::class, [
-                'label'     => 'ekyna_core.field.parent',
+                'label'     => 'ekyna_commerce.customer.field.parent',
                 'class'     => $this->dataClass,
                 'allow_new' => true,
                 'required'  => false,
             ])
-            // TODO Children ?
             ->add('user', ResourceType::class, [
                 'label'     => 'ekyna_user.user.label.singular',
                 'allow_new' => true,

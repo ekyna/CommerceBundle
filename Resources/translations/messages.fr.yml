@@ -21,8 +21,15 @@ ekyna_commerce:
                 success: Vos informations ont bien été enregistrées.
         order:
             title: Mes commandes
+            show: Détail de la commande <em>%number%</em>
+            empty_list: Aucune commande enregistré
         quote:
             title: Mes devis
+            show: Détail du devis <em>%number%</em>
+            empty_list: Aucun devis enregistré
+        attachment:
+            title: Documents
+            empty_list: Aucun document enregistré
         registration:
             title: Ouverture de compte
 
@@ -146,6 +153,9 @@ ekyna_commerce:
             new: Créer un nouveau client
             edit: Modifier le client <small>%name%</small>
             remove: Supprimer le client <small>%name%</small>
+            children: Liste des commerciaux
+            quotes: Liste des devis
+            orders: Liste des commandes
         button:
             list: Liste des clients
             show: Détail du client
@@ -153,6 +163,8 @@ ekyna_commerce:
             edit: Modifier le client
             remove: Supprimer le client
         field:
+            parent: Comptabilité
+            children: Commerciaux
             outstanding_limit: Limite d'encours
             outstanding_balance: Encours utilisé
         alert:

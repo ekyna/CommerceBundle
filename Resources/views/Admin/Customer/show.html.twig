@@ -17,6 +17,23 @@
                 {{ 'ekyna_commerce.customer_address.label.plural'|trans }}
             </a>
         </li>
+        {% if customer.children|length > 0 %}
+            <li>
+                <a href="#customer-children" id="toggle-children" data-toggle="tab">
+                    {{ 'ekyna_commerce.customer.field.children'|trans }}
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a href="#customer-quotes" id="toggle-quotes" data-toggle="tab">
+                {{ 'ekyna_commerce.quote.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#customer-orders" id="toggle-orders" data-toggle="tab">
+                {{ 'ekyna_commerce.order.label.plural'|trans }}
+            </a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -72,7 +89,7 @@
                     'route': 'ekyna_commerce_customer_group_admin_show',
                     'route_params_map': {'customerGroupId': 'id'}
                 }) }}
-                {{ show_row(customer.parent, 'entity', 'ekyna_core.field.parent', {
+                {{ show_row(customer.parent, 'entity', 'ekyna_commerce.customer.field.parent', {
                     'id': 'customer_parent',
                     'route': 'ekyna_commerce_customer_admin_show',
                     'route_params_map': {'customerId': 'id'}
@@ -120,7 +137,7 @@
                     {{ ui_button('ekyna_commerce.customer_address.button.new', {
                         'type': 'link',
                         'icon': 'plus',
-                        'theme': 'success',
+                        'theme': 'primary',
                         'path': path('ekyna_commerce_customer_address_admin_new', {
                             'customerId': customer.id
                         })
@@ -143,6 +160,50 @@
                 {% else %}
                     <p>{{ 'ekyna_commerce.customer_address.alert.no_item'|trans }}</p>
                 {% endfor %}
+            </div>
+            {% if customer.children|length > 0 %}
+            <div class="tab-pane" id="customer-children">
+                <div class="sub-header">
+                    <h2>{{ 'ekyna_commerce.customer.header.children'|trans|raw }}</h2>
+                </div>
+                <div class="actions">
+                    {{ admin_resource_btn('ekyna_commerce.customer', 'new', {
+                        'label': 'ekyna_commerce.customer.button.new',
+                        'path': path('ekyna_commerce_customer_admin_new', {
+                            'parent': customer.id,
+                        })
+                    }) }}
+                </div>
+                {{ ekyna_table_render(children) }}
+            </div>
+            {% endif %}
+            <div class="tab-pane" id="customer-quotes">
+                <div class="sub-header">
+                    <h2>{{ 'ekyna_commerce.customer.header.quotes'|trans|raw }}</h2>
+                </div>
+                <div class="actions">
+                    {{ admin_resource_btn('ekyna_commerce.quote', 'new', {
+                        'label': 'ekyna_commerce.quote.button.new',
+                        'path': path('ekyna_commerce_quote_admin_new', {
+                            'customer': customer.id,
+                        })
+                    }) }}
+                </div>
+                {{ ekyna_table_render(quotes) }}
+            </div>
+            <div class="tab-pane" id="customer-orders">
+                <div class="sub-header">
+                    <h2>{{ 'ekyna_commerce.customer.header.orders'|trans|raw }}</h2>
+                </div>
+                <div class="actions">
+                    {{ admin_resource_btn('ekyna_commerce.order', 'new', {
+                        'label': 'ekyna_commerce.order.button.new',
+                        'path': path('ekyna_commerce_order_admin_new', {
+                            'customer': customer.id,
+                        })
+                    }) }}
+                </div>
+                {{ ekyna_table_render(orders) }}
             </div>
         </div>
     </div>

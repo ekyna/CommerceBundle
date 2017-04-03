@@ -1,0 +1,27 @@
+{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+
+{% block account %}
+    <h3>{{ 'ekyna_commerce.account.quote.show'|trans({'%number%': quote.number})|raw }}</h3>
+    <hr>
+
+    {{ render_sale_view(view) }}
+
+    <hr>
+
+    {% include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
+        'sale': quote,
+        'detailRoute': 'ekyna_commerce_account_quote_attachment_download'
+    } %}
+
+    <hr>
+    <p class="text-center">
+        <a href="{{ path('ekyna_commerce_account_quote_index') }}" class="btn btn-sm btn-default">
+            {{ 'ekyna_core.button.back_to_list'|trans }}
+        </a>
+    </p>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}

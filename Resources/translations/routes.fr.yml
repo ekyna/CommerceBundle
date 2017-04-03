@@ -13,5 +13,9 @@ ekyna_commerce_account_address_edit: /mon-compte/adresses/modifier/{addressId}
 ekyna_commerce_account_address_remove: /mon-compte/adresses/supprimer/{addressId}
 
 ekyna_commerce_account_quote_index: /mon-compte/devis
+ekyna_commerce_account_quote_show: /mon-compte/devis/{number}
+ekyna_commerce_account_quote_attachment_download: /mon-compte/devis/{number}/documents/{id}
 
 ekyna_commerce_account_order_index: /mon-compte/commandes
+ekyna_commerce_account_order_show: /mon-compte/commandes/{number}
+ekyna_commerce_account_order_attachment_download: /mon-compte/commandes/{number}/documents/{id}

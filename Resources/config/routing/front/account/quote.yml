@@ -12,6 +12,25 @@ ekyna_commerce_account_quote_index:
                 follow: false
                 index: false
 
+ekyna_commerce_account_quote_show:
+    path: /{number}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:show
+    methods: [GET]
+    options:
+        _cms:
+            name: Détail du devis
+            parent: ekyna_commerce_account_quote_index
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_quote_attachment_download:
+    path: /{number}/documents/{id}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:attachmentDownload
+    methods: [GET]
+
 #ekyna_commerce_account_quote_edit:
 #    path: /edit
 #    defaults:

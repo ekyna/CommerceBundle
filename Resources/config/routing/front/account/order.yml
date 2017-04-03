@@ -12,6 +12,25 @@ ekyna_commerce_account_order_index:
                 follow: false
                 index: false
 
+ekyna_commerce_account_order_show:
+    path: /{number}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:show
+    methods: [GET]
+    options:
+        _cms:
+            name: Détail de la commande
+            parent: ekyna_commerce_account_order_index
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_order_attachment_download:
+    path: /{number}/documents/{id}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:attachmentDownload
+    methods: [GET]
+
 #ekyna_commerce_account_order_edit:
 #    path: /edit
 #    defaults:

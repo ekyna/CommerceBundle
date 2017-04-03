@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
+use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
@@ -27,6 +28,38 @@ use Symfony\Component\Validator\Constraints;
  */
 class SaleController extends AbstractSaleController
 {
+    /**
+     * @inheritDoc
+     */
+    protected function createNew(Context $context)
+    {
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = parent::createNew($context);
+
+        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+        $customer = $this
+            ->get('ekyna_commerce.customer.repository')
+            ->find($context->getRequest()->query->get('customer'));
+
+        if (null !== $customer) {
+            $sale->setCustomer($customer);
+
+            if (null !== $address = $customer->getDefaultInvoiceAddress()) {
+                $invoiceAddress = $this->get('ekyna_commerce.sale_factory')->createAddressForSale($sale);
+                AddressUtil::copy($address, $invoiceAddress);
+                $sale->setInvoiceAddress($invoiceAddress);
+            }
+
+            if (null !== $address = $customer->getDefaultDeliveryAddress()) {
+                $deliveryAddress = $this->get('ekyna_commerce.sale_factory')->createAddressForSale($sale);
+                AddressUtil::copy($address, $deliveryAddress);
+                $sale->setInvoiceAddress($deliveryAddress);
+            }
+        }
+
+        return $sale;
+    }
+
     /**
      * @inheritdoc
      */
