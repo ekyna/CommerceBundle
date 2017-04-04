@@ -101,7 +101,7 @@ Feature: Create order shipments
         And I should see "2" in the "#product_stockUnit_0_reservedQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
-    @javascript @stock @current
+    @javascript @stock
     Scenario: Create a shipment with state 'shipped'
         Given The supplier order with number "SO-001" is delivered
         And The order with number "O-0001" is paid
