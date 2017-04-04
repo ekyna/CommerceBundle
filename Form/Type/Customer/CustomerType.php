@@ -92,6 +92,10 @@ class CustomerType extends ResourceFormType
             ->add('outstandingLimit', Type\NumberType::class, [
                 'label' => 'ekyna_commerce.customer.field.outstanding_limit',
                 'scale' => 2,
+            ])
+            ->add('description', Type\TextareaType::class, [
+                'label'    => 'ekyna_core.field.description',
+                'required' => false,
             ]);
     }
 }

@@ -18,9 +18,6 @@ class CustomerGroupType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'id', [
-                'sortable' => true,
-            ])
             ->addColumn('name', 'anchor', [
                 'label'                => 'ekyna_core.field.name',
                 'property_path'        => null,
@@ -40,7 +37,6 @@ class CustomerGroupType extends ResourceTableType
                 'disable_property_path' => 'default',
                 'position'              => 20,
             ])
-            // TODO default
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [

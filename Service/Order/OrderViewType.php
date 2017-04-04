@@ -125,7 +125,7 @@ class OrderViewType extends AbstractViewType
             }
         }
 
-        if (!$item->isImmutable()) {
+        if (!$item->isImmutable() && !$item->getParent()) {
             // Configure action
             if ($item->isConfigurable()) {
                 $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [

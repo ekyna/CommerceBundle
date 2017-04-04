@@ -2,9 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class OrderType
@@ -19,9 +23,6 @@ class OrderType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'id', [
-                'sortable' => true,
-            ])
             ->addColumn('number', 'anchor', [
                 'label'                => 'ekyna_core.field.number',
                 'sortable'             => true,
@@ -30,11 +31,6 @@ class OrderType extends ResourceTableType
                     'orderId' => 'id',
                 ],
                 'position'             => 10,
-            ])
-            ->addColumn('customer', 'ekyna_commerce_sale_customer', [
-                'label'    => 'ekyna_commerce.customer.label.singular',
-                //'sortable' => true,
-                'position' => 20,
             ])
             ->addColumn('voucherNumber', 'text', [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
@@ -96,22 +92,6 @@ class OrderType extends ResourceTableType
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
-            ->addFilter('email', 'text', [
-                'label'    => 'ekyna_core.field.email',
-                'position' => 20,
-            ])
-            ->addFilter('company', 'text', [
-                'label'    => 'ekyna_core.field.company',
-                'position' => 21,
-            ])
-            ->addFilter('firstName', 'text', [
-                'label'    => 'ekyna_core.field.first_name',
-                'position' => 22,
-            ])
-            ->addFilter('lastName', 'text', [
-                'label'    => 'ekyna_core.field.last_name',
-                'position' => 23,
-            ])
             ->addFilter('voucherNumber', 'text', [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'position' => 30,
@@ -143,25 +123,55 @@ class OrderType extends ResourceTableType
                 'choices'  => Model\ShipmentStates::getChoices(),
                 'position' => 90,
             ]);
+
+        if (null === $options['customer']) {
+            $builder
+                ->addColumn('customer', 'ekyna_commerce_sale_customer', [
+                    'label'    => 'ekyna_commerce.customer.label.singular',
+                    'position' => 20,
+                ])
+                ->addFilter('email', 'text', [
+                    'label'    => 'ekyna_core.field.email',
+                    'position' => 20,
+                ])
+                ->addFilter('company', 'text', [
+                    'label'    => 'ekyna_core.field.company',
+                    'position' => 21,
+                ])
+                ->addFilter('firstName', 'text', [
+                    'label'    => 'ekyna_core.field.first_name',
+                    'position' => 22,
+                ])
+                ->addFilter('lastName', 'text', [
+                    'label'    => 'ekyna_core.field.last_name',
+                    'position' => 23,
+                ]);
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    /*public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
 
-        if (null !== $group = $this->getUserGroup()) {
-            $resolver->setDefaults([
-                'customize_qb' => function (QueryBuilder $qb, $alias) use ($group) {
-                    $qb
-                        ->join($alias . '.group', 'g')
-                        ->andWhere($qb->expr()->gte('g.position', $group->getPosition()));
-                },
-            ]);
-        }
-    }*/
+        $resolver
+            ->setDefault('customer', null)
+            ->setDefault('default_sorts', ['createdAt DESC'])
+            ->setDefault('customize_qb', function (Options $options) {
+                if (null !== $customer = $options['customer']) {
+                    return function (QueryBuilder $qb, $alias) use ($customer) {
+                        $qb
+                            ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
+                            ->setParameter('customer', $customer);
+                    };
+                }
+
+                return null;
+            })
+            ->setAllowedTypes('customer', ['null', CustomerInterface::class]);
+    }
 
     /**
      * {@inheritdoc}

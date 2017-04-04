@@ -48,33 +48,72 @@
                     background-color: #f9f9f9;
                 }
 
+                .sale-detail-information {
+                    background: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIulI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq6bW7ZwJc+f7dW4o++jn+kBD8JUAQA7') 0 0 repeat-y scroll;
+                }
+
                 &.level-0 {
-                    .sale-detail-designation, .sale-detail-information {
+                    .sale-detail-information {
                         padding-left: @base-cell-padding;
+                        background-position-x: -24px;
                     }
                 }
 
                 &.level-1 {
-                    .sale-detail-designation, .sale-detail-information {
-                        padding-left: @base-cell-padding + 16px;
+                    .sale-detail-information {
+                        padding-left: @base-cell-padding + 24px;
                     }
-
                 }
 
                 &.level-2 {
-                    .sale-detail-designation, .sale-detail-information {
-                        padding-left: @base-cell-padding + 32px;
+                    .sale-detail-information {
+                        padding-left: @base-cell-padding + 48px;
+                        background-position-x: 24px;
                     }
                 }
 
                 &.level-3 {
-                    .sale-detail-designation, .sale-detail-information {
-                        padding-left: @base-cell-padding + 48px;
+                    .sale-detail-information {
+                        padding-left: @base-cell-padding + 72px;
+                        background-position-x: 48px;
+                    }
+                }
+
+                td, a {
+                    text-overflow: ellipsis;
+                    width: 200px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+
+                .sale-detail-designation {
+                    padding: 0;
+                    line-height: 36px;
+
+                    i {
+                        display: inline-block;
+                        width: 24px;
+                        height: 36px;
+                        float: left;
+
+                        &.continue {
+                            background-image: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIulI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq6bW7ZwJc+f7dW4o++jn+kBD8JUAQA7');
+                        }
+
+                        &.child {
+                            margin-right: 6px;
+                            background-image: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIylI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq7bucSw+7R0Zd+f7uW84/uNhJkg8WBMFQAAOw==');
+
+                            &.last {
+                                background-image: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIplI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq7bucSwS9f2jef6zvf+XQAAOw==');
+                            }
+                        }
                     }
                 }
 
                 &.sale-detail-spacer {
                     background-color: transparent;
+
                     td {
                         font-size: 0;
                         line-height: 0;
@@ -94,7 +133,7 @@
                     display: inline-block;
                     width: 18px;
                     height: 18px;
-                    line-height: 18px;
+                    //line-height: 18px;
                     text-align: center;
                     margin-right: 2px;
                     color: lighten(@text-color, 30%);
@@ -130,6 +169,7 @@
                     text-align: right;
                     padding: 0;
                     height: auto;
+                    font-size: 13px;
                 }
             }
         }

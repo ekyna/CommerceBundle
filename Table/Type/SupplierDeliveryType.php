@@ -17,10 +17,10 @@ class SupplierDeliveryType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
-        $builder
+        /*$builder
             ->addColumn('id', 'id', [
                 'sortable' => true,
-            ])
+            ])*/
             /*->addColumn('reference', 'anchor', [
                 'label'                => 'ekyna_core.field.reference',
                 'sortable'             => true,

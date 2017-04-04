@@ -79,7 +79,7 @@ class QuoteViewType extends AbstractViewType
 
         $actions = [];
 
-        if (!$item->isImmutable()) {
+        if (!$item->isImmutable() && !$item->getParent()) {
             // Configure action
             if ($item->isConfigurable()) {
                 $configurePath = $this->generateUrl('ekyna_commerce_quote_item_admin_configure', [

@@ -54,16 +54,24 @@
                         }) }}
                     </div>
                 </div>
-                {{ show_row(customer.company, 'text', 'ekyna_core.field.company', {
-                    'id': 'customer_company'
-                }) }}
-                <div class="row show-row">
-                    <div class="col-md-2 show-label">
-                        {{ 'ekyna_core.field.identity'|trans }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customer.company, 'text', 'ekyna_core.field.company', {
+                            'id': 'customer_company',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
                     </div>
-                    <div class="col-md-10">
-                        <div class="show-widget show-widget-inline" id="customer_identity">
-                            {{ customer|identity }}
+                    <div class="col-md-6">
+                        <div class="row show-row">
+                            <div class="col-md-4 show-label">
+                                {{ 'ekyna_core.field.identity'|trans }}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="show-widget show-widget-inline" id="customer_identity">
+                                    {{ customer|identity }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -83,6 +91,9 @@
                         }) }}
                     </div>
                 </div>
+                {{ show_row(customer.description, 'textarea', 'ekyna_core.field.description', {
+                    'id': 'customer_description'
+                }) }}
                 <hr>
                 {{ show_row(customer.customerGroup, 'entity', 'ekyna_commerce.customer_group.label.singular', {
                     'id': 'customer_group',

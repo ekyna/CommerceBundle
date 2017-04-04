@@ -20,7 +20,7 @@ class CartViewType extends AbstractViewType
      */
     public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
     {
-        if ($item->isImmutable() || !$options['editable']) {
+        if ($item->isImmutable() || $item->getParent() || !$options['editable']) {
             return;
         }
 
@@ -60,6 +60,8 @@ class CartViewType extends AbstractViewType
         }
 
         $actions = [];
+
+        // TODO Do we really want to let customer edit or remove this adjustment ?
 
         $adjustable = $adjustment->getAdjustable();
         if ($adjustable instanceof Cart\CartAdjustmentInterface) {

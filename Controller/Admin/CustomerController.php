@@ -52,14 +52,10 @@ class CustomerController extends ResourceController
         $children = $this
             ->getTableFactory()
             ->createBuilder('ekyna_commerce_customer', [
-                'name'         => 'ekyna_commerce_customer_children',
-                'sortable'     => false,
-                'filterable'   => false,
-                'customize_qb' => function (QueryBuilder $qb, $alias) use ($customer) {
-                    $qb
-                        ->andWhere($alias . '.parent = :customer')
-                        ->setParameter('customer', $customer);
-                },
+                'name'       => 'ekyna_commerce_customer_children',
+                'sortable'   => false,
+                'filterable' => false,
+                'parent'     => $customer,
             ])
             ->getTable($request);
 
@@ -69,14 +65,10 @@ class CustomerController extends ResourceController
         $quotes = $this
             ->getTableFactory()
             ->createBuilder('ekyna_commerce_quote', [
-                'name'         => 'ekyna_commerce_customer_quote',
-                'sortable'     => false,
-                'filterable'   => false,
-                'customize_qb' => function (QueryBuilder $qb, $alias) use ($customer) {
-                    $qb
-                        ->andWhere($alias . '.customer = :customer')
-                        ->setParameter('customer', $customer);
-                },
+                'name'       => 'ekyna_commerce_customer_quote',
+                'sortable'   => false,
+                'filterable' => false,
+                'customer'   => $customer,
             ])
             ->getTable();
 
@@ -86,14 +78,10 @@ class CustomerController extends ResourceController
         $orders = $this
             ->getTableFactory()
             ->createBuilder('ekyna_commerce_order', [
-                'name'         => 'ekyna_commerce_customer_order',
-                'sortable'     => false,
-                'filterable'   => false,
-                'customize_qb' => function (QueryBuilder $qb, $alias) use ($customer) {
-                    $qb
-                        ->andWhere($alias . '.customer = :customer')
-                        ->setParameter('customer', $customer);
-                },
+                'name'       => 'ekyna_commerce_customer_order',
+                'sortable'   => false,
+                'filterable' => false,
+                'customer'   => $customer,
             ])
             ->getTable();
 

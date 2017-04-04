@@ -19,9 +19,6 @@ class SupplierOrderType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'id', [
-                'sortable' => true,
-            ])
             ->addColumn('number', 'anchor', [
                 'label'                => 'ekyna_core.field.number',
                 'sortable'             => true,

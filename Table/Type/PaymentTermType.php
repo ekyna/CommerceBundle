@@ -18,7 +18,6 @@ class PaymentTermType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'id')
             ->addColumn('name', 'anchor', [
                 'label'                => 'ekyna_core.field.name',
                 'route_name'           => 'ekyna_commerce_payment_term_admin_show',

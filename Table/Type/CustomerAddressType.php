@@ -18,9 +18,6 @@ class CustomerAddressType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'id', [
-//                'sortable' => true,
-            ])
             ->addColumn('street', 'text', [
                 'label'                => 'ekyna_core.field.name',
                 'property_path'        => null,

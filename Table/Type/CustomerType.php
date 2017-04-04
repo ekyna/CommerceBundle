@@ -2,8 +2,12 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class CustomerType
@@ -37,9 +41,6 @@ class CustomerType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('id', 'id', [
-                'sortable' => true,
-            ])
             ->addColumn('number', 'anchor', [
                 'label'                => 'ekyna_core.field.number',
                 'route_name'           => 'ekyna_commerce_customer_admin_show',
@@ -47,14 +48,9 @@ class CustomerType extends ResourceTableType
                 'position'             => 10,
             ])
             ->addColumn('name', 'text', [
-                'label'                => 'ekyna_core.field.name',
-                'property_path'        => null,
-                'position'             => 20,
-            ])
-            ->addColumn('company', 'text', [
-                'label'    => 'ekyna_core.field.company',
-                'sortable' => true,
-                'position' => 30,
+                'label'         => 'ekyna_core.field.name',
+                'property_path' => null,
+                'position'      => 20,
             ])
             ->addColumn('email', 'text', [
                 'label'    => 'ekyna_core.field.email',
@@ -70,14 +66,15 @@ class CustomerType extends ResourceTableType
                 'position'             => 50,
             ])
             ->addColumn('outstandingLimit', 'number', [
-                'label'                => 'ekyna_commerce.customer.field.outstanding_limit',
-                'sortable'             => false,
-                'position'             => 60,
+                'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                'sortable' => false,
+                'position' => 60,
             ])
             ->addColumn('createdAt', 'datetime', [
-                'label'    => 'ekyna_core.field.created_at',
-                'sortable' => true,
-                'position' => 70,
+                'label'       => 'ekyna_core.field.created_at',
+                'sortable'    => true,
+                'position'    => 70,
+                'time_format' => 'none',
             ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
@@ -110,10 +107,6 @@ class CustomerType extends ResourceTableType
                 'label'    => 'ekyna_core.field.last_name',
                 'position' => 25,
             ])
-            ->addFilter('company', 'text', [
-                'label'    => 'ekyna_core.field.company',
-                'position' => 30,
-            ])
             ->addFilter('email', 'text', [
                 'label'    => 'ekyna_core.field.email',
                 'position' => 40,
@@ -132,6 +125,42 @@ class CustomerType extends ResourceTableType
                 'label'    => 'ekyna_core.field.created_at',
                 'position' => 70,
             ]);
+
+        if (null === $options['parent']) {
+            $builder
+                ->addColumn('company', 'text', [
+                    'label'    => 'ekyna_core.field.company',
+                    'sortable' => true,
+                    'position' => 30,
+                ])
+                ->addFilter('company', 'text', [
+                    'label'    => 'ekyna_core.field.company',
+                    'position' => 30,
+                ]);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setDefault('parent', null)
+            ->setDefault('customize_qb', function (Options $options) {
+                if (null !== $parent = $options['parent']) {
+                    return function (QueryBuilder $qb, $alias) use ($parent) {
+                        $qb
+                            ->andWhere($qb->expr()->eq($alias . '.parent', ':parent'))
+                            ->setParameter('parent', $parent);
+                    };
+                }
+
+                return null;
+            })
+            ->setAllowedTypes('parent', ['null', CustomerInterface::class]);
     }
 
     /**

@@ -18,9 +18,6 @@ class SupplierProductType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            /*->addColumn('id', 'id', [
-                'sortable' => true,
-            ])*/
             ->addColumn('designation', 'anchor', [
                 'label'                => 'ekyna_core.field.designation',
                 'sortable'             => true,
