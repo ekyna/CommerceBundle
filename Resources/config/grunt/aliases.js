@@ -5,8 +5,8 @@ module.exports = {
         'clean:commerce_less'
     ],
     'build:commerce_js': [
-        //'ts:commerce',
-        //'uglify:commerce_ts',
+        'ts:commerce',
+        'uglify:commerce_ts',
         'uglify:commerce_js',
         'clean:commerce_ts'
     ],

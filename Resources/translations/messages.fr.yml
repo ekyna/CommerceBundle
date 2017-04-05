@@ -68,6 +68,11 @@ ekyna_commerce:
         label:
             singular: Panier
             plural: Paniers
+        widget:
+            items: "{1} Un article|]1,Inf[ %count% articles"
+            total: pour un total de
+            show_cart: Voir votre panier
+            empty: Votre panier est vide.
         message:
             transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
             already_paid: Ce panier est déjà réglée en totalité

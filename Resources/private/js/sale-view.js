@@ -1,12 +1,15 @@
-define(['jquery', 'ekyna-modal', 'ekyna-ui', 'jquery/form'], function($, Modal) {
+define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'], function($, Modal, Dispatcher) {
     "use strict";
 
     var parseResponse = function(response, $saleView) {
         var $xml = $(response),
             $view = $xml.find('view');
 
-        if (1 == $view.size()) {
+        if (1 === $view.size()) {
             $saleView.replaceWith($($view.text()));
+
+            Dispatcher.trigger('ekyna_commerce.sale_view_response');
+
             return true;
         }
 
@@ -23,7 +26,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-ui', 'jquery/form'], function($, Modal) 
         modal.load({url: $this.attr('href')});
 
         $(modal).on('ekyna.modal.response', function (modalEvent) {
-            if (modalEvent.contentType == 'xml') {
+            if (modalEvent.contentType === 'xml') {
                 if (parseResponse(modalEvent.content, $saleView)) {
 
                     modalEvent.preventDefault();

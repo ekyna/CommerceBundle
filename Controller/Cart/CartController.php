@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\InformationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType;
 use Ekyna\Bundle\CoreBundle\Modal;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -31,6 +32,28 @@ class CartController extends AbstractController
     public function __construct(Modal\Renderer $modalRenderer)
     {
         $this->modalRenderer = $modalRenderer;
+    }
+
+    /**
+     * Cart widget action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function widgetAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new RedirectResponse($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        $response = $this->render('EkynaCommerceBundle:Cart:widget.xml.twig', [
+            'cart' => $this->getCart(),
+        ]);
+
+        $response->headers->set('Content-Type', 'application/xml');
+
+        return $response->setPrivate();
     }
 
     /**
