@@ -1,0 +1,19 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block side %}
+    {{ parent() }}
+    {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' with {
+        'title': t('quote.label.singular', [], 'EkynaCommerce'),
+        'sale': quote
+    } only %}
+    {% if quote.customer is not null %}
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/customer.html.twig' with {
+            'customer': quote.customer
+        } only %}
+    {% endif %}
+{% endblock side %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ ivory_google_api() }}
+{% endblock javascripts %}

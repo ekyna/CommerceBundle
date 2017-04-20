@@ -1,24 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 
 /**
  * Class LoyaltyController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class LoyaltyController extends AbstractController
+class LoyaltyController implements ControllerInterface
 {
-    public function indexAction(): Response
+    use CustomerTrait;
+
+    private Environment $twig;
+
+    public function __construct(Environment $twig)
     {
-        $customer = $this->getCustomerOrRedirect();
+        $this->twig = $twig;
+    }
 
-        $type = $this->get('ekyna_commerce.coupon.configuration')->getTableType();
+    public function index(): Response
+    {
+        $customer = $this->getCustomer();
 
-        return $this->render('@EkynaCommerce/Account/Loyalty/index.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Account/Loyalty/index.html.twig', [
             'customer' => $customer,
         ]);
+
+        return (new Response($content))->setPrivate();
     }
 }

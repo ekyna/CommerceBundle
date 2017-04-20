@@ -1,0 +1,22 @@
+resources:
+    ekyna_commerce:
+        notify_model:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Bundle\CommerceBundle\Model\NotifyModelInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\NotifyModel
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyModelType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\NotifyModelType
+            trans_domain: EkynaCommerce
+            translation:
+                class: Ekyna\Bundle\CommerceBundle\Entity\NotifyModelTranslation
+                fields: [subject, message]
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/NotifyModel/_form.html.twig'
+                    read: '@EkynaCommerce/Admin/NotifyModel/read.html.twig'
+                    update: '@EkynaCommerce/Admin/NotifyModel/update.html.twig'
+                    delete: '@EkynaCommerce/Admin/NotifyModel/delete.html.twig'
+                admin_toggle:
+                    properties: enabled
+                Ekyna\Bundle\CommerceBundle\Action\Admin\NotifyModel\TestAction: ~

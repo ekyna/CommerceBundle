@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
 use Ekyna\Bundle\AdminBundle\Show\View;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CustomerType
@@ -18,27 +23,21 @@ class CustomerType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function build(View $view, $value, array $options = [])
+    public function build(View $view, $value, array $options = []): void
     {
         if ($value && !$value instanceof CustomerInterface) {
-            throw new UnexpectedValueException("Expected instance of " . CustomerInterface::class);
+            throw new UnexpectedTypeException($value, CustomerInterface::class);
         }
 
         parent::build($view, $value, $options);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'ekyna_commerce.customer.label.singular');
+        $resolver->setDefault('label', t('customer.label.singular', [], 'EkynaCommerce'));
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getWidgetPrefix()
+    public static function getName(): string
     {
         return 'commerce_customer';
     }

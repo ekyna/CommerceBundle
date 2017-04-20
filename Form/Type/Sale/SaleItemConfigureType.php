@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemFormEvent;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemAvailability;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
@@ -26,58 +28,44 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleItemConfigureType extends AbstractType
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
 
-    /**
-     * Constructor.
-     *
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
                 if (null === $item = $event->getData()) {
                     throw new LogicException('Sale item must be bound to the form at this point.');
                 }
 
                 // Initialize the item
                 $this->eventDispatcher->dispatch(
-                    SaleItemEvents::INITIALIZE,
-                    new SaleItemEvent($item)
+                    new SaleItemEvent($item),
+                    SaleItemEvents::INITIALIZE
                 );
 
                 // Build the form
                 $this->eventDispatcher->dispatch(
-                    SaleItemFormEvent::BUILD_FORM,
-                    new SaleItemFormEvent($item, $event->getForm())
+                    new SaleItemFormEvent($item, $event->getForm(), null),
+                    SaleItemFormEvent::BUILD_FORM
                 );
             }, 1024)
-            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
                 // Build the item
                 $this->eventDispatcher->dispatch(
-                    SaleItemEvents::BUILD,
-                    new SaleItemEvent($event->getData())
+                    new SaleItemEvent($event->getData()),
+                    SaleItemEvents::BUILD
                 );
             }, 1024);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['attr']['id'] = $view->vars['id'];
         $view->vars['submit_button'] = $options['submit_button'];
@@ -85,23 +73,17 @@ class SaleItemConfigureType extends AbstractType
 
         // Build the form view
         $this->eventDispatcher->dispatch(
-            SaleItemFormEvent::BUILD_VIEW,
-            new SaleItemFormEvent($form->getData(), $form, $view)
+            new SaleItemFormEvent($form->getData(), $form, $view),
+            SaleItemFormEvent::BUILD_VIEW
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         FormUtil::addClass($view, 'sale-item-configure');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([

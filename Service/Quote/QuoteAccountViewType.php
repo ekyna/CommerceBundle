@@ -15,7 +15,7 @@ use Ekyna\Component\Commerce\Quote\Model as Quote;
 class QuoteAccountViewType extends AbstractViewType
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options): void
     {
@@ -29,10 +29,10 @@ class QuoteAccountViewType extends AbstractViewType
         ]);
         $view->addButton(new View\Button(
             $refreshPath,
-            $this->trans('ekyna_core.button.refresh'),
+            $this->trans('button.refresh', [], 'EkynaUi'),
             'fa fa-refresh',
             [
-                'title'         => $this->trans('ekyna_core.button.refresh'),
+                'title'         => $this->trans('button.refresh', [], 'EkynaUi'),
                 'class'         => 'btn btn-sm btn-default',
                 'data-sale-xhr' => 'get',
             ]
@@ -44,10 +44,10 @@ class QuoteAccountViewType extends AbstractViewType
         ]);
         $view->addButton(new View\Button(
             $addItemPath,
-            $this->trans('ekyna_commerce.sale.button.item.add'),
+            $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
             'fa fa-plus',
             [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.add'),
+                'title'           => $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
                 'class'           => 'btn btn-sm btn-primary',
                 'data-sale-modal' => null,
             ]
@@ -55,7 +55,7 @@ class QuoteAccountViewType extends AbstractViewType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options): void
     {
@@ -75,7 +75,7 @@ class QuoteAccountViewType extends AbstractViewType
                 'id'     => $item->getId(),
             ]);
             $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
-                'title'         => $this->trans('ekyna_core.button.move_up'),
+                'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
                 'data-sale-xhr' => 'get',
                 'class'         => 'text-muted',
             ]));
@@ -88,7 +88,7 @@ class QuoteAccountViewType extends AbstractViewType
                 'id'     => $item->getId(),
             ]);
             $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
-                'title'         => $this->trans('ekyna_core.button.move_down'),
+                'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
                 'data-sale-xhr' => 'get',
                 'class'         => 'text-muted',
             ]));
@@ -105,8 +105,8 @@ class QuoteAccountViewType extends AbstractViewType
             'id'     => $item->getId(),
         ]);
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-            'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
+            'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
+            'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
             'data-sale-xhr' => null,
             'class'         => 'text-danger',
         ]));
@@ -118,7 +118,7 @@ class QuoteAccountViewType extends AbstractViewType
                 'id'     => $item->getId(),
             ]);
             $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
+                'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',
             ]));
@@ -126,7 +126,7 @@ class QuoteAccountViewType extends AbstractViewType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function supportsSale(Common\SaleInterface $sale): bool
     {

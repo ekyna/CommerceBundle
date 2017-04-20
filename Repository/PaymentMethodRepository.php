@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
 use Doctrine\ORM\Query;
@@ -14,15 +16,8 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentMethodInterface;
  */
 class PaymentMethodRepository extends BaseRepository
 {
-    /**
-     * @var Query
-     */
-    private $defaultFactoryQuery;
-
-    /**
-     * @var Query
-     */
-    private $availableFactoryQuery;
+    private ?Query $defaultFactoryQuery   = null;
+    private ?Query $availableFactoryQuery = null;
 
 
     /**
@@ -52,7 +47,7 @@ class PaymentMethodRepository extends BaseRepository
     /**
      * Returns the "find by factory name" query.
      *
-     * @param bool   $available
+     * @param bool $available
      *
      * @return Query
      */

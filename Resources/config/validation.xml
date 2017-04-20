@@ -25,7 +25,9 @@
         </property>
         <property name="media">
             <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaTypes">
-                <option name="types">image</option>
+                <option name="types">
+                    <value>image</value>
+                </option>
             </constraint>
         </property>
         <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\PaymentMethod"/>
@@ -36,7 +38,9 @@
     <class name="Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod">
         <property name="media">
             <constraint name="Ekyna\Bundle\MediaBundle\Validator\Constraints\MediaTypes">
-                <option name="types">image</option>
+                <option name="types">
+                    <value>image</value>
+                </option>
             </constraint>
         </property>
     </class>

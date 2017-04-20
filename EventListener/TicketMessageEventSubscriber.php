@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Bundle\AdminBundle\Service\Security\UserProviderInterface;
+use Ekyna\Bundle\AdminBundle\Model\UserInterface;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManager;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\TicketMessageEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
+use Ekyna\Component\User\Service\UserProviderInterface;
 
 /**
  * Class TicketMessageEventSubscriber
@@ -17,45 +22,27 @@ use Ekyna\Component\Resource\Event\ResourceEventInterface;
  */
 class TicketMessageEventSubscriber extends BaseSubscriber
 {
-    /**
-     * @var UserProviderInterface
-     */
-    protected $userProvider;
+    protected UserProviderInterface $userProvider;
+    protected SettingManagerInterface $settings;
 
-    /**
-     * @var SettingsManager
-     */
-    protected $settings;
-
-
-    /**
-     * Sets the user provider.
-     *
-     * @param UserProviderInterface $provider
-     */
     public function setUserProvider(UserProviderInterface $provider): void
     {
         $this->userProvider = $provider;
     }
 
-    /**
-     * Sets the settings.
-     *
-     * @param SettingsManager $settings
-     */
-    public function setSettings(SettingsManager $settings): void
+    public function setSettings(SettingManager $settings): void
     {
         $this->settings = $settings;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function onInsert(ResourceEventInterface $event): void
     {
         $message = $this->getMessageFromEvent($event);
 
-        if (null !== $admin = $this->userProvider->getUser()) {
+        /** @var UserInterface $admin */
+        $admin = $this->userProvider->getUser();
+
+        if ($admin) {
             $message->setAdmin($admin);
 
             if ($admin->hasShortName()) {
@@ -73,9 +60,6 @@ class TicketMessageEventSubscriber extends BaseSubscriber
         parent::onInsert($event);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function onUpdate(ResourceEventInterface $event): void
     {
         $message = $this->getMessageFromEvent($event);
@@ -87,8 +71,6 @@ class TicketMessageEventSubscriber extends BaseSubscriber
 
     /**
      * Updates the message (do not notify without customer and user).
-     *
-     * @param TicketMessageInterface $message
      */
     protected function updateMessage(TicketMessageInterface $message): void
     {
@@ -97,7 +79,7 @@ class TicketMessageEventSubscriber extends BaseSubscriber
                 ->setInternal(true)
                 ->setNotify(false);
         } else {
-            /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+            /** @var CustomerInterface $customer */
             if (!$customer = $message->getTicket()->getCustomer()) {
                 $message->setNotify(false);
             } elseif (!$customer->getUser()) {

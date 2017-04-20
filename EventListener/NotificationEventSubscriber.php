@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
@@ -68,6 +69,10 @@ class NotificationEventSubscriber implements EventSubscriberInterface
      */
     public function onKernelTerminate()
     {
+        if (!$this->manager->isOpen()) {
+            return;
+        }
+
         $notifies = $this->queue->flush();
 
         if (empty($notifies)) {
@@ -113,7 +118,7 @@ class NotificationEventSubscriber implements EventSubscriberInterface
             ->setSale($sale)
             ->setType($notify->getType())
             ->setDetails($notify->getReport())
-            ->setSentAt(new \DateTime());
+            ->setSentAt(new DateTime());
 
         if ($source instanceof PaymentInterface) {
             $notification->setData($source->getNumber(), 'payment');

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Customer;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Common\Repository\CouponRepositoryInterface;
 use Ekyna\Component\Commerce\Customer\Repository\LoyaltyLogRepositoryInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class LoyaltyRenderer
@@ -14,33 +16,15 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class LoyaltyRenderer
 {
-    /**
-     * @var LoyaltyLogRepositoryInterface
-     */
-    private $logRepository;
-
-    /**
-     * @var CouponRepositoryInterface
-     */
-    private $couponRepository;
-
-    /**
-     * @var EngineInterface
-     */
-    private $engine;
+    private LoyaltyLogRepositoryInterface $logRepository;
+    private CouponRepositoryInterface $couponRepository;
+    private Environment $engine;
 
 
-    /**
-     * Constructor.
-     *
-     * @param LoyaltyLogRepositoryInterface $logRepository
-     * @param CouponRepositoryInterface     $couponRepository
-     * @param EngineInterface               $engine
-     */
     public function __construct(
         LoyaltyLogRepositoryInterface $logRepository,
         CouponRepositoryInterface $couponRepository,
-        EngineInterface $engine
+        Environment $engine
     ) {
         $this->logRepository = $logRepository;
         $this->couponRepository = $couponRepository;
@@ -49,10 +33,6 @@ class LoyaltyRenderer
 
     /**
      * Renders the customer loyalty logs.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return string
      */
     public function renderLogs(CustomerInterface $customer): string
     {
@@ -63,10 +43,6 @@ class LoyaltyRenderer
 
     /**
      * Renders the customer coupons.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return string
      */
     public function renderCoupons(CustomerInterface $customer): string
     {

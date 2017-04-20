@@ -68,7 +68,7 @@ define(['jquery', 'routing'], function ($, Router) {
         $form.find('input, select, button').prop('disabled', true);
 
         var xhr = $.ajax({
-            url: Router.generate('ekyna_commerce_admin_map_data'),
+            url: Router.generate('admin_ekyna_commerce_map_data'),
             method: 'GET',
             data: data,
             dataType: 'json'
@@ -130,7 +130,7 @@ define(['jquery', 'routing'], function ($, Router) {
         }
 
         var xhr = $.ajax({
-            url: Router.generate('ekyna_commerce_admin_map_info'),
+            url: Router.generate('admin_ekyna_commerce_map_info'),
             method: 'GET',
             data: {customerId: marker.customerId},
             dataType: 'html'

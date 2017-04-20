@@ -1,147 +1,86 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
-use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
+use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
+use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Ekyna\Component\Commerce\Features;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Ekyna\Component\User\Service\UserProviderInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Twig\Environment;
 
 /**
  * Class AbstractController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Cart
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO Split into actions...
  */
 class AbstractController
 {
-    /**
-     * @var Features
-     */
-    protected $features;
+    protected Features $features;
+    protected Environment $twig;
+    protected UrlGeneratorInterface $urlGenerator;
+    protected TranslatorInterface $translator;
+    protected CartHelper $cartHelper;
+    protected UserProviderInterface $userProvider;
+    protected CustomerProviderInterface $customerProvider;
+    protected SaleStepValidatorInterface $stepValidator;
 
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var CartHelper
-     */
-    private $cartHelper;
-
-    /**
-     * @var UserProviderInterface
-     */
-    private $userProvider;
-
-    /**
-     * @var CustomerProviderInterface
-     */
-    private $customerProvider;
-
-    /**
-     * @var SaleStepValidatorInterface
-     */
-    protected $stepValidator;
-
-
-    /**
-     * Sets the features.
-     *
-     * @param Features $features
-     */
-    public function setFeatures(Features $features)
+    public function setFeatures(Features $features): void
     {
         $this->features = $features;
     }
 
-    /**
-     * Sets the templating.
-     *
-     * @param EngineInterface $templating
-     */
-    public function setTemplating(EngineInterface $templating)
+    public function setEnvironment(Environment $twig): void
     {
-        $this->templating = $templating;
+        $this->twig = $twig;
     }
 
-    /**
-     * Sets the url generator.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     */
-    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator): void
     {
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * Sets the translator.
-     *
-     * @param TranslatorInterface $translator
-     */
-    public function setTranslator(TranslatorInterface $translator)
+    public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
-    /**
-     * Sets the cart helper.
-     *
-     * @param CartHelper $cartHelper
-     */
-    public function setCartHelper(CartHelper $cartHelper)
+    public function setCartHelper(CartHelper $cartHelper): void
     {
         $this->cartHelper = $cartHelper;
     }
 
-    /**
-     * Sets the user provider.
-     *
-     * @param UserProviderInterface $userProvider
-     */
-    public function setUserProvider(UserProviderInterface $userProvider)
+    public function setUserProvider(UserProviderInterface $userProvider): void
     {
         $this->userProvider = $userProvider;
     }
 
-    /**
-     * Sets the customer provider.
-     *
-     * @param CustomerProviderInterface $customerProvider
-     */
-    public function setCustomerProvider(CustomerProviderInterface $customerProvider)
+    public function setCustomerProvider(CustomerProviderInterface $customerProvider): void
     {
         $this->customerProvider = $customerProvider;
     }
 
-    /**
-     * Sets the step validator.
-     *
-     * @param SaleStepValidatorInterface $stepValidator
-     */
-    public function setStepValidator(SaleStepValidatorInterface $stepValidator)
+    public function setStepValidator(SaleStepValidatorInterface $stepValidator): void
     {
         $this->stepValidator = $stepValidator;
     }
@@ -149,28 +88,17 @@ class AbstractController
     /**
      * Generates a URL from the given parameters.
      *
-     * @param string $route         The name of the route
-     * @param mixed  $parameters    An array of parameters
-     * @param int    $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
-     *
-     * @return string The generated URL
-     *
      * @see UrlGeneratorInterface::generate()
      */
-    protected function generateUrl($route, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    protected function generateUrl(string $route, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
         return $this->urlGenerator->generate($route, $parameters, $referenceType);
     }
 
     /**
      * Returns a RedirectResponse to the given URL.
-     *
-     * @param string $url    The URL to redirect to
-     * @param int    $status The status code to use for the Response
-     *
-     * @return RedirectResponse
      */
-    protected function redirect($url, $status = 302)
+    protected function redirect(string $url, int $status = 302): RedirectResponse
     {
         return new RedirectResponse($url, $status);
     }
@@ -178,42 +106,31 @@ class AbstractController
     /**
      * Translates the message.
      *
-     * @param string $id
-     * @param array  $parameters
-     * @param null   $domain
-     * @param null   $locale
-     *
-     * @return string
-     *
      * @see TranslatorInterface::trans()
      */
-    protected function translate($id, array $parameters = [], $domain = null, $locale = null)
+    protected function translate(string $id, array $parameters = [], string $domain = null, $locale = null): string
     {
         return $this->translator->trans($id, $parameters, $domain, $locale);
     }
 
     /**
      * Renders the template and returns the response.
-     *
-     * @param string        $view
-     * @param array         $parameters
-     * @param Response|null $response
-     *
-     * @return Response
      */
-    protected function render($view, array $parameters = [], Response $response = null)
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
-        return $this->templating->renderResponse($view, $parameters, $response);
+        $content = $this->twig->render($view, $parameters);
+
+        if (!$response) {
+            $response = new Response();
+        }
+
+        return $response->setContent($content);
     }
 
     /**
      * Builds the cart controls.
-     *
-     * @param SaleInterface|null $cart
-     *
-     * @return array
      */
-    protected function buildCartControls(SaleInterface $cart = null)
+    protected function buildCartControls(SaleInterface $cart = null): array
     {
         $customer = $this->getCustomer();
 
@@ -250,7 +167,7 @@ class AbstractController
                 if ($valid) {
                     $controls['valid'] = 1;
                 } else {
-                    /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+                    /** @var ConstraintViolationInterface $violation */
                     foreach ($this->stepValidator->getViolationList() as $violation) {
                         $controls['errors'][] = $violation->getMessage();
                     }
@@ -263,19 +180,16 @@ class AbstractController
 
     /**
      * Transforms the constraint violation list to session flashes.
-     *
-     * @param ConstraintViolationListInterface $list
-     * @param Request                          $request
      */
-    protected function violationToFlashes(ConstraintViolationListInterface $list, Request $request)
+    protected function violationToFlashes(ConstraintViolationListInterface $list, Request $request): void
     {
-        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        /** @var Session $session */
         $session = $request->getSession();
         $flashes = $session->getFlashBag();
 
         $messages = [];
 
-        /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+        /** @var ConstraintViolationInterface $violation */
         foreach ($list as $violation) {
             $messages[] = $violation->getMessage();
         }
@@ -307,6 +221,8 @@ class AbstractController
      * @param CartInterface $cart
      *
      * @return FormInterface
+     *
+     * @deprecated Use CouponHelper
      */
     protected function createCouponForm(CartInterface $cart): FormInterface
     {
@@ -327,10 +243,8 @@ class AbstractController
 
     /**
      * Returns the cart.
-     *
-     * @return CartInterface|null
      */
-    protected function getCart()
+    protected function getCart(): ?CartInterface
     {
         return $this->cartHelper->getCartProvider()->getCart();
     }
@@ -338,57 +252,49 @@ class AbstractController
     /**
      * Saves the cart.
      */
-    protected function saveCart()
+    protected function saveCart(): void
     {
         $this->cartHelper->getCartProvider()->saveCart();
     }
 
     /**
      * Returns the current (logged in) customer.
-     *
-     * @return \Ekyna\Component\Commerce\Customer\Model\CustomerInterface|null
      */
-    protected function getCustomer()
+    protected function getCustomer(): ?CustomerInterface
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->customerProvider->getCustomer();
     }
 
     /**
      * Returns the current (logged in) user.
-     *
-     * @return \Ekyna\Bundle\UserBundle\Model\UserInterface|null
      */
-    protected function getUser()
+    protected function getUser(): ?UserInterface
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->userProvider->getUser();
     }
 
     /**
      * Returns the cartHelper.
-     *
-     * @return CartHelper
      */
-    protected function getCartHelper()
+    protected function getCartHelper(): CartHelper
     {
         return $this->cartHelper;
     }
 
     /**
      * Returns the sale helper.
-     *
-     * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
      */
-    protected function getSaleHelper()
+    protected function getSaleHelper(): SaleHelper
     {
         return $this->cartHelper->getSaleHelper();
     }
 
     /**
      * Returns the sale factory.
-     *
-     * @return \Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface
      */
-    protected function getSaleFactory()
+    protected function getSaleFactory(): SaleFactoryInterface
     {
         return $this->getSaleHelper()->getSaleFactory();
     }
@@ -396,9 +302,9 @@ class AbstractController
     /**
      * Returns the form factory.
      *
-     * @return \Symfony\Component\Form\FormFactoryInterface
+     * @deprecated
      */
-    protected function getFormFactory()
+    protected function getFormFactory(): FormFactoryInterface
     {
         return $this->getSaleHelper()->getFormFactory();
     }

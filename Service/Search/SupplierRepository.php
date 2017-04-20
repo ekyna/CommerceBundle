@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Search;
 
-use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
+use Ekyna\Component\Resource\Bridge\Symfony\Elastica\SearchRepository;
 use Ekyna\Component\Resource\Search\Request;
 use Ekyna\Component\Resource\Search\Result;
 
@@ -11,7 +13,7 @@ use Ekyna\Component\Resource\Search\Result;
  * @package Ekyna\Bundle\CommerceBundle\Service\Search
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierRepository extends ResourceRepository
+class SupplierRepository extends SearchRepository
 {
     /**
      * @inheritDoc
@@ -24,13 +26,10 @@ class SupplierRepository extends ResourceRepository
 
         return $result
             ->setIcon('fa fa-truck')
-            ->setRoute('ekyna_commerce_supplier_admin_show')
+            ->setRoute('admin_ekyna_commerce_supplier_read') // TODO Use resource/action
             ->setParameters(['supplierId' => $source['id']]);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getDefaultFields(): array
     {
         return [

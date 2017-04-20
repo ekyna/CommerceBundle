@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -23,46 +25,25 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
 {
     use MediaSubjectTrait;
 
-    /**
-     * @var string
-     */
-    protected $gatewayName;
-
-    /**
-     * @var string
-     */
-    protected $factoryName;
-
-    /**
-     * @var array
-     */
-    protected $config;
+    protected ?string $gatewayName = null;
+    protected ?string $factoryName = null;
+    protected array   $config = [];
 
 
     /**
-     * Constructor.
+     * @inheritDoc
      */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->config = [];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getGatewayName()
+    public function getGatewayName(): ?string
     {
         return $this->gatewayName;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return $this|PaymentMethodInterface
      */
-    public function setGatewayName($gatewayName)
+    public function setGatewayName($gatewayName): PaymentMethodInterface
     {
         $this->gatewayName = $gatewayName;
 
@@ -70,29 +51,29 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getFactoryName()
+    public function getFactoryName(): ?string
     {
         return $this->factoryName;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return $this|PaymentMethodInterface
      */
-    public function setFactoryName($factoryName)
+    public function setFactoryName($name): PaymentMethodInterface
     {
-        $this->factoryName = $factoryName;
+        $this->factoryName = $name;
 
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return array_replace($this->config, [
             'factory' => $this->factoryName,
@@ -100,11 +81,11 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return $this|PaymentMethodInterface
      */
-    public function setConfig(array $config)
+    public function setConfig(array $config): PaymentMethodInterface
     {
         $this->config = $config;
 
@@ -120,7 +101,7 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function isCredit(): bool
     {
@@ -128,7 +109,7 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function isOutstanding(): bool
     {

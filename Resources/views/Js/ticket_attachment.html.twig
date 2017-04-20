@@ -1,0 +1,39 @@
+{% if not (attachment.internal and not config.admin) -%}
+    <tr class="attachment" data-id="{{ attachment.id }}">
+        <td>
+            <a href="javascript: void(0)" class="attachment-download">
+                {% if attachment.internal -%}
+                    <i class="fa fa-lock"></i>&nbsp;
+                {%- endif %}
+                {% if attachment.title is not empty -%}
+                    {{ attachment.title }}
+                {%- else -%}
+                    {{ attachment.file }}
+                {%- endif %}
+            </a>
+        </td>
+        <td>
+            <em class="date">
+                {{- attachment.f_created_at }}
+                {% if attachment.updated_at > attachment.created_at %}({{ attachment.f_updated_at }}){% endif -%}
+            </em>
+        </td>
+        <td>
+            <span class="controls">
+                <button type="button" class="btn btn-xs btn-default attachment-download" title="{{ trans.download }}">
+                    <i class="fa fa-download"></i>
+                </button>
+                {% if attachment.edit -%}
+                    <button type="button" class="btn btn-xs btn-warning attachment-edit" title="{{ trans.edit }}">
+                    <i class="fa fa-pencil"></i>
+                </button>
+                {% endif %}
+                {% if attachment.remove -%}
+                    <button type="button" class="btn btn-xs btn-danger attachment-remove" title="{{ trans.remove }}">
+                    <i class="fa fa-trash"></i>
+                </button>
+                {%- endif %}
+            </span>
+        </td>
+    </tr>
+{%- endif %}

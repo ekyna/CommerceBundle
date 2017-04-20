@@ -1,0 +1,71 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+<div class="tab-pane active" id="coupon-general">
+    <div class="row">
+        <div class="col-md-6">
+            {{ show_row(coupon.code, 'text', {
+                'label': t('field.code', [], 'EkynaUi'),
+                'label_col': 4
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {% set usage = 0 < coupon.limit ? (coupon.usage ~ '/' ~ coupon.limit) : coupon.usage %}
+            {{ show_row(usage, 'text', {
+                'label': t('coupon.field.usage', [], 'EkynaCommerce'),
+                'label_col': 4
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ show_row(coupon.mode|adjustment_mode_label, 'text', {
+                'label': t('field.mode', [], 'EkynaUi'),
+                'label_col': 4
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ show_row(coupon.amount, 'number', {
+                'label': t('field.value', [], 'EkynaUi'),
+                'label_col': 4
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ show_row(coupon.startAt, 'datetime', {
+                'label': t('field.from_date', [], 'EkynaUi'),
+                'time': false,
+                'label_col': 4
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ show_row(coupon.endAt, 'datetime', {
+                'label': t('field.to_date', [], 'EkynaUi'),
+                'time': false,
+                'label_col': 4
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ show_row(coupon.minGross|format_currency(commerce_default_currency), 'text', {
+                'label': t('coupon.field.min_gross', [], 'EkynaCommerce'),
+                'label_col': 4
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ show_row(coupon.cumulative, 'boolean', {
+                'label': t('coupon.field.cumulative', [], 'EkynaCommerce'),
+                'label_col': 4,
+                'color': true,
+                'true_class': 'label label-warning',
+                'false_class': 'label label-success'
+            }) }}
+        </div>
+    </div>
+    {{ show_row(coupon.designation, 'text', {
+        'label': t('field.designation', [], 'EkynaUi')
+    }) }}
+</div>
+{%- endblock main_contents %}

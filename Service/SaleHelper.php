@@ -103,6 +103,7 @@ class SaleHelper
      * Returns the form factory.
      *
      * @return FormFactoryInterface
+     * @deprecated
      */
     public function getFormFactory()
     {
@@ -128,6 +129,7 @@ class SaleHelper
      * @param array               $options
      *
      * @return \Ekyna\Component\Commerce\Common\View\SaleView
+     * @deprecated Use SaleViewHelper
      */
     public function buildView(Model\SaleInterface $sale, array $options = [])
     {
@@ -141,6 +143,7 @@ class SaleHelper
      * @param array               $options
      *
      * @return FormInterface
+     * @deprecated Use SaleViewHelper
      */
     public function createQuantitiesForm(Model\SaleInterface $sale, array $options = [])
     {

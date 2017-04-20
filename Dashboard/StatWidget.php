@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
+use DateTime;
+use Doctrine\Persistence\ManagerRegistry;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
+use Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface;
 use OzdemirBurak\Iris\Color\Hex;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
 
@@ -18,37 +22,23 @@ use Twig\Environment;
  */
 class StatWidget extends AbstractWidgetType
 {
-    /**
-     * @var RegistryInterface
-     */
-    protected $registry;
+    public const NAME = 'commerce_stat';
 
-    /**
-     * @var \Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface
-     */
-    protected $orderStatRepository;
+    protected ManagerRegistry               $registry;
+    protected ?OrderStatRepositoryInterface $orderStatRepository = null;
 
-
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface $registry
-     */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function render(WidgetInterface $widget, Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig): string
     {
         $repository = $this->getOrderStatRepository();
 
         // TODO Cache
 
-        $currentDate = new \DateTime();
+        $currentDate = new DateTime();
         $compareDate = (clone $currentDate)->modify('-1 year');
 
         $currentDay = $repository->findOneByDay($currentDate);
@@ -64,6 +54,7 @@ class StatWidget extends AbstractWidgetType
         $aggregateYear = $repository->findSumByYear($compareDate);
         $yearlyChart = $this->buildYearlyChart();
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_stat.html.twig', [
             'current_day'    => $currentDay,
             'compare_day'    => $compareDay,
@@ -78,10 +69,7 @@ class StatWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -92,20 +80,7 @@ class StatWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        return 'commerce_stat';
-    }
-
-    /**
-     * Returns the order repository.
-     *
-     * @return \Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface
-     */
-    protected function getOrderStatRepository()
+    protected function getOrderStatRepository(): OrderStatRepositoryInterface
     {
         if (null !== $this->orderStatRepository) {
             return $this->orderStatRepository;
@@ -116,12 +91,8 @@ class StatWidget extends AbstractWidgetType
 
     /**
      * Builds the daily revenues chart config.
-     *
-     * @param \DateTime $currentDate
-     *
-     * @return array
      */
-    private function buildDailyChart(\DateTime $currentDate)
+    private function buildDailyChart(DateTime $currentDate): array
     {
         $repository = $this->getOrderStatRepository();
 
@@ -131,7 +102,7 @@ class StatWidget extends AbstractWidgetType
         $compareRevenues = $repository->findDayRevenuesByMonth($compareDate);
 
         $labels = array_map(function ($d) {
-            return (new \DateTime($d))->format('j');
+            return (new DateTime($d))->format('j');
         }, array_keys($currentRevenues));
 
         return [
@@ -177,12 +148,8 @@ class StatWidget extends AbstractWidgetType
 
     /**
      * Builds the monthly revenues chart config.
-     *
-     * @param \DateTime $currentDate
-     *
-     * @return array
      */
-    private function buildMonthlyChart(\DateTime $currentDate)
+    private function buildMonthlyChart(DateTime $currentDate): array
     {
         $repository = $this->getOrderStatRepository();
 
@@ -192,7 +159,7 @@ class StatWidget extends AbstractWidgetType
         $compareRevenues = $repository->findMonthRevenuesByYear($compareDate, true);
 
         $labels = array_map(function ($d) {
-            return (new \DateTime($d))->format('M');
+            return (new DateTime($d))->format('M');
         }, array_keys($currentRevenues));
 
         $datasets = [];
@@ -253,10 +220,8 @@ class StatWidget extends AbstractWidgetType
 
     /**
      * Builds the yearly revenues chart config.
-     *
-     * @return array
      */
-    private function buildYearlyChart()
+    private function buildYearlyChart(): array
     {
         $repository = $this->getOrderStatRepository();
 
@@ -300,5 +265,10 @@ class StatWidget extends AbstractWidgetType
                 ],
             ],
         ];
+    }
+
+    public static function getName(): string
+    {
+        return self::NAME;
     }
 }

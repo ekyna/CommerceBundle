@@ -15,7 +15,7 @@ use Ekyna\Component\Resource\Event\ResourceMessage;
 class OrderAdjustmentEventSubscriber extends BaseSubscriber
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function onPreUpdate(ResourceEventInterface $event)
     {
@@ -27,7 +27,7 @@ class OrderAdjustmentEventSubscriber extends BaseSubscriber
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function onPreDelete(ResourceEventInterface $event)
     {

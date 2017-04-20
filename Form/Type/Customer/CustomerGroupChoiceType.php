@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_replace;
 
 /**
  * Class CustomerGroupChoiceType
@@ -17,26 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CustomerGroupChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $customerGroupClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $customerGroupClass
-     */
-    public function __construct(string $customerGroupClass)
-    {
-        $this->customerGroupClass = $customerGroupClass;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         if (!$view->vars['expanded']) {
             return;
@@ -50,20 +34,10 @@ class CustomerGroupChoiceType extends AbstractType
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'             => function (Options $options, $value) {
-                if (false === $value || !empty($value)) {
-                    return $value;
-                }
-
-                return 'ekyna_commerce.customer_group.label.' . ($options['multiple'] ? 'plural' : 'singular');
-            },
-            'class'             => $this->customerGroupClass,
+            'resource'          => 'ekyna_commerce.customer_group',
             'preferred_choices' => function (CustomerGroupInterface $customerGroup) {
                 return $customerGroup->isDefault();
             },
@@ -79,19 +53,13 @@ class CustomerGroupChoiceType extends AbstractType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_customer_group';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return ResourceType::class;
+        return ResourceChoiceType::class;
     }
 }

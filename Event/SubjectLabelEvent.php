@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Event;
 
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class SubjectLabelEvent
@@ -12,17 +14,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class SubjectLabelEvent extends Event
 {
-    const BUILD = 'ekyna_commerce.subject.label.build';
+    public const BUILD = 'ekyna_commerce.subject.label.build';
 
     /**
      * @var SubjectLabel[]
      */
-    private $labels;
+    private array $labels;
 
 
     /**
-     * Constructor.
-     *
      * @param SubjectLabel[] $labels
      */
     public function __construct(array $labels = [])
@@ -34,22 +34,15 @@ class SubjectLabelEvent extends Event
         }
     }
 
-    /**
-     * Adds the subject label.
-     *
-     * @param SubjectLabel $label
-     */
-    public function addLabel(SubjectLabel $label)
+    public function addLabel(SubjectLabel $label): void
     {
         $this->labels[] = $label;
     }
 
     /**
-     * Returns the subject labels.
-     *
      * @return SubjectLabel[]
      */
-    public function getLabels()
+    public function getLabels(): array
     {
         return $this->labels;
     }

@@ -2,11 +2,11 @@
 
 {% block account %}
 {% apply spaceless %}
-    <h3>{{ 'ekyna_commerce.account.loyalty.title'|trans|raw }} : {{ customer.loyaltyPoints }} pts</h3>
+    <h3>{{ 'account.loyalty.title'|trans({}, 'EkynaCommerce')|raw }} : {{ customer.loyaltyPoints }} pts</h3>
     <hr>
-    <h4>{{ 'ekyna_commerce.customer.field.loyalty_logs'|trans }}</h4>
+    <h4>{{ 'customer.field.loyalty_logs'|trans({}, 'EkynaCommerce') }}</h4>
     {{ customer_loyalty_logs(customer) }}
-    <h4>{{ 'ekyna_commerce.coupon.label.plural'|trans }}</h4>
+    <h4>{{ 'coupon.label.plural'|trans({}, 'EkynaCommerce') }}</h4>
     {{ customer_coupons(customer) }}
 {% endapply %}
 {% endblock account %}

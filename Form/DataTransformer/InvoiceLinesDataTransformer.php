@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,10 +19,7 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 class InvoiceLinesDataTransformer implements DataTransformerInterface
 {
-    /**
-     * @var InvoiceInterface
-     */
-    private $invoice;
+    private InvoiceInterface $invoice;
 
 
     /**
@@ -36,11 +35,11 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
     /**
      * Transforms the flat invoice lines collection into a tree invoice lines collection.
      *
-     * @param Collection|InvoiceLineInterface[] $flat
+     * @param Collection|InvoiceLineInterface[] $value
      *
      * @return Collection
      */
-    public function transform($flat)
+    public function transform($value)
     {
         $sale = $this->invoice->getSale();
 
@@ -48,7 +47,7 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
 
         // Move goods lines from flat to tree for each sale items
         foreach ($sale->getItems() as $saleItem) {
-            $this->buildTreeInvoiceLine($saleItem, $flat, $tree);
+            $this->buildTreeInvoiceLine($saleItem, $value, $tree);
         }
         // Move discount lines at the end of the tree
         foreach ($this->invoice->getLinesByType(DocumentLineTypes::TYPE_DISCOUNT) as $line) {
@@ -65,15 +64,15 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
     /**
      * Transforms the tree invoice lines collection into a flat invoice lines collection.
      *
-     * @param Collection|InvoiceLineInterface[] $tree
+     * @param Collection|InvoiceLineInterface[] $value
      *
      * @return Collection
      */
-    public function reverseTransform($tree)
+    public function reverseTransform($value)
     {
         $flat = new ArrayCollection();
 
-        foreach ($tree as $item) {
+        foreach ($value as $item) {
             $this->flattenInvoiceLine($item, $flat);
         }
 
@@ -87,7 +86,7 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
      * @param Collection        $flat
      * @param Collection        $parent
      */
-    private function buildTreeInvoiceLine(SaleItemInterface $saleItem, Collection $flat, Collection $parent)
+    private function buildTreeInvoiceLine(SaleItemInterface $saleItem, Collection $flat, Collection $parent): void
     {
         $invoiceLine = null;
 
@@ -120,7 +119,7 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
      * @param InvoiceLineInterface $line
      * @param ArrayCollection      $flat
      */
-    private function flattenInvoiceLine(InvoiceLineInterface $line, ArrayCollection $flat)
+    private function flattenInvoiceLine(InvoiceLineInterface $line, ArrayCollection $flat): void
     {
         if (0 < $line->getQuantity()) {
             $flat->add($line);

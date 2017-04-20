@@ -1,56 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\PriceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
-use Ekyna\Bundle\CoreBundle\Form\Type\CollectionPositionType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\UiBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class InvoiceItemType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Invoice
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class InvoiceItemType extends ResourceFormType
+class InvoiceItemType extends AbstractResourceType
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var InvoiceInterface $invoice */
         $invoice = $options['invoice'];
 
         $builder
             ->add('designation', Type\TextType::class, [
-                'label'          => 'ekyna_core.field.designation',
+                'label'          => t('field.designation', [], 'EkynaUi'),
                 'attr'           => [
-                    'placeholder' => 'ekyna_core.field.designation',
+                    'placeholder' => t('field.designation', [], 'EkynaUi'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('reference', Type\TextType::class, [
-                'label'          => 'ekyna_core.field.reference',
+                'label'          => t('field.reference', [], 'EkynaUi'),
                 'attr'           => [
-                    'placeholder' => 'ekyna_core.field.reference',
+                    'placeholder' => t('field.reference', [], 'EkynaUi'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('unit', PriceType::class, [
-                'label'          => 'ekyna_commerce.sale.field.net_unit',
+                'label'          => t('sale.field.net_unit', [], 'EkynaCommerce'),
                 'currency'       => $invoice->getCurrency(),
                 'attr'           => [
-                    'placeholder' => 'ekyna_commerce.sale.field.net_unit',
+                    'placeholder' => t('sale.field.net_unit', [], 'EkynaCommerce'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('quantity', Type\NumberType::class, [
-                'label'          => 'ekyna_core.field.quantity',
+                'label'          => t('field.quantity', [], 'EkynaUi'),
+                'scale'          => 3, // TODO Packaging format
+                'decimal'        => true,
                 'disabled'       => $options['disabled'],
                 'attr'           => [
                     'class' => 'input-sm',
@@ -59,17 +62,14 @@ class InvoiceItemType extends ResourceFormType
             ])
             ->add('taxGroup', TaxGroupChoiceType::class, [
                 'attr'           => [
-                    'placeholder' => 'ekyna_commerce.field.tax_group',
+                    'placeholder' => t('field.tax_group', [], 'EkynaCommerce'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('position', CollectionPositionType::class);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -78,10 +78,7 @@ class InvoiceItemType extends ResourceFormType
             ->setAllowedTypes('invoice', InvoiceInterface::class);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_invoice_item';
     }

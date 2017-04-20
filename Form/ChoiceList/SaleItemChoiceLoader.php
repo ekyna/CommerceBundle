@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\ChoiceList;
 
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
+use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 /**
@@ -14,25 +17,11 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
  */
 class SaleItemChoiceLoader implements ChoiceLoaderInterface
 {
-    /**
-     * @var SaleInterface
-     */
-    private $sale;
+    private SaleInterface $sale;
+    private ?int $depth;
+    private bool $public;
 
-    /**
-     * @var int
-     */
-    private $depth;
-
-    /**
-     * @var bool
-     */
-    private $public;
-
-    /**
-     * @var ArrayChoiceList
-     */
-    private $choiceList;
+    private ?ArrayChoiceList $choiceList = null;
 
 
     /**
@@ -40,7 +29,7 @@ class SaleItemChoiceLoader implements ChoiceLoaderInterface
      *
      * @param SaleInterface $sale
      * @param bool          $public
-     * @param int           $depth
+     * @param int|null      $depth
      */
     public function __construct(SaleInterface $sale, bool $public = true, int $depth = null)
     {
@@ -52,7 +41,7 @@ class SaleItemChoiceLoader implements ChoiceLoaderInterface
     /**
      * @inheritDoc
      */
-    public function loadChoiceList($value = null)
+    public function loadChoiceList(callable $value = null): ChoiceListInterface
     {
         if ($this->choiceList) {
             return $this->choiceList;
@@ -66,7 +55,7 @@ class SaleItemChoiceLoader implements ChoiceLoaderInterface
     /**
      * @inheritDoc
      */
-    public function loadChoicesForValues(array $values, $value = null)
+    public function loadChoicesForValues(array $values, callable $value = null): array
     {
         return $this->loadChoiceList($value)->getChoicesForValues($values);
     }
@@ -74,7 +63,7 @@ class SaleItemChoiceLoader implements ChoiceLoaderInterface
     /**
      * @inheritDoc
      */
-    public function loadValuesForChoices(array $choices, $value = null)
+    public function loadValuesForChoices(array $choices, callable $value = null): array
     {
         return $this->loadChoiceList($value)->getValuesForChoices($choices);
     }
@@ -84,7 +73,7 @@ class SaleItemChoiceLoader implements ChoiceLoaderInterface
      *
      * @return array
      */
-    public function loadItems()
+    public function loadItems(): array
     {
         $items = [];
 
@@ -104,7 +93,7 @@ class SaleItemChoiceLoader implements ChoiceLoaderInterface
      * @param SaleItemInterface $item
      * @param int               $depth
      */
-    private function loadChildren(array &$list, SaleItemInterface $item, int $depth)
+    private function loadChildren(array &$list, SaleItemInterface $item, int $depth): void
     {
         foreach ($item->getChildren() as $child) {
             if ($this->public && $child->isPrivate()) {

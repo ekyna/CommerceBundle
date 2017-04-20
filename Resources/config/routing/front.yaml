@@ -1,0 +1,35 @@
+ekyna_commerce_payment:
+    resource: "front/payment.yaml"
+    prefix:   /{_locale}/payment
+    defaults: { _locale: "%kernel.default_locale%" }
+
+ekyna_commerce_cart:
+    resource: "front/cart.yaml"
+    prefix:   /{_locale}/cart
+    defaults: { _locale: "%kernel.default_locale%" }
+
+ekyna_commerce_widget:
+    resource: "front/widget.yaml"
+    prefix:   /{_locale}/widget
+    defaults: { _locale: "%kernel.default_locale%" }
+
+ekyna_commerce_subject:
+    resource: "front/subject.yaml"
+    prefix:   /{_locale}/subject
+    defaults: { _locale: "%kernel.default_locale%" }
+
+ekyna_commerce_cart_checkout:
+    resource: "front/cart-checkout.yaml"
+    prefix:
+        en: /my-cart
+        fr: /mon-panier
+        es: /mi-cesta
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account:
+    resource: "front/account.yaml"
+    prefix:
+        en: /my-account
+        fr: /mon-compte
+        es: /mi-cuenta

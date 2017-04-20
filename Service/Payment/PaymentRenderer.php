@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 
 use DateTime;
-use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
+use Decimal\Decimal;
+use Ekyna\Bundle\CommerceBundle\Action\Admin\Payment as Action;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions as BTransitions;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -16,45 +20,20 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Ekyna\Component\Commerce\Payment\Model\PaymentSubjectInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
-use Symfony\Component\Translation\TranslatorInterface;
-use Twig\Extension\RuntimeExtensionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PaymentRenderer
  * @package Ekyna\Bundle\CommerceBundle\Service\Payment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentRenderer implements RuntimeExtensionInterface
+class PaymentRenderer
 {
-    /**
-     * @var PaymentCalculatorInterface
-     */
-    private $paymentCalculator;
+    private PaymentCalculatorInterface $paymentCalculator;
+    private PaymentHelper              $paymentHelper;
+    private ResourceHelper             $resourceHelper;
+    private TranslatorInterface        $translator;
 
-    /**
-     * @var PaymentHelper
-     */
-    private $paymentHelper;
-
-    /**
-     * @var ResourceHelper
-     */
-    private $resourceHelper;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-
-    /**
-     * Constructor.
-     *
-     * @param PaymentCalculatorInterface $paymentCalculator
-     * @param PaymentHelper              $paymentHelper
-     * @param ResourceHelper             $resourceHelper
-     * @param TranslatorInterface        $translator
-     */
     public function __construct(
         PaymentCalculatorInterface $paymentCalculator,
         PaymentHelper $paymentHelper,
@@ -62,30 +41,21 @@ class PaymentRenderer implements RuntimeExtensionInterface
         TranslatorInterface $translator
     ) {
         $this->paymentCalculator = $paymentCalculator;
-        $this->paymentHelper     = $paymentHelper;
-        $this->resourceHelper    = $resourceHelper;
-        $this->translator        = $translator;
+        $this->paymentHelper = $paymentHelper;
+        $this->resourceHelper = $resourceHelper;
+        $this->translator = $translator;
     }
 
     /**
      * Calculates the subject's expected payment amount.
-     *
-     * @param PaymentSubjectInterface $subject
-     * @param string|null             $currency
-     *
-     * @return float
      */
-    public function getExpectedPaymentAmount(PaymentSubjectInterface $subject, string $currency = null): float
+    public function getExpectedPaymentAmount(PaymentSubjectInterface $subject, string $currency = null): Decimal
     {
         return $this->paymentCalculator->calculateExpectedPaymentAmount($subject, $currency);
     }
 
     /**
      * Renders the available payment account actions.
-     *
-     * @param PaymentInterface $payment
-     *
-     * @return string
      */
     public function renderPaymentAccountActions(PaymentInterface $payment): string
     {
@@ -93,7 +63,7 @@ class PaymentRenderer implements RuntimeExtensionInterface
             return '';
         }
 
-        $transitions = $this->paymentHelper->getTransitions($payment, false);
+        $transitions = $this->paymentHelper->getTransitions($payment);
 
         if (empty($transitions)) {
             return '';
@@ -104,11 +74,11 @@ class PaymentRenderer implements RuntimeExtensionInterface
         } elseif ($payment instanceof QuotePaymentInterface) {
             $routePrefix = 'ekyna_commerce_account_quote_payment_';
         } else {
-            throw new InvalidArgumentException("Unexpected payment.");
+            throw new InvalidArgumentException('Unexpected payment.');
         }
 
         $buttons = [];
-        $sale    = $payment->getSale();
+        $sale = $payment->getSale();
 
         foreach ($transitions as $transition) {
             $url = $this->resourceHelper->getUrlGenerator()->generate($routePrefix . $transition, [
@@ -118,7 +88,7 @@ class PaymentRenderer implements RuntimeExtensionInterface
 
             $buttons[$transition] = [
                 'href'    => $url,
-                'confirm' => $this->translator->trans(BTransitions::getConfirm($transition)),
+                'confirm' => $this->translator->trans(BTransitions::getConfirm($transition), [], 'EkynaCommerce'),
             ];
         }
 
@@ -127,10 +97,6 @@ class PaymentRenderer implements RuntimeExtensionInterface
 
     /**
      * Renders the available payment admin actions.
-     *
-     * @param PaymentInterface $payment
-     *
-     * @return string
      */
     public function renderPaymentAdminActions(PaymentInterface $payment): string
     {
@@ -139,13 +105,13 @@ class PaymentRenderer implements RuntimeExtensionInterface
         $buttons = [];
 
         foreach ($transitions as $transition) {
-            $url = $this->resourceHelper->generateResourcePath($payment, 'action', [
+            $url = $this->resourceHelper->generateResourcePath($payment, Action\ActionAction::class, [
                 'action' => $transition,
             ]);
 
             $buttons[$transition] = [
                 'href'    => $url,
-                'confirm' => $this->translator->trans(BTransitions::getConfirm($transition)),
+                'confirm' => $this->translator->trans(BTransitions::getConfirm($transition), [], 'EkynaCommerce'),
             ];
         }
 
@@ -155,14 +121,14 @@ class PaymentRenderer implements RuntimeExtensionInterface
             $buttons['edit'] = [
                 'label' => '<span class="fa fa-pencil"></span>',
                 'theme' => 'warning',
-                'href'  => $this->resourceHelper->generateResourcePath($payment, 'edit'),
+                'href'  => $this->resourceHelper->generateResourcePath($payment, Action\UpdateAction::class),
             ];
         }
         if (PaymentStates::isDeletableState($payment->getState())) {
             $buttons['remove'] = [
                 'label' => '<span class="fa fa-remove"></span>',
                 'theme' => 'danger',
-                'href'  => $this->resourceHelper->generateResourcePath($payment, 'remove'),
+                'href'  => $this->resourceHelper->generateResourcePath($payment, Action\DeleteAction::class),
             ];
         }
 
@@ -171,10 +137,6 @@ class PaymentRenderer implements RuntimeExtensionInterface
 
     /**
      * Returns whether the payment can be canceled by the user.
-     *
-     * @param PaymentInterface $payment
-     *
-     * @return bool
      */
     public function isUserCancellable(PaymentInterface $payment): bool
     {
@@ -183,10 +145,6 @@ class PaymentRenderer implements RuntimeExtensionInterface
 
     /**
      * Renders the payment method config.
-     *
-     * @param PaymentMethodInterface $method
-     *
-     * @return string
      */
     public function renderMethodConfig(PaymentMethodInterface $method): string
     {
@@ -207,10 +165,6 @@ class PaymentRenderer implements RuntimeExtensionInterface
 
     /**
      * Renders the payment method notice.
-     *
-     * @param object $subject
-     *
-     * @return string|null
      */
     public function renderPaymentMethodNotice(object $subject): ?string
     {
@@ -240,14 +194,10 @@ class PaymentRenderer implements RuntimeExtensionInterface
 
     /**
      * Renders the payment state message.
-     *
-     * @param PaymentInterface $payment
-     *
-     * @return null|string
      */
     public function renderPaymentStateMessage(PaymentInterface $payment): ?string
     {
-        $state  = $payment->getState();
+        $state = $payment->getState();
         $method = $payment->getMethod();
 
         foreach ($method->getMessages() as $message) {
@@ -261,10 +211,6 @@ class PaymentRenderer implements RuntimeExtensionInterface
 
     /**
      * Renders the buttons.
-     *
-     * @param array $buttons
-     *
-     * @return string
      */
     private function renderButtons(array $buttons): string
     {
@@ -276,7 +222,7 @@ class PaymentRenderer implements RuntimeExtensionInterface
             }
 
             if (!isset($config['label'])) {
-                $config['label'] = $this->translator->trans(BTransitions::getLabel($transition));
+                $config['label'] = BTransitions::getLabel($transition)->trans($this->translator);
             }
 
             if (!isset($config['theme'])) {
@@ -288,6 +234,7 @@ class PaymentRenderer implements RuntimeExtensionInterface
                 $confirm = ' onclick="javascript: return confirm(\'' . $config['confirm'] . '\')"';
             }
 
+            /** @noinspection HtmlUnknownTarget */
             /** @noinspection HtmlUnknownAttribute */
             $output .= sprintf(
                 '<a href="%s" class="btn btn-xs btn-%s" %s>%s</a>',

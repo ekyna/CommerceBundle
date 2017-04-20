@@ -1,11 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\ChoiceList;
 
+use Collator;
 use Ekyna\Component\Commerce\Common\Repository\CurrencyRepositoryInterface;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
+use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Currencies;
+
+use function array_filter;
+use function array_flip;
+use function mb_convert_case;
+
+use const MB_CASE_TITLE;
 
 /**
  * Class CurrencyChoiceLoader
@@ -14,25 +24,11 @@ use Symfony\Component\Intl\Intl;
  */
 class CurrencyChoiceLoader implements ChoiceLoaderInterface
 {
-    /**
-     * @var CurrencyRepositoryInterface
-     */
-    private $repository;
+    private CurrencyRepositoryInterface $repository;
+    private bool                        $enabled;
+    private string                      $locale;
 
-    /**
-     * @var bool
-     */
-    private $enabled;
-
-    /**
-     * @var string
-     */
-    private $locale;
-
-    /**
-     * @var ArrayChoiceList
-     */
-    private $choiceList;
+    private ?ArrayChoiceList $choiceLists = null;
 
 
     /**
@@ -52,7 +48,7 @@ class CurrencyChoiceLoader implements ChoiceLoaderInterface
     /**
      * @inheritDoc
      */
-    public function loadChoicesForValues(array $values, $value = null)
+    public function loadChoicesForValues(array $values, callable $value = null): array
     {
         // Optimize
         $values = array_filter($values);
@@ -66,13 +62,11 @@ class CurrencyChoiceLoader implements ChoiceLoaderInterface
     /**
      * @inheritDoc
      */
-    public function loadChoiceList($value = null)
+    public function loadChoiceList(callable $value = null): ChoiceListInterface
     {
-        if (null !== $this->choiceList) {
-            return $this->choiceList;
+        if (null !== $this->choiceLists) {
+            return $this->choiceLists;
         }
-
-        $bundle = Intl::getCurrencyBundle();
 
         $codes = $this->enabled
             ? $this->repository->findEnabledCodes()
@@ -80,19 +74,19 @@ class CurrencyChoiceLoader implements ChoiceLoaderInterface
 
         $currencies = [];
         foreach ($codes as $code) {
-            $currencies[$code] = mb_convert_case($bundle->getCurrencyName($code, $this->locale), MB_CASE_TITLE);
+            $currencies[$code] = mb_convert_case(Currencies::getName($code, $this->locale), MB_CASE_TITLE);
         }
 
-        $collator = new \Collator($this->locale);
+        $collator = new Collator($this->locale);
         $collator->asort($currencies);
 
-        return $this->choiceList = new ArrayChoiceList(array_flip($currencies), $value);
+        return $this->choiceLists = new ArrayChoiceList(array_flip($currencies), $value);
     }
 
     /**
      * @inheritDoc
      */
-    public function loadValuesForChoices(array $choices, $value = null)
+    public function loadValuesForChoices(array $choices, callable $value = null): array
     {
         // Optimize
         $choices = array_filter($choices);

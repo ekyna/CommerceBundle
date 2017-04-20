@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Column\EntityType;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class InChargeType
@@ -13,24 +17,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class InChargeType extends AbstractColumnType
 {
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'                => 'ekyna_commerce.customer.field.in_charge',
-            'entity_label'         => 'shortName',
-            'route_name'           => 'ekyna_admin_user_admin_show',
-            'route_parameters_map' => ['userId' => 'id'],
-            'sortable'             => false,
+            'label'        => t('customer.field.in_charge', [], 'EkynaCommerce'),
+            'entity_label' => 'shortName',
+            'sortable'     => false,
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return EntityType::class;
     }

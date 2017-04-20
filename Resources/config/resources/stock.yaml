@@ -1,0 +1,52 @@
+resources:
+    ekyna_commerce:
+        warehouse:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Stock\Model\WarehouseInterface
+                class: Ekyna\Component\Commerce\Stock\Entity\Warehouse
+            repository:
+                interface: Ekyna\Component\Commerce\Stock\Repository\WarehouseRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\WarehouseRepository
+#            manager:
+#                interface: ~
+#                class: ~
+#            factory:
+#                interface: ~
+#                class: ~
+#            normalizer: ~
+#            search:
+#                class: ~
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\WarehouseType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/Warehouse/_form.html.twig'
+                    create: '@EkynaCommerce/Admin/Warehouse/create.html.twig'
+                    read: '@EkynaCommerce/Admin/Warehouse/read.html.twig'
+                    update: '@EkynaCommerce/Admin/Warehouse/update.html.twig'
+
+        stock_adjustment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface
+                class: Ekyna\Component\Commerce\Stock\Entity\StockAdjustment
+            repository:
+                interface: Ekyna\Component\Commerce\Stock\Repository\StockAdjustmentRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\StockAdjustmentRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Stock\StockAdjustmentType
+            normalizer: Ekyna\Bundle\CommerceBundle\Service\Serializer\StockAdjustmentNormalizer
+            trans_domain: EkynaCommerce
+            # TODO actions:
+
+        resupply_alert:
+            driver: doctrine/orm
+            entity:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Stock\Entity\ResupplyAlert
+            repository:
+                interface: Ekyna\Component\Commerce\Stock\Repository\ResupplyAlertRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ResupplyAlertRepository
+            trans_domain: EkynaCommerce
+            # TODO actions:

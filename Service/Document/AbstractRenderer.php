@@ -4,12 +4,13 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
-use Ekyna\Component\Commerce\Exception\PdfException;
+use Ekyna\Component\Resource\Exception\PdfException;
+use Ekyna\Component\Resource\Helper\PdfGenerator;
 use Ekyna\Component\Resource\Model\TimestampableInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class AbstractRenderer
@@ -19,9 +20,9 @@ use Symfony\Component\Templating\EngineInterface;
 abstract class AbstractRenderer implements RendererInterface
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    protected $templating;
+    protected $twig;
 
     /**
      * @var PdfGenerator
@@ -74,11 +75,11 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * Sets the templating engine.
      *
-     * @param EngineInterface $templating
+     * @param Environment $twig
      */
-    public function setTemplating(EngineInterface $templating)
+    public function setTwig(Environment $twig)
     {
-        $this->templating = $templating;
+        $this->twig = $twig;
     }
 
     /**
@@ -102,7 +103,7 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function create($format = RendererInterface::FORMAT_PDF)
     {
@@ -126,7 +127,7 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function render($format = RendererInterface::FORMAT_HTML)
     {
@@ -155,7 +156,7 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function respond(Request $request)
     {
@@ -218,7 +219,7 @@ abstract class AbstractRenderer implements RendererInterface
      */
     protected function getContent(string $format): string
     {
-        return $this->templating->render('@EkynaCommerce/Document/render.html.twig', array_replace([
+        return $this->twig->render('@EkynaCommerce/Document/render.html.twig', array_replace([
             'debug'    => $this->config['debug'],
             'format'   => $format,
             'subjects' => $this->subjects,
@@ -253,7 +254,7 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     abstract function getFilename();
 

@@ -5,7 +5,7 @@
     "authors": [
         {
             "name": "Etienne Dauvergne",
-            "homepage": "http://ekyna.com"
+            "homepage": "https://ekyna.com"
         }
     ],
     "keywords": [
@@ -16,35 +16,21 @@
     "homepage": "https://github.com/ekyna/CommerceBundle",
     "license": "MIT",
     "require": {
-        "php": ">=7.0",
-        "ekyna/user-bundle": "0.7.x-dev",
-        "ekyna/cms-bundle": "0.7.x-dev",
-        "ekyna/commerce": "0.7.x-dev",
-        "payum/core": "^1.5.0",
-        "payum/payum-bundle": "^2.3.0",
-        "php-http/guzzle6-adapter": "^1.1",
-        "symfony/psr-http-message-bridge": "~1.0",
-        "zendframework/zend-diactoros": "~1.6",
-        "behat/transliterator": "~1.2",
-        "florianv/swap-bundle": "~3.0",
-        "tecnickcom/tc-lib-barcode": "~1.0"
+        "php": ">=7.4",
+        "ekyna/user-bundle": "0.8.x-dev",
+        "ekyna/cms-bundle": "0.8.x-dev",
+        "ekyna/commerce": "0.8.x-dev",
+        "payum/payum-bundle": "^2.4",
+        "php-http/guzzle6-adapter": "^2.0",
+        "symfony/psr-http-message-bridge": "^2.0",
+        "laminas/laminas-diactoros": "^2.5",
+        "behat/transliterator": "^1.3",
+        "florianv/swap-bundle": "^5.2",
+        "tecnickcom/tc-lib-barcode": "^1.17"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/ekyna/JMSI18nRoutingBundle.git"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/ekyna/bootstrap-bundle.git"
-        }
-    ],
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Ekyna\\Bundle\\CommerceBundle\\Behat\\Context\\": "Behat/Context/",
-            "Ekyna\\Bundle\\CommerceBundle\\": "",
-            "Acme\\ProductBundle\\": "Behat/app/Acme/ProductBundle/"
+            "Ekyna\\Bundle\\CommerceBundle\\": ""
         }
     }
 }

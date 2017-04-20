@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
-use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\CommerceBundle\Model\OrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockAssignmentNormalizer as BaseNormalizer;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
+use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 
 /**
  * Class StockAssignmentNormalizer
@@ -15,24 +19,9 @@ use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
  */
 class StockAssignmentNormalizer extends BaseNormalizer
 {
-    /**
-     * @var ConstantsHelper
-     */
-    protected $constantHelper;
+    protected ConstantsHelper $constantHelper;
+    protected ResourceHelper $resourceHelper;
 
-    /**
-     * @var ResourceHelper
-     */
-    protected $resourceHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param FormatterFactory $formatterFactory
-     * @param ConstantsHelper  $constantHelper
-     * @param ResourceHelper   $resourceHelper
-     */
     public function __construct(
         FormatterFactory $formatterFactory,
         ConstantsHelper $constantHelper,
@@ -46,23 +35,23 @@ class StockAssignmentNormalizer extends BaseNormalizer
     /**
      * @inheritDoc
      *
-     * @param \Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface $assignment
+     * @param StockAssignmentInterface $object
      */
-    public function normalize($assignment, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): array
     {
-        $data = parent::normalize($assignment, $format, $context);
+        $data = parent::normalize($object, $format, $context);
 
         $actions = [];
 
         if ($this->contextHasGroup('StockView', $context)) {
-            $order = $assignment->getSaleItem()->getSale();
+            $order = $object->getSaleItem()->getSale();
 
             $actions[] = [
                 'label' => sprintf('%s (%s)',
                     $order->getNumber(),
                     $this->constantHelper->renderOrderStateLabel($order)
                 ),
-                'href'  => $this->resourceHelper->generateResourcePath($order),
+                'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
                 'theme' => OrderStates::getTheme($order->getState()),
                 'modal' => false,
             ];

@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Ekyna\Bundle\CommerceBundle\Factory\OrderFactory;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Repository\CartRepositoryInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
-use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,56 +29,33 @@ use Symfony\Component\Console\Question\Question;
  */
 class CartTransformCommand extends Command
 {
-    /**
-     * @var CartRepositoryInterface
-     */
-    private $cartRepository;
+    protected static $defaultName = 'ekyna:commerce:cart:transform';
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * @var SaleTransformerInterface
-     */
-    private $saleTransformer;
+    private CartRepositoryInterface  $cartRepository;
+    private OrderFactory             $orderFactory;
+    private SaleTransformerInterface $saleTransformer;
 
 
-    /**
-     * Constructor.
-     *
-     * @param CartRepositoryInterface $cartRepository
-     * @param OrderRepositoryInterface $orderRepository
-     * @param SaleTransformerInterface $saleTransformer
-     */
     public function __construct(
-        CartRepositoryInterface $cartRepository,
-        OrderRepositoryInterface $orderRepository,
+        CartRepositoryInterface  $cartRepository,
+        OrderFactory             $orderFactory,
         SaleTransformerInterface $saleTransformer
     ) {
         parent::__construct();
 
         $this->cartRepository = $cartRepository;
-        $this->orderRepository = $orderRepository;
+        $this->orderFactory = $orderFactory;
         $this->saleTransformer = $saleTransformer;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            ->setName('ekyna:commerce:cart:transform')
             ->setDescription('Transforms the cart to an order.')
             ->addArgument('number', InputArgument::REQUIRED, 'The cart number');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $helper = $this->getHelper('question');
 
@@ -79,7 +63,7 @@ class CartTransformCommand extends Command
             $question = new Question('Cart number:');
             $question->setValidator(function ($answer) {
                 if (!is_string($answer) || empty($answer)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         'Please provide a cart number.'
                     );
                 }
@@ -92,55 +76,42 @@ class CartTransformCommand extends Command
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Check arguments
         if (empty($number = $input->getArgument('number'))) {
-            throw new \InvalidArgumentException("<error>Empty 'number' argument.</error>");
+            throw new InvalidArgumentException("<error>Empty 'number' argument.</error>");
         }
 
-        /** @var \Ekyna\Component\Commerce\Cart\Model\CartInterface $cart */
+        /** @var CartInterface $cart */
         $cart = $this->cartRepository->findOneBy(['number' => $number]);
         if (null === $cart) {
             $output->writeln("<error>Cart not found for number '$number'.</error>");
 
-            return;
+            return Command::FAILURE;
         }
 
-        $table = new Table($output);
-        $table->setRows([
-            ['Number', $cart->getNumber()],
-            ['State', $cart->getState()],
-            ['Grand total', $cart->getGrandTotal()],
-            ['Paid total', $cart->getPaidTotal()],
-            ['Company', $cart->getCompany()],
-            ['Name', $cart->getFirstName() . ' ' . $cart->getLastName()],
-            ['Email', $cart->getEmail()],
-        ]);
-        $table->render();
+        $this->renderSale($cart, $output);
 
-        $output->writeln("");
+        $output->writeln('');
 
-        /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
+        /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
         $confirmation = new ConfirmationQuestion(
             '<question>Are you sure you want to transform this cart to a new order ?</question>',
             false
         );
         if (!$helper->ask($input, $output, $confirmation)) {
-
-            $output->writeln("");
+            $output->writeln('');
             $output->writeln('<comment>Abort by user.</comment>');
 
-            return;
+            return Command::SUCCESS;
         }
 
-        $output->writeln("");
+        $output->writeln('');
 
-        $order = $this->orderRepository->createNew();
+        /** @var OrderInterface $order */
+        $order = $this->orderFactory->create();
 
         $event = $this->saleTransformer->initialize($cart, $order);
         if ($event->isPropagationStopped()) {
@@ -148,7 +119,7 @@ class CartTransformCommand extends Command
 
             $output->writeln('<error>Initialization failed.</error>');
 
-            return;
+            return Command::FAILURE;
         }
 
         if (null !== $event = $this->saleTransformer->transform()) {
@@ -156,30 +127,33 @@ class CartTransformCommand extends Command
 
             $output->writeln('<error>Transformation failed.</error>');
 
-            return;
+            return Command::FAILURE;
         }
 
         $output->writeln('<info>Success !</info>');
-        $output->writeln("");
+        $output->writeln('');
 
+        $this->renderSale($order, $output);
+
+        return Command::SUCCESS;
+    }
+
+    private function renderSale(SaleInterface $sale, OutputInterface $output): void
+    {
         $table = new Table($output);
         $table->setRows([
-            ['Number', $order->getNumber()],
-            ['State', $order->getState()],
-            ['Grand total', $order->getGrandTotal()],
-            ['Paid total', $order->getPaidTotal()],
-            ['Company', $order->getCompany()],
-            ['Name', $order->getFirstName() . ' ' . $order->getLastName()],
-            ['Email', $order->getEmail()],
+            ['Number', $sale->getNumber()],
+            ['State', $sale->getState()],
+            ['Grand total', $sale->getGrandTotal()->toFixed(2)],
+            ['Paid total', $sale->getPaidTotal()->toFixed(2)],
+            ['Company', $sale->getCompany()],
+            ['Name', $sale->getFirstName() . ' ' . $sale->getLastName()],
+            ['Email', $sale->getEmail()],
         ]);
         $table->render();
     }
 
-    /**
-     * @param ResourceEventInterface $event
-     * @param OutputInterface        $output
-     */
-    private function writeMessages(ResourceEventInterface $event, OutputInterface $output)
+    private function writeMessages(ResourceEventInterface $event, OutputInterface $output): void
     {
         foreach ($event->getMessages(ResourceMessage::TYPE_ERROR) as $message) {
             $output->writeln($message->getMessage());

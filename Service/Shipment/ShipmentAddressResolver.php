@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\Transformer\ShipmentAddressTransformer;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\CountryInterface;
@@ -19,38 +21,18 @@ use libphonenumber\PhoneNumberUtil;
  */
 class ShipmentAddressResolver extends BaseResolver
 {
-    /**
-     * @var ShipmentAddress
-     */
-    private $companyAddress;
+    private SettingManagerInterface $settingsManager;
 
-    /**
-     * @var SettingsManagerInterface
-     */
-    private $settingsManager;
+    private ?PhoneNumberUtil $phoneUtil      = null;
+    private ?ShipmentAddress $companyAddress = null;
 
-    /**
-     * @var PhoneNumberUtil
-     */
-    private $phoneUtil;
-
-
-    /**
-     * Constructor.
-     *
-     * @param ShipmentAddressTransformer $transformer
-     * @param SettingsManagerInterface   $settingsManager
-     */
-    public function __construct(ShipmentAddressTransformer $transformer, SettingsManagerInterface $settingsManager)
+    public function __construct(ShipmentAddressTransformer $transformer, SettingManagerInterface $settingsManager)
     {
         parent::__construct($transformer);
 
         $this->settingsManager = $settingsManager;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getCompanyAddress(): AddressInterface
     {
         if (null !== $this->companyAddress) {
@@ -91,17 +73,10 @@ class ShipmentAddressResolver extends BaseResolver
         return $this->companyAddress = $companyAddress;
     }
 
-    /**
-     * Finds the country by its code.
-     *
-     * @param string $code
-     *
-     * @return CountryInterface
-     */
-    private function findCountryByCode($code): CountryInterface
+    private function findCountryByCode(string $code): CountryInterface
     {
         if (null === $country = $this->getCountryRepository()->findOneByCode($code)) {
-            throw new InvalidArgumentException("Unexpected country code.");
+            throw new InvalidArgumentException('Unexpected country code.');
         }
 
         return $country;

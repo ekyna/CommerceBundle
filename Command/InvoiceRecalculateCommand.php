@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use DateTime;
+use Decimal\Decimal;
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
@@ -20,35 +23,14 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class InvoiceRecalculateCommand extends Command
 {
-    /**
-     * @var OrderInvoiceRepositoryInterface
-     */
-    private $invoiceRepository;
+    protected static $defaultName = 'ekyna:commerce:invoice:recalculate';
 
-    /**
-     * @var DocumentCalculatorInterface
-     */
-    private $invoiceCalculator;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $invoiceManager;
-
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
+    private OrderInvoiceRepositoryInterface $invoiceRepository;
+    private DocumentCalculatorInterface $invoiceCalculator;
+    private EntityManagerInterface $invoiceManager;
+    private string $defaultCurrency;
 
 
-    /**
-     * Constructor.
-     *
-     * @param OrderInvoiceRepositoryInterface $invoiceRepository
-     * @param DocumentCalculatorInterface     $invoiceCalculator
-     * @param EntityManagerInterface          $invoiceManager
-     * @param string                          $defaultCurrency
-     */
     public function __construct(
         OrderInvoiceRepositoryInterface $invoiceRepository,
         DocumentCalculatorInterface $invoiceCalculator,
@@ -63,37 +45,30 @@ class InvoiceRecalculateCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            ->setName('ekyna:commerce:invoice:recalculate')
             ->setDescription('Recalculates the invoices created the given month.')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'The invoice id.')
             ->addOption('month', 'm', InputOption::VALUE_REQUIRED, 'The month date as `Y-m`.');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $invoices = [];
         if (null !== $id = $input->getOption('id')) {
-            if (null === $invoice = $this->invoiceRepository->find($id)) {
+            if (null === $invoice = $this->invoiceRepository->find((int)$id)) {
                 $output->writeln("<error>Invoice #$id not found</error>");
 
-                return;
+                return Command::FAILURE;
             }
 
             $invoices = [$invoice];
         } elseif (null !== $month = $input->getOption('month')) {
-            if (false === $date = \DateTime::createFromFormat('Y-m-d', $month . '-01')) {
+            if (false === $date = DateTime::createFromFormat('Y-m-d', $month . '-01')) {
                 $output->writeln("<error>Failed to parse '$month'</error>");
 
-                return;
+                return Command::FAILURE;
             }
 
             $invoices = $this->invoiceRepository->findByMonth($date);
@@ -105,7 +80,7 @@ class InvoiceRecalculateCommand extends Command
         $helper   = $this->getHelper('question');
         $question = new ConfirmationQuestion("Recalculate $count invoices ?", false);
         if (!$helper->ask($input, $output, $question)) {
-            return;
+            return Command::SUCCESS;
         }
 
         $confirm = function (string $number, array $diff) use ($helper, $input, $output) {
@@ -142,7 +117,6 @@ class InvoiceRecalculateCommand extends Command
             } elseif (!$confirm($invoice->getNumber(), $diff)) {
                 $output->writeln(' ... <error>abort</error>');
 
-                $this->invoiceManager->flush();
                 $this->invoiceManager->clear();
 
                 continue;
@@ -161,16 +135,14 @@ class InvoiceRecalculateCommand extends Command
         if ($count % 10 !== 0) {
             $this->invoiceManager->flush();
         }
+
+        return Command::SUCCESS;
     }
 
     /**
      * Extracts the invoice amounts.
-     *
-     * @param InvoiceInterface $invoice
-     *
-     * @return array
      */
-    private function getAmounts(InvoiceInterface $invoice)
+    private function getAmounts(InvoiceInterface $invoice): array
     {
         return [
             'goodsBase'      => $invoice->getGoodsBase(),
@@ -186,12 +158,6 @@ class InvoiceRecalculateCommand extends Command
 
     /**
      * Returns the invoice's amounts diff.
-     *
-     * @param array  $a
-     * @param array  $b
-     * @param string $currency
-     *
-     * @return array
      */
     private function getDiff(array $a, array $b, string $currency): array
     {
@@ -209,8 +175,12 @@ class InvoiceRecalculateCommand extends Command
         $diff = [];
 
         foreach ($keys as $key => $c) {
-            if (0 !== Money::compare($a[$key], $b[$key], $c)) {
-                $diff[$key] = [$a[$key], $b[$key]];
+            /** @var Decimal $aD */
+            $aD = $a[$key];
+            /** @var Decimal $bD */
+            $bD = $b[$key];
+            if (!$aD->equals($bD)) {
+                $diff[$key] = [$aD->toFixed(5), $bD->toFixed(5)];
             }
         }
 

@@ -1,89 +1,76 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\CommerceBundle\Table\Column\VatDisplayModeType;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentRuleType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentRuleType extends ResourceTableType
+class ShipmentRuleType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addColumn('name', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.name',
-                'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_shipment_rule_admin_show',
-                'route_parameters_map' => [
-                    'shipmentRuleId' => 'id',
-                ],
-                'position'             => 10,
+                'label'        => t('field.name', [], 'EkynaUi'),
+                'position'     => 10,
             ])
             ->addColumn('vatMode', VatDisplayModeType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.vat_mode',
-                'position' => 20,
+                'label'        => t('shipment_rule.field.vat_mode', [], 'EkynaCommerce'),
+                'position'     => 20,
             ])
             ->addColumn('methods', DType\Column\EntityType::class, [
-                'label'        => 'ekyna_commerce.shipment_method.label.plural',
+                'label'        => t('shipment_method.label.plural', [], 'EkynaCommerce'),
                 'entity_label' => 'name',
                 'position'     => 30,
             ])
             ->addColumn('countries', DType\Column\EntityType::class, [
-                'label'        => 'ekyna_commerce.country.label.plural',
+                'label'        => t('country.label.plural', [], 'EkynaCommerce'),
                 'entity_label' => 'name',
                 'position'     => 40,
             ])
             ->addColumn('customerGroups', DType\Column\EntityType::class, [
-                'label'        => 'ekyna_commerce.customer_group.label.plural',
+                'label'        => t('customer_group.label.plural', [], 'EkynaCommerce'),
                 'entity_label' => 'name',
                 'position'     => 50,
             ])
             ->addColumn('startAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_commerce.shipment_rule.field.start_at',
-                'time_format' => 'none',
-                'position'    => 60,
+                'label'        => t('shipment_rule.field.start_at', [], 'EkynaCommerce'),
+                'time_format'  => 'none',
+                'position'     => 60,
             ])
             ->addColumn('endAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_commerce.shipment_rule.field.end_at',
-                'time_format' => 'none',
-                'position'    => 70,
+                'label'        => t('shipment_rule.field.end_at', [], 'EkynaCommerce'),
+                'time_format'  => 'none',
+                'position'     => 70,
             ])
             ->addColumn('baseTotal', BType\Column\PriceType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.base_total',
-                'position' => 80,
+                'label'        => t('shipment_rule.field.base_total', [], 'EkynaCommerce'),
+                'position'     => 80,
             ])
             ->addColumn('netPrice', BType\Column\PriceType::class, [
-                'label'    => 'ekyna_commerce.field.net_price',
-                'position' => 90,
+                'label'        => t('field.net_price', [], 'EkynaCommerce'),
+                'position'     => 90,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_shipment_rule_admin_edit',
-                        'route_parameters_map' => ['shipmentRuleId' => 'id'],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_shipment_rule_admin_remove',
-                        'route_parameters_map' => ['shipmentRuleId' => 'id'],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    UpdateAction::class,
+                    DeleteAction::class,
                 ],
             ]);
     }

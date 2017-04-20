@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
@@ -17,23 +19,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ShipmentLabelPurgeCommand extends Command
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    protected static $defaultName = 'ekyna:commerce:shipment:purge-label';
 
-    /**
-     * @var string
-     */
-    private $retention;
+    private EntityManagerInterface $manager;
+    private string                 $retention;
 
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManagerInterface $manager
-     * @param string                 $retention
-     */
     public function __construct(EntityManagerInterface $manager, string $retention = '6 months')
     {
         $this->manager = $manager;
@@ -42,27 +32,18 @@ class ShipmentLabelPurgeCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('ekyna:commerce:shipment:purge-label')
-            ->setDescription('Purges old labels.');
+        $this->setDescription('Purges old labels.');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<comment>Purging shipment labels...</comment>');
 
         $qb = $this->manager->createQueryBuilder();
 
-        $date = new DateTime('-' . $this->retention);
-        $date = $date->setTime(0, 0);
+        $date = (new DateTime('-' . $this->retention))->setTime(0, 0);
 
         $count = $qb
             ->update(OrderShipmentLabel::class, 'l')
@@ -74,5 +55,7 @@ class ShipmentLabelPurgeCommand extends Command
             ->execute();
 
         $output->writeln(sprintf('Purged <info>%d</info> shipment label(s).', $count));
+
+        return Command::SUCCESS;
     }
 }

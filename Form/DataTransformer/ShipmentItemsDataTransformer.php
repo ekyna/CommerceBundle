@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,10 +18,7 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 class ShipmentItemsDataTransformer implements DataTransformerInterface
 {
-    /**
-     * @var ShipmentInterface
-     */
-    private $shipment;
+    private ShipmentInterface $shipment;
 
 
     /**
@@ -35,11 +34,11 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     /**
      * Transforms the flat shipment items collection into a tree shipment items collection.
      *
-     * @param Collection|ShipmentItemInterface[] $flat
+     * @param Collection|ShipmentItemInterface[] $value
      *
      * @return Collection
      */
-    public function transform($flat)
+    public function transform($value)
     {
         $sale = $this->shipment->getSale();
 
@@ -47,7 +46,7 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
 
         // Move shipment items from flat to tree for each sale items
         foreach ($sale->getItems() as $saleItem) {
-            $this->buildTreeShipmentItem($saleItem, $flat, $tree);
+            $this->buildTreeShipmentItem($saleItem, $value, $tree);
         }
 
         return $tree;
@@ -56,15 +55,15 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     /**
      * Transforms the tree shipment items collection into a flat shipment items collection.
      *
-     * @param Collection|ShipmentItemInterface[] $tree
+     * @param Collection|ShipmentItemInterface[] $value
      *
      * @return Collection
      */
-    public function reverseTransform($tree)
+    public function reverseTransform($value)
     {
         $flat = new ArrayCollection();
 
-        foreach ($tree as $item) {
+        foreach ($value as $item) {
             $this->flattenShipmentItem($item, $flat);
         }
 

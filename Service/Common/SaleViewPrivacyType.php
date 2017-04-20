@@ -30,14 +30,14 @@ class SaleViewPrivacyType extends AbstractViewType
 
         if ($item->hasPrivateChildren()) {
             $view->addAction(new View\Action('javascript: void(0)', 'fa fa-info-circle', [
-                'title'                     => $this->trans('ekyna_commerce.sale.button.item.detail'),
+                'title'                     => $this->trans('sale.button.item.detail', [], 'EkynaCommerce'),
                 'data-sale-toggle-children' => $item->getId(),
             ]));
         }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function supportsSale(Model\SaleInterface $sale): bool
     {
@@ -46,7 +46,7 @@ class SaleViewPrivacyType extends AbstractViewType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getName(): string
     {

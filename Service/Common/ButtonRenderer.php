@@ -3,8 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleButtonsEvent;
-use Ekyna\Bundle\CoreBundle\Model\UiButton;
-use Ekyna\Bundle\CoreBundle\Service\Ui\UiRenderer;
+use Ekyna\Bundle\UiBundle\Model\UiButton;
+use Ekyna\Bundle\UiBundle\Service\UiRenderer;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -49,7 +49,7 @@ class ButtonRenderer
     {
         $event = new SaleButtonsEvent($sale);
 
-        $this->dispatcher->dispatch(SaleButtonsEvent::SALE_BUTTONS, $event);
+        $this->dispatcher->dispatch($event, SaleButtonsEvent::SALE_BUTTONS);
 
         if (empty($buttons = $event->getButtons())) {
             return '';

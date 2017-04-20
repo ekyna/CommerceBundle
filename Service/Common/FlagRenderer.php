@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class FlagRenderer
@@ -14,17 +16,8 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class FlagRenderer
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
-
-    /**
-     * Constructor.
-     *
-     * @param TranslatorInterface $translator
-     */
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
@@ -32,13 +25,8 @@ class FlagRenderer
 
     /**
      * Renders the sale flags.
-     *
-     * @param SaleInterface $sale
-     * @param array         $options
-     *
-     * @return string
      */
-    public function renderSaleFlags(SaleInterface $sale, array $options = [])
+    public function renderSaleFlags(SaleInterface $sale, array $options = []): string
     {
         $options = array_replace([
             'badge' => true,
@@ -53,14 +41,14 @@ class FlagRenderer
         if (SaleSources::SOURCE_WEBSITE === $sale->getSource()) {
             $flags .= sprintf(
                 $template,
-                $this->translator->trans('ekyna_commerce.sale.source.website'),
+                $this->translator->trans('sale.source.website', [], 'EkynaCommerce'),
                 'default',
                 'sitemap'
             );
         } elseif (SaleSources::SOURCE_COMMERCIAL === $sale->getSource()) {
             $flags .= sprintf(
                 $template,
-                $this->translator->trans('ekyna_commerce.sale.source.commercial'),
+                $this->translator->trans('sale.source.commercial', [], 'EkynaCommerce'),
                 'default',
                 'briefcase'
             );
@@ -69,7 +57,7 @@ class FlagRenderer
         if ($sale instanceof OrderInterface && $sale->isFirst()) {
             $flags .= sprintf(
                 $template,
-                $this->translator->trans('ekyna_commerce.sale.flag.first_order'),
+                $this->translator->trans('sale.flag.first_order', [], 'EkynaCommerce'),
                 'success',
                 'thumbs-o-up'
             );
@@ -78,7 +66,7 @@ class FlagRenderer
         if ($sale->isSample()) {
             $flags .= sprintf(
                 $template,
-                $this->translator->trans('ekyna_commerce.field.sample'),
+                $this->translator->trans('field.sample', [], 'EkynaCommerce'),
                 'info',
                 'cube'
             );
@@ -86,7 +74,7 @@ class FlagRenderer
             if ($sale->canBeReleased()) {
                 $flags .= sprintf(
                     $template,
-                    $this->translator->trans('ekyna_commerce.sale.flag.can_be_released'),
+                    $this->translator->trans('sale.flag.can_be_released', [], 'EkynaCommerce'),
                     'danger',
                     'check-circle-o'
                 );
@@ -96,7 +84,7 @@ class FlagRenderer
         if (!empty($sale->getPreparationNote())) {
             $flags .= sprintf(
                 $template,
-                $this->translator->trans('ekyna_commerce.sale.field.preparation_note'),
+                $this->translator->trans('sale.field.preparation_note', [], 'EkynaCommerce'),
                 'warning',
                 'check-square-o'
             );
@@ -105,7 +93,7 @@ class FlagRenderer
         if (!empty($sale->getComment())) {
             $flags .= sprintf(
                 $template,
-                $this->translator->trans('ekyna_core.field.comment'),
+                $this->translator->trans('field.comment', [], 'EkynaUi'),
                 'danger',
                 'comment'
             );

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Symfony\Component\Form\AbstractType;
@@ -8,6 +10,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ShipmentItemsType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
@@ -15,38 +19,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentItemsType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['headers'] = false;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'      => 'ekyna_commerce.shipment.field.items',
+                'label'      => t('shipment.field.items', [], 'EkynaCommerce'),
                 'entry_type' => ShipmentItemType::class,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_shipment_items';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return CollectionType::class;
     }

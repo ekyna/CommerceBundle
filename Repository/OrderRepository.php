@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderRepository as BaseRepository;
@@ -15,10 +17,6 @@ class OrderRepository extends BaseRepository
 
     /**
      * Finds map locations.
-     *
-     * @param array $groups
-     *
-     * @return array
      */
     public function findLocations(array $groups): array
     {
@@ -63,8 +61,8 @@ class OrderRepository extends BaseRepository
 
         return array_map(function ($r) use ($min, $max) {
             return [
-                'lat'    => floatval($r['latitude']),
-                'lng'    => floatval($r['longitude']),
+                'lat'    => $r['latitude'],
+                'lng'    => $r['longitude'],
                 'weight' => round(($r['net'] - $min) * 9 / $max + 1, 2),
             ];
         }, $results);

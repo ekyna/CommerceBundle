@@ -2,10 +2,10 @@
 <table class="table table-condensed table-alt-head">
 <thead>
     <tr>
-        <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-        <th>{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
-        <th>{{ 'ekyna_commerce.stock_unit.field.ordered_quantity'|trans }}</th>
-        <th>{{ 'ekyna_commerce.stock_unit.field.received_quantity'|trans }}</th>
+        <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'stock_unit.field.ordered_quantity'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'stock_unit.field.received_quantity'|trans({}, 'EkynaCommerce') }}</th>
     </tr>
 </thead>
 <tbody>
@@ -23,7 +23,7 @@
 <div>
     <dl class="dl-horizontal">
         {% if description is not empty %}
-            <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+            <dt>{{ 'field.description'|trans({}, 'EkynaCommerce') }}</dt>
             <dd>{{ description|nl2br|raw }}</dd>
         {% endif %}
     </dl>

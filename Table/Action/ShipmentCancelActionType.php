@@ -1,16 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Gateway\PersisterInterface;
-use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_map;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentCancelActionType
@@ -19,24 +25,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentCancelActionType extends AbstractActionType
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $gatewayRegistry;
+    private GatewayRegistryInterface $gatewayRegistry;
+    private PersisterInterface       $shipmentPersister;
 
-    /**
-     * @var PersisterInterface
-     */
-    private $shipmentPersister;
-
-
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface $gatewayRegistry
-     * @param PersisterInterface $shipmentPersister
-     */
-    public function __construct(RegistryInterface $gatewayRegistry, PersisterInterface $shipmentPersister)
+    public function __construct(GatewayRegistryInterface $gatewayRegistry, PersisterInterface $shipmentPersister)
     {
         $this->gatewayRegistry = $gatewayRegistry;
         $this->shipmentPersister = $shipmentPersister;
@@ -55,11 +47,11 @@ class ShipmentCancelActionType extends AbstractActionType
         );
 
         $shipments = array_map(function(RowInterface $row) {
-            return $row->getData();
+            return $row->getData(null);
         }, $rows);
 
         try {
-            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+            /** @var ShipmentInterface $shipment */
             foreach ($shipments as $shipment) {
                 $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 
@@ -79,11 +71,8 @@ class ShipmentCancelActionType extends AbstractActionType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'ekyna_commerce.shipment.action.cancel');
+        $resolver->setDefault('label', t('shipment.action.cancel', [], 'EkynaCommerce'));
     }
 }

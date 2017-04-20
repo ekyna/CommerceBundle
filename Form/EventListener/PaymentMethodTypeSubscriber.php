@@ -1,13 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
+use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Payum\Core\Registry\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+
+use function in_array;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_null;
+use function is_numeric;
+use function is_string;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class PaymentMethodTypeSubscriber
@@ -16,27 +28,15 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
  */
 class PaymentMethodTypeSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $registry;
+    private RegistryInterface $registry;
 
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface $registry
-     */
+
     public function __construct(RegistryInterface $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * Builds the config field.
-     *
-     * @param FormEvent $event
-     */
-    public function buildConfigField(FormEvent $event)
+    public function buildConfigField(FormEvent $event): void
     {
         $data = $event->getData();
         if (is_null($data)) {
@@ -52,7 +52,7 @@ class PaymentMethodTypeSubscriber implements EventSubscriberInterface
         $gatewayFactory = $this->registry->getGatewayFactory($factoryName);
         $config = $gatewayFactory->createConfig();
 
-        if (empty($options = $config['payum.default_options'])) {
+        if (empty($config['payum.default_options'])) {
             return;
         }
 
@@ -60,7 +60,7 @@ class PaymentMethodTypeSubscriber implements EventSubscriberInterface
 
         $form = $event->getForm();
         $form->add('config', Type\FormType::class, [
-            'label' => 'ekyna_core.field.config',
+            'label' => t('field.config', [], 'EkynaUi'),
         ]);
 
         $configForm = $form->get('config');
@@ -74,8 +74,7 @@ class PaymentMethodTypeSubscriber implements EventSubscriberInterface
                 if (!empty($config[$name])) {
                     return false;
                 }
-            }
-            // If defined value is not null
+            } // If defined value is not null
             elseif (!is_null($config[$name])) {
                 return false;
             }
@@ -113,9 +112,9 @@ class PaymentMethodTypeSubscriber implements EventSubscriberInterface
         $event->setData($data);
     }
 
-    public function removeEmptyConfig(FormEvent $event)
+    public function removeEmptyConfig(FormEvent $event): void
     {
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $data */
+        /** @var PaymentMethodInterface $data */
         $data = $event->getData();
 
         $config = $data->getConfig();
@@ -130,10 +129,7 @@ class PaymentMethodTypeSubscriber implements EventSubscriberInterface
         $data->setConfig($config);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::PRE_SET_DATA => 'buildConfigField',

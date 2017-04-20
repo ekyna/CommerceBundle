@@ -1,0 +1,84 @@
+admin_ekyna_commerce_export_accounting:
+    path: /accounting
+    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\AccountingController
+
+admin_ekyna_commerce_export_invoice_costs:
+    path: /invoice-cost
+    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\CostController
+
+admin_ekyna_commerce_export_due_invoices:
+    path: /due-invoices
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\InvoiceController::dueInvoices
+
+admin_ekyna_commerce_export_fall_invoices:
+    path: /fall-invoices
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\InvoiceController::fallInvoices
+
+admin_ekyna_commerce_export_remaining_orders:
+    path: /remaining-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::remainingOrders
+
+admin_ekyna_commerce_export_due_orders:
+    path: /due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::dueOrders
+
+admin_ekyna_commerce_export_all_due_orders:
+    path: /all-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::allDueOrders
+
+admin_ekyna_commerce_export_regular_due_orders:
+    path: /regular-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::regularDueOrders
+
+admin_ekyna_commerce_export_outstanding_expired_due_orders:
+    path: /outstanding-expired-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::outstandingExpiredDueOrders
+
+admin_ekyna_commerce_export_outstanding_fall_due_orders:
+    path: /outstanding-fall-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::outstandingFallDueOrders
+
+admin_ekyna_commerce_export_outstanding_pending_due_orders:
+    path: /outstanding-pending-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::outstandingPendingDueOrders
+
+admin_ekyna_commerce_export_suppliers_expired_due_orders:
+    path: /suppliers-expired-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::suppliersExpiredDueOrders
+
+admin_ekyna_commerce_export_suppliers_fall_due_orders:
+    path: /suppliers-fall-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::suppliersFallDueOrders
+
+admin_ekyna_commerce_export_forwarders_expired_due_orders:
+    path: /forwarders-expired-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::forwardersExpiredDueOrders
+
+admin_ekyna_commerce_export_forwarders_fall_due_orders:
+    path: /forwarders-fall-due-orders
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::forwardersFallDueOrders
+
+admin_ekyna_commerce_export_regions_orders_stats:
+    path: /regions-orders-stats
+    methods: [GET]
+    controller: \Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\StatController::regionsOrdersStats
+
+admin_ekyna_commerce_export_regions_invoices_stats:
+    path: /regions-invoices-stats
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\InvoiceController::regionsInvoicesStats

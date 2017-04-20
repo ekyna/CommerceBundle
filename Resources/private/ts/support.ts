@@ -1,10 +1,10 @@
-/// <reference path="../../../../../../typings/index.d.ts" />
+/// <reference path="../../../../../../../assets/typings/index.d.ts" />
 /// <reference path="../typings/templates.d.ts" />
 
 import * as $ from 'jquery';
 import * as Router from 'routing';
 import * as Templates from 'ekyna-commerce/templates';
-import * as Ui from 'ekyna-ui';
+import * as Ui from 'ekyna-spinner';
 import * as Bootstrap from 'bootstrap';
 import * as Modal from 'ekyna-modal';
 
@@ -31,7 +31,8 @@ let config: {
 
 interface Response {
     ticket?: TicketData
-    message?: MessageData
+    ticketMessage?: MessageData
+    ticketAttachment?: AttachmentData
 }
 
 interface TicketData {
@@ -48,6 +49,7 @@ interface MessageData {
 
 interface AttachmentData {
     id: number
+    ticket: number
     message: number
     internal: boolean
 }
@@ -61,8 +63,6 @@ class Support {
         this.tickets = [];
 
         $element.data('support', this);
-
-        console.log('Created support');
     }
 
     public init(): Support {
@@ -155,17 +155,36 @@ class Support {
             }
         }
 
-        if (response.message) {
-            let ticket = this.findTicket(response.message.ticket);
+        if (response.ticketMessage) {
+            let ticket = this.findTicket(response.ticketMessage.ticket);
             if (!ticket) {
                 throw "Ticket not found.";
             }
 
-            let message = ticket.findMessage(response.message.id);
+            let message = ticket.findMessage(response.ticketMessage.id);
             if (message) {
-                message.update(response.message);
+                message.update(response.ticketMessage);
             } else {
-                ticket.createMessage(response.message);
+                ticket.createMessage(response.ticketMessage);
+            }
+        }
+
+        if (response.ticketAttachment) {
+            let ticket = this.findTicket(response.ticketAttachment.ticket);
+            if (!ticket) {
+                throw "Ticket not found.";
+            }
+
+            let message = ticket.findMessage(response.ticketAttachment.message);
+            if (!message) {
+                throw "Message not found.";
+            }
+
+            let attachment = message.findAttachment(response.ticketAttachment.id);
+            if (attachment) {
+                attachment.update(response.ticketAttachment);
+            } else {
+                message.createAttachment(response.ticketAttachment);
             }
         }
     }
@@ -184,8 +203,6 @@ class Ticket {
         this.messages = [];
 
         $element.data('ticket', this);
-
-        console.log('Created ticket', this.id);
     }
 
     public init(): Ticket {
@@ -215,7 +232,7 @@ class Ticket {
         }
 
         window.open(
-            Router.generate(config.routes.order + '_show', {customerId: $(e.target).data('id')})
+            Router.generate(config.routes.order + '_read', {customerId: $(e.target).data('id')})
             , '_blank'
         ).focus();
 
@@ -233,7 +250,7 @@ class Ticket {
             parameters = {number: $(e.target).text()};
         }
 
-        window.open(Router.generate(config.routes.order + '_show', parameters), '_blank').focus();
+        window.open(Router.generate(config.routes.order + '_read', parameters), '_blank').focus();
 
         return false;
     }
@@ -249,7 +266,7 @@ class Ticket {
             parameters = {number: $(e.target).text()};
         }
 
-        window.open(Router.generate(config.routes.quote + '_show', parameters), '_blank').focus();
+        window.open(Router.generate(config.routes.quote + '_read', parameters), '_blank').focus();
 
         return false;
     }
@@ -264,7 +281,7 @@ class Ticket {
 
     private newMessage() {
         this.support.request(
-            Router.generate(config.routes.message + '_new', {
+            Router.generate(config.routes.message + '_create', {
                 'ticketId': this.id
             })
         );
@@ -272,7 +289,7 @@ class Ticket {
 
     private edit() {
         this.support.request(
-            Router.generate(config.routes.ticket + '_edit', {
+            Router.generate(config.routes.ticket + '_update', {
                 'ticketId': this.id
             })
         );
@@ -280,7 +297,7 @@ class Ticket {
 
     private remove() {
         this.support.request(
-            Router.generate(config.routes.ticket + '_remove', {
+            Router.generate(config.routes.ticket + '_delete', {
                 'ticketId': this.id
             }),
             () => {
@@ -417,8 +434,6 @@ class Message {
         this.$element = $element;
 
         $element.data('message', this);
-
-        console.log('Created message', this.id);
     }
 
     public init(): Message {
@@ -445,7 +460,7 @@ class Message {
 
     private newAttachment() {
         this.ticket.getSupport().request(
-            Router.generate(config.routes.attachment + '_new', {
+            Router.generate(config.routes.attachment + '_create', {
                 'ticketId': this.ticket.getId(),
                 'ticketMessageId': this.id
             })
@@ -454,7 +469,7 @@ class Message {
 
     private edit() {
         this.ticket.getSupport().request(
-            Router.generate(config.routes.message + '_edit', {
+            Router.generate(config.routes.message + '_update', {
                 'ticketId': this.ticket.getId(),
                 'ticketMessageId': this.id
             })
@@ -463,7 +478,7 @@ class Message {
 
     private remove() {
         this.ticket.getSupport().request(
-            Router.generate(config.routes.message + '_remove', {
+            Router.generate(config.routes.message + '_delete', {
                 'ticketId': this.ticket.getId(),
                 'ticketMessageId': this.id
             }),
@@ -472,6 +487,33 @@ class Message {
                 this.delete();
             }
         );
+    }
+
+    public findAttachment(id: number): Attachment {
+        let attachment: Attachment = null;
+
+        this.attachments.forEach(function(a: Attachment) {
+            if (a.getId() === id) {
+                attachment = a;
+                return false;
+            }
+        });
+
+        return attachment;
+    }
+
+    public createAttachment(attachment: AttachmentData) {
+        let $attachment = $(Templates['@EkynaCommerce/Js/ticket_attachment.html.twig'].render({
+            attachment: attachment,
+            trans: trans,
+            config: config
+        }));
+
+        this.$element.find('.attachments').append($attachment);
+
+        this.attachments.push(new Attachment(this, $attachment).init());
+
+        return;
     }
 
     public removeAttachment(id: number) {
@@ -517,8 +559,6 @@ class Attachment {
         this.$element = $element;
 
         $element.data('attachment', this);
-
-        console.log('Created attachment', this.id);
     }
 
     public init(): Attachment {
@@ -543,7 +583,7 @@ class Attachment {
 
     private edit() {
         this.message.getTicket().getSupport().request(
-            Router.generate(config.routes.attachment + '_edit', {
+            Router.generate(config.routes.attachment + '_update', {
                 'ticketId': this.message.getTicket().getId(),
                 'ticketMessageId': this.message.getId(),
                 'ticketAttachmentId': this.id
@@ -553,7 +593,7 @@ class Attachment {
 
     private remove() {
         this.message.getTicket().getSupport().request(
-            Router.generate(config.routes.attachment + '_remove', {
+            Router.generate(config.routes.attachment + '_delete', {
                 'ticketId': this.message.getTicket().getId(),
                 'ticketMessageId': this.message.getId(),
                 'ticketAttachmentId': this.id
@@ -565,12 +605,23 @@ class Attachment {
         );
     }
 
+    public update(data: AttachmentData) {
+        let $attachment = $(Templates['@EkynaCommerce/Js/ticket_attachment.html.twig'].render({
+            attachment: data,
+            trans: trans,
+            config: config
+        }));
+
+        this.$element.replaceWith($attachment);
+        this.$element = $attachment;
+
+        this.init();
+    }
+
     public delete() {
         this.$element.remove();
     }
 }
-
-console.log ('Initializing support');
 
 let $support = $('#commerce-support');
 if (1 === $support.length) {
@@ -579,5 +630,5 @@ if (1 === $support.length) {
 
     new Support($support).init();
 } else {
-    console.log('Support root not found.');
+    console.error('Support root not found.');
 }

@@ -3,22 +3,22 @@
     <div class="panel-heading">
     {%- if refund -%}
         {%- set payments = sale.getPayments(false) -%}
-        {{- 'ekyna_commerce.refund.label.plural'|trans -}}
+        {{- 'refund.label.plural'|trans({}, 'EkynaCommerce') -}}
     {%- else -%}
         {%- set payments = sale.getPayments(true) -%}
-        {{- 'ekyna_commerce.payment.label.plural'|trans -}}
+        {{- 'payment.label.plural'|trans({}, 'EkynaCommerce') -}}
     {%- endif -%}
     </div>
     <div class="table-responsive">
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.number'|trans }}</th>
-                <th>{{ 'ekyna_core.field.method'|trans }}</th>
-                <th>{{ 'ekyna_core.field.amount'|trans }}</th>
-                <th>{{ 'ekyna_commerce.field.status'|trans }}</th>
-                <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
-                <th>{{ 'ekyna_core.field.completed_at'|trans }}</th>
+                <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.method'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.amount'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.status'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.completed_at'|trans({}, 'EkynaUi') }}</th>
                 {% if not customer.hasParent() -%}
                 <th></th>
                 {%- endif %}
@@ -31,10 +31,10 @@
                     <td>{{ payment.getMethod() }}</td>
                     <td>{{ payment.getRealAmount()|currency_quote(payment, true) }}</td>
                     <td>{{ payment|payment_state_badge }}</td>
-                    <td>{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
+                    <td>{{ payment.getCreatedAt()|format_datetime('short', 'none') }}</td>
                     <td>
                         {% if payment.getCompletedAt() -%}
-                            {{ payment.getCompletedAt()|localizeddate('short', 'none') }}
+                            {{ payment.getCompletedAt()|format_datetime('short', 'none') }}
                         {%- else -%}
                             &dash;
                         {%- endif %}
@@ -48,7 +48,7 @@
             {%- else -%}
                 <tr>
                     <td colspan="{{ customer.hasParent() ? 6 : 7 }}" class="text-center">
-                        <em>{{- 'ekyna_core.value.no_item'|trans -}}</em>
+                        <em>{{- 'value.no_item'|trans({}, 'EkynaUi') -}}</em>
                     </td>
                 </tr>
             {%- endfor -%}

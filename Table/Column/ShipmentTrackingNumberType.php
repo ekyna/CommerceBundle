@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function sprintf;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentTrackingNumberType
@@ -17,31 +23,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentTrackingNumberType extends AbstractColumnType
 {
-    const TEMPLATE = '<a href="%s" target="_blank">%s</a>';
-
-    /**
-     * @var ShipmentHelper
-     */
-    private $shipmentHelper;
+    private ShipmentHelper $shipmentHelper;
 
 
-    /**
-     * Constructor.
-     *
-     * @param ShipmentHelper $shipmentHelper
-     */
     public function __construct(ShipmentHelper $shipmentHelper)
     {
         $this->shipmentHelper = $shipmentHelper;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-        $shipment = $row->getData();
+        /** @var ShipmentInterface $shipment */
+        $shipment = $row->getData(null);
 
         if ($shipment->hasParcels()) {
             if (false === $parcel = $shipment->getParcels()->first()) {
@@ -49,7 +42,12 @@ class ShipmentTrackingNumberType extends AbstractColumnType
             }
 
             if (!empty($trackingUrl = $this->shipmentHelper->getTrackingUrl($parcel))) {
-                $output = sprintf(static::TEMPLATE, $trackingUrl, $parcel->getTrackingNumber());
+                /** @noinspection HtmlUnknownTarget */
+                $output = sprintf(
+                    '<a href="%s" target="_blank">%s</a>',
+                    $trackingUrl,
+                    $parcel->getTrackingNumber()
+                );
             } else {
                 $output = $parcel->getTrackingNumber();
             }
@@ -60,32 +58,28 @@ class ShipmentTrackingNumberType extends AbstractColumnType
         }
 
         if (!empty($trackingUrl = $this->shipmentHelper->getTrackingUrl($shipment))) {
-            $view->vars['value'] = sprintf(static::TEMPLATE, $trackingUrl, $shipment->getTrackingNumber());
+            /** @noinspection HtmlUnknownTarget */
+            $view->vars['value'] = sprintf(
+                '<a href="%s" target="_blank">%s</a>',
+                $trackingUrl,
+                $shipment->getTrackingNumber()
+            );
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label' => 'ekyna_commerce.shipment.field.tracking_number',
+            'label' => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return TextType::class;
     }

@@ -3,21 +3,21 @@
     <div class="panel-heading">
     {%- if return -%}
         {%- set shipments = sale.getShipments(false) -%}
-        {{- 'ekyna_commerce.return.label.plural'|trans -}}
+        {{- 'return.label.plural'|trans({}, 'EkynaCommerce') -}}
     {%- else -%}
         {%- set shipments = sale.getShipments(true) -%}
-        {{- 'ekyna_commerce.shipment.label.plural'|trans -}}
+        {{- 'shipment.label.plural'|trans({}, 'EkynaCommerce') -}}
     {%- endif -%}
     </div>
     <div class="table-responsive">
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.number'|trans }}</th>
-                <th>{{ 'ekyna_commerce.shipment_method.label.singular'|trans }}</th>
-                <th>{{ 'ekyna_commerce.shipment.field.tracking_number'|trans }}</th>
-                <th>{{ 'ekyna_commerce.field.status'|trans }}</th>
-                <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
+                <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'shipment_method.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'shipment.field.tracking_number'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.status'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</th>
                 <th></th>
             </tr>
             </thead>
@@ -34,7 +34,7 @@
                     <td>{{ shipment.method }}</td>
                     <td>{{ display_shipment_tracking(shipment) }}</td>
                     <td>{{ shipment|shipment_state_badge }}</td>
-                    <td>{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
+                    <td>{{ shipment.createdAt|format_datetime('short', 'none') }}</td>
                     <td class="actions text-right">
                         <a href="javascript:void(0)"
                            id="{{ shipmentId }}_toggle_details"
@@ -43,7 +43,7 @@
                             <span class="fa fa-info-circle"></span>
                         </a>&nbsp;
                         {#<a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
-                            {{- 'ekyna_core.button.download'|trans -}}
+                            {{- 'button.download'|trans({}, 'EkynaUi') -}}
                         </a>#}
                     </td>
                 </tr>
@@ -53,9 +53,9 @@
                         <table class="table table-alt table-striped table-condensed">
                             <thead>
                                 <tr>
-                                    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                                    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                                    <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+                                    <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                                    <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                                    <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,7 +64,7 @@
                                 <tr>
                                     <td>{{ item.saleItem.designation }}</td>{# TODO Public link #}
                                     <td>{{ item.saleItem.reference }}</td>
-                                    <td>{{ item.quantity|localizednumber }}</td> {# TODO Packaging format #}
+                                    <td>{{ item.quantity|format_number }}</td> {# TODO Packaging format #}
                                 </tr>
                                 {%- endif -%}
                             {%- endfor -%}
@@ -74,15 +74,15 @@
                         <table class="table table-alt table-striped table-condensed">
                             <thead>
                             <tr>
-                                <th>{{ 'ekyna_core.field.weight'|trans }}</th>
-                                <th>{{ 'ekyna_commerce.shipment.field.tracking_number'|trans }}</th>
+                                <th>{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
+                                <th>{{ 'shipment.field.tracking_number'|trans({}, 'EkynaCommerce') }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for parcel in shipment.parcels %}
                                 {% set parcelId = shipmentId ~ '_parcel_' ~ loop.index0 %}
                                 <tr>
-                                    <td id="{{ parcelId ~ '_weight' }}">{{ parcel.weight|localizednumber }} kg</td>
+                                    <td id="{{ parcelId ~ '_weight' }}">{{ parcel.weight|format_number }} kg</td>
                                     <td id="{{ parcelId ~ '_trackingNumber' }}">{{ display_shipment_tracking(parcel) }}</td>
                                 </tr>
                             {% endfor %}
@@ -94,7 +94,7 @@
             {%- else -%}
                 <tr>
                     <td colspan="6" class="text-center">
-                        <em>{{- 'ekyna_core.value.no_item'|trans -}}</em>
+                        <em>{{- 'value.no_item'|trans({}, 'EkynaUi') -}}</em>
                     </td>
                 </tr>
             {%- endfor -%}

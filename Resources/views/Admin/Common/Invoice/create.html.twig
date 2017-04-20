@@ -1,0 +1,12 @@
+{% extends '@EkynaAdmin/Entity/Crud/create.html.twig' %}
+
+{% block title %}
+    <h1>{{ ((resource.credit ? 'credit' : 'invoice') ~ '.header.new')|trans({}, 'EkynaCommerce')|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block side %}
+    {{ parent() }}
+    {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' with {'sale': resource.sale} only %}
+{% endblock side %}

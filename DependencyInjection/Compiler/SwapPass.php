@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -13,18 +15,11 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class SwapPass implements CompilerPassInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('florianv_swap.builder')) {
-            return;
-        }
-
-        $definition = $container->getDefinition('florianv_swap.builder');
-        $definition
+        $container
+            ->getDefinition('florianv_swap.builder')
             ->replaceArgument(0, ['cache_ttl' => 3600 * 24])
-            ->addMethodCall('useCacheItemPool', [new Reference('ekyna_commerce.cache')]);
+            ->addMethodCall('useSimpleCache', [new Reference('ekyna_commerce.cache.psr16')]);
     }
 }

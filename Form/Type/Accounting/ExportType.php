@@ -1,14 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Accounting;
 
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use Ekyna\Component\Commerce\Invoice\Repository\InvoiceRepositoryInterface;
 use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
+use IntlDateFormatter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+
+use function array_reverse;
+use function mb_convert_case;
+use function Symfony\Component\Translation\t;
+
+use const MB_CASE_TITLE;
 
 /**
  * Class ExportType
@@ -17,55 +28,23 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class ExportType extends AbstractType
 {
-    /**
-     * @var array
-     */
-    private static $yearChoices;
+    private static ?array $yearChoices = null;
+    private static ?array $monthChoices = null;
 
-    /**
-     * @var array
-     */
-    private static $monthChoices;
+    private LocaleProviderInterface    $localeProvider;
+    private InvoiceRepositoryInterface $invoiceRepository;
 
-    /**
-     * @var LocaleProviderInterface
-     */
-    private $localeProvider;
-
-    /**
-     * @var InvoiceRepositoryInterface
-     */
-    private $invoiceRepository;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-
-    /**
-     * Constructor.
-     *
-     * @param LocaleProviderInterface    $localeProvider
-     * @param InvoiceRepositoryInterface $invoiceRepository
-     * @param TranslatorInterface        $translator
-     */
     public function __construct(
-        LocaleProviderInterface $localeProvider,
-        InvoiceRepositoryInterface $invoiceRepository,
-        TranslatorInterface $translator
+        LocaleProviderInterface    $localeProvider,
+        InvoiceRepositoryInterface $invoiceRepository
     ) {
-        $this->localeProvider    = $localeProvider;
+        $this->localeProvider = $localeProvider;
         $this->invoiceRepository = $invoiceRepository;
-        $this->translator        = $translator;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $preferred = new \DateTime('-1 month');
+        $preferred = new DateTime('-1 month');
 
         $builder
             ->add('year', ChoiceType::class, [
@@ -83,7 +62,7 @@ class ExportType extends AbstractType
                 'preferred_choices'         => [$preferred->format('m')],
             ])
             ->add('submit', SubmitType::class, [
-                'label'        => 'ekyna_core.button.export',
+                'label'        => t('button.export', [], 'EkynaUi'),
                 'button_class' => 'default',
                 'attr'         => [
                     'icon' => 'download',
@@ -91,24 +70,19 @@ class ExportType extends AbstractType
             ]);
     }
 
-    /**
-     * Returns the years choices.
-     *
-     * @return array
-     */
     private function getYearChoices(): array
     {
         if (self::$yearChoices) {
             return self::$yearChoices;
         }
 
-        $from = $this->invoiceRepository->findFirstInvoiceDate() ?? new \DateTime();
+        $from = $this->invoiceRepository->findFirstInvoiceDate() ?? new DateTime();
         $from->modify('first day of january');
-        $to   = new \DateTime();
+        $to = new DateTime();
 
         $choices = [];
-        $period  = new \DatePeriod($from, new \DateInterval('P1Y'), $to);
-        /** @var \DateTime $date */
+        $period = new DatePeriod($from, new DateInterval('P1Y'), $to);
+        /** @var DateTime $date */
         foreach ($period as $date) {
             $choices[$date->format('Y')] = $date->format('Y');
         }
@@ -116,39 +90,35 @@ class ExportType extends AbstractType
         return self::$yearChoices = array_reverse($choices, true);
     }
 
-    /**
-     * Returns the months choices.
-     *
-     * @return array
-     */
     private function getMonthsChoices(): array
     {
         if (self::$monthChoices) {
             return self::$monthChoices;
         }
 
-        $from = new \DateTime('first day of january');
-        $to   = new \DateTime('last day of december');
+        $from = new DateTime('first day of january');
+        $to = new DateTime('last day of december');
 
-        $formatter = \IntlDateFormatter::create(
+        // TODO Use formatter factory
+        $formatter = IntlDateFormatter::create(
             $this->localeProvider->getCurrentLocale(),
-            \IntlDateFormatter::SHORT,
-            \IntlDateFormatter::NONE,
+            IntlDateFormatter::SHORT,
+            IntlDateFormatter::NONE,
             $from->getTimezone(),
-            \IntlDateFormatter::GREGORIAN,
+            IntlDateFormatter::GREGORIAN,
             'MMMM'
         );
 
         // TODO Add 'all' choices.
         // For now it consume too much time to be done in a request.
         // It needs to scheduled as background task to be sent by email.
-        // $choices = [$this->translator->trans('ekyna_core.value.all') => null];
+        // $choices = [$this->translator->trans('value.all', [], 'EkynaUi') => null];
 
         $choices = [];
-        $period  = new \DatePeriod($from, new \DateInterval('P1M'), $to);
-        /** @var \DateTime $date */
+        $period = new DatePeriod($from, new DateInterval('P1M'), $to);
+        /** @var DateTime $date */
         foreach ($period as $date) {
-            $key           = mb_convert_case($formatter->format($date->getTimestamp()), MB_CASE_TITLE);
+            $key = mb_convert_case($formatter->format($date->getTimestamp()), MB_CASE_TITLE);
             $choices[$key] = $date->format('m');
         }
 

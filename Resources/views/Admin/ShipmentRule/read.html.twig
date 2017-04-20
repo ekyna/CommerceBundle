@@ -1,0 +1,74 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(shipmentRule.name, 'text', {
+                    'label': 'field.name',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'shipmentRule_name',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(shipmentRule.vatMode, 'commerce_vat_mode', {
+                    'label': 'shipment_rule.field.vat_mode',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'shipmentRule_vatMode',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(shipmentRule.methods, 'resource', {
+            'resource': 'ekyna_commerce.shipment_method',
+            'id': 'shipmentRule_methods'
+        }) }}
+        {{ show_row(shipmentRule.countries, 'resource', {
+            'resource': 'ekyna_commerce.country',
+            'id': 'shipmentRule_countries'
+        }) }}
+        {{ show_row(shipmentRule.customerGroups, 'resource', {
+            'resource': 'ekyna_commerce.customer_group',
+            'id': 'shipmentRule_customerGroups'
+        }) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(shipmentRule.startAt, 'datetime', {
+                    'label': 'shipment_rule.field.start_at',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'shipmentRule_startAt',
+                    'time': false,
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(shipmentRule.endAt, 'datetime', {
+                    'label': 'shipment_rule.field.end_at',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'shipmentRule_endAt',
+                    'time': false,
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(shipmentRule.baseTotal|format_currency(commerce_default_currency), 'text', {
+                    'label': 'shipment_rule.field.base_total',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'shipmentRule_baseTotal',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(shipmentRule.netPrice|format_currency(commerce_default_currency), 'text', {
+                    'label': 'field.net_price',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'shipmentRule_price',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+    </div>
+{%- endblock main_contents %}

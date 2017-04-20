@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
@@ -22,7 +24,6 @@ class CustomerRepository extends BaseRepository
      */
     public function findOneByUser(UserInterface $user): ?CustomerInterface
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->findOneBy(['user' => $user]);
     }
 }

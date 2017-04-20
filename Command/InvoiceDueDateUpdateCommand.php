@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use Ekyna\Component\Commerce\Common\Util\DateUtil;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
+use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,31 +21,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InvoiceDueDateUpdateCommand extends Command
 {
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
+    protected static $defaultName = 'ekyna:commerce:invoice:update-due-date';
 
-    /**
-     * @var DueDateResolverInterface
-     */
-    private $resolver;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    private OrderInvoiceRepositoryInterface $repository;
+    private DueDateResolverInterface        $resolver;
+    private EntityManagerInterface          $manager;
 
 
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository         $repository
-     * @param DueDateResolverInterface $resolver
-     * @param EntityManagerInterface   $manager
-     */
     public function __construct(
-        EntityRepository $repository,
+        OrderInvoiceRepositoryInterface $repository,
         DueDateResolverInterface $resolver,
         EntityManagerInterface $manager
     ) {
@@ -52,27 +40,21 @@ class InvoiceDueDateUpdateCommand extends Command
         $this->manager = $manager;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('ekyna:commerce:invoice:update-due-date')
-            ->setDescription('Updates the invoices due date');
+        $this->setDescription('Updates the invoices due date');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Updating invoices due dates');
         $output->writeln('');
 
-        $qb = $this->repository->createQueryBuilder('i');
+        $class = $this->repository->getClassName();
 
-        $metadata = $this->manager->getClassMetadata($this->repository->getClassName());
+        $qb = $this->manager->createQueryBuilder()->from($class, 'i');
+
+        $metadata = $this->manager->getClassMetadata($class);
         $metadata->getTableName();
 
         /** @noinspection SqlResolve */
@@ -93,7 +75,7 @@ class InvoiceDueDateUpdateCommand extends Command
             $invoices = $select->setFirstResult($page * $limit)->execute();
             $page++;
 
-            /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+            /** @var InvoiceInterface $invoice */
             foreach ($invoices as $invoice) {
                 $number = $invoice->getNumber();
 
@@ -111,9 +93,10 @@ class InvoiceDueDateUpdateCommand extends Command
                     continue;
                 }
 
-                if ($update->execute(['date' => $date->format('Y-m-d H:i:s'), 'id' => $invoice->getId()])) {
+                try {
+                    $update->executeQuery(['date' => $date->format('Y-m-d H:i:s'), 'id' => $invoice->getId()]);
                     $output->writeln('<info>done</info>');
-                } else {
+                } catch (Exception $e) {
                     $output->writeln('<error>failure</error>');
                 }
             }
@@ -122,5 +105,7 @@ class InvoiceDueDateUpdateCommand extends Command
         } while (!empty($invoices));
 
         $output->writeln('');
+
+        return Command::SUCCESS;
     }
 }

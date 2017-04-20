@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\CommerceBundle\Table\Action;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
@@ -12,7 +13,8 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
-use Symfony\Component\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class OrderShipmentType
@@ -21,67 +23,35 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class OrderShipmentType extends AbstractOrderListType
 {
-    /**
-     * @var ShipmentHelper
-     */
-    private $shipmentHelper;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-
-    /**
-     * Constructor.
-     *
-     * @param ShipmentHelper      $shipmentHelper
-     * @param TranslatorInterface $translator
-     * @param string              $class
-     */
-    public function __construct(
-        ShipmentHelper $shipmentHelper,
-        TranslatorInterface $translator,
-        string $class
-    ) {
-        parent::__construct($class);
-
-        $this->shipmentHelper = $shipmentHelper;
-        $this->translator = $translator;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         parent::buildTable($builder, $options);
 
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', Column\OrderShipmentType::class, [
-                'label'         => 'ekyna_core.field.number',
+                'label'         => t('field.number', [], 'EkynaUi'),
                 'property_path' => false,
                 'position'      => 10,
             ])
             ->addColumn('return', CType\Column\BooleanType::class, [
-                'label'       => 'ekyna_commerce.shipment.field.return',
+                'label'       => t('shipment.field.return', [], 'EkynaCommerce'),
                 'true_class'  => 'label-warning',
                 'false_class' => 'label-default',
                 'position'    => 20,
             ])
             /*->addColumn('customer', Column\SaleCustomerType::class, [
-                'label'         => 'ekyna_commerce.customer.label.singular',
+                'label'         => t('customer.label.singular', [], 'EkynaCommerce'),
                 'property_path' => 'order',
                 'position'      => 30,
             ])*/
             ->addColumn('method', CType\Column\TextType::class, [
-                'label'         => 'ekyna_core.field.method',
+                'label'         => t('field.method', [], 'EkynaUi'),
                 'property_path' => 'method.name',
                 'position'      => 40,
             ])
             ->addColumn('state', Column\ShipmentStateType::class, [
-                'label'    => 'ekyna_core.field.status',
+                'label'    => t('field.status', [], 'EkynaUi'),
                 'position' => 50,
             ])
             ->addColumn('weight', Column\ShipmentWeightType::class, [
@@ -91,12 +61,12 @@ class OrderShipmentType extends AbstractOrderListType
                 'position' => 70,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.created_at',
+                'label'       => t('field.created_at', [], 'EkynaUi'),
                 'time_format' => 'none',
                 'position'    => 80,
             ])
             ->addColumn('completedAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.completed_at',
+                'label'       => t('field.completed_at', [], 'EkynaUi'),
                 'time_format' => 'none',
                 'position'    => 90,
             ])
@@ -110,11 +80,11 @@ class OrderShipmentType extends AbstractOrderListType
 
         $builder
             ->addFilter('number', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
+                'label'    => t('field.number', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('return', CType\Filter\BooleanType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.return',
+                'label'    => t('shipment.field.return', [], 'EkynaCommerce'),
                 'position' => 20,
             ])
             ->addFilter('method', ResourceType::class, [
@@ -122,24 +92,24 @@ class OrderShipmentType extends AbstractOrderListType
                 'position' => 30,
             ])
             ->addFilter('state', CType\Filter\ChoiceType::class, [
-                'label'    => 'ekyna_core.field.status',
+                'label'    => t('field.status', [], 'EkynaUi'),
                 'choices'  => ShipmentStates::getChoices(),
                 'position' => 40,
             ])
             ->addFilter('weight', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_core.field.weight',
+                'label'    => t('field.weight', [], 'EkynaUi'),
                 'position' => 50,
             ])
             ->addFilter('trackingNumber', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.tracking_number',
+                'label'    => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                 'position' => 60,
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.created_at',
+                'label'    => t('field.created_at', [], 'EkynaUi'),
                 'position' => 70,
             ])
             ->addFilter('shippedAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.shipped_at',
+                'label'    => t('shipment.field.shipped_at', [], 'EkynaCommerce'),
                 'position' => 80,
             ]);
 
@@ -147,18 +117,18 @@ class OrderShipmentType extends AbstractOrderListType
             ->addAction('ship', Action\ShipmentShipActionType::class)
             ->addAction('shipment_label', Action\ShipmentPrintLabelActionType::class)
             ->addAction('summary_label', Action\ShipmentPrintLabelActionType::class, [
-                'label' => 'ekyna_commerce.shipment.action.summary_labels',
+                'label' => t('shipment.action.summary_labels', [], 'EkynaCommerce'),
                 'types' => [ShipmentLabelInterface::TYPE_SUMMARY],
             ])
             ->addAction('prepare', Action\ShipmentPrepareActionType::class)
             ->addAction('cancel', Action\ShipmentCancelActionType::class)
             ->addAction('remove', Action\ShipmentRemoveActionType::class)
             ->addAction('bills', Action\ShipmentDocumentActionType::class, [
-                'label' => 'ekyna_commerce.shipment.action.bills',
+                'label' => t('shipment.action.bills', [], 'EkynaCommerce'),
                 'type'  => DocumentTypes::TYPE_SHIPMENT_BILL,
             ])
             ->addAction('forms', Action\ShipmentDocumentActionType::class, [
-                'label' => 'ekyna_commerce.shipment.action.forms',
+                'label' => t('shipment.action.forms', [], 'EkynaCommerce'),
                 'type'  => DocumentTypes::TYPE_SHIPMENT_FORM,
             ]);
     }

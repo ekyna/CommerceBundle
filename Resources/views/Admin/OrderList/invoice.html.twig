@@ -1,13 +1,13 @@
 {% extends '@EkynaAdmin/Entity/layout.html.twig' %}
 
-{% block page_title %}{{ 'ekyna_commerce.invoice.label.plural'|trans|raw }} - {{ parent() }}{% endblock page_title %}
+{% block page_title %}{{ 'invoice.label.plural'|trans({}, 'EkynaCommerce')|raw }}{% endblock page_title %}
 
 {% block title %}
-    <h1>{{ 'ekyna_commerce.invoice.label.plural'|trans|raw }}</h1>
+    <h1>{{ 'invoice.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}{% endblock actions %}
 
 {% block main %}
-    {{ ekyna_table_render(invoices) }}
+    {{ ekyna_table_render(resources) }}
 {% endblock main %}

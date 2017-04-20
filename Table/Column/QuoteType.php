@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -16,6 +21,12 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use function array_replace;
+use function is_array;
+use function json_encode;
+use function sprintf;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class QuoteType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
@@ -23,47 +34,25 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class QuoteType extends AbstractColumnType
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private ResourceHelper $helper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     */
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(ResourceHelper $helper)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->helper = $helper;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $quotes = $row->getData($column->getConfig()->getPropertyPath());
 
         if ($quotes instanceof QuoteInterface) {
-            $href = $this->urlGenerator->generate('ekyna_commerce_quote_admin_show', [
-                'quoteId' => $quotes->getId(),
-            ]);
+            $href = $this->helper->generateResourcePath($quotes, ReadAction::class);
 
-            $view->vars['value'] = sprintf(
-                '<a href="%s">%s</a> ',
-                $href,
-                $quotes->getNumber()
-            );
+            /** @noinspection HtmlUnknownTarget */
+            $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $quotes->getNumber());
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-side-detail' => json_encode([
-                    'route'      => 'ekyna_commerce_quote_admin_summary',
-                    'parameters' => [
-                        'quoteId' => $quotes->getId(),
-                    ],
-                ]),
+                'data-side-detail' => $this->helper->generateResourcePath($quotes, SummaryAction::class),
             ]);
 
             return;
@@ -82,35 +71,22 @@ class QuoteType extends AbstractColumnType
                 continue;
             }
 
-            $href = $this->urlGenerator->generate('ekyna_commerce_quote_admin_show', [
-                'quoteId' => $quote->getId(),
-            ]);
+            $href = $this->helper->generateResourcePath($quote, ReadAction::class);
+            $summary = $this->helper->generateResourcePath($quote, SummaryAction::class);
 
-            $summary = json_encode([
-                'route'      => 'ekyna_commerce_quote_admin_summary',
-                'parameters' => ['quoteId' => $quote->getId()],
-            ]);
-
-            $output .= sprintf(
-                '<a href="%s" data-side-detail=\'%s\'>%s</a> ',
-                $href,
-                $summary,
-                $quote->getNumber()
-            );
+            /** @noinspection HtmlUnknownTarget */
+            $output .= sprintf('<a href="%s" data-side-detail="%s">%s</a>', $href, $summary, $quote->getNumber());
         }
 
         $view->vars['value'] = $output;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function applySort(
         AdapterInterface $adapter,
         ColumnInterface $column,
         ActiveSort $activeSort,
         array $options
-    ) {
+    ): bool {
         if (!$adapter instanceof EntityAdapter) {
             return false;
         }
@@ -126,10 +102,7 @@ class QuoteType extends AbstractColumnType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'multiple'      => false,
@@ -138,7 +111,7 @@ class QuoteType extends AbstractColumnType
                     return $value;
                 }
 
-                return 'ekyna_commerce.quote.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                return t('quote.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
             },
             'property_path' => function (Options $options, $value) {
                 if ($value) {
@@ -150,18 +123,12 @@ class QuoteType extends AbstractColumnType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ColumnType::class;
     }

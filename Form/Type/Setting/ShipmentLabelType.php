@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Setting;
 
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
@@ -9,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ShipmentLabelType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Setting
@@ -16,41 +20,39 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class ShipmentLabelType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('size', ChoiceType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.size',
-                'choices'  => LabelRenderer::getSizes(),
-                'required' => false,
-                'select2'  => false,
+                'label'                     => t('setting.shipment_label.size', [], 'EkynaCommerce'),
+                'choices'                   => LabelRenderer::getSizes(),
+                'choice_translation_domain' => false,
+                'required'                  => false,
+                'select2'                   => false,
             ])
             ->add('width', IntegerType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.width',
+                'label'    => t('setting.shipment_label.width', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'input_group' => ['append' => 'mm'],
                 ],
             ])
             ->add('height', IntegerType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.height',
+                'label'    => t('setting.shipment_label.height', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'input_group' => ['append' => 'mm'],
                 ],
             ])
             ->add('margin', IntegerType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.margin',
+                'label'    => t('setting.shipment_label.margin', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'input_group' => ['append' => 'mm'],
                 ],
             ])
             ->add('download', CheckboxType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.download',
+                'label'    => t('setting.shipment_label.download', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,

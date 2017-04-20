@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notify;
 
 use Ekyna\Component\Commerce\Common\Model\Recipient;
@@ -9,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class RecipientType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Notification
@@ -16,41 +20,32 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class RecipientType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', EmailType::class, [
-                'label'  => false,
-                'attr' => [
-                    'placeholder' => 'ekyna_core.field.email',
-                ]
+                'label' => false,
+                'attr'  => [
+                    'placeholder' => t('field.email', [], 'EkynaUi'),
+                ],
             ])
             ->add('name', TextType::class, [
                 'label'    => false,
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'ekyna_core.field.name',
-                ]
+                'attr'     => [
+                    'placeholder' => t('field.name', [], 'EkynaUi'),
+                ],
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Recipient::class,
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_recipient';
     }

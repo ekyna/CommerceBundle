@@ -1,23 +1,10 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    <li class="active">
-        <a href="#shipment-shipment-zone-general" id="toggle-general" data-toggle="tab">
-            {{ 'ekyna_core.field.general'|trans }}
-        </a>
-    </li>
-</ul>
-<div class="panel-body form-body commerce-shipment-zone">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="shipment-shipment-zone-general">
-            {{ form_row(form.name) }}
-            {{ form_row(form.countries) }}
-            <hr>
-            {{ form_row(form.pricing) }}
-        </div>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ form_row(form.name) }}
+        {{ form_row(form.countries) }}
+        <hr>
+        {{ form_row(form.pricing) }}
     </div>
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+{%- endblock main_contents %}

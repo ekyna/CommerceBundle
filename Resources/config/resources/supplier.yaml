@@ -1,0 +1,197 @@
+resources:
+    ekyna_commerce:
+        supplier:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\Supplier
+#            TODO repository:
+#                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierRepositoryInterface
+#                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierRepository
+#            manager:
+#                interface: ~
+#                class: ~
+#            factory:
+#                interface: ~
+#                class: ~
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierNormalizer
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\SupplierRepository
+                global: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    summary: true
+                    templates: '@EkynaCommerce/Admin/Supplier'
+                api_crud: ~
+
+        supplier_address:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierAddressInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierAddress
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierAddressType
+            parent: ekyna_commerce.supplier
+            trans_prefix: address
+            trans_domain: EkynaCommerce
+
+        # TODO Rename to supplier_reference
+        supplier_product:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierProduct
+            repository:
+                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierProductRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierProductRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Supplier\Factory\SupplierProductFactoryInterface
+                class: Ekyna\Component\Commerce\Supplier\Factory\SupplierProductFactory
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierProductNormalizer
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\SupplierProductRepository
+                global: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierProductType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierProductType
+            parent: ekyna_commerce.supplier
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/SupplierProduct'
+                    create: false
+                    list: false
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierProduct\CreateAction: ~
+
+        supplier_carrier:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierCarrierInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierCarrier
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierCarrierType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierCarrierType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/SupplierCarrier/_form.html.twig'
+                    read: '@EkynaCommerce/Admin/SupplierCarrier/read.html.twig'
+
+        supplier_order:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierOrder
+            repository:
+                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierOrderRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Supplier\Factory\SupplierOrderFactoryInterface
+                class: Ekyna\Component\Commerce\Supplier\Factory\SupplierOrderFactory
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierOrderNormalizer
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\SupplierOrderRepository
+                global: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierOrderType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/SupplierOrder'
+                    create: false
+                    summary: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\CancelAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\LabelAction:
+                    expose: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\NotifyAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\RecalculateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\RenderAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\SubmitAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder\TemplateAction:
+                    expose: true
+
+        supplier_order_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierOrderItem
+            repository:
+                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderItemRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierOrderItemRepository
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierOrderItemNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemType
+            parent: ekyna_commerce.supplier_order
+            trans_prefix: sale_item
+            trans_domain: EkynaCommerce
+
+        supplier_order_attachment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierOrderAttachmentInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierOrderAttachment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderAttachmentType
+            parent: ekyna_commerce.supplier_order
+            trans_prefix: attachment
+            trans_domain: EkynaCommerce
+            behaviors:
+                uploadable:
+                    uploader: ekyna_commerce.uploader
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/Common/Attachment'
+                    list: false
+                    read: false
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\ArchiveAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\DownloadAction: ~
+
+        supplier_delivery:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierDelivery
+            repository:
+                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierDeliveryRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierDeliveryRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierDeliveryType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierDeliveryType
+            parent: ekyna_commerce.supplier_order
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/SupplierDelivery'
+                    list: false
+                    read: false
+
+        supplier_delivery_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierDeliveryItem
+            repository:
+                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierDeliveryItemRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierDeliveryItemRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierDeliveryItemType
+            parent: ekyna_commerce.supplier_delivery
+            trans_prefix: sale_item
+            trans_domain: EkynaCommerce
+
+        supplier_template:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierTemplateInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierTemplate
+            repository:
+                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierTemplateRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierTemplateRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierTemplateType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierTemplateType
+            trans_domain: EkynaCommerce
+            translation:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierTemplateTranslationInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierTemplateTranslation
+                fields: [subject, message]
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/SupplierTemplate/_form.html.twig'
+                    read: '@EkynaCommerce/Admin/SupplierTemplate/read.html.twig'

@@ -5,7 +5,7 @@
     <div class="row show-row">
         <div class="col-md-2 show-label">
             <label for="shipment-price-filter">
-                {{- ('ekyna_commerce.shipment_' ~ list.filterBy ~ '.label.singular')|trans -}}
+                {{- ('shipment_' ~ list.filterBy ~ '.label.singular')|trans({}, 'EkynaCommerce') -}}
             </label>
         </div>
         <div class="col-md-10">
@@ -17,26 +17,26 @@
             {%- endfor -%}
             </select>
             {% else %}
-           <span class="form-control">
-               {{- ('ekyna_commerce.shipment_' ~ list.filterBy ~ '.alert.empty_list')|trans -}}
-           </span>
+            <span class="form-control">
+               {{- ('shipment_' ~ list.filterBy ~ '.alert.empty_list')|trans({}, 'EkynaCommerce') -}}
+            </span>
             {% endif %}
         </div>
     </div>
 
     <div class="row show-row">
         <div class="col-md-2 show-label">
-            {{ 'ekyna_commerce.shipment_price.label.plural'|trans }}
+            {{ 'shipment_price.label.plural'|trans({}, 'EkynaCommerce') }}
         </div>
         <div class="col-md-10">
             <table class="table table-stripped table-alt-head shipment-price-list">
                 <thead>
                 <tr>
                     <th width="50%" class="text-right">
-                        {{- 'ekyna_commerce.shipment_price.field.weight'|trans -}}
+                        {{- 'shipment_price.field.weight'|trans({}, 'EkynaCommerce') -}}
                     </th>
                     <th width="50%" class="text-right">
-                        {{- 'ekyna_commerce.field.buy_net_price'|trans -}}
+                        {{- 'field.buy_net_price'|trans({}, 'EkynaCommerce') -}}
                     </th>
                 </tr>
                 </thead>
@@ -45,10 +45,10 @@
                     <tr data-{{ list.filterBy }}="{{ attribute(price, list.filterBy).id }}">
                         {# TODO packging format #}
                         <td class="text-right" id="shipment_price_{{ loop.index0 }}_weight">
-                            {{- (price.weight|localizednumber ~ '&nbsp;kg')|raw -}}
+                            {{- (price.weight|format_number ~ '&nbsp;kg')|raw -}}
                         </td>
                         <td class="text-right" id="shipment_price_{{ loop.index0 }}_netPrice">
-                            {{- price.netPrice|localizedcurrency(commerce_default_currency) -}}
+                            {{- price.netPrice|format_currency(commerce_default_currency) -}}
                         </td>
                     </tr>
                 {%- endfor -%}

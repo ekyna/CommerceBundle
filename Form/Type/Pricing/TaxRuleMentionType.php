@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MentionType;
@@ -14,18 +16,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TaxRuleMentionType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('translation_class', TaxRuleMentionTranslation::class);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return MentionType::class;
     }

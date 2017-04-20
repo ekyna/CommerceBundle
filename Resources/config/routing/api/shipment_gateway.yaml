@@ -1,0 +1,17 @@
+api_ekyna_commerce_shipment_gateway_list_relay_points:
+    path: /{gateway}/list-relay-points
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\ShipmentGatewayController::listRelayPoints
+    requirements:
+        gateway: "[a-zA-Z0-9-_]+"
+    options:
+        expose: true
+
+api_ekyna_commerce_shipment_gateway_get_relay_point:
+    path: /{gateway}/get-relay-point
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\ShipmentGatewayController::getRelayPoint
+    requirements:
+        gateway: "[a-zA-Z0-9-_]+"
+    options:
+        expose: true

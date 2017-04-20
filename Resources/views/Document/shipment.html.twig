@@ -9,23 +9,23 @@
 {% apply spaceless %}
     <h1>
         {% if subject.return -%}
-            {{- 'ekyna_commerce.document.type.return_bill'|trans }}
+            {{- 'document.type.return_bill'|trans({}, 'EkynaCommerce') }}
         {%- else -%}
-            {{- 'ekyna_commerce.document.type.shipment_bill'|trans }}
+            {{- 'document.type.shipment_bill'|trans({}, 'EkynaCommerce') }}
         {%- endif %}
         {{ subject.number -}}
     </h1>
     <p>
-        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
-        {{ subject.createdAt|localizeddate('long', 'none', locale) }}.
-        <span class="text-alt">{{ 'ekyna_commerce.order.label.singular'|trans }}</span>&nbsp;
+        <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
+        {{ subject.createdAt|format_datetime('long', 'none', locale) }}.
+        <span class="text-alt">{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</span>&nbsp;
         <strong>{{ subject.sale.number }}</strong>.
         {% if subject.sale.customer is not null -%}
-            <span class="text-alt">{{ 'ekyna_commerce.customer.label.singular'|trans }}</span>&nbsp;
+            <span class="text-alt">{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</span>&nbsp;
             <strong>{{ subject.sale.customer.number }}</strong>.
         {%- endif %}
         {% if subject.sale.voucherNumber is not empty -%}
-            <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</span>&nbsp;
+            <span class="text-alt">{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce') }}</span>&nbsp;
             <strong>{{ subject.sale.voucherNumber }}</strong>.
         {%- endif %}
         {{ macro.render_shipment_method(subject) }}
@@ -43,9 +43,9 @@
     <table class="bloc table addresses">
         <thead>
         <tr>
-            <th>{{ 'ekyna_commerce.shipment.field.sender_address'|trans }}</th>
+            <th>{{ 'shipment.field.sender_address'|trans({}, 'EkynaCommerce') }}</th>
             <th class="blank">&nbsp;</th>
-            <th>{{ 'ekyna_commerce.shipment.field.receiver_address'|trans }}</th>
+            <th>{{ 'shipment.field.receiver_address'|trans({}, 'EkynaCommerce') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -71,9 +71,9 @@
         {% block doc_lines_header %}
         <thead>
         <tr>
-            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-            <th class="text-right">{{ 'ekyna_core.field.quantity'|trans }}</th>
+            <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+            <th class="text-right">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
         </tr>
         </thead>
         {% endblock doc_lines_header %}
@@ -107,7 +107,7 @@
                 <td>{{ row.reference }}</td>
                 <td class="text-right">
                     {%- if not row.virtual -%}
-                        {{ row.quantity|localizednumber }}{# TODO Packaging format #}
+                        {{ row.quantity|format_number }}{# TODO Packaging format #}
                     {%- else -%}
                         &nbsp;
                     {%- endif -%}
@@ -125,11 +125,11 @@
     <hr>
     <p>
     {%- if remaining_date and (remaining.eda is not null) -%}
-        {{ 'ekyna_commerce.document.mention.remaining_with_date'|trans({
-            '%date%': remaining.eda|localizeddate('long', 'none', locale)
-        }) }}
+        {{ 'document.mention.remaining_with_date'|trans({
+            '%date%': remaining.eda|format_datetime('long', 'none', locale)
+        }, 'EkynaCommerce') }}
     {%- else -%}
-        {{ 'ekyna_commerce.document.mention.remaining_unknown'|trans }}
+        {{ 'document.mention.remaining_unknown'|trans({}, 'EkynaCommerce') }}
     {%- endif -%}
     </p>
     <table class="bloc table details">
@@ -161,7 +161,7 @@
             <td>{{ row.reference }}</td>
             <td class="text-right">
                 {%- if not row.virtual -%}
-                    {{ row.quantity|localizednumber }}{# TODO Packaging format #}
+                    {{ row.quantity|format_number }}{# TODO Packaging format #}
                 {%- else -%}
                     &nbsp;
                 {%- endif -%}

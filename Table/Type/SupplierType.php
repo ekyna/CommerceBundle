@@ -1,124 +1,93 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
-use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Ekyna\Component\Table\View;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SupplierType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierType extends ResourceTableType
+class SupplierType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addColumn('name', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.name',
-                'route_name'           => 'ekyna_commerce_supplier_admin_show',
-                'route_parameters_map' => [
-                    'supplierId' => 'id',
-                ],
-                'position'             => 10,
+                'label'    => t('field.name', [], 'EkynaUi'),
+                'position' => 10,
             ])
             ->addColumn('email', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.email',
+                'label'    => t('field.email', [], 'EkynaUi'),
                 'position' => 20,
             ])
             ->addColumn('customerCode', CType\Column\TextType::class, [
-                'label'    => 'ekyna_commerce.supplier.field.customer_code',
+                'label'    => t('supplier.field.customer_code', [], 'EkynaCommerce'),
                 'position' => 30,
             ])
             ->addColumn('currency', CType\Column\TextType::class, [
-                'label'         => 'ekyna_core.field.currency',
+                'label'         => t('field.currency', [], 'EkynaUi'),
                 'property_path' => 'currency.code',
                 'position'      => 40,
             ])
-            ->addColumn('country', BType\Column\LocaleType::class, [
-                'label'    => 'ekyna_core.field.country',
+            ->addColumn('country', BType\Column\CountryType::class, [
+                'label'         => t('field.country', [], 'EkynaUi'),
                 'property_path' => 'address.country.code',
-                'position' => 50,
+                'position'      => 50,
             ])
             ->addColumn('locale', BType\Column\LocaleType::class, [
-                'label'    => 'ekyna_core.field.locale',
+                'label'    => t('field.locale', [], 'EkynaUi'),
                 'position' => 51,
             ])
             ->addColumn('tax', DType\Column\EntityType::class, [
-                'label'                => 'ekyna_commerce.tax.label.singular',
-                'entity_label'         => 'name',
-                'route_name'           => 'ekyna_commerce_tax_admin_show',
-                'route_parameters_map' => [
-                    'taxId' => 'id',
-                ],
-                'position'             => 60,
+                'label'        => t('tax.label.singular', [], 'EkynaCommerce'),
+                'entity_label' => 'name',
+                'position'     => 60,
             ])
             ->addColumn('carrier', DType\Column\EntityType::class, [
-                'label'                => 'ekyna_commerce.supplier_carrier.label.singular',
-                'entity_label'         => 'name',
-                'route_name'           => 'ekyna_commerce_supplier_carrier_admin_show',
-                'route_parameters_map' => [
-                    'supplierCarrierId' => 'id',
-                ],
-                'position'             => 70,
+                'label'        => t('supplier_carrier.label.singular', [], 'EkynaCommerce'),
+                'entity_label' => 'name',
+                'position'     => 70,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_commerce.supplier_product.button.new',
-                        'icon'                 => 'plus',
-                        'class'                => 'primary',
-                        'route_name'           => 'ekyna_commerce_supplier_product_admin_new',
-                        'route_parameters_map' => ['supplierId' => 'id'],
-                        'permission'           => 'create',
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    Action\CreateAction::class => [
+                        'resource' => 'ekyna_commerce.supplier_product',
                     ],
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_supplier_admin_edit',
-                        'route_parameters_map' => ['supplierId' => 'id'],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_supplier_admin_remove',
-                        'route_parameters_map' => ['supplierId' => 'id'],
-                        'permission'           => 'delete',
-                    ],
+                    Action\UpdateAction::class,
+                    Action\DeleteAction::class,
                 ],
             ])
             ->addFilter('name', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.name',
+                'label'    => t('field.name', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('email', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.email',
+                'label'    => t('field.email', [], 'EkynaUi'),
                 'position' => 20,
             ])
             ->addFilter('customerCode', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_commerce.supplier.field.customer_code',
+                'label'    => t('supplier.field.customer_code', [], 'EkynaCommerce'),
                 'position' => 30,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildRowView(View\RowView $view, RowInterface $row, array $options)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $view->vars['attr']['data-summary'] = json_encode([
-            'route'      => 'ekyna_commerce_supplier_admin_summary',
-            'parameters' => ['supplierId' => $row->getData('id')],
-        ]);
+        parent::configureOptions($resolver);
+
+        $resolver->setDefault('resource_summary', true);
     }
 }

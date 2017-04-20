@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<style type="text/css">
+<style>
     table { border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; width: 100% }
     td, th { font-size: 13px; padding: 2px 4px; border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
     p { margin-bottom: 10px; }
@@ -13,7 +13,7 @@
 
 {% block body %}
 {% apply spaceless %}
-    {{ 'ekyna_commerce.ticket_message.notify.admin.content'|trans|raw }}
+    {{ 'ticket_message.notify.admin.content'|trans({}, 'EkynaCommerce')|raw }}
     <table border="0" cellpadding="0" cellspacing="0">
         <thead>
         <tr>
@@ -25,7 +25,7 @@
         {% for message in messages -%}
         <tr>
             <td>
-                <a href="{{ absolute_url(path('ekyna_commerce_ticket_admin_show', {'ticketId': message.ticket.id})) }}">
+                <a href="{{ admin_resource_path(message.ticket, 'admin_read', {}, true) }}">
                     {{- message.ticket.number -}}
                 </a>
             </td>

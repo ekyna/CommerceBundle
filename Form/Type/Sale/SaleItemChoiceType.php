@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\ChoiceList\SaleItemChoiceLoader;
@@ -13,6 +15,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function sprintf;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class SaleItemChoiceType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
@@ -20,37 +25,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleItemChoiceType extends AbstractType
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['multiple']) {
             $builder
                 ->addEventSubscriber(new MergeDoctrineCollectionListener())
-                ->addViewTransformer(new CollectionToArrayTransformer(), true)
-            ;
+                ->addViewTransformer(new CollectionToArrayTransformer(), true);
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('sale')
             ->setDefaults([
-                'label' => function(Options $options) {
-                    return 'ekyna_commerce.sale_item.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                'label'                     => function (Options $options) {
+                    return t('sale_item.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
                 },
-                'public'        => true,
-                'depth'         => null,
-                'choices'       => null,
-                'choice_loader' => function (Options $options) {
+                'public'                    => true,
+                'depth'                     => null,
+                'choices'                   => null,
+                'choice_loader'             => function (Options $options) {
                     return new SaleItemChoiceLoader($options['sale']);
                 },
-                'choice_label'  => function (SaleItemInterface $item) {
+                'choice_label'              => function (SaleItemInterface $item) {
                     return sprintf(
                         '%s [%s] %s',
                         str_repeat('&nbsp;&nbsp;&rsaquo;&nbsp;', $item->getLevel()),
@@ -58,18 +56,16 @@ class SaleItemChoiceType extends AbstractType
                         $item->getDesignation()
                     );
                 },
-                'choice_name'   => 'id',
-                'choice_value'  => 'id',
+                'choice_translation_domain' => false,
+                'choice_name'               => 'id',
+                'choice_value'              => 'id',
             ])
             ->setAllowedTypes('sale', SaleInterface::class)
             ->setAllowedTypes('public', 'bool')
             ->setAllowedTypes('depth', ['int', 'null']);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }

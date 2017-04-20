@@ -1,30 +1,34 @@
-{{ show_row(settings.commerce.invoice_footer, 'i18n_parameter', {
-    'label': 'ekyna_commerce.setting.invoice_footer',
+{{ show_row(settings.commerce.invoice_footer, 'setting_i18n_parameter', {
+    'label': 'setting.invoice_footer',
+    'label_trans_domain': 'EkynaCommerce',
     'type': 'textarea',
     'options': {'html': true},
     'label_col': 3
 }) }}
-{{ show_row(settings.commerce.email_signature, 'i18n_parameter', {
-    'label': 'ekyna_commerce.setting.email_signature',
+{{ show_row(settings.commerce.email_signature, 'setting_i18n_parameter', {
+    'label': 'setting.email_signature',
+    'label_trans_domain': 'EkynaCommerce',
     'type': 'textarea',
     'options': {'html': true},
     'label_col': 3
 }) }}
 <div class="row show-row">
     <div class="col-md-3 show-label">
-        {{ 'ekyna_commerce.setting.shipment_label.label'|trans }}
+        {{ 'setting.shipment_label.label'|trans({}, 'EkynaCommerce') }}
     </div>
     <div class="col-md-9">
         <div class="row">
             <div class="col-md-6">
                 {{ show_row(settings.commerce.shipment_label.size, 'text', {
-                    'label': 'ekyna_commerce.setting.shipment_label.size',
+                    'label': 'setting.shipment_label.size',
+                    'label_trans_domain': 'EkynaCommerce',
                     'label_col': 6
                 }) }}
             </div>
             <div class="col-md-6">
                 {{ show_row(settings.commerce.shipment_label.width, 'number', {
-                    'label': 'ekyna_commerce.setting.shipment_label.width',
+                    'label': 'setting.shipment_label.width',
+                    'label_trans_domain': 'EkynaCommerce',
                     'append': 'mm',
                     'label_col': 6
                 }) }}
@@ -33,14 +37,16 @@
         <div class="row">
             <div class="col-md-6">
                 {{ show_row(settings.commerce.shipment_label.height, 'number', {
-                    'label': 'ekyna_commerce.setting.shipment_label.height',
+                    'label': 'setting.shipment_label.height',
+                    'label_trans_domain': 'EkynaCommerce',
                     'append': 'mm',
                     'label_col': 6
                 }) }}
             </div>
             <div class="col-md-6">
                 {{ show_row(settings.commerce.shipment_label.margin, 'number', {
-                    'label': 'ekyna_commerce.setting.shipment_label.margin',
+                    'label': 'setting.shipment_label.margin',
+                    'label_trans_domain': 'EkynaCommerce',
                     'append': 'mm',
                     'label_col': 6
                 }) }}
@@ -49,7 +55,8 @@
         <div class="row">
             <div class="col-md-6">
                 {{ show_row(settings.commerce.shipment_label.download, 'boolean', {
-                    'label': 'ekyna_commerce.setting.shipment_label.download',
+                    'label': 'setting.shipment_label.download',
+                    'label_trans_domain': 'EkynaCommerce',
                     'label_col': 6
                 }) }}
             </div>

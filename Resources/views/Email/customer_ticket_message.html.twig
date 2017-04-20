@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<style type="text/css">
+<style>
     table { border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; width: 100% }
     td, th { font-size: 13px; padding: 2px 4px; border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
     p { margin-bottom: 10px; }
@@ -25,22 +25,22 @@
 {% apply spaceless %}
     {% do trans_set_locale(locale) %}
     {% if 0 < ticket.orders|length %}
-        {% set path = path('ekyna_commerce_account_order_show', {'number': ticket.orders|first.number}) %}
+        {% set path = path('ekyna_commerce_account_order_read', {'number': ticket.orders|first.number}) %}
     {% elseif 0 < ticket.quotes|length %}
-        {% set path = path('ekyna_commerce_account_quote_show', {'number': ticket.quotes|first.number}) %}
+        {% set path = path('ekyna_commerce_account_quote_read', {'number': ticket.quotes|first.number}) %}
     {% else %}
         {% set path = path('ekyna_commerce_account_ticket_index') %}
     {% endif %}
-    {{- 'ekyna_commerce.ticket_message.notify.customer.content_head'|trans({
+    {{- 'ticket_message.notify.customer.content_head'|trans({
         '%number%': ticket.number,
         '%subject%': ticket.subject
-    })|raw -}}
+    }, 'EkynaCommerce')|raw -}}
     <div class="message-content">
         {{- message.content|raw -}}
     </div>
-    {{- 'ekyna_commerce.ticket_message.notify.customer.content_foot'|trans({
+    {{- 'ticket_message.notify.customer.content_foot'|trans({
         '%url%': absolute_url(path) ~ '#support-tickets'
-    })|raw -}}
+    }, 'EkynaCommerce')|raw -}}
     {{- get_setting('commerce.email_signature', locale)|raw -}}
     {% do trans_revert_locale() %}
 {% endapply %}

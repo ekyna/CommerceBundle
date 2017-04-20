@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions as Transitions;
  */
 final class PaymentTransitions extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.payment.transition.';
+        $prefix = 'payment.transition.';
         $suffix = '.label';
 
         return [
@@ -38,10 +37,15 @@ final class PaymentTransitions extends AbstractConstants
      *
      * @return string
      */
-    public static function getConfirm($transition)
+    public static function getConfirm(string $transition): string
     {
-        static::isValid($transition, true);
+        PaymentTransitions::isValid($transition, true);
 
-        return sprintf('ekyna_commerce.payment.transition.%s.confirm', $transition);
+        return sprintf('payment.transition.%s.confirm', $transition);
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

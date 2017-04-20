@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
-use Ekyna\Bundle\CoreBundle\Form\Type\UploadType;
+use Ekyna\Bundle\UiBundle\Form\Type\UploadType;
 use Ekyna\Component\Commerce\Customer\Entity\CustomerLogo;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CustomerLogoType
@@ -14,22 +18,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CustomerLogoType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'      => 'ekyna_core.field.logo',
+                'label'      => t('field.logo', [], 'EkynaUi'),
                 'data_class' => CustomerLogo::class,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return UploadType::class;
     }

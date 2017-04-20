@@ -2,7 +2,7 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.pricing.field.vat_number'|trans }}
+                {{ 'pricing.field.vat_number'|trans({}, 'EkynaCommerce') }}
             </div>
             <div class="col-md-8">
                 <div class="show-widget show-widget-inline" id="{{ prefix|default('subject') }}_vat_number">
@@ -22,7 +22,7 @@
                             </div>
                         {%- endif %}
                     {%- else -%}
-                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                        <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
                     {%- endif %}
                 </div>
             </div>
@@ -31,17 +31,17 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.pricing.field.vat_valid'|trans }}
+                {{ 'pricing.field.vat_valid'|trans({}, 'EkynaCommerce') }}
             </div>
             <div class="col-md-8">
                 <div class="show-widget show-widget-inline" id="{{ prefix|default('subject') }}_vat_valid">
                     {% if subject.vatValid -%}
                     <span class="label label-success">
-                         {{- 'ekyna_core.value.yes'|trans -}}
+                         {{- 'value.yes'|trans({}, 'EkynaUi') -}}
                     </span>
                     {%- else -%}
                     <span class="label label-{{ subject.vatNumber is empty ? 'default' : 'danger' }}">
-                         {{- 'ekyna_core.value.no'|trans -}}
+                         {{- 'value.no'|trans({}, 'EkynaUi') -}}
                     </span>
                     {%- endif %}
                 </div>

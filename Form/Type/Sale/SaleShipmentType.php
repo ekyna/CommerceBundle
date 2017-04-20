@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
-use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use libphonenumber\PhoneNumberType as PhoneType;
@@ -18,6 +20,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class SaleShipmentType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
@@ -25,30 +29,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleShipmentType extends AbstractType
 {
-    /**
-     * @var ShipmentPriceResolverInterface
-     */
-    private $shipmentPriceResolver;
+    private ShipmentPriceResolverInterface $shipmentPriceResolver;
 
 
-    /**
-     * Constructor.
-     *
-     * @param ShipmentPriceResolverInterface $shipmentPriceResolver
-     */
     public function __construct(ShipmentPriceResolverInterface $shipmentPriceResolver)
     {
         $this->shipmentPriceResolver = $shipmentPriceResolver;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('shipmentAmount', Type\NumberType::class, [
-                'label'    => 'ekyna_commerce.sale.field.shipping_cost',
+                'label'    => t('sale.field.shipping_cost', [], 'EkynaCommerce'),
+                'decimal'  => true,
                 'scale'    => 5,
                 'required' => true,
                 'attr'     => [
@@ -56,7 +50,8 @@ class SaleShipmentType extends AbstractType
                 ],
             ])
             ->add('shipmentWeight', Type\NumberType::class, [
-                'label'    => 'ekyna_commerce.sale.field.weight_total',
+                'label'    => t('sale.field.weight_total', [], 'EkynaCommerce'),
+                'decimal'  => true,
                 'scale'    => 3,
                 'required' => false,
                 'attr'     => [
@@ -64,13 +59,13 @@ class SaleShipmentType extends AbstractType
                 ],
             ])
             ->add('shipmentLabel', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.shipment_label',
+                'label'    => t('sale.field.shipment_label', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class' => 'sale-shipment-label',
                 ],
             ])
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
                 /** @var SaleInterface $sale */
                 $sale = $event->getData();
                 $form = $event->getForm();
@@ -85,7 +80,7 @@ class SaleShipmentType extends AbstractType
 
                 $form
                     ->add('shipmentMethod', Shipment\ShipmentMethodPickType::class, [
-                        'label'      => 'ekyna_commerce.shipment_method.label.singular',
+                        'label'      => t('shipment_method.label.singular', [], 'EkynaCommerce'),
                         'sale'       => $sale,
                         'with_price' => false,
                         'available'  => false,
@@ -102,28 +97,25 @@ class SaleShipmentType extends AbstractType
                 }
 
                 $region = PhoneNumberUtil::UNKNOWN_REGION;
-                if ($address && null !== $country = $address->getCountry()) {
+                if (null !== $country = $address->getCountry()) {
                     $region = $country->getCode();
                 }
 
                 $form->add('mobile', PhoneNumberType::class, [
-                    'label'           => 'ekyna_core.field.mobile',
+                    'label'           => t('field.mobile', [], 'EkynaUi'),
                     'property_path'   => $addressPath . '.mobile',
                     'required'        => false,
                     'default_country' => $region,
                     'type'            => PhoneType::MOBILE,
                     'attr'            => [
                         'class'     => 'address-mobile',
-                        'help_text' => 'ekyna_commerce.checkout.shipment.mobile_required',
+                        'help_text' => t('checkout.shipment.mobile_required', [], 'EkynaCommerce'),
                     ],
                 ]);
             });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var SaleInterface $sale */
         $sale = $form->getData();
@@ -137,18 +129,12 @@ class SaleShipmentType extends AbstractType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         FormUtil::addClass($view, 'commerce-sale-shipment');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => SaleInterface::class,

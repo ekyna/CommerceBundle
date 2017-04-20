@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
@@ -9,8 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SupplierTemplateChoiceType
@@ -19,37 +23,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SupplierTemplateChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $templateClass;
-
-    /**
-     * @var string []
-     */
-    private $locales;
+    private string $templateClass;
+    private array $locales;
 
 
-    /**
-     * Constructor.
-     *
-     * @param string $class
-     * @param array  $locales
-     */
     public function __construct(string $class, array $locales)
     {
         $this->templateClass = $class;
         $this->locales       = $locales;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $locales = [];
         foreach ($this->locales as $locale) {
-            $locales[Intl::getLocaleBundle()->getLocaleName($locale)] = $locale;
+            $locales[Locales::getName($locale)] = $locale;
         }
 
         /** @var SupplierOrderInterface $order */
@@ -57,8 +45,8 @@ class SupplierTemplateChoiceType extends AbstractType
 
         $builder
             ->add('template', EntityType::class, [
-                'label'       => 'ekyna_commerce.field.template',
-                'placeholder' => 'ekyna_commerce.placeholder.template',
+                'label'       => t('field.template', [], 'EkynaCommerce'),
+                'placeholder' => t('placeholder.template', [], 'EkynaCommerce'),
                 'class'       => $this->templateClass,
                 'required'    => false,
                 'select2'     => false,
@@ -76,10 +64,7 @@ class SupplierTemplateChoiceType extends AbstractType
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var SupplierOrderInterface $order */
         $order = $options['order'];
@@ -87,10 +72,7 @@ class SupplierTemplateChoiceType extends AbstractType
         $view->vars['order_id'] = $order->getId();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('order')
@@ -101,10 +83,7 @@ class SupplierTemplateChoiceType extends AbstractType
             ->setAllowedTypes('order', SupplierOrderInterface::class);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_supplier_template_choice';
     }

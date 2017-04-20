@@ -1,67 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\AdminBundle\Table\Type\Column\ConstantChoiceType;
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model\SubscriptionStatus;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class MemberType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class MemberType extends ResourceTableType
+class MemberType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addColumn('email', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.email_address',
-                'route_name'           => 'ekyna_commerce_member_admin_show',
-                'route_parameters_map' => [
-                    'memberId' => 'id',
-                ],
-                'position'             => 10,
+                'label'    => t('field.email_address', [], 'EkynaUi'),
+                'position' => 10,
             ])
             ->addColumn('status', ConstantChoiceType::class, [
-                'label'    => 'ekyna_core.field.status',
+                'label'    => t('field.status', [], 'EkynaUi'),
                 'class'    => SubscriptionStatus::class,
                 'theme'    => true,
                 'position' => 30,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'icon'                 => 'pencil',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_member_admin_edit',
-                        'route_parameters_map' => [
-                            'memberId' => 'id',
-                        ],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'icon'                 => 'trash',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_member_admin_remove',
-                        'route_parameters_map' => [
-                            'memberId' => 'id',
-                        ],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    UpdateAction::class,
+                    DeleteAction::class,
                 ],
             ])
             ->addFilter('email', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.email',
+                'label'    => t('field.email', [], 'EkynaUi'),
                 'position' => 10,
             ]);
     }

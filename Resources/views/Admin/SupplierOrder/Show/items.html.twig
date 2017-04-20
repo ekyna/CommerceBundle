@@ -2,15 +2,15 @@
 <table class="table table-condensed table-stripped table-alt-head">
     <thead>
     <tr>
-        <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-        <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-        <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-        <th>{{ 'ekyna_commerce.stock_unit.field.received_quantity'|trans }}</th>
-        <th>{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
-        <th>{{ 'ekyna_core.field.weight'|trans }}</th>
-        <th>{{ 'ekyna_commerce.tax_group.label.singular'|trans }}</th>
-        <th>{{ 'ekyna_commerce.supplier_order_item.field.supplier_data'|trans }}</th>
-        <th>{{ 'ekyna_commerce.supplier_order_item.field.subject'|trans }}</th>
+        <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'stock_unit.field.received_quantity'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'tax_group.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'supplier_order_item.field.supplier_data'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'supplier_order_item.field.subject'|trans({}, 'EkynaCommerce') }}</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
@@ -23,10 +23,7 @@
     <tr{% if partial %} class="danger"{% endif %}>
         <td id="{{ itemId ~ 'designation' }}">
             {% if item.product is not null -%}
-            <a href="{{ path('ekyna_commerce_supplier_product_admin_show', {
-                'supplierId': item.product.supplier.id,
-                'supplierProductId': item.product.id,
-            }) }}">
+            <a href="{{ admin_resource_path(item.product) }}">
                 {{- item.designation -}}
             </a>
             {%- else -%}
@@ -37,40 +34,40 @@
             {{- item.reference -}}
         </td>
         <td id="{{ itemId ~ 'quantity' }}" class="text-right">
-            {{ item.quantity|localizednumber }}
+            {{ item.quantity|format_number }}
         </td>
         <td id="{{ itemId ~ 'receivedQuantity' }}" class="text-right">
             {%- if partial %}<strong class="text-danger">{% endif -%}
-                {{ received|localizednumber }}
+                {{ received|format_number }}
             {%- if partial %}</strong>{% endif -%}
         </td>
         <td id="{{ itemId ~ 'netPrice' }}" class="text-right">
-            {{ item.netPrice|localizedcurrency(supplierOrder.currency.code) }}
+            {{ item.netPrice|format_currency(supplierOrder.currency.code) }}
         </td>
         <td id="{{ itemId ~ 'weight' }}" class="text-right">
-            {{ item.weight|localizednumber }}&nbsp;kg
+            {{ item.weight|format_number }}&nbsp;kg
         </td>
         <td id="{{ itemId ~ 'taxGroup' }}" class="text-right">
             {{ item.taxGroup.name }}
         </td>
         <td id="{{ itemId ~ 'supplierData' }}">
             {% if item.product is not same as(null) %}
-                [{{ item.product.availableStock|localizednumber }}]{# TODO packaging format #}
+                [{{ item.product.availableStock|format_number }}]{# TODO packaging format #}
                 {% if 0 < item.product.orderedStock %}
-                    [{{ item.product.orderedStock|localizednumber }}]{# TODO packaging format #}
+                    [{{ item.product.orderedStock|format_number }}]{# TODO packaging format #}
                 {% endif %}
                 {% if item.product.estimatedDateOfArrival is not same as(null) %}
-                    ({{ item.product.estimatedDateOfArrival|localizeddate('short', 'none') }})
+                    ({{ item.product.estimatedDateOfArrival|format_datetime('short', 'none') }})
                 {% endif %}
             {% endif %}
         </td>
         <td id="{{ itemId ~ 'subject' }}">
             {% if item.product is null -%}
-                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
             {% else %}
                 {% set subject = item.product|subject_get(false) %}
                 {% if subject is null %}
-                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
                 {% else %}
                     {% set url = subject|subject_private_url %}
                     {% if url is not null %}
@@ -82,8 +79,7 @@
             {%- endif %}
         </td>
         <td id="{{ itemId ~ 'label' }}">
-            <a href="{{ path('ekyna_commerce_supplier_order_admin_label', {
-                'supplierOrderId': supplierOrder.id,
+            <a href="{{ admin_resource_path(supplierOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\SupplierOrder\\LabelAction', {
                 'id': [item.id]
             }) }}" class="btn btn-xs btn-primary print-label" target="_blank">
                 <i class="glyphicon glyphicon-barcode"></i>
@@ -93,20 +89,20 @@
     {%- endfor %}
     <tr>
         <td colspan="4" class="text-right">
-            <strong>{{ 'ekyna_commerce.supplier_order.field.items_total'|trans }}</strong>
+            <strong>{{ 'supplier_order.field.items_total'|trans({}, 'EkynaCommerce') }}</strong>
         </td>
         <td class="text-right">
-            <strong>{{ supplierOrder|supplier_order_items_total|localizedcurrency(supplierOrder.currency.code) }}</strong>
+            <strong>{{ supplierOrder|supplier_order_items_total|format_currency(supplierOrder.currency.code) }}</strong>
         </td>
         <td class="text-right">
-            <strong>{{ supplierOrder|supplier_order_weight_total|localizednumber }}&nbsp;kg</strong>
+            <strong>{{ supplierOrder|supplier_order_weight_total|format_number }}&nbsp;kg</strong>
         </td>
         <td colspan="4">&nbsp;</td>
     </tr>
     {%- else %}
     <tr>
         <td colspan="10" class="text-center">
-            <em>{{ 'ekyna_commerce.supplier_order.alert.empty'|trans }}</em>
+            <em>{{ 'supplier_order.alert.empty'|trans({}, 'EkynaCommerce') }}</em>
         </td>
     </tr>
     {%- endif -%}

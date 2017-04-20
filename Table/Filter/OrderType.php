@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderSearchType;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceSearchType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Component\Table\Filter\AbstractFilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,39 +16,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class OrderType extends AbstractFilterType
 {
-    /**
-     * @var string
-     */
-    private $orderClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $class
-     */
-    public function __construct(string $class)
-    {
-        $this->orderClass = $class;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'      => 'ekyna_commerce.order.label.plural',
-            'class'      => $this->orderClass,
-            'form_class' => OrderSearchType::class,
+            'resource'     => 'ekyna_commerce.order',
+            'form_class'   => ResourceSearchType::class,
+            'form_options' => ['resource' => 'ekyna_commerce.order'],
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return EntityType::class;
+        return ResourceType::class;
     }
 }

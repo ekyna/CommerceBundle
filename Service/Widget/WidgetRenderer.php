@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Widget;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
+
+use function array_replace;
+use function json_encode;
 
 /**
  * Class WidgetRenderer
@@ -12,36 +17,18 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class WidgetRenderer
 {
-    /**
-     * @var WidgetHelper
-     */
-    private $helper;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var array
-     */
-    private $templates;
+    private WidgetHelper $helper;
+    private Environment  $twig;
+    private array        $templates;
 
 
-    /**
-     * Constructor.
-     *
-     * @param WidgetHelper    $helper
-     * @param EngineInterface $templating
-     * @param array           $templates
-     */
     public function __construct(
         WidgetHelper $helper,
-        EngineInterface $templating,
+        Environment $twig,
         array $templates = []
     ) {
-        $this->helper     = $helper;
-        $this->templating = $templating;
+        $this->helper = $helper;
+        $this->twig = $twig;
 
         $this->templates = array_replace([
             'widget'   => '@EkynaCommerce/Js/widget.html.twig',
@@ -54,88 +41,64 @@ class WidgetRenderer
 
     /**
      * Renders the customer widget.
-     *
-     * @param array $options
-     *
-     * @return string
      */
-    public function renderCustomerWidget(array $options = [])
+    public function renderCustomerWidget(array $options = []): string
     {
         return $this->renderWidget($this->helper->getCustomerWidgetData(), $options);
     }
 
     /**
      * Renders the customer widget dropdown.
-     *
-     * @return string
      */
-    public function renderCustomerDropdown()
+    public function renderCustomerDropdown(): string
     {
-        return $this->templating->render($this->templates['customer'], [
+        return $this->twig->render($this->templates['customer'], [
             'user' => $this->helper->getUser(),
         ]);
     }
 
     /**
      * Renders the cart widget.
-     *
-     * @param array $options
-     *
-     * @return string
      */
-    public function renderCartWidget(array $options = [])
+    public function renderCartWidget(array $options = []): string
     {
         return $this->renderWidget($this->helper->getCartWidgetData(), $options);
     }
 
     /**
      * Renders the cart widget dropdown.
-     *
-     * @return string
      */
     public function renderCartDropDown(): string
     {
         $cart = $this->helper->getCart();
 
-        return $this->templating->render($this->templates['cart'], [
+        return $this->twig->render($this->templates['cart'], [
             'cart' => $cart,
         ]);
     }
 
     /**
      * Renders the context widget.
-     *
-     * @param array $options
-     *
-     * @return string
      */
-    public function renderContextWidget(array $options = [])
+    public function renderContextWidget(array $options = []): string
     {
         return $this->renderWidget($this->helper->getContextWidgetData(), $options);
     }
 
     /**
      * Renders the cart widget dropdown.
-     *
-     * @param Request|null $request
-     *
-     * @return string
      */
     public function renderContextDropDown(Request $request = null): string
     {
-        return $this->templating->render($this->templates['context'], [
+        return $this->twig->render($this->templates['context'], [
             'form' => $this->helper->getContextForm($request)->createView(),
         ]);
     }
 
     /**
      * Renders the currency widget.
-     *
-     * @param array $options
-     *
-     * @return string
      */
-    public function renderCurrencyWidget(array $options = [])
+    public function renderCurrencyWidget(array $options = []): string
     {
         $data = $this->helper->getCurrencyWidgetData();
 
@@ -144,41 +107,36 @@ class WidgetRenderer
         }
 
         $data = array_replace([
-            'tag'      => 'li',
-            'class'    => null,
+            'tag'   => 'li',
+            'class' => null,
         ], $data, $options);
 
-        return $this->templating->render($this->templates['currency'], $data);
+        return $this->twig->render($this->templates['currency'], $data);
     }
 
     /**
      * Renders the widget.
-     *
-     * @param array $data
-     * @param array $options
-     *
-     * @return string
      */
-    private function renderWidget(array $data, array $options)
+    private function renderWidget(array $data, array $options): string
     {
         $data = array_replace([
-            'tag'      => 'li',
-            'label'    => null,
-            'title'    => null,
-            'class'    => null,
-            'icon'     => null,
-            'url'      => null,
-            'data'     => null,
+            'tag'   => 'li',
+            'label' => null,
+            'title' => null,
+            'class' => null,
+            'icon'  => null,
+            'url'   => null,
+            'data'  => null,
         ], $data, $options);
 
         if (!empty($data['url'])) {
-            $data['url'] = \json_encode($data['url']);
+            $data['url'] = json_encode($data['url']);
         }
 
         if (!empty($data['data'])) {
-            $data['data'] = \json_encode($data['data']);
+            $data['data'] = json_encode($data['data']);
         }
 
-        return $this->templating->render($this->templates['widget'], $data);
+        return $this->twig->render($this->templates['widget'], $data);
     }
 }

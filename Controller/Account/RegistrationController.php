@@ -1,80 +1,120 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Event\RegistrationEvent;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Account\RegistrationType;
+use Ekyna\Bundle\CommerceBundle\Factory\CustomerFactoryInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
+use Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UserBundle\Controller\Account\RegistrationController as BaseController;
+use Ekyna\Bundle\UserBundle\Entity\Token;
+use Ekyna\Bundle\UserBundle\Event\AccountEvent;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
-use Ekyna\Bundle\UserBundle\Model\UserManagerInterface;
-use FOS\UserBundle\Event\GetResponseUserEvent;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use FOS\UserBundle\Event\FilterUserResponseEvent;
-use FOS\UserBundle\FOSUserEvents;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Class RegistrationController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class RegistrationController extends Controller
+class RegistrationController extends BaseController
 {
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function registerAction(Request $request)
+    use CustomerTrait;
+
+    private CustomerRepository       $customerRepository;
+    private CustomerFactoryInterface $customerFactory;
+    private ResourceManagerInterface $customerManager;
+
+    public function setCustomerRepository(CustomerRepository $customerRepository): void
     {
-        // TODO if user is logged and linked to a customer, redirect to customer area index
+        $this->customerRepository = $customerRepository;
+    }
 
-        /** @var $userManager UserManagerInterface */
-        $userManager = $this->get('fos_user.user_manager');
-        /** @var $dispatcher EventDispatcherInterface */
-        $dispatcher = $this->get('event_dispatcher');
+    public function setCustomerFactory(CustomerFactoryInterface $customerFactory): void
+    {
+        $this->customerFactory = $customerFactory;
+    }
 
-        if (null === $user = $this->get('ekyna_user.user.provider')->getUser()) {
-            /** @var \Ekyna\Bundle\UserBundle\Model\UserInterface $user */
-            $user = $userManager->createUser();
-            $user->setEnabled(true);
-        } else {
-            // Get ride of plain password validation
-            $user->setPlainPassword('TEMP!#132');
+    public function setCustomerManager(ResourceManagerInterface $customerManager): void
+    {
+        $this->customerManager = $customerManager;
+    }
+
+    protected function redirectIfLoggedIn(): ?Response
+    {
+        if (!($this->userProvider->hasUser() && $this->customerProvider->hasCustomer())) {
+            return null;
         }
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
-        $customer = $this->get('ekyna_commerce.customer.repository')->createNew();
-        $customer->setUser($user);
+        // TODO Flash message (?)
 
-        // Default customer group
-        $customer->setCustomerGroup(
-            $this->get('ekyna_commerce.customer_group.repository')->findDefault()
-        );
+        $redirect = $this->urlGenerator->generate('ekyna_user_account_index');
 
-        /*$event = new GetResponseUserEvent($user, $request);
-        $dispatcher->dispatch(FOSUserEvents::REGISTRATION_INITIALIZE, $event);
-        if (null !== $event->getResponse()) {
-            return $event->getResponse();
-        }*/
+        return new RedirectResponse($redirect);
+    }
+
+    public function register(Request $request): Response
+    {
+        $token = $this
+            ->tokenManager
+            ->findToken(
+                $request->attributes->getAlnum('token'),
+                Token::TYPE_REGISTRATION,
+                false
+            );
+
+        if (!$token) {
+            return new Response('Invalid token', Response::HTTP_FORBIDDEN);
+        }
+
+        /** @var UserInterface $user */
+        if ($user = $this->userProvider->getUser()) {
+            if ($this->customerRepository->findOneByUser($user)) {
+                // TODO Flash ?
+
+                return new RedirectResponse(
+                    $this->urlGenerator->generate('ekyna_user_account_index')
+                );
+            }
+
+            // Get rid of plain password validation
+            $user->setPlainPassword('TEMP!#132');
+        } else {
+            $user = $this->userFactory->create();
+            if ($email = $token->getData()['email'] ?? null) {
+                $user->setEmail($email);
+            }
+
+            // Initialize event
+            $accountEvent = new AccountEvent($user, null);
+            $this->dispatcher->dispatch($accountEvent, AccountEvent::REGISTRATION_INITIALIZE);
+            if ($response = $accountEvent->getResponse()) {
+                return $response;
+            }
+        }
+
+        $customer = $this->customerFactory->createWithUser($user);
 
         $registration = new Registration($customer);
 
-        $event = new RegistrationEvent($registration);
-        $dispatcher->dispatch(RegistrationEvent::REGISTRATION_INITIALIZE, $event);
+        $registrationEvent = new RegistrationEvent($registration);
+        $this->dispatcher->dispatch($registrationEvent, RegistrationEvent::REGISTRATION_INITIALIZE);
 
-        if ($targetPath = $request->query->get('target_path')) {
-            $this->get('session')->set('fos_user_send_confirmation_email/target_path', $targetPath);
+        if ($response = $registrationEvent->getResponse()) {
+            return $response;
         }
 
-        $form = $this->createForm(RegistrationType::class, $registration, [
-            'action' => $this->generateUrl('fos_user_registration_register'),
-            'method' => 'POST',
-        ]);
+        /* TODO (?) if ($targetPath = $request->query->get('target_path')) {
+            $this->get('session')->set('fos_user_send_confirmation_email/target_path', $targetPath);
+        }*/
+
+        $form = $this->formFactory->create($this->config['form'], $registration);
 
         $form->handleRequest($request);
 
@@ -85,145 +125,43 @@ class RegistrationController extends Controller
                     $user->setPlainPassword(null);
                 }
 
-                $dispatcher->dispatch(RegistrationEvent::REGISTRATION_SUCCESS, $event);
+                $registrationEvent = new RegistrationEvent($registration);
+                $this->dispatcher->dispatch($registrationEvent, RegistrationEvent::REGISTRATION_SUCCESS);
 
-                // This FOSUB event is disabled because we need the customer (and not only the user)
-                // to build the confirmation email).
-                /*$event = new FormEvent($form, $request);
-                $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);*/
+                $user->setEnabled(true);
+                $this->userManager->persist($user);
 
-                /** @noinspection PhpMethodParametersCountMismatchInspection */
-                $userManager->updateUser($user, false);
+                $resourceEvent = $this->customerManager->save($customer);
 
-                $em = $this->get('ekyna_commerce.customer.manager');
-                $em->persist($customer);
-                $em->flush();
+                if (!$resourceEvent->hasErrors()) {
+                    $token->setUser($user);
+                    $this->tokenManager->update($token);
 
-                $dispatcher->dispatch(RegistrationEvent::REGISTRATION_COMPLETED, new RegistrationEvent($registration));
+                    $this->dispatcher->dispatch(
+                        new RegistrationEvent($registration),
+                        RegistrationEvent::REGISTRATION_COMPLETED
+                    );
 
-                if (null === $response = $event->getResponse()) {
-                    $url = $this->generateUrl('fos_user_registration_confirmed');
-                    $response = new RedirectResponse($url);
+                    if ($response = $registrationEvent->getResponse()) {
+                        return $response;
+                    }
+
+                    return new RedirectResponse(
+                        $this->urlGenerator->generate('ekyna_user_account_registration_confirmed', [
+                            'token' => $token->getHash(),
+                        ])
+                    );
                 }
 
-                // We keep this FOSUB event for auto login
-                $dispatcher->dispatch(
-                    FOSUserEvents::REGISTRATION_COMPLETED,
-                    new FilterUserResponseEvent($user, $request, $response)
-                );
-
-                return $response;
+                FormUtil::addErrorsFromResourceEvent($form, $resourceEvent);
             }
-
-            /*$event = new FormEvent($form, $request);
-            $dispatcher->dispatch(FOSUserEvents::REGISTRATION_FAILURE, $event);
-
-            if (null !== $response = $event->getResponse()) {
-                return $response;
-            }*/
         }
 
-        return $this->render('@EkynaCommerce/Account/Registration/register.html.twig', [
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $content = $this->twig->render($this->config['template']['register'], [
             'form' => $form->createView(),
         ]);
-    }
 
-    /**
-     * Tell the user to check his email provider.
-     */
-    public function checkEmailAction()
-    {
-        $email = $this->get('session')->get('fos_user_send_confirmation_email/email');
-
-        if (empty($email)) {
-            return $this->redirect($this->generateUrl('fos_user_registration_register'));
-        }
-
-        $this->get('session')->remove('fos_user_send_confirmation_email/email');
-        $user = $this->get('fos_user.user_manager')->findUserByEmail($email);
-
-        if (null === $user) {
-            // TODO Flash + redirect
-            throw $this->createNotFoundException(sprintf('The user with email "%s" does not exist', $email));
-        }
-
-        return $this->render('@EkynaCommerce/Account/Registration/check_email.html.twig', [
-            'user' => $user,
-        ]);
-    }
-
-    /**
-     * Receive the confirmation token from user email provider, login the user.
-     *
-     * @param Request $request
-     * @param string  $token
-     *
-     * @return Response
-     */
-    public function confirmAction(Request $request, $token)
-    {
-        /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
-        $userManager = $this->get('fos_user.user_manager');
-
-        $user = $userManager->findUserByConfirmationToken($token);
-
-        if (null === $user) {
-            // TODO Flash + redirect
-            throw $this->createNotFoundException(
-                sprintf('The user with confirmation token "%s" does not exist', $token)
-            );
-        }
-
-        /** @var $dispatcher EventDispatcherInterface */
-        $dispatcher = $this->get('event_dispatcher');
-
-        $user->setConfirmationToken(null);
-        $user->setEnabled(true);
-
-        $event = new GetResponseUserEvent($user, $request);
-        $dispatcher->dispatch(FOSUserEvents::REGISTRATION_CONFIRM, $event);
-
-        $userManager->updateUser($user);
-
-        if (null === $response = $event->getResponse()) {
-            $url = $this->generateUrl('fos_user_registration_confirmed');
-            $response = new RedirectResponse($url);
-        }
-
-        $dispatcher->dispatch(
-            FOSUserEvents::REGISTRATION_CONFIRMED,
-            new FilterUserResponseEvent($user, $request, $response)
-        );
-
-        return $response;
-    }
-
-    /**
-     * Tell the user his account is now confirmed.
-     */
-    public function confirmedAction()
-    {
-        $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
-            // TODO Flash + redirect (?)
-            throw $this->createAccessDeniedException('This user does not have access to this section.');
-        }
-
-        $targetUrl = $this->generateUrl('ekyna_user_account_index');
-        $token = $this->get('security.token_storage')->getToken();
-
-        if ($path = $this->get('session')->get('fos_user_send_confirmation_email/target_path')) {
-            $targetUrl = $this->generateUrl($path);
-        } elseif (null !== $token && $token instanceof UsernamePasswordToken) {
-            $key = sprintf('_security.%s.target_path', $token->getProviderKey());
-            if ($this->get('session')->has($key)) {
-                $targetUrl = $this->get('session')->get($key);
-            }
-        }
-
-        return $this->render('@EkynaCommerce/Account/Registration/confirmed.html.twig', [
-            'user'      => $user,
-            'targetUrl' => $targetUrl,
-        ]);
+        return (new Response($content))->setPrivate();
     }
 }

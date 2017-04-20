@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Subject;
 
 use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
-use Ekyna\Bundle\CoreBundle\Modal;
+use Ekyna\Bundle\UiBundle\Model\Modal;
+use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,40 +18,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class AddToCartController
 {
-    /**
-     * @var Modal\Renderer
-     */
-    private $modalRenderer;
+    private ModalRenderer $modalRenderer;
+    private CartHelper    $cartHelper;
 
-    /**
-     * @var CartHelper
-     */
-    private $cartHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param Modal\Renderer $modalRenderer
-     * @param CartHelper     $cartHelper
-     */
-    public function __construct(Modal\Renderer $modalRenderer, CartHelper $cartHelper)
+    public function __construct(ModalRenderer $modalRenderer, CartHelper $cartHelper)
     {
         $this->modalRenderer = $modalRenderer;
-        $this->cartHelper    = $cartHelper;
+        $this->cartHelper = $cartHelper;
     }
 
-    /**
-     * Subject add to cart action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function __invoke(Request $request): Response
     {
-        $provider   = $request->attributes->get('provider');
-        $identifier = $request->attributes->get('identifier');
+        $provider = $request->attributes->get('provider');
+        $identifier = $request->attributes->getInt('identifier');
 
         $subject = $this->cartHelper->getSaleHelper()->getSubjectHelper()->find($provider, $identifier);
 
@@ -61,7 +43,7 @@ class AddToCartController
         }
 
         // Default modal
-        $modal = new Modal\Modal();
+        $modal = new Modal();
         $modal->setTitle((string)$subject);
 
         // Initialize event
@@ -81,24 +63,16 @@ class AddToCartController
 
         // TODO form template
         $modal
-            ->setSize(Modal\Modal::SIZE_WIDE)
-            ->setType(Modal\Modal::TYPE_PRIMARY)
+            ->setSize(Modal::SIZE_WIDE)
+            ->setType(Modal::TYPE_PRIMARY)
             ->setCondensed(true)
-            ->setContent($form->createView())
+            ->setForm($form->createView())
             ->setButtons([
-                [
-                    'id'       => 'submit',
-                    'label'    => 'ekyna_commerce.cart.button.add',
-                    'icon'     => 'glyphicon glyphicon-ok',
-                    'cssClass' => 'btn-success',
-                    'autospin' => true,
-                ],
-                [
-                    'id'       => 'close',
-                    'label'    => 'ekyna_core.button.cancel',
-                    'icon'     => 'glyphicon glyphicon-remove',
-                    'cssClass' => 'btn-default',
-                ],
+                array_replace(Modal::BTN_SUBMIT, [
+                    'label'        => 'cart.button.add',
+                    'trans_domain' => 'EkynaCommerce',
+                ]),
+                Modal::BTN_CLOSE,
             ]);
 
         return $this->modalRenderer->render($modal);

@@ -1,74 +1,74 @@
 {% apply spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        {{ 'ekyna_commerce.customer.label.singular'|trans }}
+        {{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}
     </div>
     <div class="panel-body">
         <table class="table table-condensed table-alt-head">
         <tbody>
             <tr>
-                <th>{{ 'ekyna_core.field.number'|trans }}</th>
+                <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ customer.number }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_core.field.company'|trans }}</th>
+                <th>{{ 'field.company'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ customer.company }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer.field.company_number'|trans }}</th>
+                <th>{{ 'customer.field.company_number'|trans({}, 'EkynaCommerce') }}</th>
                 <td>{{ customer.companyNumber }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer.label.singular'|trans }}</th>
+                <th>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</th>
                 <td>
-                    <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}">
+                    <a href="{{ admin_resource_path(customer) }}">
                         {{- customer|identity|raw -}}
                     </a>
                 </td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer_group.label.singular'|trans }}</th>
+                <th>{{ 'customer_group.label.singular'|trans({}, 'EkynaCommerce') }}</th>
                 <td>
-                    <a href="{{ path('ekyna_commerce_customer_group_admin_show', {'customerGroupId': customer.customerGroup.id}) }}">
+                    <a href="{{ admin_resource_path(customer.customerGroup) }}">
                         {{- customer.customerGroup -}}
                     </a>
                 </td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_core.field.currency'|trans }}</th>
+                <th>{{ 'field.currency'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ customer.currency }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_core.field.locale'|trans }}</th>
+                <th>{{ 'field.locale'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ customer.locale|language|capitalize  }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_core.field.email'|trans }}</th>
+                <th>{{ 'field.email'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ customer.email }}</td>
             </tr>
             {% if customer.phone is not empty %}
             <tr>
-                <th>{{ 'ekyna_core.field.phone'|trans }}</th>
+                <th>{{ 'field.phone'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ customer.phone|phone_number_format }}</td>
             </tr>
             {% endif %}
             {% if customer.mobile is not empty %}
             <tr>
-                <th>{{ 'ekyna_core.field.mobile'|trans }}</th>
+                <th>{{ 'field.mobile'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ customer.mobile|phone_number_format }}</td>
             </tr>
             {% endif %}
             {% if customer.description is not empty -%}
             <tr>
-                <th>{{ 'ekyna_commerce.field.description'|trans }}</th>
+                <th>{{ 'field.description'|trans({}, 'EkynaCommerce') }}</th>
                 <td>{{ customer.description|nl2br }}</td>
             </tr>
             {%- endif %}
             {% if customer.hasParent() -%}
             <tr>
-                <th>{{ 'ekyna_commerce.customer.field.parent'|trans }}</th>
+                <th>{{ 'customer.field.parent'|trans({}, 'EkynaCommerce') }}</th>
                 <td>
-                    <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.parent.id}) }}">
+                    <a href="{{ admin_resource_path(customer.parent) }}">
                         {{- customer.parent|raw -}}
                     </a>
                 </td>
@@ -76,46 +76,46 @@
             {%- endif %}
             {% set customerSource = customer.hasParent() ? customer.parent : customer %}
             <tr>
-                <th>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</th>
+                <th>{{ 'payment_term.label.singular'|trans({}, 'EkynaCommerce') }}</th>
                 <td>
                     {% if customerSource.paymentTerm is not null -%}
-                    <a href="{{ path('ekyna_commerce_payment_term_admin_show', {'paymentTermId': customerSource.paymentTerm.id}) }}">
+                    <a href="{{ admin_resource_path(customerSource.paymentTerm) }}">
                         {{- customerSource.paymentTerm|raw -}}
                     </a>
                     {%- else -%}
-                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                        <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
                     {%- endif %}
                 </td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.sale.field.outstanding_limit'|trans }}</th>
-                <td>{{ customerSource.outstandingLimit|localizedcurrency(commerce_default_currency) }}</td>
+                <th>{{ 'sale.field.outstanding_limit'|trans({}, 'EkynaCommerce') }}</th>
+                <td>{{ customerSource.outstandingLimit|format_currency(commerce_default_currency) }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer.field.outstanding_balance'|trans }}</th>
-                <td>{{ customerSource.outstandingBalance|localizedcurrency(commerce_default_currency) }}</td>
+                <th>{{ 'customer.field.outstanding_balance'|trans({}, 'EkynaCommerce') }}</th>
+                <td>{{ customerSource.outstandingBalance|format_currency(commerce_default_currency) }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer.field.outstanding_overflow'|trans }}</th>
+                <th>{{ 'customer.field.outstanding_overflow'|trans({}, 'EkynaCommerce') }}</th>
                 <td>
                     {%- if customerSource.outstandingOverflow -%}
-                        <span class="label label-warning">{{ 'ekyna_core.value.yes'|trans }}</span>
+                        <span class="label label-warning">{{ 'value.yes'|trans({}, 'EkynaUi') }}</span>
                     {%- else -%}
-                        <span class="label label-success">{{ 'ekyna_core.value.no'|trans }}</span>
+                        <span class="label label-success">{{ 'value.no'|trans({}, 'EkynaUi') }}</span>
                     {%- endif -%}
                 </td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer.field.credit_balance'|trans }}</th>
-                <td>{{ customerSource.creditBalance|localizedcurrency(commerce_default_currency) }}</td>
+                <th>{{ 'customer.field.credit_balance'|trans({}, 'EkynaCommerce') }}</th>
+                <td>{{ customerSource.creditBalance|format_currency(commerce_default_currency) }}</td>
             </tr>
             {%- if customerSource.defaultPaymentMethod is not null -%}
             <tr>
-                <th>{{ 'ekyna_commerce.customer.field.default_payment_method'|trans }}</th>
+                <th>{{ 'customer.field.default_payment_method'|trans({}, 'EkynaCommerce') }}</th>
                 <td>{{ customerSource.defaultPaymentMethod }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer.field.payment_methods'|trans }}</th>
+                <th>{{ 'customer.field.payment_methods'|trans({}, 'EkynaCommerce') }}</th>
                 <td>
                     {%- for method in customerSource.paymentMethods -%}
                         {{- method -}}

@@ -1,74 +1,74 @@
 {% apply spaceless %}
 <div>
     <dl class="dl-horizontal">
-        <dt>{{ 'ekyna_core.field.number'|trans }}</dt>
+        <dt>{{ 'field.number'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ number }}</dd>
 
         {% if company is not empty -%}
-        <dt>{{ 'ekyna_core.field.company'|trans }}</dt>
+        <dt>{{ 'field.company'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ company }}</dd>
         {%- endif %}
 
-        <dt>{{ 'ekyna_core.field.identity'|trans }}</dt>
+        <dt>{{ 'field.identity'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ first_name|capitalize }} {{ last_name|upper }}</dd>
-        <dt>{{ 'ekyna_core.field.email'|trans }}</dt>
+        <dt>{{ 'field.email'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ email }}</dd>
 
         {% if phone is not empty -%}
-        <dt>{{ 'ekyna_core.field.phone'|trans }}</dt>
+        <dt>{{ 'field.phone'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ phone }}</dd>
         {%- endif %}
 
         {% if mobile is not empty -%}
-        <dt>{{ 'ekyna_core.field.mobile'|trans }}</dt>
+        <dt>{{ 'field.mobile'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ mobile }}</dd>
         {%- endif %}
 
         {% if parent is not empty %}
     </dl>
     <dl class="dl-horizontal">
-        <dt>{{ 'ekyna_commerce.customer.field.parent'|trans }}</dt>
+        <dt>{{ 'customer.field.parent'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ parent }}</dd>
         {% endif %}
 
-        <dt>{{ 'ekyna_commerce.customer_group.label.singular'|trans }}</dt>
+        <dt>{{ 'customer_group.label.singular'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ group }}</dd>
 
         {% if payment_term is not empty -%}
-        <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
+        <dt>{{ 'payment_term.label.singular'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ payment_term }}</dd>
-        <dt>{{ 'ekyna_commerce.sale.field.outstanding_limit'|trans }}</dt>
-        <dd>{{ outstanding_limit|localizedcurrency(commerce_default_currency) }}</dd>
-        <dt>{{ 'ekyna_commerce.customer.field.outstanding_balance'|trans }}</dt>
-        <dd>{{ outstanding_balance|localizedcurrency(commerce_default_currency) }}</dd>
-        <dt>{{ 'ekyna_commerce.customer.field.outstanding_overflow'|trans }}</dt>
+        <dt>{{ 'sale.field.outstanding_limit'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>{{ outstanding_limit|format_currency(commerce_default_currency) }}</dd>
+        <dt>{{ 'customer.field.outstanding_balance'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>{{ outstanding_balance|format_currency(commerce_default_currency) }}</dd>
+        <dt>{{ 'customer.field.outstanding_overflow'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>
             {%- if outstanding_overflow -%}
-            <span class="label label-warning">{{ 'ekyna_core.value.yes'|trans }}</span>
+            <span class="label label-warning">{{ 'value.yes'|trans({}, 'EkynaUi') }}</span>
             {%- else -%}
-            <span class="label label-success">{{ 'ekyna_core.value.no'|trans }}</span>
+            <span class="label label-success">{{ 'value.no'|trans({}, 'EkynaUi') }}</span>
             {%- endif -%}
         </dd>
         {%- endif %}
         {% if default_payment_method is not empty -%}
-        <dt>{{ 'ekyna_commerce.customer.field.default_payment_method'|trans }}</dt>
+        <dt>{{ 'customer.field.default_payment_method'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ default_payment_method }}</dd>
         {%- endif %}
         {% if payment_methods is not empty -%}
-        <dt>{{ 'ekyna_commerce.customer.field.payment_methods'|trans }}</dt>
+        <dt>{{ 'customer.field.payment_methods'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ payment_methods }}</dd>
         {%- endif %}
 
-        <dt>{{ 'ekyna_commerce.customer.field.credit_balance'|trans }}</dt>
-        <dd>{{ credit_balance|localizedcurrency(commerce_default_currency) }}</dd>
+        <dt>{{ 'customer.field.credit_balance'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>{{ credit_balance|format_currency(commerce_default_currency) }}</dd>
 
-        <dt>{{ 'ekyna_commerce.pricing.field.vat_number'|trans }}</dt>
+        <dt>{{ 'pricing.field.vat_number'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ vat_number }}</dd>
-        <dt>{{ 'ekyna_commerce.pricing.field.vat_valid'|trans }}</dt>
-        <dd>{{ ('ekyna_core.value.' ~ (vat_valid ? 'yes' : 'no'))|trans }}</dd>
+        <dt>{{ 'pricing.field.vat_valid'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>{{ ('value.' ~ (vat_valid ? 'yes' : 'no'))|trans({}, 'EkynaUi') }}</dd>
 
         {% if description is not empty -%}
-        <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+        <dt>{{ 'field.description'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ description|nl2br|raw }}</dd>
         {%- endif %}
     </dl>

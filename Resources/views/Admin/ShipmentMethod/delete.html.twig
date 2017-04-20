@@ -1,0 +1,6 @@
+{% extends '@EkynaAdmin/Entity/Crud/delete.html.twig' %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ShipmentMethod\\CreateAction') }}
+{% endblock actions %}

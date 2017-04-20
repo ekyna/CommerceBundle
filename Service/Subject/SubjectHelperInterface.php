@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
+use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface as Subject;
 use Ekyna\Component\Commerce\Subject\Model\SubjectReferenceInterface as Reference;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface as BaseInterface;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Interface SubjectHelperInterface
@@ -62,4 +66,6 @@ interface SubjectHelperInterface extends BaseInterface
      * @return null|string
      */
     public function generatePrivateUrl($subject, bool $path = true): ?string;
+
+    public function getCreateSupplierProductForm(SubjectInterface $subject): FormInterface;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerAddressRepository as BaseRepository;
@@ -13,11 +15,6 @@ class CustomerAddressRepository extends BaseRepository
 {
     /**
      * Finds map locations.
-     *
-     * @param array $groups
-     * @param bool  $invoice
-     *
-     * @return array
      */
     public function findLocations(array $groups, bool $invoice): array
     {
@@ -59,8 +56,8 @@ class CustomerAddressRepository extends BaseRepository
             return [
                 'title'      => $r['company'],
                 'position'   => [
-                    'lat' => floatval($r['latitude']),
-                    'lng' => floatval($r['longitude']),
+                    'lat' => $r['latitude'],
+                    'lng' => $r['longitude'],
                 ],
                 'customerId' => $r['id'],
             ];

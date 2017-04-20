@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Filter\AbstractFilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CustomerType
@@ -14,38 +18,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CustomerType extends AbstractFilterType
 {
-    /**
-     * @var string
-     */
-    private $customerClass;
+    private string $customerClass;
 
-
-    /**
-     * Constructor.
-     *
-     * @param string $class
-     */
     public function __construct(string $class)
     {
         $this->customerClass = $class;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'      => 'ekyna_commerce.customer.label.plural',
+            'label'      => t('customer.label.plural', [], 'EkynaCommerce'),
             'class'      => $this->customerClass,
             'form_class' => CustomerSearchType::class,
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return EntityType::class;
     }

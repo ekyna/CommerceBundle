@@ -14,7 +14,7 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 class SupplierOrderRenderer extends AbstractRenderer
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getFilename()
     {
@@ -43,7 +43,7 @@ class SupplierOrderRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function supports($subject)
     {
@@ -51,7 +51,7 @@ class SupplierOrderRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getTemplate()
     {

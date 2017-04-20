@@ -1,70 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentParcelType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentParcelType extends ResourceFormType
+class ShipmentParcelType extends AbstractResourceType
 {
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
+    private string $defaultCurrency;
 
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct($class, $defaultCurrency)
+    public function __construct(string $defaultCurrency)
     {
-        parent::__construct($class);
-
         $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('weight', Type\NumberType::class, [
-                'label' => 'ekyna_core.field.weight',
-                'scale' => 3,
-                'attr'  => [
-                    'placeholder' => 'ekyna_core.field.weight',
+                'label'   => t('field.weight', [], 'EkynaUi'),
+                'decimal' => true,
+                'scale'   => 3,
+                'attr'    => [
+                    'placeholder' => t('field.weight', [], 'EkynaUi'),
                     'input_group' => ['append' => 'kg'],
                     'min'         => 0,
                 ],
             ])
             ->add('valorization', Type\MoneyType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.valorization',
+                'label'    => t('shipment.field.valorization', [], 'EkynaCommerce'),
+                'decimal'  => true,
                 'currency' => $this->defaultCurrency,
                 'required' => false,
                 'attr'     => [
-                    'placeholder' => 'ekyna_commerce.shipment.field.valorization',
+                    'placeholder' => t('shipment.field.valorization', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('trackingNumber', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.tracking_number',
+                'label'    => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                 'attr'     => [
-                    'placeholder' => 'ekyna_commerce.shipment.field.tracking_number',
+                    'placeholder' => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                 ],
                 'required' => false,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_shipment_parcel';
     }

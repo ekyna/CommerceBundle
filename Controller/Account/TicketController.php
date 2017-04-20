@@ -1,18 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketType;
-use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
-use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketStates;
+use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
-use Ekyna\Component\Resource\Model\Actions;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use function sprintf;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SupportController
@@ -22,43 +30,38 @@ use Symfony\Component\HttpFoundation\Response;
 class TicketController extends AbstractTicketController
 {
     private const REMOVE = 'remove';
-    private const CLOSE = 'close';
-    private const OPEN = 'open';
+    private const CLOSE  = 'close';
+    private const OPEN   = 'open';
 
     /**
      * Ticket index action.
      *
      * @return Response
      */
-    public function indexAction()
+    public function index(): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        return $this->render('@EkynaCommerce/Account/Ticket/index.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Account/Ticket/index.html.twig', [
             'customer' => $customer,
         ]);
+
+        return (new Response($content))->setPrivate();
     }
 
-    /**
-     * Ticket new action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function newAction(Request $request)
+    public function create(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        /** @var \Ekyna\Component\Commerce\Support\Model\TicketInterface $ticket */
-        $ticket = $this->get('ekyna_commerce.ticket.repository')->createNew();
+        /** @var TicketInterface $ticket */
+        $ticket = $this->factoryFactory->getFactory(TicketInterface::class)->create();
         $ticket->setCustomer($customer);
 
-        $this->denyAccessUnlessGranted(Actions::CREATE, $ticket);
+        $this->denyAccessUnlessGranted(Permission::CREATE, $ticket);
 
         $actionParameters = [
             'ticketId' => $ticket->getId(),
@@ -66,32 +69,34 @@ class TicketController extends AbstractTicketController
 
         if ($number = $request->query->get('order')) {
             $order = $this
-                ->get('ekyna_commerce.order.repository')
+                ->repositoryFactory
+                ->getRepository(OrderInterface::class)
                 ->findOneByCustomerAndNumber($customer, $number);
 
             if (null === $order) {
-                throw $this->createNotFoundException('Order not found.');
+                throw new NotFoundHttpException('Order not found.');
             }
 
             $ticket->addOrder($order);
             $actionParameters['order'] = $order->getNumber();
         } elseif ($number = $request->query->get('quote')) {
             $quote = $this
-                ->get('ekyna_commerce.quote.repository')
+                ->repositoryFactory
+                ->getRepository(QuoteInterface::class)
                 ->findOneByCustomerAndNumber($customer, $number);
 
             if (null === $quote) {
-                throw $this->createNotFoundException('Quote not found.');
+                throw new NotFoundHttpException('Quote not found.');
             }
 
             $ticket->addQuote($quote);
             $actionParameters['quote'] = $quote->getNumber();
         } else {
-            throw $this->createNotFoundException('Missing order id or quote id query parameter.');
+            throw new NotFoundHttpException('Missing order id or quote id query parameter.');
         }
 
-        $form = $this->createForm(TicketType::class, $ticket, [
-            'action' => $this->generateUrl('ekyna_commerce_account_ticket_new', $actionParameters),
+        $form = $this->formFactory->create(TicketType::class, $ticket, [
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_ticket_create', $actionParameters),
             'method' => 'POST',
             'attr'   => [
                 'class' => 'form-horizontal',
@@ -101,7 +106,7 @@ class TicketController extends AbstractTicketController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket.operator')->create($ticket);
+            $event = $this->managerFactory->getManager(TicketInterface::class)->create($ticket);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -114,39 +119,31 @@ class TicketController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.ticket.header.new', $form->createView())
+            ->createModal('ticket.header.new')
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_ticket.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 
-    /**
-     * Ticket edit action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function editAction(Request $request)
+    public function update(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $ticket = $this->findTicket($request);
 
-        $this->denyAccessUnlessGranted(Actions::EDIT, $ticket);
+        $this->denyAccessUnlessGranted(Permission::UPDATE, $ticket);
 
-        $form = $this->createForm(TicketType::class, $ticket, [
-            'action' => $this->generateUrl('ekyna_commerce_account_ticket_edit', [
+        $form = $this->formFactory->create(TicketType::class, $ticket, [
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_ticket_update', [
                 'ticketId' => $ticket->getId(),
             ]),
             'method' => 'POST',
@@ -158,7 +155,7 @@ class TicketController extends AbstractTicketController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket.operator')->update($ticket);
+            $event = $this->managerFactory->getManager(TicketInterface::class)->update($ticket);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -171,63 +168,41 @@ class TicketController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.ticket.header.edit', $form->createView())
+            ->createModal('ticket.header.edit')
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_ticket.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 
-    /**
-     * Ticket remove action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function removeAction(Request $request)
+    public function delete(Request $request): Response
     {
-        return $this->handleConfirmation($request, self::REMOVE, function(TicketInterface $ticket) {
-            return $this->get('ekyna_commerce.ticket.operator')->delete($ticket);
+        return $this->handleConfirmation($request, self::REMOVE, function (TicketInterface $ticket) {
+            return $this->managerFactory->getManager(TicketInterface::class)->delete($ticket);
         });
     }
 
-    /**
-     * Ticket close action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function closeAction(Request $request)
+    public function close(Request $request): Response
     {
-        return $this->handleConfirmation($request, self::CLOSE, function(TicketInterface $ticket) {
+        return $this->handleConfirmation($request, self::CLOSE, function (TicketInterface $ticket) {
             $ticket->setState(TicketStates::STATE_CLOSED);
 
-            return $this->get('ekyna_commerce.ticket.operator')->update($ticket);
+            return $this->managerFactory->getManager(TicketInterface::class)->save($ticket);
         });
     }
 
-    /**
-     * Ticket (re)open action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function openAction(Request $request)
+    public function open(Request $request): Response
     {
-        return $this->handleConfirmation($request, self::OPEN, function(TicketInterface $ticket) {
+        return $this->handleConfirmation($request, self::OPEN, function (TicketInterface $ticket) {
             $ticket->setState(TicketStates::STATE_NEW);
 
-            return $this->get('ekyna_commerce.ticket.operator')->update($ticket);
+            return $this->managerFactory->getManager(TicketInterface::class)->save($ticket);
         });
     }
 
@@ -243,26 +218,26 @@ class TicketController extends AbstractTicketController
     public function handleConfirmation(Request $request, string $action, callable $onConfirmed): Response
     {
         if (!in_array($action, [self::OPEN, self::CLOSE, self::OPEN, true])) {
-            throw new RuntimeException("Unexpected action");
+            throw new RuntimeException('Unexpected action');
         }
 
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $ticket = $this->findTicket($request);
 
-        $this->denyAccessUnlessGranted(Actions::EDIT, $ticket);
+        $this->denyAccessUnlessGranted($action === self::REMOVE ? Permission::DELETE : Permission::UPDATE, $ticket);
 
-        $form = $this->createForm(ConfirmType::class, null, [
-            'action'  => $this->generateUrl(sprintf('ekyna_commerce_account_ticket_%s', $action), [
+        $form = $this->formFactory->create(ConfirmType::class, null, [
+            'action'  => $this->urlGenerator->generate(sprintf('ekyna_commerce_account_ticket_%s', $action), [
                 'ticketId' => $ticket->getId(),
             ]),
             'method'  => 'POST',
             'attr'    => [
                 'class' => 'form-horizontal',
             ],
-            'message' => sprintf('ekyna_commerce.ticket.message.%s_confirm', $action),
+            'message' => t(sprintf('ticket.message.%s_confirm', $action), [], 'EkynaCommerce'),
             'buttons' => false,
         ]);
 
@@ -283,18 +258,17 @@ class TicketController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal(sprintf('ekyna_commerce.ticket.header.%s', $action), $form->createView(), 'confirm')
+            ->createModal(sprintf('ticket.header.%s', $action), 'confirm')
             ->setSize(Modal::SIZE_NORMAL)
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_confirm.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 }

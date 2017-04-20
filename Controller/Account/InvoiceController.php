@@ -1,126 +1,135 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
-use Ekyna\Component\Commerce\Exception\PdfException;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
+use Ekyna\Bundle\UiBundle\Service\FlashHelper;
+use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
+use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
+use Ekyna\Component\Resource\Exception\PdfException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Environment;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class InvoiceController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class InvoiceController extends AbstractController
+class InvoiceController implements ControllerInterface
 {
-    /**
-     * Invoice index action.
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function indexAction()
+    use CustomerTrait;
+
+    private OrderInvoiceRepositoryInterface $invoiceRepository;
+    private RendererFactory                 $rendererFactory;
+    private FlashHelper                     $flashHelper;
+    private UrlGeneratorInterface           $urlGenerator;
+    private Environment                     $twig;
+
+    public function __construct(
+        OrderInvoiceRepositoryInterface $invoiceRepository,
+        RendererFactory                 $rendererFactory,
+        FlashHelper                     $flashHelper,
+        UrlGeneratorInterface           $urlGenerator,
+        Environment                     $twig
+    ) {
+        $this->invoiceRepository = $invoiceRepository;
+        $this->rendererFactory = $rendererFactory;
+        $this->flashHelper = $flashHelper;
+        $this->urlGenerator = $urlGenerator;
+        $this->twig = $twig;
+    }
+
+    public function index(): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
         if ($customer->hasParent()) {
-            throw $this->createAccessDeniedException();
+            throw new AccessDeniedHttpException('');
         }
 
         $invoices = $this->findInvoicesByCustomer($customer);
 
-        return $this->render('@EkynaCommerce/Account/Invoice/index.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Account/Invoice/index.html.twig', [
             'customer' => $customer,
             'invoices' => $invoices,
         ]);
+
+        return (new Response($content))->setPrivate();
     }
 
-    /**
-     * Invoice show action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function showAction(Request $request)
+    public function read(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
         if ($customer->hasParent()) {
-            throw $this->createAccessDeniedException();
+            throw new AccessDeniedHttpException('');
         }
 
         $invoice = $this->findInvoiceByCustomerAndNumber($customer, $request->attributes->get('number'));
 
         $invoices = $this->findInvoicesByCustomer($customer);
 
-        return $this->render('@EkynaCommerce/Account/Invoice/show.html.twig', [
-            'customer'     => $customer,
-            'invoice'      => $invoice,
-            'invoices'     => $invoices,
+        $content = $this->twig->render('@EkynaCommerce/Account/Invoice/show.html.twig', [
+            'customer' => $customer,
+            'invoice' => $invoice,
+            'invoices' => $invoices,
             'route_prefix' => 'ekyna_commerce_account_order',
         ]);
+
+        return (new Response($content))->setPrivate();
     }
 
-    /**
-     * Invoice download action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function downloadAction(Request $request)
+    public function download(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
         $invoice = $this->findInvoiceByCustomerAndNumber($customer, $request->attributes->get('number'));
 
         $renderer = $this
-            ->get(RendererFactory::class)
+            ->rendererFactory
             ->createRenderer($invoice);
 
         try {
             return $renderer->respond($request);
         } catch (PdfException $e) {
-            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+            $this->flashHelper->addFlash(t('document.message.failed_to_generate', [], 'EkynaCommerce'), 'danger');
 
-            return $this->redirectToReferer(
-                $this->generateUrl('ekyna_commerce_account_invoice_index')
+            return new RedirectResponse(
+                $this->urlGenerator->generate('ekyna_commerce_account_invoice_index')
             );
         }
     }
 
     /**
-     * Finds the invoices by customer.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return array|InvoiceInterface[]
+     * @return array<OrderInvoiceInterface>
      */
-    protected function findInvoicesByCustomer(CustomerInterface $customer)
+    protected function findInvoicesByCustomer(CustomerInterface $customer): array
     {
         return $this
-            ->get('ekyna_commerce.order_invoice.repository')
+            ->invoiceRepository
             ->findByCustomer($customer);
     }
 
-    /**
-     * Finds the invoice by customer and number.
-     *
-     * @param CustomerInterface $customer
-     * @param string            $number
-     *
-     * @return InvoiceInterface
-     */
-    protected function findInvoiceByCustomerAndNumber(CustomerInterface $customer, $number)
-    {
+    protected function findInvoiceByCustomerAndNumber(
+        CustomerInterface $customer,
+        string            $number
+    ): OrderInvoiceInterface {
         $invoice = $this
-            ->get('ekyna_commerce.order_invoice.repository')
+            ->invoiceRepository
             ->findOneByCustomerAndNumber($customer, $number);
 
         if (null === $invoice) {
-            throw $this->createNotFoundException('Invoice not found.');
+            throw new NotFoundHttpException('Invoice not found.');
         }
 
         return $invoice;

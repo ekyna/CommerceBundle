@@ -1,32 +1,30 @@
-{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% set customer = context.resource %}
+
+{% block page_title %}{{ (context.config.transPrefix ~ '.header.balance')|trans({}, context.config.transDomain)|raw }}{% endblock page_title %}
+
+{% block title %}
+    <h1>{{ (context.config.transPrefix ~ '.header.balance')|trans({}, context.config.transDomain)|raw }}</h1>
+{% endblock title %}
 
 {% block main %}
 <div class="actions">
-    {{ admin_resource_btn(customer, 'show', {
-        'label': 'ekyna_core.button.back'
+    {{ admin_resource_btn(customer, 'Ekyna\\Bundle\\AdminBundle\\Action\\ReadAction', {
+        'label': t('button.back', {}, 'EkynaUi')
     }) }}
-    {% if customer.user is null %}
-        {{ ui_button('ekyna_commerce.customer.button.create_user', {
-            'type': 'link',
-            'path': path('ekyna_commerce_customer_admin_create_user', {'customerId': customer.id}),
-            'theme': 'primary',
-            'icon': 'user'
-        }) }}
-    {% elseif is_granted('VIEW', customer.user) %}
-        {{ ui_button('ekyna_user.user.button.use_session', {
-            'type': 'link',
-            'path': path('ekyna_user_user_admin_use_session', {'userId': customer.user.id}),
-            'theme': 'primary',
-            'icon': 'eye-open'
-        }, {
-            'onclick': ('return confirm(\'' ~ ('ekyna_user.user.alert.use_session'|trans({
+    {% if customer.user is null -%}
+        {{ admin_resource_btn(customer, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Customer\\CreateUserAction') }}
+    {%- else -%}{# if is_granted(constant('Ekyna\\Component\\Resource\\Action\\Permission::READ'), customer.user) #}
+        {{- admin_resource_btn(customer.user, 'Ekyna\\Bundle\\UserBundle\\Action\\User\\UseSessionAction', {} , {
+            'onclick': ('return confirm(\'' ~ ('user.alert.use_session'|trans({
                 '{email}': customer.user.email
-            })|escape('js')) ~ '\')'),
+            }, 'EkynaUser')) ~ '\')'),
             'target': '_blank'
-        }) }}
-    {% endif %}
-    {{ admin_resource_btn(customer, 'edit') }}
-    {{ admin_resource_btn(customer, 'remove') }}
+        }) -}}
+    {%- endif %}
+    {{ admin_resource_btn(customer, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}
+    {{ admin_resource_btn(customer, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction') }}
 </div>
 <div class="show">
     <div class="show-body">

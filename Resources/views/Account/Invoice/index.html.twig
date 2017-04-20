@@ -2,7 +2,7 @@
 
 {% block account %}
     {% apply spaceless %}
-        <h3>{{ 'ekyna_commerce.account.invoice.title'|trans|raw }}</h3>
+        <h3>{{ 'account.invoice.title'|trans({}, 'EkynaCommerce')|raw }}</h3>
         <hr>
         {% include '@EkynaCommerce/Account/Invoice/_list.html.twig' with {
             'customer': customer,

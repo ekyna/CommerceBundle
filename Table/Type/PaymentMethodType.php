@@ -1,24 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\MoveDownAction;
+use Ekyna\Bundle\AdminBundle\Action\MoveUpAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Column\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class PaymentMethodType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentMethodType extends ResourceTableType
+class PaymentMethodType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addDefaultSort('position')
@@ -26,81 +31,40 @@ class PaymentMethodType extends ResourceTableType
             ->setFilterable(false)
             ->setPerPageChoices([100])
             ->addColumn('name', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.name',
-                'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_payment_method_admin_show',
-                'route_parameters_map' => [
-                    'paymentMethodId' => 'id',
-                ],
-                'position'             => 10,
+                'label'    => t('field.name', [], 'EkynaUi'),
+                'sortable' => true,
+                'position' => 10,
             ])
             ->addColumn('enabled', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_core.field.enabled',
-                'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
-                'route_parameters'     => ['field' => 'enabled'],
-                'route_parameters_map' => ['paymentMethodId' => 'id'],
-                'position'             => 20,
+                'label'    => t('field.enabled', [], 'EkynaUi'),
+                'position' => 20,
             ])
             ->addColumn('available', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_commerce.field.front_office',
-                'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
-                'route_parameters'     => ['field' => 'available'],
-                'route_parameters_map' => ['paymentMethodId' => 'id'],
-                'position'             => 30,
+                'label'    => t('field.front_office', [], 'EkynaCommerce'),
+                'position' => 30,
             ])
             ->addColumn('private', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_commerce.payment_method.field.private',
-                'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
-                'route_parameters'     => ['field' => 'private'],
-                'route_parameters_map' => ['paymentMethodId' => 'id'],
-                'true_class'           => 'label-success',
-                'false_class'          => 'label-warning',
-                'position'             => 40,
+                'label'       => t('payment_method.field.private', [], 'EkynaCommerce'),
+                'true_class'  => 'label-success',
+                'false_class' => 'label-warning',
+                'position'    => 40,
             ])
             ->addColumn('defaultCurrency', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_commerce.payment_method.field.use_default_currency',
-                'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
-                'route_parameters'     => ['field' => 'defaultCurrency'],
-                'route_parameters_map' => ['paymentMethodId' => 'id'],
-                'position'             => 50,
+                'label'    => t('payment_method.field.use_default_currency', [], 'EkynaCommerce'),
+                'position' => 50,
             ])
             ->addColumn('currencies', EntityType::class, [
-                'label'        => 'ekyna_commerce.currency.label.plural',
+                'label'        => t('currency.label.plural', [], 'EkynaCommerce'),
                 'entity_label' => 'code',
                 'position'     => 60,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.move_up',
-                        'icon'                 => 'arrow-up',
-                        'class'                => 'primary',
-                        'route_name'           => 'ekyna_commerce_payment_method_admin_move_up',
-                        'route_parameters_map' => ['paymentMethodId' => 'id'],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.move_down',
-                        'icon'                 => 'arrow-down',
-                        'class'                => 'primary',
-                        'route_name'           => 'ekyna_commerce_payment_method_admin_move_down',
-                        'route_parameters_map' => ['paymentMethodId' => 'id'],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_payment_method_admin_edit',
-                        'route_parameters_map' => ['paymentMethodId' => 'id'],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_payment_method_admin_remove',
-                        'route_parameters_map' => ['paymentMethodId' => 'id'],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    MoveUpAction::class,
+                    MoveDownAction::class,
+                    UpdateAction::class,
+                    DeleteAction::class,
                 ],
             ]);
     }

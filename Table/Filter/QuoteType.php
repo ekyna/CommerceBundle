@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteSearchType;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceSearchType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Component\Table\Filter\AbstractFilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,39 +16,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class QuoteType extends AbstractFilterType
 {
-    /**
-     * @var string
-     */
-    private $quoteClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $class
-     */
-    public function __construct(string $class)
-    {
-        $this->quoteClass = $class;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'      => 'ekyna_commerce.quote.label.plural',
-            'class'      => $this->quoteClass,
-            'form_class' => QuoteSearchType::class,
+            'resource'     => 'ekyna_commerce.quote',
+            'form_class'   => ResourceSearchType::class,
+            'form_options' => ['resource' => 'ekyna_commerce.quote'],
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return EntityType::class;
+        return ResourceType::class;
     }
 }

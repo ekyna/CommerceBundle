@@ -1,7 +1,7 @@
 {% macro show_stock_mode(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject|stock_subject_mode_badge, 'text', {
-        'label': 'ekyna_core.field.mode',
+        'label': t('field.mode', [], 'EkynaUi'),
         'id': 'subject_stockMode'
     }|merge(options)) }}
 {% endapply %}
@@ -11,7 +11,7 @@
 {% macro show_stock_state(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject|stock_subject_state_badge, 'text', {
-        'label': 'ekyna_core.field.status',
+        'label': t('field.status', [], 'EkynaUi'),
         'id': 'subject_stockState'
     }|merge(options)) }}
 {% endapply %}
@@ -21,7 +21,7 @@
 {% macro show_in_stock(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.inStock, 'number', {
-        'label': 'ekyna_commerce.field.in_stock',
+        'label': t('field.in_stock', [], 'EkynaCommerce'),
         'id': 'subject_inStock'
     }|merge(options)) }}
 {% endapply %}
@@ -31,7 +31,7 @@
 {% macro show_available_stock(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.availableStock, 'number', {
-        'label': 'ekyna_commerce.field.available_stock',
+        'label': t('field.available_stock', [], 'EkynaCommerce'),
         'id': 'subject_availableStock'
     }|merge(options)) }}
 {% endapply %}
@@ -41,7 +41,7 @@
 {% macro show_virtual_stock(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.virtualStock, 'number', {
-        'label': 'ekyna_commerce.field.virtual_stock',
+        'label': t('field.virtual_stock', [], 'EkynaCommerce'),
         'id': 'subject_virtualStock'
     }|merge(options)) }}
 {% endapply %}
@@ -51,7 +51,7 @@
 {% macro show_stock_floor(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.stockFloor, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.floor',
+        'label': t('stock_subject.field.floor', [], 'EkynaCommerce'),
         'id': 'subject_stockFloor'
     }|merge(options)) }}
 {% endapply %}
@@ -61,7 +61,7 @@
 {% macro show_minimum_order_quantity(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.minimumOrderQuantity, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.minimum_order_quantity',
+        'label': t('stock_subject.field.minimum_order_quantity', [], 'EkynaCommerce'),
         'id': 'subject_minimumOrderQuantity'
     }|merge(options)) }}
 {% endapply %}
@@ -71,7 +71,7 @@
 {% macro show_eda(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.estimatedDateOfArrival, 'datetime', {
-        'label': 'ekyna_commerce.field.replenishment_eda',
+        'label': t('field.replenishment_eda', [], 'EkynaCommerce'),
         'id': 'subject_estimatedDateOfArrival',
         'time': false
     }|merge(options)) }}
@@ -82,7 +82,7 @@
 {% macro show_replenishment_time(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.replenishmentTime, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.replenishment_time',
+        'label': t('stock_subject.field.replenishment_time', [], 'EkynaCommerce'),
         'id': 'subject_replenishmentTime'
     }|merge(options)) }}
 {% endapply %}
@@ -92,7 +92,7 @@
 {% macro show_geocode(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.geocode, 'text', {
-        'label': 'ekyna_commerce.field.geocode',
+        'label': t('field.geocode', [], 'EkynaCommerce'),
         'id': 'subject_geocode'
     }|merge(options)) }}
 {% endapply %}
@@ -102,7 +102,7 @@
 {% macro show_quote_only(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.quoteOnly, 'boolean', {
-        'label': 'ekyna_commerce.stock_subject.field.quote_only',
+        'label': t('stock_subject.field.quote_only', [], 'EkynaCommerce'),
         'id': 'subject_quoteOnly',
         'color': true,
         'true_class': 'label label-warning',
@@ -115,7 +115,7 @@
 {% macro show_end_of_life(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.endOfLife, 'boolean', {
-        'label': 'ekyna_commerce.stock_subject.field.end_of_life',
+        'label': t('stock_subject.field.end_of_life', [], 'EkynaCommerce'),
         'id': 'subject_endOfLife',
         'color': true,
         'true_class': 'label label-warning',
@@ -127,7 +127,7 @@
 
 {%- macro show_weight(subject, options = {}) -%}
     {{- show_row(subject.weight, 'number', {
-        'label': 'ekyna_core.field.weight',
+        'label': t('field.weight', [], 'EkynaUi'),
         'id': 'subject_weight',
         'append': ' kg'
     }|merge(options)) -}}
@@ -136,7 +136,7 @@
 
 {%- macro show_width(subject, options = {}) -%}
     {{- show_row(subject.width, 'number', {
-        'label': 'ekyna_core.field.width',
+        'label': t('field.width', [], 'EkynaUi'),
         'id': 'subject_width',
         'append': ' mm'
     }|merge(options)) -}}
@@ -145,7 +145,7 @@
 
 {%- macro show_height(subject, options = {}) -%}
     {{- show_row(subject.height, 'number', {
-        'label': 'ekyna_core.field.height',
+        'label': t('field.height', [], 'EkynaUi'),
         'id': 'subject_height',
         'append': ' mm'
     }|merge(options)) -}}
@@ -154,7 +154,7 @@
 
 {%- macro show_depth(subject, options = {}) -%}
     {{- show_row(subject.depth, 'number', {
-        'label': 'ekyna_core.field.depth',
+        'label': t('field.depth', [], 'EkynaUi'),
         'id': 'subject_depth',
         'append': ' mm'
     }|merge(options)) -}}
@@ -162,8 +162,8 @@
 
 
 {%- macro show_unit(subject, options = {}) -%}
-    {{- show_row(subject.unit, 'unit', {
-        'label': 'ekyna_commerce.unit.label',
+    {{- show_row(subject.unit, 'commerce_unit', {
+        'label': t('unit.label', [], 'EkynaCommerce'),
         'id': 'subject_unit'
     }|merge(options)) -}}
 {%- endmacro show_unit -%}
@@ -171,7 +171,7 @@
 
 {%- macro show_package_weight(subject, options = {}) -%}
     {{- show_row(subject.packageWeight, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.package_weight',
+        'label': t('stock_subject.field.package_weight', [], 'EkynaCommerce'),
         'id': 'subject_package_weight',
         'append': ' kg'
     }|merge(options)) -}}
@@ -180,7 +180,7 @@
 
 {%- macro show_package_width(subject, options = {}) -%}
     {{- show_row(subject.packageWidth, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.package_width',
+        'label': t('stock_subject.field.package_width', [], 'EkynaCommerce'),
         'id': 'subject_package_width',
         'append': ' mm'
     }|merge(options)) -}}
@@ -189,7 +189,7 @@
 
 {%- macro show_package_height(subject, options = {}) -%}
     {{- show_row(subject.packageHeight, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.package_height',
+        'label': t('stock_subject.field.package_height', [], 'EkynaCommerce'),
         'id': 'subject_package_height',
         'append': ' mm'
     }|merge(options)) -}}
@@ -198,7 +198,7 @@
 
 {%- macro show_package_depth(subject, options = {}) -%}
     {{- show_row(subject.packageDepth, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.package_depth',
+        'label': t('stock_subject.field.package_depth', [], 'EkynaCommerce'),
         'id': 'subject_package_depth',
         'append': ' mm'
     }|merge(options)) -}}

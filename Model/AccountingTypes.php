@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Accounting\Model\AccountingTypes as Types;
  */
 final class AccountingTypes extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
     public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.accounting.type.';
+        $prefix = 'accounting.type.';
 
         return [
             Types::TYPE_GOOD       => [$prefix . Types::TYPE_GOOD],
@@ -32,11 +31,13 @@ final class AccountingTypes extends AbstractConstants
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

@@ -1,46 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class CustomerAddressType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Customer
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CustomerAddressType extends ResourceFormType
+class CustomerAddressType extends AbstractResourceType
 {
-    /**
-     * Constructor.
-     *
-     * @param string $addressClass
-     */
-    public function __construct($addressClass)
-    {
-        parent::__construct($addressClass);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['defaults']) {
             $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-                /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface $address */
+                /** @var CustomerAddressInterface $address */
                 $address = $event->getData();
                 $form = $event->getForm();
 
                 $form
                     ->add('invoiceDefault', CheckboxType::class, [
-                        'label'    => 'ekyna_commerce.customer_address.field.invoice_default',
+                        'label'    => t('customer_address.field.invoice_default', [], 'EkynaCommerce'),
                         'disabled' => $address->isInvoiceDefault(),
                         'required' => false,
                         'attr'     => [
@@ -48,7 +40,7 @@ class CustomerAddressType extends ResourceFormType
                         ],
                     ])
                     ->add('deliveryDefault', CheckboxType::class, [
-                        'label'    => 'ekyna_commerce.customer_address.field.delivery_default',
+                        'label'    => t('customer_address.field.delivery_default', [], 'EkynaCommerce'),
                         'disabled' => $address->isDeliveryDefault(),
                         'required' => false,
                         'attr'     => [
@@ -59,10 +51,7 @@ class CustomerAddressType extends ResourceFormType
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -71,10 +60,7 @@ class CustomerAddressType extends ResourceFormType
             ->setAllowedTypes('defaults', 'bool');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return AddressType::class;
     }

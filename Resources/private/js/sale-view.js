@@ -1,4 +1,4 @@
-define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form', 'bootstrap'], function($, Modal, Dispatcher) {
+define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-spinner', 'jquery/form', 'bootstrap'], function($, Modal, Dispatcher) {
     "use strict";
 
     function initView() {

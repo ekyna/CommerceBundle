@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter;
 
 use Ekyna\Component\Commerce\Newsletter\Webhook\HandlerRegistry;
@@ -13,17 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class WebhookController
 {
-    /**
-     * @var HandlerRegistry
-     */
-    private $registry;
+    private HandlerRegistry $registry;
 
-
-    /**
-     * Constructor.
-     *
-     * @param HandlerRegistry $registry
-     */
     public function __construct(HandlerRegistry $registry)
     {
         $this->registry = $registry;

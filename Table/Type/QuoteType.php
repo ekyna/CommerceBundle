@@ -1,43 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
-use Ekyna\Component\Table\Exception\InvalidArgumentException;
+use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_merge;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class QuoteType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class QuoteType extends ResourceTableType
+class QuoteType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $filters = false;
         /** @var CustomerInterface $customer */
         if (null !== $customer = $options['customer']) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
-                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+                throw new UnexpectedTypeException($source, EntitySource::class);
             }
 
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($customer): void {
                 if ($customer->hasChildren()) {
                     $qb
                         ->andWhere($qb->expr()->in($alias . '.customer', ':customers'))
@@ -65,37 +69,35 @@ class QuoteType extends ResourceTableType
                 'position'      => 5,
             ])
             ->addColumn('number', Type\Column\QuoteType::class, [
-                'label'         => 'ekyna_core.field.number',
+                'label'         => t('field.number', [], 'EkynaUi'),
                 'property_path' => false,
                 'position'      => 10,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.date',
+                'label'       => t('field.date', [], 'EkynaUi'),
                 'position'    => 20,
                 'time_format' => 'none',
             ])
             ->addColumn('title', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.title',
+                'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
             ])
             ->addColumn('voucherNumber', CType\Column\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
                 'position' => 45,
             ])
             ->addColumn('grandTotal', Type\Column\CurrencyType::class, [
-                'label'    => 'ekyna_commerce.sale.field.ati_total',
+                'label'    => t('sale.field.ati_total', [], 'EkynaCommerce'),
                 'position' => 50,
             ])
             ->addColumn('paidTotal', Type\Column\CurrencyType::class, [
-                'label'    => 'ekyna_commerce.sale.field.paid_total',
+                'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 60,
             ])
             ->addColumn('state', Type\Column\SaleStateType::class, [
-                'label'    => 'ekyna_commerce.field.status',
                 'position' => 70,
             ])
             ->addColumn('paymentState', Type\Column\PaymentStateType::class, [
-                'label'    => 'ekyna_commerce.sale.table.payment_state',
                 'position' => 80,
             ])
             /*->addColumn('inCharge', Type\Column\InChargeType::class, [
@@ -106,31 +108,15 @@ class QuoteType extends ResourceTableType
                 'position'      => 100,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_quote_admin_edit',
-                        'route_parameters_map' => [
-                            'quoteId' => 'id',
-                        ],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_quote_admin_remove',
-                        'route_parameters_map' => [
-                            'quoteId' => 'id',
-                        ],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    UpdateAction::class,
+                    DeleteAction::class,
                 ],
             ]);
 
         if (null === $customer || $customer->hasChildren()) {
             $builder->addColumn('customer', Type\Column\SaleCustomerType::class, [
-                'label'    => 'ekyna_commerce.customer.label.singular',
                 'position' => 30,
             ]);
         }
@@ -140,32 +126,32 @@ class QuoteType extends ResourceTableType
         }
         $builder
             ->addFilter('number', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
+                'label'    => t('field.number', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.created_at',
+                'label'    => t('field.created_at', [], 'EkynaUi'),
                 'position' => 20,
                 'time'     => false,
             ])
             ->addFilter('email', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.email',
+                'label'    => t('field.email', [], 'EkynaUi'),
                 'position' => 30,
             ])
             ->addFilter('company', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
+                'label'    => t('field.company', [], 'EkynaUi'),
                 'position' => 31,
             ])
             ->addFilter('firstName', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.first_name',
+                'label'    => t('field.first_name', [], 'EkynaUi'),
                 'position' => 32,
             ])
             ->addFilter('lastName', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.last_name',
+                'label'    => t('field.last_name', [], 'EkynaUi'),
                 'position' => 33,
             ])
             ->addFilter('companyNumber', CType\Filter\TextType::class, [
-                'label'         => 'ekyna_commerce.customer.field.company_number',
+                'label'         => t('customer.field.company_number', [], 'EkynaCommerce'),
                 'property_path' => 'customer.companyNumber',
                 'position'      => 34,
             ])
@@ -174,52 +160,46 @@ class QuoteType extends ResourceTableType
                 'position' => 35,
             ])
             ->addFilter('title', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.title',
+                'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
             ])
             ->addFilter('voucherNumber', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
                 'position' => 45,
             ])
             ->addFilter('grandTotal', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.sale.field.ati_total',
+                'label'    => t('sale.field.ati_total', [], 'EkynaCommerce'),
                 'position' => 50,
             ])
             ->addFilter('paidTotal', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.sale.field.paid_total',
+                'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 60,
             ])
             ->addFilter('state', CType\Filter\ChoiceType::class, [
-                'label'    => 'ekyna_commerce.field.status',
+                'label'    => t('field.status', [], 'EkynaCommerce'),
                 'choices'  => Model\OrderStates::getChoices(),
                 'position' => 70,
             ])
             ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
-                'label'    => 'ekyna_commerce.sale.field.payment_state',
+                'label'    => t('sale.field.payment_state', [], 'EkynaCommerce'),
                 'choices'  => Model\PaymentStates::getChoices(),
                 'position' => 80,
             ])
-            /*->addFilter('inCharge', Type\Filter\InChargeType::class, [
+            ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 90,
-            ])*/
+            ])
             ->addFilter('tags', Type\Filter\SaleTagsType::class, [
-                'label'    => 'ekyna_cms.tag.label.plural',
                 'position' => 100,
             ])
             ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 110,
             ])
             ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
-                'label'    => 'Article',
                 'position' => 150,
             ]);
-
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

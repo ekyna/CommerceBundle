@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Doctrine\ORM\EntityRepository;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SupplierChoiceType
@@ -14,41 +18,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SupplierChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $supplierClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $supplierClass
-     */
-    public function __construct(string $supplierClass)
-    {
-        $this->supplierClass = $supplierClass;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'         => 'ekyna_commerce.supplier.label.singular',
-            'class'         => $this->supplierClass,
+            'label'         => t('supplier.label.singular', [], 'EkynaCommerce'),
+            'resource'      => 'ekyna_commerce.supplier',
             'query_builder' => function (EntityRepository $repository) {
                 return $repository->createQueryBuilder('s')->orderBy('s.name', 'ASC');
             },
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return ResourceType::class;
+        return ResourceChoiceType::class;
     }
 }

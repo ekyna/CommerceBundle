@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Bundle\CoreBundle\Form\DataTransformer\ObjectToIdentifierTransformer;
+use Ekyna\Bundle\ResourceBundle\Form\DataTransformer\ResourceToIdentifierTransformer;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Shipment\Repository\RelayPointRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
@@ -13,6 +15,9 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use function json_encode;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class RelayPointType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
@@ -20,47 +25,27 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class RelayPointType extends AbstractType
 {
-    /**
-     * @var RelayPointRepositoryInterface
-     */
-    private $repository;
+    private RelayPointRepositoryInterface $repository;
+    private SerializerInterface $serializer;
+    private string $mapApiKey;
 
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
 
-    /**
-     * @var string
-     */
-    private $mapApiKey;
-
-    /**
-     * Constructor.
-     *
-     * @param RelayPointRepositoryInterface $repository
-     * @param SerializerInterface           $serializer
-     * @param string                        $mapApiKey
-     */
-    public function __construct(RelayPointRepositoryInterface $repository, SerializerInterface $serializer, $mapApiKey)
-    {
+    public function __construct(
+        RelayPointRepositoryInterface $repository,
+        SerializerInterface $serializer,
+        string $mapApiKey
+    ) {
         $this->repository = $repository;
         $this->serializer = $serializer;
         $this->mapApiKey = $mapApiKey;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addViewTransformer(new ObjectToIdentifierTransformer($this->repository, 'number'));
+        $builder->addViewTransformer(new ResourceToIdentifierTransformer($this->repository, 'number'));
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['map_api_key'] = $this->mapApiKey;
         $view->vars['relay_point'] = $relayPoint = $form->getData();
@@ -82,14 +67,11 @@ class RelayPointType extends AbstractType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'          => 'ekyna_commerce.relay_point.label.singular',
+                'label'          => t('relay_point.label.singular', [], 'EkynaCommerce'),
                 'search'         => null,
                 'required'       => false,
                 'error_bubbling' => false,
@@ -97,18 +79,12 @@ class RelayPointType extends AbstractType
             ->setAllowedTypes('search', [AddressInterface::class, 'null']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_relay_point';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return HiddenType::class;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
 use Doctrine\ORM\EntityRepository;
@@ -8,6 +10,8 @@ use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Filter\AbstractFilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class InChargeType
  * @package Ekyna\Bundle\CommerceBundle\Table\Filter
@@ -15,37 +19,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class InChargeType extends AbstractFilterType
 {
-    /**
-     * @var string
-     */
-    private $userClass;
+    private GroupRepositoryInterface $groupRepository;
+    private string                   $userClass;
 
-    /**
-     * @var GroupRepositoryInterface
-     */
-    private $groupRepository;
-
-
-    /**
-     * Constructor.
-     *
-     * @param GroupRepositoryInterface $groupRepository
-     * @param string                   $userClass
-     */
-    public function __construct(GroupRepositoryInterface $groupRepository, $userClass)
+    public function __construct(GroupRepositoryInterface $groupRepository, string $userClass)
     {
         $this->groupRepository = $groupRepository;
         $this->userClass = $userClass;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'         => 'ekyna_commerce.customer.field.in_charge',
+                'label'         => t('customer.field.in_charge', [], 'EkynaCommerce'),
                 'class'         => $this->userClass,
                 'entity_label'  => 'shortName',
                 'query_builder' => function (EntityRepository $repository) {
@@ -53,19 +40,16 @@ class InChargeType extends AbstractFilterType
 
                     return $qb
                         ->andWhere($qb->expr()->in('u.group', ':groups'))
-                        ->andWhere($qb->expr()->in('u.active', ':active'))
+                        ->andWhere($qb->expr()->in('u.enabled', ':enabled'))
                         ->setParameter('groups', $this->groupRepository->findByRole('ROLE_ADMIN'))
-                        ->setParameter('active', true)
+                        ->setParameter('enabled', true)
                         ->orderBy('u.firstName', 'ASC')
                         ->orderBy('u.lastName', 'ASC');
                 },
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return EntityType::class;
     }

@@ -1,106 +1,94 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatDisplayModeType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentRuleType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentRuleType extends ResourceFormType
+class ShipmentRuleType extends AbstractResourceType
 {
-    /**
-     * @var string
-     */
-    protected $defaultCurrency;
+    protected string $defaultCurrency;
 
-
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     * @param string $defaultCurrency
-     */
-    public function __construct(string $dataClass, string $defaultCurrency)
+    public function __construct(string $defaultCurrency)
     {
-        parent::__construct($dataClass);
-
         $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', Type\TextType::class, [
-                'label' => 'ekyna_core.field.name',
+                'label' => t('field.name', [], 'EkynaUi'),
             ])
             ->add('vatMode', VatDisplayModeType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.vat_mode',
+                'label'    => t('shipment_rule.field.vat_mode', [], 'EkynaCommerce'),
                 'required' => true,
                 'attr'     => [
                     'inline'            => true,
                     'align_with_widget' => true,
-                    'help_text'         => 'ekyna_commerce.shipment_rule.help.vat_mode',
+                    'help_text'         => t('shipment_rule.help.vat_mode', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('methods', ShipmentMethodChoiceType::class, [
-                'label'    => 'ekyna_commerce.shipment_method.label.plural',
+                'label'    => t('shipment_method.label.plural', [], 'EkynaCommerce'),
                 'multiple' => true,
                 'required' => false,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.shipment_rule.help.methods',
+                    'help_text' => t('shipment_rule.help.methods', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('countries', CountryChoiceType::class, [
-                'label'    => 'ekyna_commerce.country.label.plural',
+                'label'    => t('country.label.plural', [], 'EkynaCommerce'),
                 'enabled'  => false,
                 'multiple' => true,
                 'required' => false,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.shipment_rule.help.countries',
+                    'help_text' => t('shipment_rule.help.countries', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('customerGroups', CustomerGroupChoiceType::class, [
-                'label'    => 'ekyna_commerce.customer_group.label.plural',
+                'label'    => t('customer_group.label.plural', [], 'EkynaCommerce'),
                 'multiple' => true,
                 'required' => false,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.shipment_rule.help.customer_groups',
+                    'help_text' => t('shipment_rule.help.customer_groups', [], 'EkynaCommerce'),
                 ],
             ])
-            ->add('startAt', Type\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.start_at',
-                'format'   => 'dd/MM/yyyy',
+            ->add('startAt', Type\DateType::class, [
+                'label'    => t('shipment_rule.field.start_at', [], 'EkynaCommerce'),
                 'required' => false,
             ])
-            ->add('endAt', Type\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.end_at',
-                'format'   => 'dd/MM/yyyy',
+            ->add('endAt', Type\DateType::class, [
+                'label'    => t('shipment_rule.field.end_at', [], 'EkynaCommerce'),
                 'required' => false,
             ])
-            ->add('baseTotal', MoneyType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.base_total',
+            ->add('baseTotal', Type\MoneyType::class, [
+                'label'    => t('shipment_rule.field.base_total', [], 'EkynaCommerce'),
+                'decimal'  => true,
                 'currency' => $this->defaultCurrency,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.shipment_rule.help.base_total',
+                    'help_text' => t('shipment_rule.help.base_total', [], 'EkynaCommerce'),
                 ],
             ])
-            ->add('netPrice', MoneyType::class, [
-                'label'    => 'ekyna_commerce.field.net_price',
+            ->add('netPrice', Type\MoneyType::class, [
+                'label'    => t('field.net_price', [], 'EkynaCommerce'),
+                'decimal'  => true,
                 'currency' => $this->defaultCurrency,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.field.net_price',
+                    'help_text' => t('field.net_price', [], 'EkynaCommerce'),
                 ],
             ]);
     }

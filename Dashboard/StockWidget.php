@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
+use DateTime;
+use Doctrine\Persistence\ManagerRegistry;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
 use Ekyna\Component\Commerce\Stat\Entity\StockStat;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Ekyna\Component\Commerce\Stat\Repository\StockStatRepositoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
 
@@ -16,31 +20,18 @@ use Twig\Environment;
  */
 class StockWidget extends AbstractWidgetType
 {
-    /**
-     * @var RegistryInterface
-     */
-    protected $registry;
+    public const NAME = 'commerce_stock';
 
-    /**
-     * @var \Ekyna\Component\Commerce\Stat\Repository\StockStatRepositoryInterface
-     */
-    protected $stockStatRepository;
+    protected ManagerRegistry               $registry;
+    protected ?StockStatRepositoryInterface $stockStatRepository = null;
 
 
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface $registry
-     */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function render(WidgetInterface $widget, Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig): string
     {
         $current = $this->getStockStatRepository()->findOneByDay();
 
@@ -50,10 +41,7 @@ class StockWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -69,20 +57,7 @@ class StockWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        return 'commerce_stock';
-    }
-
-    /**
-     * Returns the order repository.
-     *
-     * @return \Ekyna\Component\Commerce\Stat\Repository\StockStatRepositoryInterface
-     */
-    protected function getStockStatRepository()
+    protected function getStockStatRepository(): StockStatRepositoryInterface
     {
         if (null !== $this->stockStatRepository) {
             return $this->stockStatRepository;
@@ -93,10 +68,8 @@ class StockWidget extends AbstractWidgetType
 
     /**
      * Builds the yearly revenues chart config.
-     *
-     * @return array
      */
-    private function buildStockChart()
+    private function buildStockChart(): array
     {
         $repository = $this->getStockStatRepository();
 
@@ -107,7 +80,7 @@ class StockWidget extends AbstractWidgetType
         $labels = $inValues = $soldValues = [];
         /** @var StockStat $stat */
         foreach ($stats as $stat) {
-            $labels[] = (new \DateTime($stat->getDate()))->format('j M');
+            $labels[] = (new DateTime($stat->getDate()))->format('j M');
             $inValues[] = $stat->getInValue();
             $soldValues[] = $stat->getSoldValue();
         }
@@ -146,5 +119,10 @@ class StockWidget extends AbstractWidgetType
                 ],
             ],
         ];
+    }
+
+    public static function getName(): string
+    {
+        return self::NAME;
     }
 }

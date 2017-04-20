@@ -1,0 +1,26 @@
+{% extends '@EkynaAdmin/Entity/sided.html.twig' %}
+
+{% set resource = context.resource %}
+{% set resource_name = context.config.dashedName %}
+
+{% block page_title %}
+    {{ (context.config.transPrefix ~ '.button.transform')|trans({}, context.config.transDomain)|raw }}
+{% endblock page_title %}
+
+{% block title %}
+    <h1>{{ (context.config.transPrefix ~ '.header.transform')|trans({
+        '%name%': resource.number,
+        '%target%': (target ~ '.label.singular')|trans({}, 'EkynaCommerce')|lower
+    }, context.config.transDomain)|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction') }}
+{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form) }}
+    {% include '@EkynaCommerce/Admin/Common/Sale/_form_transform.html.twig' %}
+    {{ form_end(form) }}
+{% endblock main %}

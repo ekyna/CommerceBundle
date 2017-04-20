@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Common\Model\NotificationTypes as Types;
  */
 class NotificationTypes extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
     public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.notify.type.';
+        $prefix = 'notify.type.';
         $suffix = '.label';
 
         return [
@@ -39,11 +38,13 @@ class NotificationTypes extends AbstractConstants
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

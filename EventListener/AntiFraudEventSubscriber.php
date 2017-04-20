@@ -12,7 +12,7 @@ use Ekyna\Component\Commerce\Customer\Model\CustomerStates;
 use Ekyna\Component\Commerce\Payment\Event\PaymentEvent;
 use Ekyna\Component\Commerce\Payment\Event\PaymentEvents;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
-use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
+use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Payum;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -25,7 +25,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class AntiFraudEventSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var ResourceOperatorInterface
+     * @var ResourceManagerInterface
      */
     protected $cartOperator;
 
@@ -53,14 +53,14 @@ class AntiFraudEventSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param ResourceOperatorInterface $cartOperator
-     * @param EntityManagerInterface    $entityManager
-     * @param Payum                     $payum
-     * @param Mailer                    $mailer
-     * @param array                     $config
+     * @param ResourceManagerInterface $cartOperator
+     * @param EntityManagerInterface   $entityManager
+     * @param Payum                    $payum
+     * @param Mailer                   $mailer
+     * @param array                    $config
      */
     public function __construct(
-        ResourceOperatorInterface $cartOperator,
+        ResourceManagerInterface $cartOperator,
         EntityManagerInterface $entityManager,
         Payum $payum,
         Mailer $mailer,
@@ -161,7 +161,7 @@ class AntiFraudEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public static function getSubscribedEvents()
     {

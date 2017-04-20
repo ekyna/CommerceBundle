@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Craue\FormFlowBundle\Form\FormFlow;
@@ -13,10 +15,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodType;
  */
 class PaymentMethodCreateFlow extends FormFlow
 {
-    /**
-     * @inheritdoc
-     */
-    protected function loadStepsConfig()
+    protected function loadStepsConfig(): array
     {
         return [
             [

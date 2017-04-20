@@ -1,36 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Stock;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
 use Ekyna\Bundle\CommerceBundle\Model\StockAdjustmentReasons;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
+use Ekyna\Component\Commerce\Common\Model\Units;
+use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class StockAdjustmentType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Stock
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class StockAdjustmentType extends ResourceFormType
+class StockAdjustmentType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+            /** @var StockAdjustmentInterface $adjustment */
+            $adjustment = $event->getData();
+
+            $unit = $this->getUnit($adjustment);
+
+            FormHelper::addQuantityType($event->getForm(), $unit);
+        });
+
         $builder
-            ->add('quantity', Type\NumberType::class, [
-                'label' => 'ekyna_core.field.quantity',
-            ])
-            ->add('reason', Type\ChoiceType::class, [
-                'label'       => 'ekyna_commerce.stock_adjustment.field.reason',
-                'placeholder' => 'ekyna_core.value.choose',
-                'choices'     => StockAdjustmentReasons::getChoices(),
+            ->add('reason', ConstantChoiceType::class, [
+                'label'       => t('stock_adjustment.field.reason', [], 'EkynaCommerce'),
+                'placeholder' => t('value.choose', [], 'EkynaUi'),
+                'class'       => StockAdjustmentReasons::class,
             ])
             ->add('note', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.comment',
+                'label'    => t('field.comment', [], 'EkynaUi'),
                 'required' => false,
             ]);
+    }
+
+    private function getUnit(StockAdjustmentInterface $adjustment): string
+    {
+        if (null === $stockUnit = $adjustment->getStockUnit()) {
+            return Units::PIECE;
+        }
+
+        if (null === $subject = $stockUnit->getSubject()) {
+            return Units::PIECE;
+        }
+
+        return $subject->getUnit() ?: Units::PIECE;
     }
 }

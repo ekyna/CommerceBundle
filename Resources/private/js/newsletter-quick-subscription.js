@@ -1,4 +1,4 @@
-define(['jquery', 'routing', 'ekyna-ui'], function ($, Router) {
+define(['jquery', 'routing', 'ekyna-spinner'], function ($, Router) {
 
     function Newsletter($element) {
         if ($element.data('NewsletterQuickSubscription')) {
@@ -31,7 +31,7 @@ define(['jquery', 'routing', 'ekyna-ui'], function ($, Router) {
 
         var self = this,
             xhr = $.ajax({
-                url: Router.generate('ekyna_commerce_api_newsletter_subscribe', {key: this.key}),
+                url: Router.generate('api_ekyna_commerce_newsletter_subscribe', {key: this.key}),
                 method: 'POST',
                 data: { email: email },
                 dataType: 'json'

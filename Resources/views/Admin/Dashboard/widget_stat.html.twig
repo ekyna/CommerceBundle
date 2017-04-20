@@ -5,7 +5,7 @@
     <div class="col-lg-4 commerce-stat-day">
         {{ macros.render_stat_panel(
             'daily_revenues_stats',
-            'ekyna_commerce.dashboard.stat.title.daily',
+            t('dashboard.stat.title.daily', [], 'EkynaCommerce'),
             current_day,
             compare_day
         ) }}
@@ -15,7 +15,7 @@
     <div class="col-lg-4 commerce-stat-month">
         {{ macros.render_stat_panel(
             'monthly_revenues_stats',
-            'ekyna_commerce.dashboard.stat.title.monthly',
+            t('dashboard.stat.title.monthly', [], 'EkynaCommerce'),
             current_month,
             compare_month
         ) }}
@@ -25,7 +25,7 @@
     <div class="col-lg-4 commerce-stat-year">
         {{ macros.render_stat_panel(
             'yearly_revenues_stats',
-            'ekyna_commerce.dashboard.stat.title.yearly',
+            t('dashboard.stat.title.yearly', [], 'EkynaCommerce'),
             current_year,
             compare_year,
             aggregate_year

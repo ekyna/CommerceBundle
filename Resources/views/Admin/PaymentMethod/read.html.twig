@@ -1,0 +1,150 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% import '@EkynaCommerce/Admin/macros.html.twig' as _commerce %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\PaymentMethod\\CreateAction') }}
+{% endblock actions %}
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{- 'field.general'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-content" id="toggle-content" data-toggle="tab">
+            {{- 'field.content'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-messages" id="toggle-messages" data-toggle="tab">
+            {{- 'message.label.plural'|trans({}, 'EkynaCommerce') -}}
+        </a>
+    </li>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{- show_row(paymentMethod.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi'
+        }) -}}
+        {{- show_row(paymentMethod.factoryName, 'text', {
+            'label': 'field.factory_name',
+            'label_trans_domain': 'EkynaCommerce'
+        }) -}}
+        <div class="row">
+            <div class="col-md-6">
+                {{- show_row(paymentMethod.enabled, 'boolean', {
+                    'label': 'field.enabled',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4,
+                    'color': true
+                }) -}}
+            </div>
+            <div class="col-md-6">
+                {{- show_row(paymentMethod.available, 'boolean', {
+                    'label': 'field.front_office',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'label_col': 4,
+                    'color': true
+                }) -}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{- show_row(paymentMethod.defaultCurrency, 'boolean', {
+                    'label': 'payment_method.field.use_default_currency',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'label_col': 4,
+                    'color': true,
+                    'false_class': 'label label-warning'
+                }) -}}
+            </div>
+            <div class="col-md-6">
+                {{- show_row(paymentMethod.private, 'boolean', {
+                    'label': 'payment_method.field.private',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'label_col': 4,
+                    'color': true,
+                    'true_class': 'label label-warning',
+                    'false_class': 'label label-success'
+                }) -}}
+            </div>
+        </div>
+        {{- show_row(paymentMethod.currencies, 'resource', {
+            'resource': 'ekyna_commerce.currency'
+        }) -}}
+        {% if paymentMethod.config is not empty -%}
+            <div class="row show-row">
+                <div class="col-md-2 show-label">{{ 'field.config'|trans({}, 'EkynaUi') }}</div>
+                <div class="col-md-10">
+                    <div class="show-widget show-widget-block">
+                        {{- paymentMethod|payment_method_config -}}
+                    </div>
+                </div>
+            </div>
+        {%- endif %}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-content">
+        {{- show_row(paymentMethod.media, 'media_media', {
+            'label': 'field.image',
+            'label_trans_domain': 'EkynaUi'
+        }) -}}
+        {{- show_row(paymentMethod.translations, 'translations', {
+            'fields': {
+                'title': {
+                    'label': 'field.title',
+                    'options': {'label_trans_domain': 'EkynaUi'}
+                },
+                'description': {
+                    'label': 'field.description',
+                    'type': 'textarea',
+                    'options': {'html': true, 'label_trans_domain': 'EkynaUi'}
+                },
+                'notice': {
+                    'label': 'payment_method.field.notice',
+                    'type': 'textarea',
+                    'options': {'html': true, 'label_trans_domain': 'EkynaCommerce'}
+                },
+                'footer': {
+                    'label': 'payment_method.field.footer',
+                    'type': 'textarea',
+                    'options': {'html': true, 'label_trans_domain': 'EkynaCommerce'}
+                }
+            }
+        }) -}}
+        {{- _commerce.show_mentions(paymentMethod) -}}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-messages">
+        <ul class="nav nav-tabs">
+            {% for message in paymentMethod.messages -%}
+                <li{% if loop.first %} class="active"{% endif %}>
+                    <a href="#{{ resource_name }}-state-{{ message.state }}" data-toggle="tab">
+                        {{- message.state|payment_state_label -}}
+                    </a>
+                </li>
+            {%- endfor %}
+        </ul>
+        <div class="panel-body" style="border: 1px solid #ddd; border-top: none; padding:15px 15px 1px 15px; margin-bottom: 15px;">
+            <div class="tab-content">
+                {% for message in paymentMethod.messages -%}
+                    <div class="tab-pane{% if loop.first %} active{% endif %}"
+                         id="{{ resource_name }}-state-{{ message.state }}">
+                        {{- show_row(message.translations, 'translations', {
+                            'fields': {
+                                'content': {
+                                    'label': 'field.content',
+                                    'type': 'textarea',
+                                    'options': {'html': true, 'label_trans_domain': 'EkynaUi'}
+                                }
+                            }
+                        }) -}}
+                    </div>
+                {%- endfor %}
+            </div>
+        </div>
+    </div>
+{%- endblock main_contents %}

@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DocumentGenerator
@@ -76,7 +76,7 @@ class DocumentGenerator
      *
      * @return \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface
      *
-     * @throws \Ekyna\Component\Commerce\Exception\PdfException
+     * @throws \Ekyna\Component\Resource\Exception\PdfException
      */
     public function generate(SaleInterface $sale, $type)
     {
@@ -99,14 +99,14 @@ class DocumentGenerator
         $path = $renderer->create(RendererInterface::FORMAT_PDF);
 
         // Fake uploaded file
-        $file = new UploadedFile($path, $renderer->getFilename(), null, null, null, true);
+        $file = new UploadedFile($path, $renderer->getFilename(), null, null, true);
 
         // Attachment
         $attachment = $this->saleFactory->createAttachmentForSale($sale);
 
         $attachment
             ->setType($type)
-            ->setTitle($this->translator->trans('ekyna_commerce.document.type.' . $type))
+            ->setTitle($this->translator->trans('document.type.' . $type, [], 'EkynaCommerce'))
             ->setFile($file);
 
         $sale->addAttachment($attachment);

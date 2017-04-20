@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Ekyna\Component\Commerce\Newsletter\Synchronizer\SynchronizerRegistry;
@@ -19,17 +21,9 @@ class NewsletterSynchronizeCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:newsletter:synchronize';
 
-    /**
-     * @var SynchronizerRegistry
-     */
-    private $registry;
+    private SynchronizerRegistry $registry;
 
 
-    /**
-     * Constructor.
-     *
-     * @param SynchronizerRegistry $registry
-     */
     public function __construct(SynchronizerRegistry $registry)
     {
         parent::__construct();
@@ -37,17 +31,11 @@ class NewsletterSynchronizeCommand extends Command
         $this->registry = $registry;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function configure(): void
     {
         $this->addArgument('name', InputArgument::REQUIRED, 'The synchronizer name');
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $name = $input->getArgument('name');
@@ -58,6 +46,6 @@ class NewsletterSynchronizeCommand extends Command
 
         $this->registry->get($name)->synchronize(new ConsoleLogger($output));
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

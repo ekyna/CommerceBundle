@@ -1,21 +1,13 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    <li class="active">
-        <a href="#notify-model-general" id="toggle-general" data-toggle="tab">
-            {{- 'ekyna_core.field.general'|trans -}}
-        </a>
-    </li>
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="notify-model-general">
-            {{ form_row(form.type) }}
-            {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
-        </div>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ form_row(form.type) }}
+        {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
+        {{ form_row(form.paymentMessage) }}
+        {{ form_row(form.shipmentMessage) }}
+        {{ form_row(form.includeView) }}
+        {{ form_row(form.documentTypes) }}
+        {{ form_row(form.enabled) }}
     </div>
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+{%- endblock main_contents %}

@@ -1,0 +1,39 @@
+ekyna_commerce_payment_capture:
+    path: /capture/{payum_token}
+    controller: Payum\Bundle\PayumBundle\Controller\CaptureController::doAction
+
+ekyna_commerce_payment_authorize:
+    path: /authorize/{payum_token}
+    controller: Payum\Bundle\PayumBundle\Controller\AuthorizeController::doAction
+
+ekyna_commerce_payment_payout:
+    path: /payout/{payum_token}
+    controller: Payum\Bundle\PayumBundle\Controller\PayoutController::doAction
+
+ekyna_commerce_payment_cancel:
+    path: /cancel/{payum_token}
+    controller: Payum\Bundle\PayumBundle\Controller\CancelController::doAction
+
+ekyna_commerce_payment_refund:
+    path: /refund/{payum_token}
+    controller: Payum\Bundle\PayumBundle\Controller\RefundController::doAction
+
+ekyna_commerce_payment_sync:
+    path: /sync/{payum_token}
+    controller: Payum\Bundle\PayumBundle\Controller\SyncController::doAction
+
+ekyna_commerce_payment_notify:
+    path: /notify/{payum_token}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\NotifyController
+
+ekyna_commerce_payment_accept:
+    path: /accept/{payum_token}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\AcceptController
+
+ekyna_commerce_payment_hang:
+    path: /hang/{payum_token}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\HangController
+
+ekyna_commerce_payment_reject:
+    path: /reject/{payum_token}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\RejectController

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
@@ -10,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ContextType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
@@ -17,41 +21,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ContextType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $class = Context::class;
+    private string $class = Context::class;
 
-
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('currency', CurrencyChoiceType::class)
             ->add('deliveryCountry', CountryChoiceType::class, [
-                'label' => 'ekyna_commerce.context.field.delivery_country',
+                'label' => t('context.field.delivery_country', [], 'EkynaCommerce'),
             ]);
 
         if ($options['admin_mode']) {
             $builder
                 ->add('invoiceCountry', CountryChoiceType::class, [
-                    'label' => 'ekyna_commerce.context.field.invoice_country',
+                    'label' => t('context.field.invoice_country', [], 'EkynaCommerce'),
                 ])
                 ->add('customerGroup', CustomerGroupChoiceType::class)
                 ->add('vatDisplayMode', VatDisplayModeType::class)
                 ->add('date', DateTimeType::class, [
                     'required' => false,
-                    'format'   => 'dd/MM/yyyy',
                 ]);
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => $this->class,

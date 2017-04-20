@@ -1,3 +1,0 @@
-acme_product_product_admin:
-    resource: routing/product.yml
-    prefix:   /admin/acme/products

@@ -1,0 +1,42 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(accounting.number, 'text', {
+                    'label': 'field.number',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(accounting.enabled, 'boolean', {
+                    'label': 'field.enabled',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(accounting.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi'
+        }) }}
+        {{ show_row(accounting.type, 'constant_choice', {
+            'label': 'field.type',
+            'class': 'Ekyna\\Bundle\\CommerceBundle\\Model\\AccountingTypes'
+        }) }}
+        {{ show_row(accounting.taxRule, 'resource', {
+            'resource': 'ekyna_commerce.tax_rule'
+        }) }}
+        {{ show_row(accounting.tax, 'resource', {
+            'resource': 'ekyna_commerce.tax'
+        }) }}
+        {{ show_row(accounting.paymentMethod, 'resource', {
+            'resource': 'ekyna_commerce.payment_method'
+        }) }}
+        {{ show_row(accounting.customerGroups, 'resource', {
+            'resource': 'ekyna_commerce.customer_group'
+        }) }}
+    </div>
+{%- endblock main_contents %}

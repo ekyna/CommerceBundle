@@ -1,48 +1,45 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    <li class="active">
-        <a href="#supplier-general" id="toggle-general" data-toggle="tab">
-            {{ 'ekyna_core.field.general'|trans }}
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_tabs -%}
+    {{ parent() }}
+    <li>
+        <a href="#{{ resource_name }}-address" id="toggle-address" data-toggle="tab">
+            {{ 'field.address'|trans({}, 'EkynaUi') }}
         </a>
     </li>
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="supplier-general">
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.name, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.carrier, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.name, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.locale, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+            <div class="col-md-6">
+                {{ form_row(form.carrier, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.customerCode, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.tax, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            {{ form_row(form.identity) }}
-            {{ form_row(form.email) }}
-            {{ form_row(form.address) }}
-            {{ form_row(form.description) }}
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.locale, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.customerCode, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.tax, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.identity) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.description) }}
     </div>
-    {{ ivory_google_api() }}
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+    <div class="tab-pane" id="{{ resource_name }}-address">
+        {{ form_row(form.address) }}
+    </div>
+{%- endblock main_contents %}

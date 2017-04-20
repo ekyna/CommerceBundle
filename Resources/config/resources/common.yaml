@@ -1,0 +1,76 @@
+resources:
+    ekyna_commerce:
+        accounting:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Accounting\Model\AccountingInterface
+                class: Ekyna\Component\Commerce\Accounting\Entity\Accounting
+            repository:
+                interface: Ekyna\Component\Commerce\Accounting\Repository\AccountingRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\AccountingRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\AccountingType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\AccountingType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/Accounting/read.html.twig'
+                    form: '@EkynaCommerce/Admin/Accounting/_form.html.twig'
+                admin_toggle:
+                    properties: enabled
+                admin_move_up: ~
+                admin_move_down: ~
+
+        country:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Common\Model\CountryInterface
+                class: Ekyna\Component\Commerce\Common\Entity\Country
+            repository:
+                interface: Ekyna\Component\Commerce\Common\Repository\CountryRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CountryType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/Country/read.html.twig'
+                    form: '@EkynaCommerce/Admin/Country/_form.html.twig'
+                admin_toggle:
+                    properties: [enabled, default]
+
+        currency:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Common\Model\CurrencyInterface
+                class: Ekyna\Component\Commerce\Common\Entity\Currency
+            repository:
+                interface: Ekyna\Component\Commerce\Common\Repository\CurrencyRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CurrencyRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CurrencyType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/Currency/read.html.twig'
+                    form: '@EkynaCommerce/Admin/Currency/_form.html.twig'
+                admin_toggle:
+                    properties: [enabled, default]
+
+        coupon:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Common\Model\CouponInterface
+                class: Ekyna\Component\Commerce\Common\Entity\Coupon
+            repository:
+                interface: Ekyna\Component\Commerce\Common\Repository\CouponRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CouponRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Common\Factory\CouponFactoryInterface
+                class: Ekyna\Component\Commerce\Common\Factory\CouponFactory
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Common\CouponType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CouponType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/Coupon/read.html.twig'
+                    form: '@EkynaCommerce/Admin/Coupon/_form.html.twig'

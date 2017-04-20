@@ -7,7 +7,8 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Ekyna\Component\Resource\Helper\PdfGenerator;
+use Twig\Environment;
 
 /**
  * Class RendererFactory
@@ -17,9 +18,9 @@ use Symfony\Component\Templating\EngineInterface;
 class RendererFactory
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    protected $templating;
+    protected $twig;
 
     /**
      * @var PdfGenerator
@@ -32,19 +33,12 @@ class RendererFactory
     protected $config;
 
 
-    /**
-     * Constructor.
-     *
-     * @param EngineInterface $templating
-     * @param PdfGenerator    $pdfGenerator
-     * @param array           $config
-     */
     public function __construct(
-        EngineInterface $templating,
+        Environment $twig,
         PdfGenerator $pdfGenerator,
         array $config = []
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->pdfGenerator = $pdfGenerator;
 
         $this->config = array_replace([
@@ -84,7 +78,7 @@ class RendererFactory
             throw new InvalidArgumentException("Unsupported subject.");
         }
 
-        $renderer->setTemplating($this->templating);
+        $renderer->setTwig($this->twig);
         $renderer->setPdfGenerator($this->pdfGenerator);
         $renderer->setConfig($this->config);
 

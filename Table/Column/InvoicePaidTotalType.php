@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
-use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
@@ -13,6 +15,8 @@ use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
+
+use function trim;
 
 /**
  * Class InvoicePaidTotalType
@@ -23,24 +27,9 @@ class InvoicePaidTotalType extends AbstractColumnType
 {
     use FormatterAwareTrait;
 
-    /**
-     * @var CurrencyRendererInterface
-     */
-    private $renderer;
+    private CurrencyRendererInterface $renderer;
+    private DueDateResolverInterface $resolver;
 
-    /**
-     * @var DueDateResolverInterface
-     */
-    private $resolver;
-
-
-    /**
-     * Constructor.
-     *
-     * @param FormatterFactory $formatterFactory
-     * @param CurrencyRendererInterface $renderer
-     * @param DueDateResolverInterface $resolver
-     */
     public function __construct(
         FormatterFactory $formatterFactory,
         CurrencyRendererInterface $renderer,
@@ -51,15 +40,12 @@ class InvoicePaidTotalType extends AbstractColumnType
         $this->resolver = $resolver;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $invoice = $row->getData();
+        $invoice = $row->getData(null);
 
         if (!$invoice instanceof OrderInvoiceInterface) {
-            throw new UnexpectedValueException("Expected instance of " . OrderInvoiceInterface::class);
+            throw new UnexpectedTypeException($invoice, OrderInvoiceInterface::class);
         }
 
         $view->vars['value'] = $this->getFormatter()->currency($invoice->getPaidTotal(), $invoice->getCurrency());
@@ -71,18 +57,12 @@ class InvoicePaidTotalType extends AbstractColumnType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

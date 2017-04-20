@@ -1,0 +1,30 @@
+ekyna_commerce_newsletter_subscription:
+    path:
+        en: /subscription
+        fr: /inscription
+        es: /suscripcion
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Front\NewsletterController::subscription
+    methods: [GET, POST]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Inscription à notre newsletter
+            menus: [footer]
+            locked: true
+            advanced: true
+            position: 90
+
+ekyna_commerce_newsletter_subscribed:
+    path:
+        en: /subscribed
+        fr: /confirmation
+        es: /confirmacion
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Front\NewsletterController::subscribed
+    methods: [GET]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Confirmation d'inscription à la newsletter
+            locked: true
+            advanced: true
+            position: 91

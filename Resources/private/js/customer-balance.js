@@ -1,4 +1,4 @@
-define(['jquery', 'ekyna-commerce/templates', 'ekyna-modal', 'ekyna-ui'], function ($, Templates, Modal) {
+define(['jquery', 'ekyna-commerce/templates', 'ekyna-modal', 'ekyna-spinner'], function ($, Templates, Modal) {
     function CustomerBalance ($element) {
         this.$element = $element;
         this.$element.data('customerBalance', this);

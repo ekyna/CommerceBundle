@@ -31,22 +31,22 @@
 {% if address.digicode1 is not empty or address.digicode2 is not empty or address.intercom is not empty %}
     <br>
     {% if address.digicode1 is not empty -%}
-    <abbr title="{{ 'ekyna_commerce.address.field.digicode1'|trans }}">C1:</abbr>&nbsp;{{ address.digicode1 }}.&nbsp;
+    <abbr title="{{ 'address.field.digicode1'|trans({}, 'EkynaCommerce') }}">C1:</abbr>&nbsp;{{ address.digicode1 }}.&nbsp;
     {%- endif %}
     {% if address.digicode2 is not empty -%}
-    <abbr title="{{ 'ekyna_commerce.address.field.digicode2'|trans }}">C2:</abbr>&nbsp;{{ address.digicode2 }}.&nbsp;
+    <abbr title="{{ 'address.field.digicode2'|trans({}, 'EkynaCommerce') }}">C2:</abbr>&nbsp;{{ address.digicode2 }}.&nbsp;
     {%- endif %}
     {% if address.intercom is not empty -%}
-    <abbr title="{{ 'ekyna_commerce.address.field.intercom'|trans }}">I:</abbr>&nbsp;{{ address.intercom }}
+    <abbr title="{{ 'address.field.intercom'|trans({}, 'EkynaCommerce') }}">I:</abbr>&nbsp;{{ address.intercom }}
     {%- endif %}
 {% endif %}
 
 {% if options.display_phones -%}
     {% if address.phone is not empty -%}
-        <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address.phone|phone_number_format -}}
+        <br><abbr title="{{ 'field.phone'|trans({}, 'EkynaUi') }}">T:</abbr> {{ address.phone|phone_number_format -}}
     {%- endif %}
     {% if address.mobile is not empty -%}
-        <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address.mobile|phone_number_format -}}
+        <br><abbr title="{{ 'field.mobile'|trans({}, 'EkynaUi') }}">M:</abbr> {{ address.mobile|phone_number_format -}}
     {%- endif %}
 {%- endif %}
 
@@ -67,27 +67,27 @@
     {%- do trans_set_locale(options.locale) -%}
 {%- endif -%}
     <dl class="dl-horizontal">
-        <dt>{{ 'ekyna_core.field.name'|trans }}</dt>
+        <dt>{{ 'field.name'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ contact|identity }}</dd>
-        <dt>{{ 'ekyna_core.field.email'|trans }}</dt>
+        <dt>{{ 'field.email'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ contact.email }}</dd>
-        <dt>{{ 'ekyna_core.field.title'|trans }}</dt>
+        <dt>{{ 'field.title'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ contact.title }}</dd>
         {% if options.display_phones and contact.phone is not empty -%}
-        <dt>{{ 'ekyna_core.field.phone'|trans }}</dt>
+        <dt>{{ 'field.phone'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ contact.phone|phone_number_format -}}</dd>
         {%- endif %}
-        <dt>{{ 'ekyna_commerce.notification.label.plural'|trans }}</dt>
+        <dt>{{ 'notification.label.plural'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>
             {%- for type in contact.notifications -%}
                 {{ type|notify_type_label -}}
                 {% if not loop.last %}, {% endif -%}
             {%- else -%}
-                <em>{{ 'ekyna_commerce.notification.alert.no_item'|trans }}</em>
+                <em>{{ 'notification.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
             {%- endfor -%}
         </dd>
         {% if options.admin -%}
-        <dt>{{ 'ekyna_core.field.description'|trans }}</dt>
+        <dt>{{ 'field.description'|trans({}, 'EkynaUi') }}</dt>
         <dd>{{ contact.description|nl2br -}}</dd>
         {%- endif %}
     </dl>
@@ -110,7 +110,7 @@
             {%- else -%}
                 <i class="fa fa-remove text-danger"></i>
             {%- endif %}&nbsp;
-            {{ label|trans -}}
+            {{ label|trans({}, 'EkynaCommerce') -}}
         </li>
         {%- endfor %}
     </ul>

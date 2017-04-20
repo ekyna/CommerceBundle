@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Customer;
 
-use Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository;
-use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Provider\AbstractCustomerProvider;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterface;
+use Ekyna\Component\Commerce\Customer\Repository\CustomerRepositoryInterface;
+use Ekyna\Component\User\Service\UserProviderInterface;
 
 /**
  * Class SecurityCustomerProvider
@@ -14,32 +17,15 @@ use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterfac
  */
 class SecurityCustomerProvider extends AbstractCustomerProvider
 {
-    /**
-     * @var CustomerRepository
-     */
-    protected $customerRepository;
+    protected CustomerRepositoryInterface $customerRepository;
+    protected UserProviderInterface       $userProvider;
 
-    /**
-     * @var UserProviderInterface
-     */
-    protected $userProvider;
-
-    /**
-     * @var bool
-     */
-    private $initialized = false;
+    private bool $initialized = false;
 
 
-    /**
-     * Constructor.
-     *
-     * @param CustomerGroupRepositoryInterface $customerGroupRepository
-     * @param CustomerRepository               $customerRepository
-     * @param UserProviderInterface            $userProvider
-     */
     public function __construct(
         CustomerGroupRepositoryInterface $customerGroupRepository,
-        CustomerRepository $customerRepository,
+        CustomerRepositoryInterface $customerRepository,
         UserProviderInterface $userProvider
     ) {
         parent::__construct($customerGroupRepository);
@@ -49,9 +35,9 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function hasCustomer()
+    public function hasCustomer(): bool
     {
         $this->initialize();
 
@@ -59,9 +45,9 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getCustomer()
+    public function getCustomer(): ?CustomerInterface
     {
         $this->initialize();
 
@@ -69,9 +55,9 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function reset()
+    public function reset(): void
     {
         parent::reset();
 
@@ -79,9 +65,9 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function clear()
+    public function clear(): void
     {
         parent::reset();
 
@@ -91,7 +77,7 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     /**
      * Loads the customer once.
      */
-    private function initialize()
+    private function initialize(): void
     {
         if ($this->initialized) {
             return;

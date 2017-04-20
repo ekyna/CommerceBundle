@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Country;
 
-use Ekyna\Bundle\CoreBundle\Service\Geo\UserCountryGuesser;
+use Ekyna\Bundle\UiBundle\Service\Geo\UserCountryGuesser;
 use Ekyna\Component\Commerce\Bridge\Symfony\Country\SessionCountryProvider as BaseProvider;
 
 /**
@@ -12,25 +14,14 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Country\SessionCountryProvider as Ba
  */
 class SessionCountryProvider extends BaseProvider
 {
-    /**
-     * @var UserCountryGuesser
-     */
-    private $countryGuesser;
+    private UserCountryGuesser $countryGuesser;
 
 
-    /**
-     * Sets the country guesser.
-     *
-     * @param UserCountryGuesser $guesser
-     */
-    public function setCountryGuesser(UserCountryGuesser $guesser)
+    public function setCountryGuesser(UserCountryGuesser $guesser): void
     {
         $this->countryGuesser = $guesser;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function guessCountry(): ?string
     {
         return $this->countryGuesser->getUserCountry($this->getFallbackCountry());

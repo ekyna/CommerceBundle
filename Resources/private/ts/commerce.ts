@@ -1,4 +1,4 @@
-/// <reference path="../../../../../../typings/index.d.ts" />
+/// <reference path="../../../../../../../assets/typings/index.d.ts" />
 /// <reference path="../typings/templates.d.ts" />
 
 import * as $ from 'jquery';
@@ -6,7 +6,7 @@ import * as Templates from 'ekyna-commerce/templates';
 import * as _ from 'underscore';
 import * as Dispatcher from 'ekyna-dispatcher';
 import * as Form from 'ekyna-form';
-import * as Ui from 'ekyna-ui';
+import * as Ui from 'ekyna-spinner';
 import * as Bootstrap from 'bootstrap';
 import * as Modal from 'ekyna-modal';
 import * as Flags from 'ekyna-flags';

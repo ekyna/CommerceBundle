@@ -1,21 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Notify;
 
-use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\AdminBundle\Repository\UserRepositoryInterface;
-use Ekyna\Bundle\AdminBundle\Service\Security\UserProviderInterface;
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\RecipientList;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerContactInterface;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Ekyna\Component\User\Model\UserInterface;
+use Ekyna\Component\User\Service\UserProviderInterface;
+
+use function array_replace;
 
 /**
  * Class RecipientHelper
@@ -24,54 +28,26 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
  */
 class RecipientHelper
 {
-    /**
-     * @var SettingsManager
-     */
-    private $settings;
-
-    /**
-     * @var UserProviderInterface
-     */
-    private $userProvider;
-
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $userRepository;
-
-    /**
-     * @var array
-     */
-    private $config;
+    private SettingManagerInterface $setting;
+    private UserProviderInterface   $userProvider;
+    private UserRepositoryInterface $userRepository;
+    private array                   $config;
 
 
-    /**
-     * Constructor.
-     *
-     * @param SettingsManager         $settings
-     * @param UserProviderInterface   $userProvider
-     * @param UserRepositoryInterface $userRepository
-     * @param array                   $config
-     */
     public function __construct(
-        SettingsManager $settings,
+        SettingManagerInterface $settings,
         UserProviderInterface $userProvider,
         UserRepositoryInterface $userRepository,
         array $config
     ) {
-        $this->settings       = $settings;
-        $this->userProvider   = $userProvider;
+        $this->setting = $settings;
+        $this->userProvider = $userProvider;
         $this->userRepository = $userRepository;
-        $this->config         = array_replace([
+        $this->config = array_replace([
             'administrators' => false,
         ], $config);
     }
 
-    /**
-     * Returns the user provider.
-     *
-     * @return UserProviderInterface
-     */
     public function getUserProvider(): UserProviderInterface
     {
         return $this->userProvider;
@@ -79,8 +55,6 @@ class RecipientHelper
 
     /**
      * Creates the 'from' list from the given sale.
-     *
-     * @param SaleInterface $sale
      *
      * @return Recipient[]
      */
@@ -102,8 +76,6 @@ class RecipientHelper
     /**
      * Creates the recipient list from the given sale.
      *
-     * @param SaleInterface $sale
-     *
      * @return Recipient[]
      */
     public function createRecipientListFromSale(SaleInterface $sale): array
@@ -112,27 +84,14 @@ class RecipientHelper
 
         if ($customer = $sale->getCustomer()) {
             $list->add($this->createRecipient($customer, Recipient::TYPE_CUSTOMER));
-            if ($parent = $customer->getParent()) {
-                $list->add($this->createRecipient($parent, Recipient::TYPE_ACCOUNTABLE));
-                foreach ($parent->getContacts() as $contact) {
-                    $list->add($this->createRecipient($contact, Recipient::TYPE_CONTACT));
-                }
-            } else {
-                foreach ($customer->getContacts() as $contact) {
-                    $list->add($this->createRecipient($contact, Recipient::TYPE_CONTACT));
-                }
-            }
+            $this->addCustomerContacts($customer, $list);
         } else {
             $list->add($this->createRecipient($sale, Recipient::TYPE_CUSTOMER));
         }
 
-        if ($sale instanceof OrderInterface) {
-            if (null !== $customer = $sale->getOriginCustomer()) {
-                $list->add($this->createRecipient($customer, Recipient::TYPE_SALESMAN));
-                foreach ($customer->getContacts() as $contact) {
-                    $list->add($this->createRecipient($contact, Recipient::TYPE_CONTACT));
-                }
-            }
+        if ($sale instanceof OrderInterface && $customer = $sale->getOriginCustomer()) {
+            $list->add($this->createRecipient($customer, Recipient::TYPE_SALESMAN));
+            $this->addCustomerContacts($customer, $list, false);
         }
 
         if ($recipient = $this->createInChargeRecipient($sale)) {
@@ -147,23 +106,14 @@ class RecipientHelper
      *
      * @param SaleInterface $sale
      *
-     * @return array
+     * @return Recipient[]
      */
     public function createCopyListFromSale(SaleInterface $sale): array
     {
         $copies = new RecipientList();
 
         if ($customer = $sale->getCustomer()) {
-            if ($parent = $customer->getParent()) {
-                $copies->add($this->createRecipient($parent, Recipient::TYPE_ACCOUNTABLE));
-                foreach ($parent->getContacts() as $contact) {
-                    $copies->add($this->createRecipient($contact, Recipient::TYPE_CONTACT));
-                }
-            } else {
-                foreach ($customer->getContacts() as $contact) {
-                    $copies->add($this->createRecipient($contact, Recipient::TYPE_CONTACT));
-                }
-            }
+            $this->addCustomerContacts($customer, $copies);
         }
 
         $this->addAdministrators($copies);
@@ -175,8 +125,6 @@ class RecipientHelper
 
     /**
      * Creates the 'from' list from the given supplier order.
-     *
-     * @param SupplierOrderInterface $order
      *
      * @return Recipient[]
      */
@@ -194,8 +142,6 @@ class RecipientHelper
     /**
      * Creates the recipient list from the given supplier order.
      *
-     * @param SupplierOrderInterface $order
-     *
      * @return Recipient[]
      */
     public function createRecipientListFromSupplierOrder(SupplierOrderInterface $order): array
@@ -211,8 +157,6 @@ class RecipientHelper
 
     /**
      * Creates the copy list from the given supplier order.
-     *
-     * @param SupplierOrderInterface $order
      *
      * @return Recipient[]
      */
@@ -235,18 +179,14 @@ class RecipientHelper
     public function createWebsiteRecipient(): Recipient
     {
         return new Recipient(
-            $this->settings->getParameter('general.admin_email'),
-            $this->settings->getParameter('general.admin_name'),
+            $this->setting->getParameter('general.admin_email'),
+            $this->setting->getParameter('general.admin_name'),
             Recipient::TYPE_WEBSITE
         );
     }
 
     /**
      * Creates the sale's 'in charge' recipient.
-     *
-     * @param SaleInterface $sale
-     *
-     * @return Recipient|null
      */
     public function createInChargeRecipient(SaleInterface $sale): ?Recipient
     {
@@ -267,8 +207,6 @@ class RecipientHelper
 
     /**
      * Returns the current user recipient.
-     *
-     * @return Recipient|null
      */
     public function createCurrentUserRecipient(): ?Recipient
     {
@@ -286,12 +224,9 @@ class RecipientHelper
     /**
      * Creates a recipient from the given element (sale or customer).
      *
-     * @param mixed  $element
-     * @param string $type
-     *
-     * @return Recipient
+     * @param UserInterface|SaleInterface|CustomerInterface|CustomerContactInterface|SupplierInterface $element
      */
-    public function createRecipient($element, $type = null): Recipient
+    public function createRecipient($element, string $type = null): Recipient
     {
         if ($element instanceof UserInterface) {
             $type = $element === $this->userProvider->getUser() ? Recipient::TYPE_USER : $type;
@@ -318,18 +253,38 @@ class RecipientHelper
             return new Recipient($element->getEmail(), $name, $type);
         }
 
-        throw new InvalidArgumentException(sprintf(
-            'Expected instance of %s, %s or %s',
+        throw new UnexpectedTypeException($element, [
+            UserInterface::class,
             SaleInterface::class,
             CustomerInterface::class,
-            UserInterface::class
-        ));
+            CustomerContactInterface::class,
+            SupplierInterface::class
+        ]);
+    }
+
+    /**
+     * Adds the customer's contacts to the given recipient list.
+     */
+    private function addCustomerContacts(CustomerInterface $customer, RecipientList $list, bool $parent = true): void
+    {
+        foreach ($customer->getContacts() as $contact) {
+            $list->add($this->createRecipient($contact, Recipient::TYPE_CONTACT));
+        }
+
+        if (!$parent) {
+            return;
+        }
+
+        if ($customer = $customer->getParent()) {
+            $list->add($this->createRecipient($customer, Recipient::TYPE_ACCOUNTABLE));
+            foreach ($customer->getContacts() as $contact) {
+                $list->add($this->createRecipient($contact, Recipient::TYPE_CONTACT));
+            }
+        }
     }
 
     /**
      * Adds the administrators to the list.
-     *
-     * @param RecipientList $list
      */
     private function addAdministrators(RecipientList $list): void
     {

@@ -1,0 +1,102 @@
+resources:
+    ekyna_commerce:
+        customer:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Customer\Model\CustomerInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\Customer
+            repository:
+                interface: Ekyna\Component\Commerce\Customer\Repository\CustomerRepositoryInterface
+                class: Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository
+            factory:
+                interface: Ekyna\Bundle\CommerceBundle\Factory\CustomerFactoryInterface
+                class: Ekyna\Bundle\CommerceBundle\Factory\CustomerFactory
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\CustomerNormalizer
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository
+                global: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType
+            trans_domain: EkynaCommerce
+            actions:
+                api_crud:
+                    search:
+                        parameters: [parent]
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/Customer/_form.html.twig'
+                    list: '@EkynaCommerce/Admin/Customer/list.html.twig'
+                    read: '@EkynaCommerce/Admin/Customer/read.html.twig'
+                    summary: '@EkynaCommerce/Admin/Customer/summary.html.twig'
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\BalanceAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\CreateUserAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\ExportAction: ~
+
+        customer_address:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface
+                class: Ekyna\Component\Commerce\Customer\Entity\CustomerAddress
+            repository:
+                interface: Ekyna\Component\Commerce\Customer\Repository\CustomerAddressRepositoryInterface
+                class: Ekyna\Bundle\CommerceBundle\Repository\CustomerAddressRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType
+            parent: ekyna_commerce.customer
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/CustomerAddress'
+                    list: false
+                    read: false
+                Ekyna\Bundle\CommerceBundle\Action\Admin\CustomerAddress\ToggleInvoiceDefaultAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\CustomerAddress\ToggleDeliveryDefaultAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\CustomerAddress\ImportAction: ~
+
+        customer_contact:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Customer\Model\CustomerContactInterface
+                class: Ekyna\Component\Commerce\Customer\Entity\CustomerContact
+            repository:
+                interface: Ekyna\Component\Commerce\Customer\Repository\CustomerContactRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerContactRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerContactType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CustomerContactType
+            parent: ekyna_commerce.customer
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/CustomerContact'
+                    list: false
+                    read: false
+
+        customer_group:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface
+                class: Ekyna\Component\Commerce\Customer\Entity\CustomerGroup
+            repository:
+                interface: Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerGroupRepository
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\CustomerGroupNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CustomerGroupType
+            trans_domain: EkynaCommerce
+            translation:
+                interface: Ekyna\Component\Commerce\Customer\Model\CustomerGroupTranslationInterface
+                class: Ekyna\Component\Commerce\Customer\Entity\CustomerGroupTranslation
+                fields: [title]
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/CustomerGroup/read.html.twig'
+                    form: '@EkynaCommerce/Admin/CustomerGroup/_form.html.twig'
+                admin_toggle:
+                    properties: [default, business, registration, quoteAllowed, loyalty]
+
+        customer_logo:
+            driver: doctrine/orm
+            entity: Ekyna\Component\Commerce\Customer\Entity\CustomerLogo
+            parent: ekyna_commerce.customer
+            trans_domain: EkynaCommerce
+            behaviors:
+                uploadable:
+                    uploader: ekyna_commerce.uploader

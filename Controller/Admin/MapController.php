@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
-use Ekyna\Bundle\AdminBundle\Menu\MenuBuilder;
-use Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository;
+use Ekyna\Bundle\AdminBundle\Service\Menu\MenuBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Map\MapBuilder;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Customer\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class MapController
@@ -18,105 +21,71 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class MapController
 {
-    /**
-     * @var MapBuilder
-     */
-    private $mapBuilder;
+    private MapBuilder $mapBuilder;
+    private Environment $twig;
+    private CustomerRepositoryInterface $customerRepository;
+    private MenuBuilder $menuBuilder;
 
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var CustomerRepository
-     */
-    private $customerRepository;
-
-    /**
-     * @var MenuBuilder
-     */
-    private $menuBuilder;
-
-
-    /**
-     * Constructor.
-     *
-     * @param MapBuilder         $mapBuilder
-     * @param EngineInterface    $templating
-     * @param CustomerRepository $customerRepository
-     * @param MenuBuilder        $menuBuilder
-     */
     public function __construct(
         MapBuilder $mapBuilder,
-        EngineInterface $templating,
-        CustomerRepository $customerRepository,
+        Environment $twig,
+        CustomerRepositoryInterface $customerRepository,
         MenuBuilder $menuBuilder
     ) {
         $this->mapBuilder = $mapBuilder;
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->customerRepository = $customerRepository;
         $this->menuBuilder = $menuBuilder;
     }
 
-    /**
-     * Map index action.
-     *
-     * @return Response
-     */
     public function index(): Response
     {
         $this
             ->menuBuilder
-            ->breadcrumbAppend(
-                'customer_map',
-                'ekyna_core.button.map',
-                'ekyna_commerce_admin_map'
-            );
+            ->breadcrumbAppend([
+                'name'         => 'customer_map',
+                'label'        => 'button.map',
+                'route'        => 'admin_ekyna_commerce_map',
+                'trans_domain' => 'EkynaUi',
+            ]);
 
-        $output = $this->templating->render('@EkynaCommerce/Admin/Map/index.html.twig', [
+        $output = $this->twig->render('@EkynaCommerce/Admin/Map/index.html.twig', [
             'map'  => $this->mapBuilder->buildMap(),
             'form' => $this->mapBuilder->buildForm()->createView(),
         ]);
 
-        return new Response($output);
+        return (new Response($output))->setPrivate();
     }
 
     /**
      * Map markers action.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function data(Request $request): Response
     {
-        return new JsonResponse([
+        return (new JsonResponse([
             'locations' => $this->mapBuilder->buildLocations($request),
-        ]);
+        ]))->setPrivate();
     }
 
     /**
      * Map marker info action.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function info(Request $request): Response
     {
-        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+        /** @var CustomerInterface $customer */
         $customer = null;
         if ($customerId = $request->query->get('customerId')) {
             $customer = $this->customerRepository->find($customerId);
         }
 
         if (!$customer) {
-            throw new NotFoundHttpException("Customer not found");
+            throw new NotFoundHttpException('Customer not found');
         }
 
-        return new Response($this->templating->render('@EkynaCommerce/Admin/Map/info.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Admin/Map/info.html.twig', [
             'customer' => $customer,
-        ]));
+        ]);
+
+        return (new Response($content))->setPrivate();
     }
 }

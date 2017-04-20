@@ -1,0 +1,11 @@
+{% extends '@EkynaAdmin/Entity/Crud/_form_flow.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="supplier-order-general">
+        {% if flow.getCurrentStepNumber() == 1 %}
+            {{ form_row(form.supplier) }}
+        {% elseif flow.getCurrentStepNumber() == 2 %}
+            {% include '@EkynaCommerce/Admin/SupplierOrder/Form/general.html.twig' %}
+        {% endif %}
+    </div>
+{%- endblock main_contents -%}

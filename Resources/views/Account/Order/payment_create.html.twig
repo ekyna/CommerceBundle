@@ -2,9 +2,9 @@
 
 {% block account %}
 {% apply spaceless %}
-    <h3>{{ 'ekyna_commerce.account.order.payment'|trans({'%number%': order.number})|raw }}</h3>
+    <h3>{{ 'account.order.payment'|trans({'%number%': order.number}, 'EkynaCommerce')|raw }}</h3>
     <p>
-        Du {{ order.createdAt|localizeddate('short', 'none') }}, {{ order|sale_state_badge }}
+        Du {{ order.createdAt|format_datetime('short', 'none') }}, {{ order|sale_state_badge }}
     </p>
 
     {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-4">
             {% include '@EkynaCommerce/Account/Sale/summary.html.twig' with {
-                'title': 'ekyna_commerce.account.order.summary', 'sale': order, 'delivery': true
+                'title': t('account.order.summary', [], 'EkynaCommerce'), 'sale': order, 'delivery': true
             } %}
         </div>
     </div>
@@ -33,15 +33,15 @@
     <hr>
 
     <div class="text-center">
-        <a href="{{ path('ekyna_commerce_account_order_show', {'number': order.number}) }}" class="btn btn-default btn-lg">
+        <a href="{{ path('ekyna_commerce_account_order_read', {'number': order.number}) }}" class="btn btn-default btn-lg">
             <span class="glyphicon glyphicon-chevron-left"></span>
-            {{ 'ekyna_core.button.back'|trans }}
+            {{ 'button.back'|trans({}, 'EkynaUi') }}
         </a>
     </div>
 
     <br><br>
 
-    <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
+    <h3>{{ 'account.order.title'|trans({}, 'EkynaCommerce')|raw }}</h3>
     <hr>
     {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer

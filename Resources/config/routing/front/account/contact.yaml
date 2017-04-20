@@ -1,0 +1,49 @@
+ekyna_commerce_account_contact_index:
+    path: ''
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\ContactController::index
+    methods: [GET]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Mes contacts
+            parent: ekyna_user_account_index
+            position: 60
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_contact_add:
+    path:
+        en: /add
+        fr: /ajouter
+        es: /agregar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\ContactController::add
+    methods: [GET|POST]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_contact_edit:
+    path:
+        en: /{contactId}/edit
+        fr: /{contactId}/modifier
+        es: /{contactId}/editar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\ContactController::edit
+    methods: [GET|POST]
+    requirements:
+        contactId: \d+
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_contact_remove:
+    path:
+        en: /{contactId}/remove
+        fr: /{contactId}/supprimer
+        es: /{contactId}/borrar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\ContactController::remove
+    methods: [GET|POST]
+    requirements:
+        contactId: \d+
+    options:
+        ekyna_i18n: ~

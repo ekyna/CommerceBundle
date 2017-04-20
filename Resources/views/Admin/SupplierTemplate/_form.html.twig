@@ -1,8 +1,8 @@
 {% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+<ul class="nav nav-tabs" data-tab-key="{{ context.config.id }}">
     <li class="active">
         <a href="#supplier-template-general" id="toggle-general" data-toggle="tab">
-            {{ 'ekyna_core.field.general'|trans }}
+            {{ 'field.general'|trans({}, 'EkynaUi') }}
         </a>
     </li>
 </ul>

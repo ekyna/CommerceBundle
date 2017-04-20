@@ -3,16 +3,16 @@
     <div class="panel-heading">
         <a href="{{ path(route_prefix ~ '_attachment_create', {'number': sale.number}) }}"
             class="btn btn-xs btn-success pull-right">
-            {{ 'ekyna_core.button.add'|trans }}
+            {{ 'button.add'|trans({}, 'EkynaUi') }}
         </a>
-        {{ 'ekyna_commerce.account.attachment.title'|trans|raw }}
+        {{ 'account.attachment.title'|trans({}, 'EkynaCommerce')|raw }}
     </div>
     <div class="table-responsive">
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.file'|trans }}</th>
-                <th>{{ 'ekyna_core.field.title'|trans }}</th>
+                <th>{{ 'field.file'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.title'|trans({}, 'EkynaUi') }}</th>
                 <th></th>
             </tr>
             </thead>
@@ -30,7 +30,7 @@
                     </td>
                     <td class="text-right">
                         <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
-                            {{- 'ekyna_core.button.download'|trans -}}
+                            {{- 'button.download'|trans({}, 'EkynaUi') -}}
                         </a>
                     </td>
                 </tr>

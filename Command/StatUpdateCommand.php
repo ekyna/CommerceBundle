@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Order\Updater\OrderUpdaterInterface;
 use Ekyna\Component\Commerce\Stat\Updater\StatUpdaterInterface;
 use Symfony\Component\Console\Command\Command;
@@ -21,78 +25,44 @@ class StatUpdateCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:stat:update';
 
-    /**
-     * @var StatUpdaterInterface
-     */
-    private $statUpdater;
+    private StatUpdaterInterface     $statUpdater;
+    private OrderUpdaterInterface    $orderUpdater;
+    private OrderRepositoryInterface $orderRepository;
+    private EntityManagerInterface   $manager;
+    private string                   $orderClass;
 
-    /**
-     * @var OrderUpdaterInterface
-     */
-    private $orderUpdater;
+    private bool $force;
+    private bool $flush;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
-
-    /**
-     * @var string
-     */
-    private $orderClass;
-
-    /**
-     * @var bool
-     */
-    private $force;
-
-    /**
-     * @var bool
-     */
-    private $flush;
-
-
-    /**
-     * Constructor.
-     *
-     * @param StatUpdaterInterface   $statUpdater
-     * @param OrderUpdaterInterface  $orderUpdater
-     * @param EntityManagerInterface $manager
-     * @param string                 $orderClass
-     */
     public function __construct(
-        StatUpdaterInterface $statUpdater,
-        OrderUpdaterInterface $orderUpdater,
-        EntityManagerInterface $manager,
-        string $orderClass
+        StatUpdaterInterface     $statUpdater,
+        OrderUpdaterInterface    $orderUpdater,
+        OrderRepositoryInterface $orderRepository,
+        EntityManagerInterface   $manager,
+        string                   $orderClass
     ) {
         parent::__construct();
 
         $this->statUpdater = $statUpdater;
         $this->orderUpdater = $orderUpdater;
+        $this->orderRepository = $orderRepository;
         $this->manager = $manager;
         $this->orderClass = $orderClass;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Updates the statistics')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Whether to force the order statistics update.');
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->force = $input->getOption('force');
+        $this->force = (bool)$input->getOption('force');
         $this->flush = false;
 
-        $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
+        $this->manager->getConnection()->getConfiguration()->setSQLLogger();
 
         $this->updateStockStat($output);
 
@@ -103,12 +73,12 @@ class StatUpdateCommand extends Command
         if ($this->flush) {
             $this->manager->flush();
         }
+
+        return Command::SUCCESS;
     }
 
     /**
      * Updates the stock stats.
-     *
-     * @param OutputInterface $output
      */
     private function updateStockStat(OutputInterface $output): void
     {
@@ -132,17 +102,12 @@ class StatUpdateCommand extends Command
 
     /**
      * Updates the orders revenue and margin totals.
-     *
-     * @param OutputInterface $output
      */
     private function updateOrders(OutputInterface $output): void
     {
         $output->writeln('Updating orders margin total');
 
-        /** @var \Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface $repository */
-        $repository = $this->manager->getRepository($this->orderClass);
-
-        if (empty($ids = $repository->findWithNullRevenueOrMargin())) {
+        if (empty($ids = $this->orderRepository->findWithNullRevenueOrMargin())) {
             $output->writeln("<comment>all up-to-date</comment>\n");
 
             return;
@@ -159,8 +124,8 @@ class StatUpdateCommand extends Command
             ->setMaxResults(1);
 
         foreach ($ids as $id) {
-            /** @var \Ekyna\Component\Commerce\Order\Model\OrderInterface $order */
-            if (!$order = $repository->find($id)) {
+            /** @var OrderInterface $order */
+            if (!$order = $this->orderRepository->find($id)) {
                 continue;
             }
 
@@ -172,7 +137,7 @@ class StatUpdateCommand extends Command
             ));
 
             if (!$this->orderUpdater->updateMarginTotals($order)) {
-                $output->writeln("<comment>up-to-date</comment>");
+                $output->writeln('<comment>up-to-date</comment>');
                 continue;
             }
 
@@ -185,14 +150,12 @@ class StatUpdateCommand extends Command
 
             $this->manager->clear();
 
-            $output->writeln("<info>updated</info>");
+            $output->writeln('<info>updated</info>');
         }
     }
 
     /**
      * Updates the order stats.
-     *
-     * @param OutputInterface $output
      */
     private function updateOrderStat(OutputInterface $output): void
     {
@@ -202,17 +165,19 @@ class StatUpdateCommand extends Command
 
         /** ---------------------------- Day stats ---------------------------- */
 
-        $result = $connection->query(
+        /** @noinspection SqlDialectInspection */
+        $result = $connection->executeQuery(
             'SELECT DATE(o.created_at) AS date, MAX(o.updated_at) AS updated FROM commerce_order AS o GROUP BY date'
         );
-        while (false !== $data = $result->fetch(\PDO::FETCH_ASSOC)) {
+        while (false !== $data = $result->fetchAssociative()) {
             $orderDates[$data['date']] = $data['updated'];
         }
 
-        $result = $connection->query(
+        /** @noinspection SqlDialectInspection */
+        $result = $connection->executeQuery(
             'SELECT s.date, s.updated_at as updated FROM commerce_stat_order AS s ORDER BY s.date'
         );
-        while (false !== $data = $result->fetch(\PDO::FETCH_ASSOC)) {
+        while (false !== $data = $result->fetchAssociative()) {
             $statDates[$data['date']] = $data['updated'];
         }
 

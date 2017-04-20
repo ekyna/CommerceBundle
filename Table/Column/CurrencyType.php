@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface;
 use Ekyna\Component\Commerce\Common\Model\ExchangeSubjectInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
-use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
+use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,37 +20,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CurrencyType extends AbstractColumnType
 {
-    /**
-     * @var CurrencyRendererInterface
-     */
-    private $renderer;
+    private CurrencyRendererInterface $renderer;
 
-
-    /**
-     * Constructor.
-     *
-     * @param CurrencyRendererInterface $currencyRenderer
-     */
     public function __construct(CurrencyRendererInterface $currencyRenderer)
     {
         $this->renderer = $currencyRenderer;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'default'      => false,
-            'subject_path' => false,
+            'subject_path' => null,
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $subject = $row->getData($options['subject_path']);
 
@@ -59,19 +46,13 @@ class CurrencyType extends AbstractColumnType
         $view->vars['value'] = $this->renderer->renderQuote($view->vars['value'], $subject, $options['default']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return TextType::class;
+        return PropertyType::class;
     }
 }

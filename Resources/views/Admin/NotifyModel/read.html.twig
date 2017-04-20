@@ -1,0 +1,92 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block page_title %}{{ resource|trans({}, 'EkynaCommerce') }}{% endblock page_title %}
+
+{% block title %}
+    {{ admin_resource_pin(resource) }}
+    <h1>{{ (context.config.transPrefix ~ '.header.show')|trans({'%name%': resource|trans({}, 'EkynaCommerce')}, context.config.transDomain)|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {{ admin_resource_btn(notifyModel, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\NotifyModel\\TestAction') }}
+    {{ parent() }}
+{% endblock actions %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="notify-model-general">
+        {{ show_row(notifyModel.type|notify_type_label, 'text', {
+            'label': 'field.type',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'notifyModel_type'
+        }) }}
+        {{ show_row(notifyModel.translations, 'translations', {
+            'id': 'notifyModel_translations',
+            'fields': {
+                'subject': {
+                    'label': 'field.subject',
+                    'type': 'text',
+                    'options': {'label_trans_domain': 'EkynaUi'}
+                },
+                'message': {
+                    'label': 'field.message',
+                    'type': 'textarea',
+                    'options': {'html': true, 'label_trans_domain': 'EkynaUi'}
+                }
+            }
+        }) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(notifyModel.paymentMessage, 'boolean', {
+                    'label': 'notify.field.payment_message',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'notifyModel_paymentMessage',
+                    'label_col': 4,
+                    'null_label': 'field.default'
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(notifyModel.shipmentMessage, 'boolean', {
+                    'label': 'notify.field.shipment_message',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'notifyModel_shipmentMessage',
+                    'label_col': 4,
+                    'null_label': 'field.default'
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(notifyModel.includeView, 'choice', {
+                    'label': 'notify.field.include_view',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'notifyModel_includeView',
+                    'label_col': 4,
+                    'empty_label': 'field.default'|trans({}, 'EkynaUi'),
+                    'choices': {
+                        ('notify.include_view.none'|trans({}, 'EkynaCommerce')): 'none',
+                        ('notify.include_view.after'|trans({}, 'EkynaCommerce')): 'after',
+                        ('notify.include_view.before'|trans({}, 'EkynaCommerce')): 'before',
+                    },
+                    'choice_trans_domain': false
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(notifyModel.documentTypes, 'choice', {
+                    'label': 'notify_model.field.document_types',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'notifyModel_documentTypes',
+                    'label_col': 4,
+                    'choices': 'Ekyna\\Bundle\\CommerceBundle\\Model\\DocumentTypes',
+                    'empty_label': 'field.default'|trans({}, 'EkynaUi'),
+                    'multiple': true
+                }) }}
+            </div>
+        </div>
+        {{ show_row(notifyModel.enabled, 'boolean', {
+            'label': 'field.enabled',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'notifyModel_enabled',
+            'color': true,
+        }) }}
+    </div>
+{%- endblock main_contents %}

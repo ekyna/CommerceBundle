@@ -2,13 +2,13 @@
 {% apply spaceless %}
     <div class="row show-row">
         <div class="col-md-2 show-label">
-            {{ label|default('ekyna_commerce.subject.label.singular')|trans }}
+            {{ label|default('subject.label.singular')|trans({}, 'EkynaCommerce') }}
         </div>
         <div class="col-md-10">
             <div class="show-widget show-widget-inline">
                 {% set subject = relative|subject_get(false) %}
                 {% if subject is null %}
-                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
                 {% else %}
                     {% set url = subject|subject_private_url %}
                     {% if url is not null %}
@@ -28,19 +28,19 @@
 {% apply spaceless %}
     <div class="row show-row">
         <div class="col-md-2 show-label">
-            {{- label|default('ekyna_commerce.mention.label.plural')|trans -}}
+            {{- label|default('mention.label.plural')|trans({}, 'EkynaCommerce') -}}
         </div>
         <div class="col-md-10">
             <div class="show-widget">
             {% for mention in subject.mentions -%}
                 {{- show_row(mention.documentTypes, 'constant_choice', {
-                    'label': 'ekyna_commerce.document.label.plural',
+                    'label': t('document.label.plural', [], 'EkynaCommerce'),
                     'class': 'Ekyna\\Bundle\\CommerceBundle\\Model\\DocumentTypes'
                 }) -}}
                 {{- show_row(mention.translations, 'translations', {
                     'fields': {
                         'content': {
-                            'label': 'ekyna_core.field.content',
+                            'label': t('field.content', [], 'EkynaUi'),
                             'type': 'textarea',
                             'options': {
                                 'html': true,
@@ -49,7 +49,7 @@
                     }
                 }) -}}
             {%- else -%}
-                <em>{{ 'ekyna_commerce.mention.alert.empty_list'|trans }}</em>
+                <em>{{ 'mention.alert.empty_list'|trans({}, 'EkynaCommerce') }}</em>
             {%- endfor %}
             </div>
         </div>

@@ -1,0 +1,334 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block flashes %}
+    {{ parent() }}
+    {% include '@EkynaUi/flashes.html.twig' with {'flashes': order|sale_flashes} %}
+    {% if order.exchangeRate is null and order.currency.code != commerce_default_currency %}
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ 'sale.message.null_exchange_rate'|trans({
+            '{{url}}': admin_resource_path(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\SetExchangeRateAction')
+        }, 'EkynaCommerce')|raw }}
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+<div class="main-header">
+    <div class="infos">
+        <span class="sale-state">{{ order|sale_state_badge }}</span>
+        {{- order|sale_flags -}}
+        {{- order.allTags|cms_tags({'text': false}) -}}
+        {% if order.sample -%}
+            <span class="label label-info" style="margin-left:6px;">{{ 'field.sample'|trans({}, 'EkynaCommerce') }}</span>
+        {%- endif %}
+        {% if app.debug -%}
+            <a href="{{ admin_resource_path(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\UpdateStateAction') }}"
+               class="btn btn-xs btn-link">{# TODO XHR #}
+                <i class="fa fa-refresh text-muted"></i>
+            </a>
+        {%- endif %}
+    </div>
+    <div class="actions">
+        {{ sale_custom_buttons(order) }}
+        {{ admin_resource_btn(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\NotifyAction') }}
+        {{ sale_export_btn(order) }}
+        {{ sale_duplicate_btn(order) }}
+        {{ sale_transform_btn(order) }}
+        {% if order is sale_preparable %}
+            {{ admin_resource_btn(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Order\\PrepareAction') }}
+        {% elseif order is sale_preparing %}
+            {{ admin_resource_btn(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Order\\AbortAction') }}
+        {% endif %}
+        {% if order.sample %}
+            {{ admin_resource_btn(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Order\\ReleaseAction',
+                {'trans_domain': 'EkynaCommerce', 'theme': 'warning'}|merge(order.released
+                ? {'label': 'order.button.unrelease', 'icon': 'remove-circle'}
+                : {'label': 'order.button.release', 'icon': 'ok-circle'}
+                )
+            ) }}
+        {% endif %}
+        {{ admin_resource_btn(order, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}
+        {{ admin_resource_btn(order, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction') }}
+    </div>
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ context.config.id }}">
+        <li class="active">
+            <a href="#order-general" id="toggle-general" data-toggle="tab">
+                {{ 'field.general'|trans({}, 'EkynaUi') }}
+            </a>
+        </li>
+        <li>
+            <a href="#order-addresses" id="toggle-addresses" data-toggle="tab">
+                {{ 'address.label.plural'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+        <li>
+            <a href="#order-details" id="toggle-details" data-toggle="tab">
+                {{ 'sale.field.details'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+        {% if not order.sample -%}
+        <li>
+            <a href="#order-payments" id="toggle-payments" data-toggle="tab">
+                {{ 'payment.label.plural'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+        {%- endif %}
+        <li>
+            <a href="#order-shipments" id="toggle-shipments" data-toggle="tab">
+                {{ 'shipment.label.plural'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+        {% if not order.sample -%}
+        <li>
+            <a href="#order-invoices" id="toggle-invoices" data-toggle="tab">
+                {{ 'invoice.tab'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+        {%- endif %}
+        <li>
+            <a href="#order-attachments" id="toggle-attachments" data-toggle="tab">
+                {{ 'attachment.label.plural'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+        <li>
+            <a href="#order-information" id="toggle-information" data-toggle="tab">
+                {{ 'field.information'|trans({}, 'EkynaUi') }}
+            </a>
+        </li>
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+        <li>
+            <a href="#order-tickets" id="toggle-tickets" data-toggle="tab">
+                {{ 'ticket.label.plural'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+        {%- endif %}
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="order-general">
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_general.html.twig' with {
+                    'sample': true,
+                    'sale': order
+                } %}
+                {{ show_row(order, 'tags', {
+                    'id': 'order_tags'
+                }) }}
+            </div>
+            <div class="tab-pane" id="order-addresses">
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_addresses.html.twig' with {
+                    'sale': order
+                } %}
+            </div>
+            <div class="tab-pane" id="order-details">
+                {{- render_sale_view(order|sale_view) -}}
+            </div>
+            {% if not order.sample -%}
+            <div class="tab-pane" id="order-payments">
+                {# --------------- PAYMENTS --------------- #}
+                {% if is_granted('create', 'ekyna_commerce.order_payment') -%}
+                <div class="actions">
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Payment\\CreateAction') }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'payment.button.new'|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                </div>
+                {%- endif %}
+                <h4 class="sub-header">
+                    {{- 'payment.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {
+                    'payments': order.getPayments(true),
+                    'prefix': 'payment'
+                } %}
+                <hr>
+                {# --------------- REFUNDS --------------- #}
+                {% if is_granted('create', 'ekyna_commerce.order_payment') -%}
+                <div class="actions">
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Payment\\CreateAction', {'refund': 1}) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'refund.button.new'|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                </div>
+                {%- endif %}
+                <h4 class="sub-header">
+                    {{- 'refund.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {
+                    'payments': order.getPayments(false),
+                    'prefix': 'refund'
+                } %}
+                <hr>
+                {# --------------- PAYMENT FIELDS --------------- #}
+                {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {
+                    'sale': order
+                } %}
+            </div>
+            {%- endif %}
+            <div class="tab-pane" id="order-shipments">
+                {# --------------- SHIPMENTS --------------- #}
+                {% if is_granted('create', 'ekyna_commerce.order_shipment') -%}
+                <div class="actions">
+                    {% if not order.released %}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Shipment\\CreateAction') }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'shipment.button.new'|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                    {% endif %}
+                </div>
+                {%- endif %}
+                <h4 class="sub-header">
+                    {{- 'shipment.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_shipments.html.twig' with {
+                    'shipments': order.getShipments(true),
+                    'prefix': 'shipment'
+                } %}
+                <hr>
+                {# --------------- RETURNS --------------- #}
+                {% if is_granted('create', 'ekyna_commerce.order_shipment') -%}
+                <div class="actions">
+                    {% if not order.released %}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Shipment\\CreateAction', {'return': 1}) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'return.button.new'|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                    {% endif %}
+                </div>
+                {%- endif %}
+                <h4 class="sub-header">
+                    {{- 'return.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_shipments.html.twig' with {
+                    'shipments': order.getShipments(false),
+                    'prefix': 'return'
+                } %}
+                <hr>
+                {# --------------- SHIPMENT FIELDS --------------- #}
+                {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/shipment_fields.html.twig' with {
+                    'sale': order
+                } %}
+            </div>
+            {% if not order.sample -%}
+            <div class="tab-pane" id="order-invoices">
+                {# --------------- INVOICES --------------- #}
+                {% if is_granted('create', 'ekyna_commerce.order_invoice') -%}
+                <div class="actions">
+                    {% if not order.released %}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Invoice\\CreateAction') }}"
+                       class="btn btn-primary btn-xs pull-right"
+                       style="margin-left:16px">
+                        {{- 'invoice.button.new'|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                    {% endif %}
+                </div>
+                {%- endif %}
+                <h4 class="sub-header">
+                    {{- 'invoice.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_invoices.html.twig' with {
+                    'invoices': order.getInvoices(true),
+                    'prefix': 'invoice'
+                } %}
+                <hr>
+                {# --------------- CREDITS --------------- #}
+                {% if is_granted('create', 'ekyna_commerce.order_invoice') -%}
+                <div class="actions">
+                    {% if not order.released %}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Invoice\\CreateAction', {'credit': 1}) }}"
+                       class="btn btn-primary btn-xs pull-right"
+                       style="margin-left:16px">
+                        {{- 'credit.button.new'|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                    {% endif %}
+                </div>
+                {%- endif %}
+                <h4 class="sub-header">
+                    {{- 'credit.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_invoices.html.twig' with {
+                    'invoices': order.getInvoices(false),
+                    'prefix': 'credit'
+                } %}
+                <hr>
+                {# --------------- INVOICE FIELDS --------------- #}
+                {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/invoice_fields.html.twig' with {
+                    'sale': order
+                } %}
+            </div>
+            {%- endif %}
+            <div class="tab-pane" id="order-attachments">
+                <div class="actions">
+                    {% for type in order|sale_editable_document_types -%}
+                    <a href="{{ admin_resource_path(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\DocumentGenerateAction', {'type': type}) }}"
+                       class="btn btn-default btn-xs pull-right">
+                        {{- 'attachment.button.create'|trans({}, 'EkynaCommerce') }}
+                        {{ ('document.type.' ~ type)|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                    {%- endfor %}
+                    {% if is_granted('create', 'ekyna_commerce.order_attachment') -%}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_attachment', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction') }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'attachment.button.new'|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                    {%- endif %}
+                </div>
+                <h4 class="sub-header">
+                    {{- 'attachment.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_attachments.html.twig' with {
+                    'sale': order,
+                    'attachments': order.attachments
+                } %}
+            </div>
+            <div class="tab-pane" id="order-information">
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_information.html.twig' with {
+                    'sale': order
+                } %}
+                <h4 class="sub-header">
+                    {{- 'notification.label.plural'|trans({}, 'EkynaCommerce') -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_notifications.html.twig' with {
+                    'sale': order,
+                    'notifications': order.notifications
+                } %}
+            </div>
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+            <div class="tab-pane" id="order-tickets">
+                {{- support_tickets(order, {
+                    'admin': true,
+                    'new': admin_resource_path('ekyna_commerce.ticket', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {'order': order.number})
+                }) -}}
+            </div>
+            {%- endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block side %}
+    {{ parent() }}
+    {% if order.customer is not null %}
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/customer.html.twig' with {'customer': order.customer} %}
+    {% endif %}
+{% endblock side %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/sale-view.css')) }}" type="text/css" rel="stylesheet"/>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+        <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/support.css')) }}" rel="stylesheet" type="text/css"/>
+    {%- endif %}
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
+    <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+        <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+    {%- endif %}
+{% endblock javascripts %}
+

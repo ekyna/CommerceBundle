@@ -4,18 +4,18 @@
     <table class="table table-stripped">
         <thead>
         <tr>
-            <th>{{ 'ekyna_core.field.number'|trans }}</th>
-            <th>{{ 'ekyna_core.field.type'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.label.singular'|trans }}</th>
-            <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            <th>{{ 'ekyna_core.field.date'|trans }}</th>
+            <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.type'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'field.date'|trans({}, 'EkynaUi') }}</th>
             <th>&nbsp;</th>
         </tr>
         </thead>
         <tbody>
         {% for invoice in invoices %}
-            {% set invoicePath = path('ekyna_commerce_account_invoice_show', {'number': invoice.number}) %}
-            {% set orderPath = path('ekyna_commerce_account_order_show', {'number': invoice.order.number}) %}
+            {% set invoicePath = path('ekyna_commerce_account_invoice_read', {'number': invoice.number}) %}
+            {% set orderPath = path('ekyna_commerce_account_order_read', {'number': invoice.order.number}) %}
             <tr>
                 <td>
                     <a href="{{ invoicePath }}">{{ invoice.number }}</a>
@@ -27,25 +27,25 @@
                     <a href="{{ orderPath }}">{{ invoice.order.number }}</a>
                 </td>
                 <td class="text-right">
-                    {{- invoice.grandTotal|localizedcurrency(invoice.currency) -}}
+                    {{- invoice.grandTotal|format_currency(invoice.currency) -}}
                 </td>
                 <td>
-                    {{- invoice.createdAt|localizeddate('short', 'none') -}}
+                    {{- invoice.createdAt|format_datetime('short', 'none') -}}
                 </td>
                 <td class="text-right">
                     <a href="{{ invoicePath }}" class="btn btn-xs btn-default">
-                        {{- 'ekyna_core.button.show'|trans -}}
+                        {{- 'button.show'|trans({}, 'EkynaUi') -}}
                     </a>&nbsp;
                     <a href="{{ path('ekyna_commerce_account_invoice_download', {'number': invoice.number}) }}"
                        class="btn btn-xs btn-primary" target="_blank">
-                        {{- 'ekyna_core.button.download'|trans -}}
+                        {{- 'button.download'|trans({}, 'EkynaUi') -}}
                     </a>
                 </td>
             </tr>
         {% else %}
             <tr>
                 <td colspan="6">
-                    <em>{{ 'ekyna_commerce.account.invoice.empty_list'|trans }}</em>
+                    <em>{{ 'account.invoice.empty_list'|trans({}, 'EkynaCommerce') }}</em>
                 </td>
             </tr>
         {% endfor %}

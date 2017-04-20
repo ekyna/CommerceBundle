@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
@@ -13,34 +15,21 @@ use Ekyna\Component\Commerce\Support\Entity\TicketMessage as BaseTicket;
  */
 class TicketMessage extends BaseTicket implements TicketMessageInterface
 {
-    /**
-     * @var UserInterface
-     */
-    protected $admin;
+    protected ?UserInterface $admin = null;
 
-
-    /**
-     * @inheritdoc
-     */
-    public function getAdmin()
+    public function getAdmin(): ?UserInterface
     {
         return $this->admin;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setAdmin(UserInterface $admin = null)
+    public function setAdmin(UserInterface $admin = null): TicketMessageInterface
     {
         $this->admin = $admin;
 
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function isCustomer()
+    public function isCustomer(): bool
     {
         return null === $this->admin;
     }

@@ -7,14 +7,14 @@
 {# --- DOC TITLE --- #}
 {% block doc_title_content -%}
     <h1>
-        {{- ('ekyna_commerce.' ~ subject.type ~ '.label.singular')|trans }}
+        {{- (subject.type ~ '.label.singular')|trans({}, 'EkynaCommerce') }}
         {{ subject.number -}}
     </h1>
     <p>
-        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
+        <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
-        <strong>{{ subject.createdAt|localizeddate('long', 'none', locale) }}</strong>.
-        <span class="text-alt">{{ 'ekyna_commerce.order.label.singular'|trans }}</span>
+        <strong>{{ subject.createdAt|format_datetime('long', 'none', locale) }}</strong>.
+        <span class="text-alt">{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.number }}</strong>.
         {{ macro.render_voucher_number(subject) }}

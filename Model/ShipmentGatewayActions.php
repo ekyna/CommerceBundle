@@ -1,9 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayActions as Act;
+
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentGatewayActions
@@ -12,12 +18,9 @@ use Ekyna\Component\Commerce\Shipment\Gateway\GatewayActions as Act;
  */
 class ShipmentGatewayActions extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
     public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.shipment.action.';
+        $prefix = 'shipment.action.';
 
         return [
             Act::SHIP              => [$prefix . Act::SHIP, 'primary'],
@@ -33,12 +36,8 @@ class ShipmentGatewayActions extends AbstractConstants
 
     /**
      * Returns the icon for the given action.
-     *
-     * @param string $action
-     *
-     * @return string
      */
-    public static function getIcon(string $action): string
+    public static function getIcon(string $action): ?string
     {
         switch ($action) {
             case Act::PRINT_LABEL:
@@ -55,20 +54,16 @@ class ShipmentGatewayActions extends AbstractConstants
     }
 
     /**
-     * Returns the confirm for the given action.
-     *
-     * @param string $action
-     *
-     * @return string
+     * Returns the confirmation message for the given action.
      */
-    public static function getConfirm(string $action): ?string
+    public static function getConfirm(string $action): ?TranslatableInterface
     {
-        $prefix = 'ekyna_commerce.shipment.confirm.';
+        $prefix = 'shipment.confirm.';
 
         switch ($action) {
             case Act::CANCEL:
             case Act::COMPLETE:
-                return $prefix . $action;
+                return t($prefix . $action, [], static::getTranslationDomain());
             default:
                 return null;
         }
@@ -76,10 +71,6 @@ class ShipmentGatewayActions extends AbstractConstants
 
     /**
      * Returns the target for the given action.
-     *
-     * @param string $action
-     *
-     * @return string
      */
     public static function getTarget(string $action): ?string
     {
@@ -91,5 +82,10 @@ class ShipmentGatewayActions extends AbstractConstants
         }
 
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

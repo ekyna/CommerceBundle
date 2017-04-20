@@ -1,0 +1,62 @@
+{% extends '@EkynaAdmin/Entity/Crud/_form_flow.html.twig' %}
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{- 'field.general'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+    {% if flow.getCurrentStepNumber() == 2 -%}
+    <li>
+        <a href="#{{ resource_name }}-content" id="toggle-content" data-toggle="tab">
+            {{- 'field.content'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-messages" id="toggle-messages" data-toggle="tab">
+            {{- 'message.label.plural'|trans({}, 'EkynaCommerce') -}}
+        </a>
+    </li>
+    {%- endif %}
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {% if flow.getCurrentStepNumber() == 1 -%}
+        {{ form_row(form.factoryName) }}
+        {% else -%}
+        {{ form_row(form.name) }}
+        {{ form_row(form.factoryName) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.available, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.enabled, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.defaultCurrency, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.private, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.currencies) }}
+        {% if form.config is defined -%}
+            {{ form_row(form.config) }}
+        {%- endif %}
+        {%- endif %}
+    </div>
+    {% if flow.getCurrentStepNumber() == 2 %}
+    <div class="tab-pane" id="{{ resource_name }}-content">
+        {{ form_row(form.media) }}
+        {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
+        {{ form_row(form.mentions) }}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-messages">
+        {{ form_widget(form.messages) }}
+    </div>
+    {% endif %}
+{%- endblock main_contents -%}

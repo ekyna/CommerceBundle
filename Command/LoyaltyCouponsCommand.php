@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
@@ -17,23 +19,10 @@ class LoyaltyCouponsCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:loyalty:coupons';
 
-    /**
-     * @var CouponGenerator
-     */
-    private $generator;
-
-    /**
-     * @var Mailer
-     */
-    private $mailer;
+    private CouponGenerator $generator;
+    private Mailer          $mailer;
 
 
-    /**
-     * Constructor.
-     *
-     * @param CouponGenerator $generator
-     * @param Mailer          $mailer
-     */
     public function __construct(CouponGenerator $generator, Mailer $mailer)
     {
         parent::__construct();
@@ -42,27 +31,23 @@ class LoyaltyCouponsCommand extends Command
         $this->mailer = $mailer;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function configure()
     {
         $this->setDescription('Generates coupon rewards for customer loyalty.');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $result = $this->generator->generate();
 
         if (empty($result)) {
-            return;
+            return Command::SUCCESS;
         }
 
         foreach ($result as $data) {
             $this->mailer->sendCustomerCoupons($data['customer'], $data['coupons']);
         }
+
+        return Command::SUCCESS;
     }
 }

@@ -93,7 +93,7 @@
 
 {%- block ekyna_commerce_adjustments_widget -%}
     {%- set attr = attr|merge({'class': 'ekyna-collection' }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans({}, 'EkynaUi')|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -122,10 +122,10 @@
             {# Header #}
             {#<thead>
             <tr>
-                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                <th>{{ 'ekyna_core.field.type'|trans }}</th>
-                <th>{{ 'ekyna_core.field.mode'|trans }}</th>
-                <th>{{ 'ekyna_core.field.amount'|trans }}</th>
+                <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.type'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.mode'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.amount'|trans({}, 'EkynaUi') }}</th>
                 <th></th>
             </tr>
             </thead>#}
@@ -157,7 +157,7 @@
         <p>
             <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
                     data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                {{- form.vars.add_button_text|trans({}, 'EkynaUi')|raw -}}
             </button>
         </p>
         {%- endif -%}
@@ -192,7 +192,6 @@
     {{- bootstrap_restore_form_settings() -}}
 {%- endblock ekyna_commerce_adjustment_widget -%}
 
-
 {%- block ekyna_commerce_attachment_widget -%}
     {{- form_row(form.title) -}}
     {{- block('ekyna_upload_widget') -}}
@@ -226,7 +225,7 @@
             <p>
                 {{ payment.method.title }}
                 {% if not payment.refund -%}
-                &nbsp;&dash;&nbsp;{{ payment.getAmount()|localizedcurrency(payment.currency.code) }}
+                &nbsp;&dash;&nbsp;{{ payment.getAmount()|format_currency(payment.currency.code) }}
                 {%- endif %}
             </p>
             {{- payment.method.description|raw -}}
@@ -255,19 +254,19 @@
             {{- payment.method.description|raw -}}
 
             {%- if payment_term -%}
-                {{- 'ekyna_commerce.payment_term.label.singular'|trans }}: <strong>{{ payment_term.title -}}</strong>
+                {{- 'payment_term.label.singular'|trans({}, 'EkynaCommerce') }}: <strong>{{ payment_term.title -}}</strong>
             {%- endif -%}
 
             {%- if not payment.refund -%}
                 {%- if 0 >= available_amount -%}
                     <div class="alert alert-danger">
-                        {{- 'ekyna_commerce.checkout.payment.insuffisant_fund'|trans|raw -}}
+                        {{- 'checkout.payment.insuffisant_fund'|trans({}, 'EkynaCommerce')|raw -}}
                     </div>
                 {%- else -%}
                     <p>
-                        {{- 'ekyna_commerce.checkout.payment.available_fund'|trans({
-                            '%amount%': available_amount|localizedcurrency(currency_code)
-                        })|raw -}}
+                        {{- 'checkout.payment.available_fund'|trans({
+                            '%amount%': available_amount|format_currency(currency_code)
+                        }, 'EkynaCommerce')|raw -}}
                     </p>
                 {%- endif -%}
             {%- endif -%}
@@ -357,7 +356,7 @@
             {%- elseif translation_type == 'payment' -%}
                 {{ child.vars.state|payment_state_label }}
             {%- else -%}
-                {{ child.vars.state|trans }}
+                {{ child.vars.state|trans({}, translation_domain) }}
             {%- endif -%}
             </a>
         </li>
@@ -379,7 +378,7 @@
 
 {%- block ekyna_commerce_shipment_method_choice_widget -%}
 {%- with -%}
-    {%- set button_message = 'ekyna_commerce.shipment_method.button.choose' -%}
+    {%- set button_message = 'shipment_method.button.choose' -%}
     {%- set default_image_path = 'bundles/ekynacommerce/img/in-store.png' -%}
     {%- set default_image_alt = 'Shipment' -%}
 
@@ -444,7 +443,7 @@
                         {{- method.description|raw -}}
                         <p>
                             <label for="{{ child.vars.id }}" class="btn btn-xs btn-primary">
-                                {{- button_message|trans({'%gateway_name%': method.title}) -}}
+                                {{- button_message|trans({'%gateway_name%': method.title}, 'EkynaCommerce') -}}
                             </label>
                         </p>
                     </div>
@@ -455,11 +454,11 @@
             <div class="alert alert-warning">
                 <p>
                     {%- if form.vars.country is defined -%}
-                        {{ 'ekyna_commerce.shipment_method.alert.none_available_for_country'|trans({
+                        {{ 'shipment_method.alert.none_available_for_country'|trans({
                             '%country%': form.vars.country
-                        })|raw }}
+                        }, 'EkynaCommerce')|raw }}
                     {%- else -%}
-                        {{ 'ekyna_commerce.shipment_method.alert.none_available'|trans }}
+                        {{ 'shipment_method.alert.none_available'|trans({}, 'EkynaCommerce') }}
                     {%- endif -%}
                 </p>
             </div>
@@ -544,7 +543,7 @@
 
 {%- block ekyna_commerce_sale_items_widget -%}
     {%- set attr = attr|merge({'class': 'ekyna-collection' }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans({}, 'EkynaUi')|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -575,13 +574,13 @@
                 {# Header #}
                 <thead>
                 <tr>
-                    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                    <th>{{ 'ekyna_core.field.weight'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.field.net_price'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.field.tax_group'|trans }}</th>
-                    <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.field.private'|trans }}</th>
+                    <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                    <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                    <th>{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
+                    <th>{{ 'field.net_price'|trans({}, 'EkynaCommerce') }}</th>
+                    <th>{{ 'field.tax_group'|trans({}, 'EkynaCommerce') }}</th>
+                    <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                    <th>{{ 'field.private'|trans({}, 'EkynaCommerce') }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -614,7 +613,7 @@
         <p>
             <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
                     data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                {{- form.vars.add_button_text|trans({}, 'EkynaUi')|raw -}}
             </button>
         </p>
         {%- endif -%}
@@ -679,16 +678,16 @@
     <table class="table table-striped table-condensed table-alt-head shipment-items">
         <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                <th style="width:15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                <th style="width:15%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
                 {%- if form.parent.vars.return_mode -%}
-                    <th>{{ 'ekyna_commerce.field.shipped'|trans }}</th>
+                    <th>{{ 'field.shipped'|trans({}, 'EkynaCommerce') }}</th>
                 {%- else -%}
-                <th>{{ 'ekyna_commerce.field.available'|trans }}</th>
-                <th>{{ 'ekyna_commerce.field.expected'|trans }}</th>
+                <th>{{ 'field.available'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.expected'|trans({}, 'EkynaCommerce') }}</th>
                 {%- endif -%}
-                <th>{{ 'ekyna_commerce.field.geocode'|trans }}</th>
+                <th>{{ 'field.geocode'|trans({}, 'EkynaCommerce') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -706,7 +705,7 @@
                 <td colspan="2">&nbsp;</td>
                 <td class="text-center">
                     <a href="javascript:void(0)" id="toggle-quantities">
-                        {{- 'ekyna_commerce.button.toggle_quantities'|trans -}}
+                        {{- 'button.toggle_quantities'|trans({}, 'EkynaCommerce') -}}
                     </a>
                 </td>
                 <td colspan="{{ form.parent.vars.return_mode ? 2 : 3 }}">&nbsp;</td>
@@ -733,10 +732,10 @@
         <td>{{ form.vars.item.saleItem.reference }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
         {%- if return_mode -%}
-            <td>{{ form.vars.item.available }}</td>{# TODO packaging format #}
+            <td>{{ form.vars.item.available|number_format }}</td>{# TODO packaging format #}
         {%- else -%}
-            <td>{{ form.vars.item.available }}</td>{# TODO packaging format #}
-            <td>{{ form.vars.item.expected }}</td>{# TODO packaging format #}
+            <td>{{ form.vars.item.available|number_format }}</td>{# TODO packaging format #}
+            <td>{{ form.vars.item.expected|number_format }}</td>{# TODO packaging format #}
         {%- endif -%}
         <td>{{ form.vars.geocodes|join(', ') }}</td>
     </tr>
@@ -791,14 +790,14 @@
     <table class="table table-striped table-condensed table-alt-head invoice-lines">
         <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                <th style="width:15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                <th style="width:15%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
                 {%- if form.parent.vars.credit_mode -%}
-                <th>{{ 'ekyna_commerce.field.max_quantity'|trans }}</th>
+                <th>{{ 'field.max_quantity'|trans({}, 'EkynaCommerce') }}</th>
                 {%- else -%}
-                <th>{{ 'ekyna_commerce.field.max_quantity'|trans }}</th>
-                <th>{{ 'ekyna_commerce.field.expected'|trans }}</th>
+                <th>{{ 'field.max_quantity'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.expected'|trans({}, 'EkynaCommerce') }}</th>
                 {%- endif -%}
             </tr>
         </thead>
@@ -817,7 +816,7 @@
             <td colspan="2">&nbsp;</td>
             <td class="text-center">
                 <a href="javascript:void(0)" id="toggle-quantities">
-                    {{- 'ekyna_commerce.button.toggle_quantities'|trans -}}
+                    {{- 'button.toggle_quantities'|trans({}, 'EkynaCommerce') -}}
                 </a>
             </td>
             <td colspan="{{ form.parent.vars.credit_mode ? 2 : 3 }}">&nbsp;</td>
@@ -837,7 +836,7 @@
     <tr {{ block('widget_container_attributes') }}>
         <td style="padding-left:{{ level * 20 }}px">
             {%- if form.vars.line.designation is empty and form.vars.line.type == 'discount' -%}
-                {{ 'ekyna_commerce.adjustment.type.discount'|trans }}
+                {{ 'adjustment.type.discount'|trans({}, 'EkynaCommerce') }}
             {%- else -%}
                 {{ form.vars.line.designation }}
             {%- endif -%}
@@ -848,10 +847,10 @@
         <td>{{ form.vars.line.reference }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
         {%- if credit_mode -%}
-        <td>{{ form.vars.line.available }}</td>{# TODO packaging format #}
+        <td>{{ form.vars.line.available|number_format }}</td>{# TODO packaging format #}
         {%- else -%}
-        <td>{{ form.vars.line.available }}</td>{# TODO packaging format #}
-        <td>{{ form.vars.line.expected }}</td>{# TODO packaging format #}
+        <td>{{ form.vars.line.available|number_format }}</td>{# TODO packaging format #}
+        <td>{{ form.vars.line.expected|number_format }}</td>{# TODO packaging format #}
         {%- endif -%}
     </tr>
     {%- if errors|length > 0 -%}
@@ -868,7 +867,7 @@
 
 {%- block ekyna_commerce_invoice_items_widget -%}
     {%- set attr = attr|merge({'class': 'ekyna-collection' }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans({}, 'EkynaUi')|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -897,11 +896,11 @@
     <table class="table table-striped table-condensed table-alt-head">
         <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
-                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-                <th>{{ 'ekyna_commerce.field.tax_group'|trans }}</th>
+                <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'sale.field.net_unit'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.tax_group'|trans({}, 'EkynaCommerce') }}</th>
                 <th></th>
             </tr>
         </thead>
@@ -931,7 +930,7 @@
             <td colspan="6" class="text-center">
                 <button type="button" class="btn btn-link btn-xs" data-collection-role="add"
                         data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                    {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                    {{- form.vars.add_button_text|trans({}, 'EkynaUi')|raw -}}
                 </button>
             </td>
         </tr>
@@ -984,7 +983,7 @@
             {{- currency -}}
             <label for="{{ mode_prototype.vars.id }}">
                 {{- form_widget(mode_prototype) -}}
-                {{- 'ekyna_commerce.pricing.vat_display_mode.ati'|trans -}}
+                {{- 'pricing.vat_display_mode.ati'|trans({}, 'EkynaCommerce') -}}
                 <span class="commerce-price-rates"></span>
             </label>
         </span>
@@ -1006,7 +1005,7 @@
 {%- block ekyna_commerce_shipment_prices_widget -%}
     {%- set class = attr.class|default('') -%}
     {%- set attr = attr|merge({'class': ('ekyna-collection ' ~ class)|trim }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans({}, 'EkynaUi')|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -1029,8 +1028,8 @@
             {# Header #}
             <thead>
             <tr>
-                <th>{{ 'ekyna_commerce.shipment_price.field.weight'|trans }}</th>
-                <th>{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
+                <th>{{ 'shipment_price.field.weight'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
                 <th></th>
             </tr>
             </thead>
@@ -1062,7 +1061,7 @@
         <p style="text-align:center;">
             <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
                     data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                {{- form.vars.add_button_text|trans({}, 'EkynaUi')|raw -}}
             </button>
         </p>
         {%- endif -%}
@@ -1120,11 +1119,11 @@
             {# Header #}
             <thead>
                 <tr>
-                    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                    <th style="width:12%">{{ 'ekyna_core.field.quantity'|trans }}</th>
-                    <th style="width:12%">{{ 'ekyna_commerce.supplier_delivery_item.field.remaining'|trans }}</th>
-                    <th style="width:12%">{{ 'ekyna_commerce.field.geocode'|trans }}</th>
+                    <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                    <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:12%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:12%">{{ 'supplier_delivery_item.field.remaining'|trans({}, 'EkynaCommerce') }}</th>
+                    <th style="width:12%">{{ 'field.geocode'|trans({}, 'EkynaCommerce') }}</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -1154,7 +1153,7 @@
             <td>{{ form.vars.order_item.designation }}</td>
             <td>{{ form.vars.order_item.reference }}</td>
             <td class="text-right">{{ form_widget(form.quantity) }}</td>
-            <td class="text-right">{{ form.vars.remaining_quantity|localizednumber }}</td>{# TODO packaging format #}
+            <td class="text-right">{{ form.vars.remaining_quantity|format_number }}</td>{# TODO packaging format #}
             <td class="text-right">{{ form_widget(form.geocode) }}</td>
             <td>
                 <a href="javascript: void(0)"
@@ -1183,7 +1182,7 @@
     {%- if errors|length > 0 -%}
         {%- set attr = attr|merge({'class': ('has-error ' ~ class)|trim }) -%}
     {%- endif -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans({}, 'EkynaCommerce')|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -1206,12 +1205,12 @@
             {# Header #}
             <thead>
                 <tr>
-                    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                    <th style="width:13%">{{ 'ekyna_core.field.reference'|trans }}</th>
-                    <th style="width:10%">{{ 'ekyna_core.field.quantity'|trans }}</th>
-                    <th style="width:10%">{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
-                    <th style="width:10%">{{ 'ekyna_core.field.weight'|trans }}</th>
-                    <th style="width:14%">{{ 'ekyna_commerce.tax_group.label.singular'|trans }}</th>
+                    <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:13%">{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:10%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:10%">{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
+                    <th style="width:10%">{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:14%">{{ 'tax_group.label.singular'|trans({}, 'EkynaCommerce') }}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -1240,7 +1239,7 @@
         <p style="text-align:center;">
             <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
                     data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                {{- form.vars.add_button_text|trans({}, 'EkynaCommerce')|raw -}}
             </button>
         </p>
         {%- endif -%}
@@ -1308,15 +1307,15 @@
                 {%- if relay_point is not null %}{{ relay_point|address }}{% endif -%}
             </p>
             <p class="relay-point-none"{% if relay_point is not null %} style="display: none;"{% endif %}>
-                {{- 'ekyna_commerce.relay_point.message.choose'|trans -}}
+                {{- 'relay_point.message.choose'|trans({}, 'EkynaCommerce') -}}
             </p>
         </div>
         <div class="panel-footer">
             <button class="btn btn-primary btn-sm relay-point-search" type="button">
-                <i class="glyphicon glyphicon-search"></i> {{ 'ekyna_core.button.search'|trans }}
+                <i class="glyphicon glyphicon-search"></i> {{ 'button.search'|trans({}, 'EkynaUi') }}
             </button>
             <button class="btn btn-default btn-sm relay-point-clear" type="button">
-                <i class="glyphicon glyphicon-remove"></i> {{ 'ekyna_core.button.cancel'|trans }}
+                <i class="glyphicon glyphicon-remove"></i> {{ 'button.cancel'|trans({}, 'EkynaUi') }}
             </button>
         </div>
     </div>
@@ -1330,7 +1329,7 @@
     {%- if errors|length > 0 -%}
         {%- set attr = attr|merge({'class': ('has-error ' ~ class)|trim }) -%}
     {%- endif -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans({}, 'EkynaUi')|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -1374,7 +1373,7 @@
         <p>
             <button type="button" class="btn btn-primary btn-xs" data-collection-role="add"
                     data-collection="{{ form.vars.id }}" data-prototype-name="{{ prototype_name }}">
-                {{- form.vars.add_button_text|trans({}, translation_domain)|raw -}}
+                {{- form.vars.add_button_text|trans({}, 'EkynaUi')|raw -}}
             </button>
         </p>
         {%- endif -%}
@@ -1397,7 +1396,7 @@
 
 {%- block ekyna_commerce_resupply_alert_subscribe_widget -%}
     <div class="alert alert-info">
-        <p>{{ 'ekyna_commerce.resupply_alert.subscribe.message'|trans }}</p>
+        <p>{{ 'resupply_alert.subscribe.message'|trans({}, 'EkynaCommerce') }}</p>
     </div>
     {{ form_row(form.email) }}
 {%- endblock ekyna_commerce_resupply_alert_subscribe_widget -%}
@@ -1405,7 +1404,7 @@
 
 {%- block ekyna_commerce_resupply_alert_unsubscribe_widget -%}
     <div class="alert alert-warning">
-        <p>{{ 'ekyna_commerce.resupply_alert.unsubscribe.message'|trans }}</p>
+        <p>{{ 'resupply_alert.unsubscribe.message'|trans({}, 'EkynaCommerce') }}</p>
     </div>
     {{ form_row(form.email) }}
     {{ form_row(form.confirm) }}
@@ -1414,7 +1413,7 @@
 
 {%- block ekyna_commerce_vat_number_widget -%}
     {%- if form.vars.config is defined -%}
-    <div class="input-group commerce-vat-number" data-config='{{ form.vars.config|json_encode }}'>
+    <div class="input-group commerce-vat-number" data-config='{{ form.vars.config|json_encode_data }}'>
         {{- block('form_widget') -}}
         <span class="input-group-btn">
             <button class="btn btn-default" type="button">

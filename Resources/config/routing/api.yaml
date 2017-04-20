@@ -1,0 +1,15 @@
+ekyna_commerce_api_customer:
+    resource: "api/customer.yaml"
+    prefix: /customer
+
+api_ekyna_commerce_newsletter:
+    resource: "api/newsletter.yaml"
+    prefix: /newsletter
+
+ekyna_commerce_api_pricing:
+    resource: "api/pricing.yaml"
+    prefix: /pricing
+
+ekyna_commerce_api_shippment_gateway:
+    resource: "api/shipment_gateway.yaml"
+    prefix: /shipment-gateway

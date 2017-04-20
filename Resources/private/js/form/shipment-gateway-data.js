@@ -1,4 +1,4 @@
-define(['jquery', 'routing', 'ekyna-form', 'ekyna-ui'], function($, Router, Form) {
+define(['jquery', 'routing', 'ekyna-form', 'ekyna-spinner'], function($, Router, Form) {
     "use strict";
 
     /**
@@ -40,7 +40,7 @@ define(['jquery', 'routing', 'ekyna-form', 'ekyna-ui'], function($, Router, Form
                 }
 
                 xhr = $.ajax({
-                    url: Router.generate('ekyna_commerce_order_shipment_admin_gateway_form', parameters),
+                    url: Router.generate('admin_ekyna_commerce_order_shipment_gateway_form', parameters),
                     dataType: 'xml'
                 });
 

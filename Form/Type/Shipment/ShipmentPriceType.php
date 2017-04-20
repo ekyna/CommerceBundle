@@ -1,84 +1,78 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CoreBundle\Form\Type\HiddenEntityType;
+use Decimal\Decimal;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\HiddenResourceType;
+use Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_merge;
+use function is_null;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ShipmentPriceType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentPriceType extends ResourceFormType
+class ShipmentPriceType extends AbstractResourceType
 {
-    /**
-     * @var string
-     */
-    private $zoneClass;
-
-    /**
-     * @var string
-     */
-    private $methodClass;
+    private string $zoneClass;
+    private string $methodClass;
 
 
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     * @param string $zoneClass
-     * @param string $methodClass
-     */
-    public function __construct($dataClass, $zoneClass, $methodClass)
+    public function __construct(string $zoneClass, string $methodClass)
     {
-        parent::__construct($dataClass);
-
         $this->zoneClass = $zoneClass;
         $this->methodClass = $methodClass;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('weight', NumberType::class, [
-                'label'      => 'ekyna_core.field.weight',
-                'required'   => true,
-                'empty_data' => '0',
+                'label'      => t('field.weight', [], 'EkynaUi'),
+                'decimal'    => true,
+                'scale'      => 3,
+                'empty_data' => new Decimal(0),
                 'attr'       => [
-                    'placeholder' => 'ekyna_core.field.weight',
+                    'placeholder' => 'field.weight',
                     'input_group' => ['append' => 'kg'],
                     'min'         => 0,
                 ],
             ])
             ->add('netPrice', NumberType::class, [
-                'label'      => 'ekyna_commerce.field.net_price',
-                'required'   => true,
+                'label'      => t('field.net_price', [], 'EkynaCommerce'),
+                'decimal'    => true,
                 'scale'      => 5,
-                'empty_data' => '0',
+                'empty_data' => new Decimal(0),
                 'attr'       => [
-                    'placeholder' => 'ekyna_commerce.field.net_price',
+                    'placeholder' => 'field.net_price',
                     'input_group' => ['append' => '€'],  // TODO by currency
                 ],
             ]);
 
-        if ('zone' == $options['filter_by']) {
-            $builder->add('zone', HiddenEntityType::class, [
+        if ('zone' === $options['filter_by']) {
+            $builder->add('zone', HiddenResourceType::class, [
                 'class' => $this->zoneClass,
                 'attr'  => [
                     'class' => 'shipment-price-zone',
                 ],
             ]);
-        } elseif ('method' == $options['filter_by']) {
-            $builder->add('method', HiddenEntityType::class, [
+
+            return;
+        }
+
+        if ('method' === $options['filter_by']) {
+            $builder->add('method', HiddenResourceType::class, [
                 'class' => $this->methodClass,
                 'attr'  => [
                     'class' => 'shipment-price-method',
@@ -87,31 +81,29 @@ class ShipmentPriceType extends ResourceFormType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        if (null !== $filterBy = $options['filter_by']) {
-            /** @var \Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice $price */
-            if ($price = $form->getData()) {
-                if ($filterBy == 'method') {
-                    $filterValue = $price->getMethod();
-                } else {
-                    $filterValue = $price->getZone();
-                }
-
-                $view->vars['attr'] = array_merge($view->vars['attr'], [
-                    'data-' . $filterBy => is_null($filterValue) ? 'null' : $filterValue->getId(),
-                ]);
-            }
+        if (null === $filterBy = $options['filter_by']) {
+            return;
         }
+
+        /** @var ShipmentPrice $price */
+        if (!$price = $form->getData()) {
+            return;
+        }
+
+        if ($filterBy == 'method') {
+            $filterValue = $price->getMethod();
+        } else {
+            $filterValue = $price->getZone();
+        }
+
+        $view->vars['attr'] = array_merge($view->vars['attr'], [
+            'data-' . $filterBy => is_null($filterValue) ? 'null' : $filterValue->getId(),
+        ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -120,10 +112,7 @@ class ShipmentPriceType extends ResourceFormType
             ->setAllowedValues('filter_by', [null, 'zone', 'method']);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_shipment_price';
     }

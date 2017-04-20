@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\DataFixtures\ORM;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-use Ekyna\Bundle\CoreBundle\DataFixtures\ORM\Fixtures;
+use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\CountryInterface;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
 use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Common\Repository\CountryRepositoryInterface;
 use Ekyna\Component\Commerce\Common\Repository\CurrencyRepositoryInterface;
-use Ekyna\Component\Commerce\Customer\Entity\CustomerAddress;
+use Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface;
-use Ekyna\Component\Commerce\Customer\Repository\CustomerAddressRepositoryInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterface;
-use Ekyna\Component\Commerce\Order\Entity\OrderAddress;
+use Ekyna\Component\Commerce\Order\Model\OrderAddressInterface;
 use Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface;
 use Ekyna\Component\Commerce\Pricing\Repository\TaxGroupRepositoryInterface;
 use Ekyna\Component\Commerce\Stock\Model\WarehouseInterface;
@@ -22,8 +23,15 @@ use Ekyna\Component\Commerce\Stock\Repository\WarehouseRepositoryInterface;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
-use Ekyna\Component\Commerce\Supplier\Entity\SupplierAddress;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierAddressInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
+use Ekyna\Component\Resource\Factory\FactoryFactoryInterface;
+use Exception;
+use Faker\Factory;
+use Faker\Generator;
+use InvalidArgumentException;
+use libphonenumber\PhoneNumberUtil;
+use RuntimeException;
 
 /**
  * Class CommerceProvider
@@ -32,81 +40,39 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
  */
 class CommerceProvider
 {
-    /**
-     * @var CountryRepositoryInterface
-     */
-    private $countryRepository;
+    private CountryRepositoryInterface       $countryRepository;
+    private CurrencyRepositoryInterface      $currencyRepository;
+    private TaxGroupRepositoryInterface      $taxGroupRepository;
+    private CustomerGroupRepositoryInterface $customerGroupRepository;
+    private WarehouseRepositoryInterface     $warehouseRepository;
+    private SubjectProviderRegistryInterface $providerRegistry;
+    private FactoryFactoryInterface          $factoryFactory;
 
-    /**
-     * @var CurrencyRepositoryInterface
-     */
-    private $currencyRepository;
+    /** @var array<CustomerGroupInterface> */
+    private ?array           $customerGroups = null;
+    private ?Generator       $faker          = null;
+    private ?PhoneNumberUtil $phoneUtil      = null;
 
-    /**
-     * @var TaxGroupRepositoryInterface
-     */
-    private $taxGroupRepository;
-
-    /**
-     * @var CustomerGroupRepositoryInterface
-     */
-    private $customerGroupRepository;
-
-    /**
-     * @var CustomerAddressRepositoryInterface
-     */
-    private $customerAddressRepository;
-
-    /**
-     * @var WarehouseRepositoryInterface
-     */
-    private $warehouseRepository;
-
-    /**
-     * @var SubjectProviderRegistryInterface
-     */
-    private $providerRegistry;
-
-    /**
-     * @var CustomerGroupInterface[]
-     */
-    private $customerGroups;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CountryRepositoryInterface         $countryRepository
-     * @param CurrencyRepositoryInterface        $currencyRepository
-     * @param TaxGroupRepositoryInterface        $taxGroupRepository
-     * @param CustomerGroupRepositoryInterface   $customerGroupRepository
-     * @param CustomerAddressRepositoryInterface $customerAddressRepository
-     * @param WarehouseRepositoryInterface       $warehouseRepository
-     * @param SubjectProviderRegistryInterface   $providerRegistry
-     */
     public function __construct(
-        CountryRepositoryInterface $countryRepository,
-        CurrencyRepositoryInterface $currencyRepository,
-        TaxGroupRepositoryInterface $taxGroupRepository,
+        CountryRepositoryInterface       $countryRepository,
+        CurrencyRepositoryInterface      $currencyRepository,
+        TaxGroupRepositoryInterface      $taxGroupRepository,
         CustomerGroupRepositoryInterface $customerGroupRepository,
-        CustomerAddressRepositoryInterface $customerAddressRepository,
-        WarehouseRepositoryInterface $warehouseRepository,
-        SubjectProviderRegistryInterface $providerRegistry
+        WarehouseRepositoryInterface     $warehouseRepository,
+        SubjectProviderRegistryInterface $providerRegistry,
+        FactoryFactoryInterface          $factoryFactory
     ) {
         $this->countryRepository = $countryRepository;
         $this->currencyRepository = $currencyRepository;
         $this->taxGroupRepository = $taxGroupRepository;
         $this->customerGroupRepository = $customerGroupRepository;
-        $this->customerAddressRepository = $customerAddressRepository;
         $this->warehouseRepository = $warehouseRepository;
-
         $this->providerRegistry = $providerRegistry;
+        $this->factoryFactory = $factoryFactory;
     }
 
     /**
      * Returns the default tax group.
-     *
-     * @return TaxGroupInterface
      */
     public function defaultTaxGroup(): TaxGroupInterface
     {
@@ -115,10 +81,6 @@ class CommerceProvider
 
     /**
      * Returns the tax group by its code.
-     *
-     * @param string $code
-     *
-     * @return TaxGroupInterface
      */
     public function taxGroupByCode(string $code): TaxGroupInterface
     {
@@ -127,10 +89,6 @@ class CommerceProvider
 
     /**
      * Returns the country by its code.
-     *
-     * @param string $code
-     *
-     * @return CountryInterface|null
      */
     public function countryByCode(string $code): ?CountryInterface
     {
@@ -139,10 +97,6 @@ class CommerceProvider
 
     /**
      * Returns the currency by its code.
-     *
-     * @param string $code
-     *
-     * @return CurrencyInterface|null
      */
     public function currencyByCode(string $code): ?CurrencyInterface
     {
@@ -151,10 +105,6 @@ class CommerceProvider
 
     /**
      * Finds the customer group by business.
-     *
-     * @param bool $business
-     *
-     * @return CustomerGroupInterface
      */
     public function customerGroup(bool $business = false): CustomerGroupInterface
     {
@@ -168,13 +118,11 @@ class CommerceProvider
             }
         }
 
-        throw new \RuntimeException('Customer group not found.');
+        throw new RuntimeException('Customer group not found.');
     }
 
     /**
-     * Returns the default warehouse repository.
-     *
-     * @return WarehouseInterface
+     * Returns the default warehouse.
      */
     public function defaultWarehouse(): WarehouseInterface
     {
@@ -184,27 +132,25 @@ class CommerceProvider
     /**
      * Generates an address.
      *
-     * @param IdentityInterface $owner
-     * @param null|bool         $ownerIdentity
-     *
-     * @return OrderAddress|CustomerAddress
+     * @return OrderAddressInterface|CustomerAddressInterface|SupplierAddressInterface
      */
-    public function generateAddress(IdentityInterface $owner, $ownerIdentity = null)
+    public function generateAddress(IdentityInterface $owner, ?bool $ownerIdentity = null): AddressInterface
     {
-        $faker = Fixtures::getFaker('fr_FR');
-
-        // TODO use sale factory
+        $faker = $this->getFaker();
 
         if ($owner instanceof OrderInterface) {
-            $address = new OrderAddress();
+            /** @var OrderAddressInterface $address */
+            $address = $this->factoryFactory->getFactory(OrderAddressInterface::class)->create();
         } elseif ($owner instanceof CustomerInterface) {
-            $address = new CustomerAddress();
+            /** @var CustomerAddressInterface $address */
+            $address = $this->factoryFactory->getFactory(CustomerAddressInterface::class)->create();
             $address->setCustomer($owner);
         } elseif ($owner instanceof SupplierInterface) {
-            $address = new SupplierAddress();
+            /** @var SupplierAddressInterface $address */
+            $address = $this->factoryFactory->getFactory(SupplierAddressInterface::class)->create();
             $address->setSupplier($owner);
         } else {
-            throw new \InvalidArgumentException('Unexpected owner.');
+            throw new InvalidArgumentException('Unexpected owner.');
         }
 
         if (false !== $ownerIdentity && ($ownerIdentity || 50 < rand(0, 100))) {
@@ -226,10 +172,10 @@ class CommerceProvider
             ->setCountry($this->countryByCode('FR'));
 
         if (50 < rand(0, 100)) {
-            $address->setPhone(Fixtures::getPhoneUtil()->parse($faker->phoneNumber, 'FR'));
+            $address->setPhone($this->getPhoneUtil()->parse($faker->phoneNumber, 'FR'));
         }
         if (50 < rand(0, 100)) {
-            $address->setMobile(Fixtures::getPhoneUtil()->parse($faker->phoneNumber, 'FR'));
+            $address->setMobile($this->getPhoneUtil()->parse($faker->phoneNumber, 'FR'));
         }
 
         return $address;
@@ -238,23 +184,34 @@ class CommerceProvider
     /**
      * Returns the subject identity.
      *
-     * @param SubjectInterface $subject
-     *
-     * @return SubjectIdentity
-     *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function subjectIdentity(SubjectInterface $subject)
+    public function subjectIdentity(SubjectInterface $subject): SubjectIdentity
     {
-        $provider = $this->providerRegistry->getProviderBySubject($subject);
-        if (null === $provider) {
-            throw new \Exception('Unsupported subject');
-        }
-
         $identity = new SubjectIdentity();
-
-        $provider->transform($subject, $identity);
+        $identity
+            ->setProvider($subject::getProviderName())
+            ->setIdentifier($subject->getIdentifier())
+            ->setSubject($subject);
 
         return $identity;
+    }
+
+    private function getFaker(): Generator
+    {
+        if ($this->faker) {
+            return $this->faker;
+        }
+
+        return $this->faker = Factory::create();
+    }
+
+    private function getPhoneUtil(): PhoneNumberUtil
+    {
+        if ($this->phoneUtil) {
+            return $this->phoneUtil;
+        }
+
+        return $this->phoneUtil = PhoneNumberUtil::getInstance();
     }
 }

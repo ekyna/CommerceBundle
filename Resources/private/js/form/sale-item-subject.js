@@ -1,4 +1,4 @@
-define(['jquery', 'routing', 'ekyna-ui'], function($, Router) {
+define(['jquery', 'routing', 'ekyna-spinner'], function($, Router) {
     "use strict";
 
     /**
@@ -28,7 +28,7 @@ define(['jquery', 'routing', 'ekyna-ui'], function($, Router) {
                     $stock.loadingSpinner('on');
 
                     stockXhr = $.ajax({
-                        url: Router.generate('ekyna_commerce_inventory_admin_subject_stock', {
+                        url: Router.generate('admin_ekyna_commerce_inventory_subject_stock', {
                             provider: provider,
                             identifier: identifier
                         }),

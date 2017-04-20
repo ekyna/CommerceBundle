@@ -1,7 +1,7 @@
 {% extends "email.html.twig" %}
 
 {% block subject %}
-    {{ 'ekyna_commerce.customer.notify.registration.subject'|trans }}
+    {{ 'customer.notify.registration.subject'|trans({}, 'EkynaCommerce') }}
 {% endblock subject %}
 
 {% block body %}
@@ -16,9 +16,8 @@
         {{ customer.description|nl2br }}
     </p>
     <p style="text-align: center;">
-        <a href="{{ url('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}">
-            {{ 'ekyna_commerce.customer.notify.admin_link'|trans }}
+        <a href="{{ admin_resource_path(customer, 'admin_read', {}, true) }}">
+            {{ 'customer.notify.admin_link'|trans({}, 'EkynaCommerce') }}
         </a>
     </p>
-
 {% endblock body %}

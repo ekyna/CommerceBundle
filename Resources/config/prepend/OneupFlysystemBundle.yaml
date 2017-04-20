@@ -1,0 +1,10 @@
+oneup_flysystem:
+    adapters:
+        local_commerce:
+            local:
+                location: "%kernel.data_dir%/commerce"
+    filesystems:
+        local_commerce:
+            adapter: local_commerce
+            alias: local_commerce_filesystem
+            mount: local_commerce

@@ -3,10 +3,10 @@
     <div class="panel-heading">
     {%- if credit -%}
         {%- set invoices = sale.getInvoices(false) -%}
-        {{- 'ekyna_commerce.credit.label.plural'|trans|raw -}}
+        {{- 'credit.label.plural'|trans({}, 'EkynaCommerce')|raw -}}
     {%- else -%}
         {%- set invoices = sale.getInvoices(true) -%}
-        {{- 'ekyna_commerce.invoice.label.plural'|trans|raw -}}
+        {{- 'invoice.label.plural'|trans({}, 'EkynaCommerce')|raw -}}
     {%- endif -%}
     </div>
     {{ sale|payment_method_notice }}
@@ -14,11 +14,11 @@
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.number'|trans }}</th>
-                <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-                <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
-                <th>{{ 'ekyna_commerce.invoice.field.sale_paid'|trans }}</th>
-                <th>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</th>
+                <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'invoice.field.sale_paid'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'sale.field.outstanding_date'|trans({}, 'EkynaCommerce') }}</th>
                 <th></th>
             </tr>
             </thead>
@@ -32,10 +32,10 @@
                             {{- invoice.number -}}
                         </a>
                     </td>
-                    <td>{{ invoice.grandTotal|localizedcurrency(invoice.currency) }}</td>
-                    <td>{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
-                    <td>{{ invoice.paidTotal|localizedcurrency(invoice.currency) }}</td>
-                    <td>{{ invoice.dueDate|localizeddate('short', 'none') }}</td>
+                    <td>{{ invoice.grandTotal|format_currency(invoice.currency) }}</td>
+                    <td>{{ invoice.createdAt|format_datetime('short', 'none') }}</td>
+                    <td>{{ invoice.paidTotal|format_currency(invoice.currency) }}</td>
+                    <td>{{ invoice.dueDate|format_datetime('short', 'none') }}</td>
                     <td class="actions text-right">
                         <a href="javascript:void(0)"
                            id="{{ invoiceId }}_toggle_details"
@@ -44,7 +44,7 @@
                             <span class="fa fa-info-circle"></span>
                         </a>&nbsp;
                         <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
-                            {{- 'ekyna_core.button.download'|trans -}}
+                            {{- 'button.download'|trans({}, 'EkynaUi') -}}
                         </a>
                     </td>
                 </tr>
@@ -54,9 +54,9 @@
                         <table class="table table-alt table-striped table-condensed">
                             <thead>
                             <tr>
-                                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+                                <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                                <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                                <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -65,7 +65,7 @@
                                 <tr>
                                     <td>{{ line.designation }}</td>{# TODO Public link #}
                                     <td>{{ line.reference }}</td>
-                                    <td>{{ line.quantity|localizednumber }}</td> {# TODO Packaging format #}
+                                    <td>{{ line.quantity|format_number }}</td> {# TODO Packaging format #}
                                 </tr>
                                 {%- endif -%}
                             {%- endfor -%}
@@ -76,7 +76,7 @@
             {%- else -%}
                 <tr>
                     <td colspan="6" class="text-center">
-                        <em>{{- 'ekyna_core.value.no_item'|trans -}}</em>
+                        <em>{{- 'value.no_item'|trans({}, 'EkynaUi') -}}</em>
                     </td>
                 </tr>
             {%- endfor -%}

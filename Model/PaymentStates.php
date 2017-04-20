@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentStates as States;
  */
 final class PaymentStates extends AbstractConstants
 {
-    /**
-     * {@inheritdoc}
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.payment.state.';
+        $prefix = 'payment.state.';
         $suffix = '.label';
 
         return [
@@ -37,5 +36,10 @@ final class PaymentStates extends AbstractConstants
             States::STATE_DEPOSIT     => [$prefix.States::STATE_DEPOSIT.$suffix,     'purple'],
             States::STATE_COMPLETED   => [$prefix.States::STATE_COMPLETED.$suffix,   'teal'],
         ];
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

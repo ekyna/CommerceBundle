@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter;
 
 use Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper;
@@ -16,32 +18,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class SubscriptionController
 {
-    /**
-     * @var CustomerRepositoryInterface
-     */
-    private $customerRepository;
+    private CustomerRepositoryInterface $customerRepository;
+    private SubscriptionHelper $subscriptionHelper;
 
-    /**
-     * @var SubscriptionHelper
-     */
-    private $subscriptionHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CustomerRepositoryInterface $customerRepository
-     * @param SubscriptionHelper          $subscriptionHelper
-     */
     public function __construct(CustomerRepositoryInterface $customerRepository, SubscriptionHelper $subscriptionHelper)
     {
         $this->customerRepository = $customerRepository;
         $this->subscriptionHelper = $subscriptionHelper;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function subscribe(Request $request): Response
     {
         if (empty($key = $request->attributes->get('key'))) {
@@ -55,9 +40,6 @@ class SubscriptionController
         return new JsonResponse($response);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function unsubscribe(Request $request): Response
     {
         if (empty($key = $request->attributes->get('key'))) {
@@ -71,13 +53,6 @@ class SubscriptionController
         return new JsonResponse($response);
     }
 
-    /**
-     * Returns the email.
-     *
-     * @param Request $request
-     *
-     * @return string
-     */
     protected function getEmail(Request $request): string
     {
         if ($key = $request->request->get('customer')) {

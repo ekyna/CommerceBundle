@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates as BShipStates;
-use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\UiBundle\Form\Type\CollectionType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilderInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,107 +22,88 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ShipmentType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentType extends ResourceFormType
+class ShipmentType extends AbstractResourceType
 {
-    /**
-     * @var ShipmentBuilderInterface
-     */
-    private $shipmentBuilder;
+    private ShipmentBuilderInterface      $shipmentBuilder;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private string                        $defaultCurrency;
 
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
-
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
-
-
-    /**
-     * Constructor.
-     *
-     * @param ShipmentBuilderInterface      $shipmentBuilder
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param string                        $dataClass
-     * @param string                        $defaultCurrency
-     */
     public function __construct(
         ShipmentBuilderInterface $shipmentBuilder,
         AuthorizationCheckerInterface $authorizationChecker,
-        string $dataClass,
         string $defaultCurrency
     ) {
-        parent::__construct($dataClass);
-
-        $this->shipmentBuilder      = $shipmentBuilder;
+        $this->shipmentBuilder = $shipmentBuilder;
         $this->authorizationChecker = $authorizationChecker;
-        $this->defaultCurrency      = $defaultCurrency;
+        $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('shippedAt', Type\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.shipped_at',
+                'label'    => t('shipment.field.shipped_at', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('description', Type\TextareaType::class, [
-                'label'    => 'ekyna_commerce.field.description',
+                'label'    => t('field.description', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                 $form = $event->getForm();
-                /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+                /** @var ShipmentInterface $shipment */
                 $shipment = $event->getData();
 
                 if (null === $sale = $shipment->getSale()) {
-                    throw new RuntimeException("The shipment must be associated with a sale at this point.");
+                    throw new RuntimeException('The shipment must be associated with a sale at this point.');
                 }
                 if (!$sale instanceof OrderInterface) {
-                    throw new RuntimeException("Not yet supported.");
+                    throw new RuntimeException('Not yet supported.');
                 }
 
                 $privileged = $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
-                $locked     = !$privileged && ShipmentStates::isStockableState($shipment, false);
+                $locked = !$privileged && ShipmentStates::isStockableState($shipment, false);
 
                 if (!$locked) {
                     $this->shipmentBuilder->build($shipment);
                 }
 
+                $stateChoices = BShipStates::getFormChoices($shipment->isReturn(), !($locked || $privileged));
+
                 $form
                     ->add('state', Type\ChoiceType::class, [
-                        'label'    => 'ekyna_core.field.status',
-                        'choices'  => BShipStates::getFormChoices($shipment->isReturn(), !($locked || $privileged)),
-                        'disabled' => $locked,
+                        'label'                     => t('field.status', [], 'EkynaUi'),
+                        'choices'                   => $stateChoices,
+                        'choice_translation_domain' => BShipStates::getTranslationDomain(),
+                        'disabled'                  => $locked,
                     ])
                     ->add('weight', Type\NumberType::class, [
-                        'label'    => 'ekyna_core.field.weight',
-                        'scale'    => 3,
+                        'label'    => t('field.weight', [], 'EkynaUi'),
+                        'decimal'    => true,
+                        'scale'      => 3,
                         'required' => false,
                         'disabled' => $locked,
                         'attr'     => [
-                            'placeholder' => 'ekyna_core.field.weight',
+                            'placeholder' => t('field.weight', [], 'EkynaUi'),
                             'input_group' => ['append' => 'kg'],
                             'min'         => 0,
                         ],
                     ])
-                    ->add('valorization', MoneyType::class, [
-                        'label'    => 'ekyna_commerce.shipment.field.valorization',
+                    ->add('valorization', Type\MoneyType::class, [
+                        'label'    => t('shipment.field.valorization', [], 'EkynaCommerce'),
+                        'decimal'  => true,
                         'currency' => $this->defaultCurrency,
                         'required' => false,
                         'disabled' => $locked,
                         'attr'     => [
-                            'placeholder' => 'ekyna_commerce.shipment.field.valorization',
+                            'placeholder' => t('shipment.field.valorization', [], 'EkynaCommerce'),
                         ],
                     ])
                     ->add('method', ShipmentMethodPickType::class, [
@@ -129,7 +112,7 @@ class ShipmentType extends ResourceFormType
                         'disabled'  => $locked,
                     ])
                     ->add('trackingNumber', Type\TextType::class, [
-                        'label'    => 'ekyna_commerce.shipment.field.tracking_number',
+                        'label'    => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                         'required' => false,
                         'disabled' => !empty($shipment->getTrackingNumber()),
                     ])
@@ -139,7 +122,7 @@ class ShipmentType extends ResourceFormType
                         'disabled'   => $locked,
                     ])
                     ->add('parcels', CollectionType::class, [
-                        'label'        => 'ekyna_commerce.shipment.field.parcels',
+                        'label'        => t('shipment.field.parcels', [], 'EkynaCommerce'),
                         'entry_type'   => $options['parcel_type'],
                         'allow_add'    => true,
                         'allow_delete' => true,
@@ -148,7 +131,7 @@ class ShipmentType extends ResourceFormType
                     ])
                     // TODO Test post_submit event
                     ->add('receiverAddress', ShipmentAddressType::class, [
-                        'label'    => 'ekyna_commerce.shipment.field.receiver_address',
+                        'label'    => t('shipment.field.receiver_address', [], 'EkynaCommerce'),
                         'required' => false,
                         'disabled' => $locked,
                         'attr'     => [
@@ -156,7 +139,7 @@ class ShipmentType extends ResourceFormType
                         ],
                     ])
                     ->add('senderAddress', ShipmentAddressType::class, [
-                        'label'    => 'ekyna_commerce.shipment.field.sender_address',
+                        'label'    => t('shipment.field.sender_address', [], 'EkynaCommerce'),
                         'required' => false,
                         'disabled' => $locked,
                         'attr'     => [
@@ -172,9 +155,10 @@ class ShipmentType extends ResourceFormType
 
                 if (!$sale->isSample()) {
                     $form->add('autoInvoice', Type\CheckboxType::class, [
-                        'label'    => $shipment->isReturn()
-                            ? 'ekyna_commerce.shipment.field.auto_credit'
-                            : 'ekyna_commerce.shipment.field.auto_invoice',
+                        'label'    => t(
+                            'shipment.field.' . ($shipment->isReturn() ? 'auto_credit' : 'auto_invoice'),
+                            [], 'EkynaCommerce'
+                        ),
                         'disabled' => $locked || null !== $shipment->getInvoice(),
                         'required' => false,
                         'attr'     => [
@@ -185,17 +169,14 @@ class ShipmentType extends ResourceFormType
             });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+        /** @var ShipmentInterface $shipment */
         $shipment = $form->getData();
 
         // For items layout
         $view->vars['return_mode'] = $shipment->isReturn();
-        $view->vars['privileged']  = ShipmentStates::isStockableState($shipment, false)
+        $view->vars['privileged'] = ShipmentStates::isStockableState($shipment, false)
             && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
         FormUtil::addClass($view, 'shipment');
@@ -206,10 +187,7 @@ class ShipmentType extends ResourceFormType
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Extension;
 
 use Ekyna\Bundle\TableBundle\Extension\Type\Column\PriceType;
@@ -13,35 +15,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PriceTypeExtension extends AbstractColumnTypeExtension
 {
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
+    private string $defaultCurrency;
 
-
-    /**
-     * Constructor.
-     *
-     * @param string $defaultCurrency
-     */
     public function __construct(string $defaultCurrency)
     {
         $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('currency', $this->defaultCurrency);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getExtendedType()
+    public static function getExtendedTypes(): array
     {
-        return PriceType::class;
+        return [PriceType::class];
     }
 }

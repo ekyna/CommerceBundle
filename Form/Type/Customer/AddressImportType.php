@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\AddressImportLabel;
-use Ekyna\Bundle\CoreBundle\Form\Type\KeyValueCollectionType;
+use Ekyna\Bundle\UiBundle\Form\Type\KeyValueCollectionType;
 use Ekyna\Component\Commerce\Customer\Import\AddressImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -13,6 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotNull;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class AddressImportType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Customer
@@ -20,14 +24,11 @@ use Symfony\Component\Validator\Constraints\NotNull;
  */
 class AddressImportType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('file', Type\FileType::class, [
-                'label'       => 'ekyna_core.field.file',
+                'label'       => t('field.file', [], 'EkynaUi'),
                 'mapped'      => false,
                 'constraints' => [
                     new NotNull(),
@@ -43,7 +44,7 @@ class AddressImportType extends AbstractType
             ])
             ->add('columns', KeyValueCollectionType::class, [
                 'key_options'  => [
-                    'choice_label' => function ($choice, $key, $value) {
+                    'choice_label' => function ($choice, $key) {
                         return AddressImportLabel::getLabel($key);
                     },
                 ],
@@ -51,28 +52,25 @@ class AddressImportType extends AbstractType
                 'allowed_keys' => AddressImport::getColumnKeys(),
             ])
             ->add('from', Type\IntegerType::class, [
-                'label'    => 'ekyna_commerce.customer_address.field.import_from',
+                'label'    => t('customer_address.field.import_from', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('to', Type\IntegerType::class, [
-                'label'    => 'ekyna_commerce.customer_address.field.import_to',
+                'label'    => t('customer_address.field.import_to', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('separator', Type\TextType::class, [
-                'label' => 'ekyna_core.field.separator',
+                'label' => t('field.separator', [], 'EkynaUi'),
             ])
             ->add('enclosure', Type\TextType::class, [
-                'label' => 'ekyna_core.field.separator',
+                'label' => t('field.separator', [], 'EkynaUi'),
             ])
             ->add('defaultCountry', CountryChoiceType::class, [
-                'label' => 'ekyna_commerce.customer_address.field.default_country',
+                'label' => t('customer_address.field.default_country', [], 'EkynaCommerce'),
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => AddressImport::class,

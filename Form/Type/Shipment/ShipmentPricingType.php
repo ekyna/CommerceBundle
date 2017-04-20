@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentPricingType
@@ -14,47 +18,33 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentPricingType extends Form\AbstractType
 {
-    /**
-     * @var string
-     */
-    private $zoneClass;
-
-    /**
-     * @var string
-     */
-    private $methodClass;
+    private string $zoneClass;
+    private string $methodClass;
 
 
-    /**
-     * Constructor.
-     *
-     * @param string $zoneClass
-     * @param string $methodClass
-     */
-    public function __construct($zoneClass, $methodClass)
+    public function __construct(string $zoneClass, string $methodClass)
     {
         $this->zoneClass = $zoneClass;
         $this->methodClass = $methodClass;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(Form\FormBuilderInterface $builder, array $options)
+    public function buildForm(Form\FormBuilderInterface $builder, array $options): void
     {
+        $class = $options['filter_by'] === 'zone' ? $this->zoneClass : $this->methodClass;
+
         $builder
             ->add('filter', EntityType::class, [
-                'label'    => false,
-                'class'    => $this->{$options['filter_by'] . 'Class'},
-                'mapped'   => false,
-                'select2'  => false,
-                'attr'     => [
+                'label'   => false,
+                'class'   => $class,
+                'mapped'  => false,
+                'select2' => false,
+                'attr'    => [
                     'data-filter-by' => $options['filter_by'],
                     'class'          => 'commerce-shipment-pricing-filter',
                 ],
             ])
             ->add('prices', ShipmentPricesType::class, [
-                //'label'     => 'ekyna_commerce.shipment_price.label.plural',
+                //'label'     => t('shipment_price.label.plural', [], 'EkynaCommerce'),
                 'label'     => false,
                 'required'  => false,
                 'filter_by' => $options['filter_by'],
@@ -64,22 +54,16 @@ class ShipmentPricingType extends Form\AbstractType
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(Form\FormView $view, Form\FormInterface $form, array $options)
+    public function finishView(Form\FormView $view, Form\FormInterface $form, array $options): void
     {
         FormUtil::addClass($view, 'commerce-shipment-pricing');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'        => 'ekyna_commerce.shipment_price.label.plural',
+                'label'        => t('shipment_price.label.plural', [], 'EkynaCommerce'),
                 'inherit_data' => true,
                 'attr'         => [
                     'class' => 'commerce-shipment-pricing',
@@ -89,11 +73,7 @@ class ShipmentPricingType extends Form\AbstractType
             ->setAllowedValues('filter_by', ['zone', 'method']);
     }
 
-
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_shipment_pricing';
     }

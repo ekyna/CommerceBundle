@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
@@ -15,11 +15,12 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BNotifications;
-use Ekyna\Bundle\CoreBundle\Form\Type\ColorPickerType;
-use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
-use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
+use Ekyna\Bundle\UiBundle\Form\Type\ColorPickerType;
+use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\UiBundle\Form\Type\TinymceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CNotifications;
 use Ekyna\Component\Commerce\Features;
@@ -30,57 +31,45 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class CustomerType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Customer
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CustomerType extends ResourceFormType
+class CustomerType extends AbstractResourceType
 {
-    /**
-     * @var Features
-     */
-    private $features;
+    private Features $features;
 
 
-    /**
-     * CustomerType constructor.
-     *
-     * @param Features $features
-     * @param string   $customerClass
-     */
-    public function __construct(Features $features, string $customerClass)
+    public function __construct(Features $features)
     {
-        parent::__construct($customerClass);
-
         $this->features = $features;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('parent', CustomerSearchType::class, [
-                'label'    => 'ekyna_commerce.customer.field.parent',
+                'label'    => t('customer.field.parent', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('user', UserSearchType::class, [
                 'required' => false,
             ])
             ->add('inCharge', UserChoiceType::class, [
-                'label'    => 'ekyna_commerce.customer.field.in_charge',
+                'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('email', Type\EmailType::class, [
-                'label' => 'ekyna_core.field.email',
+                'label' => t('field.email', [], 'EkynaUi'),
                 'attr'  => [
                     'autocomplete' => 'email',
                 ],
             ])
             ->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
+                'label'    => t('field.company', [], 'EkynaUi'),
                 'required' => false,
                 'attr'     => [
                     'maxlength'    => 35,
@@ -89,29 +78,29 @@ class CustomerType extends ResourceFormType
             ])
             ->add('identity', IdentityType::class)
             ->add('phone', PhoneNumberType::class, [
-                'label'       => 'ekyna_core.field.phone',
+                'label'       => t('field.phone', [], 'EkynaUi'),
                 'required'    => false,
                 'number_attr' => [
                     'autocomplete' => 'tel-national',
                 ],
             ])
             ->add('mobile', PhoneNumberType::class, [
-                'label'       => 'ekyna_core.field.mobile',
+                'label'       => t('field.mobile', [], 'EkynaUi'),
                 'required'    => false,
                 'type'        => PhoneType::MOBILE,
                 'number_attr' => [
                     'autocomplete' => 'tel-national',
                 ],
             ])
-            ->add('state', Type\ChoiceType::class, [
-                'label'   => 'ekyna_core.field.status',
-                'choices' => CustomerStates::getChoices(),
+            ->add('state', ConstantChoiceType::class, [
+                'label'   => t('field.status', [], 'EkynaUi'),
+                'class'   => CustomerStates::class,
                 'select2' => false,
             ])
             ->add('currency', CurrencyChoiceType::class)
             ->add('locale', LocaleChoiceType::class)
             ->add('notifications', ConstantChoiceType::class, [
-                'label'    => 'ekyna_commerce.notification.label.plural',
+                'label'    => t('notification.label.plural', [], 'EkynaCommerce'),
                 'class'    => BNotifications::class,
                 'filter'   => [CNotifications::MANUAL],
                 'multiple' => true,
@@ -119,13 +108,10 @@ class CustomerType extends ResourceFormType
                 'required' => false,
             ])
             ->add('description', Type\TextareaType::class, [
-                'label'    => 'ekyna_commerce.field.description',
+                'label'    => t('field.description', [], 'EkynaCommerce'),
                 'required' => false,
             ])
-            ->add('tags', TagChoiceType::class, [
-                'required' => false,
-                'multiple' => true,
-            ]);
+            ->add('tags', TagChoiceType::class);
 
         if ($this->features->isEnabled(Features::CUSTOMER_GRAPHIC)) {
             $builder
@@ -133,20 +119,20 @@ class CustomerType extends ResourceFormType
                     'required' => false,
                 ])
                 ->add('brandColor', ColorPickerType::class, [
-                    'label'    => 'ekyna_core.field.color',
+                    'label'    => t('field.color', [], 'EkynaUi'),
                     'required' => false,
                 ])
                 ->add('brandUrl', Type\UrlType::class, [
-                    'label'    => 'ekyna_core.field.url',
+                    'label'    => t('field.url', [], 'EkynaUi'),
                     'required' => false,
                 ])
                 ->add('documentFooter', TinymceType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.document_footer',
+                    'label'    => t('sale.field.document_footer', [], 'EkynaCommerce'),
                     'theme'    => 'simple',
                     'required' => false,
                 ])
                 ->add('documentTypes', ConstantChoiceType::class, [
-                    'label'    => 'ekyna_commerce.customer.field.document_types',
+                    'label'    => t('customer.field.document_types', [], 'EkynaCommerce'),
                     'class'    => DocumentTypes::class,
                     'multiple' => true,
                     'required' => false,
@@ -155,19 +141,18 @@ class CustomerType extends ResourceFormType
 
         if ($this->features->isEnabled(Features::BIRTHDAY)) {
             $builder->add('birthday', Type\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.birthday',
+                'label'    => t('field.birthday', [], 'EkynaUi'),
                 'required' => false,
-                'format'   => 'dd/MM/yyyy', // TODO localized format
                 'attr'     => [
                     'autocomplete' => 'bday',
                 ],
             ]);
         }
 
-        $formModifier = function (FormInterface $form, CustomerInterface $customer, $hasParent) {
+        $formModifier = function (FormInterface $form, CustomerInterface $customer, $hasParent): void {
             $form
                 ->add('companyNumber', Type\TextType::class, [
-                    'label'    => 'ekyna_commerce.customer.field.company_number',
+                    'label'    => t('customer.field.company_number', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $hasParent,
                 ])
@@ -179,7 +164,7 @@ class CustomerType extends ResourceFormType
                     'disabled' => $hasParent,
                 ])
                 ->add('vatValid', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.pricing.field.vat_valid',
+                    'label'    => t('pricing.field.vat_valid', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $hasParent,
                     'attr'     => [
@@ -190,18 +175,18 @@ class CustomerType extends ResourceFormType
                     'disabled' => $hasParent,
                 ])
                 ->add('defaultPaymentMethod', PaymentMethodChoiceType::class, [
-                    'label'       => 'ekyna_commerce.customer.field.default_payment_method',
+                    'label'       => t('customer.field.default_payment_method', [], 'EkynaCommerce'),
                     'required'    => false,
                     'public'      => false,
                     'credit'      => false,
                     'outstanding' => false,
                     'disabled'    => $hasParent,
                     'attr'        => [
-                        'help_text' => 'ekyna_commerce.customer.help.default_payment_method',
+                        'help_text' => t('customer.help.default_payment_method', [], 'EkynaCommerce'),
                     ],
                 ])
                 ->add('paymentMethods', PaymentMethodChoiceType::class, [
-                    'label'       => 'ekyna_commerce.customer.field.payment_methods',
+                    'label'       => t('customer.field.payment_methods', [], 'EkynaCommerce'),
                     'required'    => false,
                     'multiple'    => true,
                     'public'      => false,
@@ -209,26 +194,27 @@ class CustomerType extends ResourceFormType
                     'outstanding' => false,
                     'disabled'    => $hasParent,
                     'attr'        => [
-                        'help_text' => 'ekyna_commerce.customer.help.payment_methods',
+                        'help_text' => t('customer.help.payment_methods', [], 'EkynaCommerce'),
                     ],
                 ])
-                ->add('outstandingLimit', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
-                    'quote'    => $customer->getCurrency(),
+                ->add('outstandingLimit', Type\MoneyType::class, [
+                    'label'    => t('sale.field.outstanding_limit', [], 'EkynaCommerce'),
+                    'decimal'  => true,
+                    'currency' => $customer->getCurrency(),
                     'disabled' => $hasParent,
                 ])
                 ->add('outstandingOverflow', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.customer.field.outstanding_overflow',
+                    'label'    => t('customer.field.outstanding_overflow', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $hasParent,
                     'attr'     => [
                         'align_with_widget' => true,
-                        'help_text'         => 'ekyna_commerce.customer.help.outstanding_overflow',
+                        'help_text'         => t('customer.help.outstanding_overflow', [], 'EkynaCommerce'),
                     ],
                 ]);
         };
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier): void {
             /** @var CustomerInterface $customer */
             $customer = $event->getData();
 
@@ -237,7 +223,7 @@ class CustomerType extends ResourceFormType
 
         $builder
             ->get('parent')
-            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($formModifier) {
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($formModifier): void {
                 $customer = $event->getForm()->getParent()->getData();
                 /** @var CustomerInterface $customer */
                 $parent = $event->getForm()->getData();

@@ -1,51 +1,90 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Install;
 
+use Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod;
+use Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod;
 use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BNotifyTypes;
+use Ekyna\Bundle\CommerceBundle\Model\NotifyModelInterface;
 use Ekyna\Bundle\InstallBundle\Install\AbstractInstaller;
-use Ekyna\Bundle\InstallBundle\Install\OrderedInstallerInterface;
 use Ekyna\Bundle\MediaBundle\Model\FolderInterface;
+use Ekyna\Bundle\MediaBundle\Model\MediaInterface;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
+use Ekyna\Bundle\MediaBundle\Repository\FolderRepositoryInterface;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
 use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CNotifyTypes;
 use Ekyna\Component\Commerce\Install\Installer;
+use Ekyna\Component\Commerce\Payment\Model\PaymentMethodInterface;
+use Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface;
+use Ekyna\Component\Commerce\Pricing\Repository\TaxGroupRepositoryInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
+use Ekyna\Component\Resource\Factory\FactoryFactoryInterface;
+use Ekyna\Component\Resource\Manager\ManagerFactoryInterface;
+use Ekyna\Component\Resource\Repository\RepositoryFactoryInterface;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CommerceInstaller
  * @package Ekyna\Bundle\CommerceBundle\Install
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInterface, ContainerAwareInterface
+class CommerceInstaller extends AbstractInstaller
 {
-    use ContainerAwareTrait;
+    private RepositoryFactoryInterface $repositoryFactory;
+    private FactoryFactoryInterface    $factoryFactory;
+    private ManagerFactoryInterface    $managerFactory;
+    private TranslatorInterface        $translator;
+    private string                     $defaultCountry;
+    private string                     $defaultCurrency;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function install(Command $command, InputInterface $input, OutputInterface $output)
+
+    public function __construct(
+        RepositoryFactoryInterface $repositoryFactory,
+        FactoryFactoryInterface $factoryFactory,
+        ManagerFactoryInterface $managerFactory,
+        TranslatorInterface $translator,
+        string $defaultCountry,
+        string $defaultCurrency
+    ) {
+        $this->repositoryFactory = $repositoryFactory;
+        $this->factoryFactory = $factoryFactory;
+        $this->managerFactory = $managerFactory;
+        $this->translator = $translator;
+        $this->defaultCountry = $defaultCountry;
+        $this->defaultCurrency = $defaultCurrency;
+    }
+
+    public function install(Command $command, InputInterface $input, OutputInterface $output): void
     {
-        $classes = $this->container->getParameter('ekyna_resource.interfaces');
-
-        $installer = new Installer($this->container->get('doctrine'), $classes, $output);
-
-        $country  = $this->container->getParameter('ekyna_commerce.default.country');
-        $currency = $this->container->getParameter('ekyna_commerce.default.currency');
+        $installer = new Installer(
+            $this->repositoryFactory,
+            $this->factoryFactory,
+            $this->managerFactory,
+            function ($name, $result) use ($output) {
+                $output->writeln(sprintf(
+                    '- <comment>%s</comment> %s %s.',
+                    $name,
+                    str_pad('.', 44 - mb_strlen($name), '.', STR_PAD_LEFT),
+                    $result
+                ));
+            }
+        );
 
         $output->writeln('<info>[Commerce] Installing countries:</info>');
-        $installer->installCountries($country);
+        $installer->installCountries($this->defaultCountry);
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing currencies:</info>');
-        $installer->installCurrencies($currency);
+        $installer->installCurrencies($this->defaultCurrency);
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing taxes:</info>');
@@ -90,34 +129,36 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      *
      * @return FolderInterface
      */
-    private function createImageFolder()
+    private function createImageFolder(): FolderInterface
     {
-        $em               = $this->container->get('doctrine.orm.default_entity_manager');
-        $folderRepository = $this->container->get('ekyna_media.folder.repository');
+        /** @var FolderRepositoryInterface $repository */
+        $repository = $this->repositoryFactory->getRepository(FolderInterface::class);
 
-        if (null === $rootFolder = $folderRepository->findRoot()) {
-            throw new \RuntimeException('Can\'t find root folder. Please run MediaBundle installer first.');
+        if (null === $root = $repository->findRoot()) {
+            throw new Exception('Can\'t find root folder. Please run MediaBundle installer first.');
         }
 
         $name = 'Payment method';
 
-        $paymentFolder = $folderRepository->findOneBy([
+        $folder = $repository->findOneBy([
             'name'   => $name,
-            'parent' => $rootFolder,
+            'parent' => $root,
         ]);
-        if (null !== $paymentFolder) {
-            return $paymentFolder;
+        if (null !== $folder) {
+            return $folder;
         }
 
-        $paymentFolder = $folderRepository->createNew();
-        $paymentFolder
+        /** @var FolderInterface $folder */
+        $folder = $this->factoryFactory->getFactory(FolderInterface::class)->create();
+        $folder
             ->setName($name)
-            ->setParent($rootFolder);
+            ->setParent($root);
 
-        $em->persist($paymentFolder);
-        $em->flush();
+        $manager = $this->managerFactory->getManager(FolderInterface::class);
+        $manager->persist($folder);
+        $manager->flush();
 
-        return $paymentFolder;
+        return $folder;
     }
 
     /**
@@ -125,20 +166,32 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      *
      * @param OutputInterface $output
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    private function installPaymentMethods(OutputInterface $output)
+    private function installPaymentMethods(OutputInterface $output): void
     {
-        $em = $this->container->get('doctrine.orm.default_entity_manager');
+        $manager = $this->managerFactory->getManager(PaymentMethodInterface::class);
 
-        //$registry = $this->container->get('payum');
-        $methodRepository = $this->container->get('ekyna_commerce.payment_method.repository');
-        $mediaRepository  = $this->container->get('ekyna_media.media.repository');
+        $methodRepository = $this->repositoryFactory->getRepository(PaymentMethodInterface::class);
+        $methodFactory = $this->factoryFactory->getFactory(PaymentMethodInterface::class);
+        $mediaFactory = $this->factoryFactory->getFactory(MediaInterface::class);
 
-        $folder   = $this->createImageFolder();
-        $imageDir = realpath(__DIR__ . '/../Resources/install/payment-method');
+        $folder = $this->createImageFolder();
+        $directory = realpath(__DIR__ . '/../Resources/install/payment-method');
 
         $methods = [
+            'Virement'               => [
+                'factory'     => Offline::FACTORY_NAME,
+                'image'       => 'virement.png',
+                'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
+                'enabled'     => true,
+            ],
+            'Chèque'                 => [
+                'factory'     => Offline::FACTORY_NAME,
+                'image'       => 'cheque.png',
+                'description' => '<p>Veuillez adresser votre chèque à l\'ordre de ...</p>',
+                'enabled'     => true,
+            ],
             'Solde de compte client' => [
                 'factory'     => Credit::FACTORY_NAME,
                 'image'       => 'virement.png',
@@ -159,15 +212,17 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             'monetico'  => 'Ekyna\Bundle\PayumMoneticoBundle\EkynaPayumMoneticoBundle',
         ];
         foreach ($ccGateways as $factory => $class) {
-            if (class_exists($class)) {
-                $methods['Carte bancaire'] = [
-                    'factory'     => $factory,
-                    'image'       => 'credit-card.png',
-                    'description' => '<p>Réglez avec votre carte bancaire.</p>',
-                    'enabled'     => true,
-                ];
-                break;
+            if (!class_exists($class)) {
+                continue;
             }
+
+            $methods['Carte bancaire'] = [
+                'factory'     => $factory,
+                'image'       => 'credit-card.png',
+                'description' => '<p>Réglez avec votre carte bancaire.</p>',
+                'enabled'     => true,
+            ];
+            break;
         }
 
         $paypalFactory = null;
@@ -185,21 +240,6 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             ];
         }
 
-        $methods = array_merge($methods, [
-            'Virement' => [
-                'factory'     => Offline::FACTORY_NAME,
-                'image'       => 'virement.png',
-                'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
-                'enabled'     => true,
-            ],
-            'Chèque'   => [
-                'factory'     => Offline::FACTORY_NAME,
-                'image'       => 'cheque.png',
-                'description' => '<p>Veuillez adresser votre chèque à l\'ordre de ...</p>',
-                'enabled'     => true,
-            ],
-        ]);
-
         $position = 0;
         foreach ($methods as $name => $options) {
             $output->write(sprintf(
@@ -210,30 +250,31 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
             // TODO check that factory method exists
 
-            if (null !== $method = $methodRepository->findOneBy(['name' => $name])) {
+            if ($methodRepository->findOneBy(['name' => $name])) {
                 $output->writeln('already exists.');
                 continue;
             }
 
-            $source = $imageDir . '/' . $options['image'];
+            $source = $directory . '/' . $options['image'];
             if (!file_exists($source)) {
-                throw new \Exception(sprintf('File "%s" does not exists.', $source));
-            }
-            $target = sys_get_temp_dir() . '/' . uniqid() . '.' . pathinfo($options['image'], PATHINFO_EXTENSION);
-            if (!copy($source, $target)) {
-                throw new \Exception(sprintf('Failed to copy "%s" into "%s".', $source, $target));
+                throw new Exception(sprintf('File "%s" does not exists.', $source));
             }
 
-            /** @var \Ekyna\Bundle\MediaBundle\Model\MediaInterface $image */
-            $image = $mediaRepository->createNew();
+            $target = sys_get_temp_dir() . '/' . uniqid() . '.' . pathinfo($options['image'], PATHINFO_EXTENSION);
+            if (!copy($source, $target)) {
+                throw new Exception(sprintf('Failed to copy "%s" into "%s".', $source, $target));
+            }
+
+            /** @var MediaInterface $image */
+            $image = $mediaFactory->create();
             $image
                 ->setFile(new File($target))
                 ->setFolder($folder)
                 ->setTitle($name)
                 ->setType(MediaTypes::IMAGE);
 
-            /** @var \Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod $method */
-            $method = $methodRepository->createNew();
+            /** @var PaymentMethod $method */
+            $method = $methodFactory->create();
             $method
                 ->setMedia($image)
                 ->setName($name)
@@ -244,13 +285,14 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 ->setAvailable(true)
                 ->setPosition($position);
 
-            $em->persist($method);
+            $manager->persist($method);
 
             $output->writeln('created.');
 
             $position++;
         }
-        $em->flush();
+
+        $manager->flush();
     }
 
     /**
@@ -258,21 +300,22 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      *
      * @param OutputInterface $output
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    private function installShipmentMethods(OutputInterface $output)
+    private function installShipmentMethods(OutputInterface $output): void
     {
-        $em = $this->container->get('doctrine.orm.default_entity_manager');
+        $manager = $this->managerFactory->getManager(ShipmentMethodInterface::class);
 
-        $methodRepository = $this->container->get('ekyna_commerce.shipment_method.repository');
-        $mediaRepository  = $this->container->get('ekyna_media.media.repository');
+        $methodRepository = $this->repositoryFactory->getRepository(ShipmentMethodInterface::class);
+        $methodFactory = $this->factoryFactory->getFactory(ShipmentMethodInterface::class);
+        $mediaFactory = $this->factoryFactory->getFactory(MediaInterface::class);
 
-        $defaultTaxGroup = $this->container
-            ->get('ekyna_commerce.tax_group.repository')
-            ->findDefault();
+        /** @var TaxGroupRepositoryInterface $taxGroupRepository */
+        $taxGroupRepository = $this->repositoryFactory->getRepository(TaxGroupInterface::class);
+        $defaultTaxGroup = $taxGroupRepository->findDefault();
 
-        $folder   = $this->createImageFolder();
-        $imageDir = realpath(__DIR__ . '/../Resources/install/shipment-method');
+        $folder = $this->createImageFolder();
+        $directory = realpath(__DIR__ . '/../Resources/install/shipment-method');
 
         $methods = [
             'Retrait en magasin' => [
@@ -291,34 +334,34 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 str_pad('.', 44 - mb_strlen($name), '.', STR_PAD_LEFT)
             ));
 
-            if (null !== $method = $methodRepository->findOneBy(['name' => $name])) {
+            if ($methodRepository->findOneBy(['name' => $name])) {
                 $output->writeln('already exists.');
                 continue;
             }
 
-            $source = $imageDir . '/' . $options['image'];
+            $source = $directory . '/' . $options['image'];
             if (!file_exists($source)) {
-                throw new \Exception(sprintf('File "%s" does not exists.', $source));
+                throw new Exception(sprintf('File "%s" does not exists.', $source));
             }
             $target = sys_get_temp_dir() . '/' . $options['image'];
             if (!copy($source, $target)) {
-                throw new \Exception(sprintf('Failed to copy "%s" into "%s".', $source, $target));
+                throw new Exception(sprintf('Failed to copy "%s" into "%s".', $source, $target));
             }
 
-            /** @var \Ekyna\Bundle\MediaBundle\Model\MediaInterface $image */
-            $image = $mediaRepository->createNew();
+            /** @var MediaInterface $image */
+            $image = $mediaFactory->create();
             $image
                 ->setFile(new File($target))
                 ->setFolder($folder)
                 ->setTitle($name)
                 ->setType(MediaTypes::IMAGE);
 
-            /** @var \Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod $method */
-            $method = $methodRepository->createNew();
+            /** @var ShipmentMethod $method */
+            $method = $methodFactory->create();
             $method
+                ->setMedia($image)
                 ->setTaxGroup($defaultTaxGroup)
                 ->setPlatformName($options['platform'])
-                ->setMedia($image)
                 ->setName($name)
                 ->setEnabled($options['enabled'])
                 ->setAvailable(true)
@@ -326,14 +369,14 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 ->setTitle($name)
                 ->setDescription($options['description']);
 
-            $em->persist($method);
+            $manager->persist($method);
 
             $output->writeln('created.');
 
             $position++;
         }
 
-        $em->flush();
+        $manager->flush();
     }
 
     /**
@@ -343,12 +386,12 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      */
     private function installNotificationModels(OutputInterface $output): void
     {
-        $em         = $this->container->get('doctrine.orm.default_entity_manager');
-        $translator = $this->container->get('translator');
-        $repository = $this->container->get('ekyna_commerce.notify_model.repository');
+        $manager = $this->managerFactory->getManager(NotifyModelInterface::class);
+        $repository = $this->repositoryFactory->getRepository(NotifyModelInterface::class);
+        $factory = $this->factoryFactory->getFactory(NotifyModelInterface::class);
 
         foreach (BNotifyTypes::getChoices([CNotifyTypes::MANUAL]) as $label => $type) {
-            $name = $translator->trans($label);
+            $name = $this->translator->trans($label, [], 'EkynaCommerce');
 
             $output->write(sprintf(
                 '- <comment>%s</comment> %s ',
@@ -362,33 +405,22 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 continue;
             }
 
-            /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
-            $model = $repository->createNew();
+            /** @var NotifyModelInterface $model */
+            $model = $factory->create();
             $model
                 ->setType($type)
                 ->setEnabled(false);
 
-            $em->persist($model);
+            $manager->persist($model);
 
             $output->writeln('created.');
         }
 
-        $em->flush();
+        $manager->flush();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getName()
+    public static function getName(): string
     {
         return 'ekyna_commerce';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrder()
-    {
-        return 512;
     }
 }

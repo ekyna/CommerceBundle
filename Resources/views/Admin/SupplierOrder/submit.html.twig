@@ -1,18 +1,18 @@
 {% extends '@EkynaAdmin/Entity/sided.html.twig' %}
 
-{% set supplierOrder = _context[resource_name] %}
+{% set resource = context.resource %}
 
 {% block title %}
-    <h1>{{ (trans_prefix ~ '.header.submit')|trans({'%name%': supplierOrder})|raw }}</h1>
+    <h1>{{ 'supplier_order.header.submit'|trans({'%name%': resource}, 'EkynaCommerce')|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}
-    {{ admin_resource_btn(supplierOrder, 'list') }}
-    {{ admin_resource_btn(supplierOrder, 'new') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\SupplierOrder\\CreateAction') }}
 {% endblock actions %}
 
 {% block main %}
-    {% include '@EkynaCommerce/Admin/SupplierOrder/Show/items.html.twig' %}
+    {% include '@EkynaCommerce/Admin/SupplierOrder/Show/items.html.twig' with {'supplierOrder': resource} only %}
 
     {{ form_start(form) }}
     <div class="form-body">
@@ -55,7 +55,7 @@
 
 {% block side %}
     {{ parent() }}
-    {% if supplierOrder.supplier is not null %}
-        {% include '@EkynaCommerce/Admin/Supplier/_side.html.twig' with {'supplier': supplierOrder.supplier } %}
+    {% if resource.supplier is not null %}
+        {% include '@EkynaCommerce/Admin/Supplier/_side.html.twig' with {'supplier': resource.supplier } %}
     {% endif %}
 {% endblock %}

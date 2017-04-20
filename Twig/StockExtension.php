@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
@@ -20,10 +22,7 @@ use Twig\TwigTest;
  */
 class StockExtension extends AbstractExtension
 {
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -68,10 +67,7 @@ class StockExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getTests()
+    public function getTests(): array
     {
         $tests = [];
 
@@ -84,10 +80,7 @@ class StockExtension extends AbstractExtension
         return $tests;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(

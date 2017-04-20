@@ -1,76 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Newsletter\Model\AudienceInterface;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class AudienceType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class AudienceType extends ResourceTableType
+class AudienceType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addColumn('name', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.name',
-                'route_name'           => 'ekyna_commerce_audience_admin_show',
-                'route_parameters_map' => [
-                    'audienceId' => 'id',
-                ],
+                'label' => t('field.name', [], 'EkynaUi'),
             ])
             ->addColumn('public', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_commerce.audience.field.public',
-                'route_name'           => 'ekyna_commerce_audience_admin_toggle',
-                'route_parameters'     => ['field' => 'public'],
-                'route_parameters_map' => ['audienceId' => 'id'],
-                'true_class'           => 'label-primary',
-                'false_class'          => 'label-default',
-                'position'             => 20,
+                'label'       => t('audience.field.public', [], 'EkynaCommerce'),
+                'property'    => 'public',
+                'true_class'  => 'label-primary',
+                'false_class' => 'label-default',
+                'position'    => 20,
             ])
             ->addColumn('default', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_core.field.default',
-                'route_name'           => 'ekyna_commerce_audience_admin_toggle',
-                'route_parameters'     => ['field' => 'default'],
-                'route_parameters_map' => ['audienceId' => 'id'],
-                'true_class'           => 'label-primary',
-                'false_class'          => 'label-default',
-                'position'             => 20,
+                'label'       => t('field.default', [], 'EkynaUi'),
+                'property'    => 'default',
+                'true_class'  => 'label-primary',
+                'false_class' => 'label-default',
+                'position'    => 20,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'icon'                 => 'pencil',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_audience_admin_edit',
-                        'route_parameters_map' => [
-                            'audienceId' => 'id',
-                        ],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'icon'                 => 'trash',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_audience_admin_remove',
-                        'route_parameters_map' => [
-                            'audienceId' => 'id',
-                        ],
-                        'permission'           => 'delete',
-                        'disable'              => function (RowInterface $row) {
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    Action\UpdateAction::class,
+                    Action\DeleteAction::class => [
+                        'disable' => function (RowInterface $row) {
                             /** @var AudienceInterface $audience */
-                            $audience = $row->getData();
+                            $audience = $row->getData(null);
 
                             return $audience->isDefault();
                         },

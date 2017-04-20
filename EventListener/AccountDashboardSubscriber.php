@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\UserBundle\Event\DashboardEvent;
@@ -14,6 +16,8 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class AccountDashboardSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
@@ -21,39 +25,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class AccountDashboardSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CustomerProviderInterface
-     */
-    private $customerProvider;
+    private CustomerProviderInterface  $customerProvider;
+    private QuoteRepositoryInterface   $quoteRepository;
+    private OrderRepositoryInterface   $orderRepository;
+    private InvoiceRepositoryInterface $invoiceRepository;
 
-    /**
-     * @var QuoteRepositoryInterface
-     */
-    private $quoteRepository;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * @var InvoiceRepositoryInterface
-     */
-    private $invoiceRepository;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CustomerProviderInterface  $customerProvider
-     * @param QuoteRepositoryInterface   $quoteRepository
-     * @param OrderRepositoryInterface   $orderRepository
-     * @param InvoiceRepositoryInterface $invoiceRepository
-     */
     public function __construct(
-        CustomerProviderInterface $customerProvider,
-        QuoteRepositoryInterface $quoteRepository,
-        OrderRepositoryInterface $orderRepository,
+        CustomerProviderInterface  $customerProvider,
+        QuoteRepositoryInterface   $quoteRepository,
+        OrderRepositoryInterface   $orderRepository,
         InvoiceRepositoryInterface $invoiceRepository
     ) {
         $this->customerProvider = $customerProvider;
@@ -62,166 +42,136 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
         $this->invoiceRepository = $invoiceRepository;
     }
 
-    /**
-     * Account dashboard event handler.
-     *
-     * @param DashboardEvent $event
-     */
-    public function onDashboard(DashboardEvent $event)
+    public function onDashboard(DashboardEvent $event): void
     {
-        if (null === $customer = $this->customerProvider->getCustomer()) {
+        $customer = $this->customerProvider->getCustomer();
+
+        if (!$customer) {
             return;
         }
 
-        // Welcome
-        $widget = new DashboardWidget(
-            '',
-            '@EkynaCommerce/Account/Dashboard/welcome.html.twig',
-            'default'
-        );
+        $this->addWelcomeWidget($event, $customer);
+        $this->addStateWidget($event, $customer);
+        $this->addQuotesWidget($event, $customer);
+        $this->addOrdersWidget($event, $customer);
+        $this->addInvoicesWidget($event, $customer);
+    }
 
-        $widget
+    private function addWelcomeWidget(DashboardEvent $event, CustomerInterface $customer): void
+    {
+        // Welcome
+        $widget = DashboardWidget::create('@EkynaCommerce/Account/Dashboard/welcome.html.twig')
             ->setParameters([
                 'customer' => $customer,
             ])
-            ->setPanel(false)
             ->setPriority(1000);
 
         $event->addWidget($widget);
-
-        // States
-        if ($customer->isBusiness() && $customer->getPaymentTerm()) {
-            $widget = new DashboardWidget(
-                'ekyna_commerce.account.state.title',
-                '@EkynaCommerce/Account/Dashboard/state.html.twig',
-                'default'
-            );
-            $widget
-                ->setParameters([
-                    'customer' => $customer,
-                ])
-                ->setPriority(900);
-
-            $event->addWidget($widget);
-        }
-
-        // Quotes widget
-        if (!empty($quotes = $this->getQuotes($customer))) {
-            $widget = new DashboardWidget(
-                'ekyna_commerce.account.quote.latest',
-                '@EkynaCommerce/Account/Quote/_list.html.twig',
-                'default'
-            );
-            $widget
-                ->setParameters([
-                    'customer' => $customer,
-                    'quotes'   => $quotes,
-                ])
-                ->setPriority(800)
-                ->addButton(new DashboardWidgetButton(
-                    'ekyna_commerce.account.quote.all',
-                    'ekyna_commerce_account_quote_index',
-                    [],
-                    'primary'
-                ));
-
-            $event->addWidget($widget);
-        }
-
-        // Orders widget
-        if (!empty($orders = $this->getOrders($customer))) {
-            $widget = new DashboardWidget(
-                'ekyna_commerce.account.order.latest',
-                '@EkynaCommerce/Account/Order/_list.html.twig',
-                'default'
-            );
-            $widget
-                ->setParameters([
-                    'customer' => $customer,
-                    'orders'   => $orders,
-                ])
-                ->setPriority(700)
-                ->addButton(new DashboardWidgetButton(
-                    'ekyna_commerce.account.order.all',
-                    'ekyna_commerce_account_order_index',
-                    [],
-                    'primary'
-                ));
-
-            $event->addWidget($widget);
-        }
-
-        // Invoices widget
-        if (!$customer->hasParent() && !empty($invoices = $this->getInvoices($customer))) {
-            $widget = new DashboardWidget(
-                'ekyna_commerce.account.invoice.latest',
-                '@EkynaCommerce/Account/Invoice/_list.html.twig',
-                'default'
-            );
-            $widget
-                ->setParameters([
-                    'customer' => $customer,
-                    'invoices' => $invoices,
-                ])
-                ->setPriority(600)
-                ->addButton(new DashboardWidgetButton(
-                    'ekyna_commerce.account.invoice.all',
-                    'ekyna_commerce_account_invoice_index',
-                    [],
-                    'primary'
-                ));
-
-            $event->addWidget($widget);
-        }
     }
 
-    /**
-     * Returns the customer's new, pending or accepted quotes.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return array|\Ekyna\Component\Commerce\Common\Model\SaleInterface[]
-     */
-    private function getQuotes(CustomerInterface $customer)
+    private function addStateWidget(DashboardEvent $event, CustomerInterface $customer): void
+    {
+        if (!$customer->isBusiness() || !$customer->getPaymentTerm()) {
+            return;
+        }
+
+        $widget = DashboardWidget::create('@EkynaCommerce/Account/Dashboard/state.html.twig')
+            ->setTitle(t('account.state.title', [], 'EkynaCommerce'))
+            ->setParameters([
+                'customer' => $customer,
+            ])
+            ->setPriority(900);
+
+        $event->addWidget($widget);
+    }
+
+    private function addQuotesWidget(DashboardEvent $event, CustomerInterface $customer): void
     {
         $states = [QuoteStates::STATE_NEW, QuoteStates::STATE_PENDING, QuoteStates::STATE_ACCEPTED];
 
-        return $this->quoteRepository->findByCustomer($customer, $states);
+        $quotes = $this->quoteRepository->findByCustomer($customer, $states);
+
+        if (empty($quotes)) {
+            return;
+        }
+
+        $widget = DashboardWidget::create('@EkynaCommerce/Account/Quote/_list.html.twig')
+            ->setTitle(t('account.quote.latest', [], 'EkynaCommerce'))
+            ->setParameters([
+                'customer' => $customer,
+                'quotes'   => $quotes,
+            ])
+            ->setPriority(800)
+            ->addButton(new DashboardWidgetButton(
+                t('account.quote.all', [], 'EkynaCommerce'),
+                'ekyna_commerce_account_quote_index',
+                [],
+                'primary'
+            ));
+
+        $event->addWidget($widget);
     }
 
-    /**
-     * Returns the customer's new, pending or accepted orders.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return array|\Ekyna\Component\Commerce\Common\Model\SaleInterface[]
-     */
-    private function getOrders(CustomerInterface $customer)
+    private function addOrdersWidget(DashboardEvent $event, CustomerInterface $customer): void
     {
         $states = [OrderStates::STATE_PENDING, OrderStates::STATE_ACCEPTED];
 
-        return $this->orderRepository->findByCustomer($customer, $states);
+        $orders = $this->orderRepository->findByCustomer($customer, $states);
+
+        if (empty($orders)) {
+            return;
+        }
+
+        $widget = DashboardWidget::create('@EkynaCommerce/Account/Order/_list.html.twig')
+            ->setTitle(t('account.order.latest', [], 'EkynaCommerce'))
+            ->setParameters([
+                'customer' => $customer,
+                'orders'   => $orders,
+            ])
+            ->setPriority(700)
+            ->addButton(new DashboardWidgetButton(
+                t('account.order.all', [], 'EkynaCommerce'),
+                'ekyna_commerce_account_order_index',
+                [],
+                'primary'
+            ));
+
+        $event->addWidget($widget);
     }
 
-    /**
-     * Returns the customer's invoices.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return array|\Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface[]
-     */
-    private function getInvoices(CustomerInterface $customer)
+    private function addInvoicesWidget(DashboardEvent $event, CustomerInterface $customer): void
     {
-        return $this->invoiceRepository->findByCustomer($customer, 10);
+        if ($customer->hasParent()) {
+            return;
+        }
+
+        $invoices = $this->invoiceRepository->findByCustomer($customer, 10);
+
+        if (empty($invoices)) {
+            return;
+        }
+
+        $widget = DashboardWidget::create('@EkynaCommerce/Account/Invoice/_list.html.twig')
+            ->setTitle(t('account.invoice.latest', [], 'EkynaCommerce'))
+            ->setParameters([
+                'customer' => $customer,
+                'invoices' => $invoices,
+            ])
+            ->setPriority(600)
+            ->addButton(new DashboardWidgetButton(
+                t('account.invoice.all', [], 'EkynaCommerce'),
+                'ekyna_commerce_account_invoice_index',
+                [],
+                'primary'
+            ));
+
+        $event->addWidget($widget);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            DashboardEvent::DASHBOARD => ['onDashboard', 0],
+            DashboardEvent::class => ['onDashboard', 0],
         ];
     }
 }

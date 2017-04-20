@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\ResourceBundle\Form\DataTransformer\DecimalToStringTransformer;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Currencies;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function sprintf;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class PriceType
@@ -18,34 +24,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PriceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
+    private string $defaultCurrency;
+    private string $defaultVatMode;
 
-    /**
-     * @var string
-     */
-    private $defaultVatMode;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $defaultCurrency
-     * @param string $defaultVatMode
-     */
     public function __construct(string $defaultCurrency, string $defaultVatMode)
     {
         $this->defaultCurrency = $defaultCurrency;
         $this->defaultVatMode = $defaultVatMode;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->addModelTransformer(
+            new DecimalToStringTransformer(Currencies::getFractionDigits($options['currency']))
+        );
+
         $input = $builder
             ->create('input', Type\TextType::class, [
                 'label' => false,
@@ -59,7 +52,7 @@ class PriceType extends AbstractType
 
         $mode = $builder
             ->create('mode', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.pricing.vat_display_mode.ati',
+                'label'    => t('pricing.vat_display_mode.ati', [], 'EkynaCommerce'),
                 'data'     => 'ati' === $this->defaultVatMode,
                 'required' => false,
                 'attr'     => [
@@ -71,10 +64,7 @@ class PriceType extends AbstractType
         $builder->setAttribute('mode_prototype', $mode);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var FormInterface $input */
         $input = $form->getConfig()->getAttribute('input_prototype');
@@ -85,29 +75,20 @@ class PriceType extends AbstractType
         $view->vars['mode_prototype'] = $mode->setParent($form)->createView($view);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         FormUtil::addClass($view, 'commerce-price-value');
 
         $view->vars['config'] = [
             'tax_group' => sprintf('[name="%s[%s]"]', $view->parent->vars['full_name'], $options['tax_group']),
-            'precision' => Intl::getCurrencyBundle()->getFractionDigits($options['currency']),
+            'precision' => Currencies::getFractionDigits($options['currency']),
             'rates'     => $options['rates'],
         ];
 
-//        //$view->vars['group_selector'] = $options['tax_group_selector'];
-//        $view->vars['group_selector'] = sprintf('[name="%s[%s]"]', $view->parent->vars['full_name'], $options['tax_group_selector']);
-//        $view->vars['group_selector'] = '[name="' . $view->parent->vars['full_name'] . '[' . $options['tax_group_selector'] . ']"]';
-        $view->vars['currency'] = Intl::getCurrencyBundle()->getCurrencySymbol($options['currency']);
+        $view->vars['currency'] = Currencies::getSymbol($options['currency']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
@@ -120,18 +101,12 @@ class PriceType extends AbstractType
             ->setAllowedTypes('rates', 'array');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_price';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return Type\TextType::class;
     }

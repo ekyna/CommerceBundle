@@ -1,19 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Settings;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Setting\ShipmentLabelType;
-use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Bundle\SettingBundle\Form\Type\I18nParameterType;
 use Ekyna\Bundle\SettingBundle\Model\I18nParameter;
 use Ekyna\Bundle\SettingBundle\Schema\AbstractSchema;
 use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaInterface;
 use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaTrait;
 use Ekyna\Bundle\SettingBundle\Schema\SettingsBuilder;
+use Ekyna\Bundle\UiBundle\Form\Type\TinymceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CommerceSettingsSchema
@@ -24,10 +30,7 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
 {
     use LocalizedSchemaTrait;
 
-    /**
-     * @inheritDoc
-     */
-    public function buildSettings(SettingsBuilder $builder)
+    public function buildSettings(SettingsBuilder $builder): void
     {
         $labelDefaults = [
             'size'     => 'A4',
@@ -60,14 +63,11 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
             });
     }
 
-    /**
-     * @inheritDoc
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('invoice_footer', I18nParameterType::class, [
-                'label'        => 'ekyna_commerce.setting.invoice_footer',
+                'label'        => t('setting.invoice_footer', [], 'EkynaCommerce'),
                 'form_type'    => TinymceType::class,
                 'form_options' => [
                     'label'       => false,
@@ -81,7 +81,7 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
                 ],
             ])
             ->add('email_signature', I18nParameterType::class, [
-                'label'        => 'ekyna_commerce.setting.email_signature',
+                'label'        => t('setting.email_signature', [], 'EkynaCommerce'),
                 'form_type'    => TinymceType::class,
                 'form_options' => [
                     'label'       => false,
@@ -95,7 +95,7 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
                 ],
             ])
             ->add('shipment_label', ShipmentLabelType::class, [
-                'label'       => 'ekyna_commerce.setting.shipment_label.label',
+                'label'       => t('setting.shipment_label.label', [], 'EkynaCommerce'),
                 'required'    => false,
                 'constraints' => [
                     new Assert\Valid(),
@@ -103,26 +103,17 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getLabel()
+    public function getLabel(): TranslatableInterface
     {
-        return 'ekyna_commerce.label';
+        return t('label', [], 'EkynaCommerce');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getShowTemplate()
+    public function getShowTemplate(): string
     {
         return '@EkynaCommerce/Admin/Settings/show.html.twig';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFormTemplate()
+    public function getFormTemplate(): string
     {
         return '@EkynaCommerce/Admin/Settings/form.html.twig';
     }

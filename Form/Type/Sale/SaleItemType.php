@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemTypeSubscriber;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -14,40 +16,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class SaleItemType extends ResourceFormType
+class SaleItemType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $subscriber = new SaleItemTypeSubscriber(
-            $options['with_collections'],
-            $options['item_type'],
-            $options['item_adjustment_type'],
-            $options['currency']
-        );
+        $subscriber = new SaleItemTypeSubscriber($options['currency']);
 
         $builder->addEventSubscriber($subscriber);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['with_collections'] = $options['with_collections'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
         $resolver
             ->setDefaults([
+                // TODO Remove useless options
                 'with_collections'     => true,
                 'item_type'            => null,
                 'item_adjustment_type' => null,
@@ -60,10 +49,7 @@ class SaleItemType extends ResourceFormType
             ->setAllowedTypes('item_adjustment_type', 'string');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_sale_item';
     }

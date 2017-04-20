@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\TicketAttachmentNormalizer as BaseNormalizer;
-use Ekyna\Component\Resource\Model\Actions;
+use Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface;
+use Ekyna\Component\Resource\Action\Permission;
 
 /**
  * Class TicketAttachmentNormalizer
@@ -17,16 +20,16 @@ class TicketAttachmentNormalizer extends BaseNormalizer
     /**
      * @inheritDoc
      *
-     * @param \Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface $message
+     * @param TicketAttachmentInterface $message
      */
-    public function normalize($attachment, $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
-        $data = parent::normalize($attachment, $format, $context);
+        $data = parent::normalize($object, $format, $context);
 
         if ($this->contextHasGroup(['Default', 'Ticket', 'TicketMessage', 'TicketAttachment'], $context)) {
             $data = array_replace($data, [
-                'edit'   => $this->isGranted(Actions::EDIT, $attachment),
-                'remove' => $this->isGranted(Actions::DELETE, $attachment),
+                'edit'   => $this->isGranted(Permission::UPDATE, $object),
+                'remove' => $this->isGranted(Permission::DELETE, $object),
             ]);
         }
 

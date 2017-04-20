@@ -1,0 +1,18 @@
+admin_ekyna_commerce_map:
+    path: ""
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\MapController::index
+    methods: [GET]
+
+admin_ekyna_commerce_map_data:
+    path: /data
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\MapController::data
+    methods: [GET]
+    options:
+        expose: true
+
+admin_ekyna_commerce_map_info:
+    path: /info
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\MapController::info
+    methods: [GET]
+    options:
+        expose: true

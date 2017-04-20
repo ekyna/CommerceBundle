@@ -1,0 +1,19 @@
+admin_ekyna_commerce_shipment_platform_action:
+    path: /{platform}/{action}
+    methods: GET|POST
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\ShipmentPlatformController::action
+    requirements:
+        platform: "[a-zA-Z0-9-_]+"
+        action: "[a-zA-Z0-9-_]+"
+
+admin_ekyna_commerce_shipment_platform_export:
+    path: /{platform}/export
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\ShipmentPlatformController::export
+    requirements:
+        platform: "[a-zA-Z0-9-_]+"
+
+admin_ekyna_commerce_shipment_platform_import:
+    path: /{platform}/import
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\ShipmentPlatformController::import
+    requirements:
+        platform: "[a-zA-Z0-9-_]+"

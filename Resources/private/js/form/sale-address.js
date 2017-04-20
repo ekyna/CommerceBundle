@@ -25,7 +25,7 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                     var customerId = $(this).val();
                     if (customerId) {
                         var xhr = $.get(router.generate(
-                            'ekyna_commerce_customer_address_admin_choice_list',
+                            'admin_ekyna_commerce_customer_address_choice_list',
                             {customerId: customerId}
                         ));
                         xhr.done(function (data) {

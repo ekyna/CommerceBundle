@@ -2,19 +2,19 @@
 
 {% block account %}
     {% apply spaceless %}
-        <h3>{{ 'ekyna_commerce.account.invoice.show'|trans({'%number%': invoice.number})|raw }}</h3>
+        <h3>{{ 'account.invoice.show'|trans({'%number%': invoice.number}, 'EkynaCommerce')|raw }}</h3>
         <p>
-            {{ 'ekyna_core.field.created_at'|trans }} <em>{{ invoice.createdAt|localizeddate('short', 'none') }}</em>.
+            {{ 'field.created_at'|trans({}, 'EkynaUi') }} <em>{{ invoice.createdAt|format_datetime('short', 'none') }}</em>.
         </p>
         {{ invoice|payment_method_notice }}
         <hr>
         <table class="table table-condensed table-alt table-striped">
             <thead>
             <tr>
-                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                {#<th>{{ 'ekyna_commerce.field.net_price'|trans }}</th>#}
-                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+                <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                {#<th>{{ 'field.net_price'|trans({}, 'EkynaCommerce') }}</th>#}
+                <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -37,7 +37,7 @@
                     </td>
                     <td>{{ line.reference }}</td>
                     {#<td id="{{ lineId ~ '_netPrice' }}">{{ line.netUnit|currency_quote(invoice.sale) }}</td>#}
-                    <td>{{ line.quantity|localizednumber }}</td>
+                    <td>{{ line.quantity|format_number }}</td>
                 </tr>
                 {% endif %}
             {% endfor %}
@@ -47,12 +47,12 @@
         <p class="text-center">
             <a href="{{ path('ekyna_commerce_account_invoice_download', {'number': invoice.number}) }}"
                class="btn btn-primary" target="_blank">
-                {{- 'ekyna_core.button.download'|trans -}}
+                {{- 'button.download'|trans({}, 'EkynaUi') -}}
             </a>
         </p>
 
         <br><br>
-        <h3>{{ 'ekyna_commerce.account.invoice.title'|trans|raw }}</h3>
+        <h3>{{ 'account.invoice.title'|trans({}, 'EkynaCommerce')|raw }}</h3>
         <hr>
         {% include '@EkynaCommerce/Account/Invoice/_list.html.twig' with {
             'customer': customer,

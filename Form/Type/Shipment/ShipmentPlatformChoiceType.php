@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_combine;
+use function array_map;
+use function Symfony\Component\Translation\t;
+use function ucfirst;
 
 /**
  * Class ShipmentPlatformChoiceType
@@ -14,26 +21,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentPlatformChoiceType extends AbstractType
 {
-    /**
-     * @var RegistryInterface
-     */
-    protected $registry;
+    protected GatewayRegistryInterface $registry;
 
 
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface $registry
-     */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(GatewayRegistryInterface $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $names = $this->registry->getPlatformNames();
 
@@ -42,15 +38,13 @@ class ShipmentPlatformChoiceType extends AbstractType
         }, $names), $names);
 
         $resolver->setDefaults([
-            'label'   => 'ekyna_commerce.field.factory_name',
-            'choices' => $choices,
+            'label'                     => t('field.factory_name', [], 'EkynaCommerce'),
+            'choice_translation_domain' => false,
+            'choices'                   => $choices,
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }

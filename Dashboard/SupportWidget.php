@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
@@ -7,10 +9,12 @@ use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
 use Ekyna\Bundle\CommerceBundle\Table\Type\TicketType;
 use Ekyna\Component\Commerce\Support\Repository\TicketRepositoryInterface;
 use Ekyna\Component\Table\Extension\Core\Source\ArraySource;
-use Ekyna\Component\Table\FactoryInterface;
+use Ekyna\Component\Table\TableFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SupportWidget
@@ -19,43 +23,23 @@ use Twig\Environment;
  */
 class SupportWidget extends AbstractWidgetType
 {
-    /**
-     * @var TicketRepositoryInterface
-     */
-    protected $ticketRepository;
+    public const NAME = 'commerce_support';
 
-    /**
-     * @var FactoryInterface
-     */
-    protected $tableFactory;
+    protected TicketRepositoryInterface $ticketRepository;
+    protected TableFactoryInterface     $tableFactory;
+    protected RequestStack              $requestStack;
 
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-
-    /**
-     * Constructor.
-     *
-     * @param TicketRepositoryInterface $repository
-     * @param FactoryInterface          $tableFactory
-     * @param RequestStack              $requestStack
-     */
     public function __construct(
         TicketRepositoryInterface $repository,
-        FactoryInterface $tableFactory,
-        RequestStack $requestStack
+        TableFactoryInterface     $tableFactory,
+        RequestStack              $requestStack
     ) {
         $this->ticketRepository = $repository;
         $this->tableFactory = $tableFactory;
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function render(WidgetInterface $widget, Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig): string
     {
         $tickets = $this
             ->tableFactory
@@ -76,26 +60,20 @@ class SupportWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'title'    => 'ekyna_commerce.ticket.label.plural',
+            'title'    => t('ticket.label.plural', [], 'EkynaCommerce'),
             'position' => 1000,
             'col_md'   => 12,
             'css_path' => 'bundles/ekynacommerce/css/support.css',
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getName()
+    public static function getName(): string
     {
-        return 'commerce_support';
+        return self::NAME;
     }
 }

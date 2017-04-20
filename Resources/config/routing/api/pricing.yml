@@ -1,4 +1,0 @@
-ekyna_commerce_api_pricing_validate_vat:
-    path: /validate-vat
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\PricingController::validateVatNumber
-    methods: GET

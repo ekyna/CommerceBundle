@@ -1,15 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Provider\AbstractCartProvider;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Cart\Repository\CartRepositoryInterface;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
+use Ekyna\Component\Resource\Factory\ResourceFactoryInterface;
 use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
-use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
+use Symfony\Component\HttpFoundation\RequestStack;
+
+use function intval;
+use function is_null;
 
 /**
  * Class SessionCartProvider
@@ -18,92 +26,72 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class SessionCartProvider extends AbstractCartProvider implements CartProviderInterface
 {
-    const KEY = 'cart_id';
+    public const KEY = 'cart_id';
 
-    /**
-     * @var SessionInterface
-     */
-    protected $session;
-
-    /**
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * @var bool
-     */
-    protected $initialized;
+    protected RequestStack $requestStack;
+    protected string       $key;
+    protected bool         $initialized = false;
 
 
-    /**
-     * Constructor.
-     *
-     * @param CartRepositoryInterface $cartRepository
-     * @param ResourceOperatorInterface $cartOperator
-     * @param CustomerProviderInterface $customerProvider
-     * @param CurrencyProviderInterface $currencyProvider
-     * @param LocaleProviderInterface   $localeProvider
-     * @param SessionInterface $session
-     * @param string $key
-     */
     public function __construct(
+        ResourceFactoryInterface $cartFactory,
         CartRepositoryInterface $cartRepository,
-        ResourceOperatorInterface $cartOperator,
+        ResourceManagerInterface $cartManager,
         CustomerProviderInterface $customerProvider,
         CurrencyProviderInterface $currencyProvider,
         LocaleProviderInterface $localeProvider,
-        SessionInterface $session,
-        $key = self::KEY
+        RequestStack $requestStack,
+        string $key = self::KEY
     ) {
-        parent::__construct($cartRepository, $cartOperator, $customerProvider, $currencyProvider, $localeProvider);
+        parent::__construct(
+            $cartFactory,
+            $cartRepository,
+            $cartManager,
+            $customerProvider,
+            $currencyProvider,
+            $localeProvider
+        );
 
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->key = $key;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function hasCart()
+    public function hasCart(): bool
     {
         $this->initialize();
 
         return parent::hasCart();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getCart($create = false)
+    public function getCart(bool $create = false): ?CartInterface
     {
         $this->initialize();
 
         return parent::getCart($create);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function clearCart()
+    public function clearCart(): CartProviderInterface
     {
         parent::clearCart();
 
         if (is_null($this->cart)) {
-            $this->session->set($this->key, null);
+            try {
+                $this->requestStack->getSession()->set($this->key, null);
+            } catch (SessionNotFoundException $exception) {
+            }
         }
 
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function saveCart()
+    public function saveCart(): CartProviderInterface
     {
         parent::saveCart();
 
-        $this->session->set($this->key, $this->cart->getId());
+        try {
+            $this->requestStack->getSession()->set($this->key, $this->cart->getId());
+        } catch (SessionNotFoundException $exception) {
+        }
 
         return $this;
     }
@@ -111,13 +99,22 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     /**
      * Initializes the cart regarding to the session data or the current customer.
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         if (!$this->initialized) {
             $this->initialized = true;
 
+            try {
+                $session = $this->requestStack->getSession();
+            } catch (SessionNotFoundException $exception) {
+                $this->clearCart();
+
+                return;
+            }
+
             // By session id
-            if (0 < $id = intval($this->session->get($this->key, 0))) {
+            $id = intval($session->get($this->key, 0));
+            if (0 < $id) {
                 if (null !== $cart = $this->cartRepository->findOneById($id)) {
                     $this->setCart($cart);
 
@@ -127,7 +124,7 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
 
             // By customer
             if ($this->customerProvider->hasCustomer()) {
-                /** @var \Ekyna\Component\Commerce\Cart\Model\CartInterface $cart */
+                /** @var CartInterface $cart */
                 $cart = $this->cartRepository->findLatestByCustomer(
                     $this->customerProvider->getCustomer()
                 );

@@ -35,11 +35,11 @@ class KeyGenerator implements GeneratorInterface
      */
     public function setStorage($storage, int $length = null): void
     {
-        throw new LogicException("This generator does not need storage.");
+        throw new LogicException('This generator does not need storage.');
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function generate(object $subject): string
     {

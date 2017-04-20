@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
-use Ekyna\Bundle\ProductBundle\Exception\InvalidArgumentException;
+use Decimal\Decimal;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Repository\CountryRepositoryInterface;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Shipment\Gateway;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentAddressResolverInterface;
@@ -20,21 +23,13 @@ class ShipmentHelper implements
     Shipment\AddressResolverAwareInterface,
     ShipmentAddressResolverInterface
 {
-    use Shipment\WeightCalculatorAwareTrait,
-        Shipment\AddressResolverAwareTrait;
+    use Shipment\AddressResolverAwareTrait;
+    use Shipment\WeightCalculatorAwareTrait;
 
-    /**
-     * @var Gateway\RegistryInterface
-     */
-    private $gatewayRegistry;
+    private Gateway\GatewayRegistryInterface $gatewayRegistry;
 
 
-    /**
-     * Constructor.
-     *
-     * @param Gateway\RegistryInterface $gatewayRegistry
-     */
-    public function __construct(Gateway\RegistryInterface $gatewayRegistry)
+    public function __construct(Gateway\GatewayRegistryInterface $gatewayRegistry)
     {
         $this->gatewayRegistry = $gatewayRegistry;
     }
@@ -42,21 +37,17 @@ class ShipmentHelper implements
     /**
      * Returns the gateway registry.
      *
-     * @return Gateway\RegistryInterface
+     * @return Gateway\GatewayRegistryInterface
      */
-    public function getGatewayRegistry(): Gateway\RegistryInterface
+    public function getGatewayRegistry(): Gateway\GatewayRegistryInterface
     {
         return $this->gatewayRegistry;
     }
 
     /**
      * Returns the shipment's total weight.
-     *
-     * @param Shipment\ShipmentInterface $shipment
-     *
-     * @return float
      */
-    public function getShipmentWeight(Shipment\ShipmentInterface $shipment): float
+    public function getShipmentWeight(Shipment\ShipmentInterface $shipment): Decimal
     {
         if (0 < $shipment->getWeight()) {
             return $shipment->getWeight();
@@ -65,17 +56,11 @@ class ShipmentHelper implements
         return $this->weightCalculator->calculateShipment($shipment);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getCountryRepository(): CountryRepositoryInterface
     {
         return $this->addressResolver->getCountryRepository();
     }
 
-    /**
-     * @inheritdoc
-     */
     public function resolveSenderAddress(
         Shipment\ShipmentInterface $shipment,
         bool $ignoreRelay = false
@@ -83,9 +68,6 @@ class ShipmentHelper implements
         return $this->addressResolver->resolveSenderAddress($shipment, $ignoreRelay);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function resolveReceiverAddress(
         Shipment\ShipmentInterface $shipment,
         bool $ignoreRelay = false
@@ -95,10 +77,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the tracking url.
-     *
-     * @param Shipment\ShipmentDataInterface $shipmentData
-     *
-     * @return string|null
      */
     public function getTrackingUrl(Shipment\ShipmentDataInterface $shipmentData): ?string
     {
@@ -107,10 +85,10 @@ class ShipmentHelper implements
         } elseif ($shipmentData instanceof Shipment\ShipmentParcelInterface) {
             $shipment = $shipmentData->getShipment();
         } else {
-            throw new InvalidArgumentException(
-                "Expected instance of " . Shipment\ShipmentInterface::class .
-                " or " . Shipment\ShipmentParcelInterface::class
-            );
+            throw new UnexpectedTypeException($shipmentData, [
+                Shipment\ShipmentInterface::class,
+                Shipment\ShipmentParcelInterface::class,
+            ]);
         }
 
         $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
@@ -125,10 +103,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the proof url.
-     *
-     * @param Shipment\ShipmentDataInterface $shipmentData
-     *
-     * @return string|string
      */
     public function getProofUrl(Shipment\ShipmentDataInterface $shipmentData): ?string
     {
@@ -137,10 +111,10 @@ class ShipmentHelper implements
         } elseif ($shipmentData instanceof Shipment\ShipmentParcelInterface) {
             $shipment = $shipmentData->getShipment();
         } else {
-            throw new InvalidArgumentException(
-                "Expected instance of " . Shipment\ShipmentInterface::class .
-                " or " . Shipment\ShipmentParcelInterface::class
-            );
+            throw new UnexpectedTypeException($shipmentData, [
+                Shipment\ShipmentInterface::class,
+                Shipment\ShipmentParcelInterface::class,
+            ]);
         }
 
         $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
@@ -155,10 +129,6 @@ class ShipmentHelper implements
 
     /**
      * Returns whether or not the given shipment can be deleted.
-     *
-     * @param Shipment\ShipmentInterface $shipment
-     *
-     * @return bool
      */
     public function isShipmentDeleteable(Shipment\ShipmentInterface $shipment): bool
     {
@@ -167,8 +137,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the platforms global actions.
-     *
-     * @return array
      */
     public function getPlatformsGlobalActions(): array
     {
@@ -177,8 +145,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the platforms mass actions.
-     *
-     * @return array
      */
     public function getPlatformsMassActions(): array
     {
@@ -187,10 +153,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the gateway shipment actions.
-     *
-     * @param Shipment\ShipmentInterface $shipment
-     *
-     * @return array
      */
     public function getGatewayShipmentActions(Shipment\ShipmentInterface $shipment): array
     {
@@ -199,10 +161,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the gateway api actions.
-     *
-     * @param Shipment\ShipmentInterface $shipment
-     *
-     * @return array
      */
     public function getGatewayApiActions(Shipment\ShipmentInterface $shipment): array
     {
@@ -211,10 +169,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the shipment platforms actions.
-     *
-     * @param array $filter
-     *
-     * @return array
      */
     private function getPlatformsActions(array $filter): array
     {
@@ -233,11 +187,6 @@ class ShipmentHelper implements
 
     /**
      * Returns the shipment gateway actions.
-     *
-     * @param Shipment\ShipmentInterface $shipment
-     * @param array                      $filter
-     *
-     * @return array
      */
     private function getGatewayActions(Shipment\ShipmentInterface $shipment, array $filter): array
     {

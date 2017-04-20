@@ -21,7 +21,7 @@ class ShipmentRenderer extends AbstractRenderer
 
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function __construct($subjects, $type)
     {
@@ -41,7 +41,7 @@ class ShipmentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getFilename()
     {
@@ -65,7 +65,7 @@ class ShipmentRenderer extends AbstractRenderer
     protected function getContent(string $format): string
     {
         if ($this->type === DocumentTypes::TYPE_SHIPMENT_FORM) {
-            return $this->templating->render('@EkynaCommerce/Document/shipment_form.html.twig', [
+            return $this->twig->render('@EkynaCommerce/Document/shipment_form.html.twig', [
                 'subjects' => $this->subjects,
             ]);
         }
@@ -74,7 +74,7 @@ class ShipmentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getParameters()
     {
@@ -85,7 +85,7 @@ class ShipmentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function supports($subject)
     {
@@ -93,7 +93,7 @@ class ShipmentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getTemplate()
     {

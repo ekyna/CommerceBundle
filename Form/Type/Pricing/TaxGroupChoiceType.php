@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Component\Commerce\Common\Repository\CountryRepositoryInterface;
 use Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface;
 use Ekyna\Component\Commerce\Pricing\Model\TaxInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_map;
+use function implode;
+use function round;
+use function sprintf;
 
 /**
  * Class TaxGroupChoiceType
@@ -17,53 +23,28 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TaxGroupChoiceType extends AbstractType
 {
-    /**
-     * @var CountryRepositoryInterface
-     */
-    private $countryRepository;
-
-    /**
-     * @var string
-     */
-    private $taxGroupClass;
+    private CountryRepositoryInterface $countryRepository;
 
 
-    /**
-     * Constructor.
-     *
-     * @param CountryRepositoryInterface $countryRepository
-     * @param string                     $taxGroupClass
-     */
-    public function __construct(CountryRepositoryInterface $countryRepository, $taxGroupClass)
+    public function __construct(CountryRepositoryInterface $countryRepository)
     {
         $this->countryRepository = $countryRepository;
-        $this->taxGroupClass = $taxGroupClass;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $defaultCountry = $this->countryRepository->findDefault();
 
-        /**
-         * Choice attributes builder.
-         *
-         * @param TaxGroupInterface $group
-         *
-         * @return array
-         */
-        $choiceAttr = function ($group) use ($defaultCountry) {
+        $choiceAttr = function (TaxGroupInterface $group) use ($defaultCountry): array {
             $taxes = $group->getTaxes()->filter(function (TaxInterface $tax) use ($defaultCountry) {
                 return $tax->getCountry() === $defaultCountry;
             })->toArray();
 
             $taxes = array_map(function (TaxInterface $tax) {
                 return [
-                    'id'   => (int)$tax->getId(),
+                    'id'   => $tax->getId(),
                     'name' => $tax->getName(),
-                    'rate' => (float)$tax->getRate() / 100,
+                    'rate' => $tax->getRate()->div(100)->toFixed(3),
                 ];
             }, $taxes);
 
@@ -72,21 +53,14 @@ class TaxGroupChoiceType extends AbstractType
             ];
         };
 
-        /**
-         * Choice attributes builder.
-         *
-         * @param TaxGroupInterface $group
-         *
-         * @return string
-         */
-        $choiceLabel = function ($group) use ($defaultCountry) {
+        $choiceLabel = function (TaxGroupInterface $group) use ($defaultCountry): string {
             $taxes = $group->getTaxes()->filter(function (TaxInterface $tax) use ($defaultCountry) {
                 return $tax->getCountry() === $defaultCountry;
             })->toArray();
 
             if (!empty($taxes)) {
                 $taxes = array_map(function (TaxInterface $tax) {
-                    return round($tax->getRate(), 2) . '%';
+                    return $tax->getRate()->toFixed(1) . '%';
                 }, $taxes);
 
                 return sprintf('%s (%s)', $group->getName(), implode(', ', $taxes));
@@ -97,14 +71,7 @@ class TaxGroupChoiceType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'label'        => function (Options $options, $value) {
-                    if (false === $value || !empty($value)) {
-                        return $value;
-                    }
-
-                    return 'ekyna_commerce.tax_group.label.' . ($options['multiple'] ? 'plural' : 'singular');
-                },
-                'class'        => $this->taxGroupClass,
+                'resource'     => 'ekyna_commerce.tax_group',
                 'choice_value' => 'id',
                 'choice_attr'  => $choiceAttr,
                 'choice_label' => $choiceLabel,
@@ -112,25 +79,11 @@ class TaxGroupChoiceType extends AbstractType
                 'attr'         => [
                     'class' => 'tax-group-choice',
                 ],
-            ])
-            ->setNormalizer('attr', function (Options $options, $value) {
-                $value = (array)$value;
-
-                if (!isset($value['placeholder'])) {
-                    $value['placeholder'] =
-                        'ekyna_commerce.tax_group.label.' .
-                        ($options['multiple'] ? 'plural' : 'singular');
-                }
-
-                return $value;
-            });
+            ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return ResourceType::class;
+        return ResourceChoiceType::class;
     }
 }

@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
 use Ekyna\Bundle\AdminBundle\Show\View;
 use Ekyna\Bundle\CommerceBundle\Model\Units;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class UnitType
@@ -16,26 +20,27 @@ class UnitType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function build(View $view, $value, array $options = [])
+    public function build(View $view, $value, array $options = []): void
     {
         parent::build($view, $value, $options);
 
         if (Units::isValid($value)) {
             $value = Units::getLabel($value);
         } else {
-            $value = 'ekyna_core.value.undefined';
+            $value = t('value.undefined', [], 'EkynaUi');
         }
 
-        $view->vars['trans_domain'] = null;
-        $view->vars['trans_params'] = [];
         $view->vars['value'] = $value;
+        $view->vars['trans_domain'] = null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getWidgetPrefix()
+    public function getWidgetPrefix(): ?string
     {
         return 'text';
+    }
+
+    public static function getName(): string
+    {
+        return 'commerce_unit';
     }
 }

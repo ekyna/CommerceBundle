@@ -1,0 +1,14 @@
+ekyna_commerce_subject_add_to_cart:
+    path: /add-to-cart/{provider}/{identifier}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Subject\AddToCartController
+    methods: GET|POST
+
+ekyna_commerce_subject_resupply_alert_subscribe:
+    path: /resupply-alert/subscribe/{provider}/{identifier}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Subject\ResupplyAlertController::subscribe
+    methods: GET|POST
+
+ekyna_commerce_subject_resupply_alert_unsubscribe:
+    path: /resupply-alert/unsubscribe/{provider}/{identifier}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Subject\ResupplyAlertController::unsubscribe
+    methods: GET|POST

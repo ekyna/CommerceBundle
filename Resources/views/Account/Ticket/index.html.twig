@@ -2,13 +2,13 @@
 
 {% block account %}
 {% apply spaceless %}
-    <h3>{{ 'ekyna_commerce.account.ticket.title'|trans|raw }}</h3>
+    <h3>{{ 'account.ticket.title'|trans({}, 'EkynaCommerce')|raw }}</h3>
     <hr>
     {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
         {{ support_tickets(customer) }}
     {%- endif %}
     <div class="alert alert-info">
-        <p>{{ 'ekyna_commerce.account.ticket.go_to_sale_details'|trans }}</p>
+        <p>{{ 'account.ticket.go_to_sale_details'|trans({}, 'EkynaCommerce') }}</p>
     </div>
 {% endapply %}
 {% endblock account %}

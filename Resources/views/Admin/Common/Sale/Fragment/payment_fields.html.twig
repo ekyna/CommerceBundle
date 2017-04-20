@@ -1,24 +1,23 @@
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.paymentState|payment_state_badge, 'text', {
-            'label': 'ekyna_commerce.sale.field.payment_state',
+            'label': 'sale.field.payment_state',
+            'label_trans_domain': 'EkynaCommerce',
             'class': 'sale-payment-state',
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.paymentMethod, 'entity', {
-            'label': 'ekyna_commerce.payment_method.label.singular',
+        {{ show_row(sale.paymentMethod, 'resource', {
+            'resource': 'ekyna_commerce.payment_method',
             'id': 'sale_paymentMethod',
             'class': 'sale-payment-method',
-            'route': 'ekyna_commerce_payment_method_admin_show',
-            'route_parameters_map': {'paymentMethodId': 'id'},
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.depositTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.deposit_total',
+        {{ show_row(sale.depositTotal, 'commerce_amount', {
+            'label': 'sale.field.deposit_total',
             'class': 'sale-deposit-total',
             'subject': sale,
             'label_col': 6
@@ -29,21 +28,24 @@
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.currency.code|currency_name|title, 'text', {
-            'label': 'ekyna_commerce.currency.label.singular',
+            'label': 'currency.label.singular',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_currency',
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale|currency_rate, 'text', {
-            'label': 'ekyna_commerce.field.exchange_rate',
+            'label': 'field.exchange_rate',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_exchange_rate',
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale.exchangeDate, 'datetime', {
-            'label': 'ekyna_commerce.field.exchange_date',
+            'label': 'field.exchange_date',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_exchange_date',
             'label_col': 6
         }) }}
@@ -53,15 +55,15 @@
 <div class="row">
     <div class="col-md-4">
         {% if sale is sale_with_invoice -%}
-            {{ show_row(sale.invoiceTotal, 'currency_subject_amount', {
-                'label': 'ekyna_commerce.sale.field.invoice_total',
+            {{ show_row(sale.invoiceTotal, 'commerce_amount', {
+                'label': 'sale.field.invoice_total',
                 'class': 'sale-invoice-total',
                 'subject': sale,
                 'label_col': 6
             }) }}
         {%- else -%}
-            {{ show_row(sale.grandTotal, 'currency_subject_amount', {
-                'label': 'ekyna_commerce.sale.field.ati_total',
+            {{ show_row(sale.grandTotal, 'commerce_amount', {
+                'label': 'sale.field.ati_total',
                 'class': 'sale-grand-total',
                 'subject': sale,
                 'label_col': 6
@@ -69,16 +71,16 @@
         {%- endif %}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.paidTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.paid_total',
+        {{ show_row(sale.paidTotal, 'commerce_amount', {
+            'label': 'sale.field.paid_total',
             'class': 'sale-paid-total',
             'subject': sale,
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.refundedTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.refunded_total',
+        {{ show_row(sale.refundedTotal, 'commerce_amount', {
+            'label': 'sale.field.refunded_total',
             'class': 'sale-paid-total',
             'subject': sale,
             'label_col': 6
@@ -87,8 +89,8 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.outstandingAccepted, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.outstanding_accepted',
+        {{ show_row(sale.outstandingAccepted, 'commerce_amount', {
+            'label': 'sale.field.outstanding_accepted',
             'id': 'sale_outstandingAccepted',
             'class': 'sale-outstanding-accepted',
             'subject': sale,
@@ -96,8 +98,8 @@
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.outstandingExpired, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.outstanding_expired',
+        {{ show_row(sale.outstandingExpired, 'commerce_amount', {
+            'label': 'sale.field.outstanding_expired',
             'id': 'sale_outstandingExpired',
             'class': 'sale-outstanding-expired',
             'subject': sale,
@@ -105,8 +107,8 @@
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.outstandingLimit, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.outstanding_limit',
+        {{ show_row(sale.outstandingLimit, 'commerce_amount', {
+            'label': 'sale.field.outstanding_limit',
             'id': 'sale_outstandingLimit',
             'class': 'sale-outstanding-limit',
             'subject': sale,
@@ -116,18 +118,17 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.paymentTerm, 'entity', {
-            'label': 'ekyna_commerce.payment_term.label.singular',
+        {{ show_row(sale.paymentTerm, 'resource', {
+            'resource': 'ekyna_commerce.payment_term',
             'id': 'sale_paymentTerm',
             'class': 'sale-payment-term',
-            'route': 'ekyna_commerce_payment_term_admin_show',
-            'route_parameters_map': {'paymentTermId': 'id'},
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale.outstandingDate, 'datetime', {
-            'label': 'ekyna_commerce.sale.field.outstanding_date',
+            'label': 'sale.field.outstanding_date',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_outstandingDate',
             'class': 'sale-outstanding-date',
             'time': false,

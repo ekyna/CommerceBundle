@@ -1,0 +1,15 @@
+ekyna_commerce_api:
+    resource: 'routing/api.yaml'
+    prefix:   /api/commerce
+
+# TODO split commerce / settings
+ekyna_commerce_admin:
+    resource: 'routing/admin.yaml'
+    prefix:   '%ekyna_admin.routing_prefix%/commerce'
+
+ekyna_commerce_front:
+    resource: 'routing/front.yaml'
+
+ekyna_commerce_loader:
+    resource: .
+    type: commerce_routing

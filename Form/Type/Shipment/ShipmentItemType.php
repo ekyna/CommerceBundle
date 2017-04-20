@@ -1,72 +1,92 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Decimal\Decimal;
+use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Component\Commerce\Common\Model\Units;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentsInterface;
-use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_merge;
+use function array_unique;
 
 /**
  * Class ShipmentItemType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentItemType extends ResourceFormType
+class ShipmentItemType extends AbstractResourceType
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('quantity', Type\NumberType::class, [
-                'label'          => 'ekyna_core.field.quantity',
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+            /** @var ShipmentItemInterface $item */
+            $item = $event->getData();
+
+            $disabled = $options['disabled'] || $this->isDisabled($item);
+
+            $unit = $item->getSaleItem()
+                ? $item->getSaleItem()->getUnit()
+                : Units::PIECE;
+
+            FormHelper::addQuantityType($event->getForm(), $unit, [
+                'disabled'       => $disabled,
+                'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'input-sm',
                 ],
-                'error_bubbling' => true,
-                'disabled'       => $options['disabled'],
-            ])
-            ->add('children', ShipmentItemsType::class, [
-                'entry_type'    => static::class,
-                'entry_options' => [
-                    'shipment' => $options['shipment'],
-                    'level'    => $options['level'] + 1,
-                    'disabled' => $options['disabled'],
-                ],
             ]);
+
+            $event
+                ->getForm()
+                ->add('children', ShipmentItemsType::class, [
+                    'entry_type'    => static::class,
+                    'entry_options' => [
+                        'shipment' => $options['shipment'],
+                        'level'    => $options['level'] + 1,
+                        'disabled' => $disabled,
+                    ],
+                ]);
+        });
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    private function isDisabled(ShipmentItemInterface $item): bool
+    {
+        $saleItem = $item->getSaleItem();
+
+        if (null === $parent = $saleItem->getParent()) {
+            return false;
+        }
+
+        return $parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren());
+    }
+
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var ShipmentItemInterface $item */
         $item = $form->getData();
+        /** @var ShipmentInterface $shipment */
+        $shipment = $options['shipment'];
         $saleItem = $item->getSaleItem();
-
-        $locked = false;
-        if (null !== $parent = $saleItem->getParent()) {
-            if ($parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren())) {
-                $locked = true;
-            }
-        }
 
         $view->vars['item'] = $item;
         $view->vars['level'] = $options['level'];
-        $view->vars['return_mode'] = $options['shipment']->isReturn();
+        $view->vars['return_mode'] = $shipment->isReturn();
 
-        $view->children['quantity']->vars['attr']['data-max'] = $item->getAvailable();
+        $view->children['quantity']->vars['attr']['data-max'] = ($item->getAvailable() ?: new Decimal(0));
 
-        if ($locked && isset($view->parent->parent->children['quantity'])) {
-            $view->children['quantity']->vars['attr']['disabled'] = true;
+        if ($form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
             $view->children['quantity']->vars['attr']['data-quantity'] = $saleItem->getQuantity();
             $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
@@ -83,25 +103,20 @@ class ShipmentItemType extends ResourceFormType
         $view->vars['geocodes'] = $geocodes;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setDefaults([
-                'level'      => 0,
-                'data_class' => $this->dataClass,
-                'shipment'   => null,
+                'level'    => 0,
+                'shipment' => null,
             ])
             ->setAllowedTypes('level', 'int')
             ->setAllowedTypes('shipment', ShipmentInterface::class);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_shipment_item';
     }

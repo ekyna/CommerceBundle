@@ -1,52 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\CommerceBundle\Model\TicketStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Table\Filter;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class TicketType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class TicketType extends ResourceTableType
+class TicketType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.number',
-                'route_name'           => 'ekyna_commerce_ticket_admin_show',
-                'route_parameters_map' => [
-                    'ticketId' => 'id',
-                ],
-                'position'             => 10,
+                'label'    => t('field.number', [], 'EkynaUi'),
+                'position' => 10,
             ])
             ->addColumn('internal', CType\Column\BooleanType::class, [
-                'label'       => 'ekyna_commerce.field.internal',
+                'label'       => t('field.internal', [], 'EkynaCommerce'),
                 'true_class'  => 'label-danger',
                 'false_class' => 'label-success',
                 'position'    => 20,
             ])
             ->addColumn('state', Column\TicketStateType::class, [
-                'label'      => 'ekyna_commerce.field.status',
+                'label'      => t('field.status', [], 'EkynaCommerce'),
                 'admin_mode' => $options['admin_mode'],
                 'position'   => 30,
             ])
             ->addColumn('subject', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.subject',
+                'label'    => t('field.subject', [], 'EkynaUi'),
                 'position' => 40,
             ])
             ->addColumn('orders', Column\OrderType::class, [
@@ -64,38 +62,31 @@ class TicketType extends ResourceTableType
                 'position' => 80,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.date',
+                'label'       => t('field.date', [], 'EkynaUi'),
                 'position'    => 90,
                 'time_format' => 'none',
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_ticket_admin_remove',
-                        'route_parameters_map' => [
-                            'ticketId' => 'id',
-                        ],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    DeleteAction::class,
                 ],
             ])
             ->addFilter('number', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
+                'label'    => t('field.number', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('internal', CType\Filter\BooleanType::class, [
-                'label'    => 'ekyna_commerce.field.internal',
+                'label'    => t('field.internal', [], 'EkynaCommerce'),
                 'position' => 20,
             ])
             ->addFilter('state', CType\Filter\ChoiceType::class, [
-                'label'    => 'ekyna_commerce.field.status',
+                'label'    => t('field.status', [], 'EkynaCommerce'),
                 'choices'  => TicketStates::getChoices(),
                 'position' => 30,
             ])
             ->addFilter('subject', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.subject',
+                'label'    => t('field.subject', [], 'EkynaUi'),
                 'position' => 40,
             ])
             ->addFilter('orders', Filter\OrderType::class, [
@@ -111,16 +102,13 @@ class TicketType extends ResourceTableType
                 'position' => 50,
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.created_at',
+                'label'    => t('field.created_at', [], 'EkynaUi'),
                 'position' => 90,
                 'time'     => false,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

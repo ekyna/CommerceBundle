@@ -1,13 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
+use Ekyna\Component\Commerce\Cart\Model\CartPaymentInterface;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
+use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentRepositoryInterface;
-use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
+use Ekyna\Component\Resource\Manager\ManagerFactoryInterface;
+use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
+use Ekyna\Component\Resource\Repository\RepositoryFactoryInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,25 +30,37 @@ use Symfony\Component\Console\Question\Question;
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentStateChangeCommand extends ContainerAwareCommand
+class PaymentStateChangeCommand extends Command
 {
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected static $defaultName = 'ekyna:commerce:payment:change-state';
+
+    private RepositoryFactoryInterface $repositoryFactory;
+    private ManagerFactoryInterface    $managerFactory;
+    private LockChecker                $lockChecker;
+
+
+    public function __construct(
+        RepositoryFactoryInterface $repositoryFactory,
+        ManagerFactoryInterface    $managerFactory,
+        LockChecker                $lockChecker
+    ) {
+        parent::__construct();
+
+        $this->repositoryFactory = $repositoryFactory;
+        $this->managerFactory = $managerFactory;
+        $this->lockChecker = $lockChecker;
+    }
+
+    protected function configure(): void
     {
         $this
-            ->setName('ekyna:commerce:payment:change-state')
             ->setDescription('Change the payment state.')
             ->addArgument('number', InputArgument::REQUIRED, 'The payment number')
             ->addArgument('state', InputArgument::REQUIRED, 'The payment new state')
             ->addOption('unlock', null, InputOption::VALUE_NONE, 'Whether to bypass locking');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $helper = $this->getHelper('question');
 
@@ -47,9 +68,7 @@ class PaymentStateChangeCommand extends ContainerAwareCommand
             $question = new Question('Payment number:');
             $question->setValidator(function ($answer) {
                 if (!is_string($answer) || empty($answer)) {
-                    throw new \InvalidArgumentException(
-                        'Please provide a payment number.'
-                    );
+                    throw new InvalidArgumentException('Please provide a payment number.');
                 }
 
                 return $answer;
@@ -71,10 +90,7 @@ class PaymentStateChangeCommand extends ContainerAwareCommand
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Check arguments
         if (empty($number = $input->getArgument('number'))) {
@@ -87,37 +103,45 @@ class PaymentStateChangeCommand extends ContainerAwareCommand
         // Validates state
         PaymentStates::isValid($state, true);
 
+        $classes = [
+            CartPaymentInterface::class,
+            QuotePaymentInterface::class,
+            OrderPaymentInterface::class,
+        ];
+
         // Find payment
-        $payment = null;
-        $operator = null;
-        foreach (['order', 'quote', 'cart'] as $type) {
-            $id = "ekyna_commerce.{$type}_payment.repository";
-            $repository = $this->getContainer()->get($id);
+        $manager = null;
+        foreach ($classes as $class) {
+            $repository = $this->repositoryFactory->getRepository($class);
             if (!$repository instanceof PaymentRepositoryInterface) {
-                throw new \RuntimeException("Expected instance of " . PaymentRepositoryInterface::class);
+                throw new UnexpectedTypeException($repository, PaymentRepositoryInterface::class);
             }
 
-            if (null !== $payment = $repository->findOneBy(['number' => $number])) {
-                $id = "ekyna_commerce.{$type}_payment.operator";
-                $operator = $this->getContainer()->get($id);
-
-                break;
+            if (null === $payment = $repository->findOneBy(['number' => $number])) {
+                continue;
             }
+
+            $manager = $this->managerFactory->getManager($class);
+
+            break;
         }
 
         // Check if payment has been found
         if (!$payment instanceof PaymentInterface) {
             $output->writeln("<error>Payment with number $number not found.</error>");
-            return;
+
+            return Command::FAILURE;
         }
-        if (!$operator instanceof ResourceOperatorInterface) {
-            throw new \RuntimeException("Expected instance of " . ResourceOperatorInterface::class);
+
+        if (!$manager instanceof ResourceManagerInterface) {
+            throw new UnexpectedTypeException($manager, ResourceManagerInterface::class);
         }
 
         // Check that state change is needed
         if ($payment->getState() === $state) {
             $output->writeln("<info>Payment with number $number has already the state '$state'.</info>");
-            return;
+
+            return Command::SUCCESS;
         }
 
         $helper = $this->getHelper('question');
@@ -125,22 +149,25 @@ class PaymentStateChangeCommand extends ContainerAwareCommand
             "Change payment $number state from '{$payment->getState()}' to '$state' ?", false
         );
         if (!$helper->ask($input, $output, $question)) {
-            return;
+            return Command::SUCCESS;
         }
 
         if ($input->getOption('unlock')) {
-            $this->getContainer()->get(LockChecker::class)->setEnabled(false);
+            $this->lockChecker->setEnabled(false);
         }
 
         $payment->setState($state);
-        $event = $operator->update($payment);
+
+        $event = $manager->update($payment);
 
         if ($event->hasErrors() || $event->isPropagationStopped()) {
             $output->writeln('<error>State change failed</error>');
 
-            return;
+            return Command::FAILURE;
         }
 
         $output->writeln('<info>State change succeeded</info>');
+
+        return Command::SUCCESS;
     }
 }

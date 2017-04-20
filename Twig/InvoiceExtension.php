@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Invoice\InvoiceHelper;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
-use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
-use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigTest;
@@ -18,35 +19,7 @@ use Twig\TwigTest;
  */
 class InvoiceExtension extends AbstractExtension
 {
-    /**
-     * @var DueDateResolverInterface
-     */
-    private $dueDateResolver;
-
-    /**
-     * @var InvoicePaymentResolverInterface
-     */
-    private $paymentResolver;
-
-
-    /**
-     * Constructor.
-     *
-     * @param DueDateResolverInterface        $dueDateResolver
-     * @param InvoicePaymentResolverInterface $paymentResolver
-     */
-    public function __construct(
-        DueDateResolverInterface $dueDateResolver,
-        InvoicePaymentResolverInterface $paymentResolver
-    ) {
-        $this->dueDateResolver = $dueDateResolver;
-        $this->paymentResolver = $paymentResolver;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -71,19 +44,16 @@ class InvoiceExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'invoice_payments',
-                [$this->paymentResolver, 'resolve']
+                [InvoiceHelper::class, 'getInvoicePayments']
             ),
             new TwigFilter(
                 'invoice_paid_total',
-                [$this->paymentResolver, 'getPaidTotal']
+                [InvoiceHelper::class, 'getInvoicePaidTotal']
             ),
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('invoice', function ($subject) {
@@ -94,7 +64,7 @@ class InvoiceExtension extends AbstractExtension
             }),
             new TwigTest(
                 'due_invoice',
-                [$this->dueDateResolver, 'isInvoiceDue']
+                [InvoiceHelper::class, 'isInvoiceDue']
             ),
         ];
     }

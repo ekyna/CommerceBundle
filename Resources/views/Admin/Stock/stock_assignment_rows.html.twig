@@ -2,7 +2,7 @@
 {% for assignment in stock_assignments -%}
     {% set assignment_id = prefix ~ '_' ~ loop.index0 -%}
     <tr id="{{ assignment_id }}" {% if assignment.order_id is defined -%}
-        data-summary="{{ {'route': 'ekyna_commerce_order_admin_summary', 'parameters': {
+        data-summary="{{ {'route': 'admin_ekyna_commerce_order_summary', 'parameters': {
             'orderId': assignment.order_id
         }}|json_encode }}"
         {%- endif %}>

@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class StockUnitFixOverflowCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO Remove
  */
 class StockUnitFixOverflowCommand extends Command
 {

@@ -1,29 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutEvent;
+use Ekyna\Bundle\CommerceBundle\Factory\QuoteFactory;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
-use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CheckoutController
@@ -32,70 +37,35 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class CheckoutController extends AbstractController
 {
-    /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
+    protected OrderRepositoryInterface $orderRepository;
+    protected QuoteFactory             $quoteFactory;
+    protected CheckoutManager          $checkoutManager;
+    protected PaymentHelper            $paymentHelper;
+    protected SaleTransformerInterface $saleTransformer;
+    protected FormFactoryInterface     $formFactory;
+    protected EventDispatcherInterface $dispatcher;
+    protected FlashHelper              $flashHelper;
 
-    /**
-     * @var QuoteRepositoryInterface
-     */
-    protected $quoteRepository;
-
-    /**
-     * @var CheckoutManager
-     */
-    protected $checkoutManager;
-
-    /**
-     * @var PaymentHelper
-     */
-    protected $paymentHelper;
-
-    /**
-     * @var SaleTransformerInterface
-     */
-    protected $saleTransformer;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-
-    /**
-     * Constructor.
-     *
-     * @param OrderRepositoryInterface $orderRepository
-     * @param QuoteRepositoryInterface $quoteRepository
-     * @param CheckoutManager          $checkoutManager
-     * @param PaymentHelper            $paymentHelper
-     * @param SaleTransformerInterface $saleTransformer
-     * @param EventDispatcherInterface $dispatcher
-     */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
-        QuoteRepositoryInterface $quoteRepository,
-        CheckoutManager $checkoutManager,
-        PaymentHelper $paymentHelper,
+        QuoteFactory             $quoteFactory,
+        CheckoutManager          $checkoutManager,
+        PaymentHelper            $paymentHelper,
         SaleTransformerInterface $saleTransformer,
-        EventDispatcherInterface $dispatcher
+        FormFactoryInterface     $formFactory,
+        EventDispatcherInterface $dispatcher,
+        FlashHelper              $flashHelper
     ) {
         $this->orderRepository = $orderRepository;
-        $this->quoteRepository = $quoteRepository;
+        $this->quoteFactory = $quoteFactory;
         $this->checkoutManager = $checkoutManager;
         $this->paymentHelper = $paymentHelper;
         $this->saleTransformer = $saleTransformer;
+        $this->formFactory = $formFactory;
         $this->dispatcher = $dispatcher;
+        $this->flashHelper = $flashHelper;
     }
 
-    /**
-     * Cart index action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function index(Request $request): Response
     {
         $parameters = [];
@@ -133,13 +103,13 @@ class CheckoutController extends AbstractController
                     $shipmentLine->getDesignation() .
                     '&nbsp;<sup class="text-danger">&starf;</sup>'
                 );
-                $view->addMessage($this->translate('ekyna_commerce.checkout.message.shipment_defaults'));
+                $view->addMessage($this->translate('checkout.message.shipment_defaults', [], 'EkynaCommerce'));
             }
 
             if ($cart->isLocked()) {
-                $view->addAlert($this->translate('ekyna_commerce.checkout.message.unlock', [
+                $view->addAlert($this->translate('checkout.message.unlock', [
                     '{{url}}' => $this->generateUrl('ekyna_commerce_cart_checkout_unlock'),
-                ]));
+                ], 'EkynaCommerce'));
             }
 
             $parameters['view'] = $view;
@@ -152,19 +122,12 @@ class CheckoutController extends AbstractController
         }
 
         if (null !== $cart) {
-            $this->dispatcher->dispatch(CheckoutEvent::EVENT_INIT, new CheckoutEvent($cart));
+            $this->dispatcher->dispatch(new CheckoutEvent($cart), CheckoutEvent::EVENT_INIT);
         }
 
         return $this->render('@EkynaCommerce/Cart/Checkout/index.html.twig', $parameters);
     }
 
-    /**
-     * Quote transformation action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function quote(Request $request): Response
     {
         if (null === $cart = $this->getCart()) {
@@ -187,59 +150,38 @@ class CheckoutController extends AbstractController
         }
 
         $form = $this
-            ->getFormFactory()
+            ->formFactory
             ->create(SaleTransformType::class, $cart, [
                 'action'  => $this->generateUrl('ekyna_commerce_cart_checkout_quote'),
                 'method'  => 'POST',
-                'message' => 'ekyna_commerce.checkout.message.quote_confirm',
-            ])
-            ->add('actions', FormActionsType::class, [
-                'buttons' => [
-                    'remove' => [
-                        'type'    => Type\SubmitType::class,
-                        'options' => [
-                            'button_class' => 'success',
-                            'label'        => 'ekyna_core.button.transform',
-                            'attr'         => ['icon' => 'ok'],
-                        ],
-                    ],
-                    'cancel' => [
-                        'type'    => Type\ButtonType::class,
-                        'options' => [
-                            'label'        => 'ekyna_core.button.cancel',
-                            'button_class' => 'default',
-                            'as_link'      => true,
-                            'attr'         => [
-                                'class' => 'form-cancel-btn',
-                                'icon'  => 'remove',
-                                'href'  => $cancelPath,
-                            ],
-                        ],
-                    ],
-                ],
+                'message' => t('checkout.message.quote_confirm', [], 'EkynaCommerce'),
             ]);
+
+        FormUtil::addFooter($form, [
+            'submit_label' => t('button.transform', [], 'EkynaUi'),
+            'submit_class' => 'success',
+            'cancel_path'  => $cancelPath,
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // New quote
-            $quote = $this->quoteRepository->createNew();
+            $quote = $this->quoteFactory->create();
             $quote->setEditable(true);
+
             // Initialize transformation
             $this->saleTransformer->initialize($cart, $quote);
+
             // Transform
             if (null === $event = $this->saleTransformer->transform()) {
                 // Redirect to quote details
-                return $this->redirect($this->generateUrl('ekyna_commerce_account_quote_show', [
+                return $this->redirect($this->generateUrl('ekyna_commerce_account_quote_read', [
                     'number' => $quote->getNumber(),
                 ]));
             }
 
-            // Display event's flash messages
-            if (null !== $session = $request->getSession()) {
-                /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-                $event->toFlashes($session->getFlashBag());
-            }
+            $this->flashHelper->fromEvent($event);
         }
 
         return $this->render('@EkynaCommerce/Cart/Checkout/quote.html.twig', [
@@ -268,7 +210,7 @@ class CheckoutController extends AbstractController
         }
 
         $form = $this
-            ->getFormFactory()
+            ->formFactory
             ->create(ShipmentType::class, $cart, [
                 'action' => $this->generateUrl('ekyna_commerce_cart_checkout_shipment'),
                 'method' => 'POST',
@@ -282,7 +224,7 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
         }
 
-        $this->dispatcher->dispatch(CheckoutEvent::EVENT_SHIPMENT_STEP, new CheckoutEvent($cart));
+        $this->dispatcher->dispatch(new CheckoutEvent($cart), CheckoutEvent::EVENT_SHIPMENT_STEP);
 
         $view = $form->createView();
 
@@ -326,7 +268,7 @@ class CheckoutController extends AbstractController
             return $this->paymentHelper->capture($payment, $statusUrl);
         }
 
-        $this->dispatcher->dispatch(CheckoutEvent::EVENT_PAYMENT_STEP, new CheckoutEvent($cart));
+        $this->dispatcher->dispatch(new CheckoutEvent($cart), CheckoutEvent::EVENT_PAYMENT_STEP);
 
         return $this->render('@EkynaCommerce/Cart/Checkout/payment.html.twig', [
             'cart'  => $cart,
@@ -365,17 +307,10 @@ class CheckoutController extends AbstractController
         return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
     }
 
-    /**
-     * Status action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function status(Request $request)
+    public function status(Request $request): Response
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException("XHR is not supported.");
+            throw new NotFoundHttpException('XHR is not supported.');
         }
 
         if (null === $payment = $this->paymentHelper->status($request)) {
@@ -392,20 +327,13 @@ class CheckoutController extends AbstractController
         }
 
         if (!$sale instanceof CartInterface) {
-            throw new InvalidArgumentException("Expected instance of " . CartInterface::class);
+            throw new UnexpectedTypeException($sale, CartInterface::class);
         }
 
         // Else go back to payments
         return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
     }
 
-    /**
-     * Confirmation action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function confirmation(Request $request): Response
     {
         $order = $this->orderRepository->findOneByKey($request->attributes->get('orderKey'));
@@ -425,7 +353,7 @@ class CheckoutController extends AbstractController
             }
         }
 
-        $this->dispatcher->dispatch(CheckoutEvent::EVENT_CONFIRMATION, new CheckoutEvent($order));
+        $this->dispatcher->dispatch(new CheckoutEvent($order), CheckoutEvent::EVENT_CONFIRMATION);
 
         return $this->render('@EkynaCommerce/Cart/Checkout/confirmation.html.twig', [
             'order' => $order,

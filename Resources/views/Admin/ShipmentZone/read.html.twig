@@ -1,0 +1,21 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ show_row(shipmentZone.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'shipment_zone_name'
+        }) }}
+        {{ show_row(shipmentZone.countries, 'resource', {
+            'resource': 'ekyna_commerce.country',
+            'id': 'shipment_zone_countries'
+        }) }}
+        {{ display_shipment_prices(shipmentZone) }}
+    </div>
+{%- endblock main_contents %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['bundles/ekynacommerce/js/show/shipment-prices']);</script>
+{% endblock javascripts %}

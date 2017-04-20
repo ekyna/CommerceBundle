@@ -1,72 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class TaxGroupType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class TaxGroupType extends ResourceTableType
+class TaxGroupType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addColumn('name', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.name',
-                'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_tax_group_admin_show',
-                'route_parameters_map' => [
-                    'taxGroupId' => 'id',
-                ],
-                'position'             => 10,
+                'label'    => t('field.name', [], 'EkynaUi'),
+                'position' => 10,
             ])
             ->addColumn('default', CType\Column\BooleanType::class, [
-                'label'                 => 'ekyna_core.field.default',
-                'sortable'              => true,
+                'label'                 => t('field.default', [], 'EkynaUi'),
                 'position'              => 20,
-                'route_name'            => 'ekyna_commerce_tax_group_admin_toggle',
-                'route_parameters'      => ['field' => 'default'],
-                'route_parameters_map'  => ['taxGroupId' => 'id'],
                 'disable_property_path' => 'default',
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_tax_group_admin_edit',
-                        'route_parameters_map' => [
-                            'taxGroupId' => 'id',
-                        ],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_tax_group_admin_remove',
-                        'route_parameters_map' => [
-                            'taxGroupId' => 'id',
-                        ],
-                        'permission'           => 'delete',
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    UpdateAction::class => [],
+                    DeleteAction::class => [
                         'disable_property_path' => 'default',
                     ],
                 ],
             ])
             ->addFilter('name', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.name',
+                'label'    => t('field.name', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('default', CType\Filter\BooleanType::class, [
-                'label'    => 'ekyna_core.field.default',
+                'label'    => t('field.default', [], 'EkynaUi'),
                 'position' => 20,
             ]);
     }

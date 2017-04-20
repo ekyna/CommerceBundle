@@ -9,13 +9,10 @@ use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Stock\Assigner\StockUnitAssignerInterface;
-use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use function sprintf;
 
 /**
  * Class DetachSaleItemCommand
@@ -26,20 +23,9 @@ class OrderDetachCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:order:detach';
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $orderManager;
-
-    /**
-     * @var StockUnitAssignerInterface
-     */
-    private $stockAssigner;
+    private OrderRepositoryInterface   $orderRepository;
+    private EntityManagerInterface     $orderManager;
+    private StockUnitAssignerInterface $stockAssigner;
 
     public function __construct(
         OrderRepositoryInterface   $orderRepository,
@@ -75,6 +61,8 @@ class OrderDetachCommand extends Command
 
             return 1;
         }
+
+        // TODO Warning / Confirmation
 
         foreach ($order->getItems() as $item) {
             $this->detachSaleItemRecursively($item);

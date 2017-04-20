@@ -1,0 +1,5 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block title %}
+    <h1>{{ (context.config.transPrefix ~ '.header.edit')|trans({'%name%': resource|trans({}, 'EkynaCommerce')}, context.config.transDomain)|raw }}</h1>
+{% endblock title %}

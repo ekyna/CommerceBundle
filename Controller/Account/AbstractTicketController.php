@@ -1,102 +1,128 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
-use Ekyna\Bundle\CommerceBundle\Model\TicketInterface;
-use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Bundle\UiBundle\Model\Modal;
+use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
 use Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface;
+use Ekyna\Component\Commerce\Support\Model\TicketInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketMessageInterface;
+use Ekyna\Component\Resource\Factory\FactoryFactoryInterface;
+use Ekyna\Component\Resource\Manager\ManagerFactoryInterface;
+use Ekyna\Component\Resource\Repository\RepositoryFactoryInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Serializer\SerializerInterface;
+use Twig\Environment;
 
 /**
  * Class AbstractTicketController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-abstract class AbstractTicketController extends AbstractController
+abstract class AbstractTicketController implements ControllerInterface
 {
-    /**
-     * Finds the ticket.
-     *
-     * @param Request $request
-     *
-     * @return TicketInterface
-     */
-    protected function findTicket(Request $request)
+    use CustomerTrait;
+
+    protected FactoryFactoryInterface       $factoryFactory;
+    protected RepositoryFactoryInterface    $repositoryFactory;
+    protected ManagerFactoryInterface       $managerFactory;
+    protected SerializerInterface           $serializer;
+    protected AuthorizationCheckerInterface $authorizationChecker;
+    protected UrlGeneratorInterface         $urlGenerator;
+    protected FormFactoryInterface          $formFactory;
+    protected Environment                   $twig;
+    protected ModalRenderer                 $modalRenderer;
+
+    public function __construct(
+        FactoryFactoryInterface       $factoryFactory,
+        RepositoryFactoryInterface    $repositoryFactory,
+        ManagerFactoryInterface       $managerFactory,
+        SerializerInterface           $serializer,
+        AuthorizationCheckerInterface $authorizationChecker,
+        UrlGeneratorInterface         $urlGenerator,
+        FormFactoryInterface          $formFactory,
+        Environment                   $twig,
+        ModalRenderer                 $modalRenderer
+    ) {
+        $this->factoryFactory = $factoryFactory;
+        $this->repositoryFactory = $repositoryFactory;
+        $this->managerFactory = $managerFactory;
+        $this->serializer = $serializer;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->urlGenerator = $urlGenerator;
+        $this->formFactory = $formFactory;
+        $this->twig = $twig;
+        $this->modalRenderer = $modalRenderer;
+    }
+
+    protected function findTicket(Request $request): TicketInterface
     {
         $ticket = $this
-            ->get('ekyna_commerce.ticket.repository')
-            ->find($request->attributes->get('ticketId'));
+            ->repositoryFactory
+            ->getRepository(TicketInterface::class)
+            ->find($request->attributes->getInt('ticketId'));
 
-        if (null === $ticket) {
-            throw new NotFoundHttpException("Ticket not found.");
+        if (!$ticket instanceof TicketInterface) {
+            throw new NotFoundHttpException('Ticket not found.');
         }
 
-        /** @noinspection PhpParamsInspection */
         $this->checkTicketOwner($ticket);
 
         return $ticket;
     }
 
-    /**
-     * Finds the message.
-     *
-     * @param Request $request
-     *
-     * @return TicketMessageInterface
-     */
-    protected function findMessage(Request $request)
+    protected function findMessage(Request $request): TicketMessageInterface
     {
-        /** @var TicketMessageInterface $message */
         $message = $this
-            ->get('ekyna_commerce.ticket_message.repository')
-            ->find($request->attributes->get('ticketMessageId'));
+            ->repositoryFactory
+            ->getRepository(TicketMessageInterface::class)
+            ->find($request->attributes->getInt('ticketMessageId'));
 
-        if (null === $message) {
-            throw new NotFoundHttpException("Ticket message not found.");
+        if (!$message instanceof TicketMessageInterface) {
+            throw new NotFoundHttpException('Ticket message not found.');
         }
 
+        /** @var TicketInterface $ticket */
         $ticket = $message->getTicket();
-        if ($request->attributes->get('ticketId') != $ticket->getId()) {
-            throw new NotFoundHttpException("Ticket message not found.");
+        if ($request->attributes->getInt('ticketId') !== $ticket->getId()) {
+            throw new NotFoundHttpException('Ticket message not found.');
         }
 
-        /** @noinspection PhpParamsInspection */
         $this->checkTicketOwner($ticket);
 
         return $message;
     }
 
-    /**
-     * Finds the attachment.
-     *
-     * @param Request $request
-     *
-     * @return TicketAttachmentInterface
-     */
-    protected function findAttachment(Request $request)
+    protected function findAttachment(Request $request): TicketAttachmentInterface
     {
         /** @var TicketAttachmentInterface $attachment */
         $attachment = $this
-            ->get('ekyna_commerce.ticket_attachment.repository')
-            ->find($request->attributes->get('ticketAttachmentId'));
+            ->repositoryFactory
+            ->getRepository(TicketAttachmentInterface::class)
+            ->find($request->attributes->getInt('ticketAttachmentId'));
 
-        if (null === $attachment) {
-            throw new NotFoundHttpException("Ticket attachment not found.");
+        if (!$attachment instanceof TicketAttachmentInterface) {
+            throw new NotFoundHttpException('Ticket attachment not found.');
         }
 
         $message = $attachment->getMessage();
-        if ($request->attributes->get('ticketMessageId') != $message->getId()) {
-            throw new NotFoundHttpException("Ticket attachment not found.");
+        if ($request->attributes->getInt('ticketMessageId') !== $message->getId()) {
+            throw new NotFoundHttpException('Ticket attachment not found.');
         }
 
+        /** @var TicketInterface $ticket */
         $ticket = $message->getTicket();
-        if ($request->attributes->get('ticketId') != $ticket->getId()) {
-            throw new NotFoundHttpException("Ticket attachment not found.");
+        if ($request->attributes->getInt('ticketId') !== $ticket->getId()) {
+            throw new NotFoundHttpException('Ticket attachment not found.');
         }
 
-        /** @noinspection PhpParamsInspection */
         $this->checkTicketOwner($ticket);
 
         return $attachment;
@@ -104,72 +130,53 @@ abstract class AbstractTicketController extends AbstractController
 
     /**
      * Checks that the given ticket belongs to the logged customer.
-     *
-     * @param TicketInterface $ticket
-     *
-     * @throws \Ekyna\Bundle\CoreBundle\Exception\RedirectException
      */
-    protected function checkTicketOwner(TicketInterface $ticket)
+    protected function checkTicketOwner(TicketInterface $ticket): void
     {
-        if ($ticket->getCustomer() !== $this->getCustomerOrRedirect()) {
-            throw $this->createNotFoundException('Ticket not found');
+        if ($ticket->getCustomer() === $this->getCustomer()) {
+            return;
         }
+
+        throw new NotFoundHttpException('Ticket not found');
+    }
+
+    protected function serialize(array $data, array $groups = ['Default']): string
+    {
+        return $this->serializer->serialize($data, 'json', ['groups' => $groups]);
     }
 
     /**
-     * Serializes the given data.
+     * Throws an exception unless the attribute is granted against the current authentication token and optionally
+     * supplied subject.
      *
-     * @param array $data
-     * @param array $groups
-     *
-     * @return string
+     * @throws AccessDeniedException
      */
-    protected function serialize(array $data, array $groups = ['Default'])
+    protected function denyAccessUnlessGranted($attribute, $subject = null, string $message = 'Access Denied.'): void
     {
-        return $this->get('serializer')->serialize($data, 'json', ['groups' => $groups]);
+        if ($this->authorizationChecker->isGranted($attribute, $subject)) {
+            return;
+        }
+
+        $exception = new AccessDeniedException($message);
+        $exception->setAttributes($attribute);
+        $exception->setSubject($subject);
+
+        throw $exception;
     }
 
-    /**
-     * Creates a modal.
-     *
-     * @param string $title
-     * @param mixed  $content
-     * @param string $button
-     *
-     * @return Modal
-     */
-    protected function createModal($title, $content = null, string $button = null)
+    protected function createModal(string $title, string $button = null): Modal
     {
-        $modal = new Modal($title, $content);
-
-        $buttons = [];
+        $modal = new Modal($title);
 
         if ($button === 'confirm') {
-            $buttons['submit'] = [
-                'id'       => 'submit',
-                'label'    => 'ekyna_core.button.confirm',
-                'icon'     => 'glyphicon glyphicon-ok',
-                'cssClass' => 'btn-danger',
-                'autospin' => true,
-            ];
+            $modal->addButton(Modal::BTN_CONFIRM);
         } else {
-            $buttons['submit'] = [
-                'id'       => 'submit',
-                'label'    => 'ekyna_core.button.save',
-                'icon'     => 'glyphicon glyphicon-ok',
-                'cssClass' => 'btn-success',
-                'autospin' => true,
-            ];
+            $modal->addButton(Modal::BTN_SUBMIT);
         }
 
-        $buttons['close'] = [
-            'id'       => 'close',
-            'label'    => 'ekyna_core.button.cancel',
-            'icon'     => 'glyphicon glyphicon-remove',
-            'cssClass' => 'btn-default',
-        ];
-
-        $modal->setButtons($buttons);
+        $modal
+            ->addButton(Modal::BTN_CLOSE)
+            ->setDomain('EkynaCommerce');
 
         return $modal;
     }

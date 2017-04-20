@@ -1,13 +1,13 @@
 {% extends '@EkynaAdmin/Entity/sided.html.twig' %}
 
-{% block page_title %}{{ (trans_prefix ~ '.header.export')|trans|raw }} - {{ parent() }}{% endblock page_title %}
+{% block page_title %}{{ (context.config.transPrefix ~ '.header.export')|trans({}, context.config.transDomain)|raw }}{% endblock page_title %}
 
 {% block title %}
-    <h1>{{ (trans_prefix ~ '.header.export')|trans|raw }}</h1>
+    <h1>{{ (context.config.transPrefix ~ '.header.export')|trans({}, context.config.transDomain)|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}
-    {{ admin_resource_btn(resource_id, 'list') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
 {% endblock actions %}
 
 {% block main %}

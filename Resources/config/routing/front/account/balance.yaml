@@ -1,0 +1,15 @@
+ekyna_commerce_account_balance_index:
+    path: ''
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\BalanceController::index
+    methods: [GET, POST]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Situation de mon compte
+            parent: ekyna_user_account_index
+            position: 15
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false

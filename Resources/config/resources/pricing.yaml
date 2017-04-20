@@ -1,0 +1,64 @@
+resources:
+    ekyna_commerce:
+        tax:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Pricing\Model\TaxInterface
+                class: Ekyna\Component\Commerce\Pricing\Entity\Tax
+            repository:
+                interface: Ekyna\Component\Commerce\Pricing\Repository\TaxRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\TaxType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/Tax/read.html.twig'
+                    form: '@EkynaCommerce/Admin/Tax/_form.html.twig'
+
+        tax_group:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface
+                class: Ekyna\Component\Commerce\Pricing\Entity\TaxGroup
+            repository:
+                interface: Ekyna\Component\Commerce\Pricing\Repository\TaxGroupRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxGroupRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\TaxGroupType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/TaxGroup/read.html.twig'
+                    form: '@EkynaCommerce/Admin/TaxGroup/_form.html.twig'
+                admin_toggle:
+                    properties: [default]
+
+        tax_rule:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Pricing\Model\TaxRuleInterface
+                class: Ekyna\Component\Commerce\Pricing\Entity\TaxRule
+            repository:
+                interface: Ekyna\Component\Commerce\Pricing\Repository\TaxRuleRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxRuleRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\TaxRuleType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/TaxRule/read.html.twig'
+                    form: '@EkynaCommerce/Admin/TaxRule/_form.html.twig'
+
+        tax_rule_mention:
+            driver: doctrine/orm
+            entity:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Pricing\Entity\TaxRuleMention
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleMentionType
+            parent: ekyna_commerce.tax_rule
+            trans_domain: EkynaCommerce
+            translation:
+                interface: Ekyna\Component\Commerce\Pricing\Entity\TaxRuleMentionTranslation
+                class: Ekyna\Component\Commerce\Pricing\Entity\TaxRuleMentionTranslation
+                fields: [content]

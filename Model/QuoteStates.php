@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteStates as States;
  */
 final class QuoteStates extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.status.';
+        $prefix = 'status.';
 
         return [
             States::STATE_NEW      => [$prefix . States::STATE_NEW,      'brown',       false],
@@ -27,5 +26,10 @@ final class QuoteStates extends AbstractConstants
             States::STATE_REFUNDED => [$prefix . States::STATE_REFUNDED, 'indigo',      true],
             States::STATE_CANCELED => [$prefix . States::STATE_CANCELED, 'default',     false],
         ];
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

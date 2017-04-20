@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\SupplierDeliveryItemsTransformer;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
-use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Component\Resource\Factory\ResourceFactoryInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -16,53 +18,30 @@ use Symfony\Component\Form\FormView;
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Supplier
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierDeliveryType extends ResourceFormType
+class SupplierDeliveryType extends AbstractResourceType
 {
-    /**
-     * @var ResourceRepositoryInterface
-     */
-    private $deliveryItemRepository;
-
-    /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
+    private ResourceFactoryInterface $deliveryItemFactory;
+    private SubjectHelperInterface   $subjectHelper;
 
 
-    /**
-     * Constructor.
-     *
-     * @param ResourceRepositoryInterface $deliveryItemRepository
-     * @param SubjectHelperInterface      $subjectHelper
-     * @param string                      $dataClass
-     */
     public function __construct(
-        ResourceRepositoryInterface $deliveryItemRepository,
-        SubjectHelperInterface $subjectHelper,
-        $dataClass
+        ResourceFactoryInterface $deliveryItemFactory,
+        SubjectHelperInterface $subjectHelper
     ) {
-        parent::__construct($dataClass);
-
-        $this->deliveryItemRepository = $deliveryItemRepository;
+        $this->deliveryItemFactory = $deliveryItemFactory;
         $this->subjectHelper = $subjectHelper;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('items', SupplierDeliveryItemsType::class)
             ->addModelTransformer(
-                new SupplierDeliveryItemsTransformer($this->deliveryItemRepository, $this->subjectHelper)
+                new SupplierDeliveryItemsTransformer($this->deliveryItemFactory, $this->subjectHelper)
             );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         FormUtil::addClass($view, 'commerce-supplier-delivery');
     }

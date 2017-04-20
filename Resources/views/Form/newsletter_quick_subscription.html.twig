@@ -1,18 +1,18 @@
 {% apply spaceless %}
 <form id="newsletter-quick-subscription">
     <p class="title">
-        {{- 'ekyna_commerce.newsletter.subscription.title'|trans|raw -}}
+        {{- 'newsletter.subscription.title'|trans({}, 'EkynaCommerce')|raw -}}
     </p>
     <p class="content">
-        {{- 'ekyna_commerce.newsletter.subscription.content'|trans|raw -}}
+        {{- 'newsletter.subscription.content'|trans({}, 'EkynaCommerce')|raw -}}
     </p>
     <p class="alert alert-success success" style="display:none">
-        {{- 'ekyna_commerce.newsletter.subscription.success'|trans|raw -}}
+        {{- 'newsletter.subscription.success'|trans({}, 'EkynaCommerce')|raw -}}
     </p>
     <div class="row">
         <div class="col-sm-12">
             <input type="email" class="form-control input-sm" id="email" name="email"
-                   placeholder="{{ 'ekyna_core.field.email_address'|trans }}" required>
+                   placeholder="{{ 'field.email_address'|trans({}, 'EkynaUi') }}" required>
         </div>
     </div>
     <div class="row">
@@ -20,13 +20,13 @@
             <input type="hidden" name="key" value="{{ key }}">
             {# TODO Csrf protection #}
             <button type="submit" class="btn btn-primary btn-sm">
-                {{- 'ekyna_commerce.newsletter.button.subscribe'|trans -}}
+                {{- 'newsletter.button.subscribe'|trans({}, 'EkynaCommerce') -}}
             </button>
         </div>
         <div class="col-sm-6">
             <a class="btn btn-link btn-sm"
                href="{{ path('ekyna_commerce_newsletter_subscription') }}">
-                {{- 'ekyna_commerce.newsletter.button.more_options'|trans -}}
+                {{- 'newsletter.button.more_options'|trans({}, 'EkynaCommerce') -}}
             </a>
         </div>
     </div>

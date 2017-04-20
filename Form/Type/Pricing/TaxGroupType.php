@@ -1,27 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
+use Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class TaxGroupType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Pricing
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class TaxGroupType extends ResourceFormType
+class TaxGroupType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface $group */
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            /** @var TaxGroupInterface $group */
             $group = $event->getData();
             $form = $event->getForm();
 
@@ -29,7 +32,7 @@ class TaxGroupType extends ResourceFormType
 
             $form
                 ->add('default', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_core.field.default',
+                    'label'    => t('field.default', [], 'EkynaUi'),
                     'required' => false,
                     'disabled' => $group->isDefault(),
                     'attr'     => [
@@ -37,10 +40,11 @@ class TaxGroupType extends ResourceFormType
                     ],
                 ])
                 ->add('name', Type\TextType::class, [
-                    'label'    => 'ekyna_core.field.name',
+                    'label'    => t('field.name', [], 'EkynaUi'),
                     'disabled' => $disabled,
                 ])
-                ->add('taxes', TaxChoiceType::class, [
+                ->add('taxes', ResourceChoiceType::class, [
+                    'resource'  => 'ekyna_commerce.tax',
                     'multiple'  => true,
                     'allow_new' => true,
                     'required'  => false,

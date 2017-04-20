@@ -1,0 +1,12 @@
+# Liip Imagine
+liip_imagine:
+    filter_sets:
+        commerce_method:
+            cache: local_media
+            data_loader: local_media
+            filters:
+                thumbnail: { size: [ 145, 109 ], mode: inset }
+                background: { size: [ 145, 109 ], color: '#ffffff' }
+            post_processors:
+                jpegoptim: { strip_all: true, max: '%ekyna_media.image.quality.jpeg%', progressive: true }
+                pngquant: { quality: '%ekyna_media.image.quality.png%' }

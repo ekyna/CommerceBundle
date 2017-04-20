@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\DBAL\Connection;
-use Swift_Mailer;
-use Swift_SwiftException;
+use Doctrine\DBAL\Driver\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Helper\Table;
@@ -13,6 +14,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
+use function bccomp;
+use function floatval;
+use function number_format;
+use function sprintf;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * Class CustomerBalanceIntegrityCommand
@@ -21,39 +31,13 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class CustomerBalanceIntegrityCommand extends Command
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection      $connection;
+    private MailerInterface $mailer;
+    private string          $email;
+    private string          $success;
+    private string          $failure;
 
-    /**
-     * @var Swift_Mailer
-     */
-    private $mailer;
-
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var string
-     */
-    private $success;
-
-    /**
-     * @var string
-     */
-    private $failure;
-
-    /**
-     * Constructor.
-     *
-     * @param Connection   $connection
-     * @param Swift_Mailer $mailer
-     * @param string       $email
-     */
-    public function __construct(Connection $connection, Swift_Mailer $mailer, string $email)
+    public function __construct(Connection $connection, MailerInterface $mailer, string $email)
     {
         parent::__construct();
 
@@ -71,10 +55,7 @@ class CustomerBalanceIntegrityCommand extends Command
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ekyna:commerce:customer:balance-integrity')
@@ -85,10 +66,7 @@ class CustomerBalanceIntegrityCommand extends Command
             ->addOption('report', 'r', InputOption::VALUE_NONE, 'Whether to send email report');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $sendReport = $input->getOption('report');
         $applyFix = $input->getOption('fix');
@@ -111,7 +89,7 @@ class CustomerBalanceIntegrityCommand extends Command
                 false
             );
             if (!$this->getHelper('question')->ask($input, $output, $question)) {
-                return;
+                return Command::SUCCESS;
             }
         }
 
@@ -125,33 +103,29 @@ class CustomerBalanceIntegrityCommand extends Command
         $errors = false;
 
         if ($outstanding) {
-            $errors |= $this->checkOutstandingBalance($output, $applyFix);
+            $errors = $this->checkOutstandingBalance($output, $applyFix) || $errors;
         }
 
         if ($credit) {
-            $errors |= $this->checkCreditBalance($output, $applyFix);
+            $errors = $this->checkCreditBalance($output, $applyFix) || $errors;
         }
 
         $this->connection->close();
 
         if (!($sendReport && $errors)) {
-            return;
+            return Command::SUCCESS;
         }
 
-        $message =
-            \Swift_Message::newInstance(
-                'Customer balances integrity report',
-                $output->fetch(),
-                'text/plain'
-            )
-            ->setFrom($this->email)
-            ->setTo($this->email);
+        $message = new Email();
+        $message
+            ->subject('Customer balances integrity report')
+            ->text($output->fetch())
+            ->from($this->email)
+            ->to($this->email);
 
-        try {
-            $this->mailer->send($message);
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (Swift_SwiftException $e) {
-            // In case transport has bad configuration.
-        }
+        $this->mailer->send($message);
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -166,7 +140,7 @@ class CustomerBalanceIntegrityCommand extends Command
     {
         $output->writeln('Outstanding balances');
 
-        $customers = $this->connection->query(<<<SQL
+        $customers = $this->connection->executeQuery(<<<SQL
             SELECT id, number, company, first_name, last_name, parent_id, outstanding_balance, outstanding_limit 
             FROM commerce_customer
         SQL
@@ -216,10 +190,10 @@ class CustomerBalanceIntegrityCommand extends Command
         foreach ($customers as $customer) {
             $actual = -floatval($customer['outstanding_balance']);
 
-            $balanceQuery->execute(['customer_id' => $customer['id']]);
-            $expected = floatval($balanceQuery->fetchColumn(0));
+            $result = $balanceQuery->executeQuery(['customer_id' => $customer['id']]);
+            $expected = floatval($result->fetchOne());
 
-            if (0 === bccomp($actual, $expected, 3)) {
+            if (0 === bccomp((string)$actual, (string)$expected, 3)) {
                 continue;
             }
 
@@ -238,11 +212,15 @@ class CustomerBalanceIntegrityCommand extends Command
             if ($applyFix) {
                 if (0 < $customer['parent_id']) {
                     $row[] = '<comment>Has parent</comment>';
-                } elseif (1 === bccomp($expected, floatval($customer['outstanding_limit']), 3)) {
+                } elseif (1 === bccomp((string)$expected, $customer['outstanding_limit'], 3)) {
                     $row[] = '<comment>Limit overflow</comment>';
                 } else {
-                    $success = $fixQuery->execute(['balance' => -$expected, 'customer_id' => $customer['id']]);
-                    $row[] = $success ? $this->success : $this->failure;
+                    try {
+                        $fixQuery->executeQuery(['balance' => -$expected, 'customer_id' => $customer['id']]);
+                        $row[] = $this->success;
+                    } catch (Exception $e) {
+                        $row[] = $this->failure;
+                    }
                 }
             }
 
@@ -282,7 +260,7 @@ class CustomerBalanceIntegrityCommand extends Command
     {
         $output->writeln('Credit balances');
 
-        $customers = $this->connection->query(
+        $customers = $this->connection->executeQuery(
             'SELECT id, number, company, first_name, last_name, credit_balance FROM commerce_customer'
         );
 
@@ -370,13 +348,13 @@ class CustomerBalanceIntegrityCommand extends Command
             $actual = floatval($customer['credit_balance']);
             $expected = 0;
 
-            $paymentQuery->execute(['customer_id' => $customer['id']]);
-            $expected -= $payments = floatval($paymentQuery->fetchColumn(0));
+            $result = $paymentQuery->executeQuery(['customer_id' => $customer['id']]);
+            $expected -= $payments = floatval($result->fetchOne());
 
-            $refundQuery->execute(['customer_id' => $customer['id']]);
-            $expected += $refunds = floatval($refundQuery->fetchColumn(0));
+            $result = $refundQuery->executeQuery(['customer_id' => $customer['id']]);
+            $expected += $refunds = floatval($result->fetchOne());
 
-            if (0 === bccomp($actual, $expected, 3)) {
+            if (0 === bccomp((string)$actual, (string)$expected, 3)) {
                 continue;
             }
 
@@ -395,13 +373,20 @@ class CustomerBalanceIntegrityCommand extends Command
             ];
 
             if ($applyFix) {
-                if (-1 === bccomp($expected, 0, 3)) {
-                    $success = $fixQuery->execute(['balance' => 0, 'customer_id' => $customer['id']]);
-                    $row[] = ($success ? $this->success : $this->failure)
-                        . ' <comment>Missing payments or refunds</comment>';
+                if (-1 === bccomp((string)$expected, '0', 3)) {
+                    try {
+                        $success = $fixQuery->executeQuery(['balance' => 0, 'customer_id' => $customer['id']]);
+                        $row[] = $this->success . ' <comment>Missing payments or refunds</comment>';
+                    } catch (Exception $e) {
+                        $row[] = $this->failure . ' <comment>Missing payments or refunds</comment>';
+                    }
                 } else {
-                    $success = $fixQuery->execute(['balance' => $expected, 'customer_id' => $customer['id']]);
-                    $row[] = $success ? $this->success : $this->failure;
+                    try {
+                        $success = $fixQuery->executeQuery(['balance' => $expected, 'customer_id' => $customer['id']]);
+                        $row[] = $this->success;
+                    } catch (Exception $e) {
+                        $row[] = $this->failure;
+                    }
                 }
             }
 

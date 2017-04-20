@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Shipment forms</title>
     <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/shipment-form.css')) }}" rel="stylesheet" type="text/css" />
-    <link href="{{ absolute_url(asset('bundles/ekynacore/css/fontawesome.css')) }}" rel="stylesheet" type="text/css" />
+    <link href="{{ absolute_url(asset('bundles/ekynaui/css/fontawesome.css')) }}" rel="stylesheet" type="text/css" />
 </head>
 <body>
     {% for subject in subjects %}
@@ -17,10 +17,10 @@
                 {{- subject.sale.allTags|cms_tags({'text': false}) -}}
             </div>
             <h1>
-                {{ 'ekyna_commerce.order.label.singular'|trans }} <strong>{{ subject.sale.number }}</strong>
+                {{ 'order.label.singular'|trans({}, 'EkynaCommerce') }} <strong>{{ subject.sale.number }}</strong>
                 <small>
-                    {{- 'ekyna_commerce.shipment.label.singular'|trans }} <strong>{{ subject.number }}</strong>
-                    {% if subject.partial %}&nbsp;<em>({{ 'ekyna_commerce.status.partial'|trans }})</em>{% endif %}
+                    {{- 'shipment.label.singular'|trans({}, 'EkynaCommerce') }} <strong>{{ subject.number }}</strong>
+                    {% if subject.partial %}&nbsp;<em>({{ 'status.partial'|trans({}, 'EkynaCommerce') }})</em>{% endif %}
                 </small>
             </h1>
             <p>
@@ -33,10 +33,10 @@
             <table class="table table-alt-head details">
                 <thead>
                 <tr>
-                    <th colspan="2">{{ 'ekyna_core.field.designation'|trans }}</th>
-                    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.field.geocode'|trans }}</th>
-                    <th colspan="2">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                    <th colspan="2">{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                    <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                    <th>{{ 'field.geocode'|trans({}, 'EkynaCommerce') }}</th>
+                    <th colspan="2">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
                 </tr>
                 </thead>
                 <tbody class="stripped">
@@ -57,7 +57,7 @@
                                 {{ assignment.stockUnit.geocodes|join(' ')|raw }}
                             {% endfor %}
                         </td>
-                        <td class="text-right">{{ item.quantity|localizednumber }}</td>{# TODO Packing format #}
+                        <td class="text-right">{{ item.quantity|format_number }}</td>{# TODO Packing format #}
                         <td class="text-right"><span class="input">&nbsp;</span></td>
                     </tr>
                 {% endfor %}

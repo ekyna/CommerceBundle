@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
@@ -18,40 +20,20 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PaymentController
 {
-    /**
-     * @var PaymentHelper
-     */
-    private $paymentHelper;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private PaymentHelper $paymentHelper;
+    private UrlGeneratorInterface $urlGenerator;
 
 
-    /**
-     * Constructor.
-     *
-     * @param PaymentHelper         $paymentHelper
-     * @param UrlGeneratorInterface $urlGenerator
-     */
     public function __construct(PaymentHelper $paymentHelper, UrlGeneratorInterface $urlGenerator)
     {
         $this->paymentHelper = $paymentHelper;
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * Payment status action.
-     *
-     * @param Request $request
-     *
-     * @return RedirectResponse
-     */
-    public function status(Request $request): RedirectResponse
+    public function __invoke(Request $request): RedirectResponse
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException("XHR is not supported.");
+            throw new NotFoundHttpException('XHR is not supported.');
         }
 
         if (null === $payment = $this->paymentHelper->status($request)) {
@@ -62,17 +44,17 @@ class PaymentController
             $sale = $payment->getSale();
 
             if ($sale instanceof QuoteInterface) {
-                $route = 'ekyna_commerce_account_quote_show';
+                $route = 'ekyna_commerce_account_quote_read';
                 $parameters = [
                     'number' => $sale->getNumber(),
                 ];
             } elseif ($sale instanceof OrderInterface) {
-                $route = 'ekyna_commerce_account_order_show';
+                $route = 'ekyna_commerce_account_order_read';
                 $parameters = [
                     'number' => $sale->getNumber(),
                 ];
             } else {
-                throw new RuntimeException("Unexpected payment.");
+                throw new RuntimeException('Unexpected payment.');
             }
         }
 

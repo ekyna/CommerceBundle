@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Subject;
 
+use Closure;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
-use Ekyna\Component\Resource\Configuration\ConfigurationRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -13,7 +16,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SubjectChoiceType
@@ -22,49 +28,28 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class SubjectChoiceType extends AbstractType
 {
-    /**
-     * @var SubjectProviderRegistryInterface
-     */
-    private $registry;
-
-    /**
-     * @var ConfigurationRegistry
-     */
-    private $configurationRegistry;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private SubjectProviderRegistryInterface $providerRegistry;
+    private ResourceHelper                   $resourceHelper;
+    private TranslatorInterface              $translator;
 
 
-    /**
-     * Constructor.
-     *
-     * @param SubjectProviderRegistryInterface $registry
-     * @param ConfigurationRegistry            $configurationRegistry
-     * @param UrlGeneratorInterface            $urlGenerator
-     */
     public function __construct(
         SubjectProviderRegistryInterface $registry,
-        ConfigurationRegistry $configurationRegistry,
-        UrlGeneratorInterface $urlGenerator
+        ResourceHelper                   $resourceHelper,
+        TranslatorInterface              $translator
     ) {
-        $this->registry = $registry;
-        $this->configurationRegistry = $configurationRegistry;
-        $this->urlGenerator = $urlGenerator;
+        $this->providerRegistry = $registry;
+        $this->resourceHelper = $resourceHelper;
+        $this->translator = $translator;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // TODO default choice based on current subject
         // TODO Prevent submit event on subject field (to disable validation of choice list).
         // TODO transformation (provider/identifier  <=>  subject)
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             /** @var SubjectIdentity $identity */
             $identity = $event->getData();
@@ -74,7 +59,7 @@ class SubjectChoiceType extends AbstractType
             $subjectRequired = $options['required'];
 
             if (null !== $identity && $identity->hasIdentity()) {
-                $subject = $this->registry
+                $subject = $this->providerRegistry
                     ->getProviderByName($identity->getProvider())
                     ->reverseTransform($identity);
 
@@ -88,16 +73,17 @@ class SubjectChoiceType extends AbstractType
 
             $form
                 ->add('provider', ChoiceType::class, [
-                    'label'          => false,
-                    'choices'        => $this->getProviderChoices(),
-                    'choice_attr'    => $this->getProviderChoiceAttrClosure($options['context']),
-                    'select2'        => false,
-                    'disabled'       => $disabled,
-                    'required'       => $options['required'],
-                    'attr'           => [
+                    'label'                     => false,
+                    'choices'                   => $this->getProviderChoices(),
+                    'choice_translation_domain' => false,
+                    'choice_attr'               => $this->getProviderChoiceAttrClosure($options['context']),
+                    'select2'                   => false,
+                    'disabled'                  => $disabled,
+                    'required'                  => $options['required'],
+                    'attr'                      => [
                         'class' => 'provider',
                     ],
-                    'error_bubbling' => true,
+                    'error_bubbling'            => true,
                 ])
                 ->add('identifier', HiddenType::class, [
                     'disabled'       => $disabled,
@@ -108,32 +94,34 @@ class SubjectChoiceType extends AbstractType
                     'error_bubbling' => true,
                 ])
                 ->add('subject', ChoiceType::class, [
-                    'label'          => false,
-                    'choices'        => $subjectChoices,
-                    'required'       => $subjectRequired,
-                    'disabled'       => true,
-                    'select2'        => false,
-                    'attr'           => [
+                    'label'                     => false,
+                    'choices'                   => $subjectChoices,
+                    'choice_translation_domain' => false,
+                    'required'                  => $subjectRequired,
+                    'disabled'                  => true,
+                    'select2'                   => false,
+                    'attr'                      => [
                         'class' => 'subject',
                     ],
-                    'mapped'         => false,
-                    'error_bubbling' => true,
+                    'mapped'                    => false,
+                    'error_bubbling'            => true,
                 ]);
         });
     }
 
-    /**
-     * Returns the provider choices.
-     *
-     * @return array
-     */
-    private function getProviderChoices()
+    private function getProviderChoices(): array
     {
         $choices = [];
 
-        $providers = $this->registry->getProviders();
+        $providers = $this->providerRegistry->getProviders();
         foreach ($providers as $provider) {
-            $choices[$provider->getLabel()] = $provider->getName();
+            $label = $provider->getLabel();
+
+            if ($label instanceof TranslatableInterface) {
+                $label = $label->trans($this->translator);
+            }
+
+            $choices[$label] = $provider->getName();
         }
 
         return $choices;
@@ -141,39 +129,36 @@ class SubjectChoiceType extends AbstractType
 
     /**
      * Returns the provider choice attr closure.
-     *
-     * @param string $context
-     *
-     * @return \Closure
      */
-    private function getProviderChoiceAttrClosure($context)
+    private function getProviderChoiceAttrClosure(string $context): Closure
     {
         return function ($val) use ($context) {
-            $routing = $this->registry
-                ->getProviderByName($val)
-                ->getSearchRouteAndParameters($context);
+            $provider = $this->providerRegistry->getProviderByName($val);
 
-            $routing = array_replace([
-                'route'      => null,
+            $values = $provider->getSearchActionAndParameters($context);
+
+            $values = array_replace([
+                'action'      => null,
                 'parameters' => [],
-            ], $routing);
+            ], $values);
+
+            $path = $this
+                ->resourceHelper
+                ->generateResourcePath($provider->getSubjectClass(), $values['action'], $values['parameters']);
 
             return [
                 'data-config' => json_encode([
-                    'search' => $this->urlGenerator->generate($routing['route'], $routing['parameters']),
-                ])
+                    'search' => $path,
+                ]),
             ];
         };
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'          => 'ekyna_commerce.subject.label.singular',
+                'label'          => t('subject.label.singular', [], 'EkynaCommerce'),
                 'lock_mode'      => false,
                 'data_class'     => SubjectIdentity::class,
                 'error_bubbling' => false,
@@ -189,10 +174,7 @@ class SubjectChoiceType extends AbstractType
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_subject_choice';
     }

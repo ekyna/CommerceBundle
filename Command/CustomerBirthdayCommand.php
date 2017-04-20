@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,29 +21,11 @@ class CustomerBirthdayCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:customer:birthday';
 
-    /**
-     * @var CustomerRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var ResourceEventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    private CustomerRepositoryInterface $repository;
+    private ResourceEventDispatcherInterface $dispatcher;
+    private EntityManagerInterface $manager;
 
 
-    /**
-     * Constructor.
-     *
-     * @param CustomerRepositoryInterface      $repository
-     * @param ResourceEventDispatcherInterface $dispatcher
-     * @param EntityManagerInterface           $manager
-     */
     public function __construct(
         CustomerRepositoryInterface $repository,
         ResourceEventDispatcherInterface $dispatcher,
@@ -54,31 +38,26 @@ class CustomerBirthdayCommand extends Command
         $this->manager = $manager;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription("Dispatches the customer birthday event.\nDo not run more than once per day.");
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $customers = $this->repository->findWithBirthdayToday();
 
         if (empty($customers)) {
-            return;
+            return Command::SUCCESS;
         }
 
         foreach ($customers as $customer) {
             $event = $this->dispatcher->createResourceEvent($customer);
-            /** @noinspection PhpParamsInspection */
-            $this->dispatcher->dispatch(CustomerEvents::BIRTHDAY, $event);
+            $this->dispatcher->dispatch($event, CustomerEvents::BIRTHDAY);
         }
 
         $this->manager->flush();
+
+        return Command::SUCCESS;
     }
 }

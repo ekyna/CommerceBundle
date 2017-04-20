@@ -1,0 +1,17 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main %}
+    {{- support_ticket(ticket, {
+        'admin': true
+    }) -}}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/support.css')) }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+{% endblock %}

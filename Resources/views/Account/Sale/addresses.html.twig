@@ -5,7 +5,7 @@
     <div class="col-md-6">
         <p>
             <strong>
-                {{- 'ekyna_commerce.sale.field.invoice_address'|trans -}}
+                {{- 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') -}}
             </strong>
         </p>
         <div class="panel panel-default">
@@ -14,7 +14,7 @@
                 {% if sale is sale_quote and sale.editable -%}
                 <p><a href="{{ path('ekyna_commerce_account_quote_invoice_address', {'number': sale.number}) }}"
                       id="account-sale-invoice-button" class="btn btn-xs btn-primary" data-account-modal>
-                    {{- 'ekyna_core.button.edit'|trans -}}
+                    {{- 'button.edit'|trans({}, 'EkynaUi') -}}
                 </a></p>
                 {%- endif %}
             </div>
@@ -23,7 +23,7 @@
     <div class="col-md-6">
         <p>
             <strong>
-                {{- 'ekyna_commerce.sale.field.delivery_address'|trans -}}
+                {{- 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') -}}
             </strong>
         </p>
         <div class="panel panel-default">
@@ -32,7 +32,7 @@
                 {% if sale is sale_quote and sale.editable -%}
                 <p><a href="{{ path('ekyna_commerce_account_quote_delivery_address', {'number': sale.number}) }}"
                       id="account-sale-delivery-button" class="btn btn-xs btn-primary" data-account-modal>
-                    {{- 'ekyna_core.button.edit'|trans -}}
+                    {{- 'button.edit'|trans({}, 'EkynaUi') -}}
                 </a></p>
                 {%- endif %}
             </div>

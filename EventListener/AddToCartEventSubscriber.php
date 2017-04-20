@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Bundle\CoreBundle\Modal;
 use Ekyna\Bundle\CommerceBundle\Event\AddToCartEvent;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Bundle\UiBundle\Model\Modal;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AddToCartEventSubscriber
@@ -16,33 +18,14 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class AddToCartEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
+    private SubjectHelperInterface $subjectHelper;
+    private TranslatorInterface $translator;
+    private UrlGeneratorInterface $urlGenerator;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-
-    /**
-     * Constructor.
-     *
-     * @param SubjectHelperInterface $subjectHelper
-     * @param TranslatorInterface    $translator
-     * @param UrlGeneratorInterface  $urlGenerator
-     */
     public function __construct(
         SubjectHelperInterface $subjectHelper,
-        TranslatorInterface $translator,
-        UrlGeneratorInterface $urlGenerator
+        TranslatorInterface    $translator,
+        UrlGeneratorInterface  $urlGenerator
     ) {
         $this->subjectHelper = $subjectHelper;
         $this->translator = $translator;
@@ -63,22 +46,24 @@ class AddToCartEventSubscriber implements EventSubscriberInterface
         $cartPath = $this->urlGenerator->generate('ekyna_commerce_cart_checkout_index');
 
         $modal
-            ->setSize(Modal\Modal::SIZE_NORMAL)
-            ->setType(Modal\Modal::TYPE_SUCCESS)
+            ->setSize(Modal::SIZE_NORMAL)
+            ->setType(Modal::TYPE_SUCCESS)
             ->setButtons([
                 [
-                    'id'       => 'close',
-                    'label'    => 'ekyna_commerce.cart.button.continue',
-                    'icon'     => 'glyphicon glyphicon-arrow-left',
-                    'cssClass' => 'btn-default',
+                    'id'           => 'close',
+                    'label'        => 'cart.button.continue',
+                    'trans_domain' => 'EkynaCommerce',
+                    'icon'         => 'glyphicon glyphicon-arrow-left',
+                    'cssClass'     => 'btn-default',
                 ],
                 [
-                    'id'       => 'cart',
-                    'label'    => 'ekyna_commerce.cart.button.cart',
-                    'icon'     => 'glyphicon glyphicon-shopping-cart',
-                    'cssClass' => 'btn-primary',
-                    'autospin' => true,
-                    'action'   => 'function() {window.location.href="' . $cartPath . '";}',
+                    'id'           => 'cart',
+                    'label'        => 'cart.button.cart',
+                    'trans_domain' => 'EkynaCommerce',
+                    'icon'         => 'glyphicon glyphicon-shopping-cart',
+                    'cssClass'     => 'btn-primary',
+                    'autospin'     => true,
+                    'action'       => 'function() {window.location.href="' . $cartPath . '";}',
                 ],
             ]);
     }
@@ -94,11 +79,11 @@ class AddToCartEventSubscriber implements EventSubscriberInterface
 
         $cartPath = $this->urlGenerator->generate('ekyna_commerce_cart_checkout_index');
 
-        $message = $this->translator->trans('ekyna_commerce.cart.message.success', [
+        $message = $this->translator->trans('cart.message.success', [
             '%designation%' => (string)$subject,
             '%subject_url%' => $this->subjectHelper->generatePublicUrl($subject),
             '%cart_url%'    => $cartPath,
-        ]);
+        ], 'EkynaCommerce');
 
         $event
             ->setMessage($message)
@@ -108,7 +93,7 @@ class AddToCartEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $modal->setContent($message);
+        $modal->setHtml($message);
     }
 
     /**
@@ -123,15 +108,10 @@ class AddToCartEventSubscriber implements EventSubscriberInterface
         }
 
         $modal
-            ->setSize(Modal\Modal::SIZE_NORMAL)
-            ->setType(Modal\Modal::TYPE_DANGER)
+            ->setSize(Modal::SIZE_NORMAL)
+            ->setType(Modal::TYPE_DANGER)
             ->setButtons([
-                [
-                    'id'       => 'close',
-                    'label'    => 'ekyna_core.button.close',
-                    'icon'     => 'glyphicon glyphicon-remove',
-                    'cssClass' => 'btn-default',
-                ],
+                Modal::BTN_CLOSE
             ]);
     }
 
@@ -144,10 +124,10 @@ class AddToCartEventSubscriber implements EventSubscriberInterface
     {
         $subject = $event->getSubject();
 
-        $message = $this->translator->trans('ekyna_commerce.cart.message.failure', [
+        $message = $this->translator->trans('cart.message.failure', [
             '%designation%' => (string)$subject,
             '%subject_url%' => $this->subjectHelper->generatePublicUrl($subject),
-        ]);
+        ], 'EkynaCommerce');
 
         $event
             ->setMessage($message)
@@ -157,13 +137,10 @@ class AddToCartEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $modal->setContent($message);
+        $modal->setHtml($message);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AddToCartEvent::SUCCESS => [

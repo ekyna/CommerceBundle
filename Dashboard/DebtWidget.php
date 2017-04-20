@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
@@ -17,29 +19,12 @@ use Twig\Environment;
  */
 class DebtWidget extends AbstractWidgetType
 {
-    /**
-     * @var OrderInvoiceRepositoryInterface
-     */
-    protected $invoiceRepository;
+    public const NAME = 'commerce_debt';
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
+    protected OrderInvoiceRepositoryInterface  $invoiceRepository;
+    protected OrderRepositoryInterface         $orderRepository;
+    protected SupplierOrderRepositoryInterface $supplierOrderRepository;
 
-    /**
-     * @var SupplierOrderRepositoryInterface
-     */
-    protected $supplierOrderRepository;
-
-
-    /**
-     * Constructor.
-     *
-     * @param OrderInvoiceRepositoryInterface  $invoiceRepository
-     * @param OrderRepositoryInterface         $orderRepository
-     * @param SupplierOrderRepositoryInterface $supplierOrderRepository
-     */
     public function __construct(
         OrderInvoiceRepositoryInterface $invoiceRepository,
         OrderRepositoryInterface $orderRepository,
@@ -50,10 +35,7 @@ class DebtWidget extends AbstractWidgetType
         $this->supplierOrderRepository = $supplierOrderRepository;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function render(WidgetInterface $widget, Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig): string
     {
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_debt.html.twig', [
             'due_invoices'     => $this->invoiceRepository->getDueTotal(),
@@ -66,10 +48,7 @@ class DebtWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -81,11 +60,8 @@ class DebtWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getName()
+    public static function getName(): string
     {
-        return 'commerce_debt';
+        return self::NAME;
     }
 }

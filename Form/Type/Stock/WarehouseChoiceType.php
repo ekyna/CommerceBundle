@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Stock;
 
 use Doctrine\ORM\EntityRepository;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Component\Commerce\Stock\Model\WarehouseInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class WarehouseChoiceType
@@ -16,26 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class WarehouseChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $warehouseClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $warehouseClass
-     */
-    public function __construct(string $warehouseClass)
-    {
-        $this->warehouseClass = $warehouseClass;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'label'             => function (Options $options, $value) {
@@ -43,13 +28,13 @@ class WarehouseChoiceType extends AbstractType
                     return $value;
                 }
 
-                return 'ekyna_commerce.warehouse.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                return t('warehouse.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
             },
-            'class'             => $this->warehouseClass,
+            'resource'          => 'ekyna_commerce.warehouse',
             'preferred_choices' => function (WarehouseInterface $warehouse) {
                 return $warehouse->isDefault();
             },
-            'query_builder' => function (EntityRepository $repository) {
+            'query_builder'     => function (EntityRepository $repository) {
                 $qb = $repository->createQueryBuilder('w');
 
                 return $qb
@@ -61,11 +46,8 @@ class WarehouseChoiceType extends AbstractType
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return ResourceType::class;
+        return ResourceChoiceType::class;
     }
 }

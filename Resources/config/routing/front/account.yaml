@@ -1,0 +1,49 @@
+ekyna_commerce_account_address:
+    resource: "account/address.yaml"
+    prefix:
+        en: /addresses
+        fr: /adresses
+        es: /direcciones
+
+ekyna_commerce_account_balance:
+    resource: "account/balance.yaml"
+    prefix:
+        en: /balance
+        fr: /situation
+        es: /saldo
+
+ekyna_commerce_account_contact:
+    resource: "account/contact.yaml"
+    prefix:
+        en: /contacts
+        fr: /contacts
+        es: /contactos
+
+ekyna_commerce_account_invoice:
+    resource: "account/invoice.yaml"
+    prefix:
+        en: /invoices
+        fr: /factures
+        es: /facturas
+
+ekyna_commerce_account_order:
+    resource: "account/order.yaml"
+    prefix:
+        en: /orders
+        fr: /commandes
+        es: /pedidos
+
+ekyna_commerce_account_quote:
+    resource: "account/quote.yaml"
+    prefix:
+        en: /quotes
+        fr: /devis
+        es: /cotizacions
+
+ekyna_commerce_account_payment_status:
+    path: /payment/status
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\PaymentController
+    methods: GET
+    options:
+        ekyna_i18n: ~
+

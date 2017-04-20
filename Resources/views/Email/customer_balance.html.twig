@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style type="text/css">
+    <style>
         table { border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; width: 100% }
         td, th { font-size: 13px; padding: 2px 4px; border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
         p { margin-bottom: 10px; }
@@ -14,19 +14,19 @@
 {% block body %}
 {% apply spaceless %}
     {% do trans_set_locale(locale) %}
-    <p>{{ 'ekyna_commerce.notify.type.balance.message'|trans }}</p>
+    <p>{{ 'notify.type.balance.message'|trans({}, 'EkynaCommerce') }}</p>
     <table>
         <thead>
         <tr>
-            <th>{{ 'ekyna_core.field.date'|trans }}</th>
-            <th>{{ 'ekyna_core.field.number'|trans }}</th>
-            <th>{{ 'ekyna_commerce.customer.balance.order_date'|trans }}</th>
-            <th>{{ 'ekyna_commerce.order.label.singular'|trans }}</th>
-            <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
-            <th>{{ 'ekyna_core.field.label'|trans }}</th>
-            <th>{{ 'ekyna_commerce.customer.balance.debit'|trans }}</th>
-            <th>{{ 'ekyna_commerce.customer.balance.credit'|trans }}</th>
-            <th>{{ 'ekyna_commerce.customer.balance.due_date'|trans }}</th>
+            <th>{{ 'field.date'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'customer.balance.order_date'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'field.label'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'customer.balance.debit'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'customer.balance.credit'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'customer.balance.due_date'|trans({}, 'EkynaCommerce') }}</th>
         </tr>
         </thead>
         <tbody>

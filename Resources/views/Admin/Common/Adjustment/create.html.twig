@@ -1,0 +1,13 @@
+{% extends '@EkynaAdmin/Entity/Crud/create.html.twig' %}
+
+{% block title %}
+    <h1>{{ 'sale.header.adjustment.new'|trans({}, 'EkynaCommerce')|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form, {'attr': {'class': 'form-body bordeless'}}) }}
+    {% include form_template %}
+    {{ form_end(form) }}
+{% endblock main %}

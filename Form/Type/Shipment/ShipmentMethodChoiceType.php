@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Doctrine\ORM\EntityRepository;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentMethodChoiceType
@@ -14,41 +18,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentMethodChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $methodClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $methodClass
-     */
-    public function __construct($methodClass)
-    {
-        $this->methodClass = $methodClass;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'         => 'ekyna_commerce.supplier.label.singular',
-            'class'         => $this->methodClass,
+            'label'         => t('shipment_method.label.singular', [], 'EkynaCommerce'),
+            'resource'      => 'ekyna_commerce.shipment_method',
             'query_builder' => function (EntityRepository $repository) {
                 return $repository->createQueryBuilder('m')->orderBy('m.name', 'ASC');
             },
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return ResourceType::class;
+        return ResourceChoiceType::class;
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Accounting\Export\AccountingExporterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -10,6 +12,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 /**
  * Class AccountingExportCommand
@@ -20,39 +24,21 @@ class AccountingExportCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:accounting:export';
 
-    /**
-     * @var AccountingExporterInterface
-     */
-    protected $exporter;
-
-    /**
-     * @var SettingsManagerInterface
-     */
-    protected $settings;
-
-    /**
-     * @var \Swift_Mailer
-     */
-    protected $mailer;
+    protected AccountingExporterInterface $exporter;
+    protected SettingManagerInterface     $settings;
+    protected MailerInterface             $mailer;
 
 
-    /**
-     * Constructor.
-     *
-     * @param AccountingExporterInterface $exporter
-     * @param SettingsManagerInterface    $settings
-     * @param \Swift_Mailer               $mailer
-     */
     public function __construct(
         AccountingExporterInterface $exporter,
-        SettingsManagerInterface $settings,
-        \Swift_Mailer $mailer
+        SettingManagerInterface $settings,
+        MailerInterface $mailer
     ) {
         parent::__construct();
 
         $this->exporter = $exporter;
         $this->settings = $settings;
-        $this->mailer   = $mailer;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -61,8 +47,8 @@ class AccountingExportCommand extends Command
     protected function configure()
     {
         $this
-            ->addArgument('date', InputArgument::REQUIRED, "The date formatted as 'Y' or 'Y-m'.")
-            ->addOption('email', 'm', InputOption::VALUE_OPTIONAL, "The email to send the archive to.");
+            ->addArgument('date', InputArgument::REQUIRED, 'The date formatted as \'Y\' or \'Y-m\'.')
+            ->addOption('email', 'm', InputOption::VALUE_OPTIONAL, 'The email to send the archive to.');
     }
 
     /**
@@ -79,7 +65,7 @@ class AccountingExportCommand extends Command
             $year = $matches[1];
             $month = $matches[2];
         } else {
-            throw new InvalidArgumentException("Expected date as YYYY or YYYY-MM.");
+            throw new InvalidArgumentException('Expected date as YYYY or YYYY-MM.');
         }
 
         $path = $this->exporter->export($year, $month);
@@ -89,19 +75,22 @@ class AccountingExportCommand extends Command
         }
 
         $subject = sprintf(
-            "[%s] Accounting %s",
+            '[%s] Accounting %s',
             $this->settings->getParameter('general.site_name'),
             $date
         );
 
-        $message = \Swift_Message::newInstance($subject, "See attached file.");
-        $message->setFrom($this->settings->getParameter('notification.no_reply'));
-        $message->setTo($email);
-        $message->attach(\Swift_Attachment::newInstance(
-            file_get_contents($path),
-            "accounting_$date.zip",
-            'application/zip'
-        ));
+        $message = new Email();
+        $message
+            ->subject($subject)
+            ->text('See attached file.')
+            ->from($this->settings->getParameter('notification.no_reply'))
+            ->to($email)
+            ->attach(
+                file_get_contents($path),
+                "accounting_$date.zip",
+                'application/zip'
+            );
 
         $this->mailer->send($message);
     }

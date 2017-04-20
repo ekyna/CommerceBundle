@@ -1,39 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Table\Filter;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
+use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class OrderListType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-abstract class AbstractOrderListType extends ResourceTableType
+abstract class AbstractOrderListType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         if (null !== $order = $options['order']) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
-                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+                throw new UnexpectedTypeException($source, EntitySource::class);
             }
 
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($order) {
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($order): void {
                 $qb
                     ->andWhere($qb->expr()->eq($alias . '.order', ':order'))
                     ->setParameter('order', $order);
@@ -44,10 +45,10 @@ abstract class AbstractOrderListType extends ResourceTableType
             if (null !== $customer = $options['customer']) {
                 $source = $builder->getSource();
                 if (!$source instanceof EntitySource) {
-                    throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+                    throw new UnexpectedTypeException($source, EntitySource::class);
                 }
 
-                $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
+                $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($customer): void {
                     $qb
                         ->join($alias . '.order', 'o')
                         ->andWhere($qb->expr()->eq('o.customer', ':customer'))
@@ -63,7 +64,7 @@ abstract class AbstractOrderListType extends ResourceTableType
                     ->setConfigurable(true)
                     ->setProfileable(true)
                     ->addColumn('customer', Column\SaleCustomerType::class, [
-                        'label'         => 'ekyna_commerce.customer.label.singular',
+                        'label'         => t('customer.label.singular', [], 'EkynaCommerce'),
                         'property_path' => 'order',
                         'position'      => 25,
                     ])
@@ -76,7 +77,7 @@ abstract class AbstractOrderListType extends ResourceTableType
                         'position'      => 998,
                     ])
                     ->addFilter('order', CType\Filter\TextType::class, [
-                        'label'         => 'ekyna_commerce.order.label.singular',
+                        'label'         => t('order.label.singular', [], 'EkynaCommerce'),
                         'property_path' => 'order.number',
                         'position'      => 15,
                     ])
@@ -85,27 +86,27 @@ abstract class AbstractOrderListType extends ResourceTableType
                         'position'      => 30,
                     ])
                     ->addFilter('email', CType\Filter\TextType::class, [
-                        'label'         => 'ekyna_core.field.email',
+                        'label'         => t('field.email', [], 'EkynaUi'),
                         'property_path' => 'order.email',
                         'position'      => 31,
                     ])
                     ->addFilter('company', CType\Filter\TextType::class, [
-                        'label'         => 'ekyna_core.field.company',
+                        'label'         => t('field.company', [], 'EkynaUi'),
                         'property_path' => 'order.company',
                         'position'      => 32,
                     ])
                     ->addFilter('firstName', CType\Filter\TextType::class, [
-                        'label'         => 'ekyna_core.field.first_name',
+                        'label'         => t('field.first_name', [], 'EkynaUi'),
                         'property_path' => 'order.firstName',
                         'position'      => 33,
                     ])
                     ->addFilter('lastName', CType\Filter\TextType::class, [
-                        'label'         => 'ekyna_core.field.last_name',
+                        'label'         => t('field.last_name', [], 'EkynaUi'),
                         'property_path' => 'order.lastName',
                         'position'      => 34,
                     ])
                     ->addFilter('companyNumber', CType\Filter\TextType::class, [
-                        'label'         => 'ekyna_commerce.customer.field.company_number',
+                        'label'         => t('customer.field.company_number', [], 'EkynaCommerce'),
                         'property_path' => 'order.customer.companyNumber',
                         'position'      => 35,
                     ]);
@@ -118,10 +119,7 @@ abstract class AbstractOrderListType extends ResourceTableType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

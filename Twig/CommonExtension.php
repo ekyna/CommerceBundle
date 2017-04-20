@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
@@ -21,10 +23,7 @@ use Twig\TwigTest;
  */
 class CommonExtension extends AbstractExtension
 {
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -99,10 +98,7 @@ class CommonExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -134,9 +130,6 @@ class CommonExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getTests(): array
     {
         return [

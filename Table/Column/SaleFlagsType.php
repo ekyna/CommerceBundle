@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
@@ -18,49 +20,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleFlagsType extends AbstractColumnType
 {
-    /**
-     * @var FlagRenderer
-     */
-    private $renderer;
+    private FlagRenderer $renderer;
 
 
-    /**
-     * @inheritDoc
-     */
     public function __construct(FlagRenderer $renderer)
     {
         $this->renderer = $renderer;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildColumn(ColumnBuilderInterface $builder, array $options)
+    public function buildColumn(ColumnBuilderInterface $builder, array $options): void
     {
         $builder->setSortable(false);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $view->vars['value'] = $this->renderer->renderSaleFlags($view->vars['value'], ['badge' => false]);
         $view->vars['block_prefix'] = 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('label', null);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

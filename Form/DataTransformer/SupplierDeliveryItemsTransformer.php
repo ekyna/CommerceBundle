@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
-use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface;
 use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
-use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
+use Ekyna\Component\Resource\Factory\ResourceFactoryInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -17,50 +20,36 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
  */
 class SupplierDeliveryItemsTransformer implements DataTransformerInterface
 {
-    /**
-     * @var ResourceRepositoryInterface
-     */
-    private $deliveryItemRepository;
+    private ResourceFactoryInterface $deliveryItemFactory;
+    private SubjectHelperInterface   $subjectHelper;
 
-    /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param ResourceRepositoryInterface $deliveryItemRepository
-     * @param SubjectHelperInterface      $subjectHelper
-     */
     public function __construct(
-        ResourceRepositoryInterface $deliveryItemRepository,
+        ResourceFactoryInterface $deliveryItemFactory,
         SubjectHelperInterface $subjectHelper
     ) {
-        $this->deliveryItemRepository = $deliveryItemRepository;
+        $this->deliveryItemFactory = $deliveryItemFactory;
         $this->subjectHelper = $subjectHelper;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function transform($delivery)
+    public function transform($value)
     {
-        if (!$delivery instanceof SupplierDeliveryInterface) {
-            throw new TransformationFailedException("Expected instance of " . SupplierDeliveryInterface::class);
+        if (!$value instanceof SupplierDeliveryInterface) {
+            throw new TransformationFailedException('Expected instance of ' . SupplierDeliveryInterface::class);
         }
 
-        if (null === $order = $delivery->getOrder()) {
-            throw new TransformationFailedException("Supplier delivery's order must be set.");
+        if (null === $order = $value->getOrder()) {
+            throw new TransformationFailedException('Supplier delivery\'s order must be set.');
         }
 
-        $create = null === $delivery->getId();
+        $create = null === $value->getId();
 
         // For each order items
         foreach ($order->getItems() as $orderItem) {
             // If not deliveryItem not exists
-            foreach ($delivery->getItems() as $deliveryItem) {
+            foreach ($value->getItems() as $deliveryItem) {
                 if ($orderItem === $deliveryItem->getOrderItem()) {
                     continue 2;
                 }
@@ -77,8 +66,8 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
                     $geocode = $subject->getGeocode();
                 }
 
-                /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface $deliveryItem */
-                $deliveryItem = $this->deliveryItemRepository->createNew();
+                /** @var SupplierDeliveryItemInterface $deliveryItem */
+                $deliveryItem = $this->deliveryItemFactory->create();
                 $deliveryItem->setOrderItem($orderItem);
 
                 if ($create) {
@@ -87,29 +76,29 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
                         ->setGeocode($geocode);
                 }
 
-                $delivery->addItem($deliveryItem);
+                $value->addItem($deliveryItem);
             }
         }
 
-        return $delivery;
+        return $value;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function reverseTransform($delivery)
+    public function reverseTransform($value)
     {
-        if (!$delivery instanceof SupplierDeliveryInterface) {
-            throw new TransformationFailedException("Expected instance of " . SupplierDeliveryInterface::class);
+        if (!$value instanceof SupplierDeliveryInterface) {
+            throw new TransformationFailedException('Expected instance of ' . SupplierDeliveryInterface::class);
         }
 
         // Removed zero quantity delivery item
-        foreach ($delivery->getItems() as $deliveryItem) {
+        foreach ($value->getItems() as $deliveryItem) {
             if (0 >= $deliveryItem->getQuantity()) {
-                $delivery->removeItem($deliveryItem);
+                $value->removeItem($deliveryItem);
             }
         }
 
-        return $delivery;
+        return $value;
     }
 }

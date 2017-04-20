@@ -1,0 +1,27 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block title %}
+    <h1>{{ ((resource.return ? 'return' : 'shipment') ~ '.header.edit')|trans({}, 'EkynaCommerce')|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block side %}
+    {% if resource.sale is not sale_stockable_state %}
+    <div class="alert alert-warning">
+        {{ 'shipment.message.sale_is_not_stockable'|trans({}, 'EkynaCommerce')|raw }}
+    </div>
+    {% endif %}
+    {% if resource.sale|stock_can_prioritize %}
+        <div class="alert alert-info">
+            <p>{{ 'sale.prioritize.info'|trans({}, 'EkynaCommerce')|raw }}</p>
+            <p>
+                <a href="{{ admin_resource_path(resource.sale, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Order\\PrioritizeAction') }}?_redirect={{ admin_resource_path(resource, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}"
+                   class="btn btn-sm btn-primary">
+                    {{ 'sale.button.prioritize'|trans({}, 'EkynaCommerce') }}
+                </a>
+            </p>
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock side %}

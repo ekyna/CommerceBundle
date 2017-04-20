@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Newsletter;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\SubscriptionType as SubscriptionFormType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\NewsletterSubscriptionType as SubscriptionFormType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Table\Type\SubscriptionType as SubscriptionTableType;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
@@ -15,24 +17,27 @@ use Ekyna\Component\Commerce\Newsletter\Gateway\GatewayInterface;
 use Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry;
 use Ekyna\Component\Commerce\Newsletter\Model\MemberInterface;
 use Ekyna\Component\Commerce\Newsletter\Model\NewsletterSubscription;
+use Ekyna\Component\Commerce\Newsletter\Model\SubscriptionInterface;
 use Ekyna\Component\Commerce\Newsletter\Model\SubscriptionStatus;
 use Ekyna\Component\Commerce\Newsletter\Repository\AudienceRepositoryInterface;
 use Ekyna\Component\Commerce\Newsletter\Repository\MemberRepositoryInterface;
-use Ekyna\Component\Commerce\Newsletter\Repository\SubscriptionRepositoryInterface;
 use Ekyna\Component\Resource\Dispatcher\ResourceEventDispatcherInterface;
 use Ekyna\Component\Resource\Event\ResourceEvent;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
+use Ekyna\Component\Resource\Factory\FactoryFactoryInterface;
 use Ekyna\Component\Resource\Model\ResourceInterface;
 use Ekyna\Component\Table\Extension\Core\Source\ArraySource;
-use Ekyna\Component\Table\FactoryInterface;
+use Ekyna\Component\Table\TableFactoryInterface;
 use Ekyna\Component\Table\View\TableView;
+use Exception;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Templating\EngineInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Twig\Environment;
 
 /**
  * Class SubscriptionHelper
@@ -41,98 +46,41 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class SubscriptionHelper
 {
-    /**
-     * @var AudienceRepositoryInterface
-     */
-    private $audienceRepository;
-
-    /**
-     * @var MemberRepositoryInterface
-     */
-    private $memberRepository;
-
-    /**
-     * @var SubscriptionRepositoryInterface
-     */
-    private $subscriptionRepository;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var FactoryInterface
-     */
-    private $tableFactory;
-
-    /**
-     * @var GatewayRegistry
-     */
-    private $gatewayRegistry;
-
-    /**
-     * @var ResourceEventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
-
-    /**
-     * @var EngineInterface
-     */
-    private $engine;
-
-    /**
-     * @var FormInterface
-     */
-    private $form;
+    private AudienceRepositoryInterface      $audienceRepository;
+    private MemberRepositoryInterface        $memberRepository;
+    private FactoryFactoryInterface          $factoryFactory;
+    private FormFactoryInterface  $formFactory;
+    private TableFactoryInterface $tableFactory;
+    private GatewayRegistry       $gatewayRegistry;
+    private ResourceEventDispatcherInterface $dispatcher;
+    private ValidatorInterface               $validator;
+    private EntityManagerInterface           $manager;
+    private Environment                      $engine;
+    private FormInterface                    $form;
 
 
-    /**
-     * Constructor.
-     *
-     * @param AudienceRepositoryInterface      $audienceRepository
-     * @param MemberRepositoryInterface        $memberRepository
-     * @param SubscriptionRepositoryInterface  $subscriptionRepository
-     * @param FormFactoryInterface             $formFactory
-     * @param FactoryInterface                 $tableFactory
-     * @param GatewayRegistry                  $gatewayRegistry
-     * @param ResourceEventDispatcherInterface $dispatcher
-     * @param ValidatorInterface               $validator
-     * @param EntityManagerInterface           $manager
-     * @param EngineInterface                  $engine
-     */
     public function __construct(
-        AudienceRepositoryInterface $audienceRepository,
-        MemberRepositoryInterface $memberRepository,
-        SubscriptionRepositoryInterface $subscriptionRepository,
-        FormFactoryInterface $formFactory,
-        FactoryInterface $tableFactory,
-        GatewayRegistry $gatewayRegistry,
+        AudienceRepositoryInterface      $audienceRepository,
+        MemberRepositoryInterface        $memberRepository,
+        FactoryFactoryInterface          $factoryFactory,
+        FormFactoryInterface             $formFactory,
+        TableFactoryInterface            $tableFactory,
+        GatewayRegistry                  $gatewayRegistry,
         ResourceEventDispatcherInterface $dispatcher,
-        ValidatorInterface $validator,
-        EntityManagerInterface $manager,
-        EngineInterface $engine
+        ValidatorInterface               $validator,
+        EntityManagerInterface           $manager,
+        Environment                      $twig
     ) {
-        $this->audienceRepository     = $audienceRepository;
-        $this->memberRepository       = $memberRepository;
-        $this->subscriptionRepository = $subscriptionRepository;
-        $this->formFactory            = $formFactory;
-        $this->tableFactory           = $tableFactory;
-        $this->gatewayRegistry        = $gatewayRegistry;
-        $this->dispatcher             = $dispatcher;
-        $this->validator              = $validator;
-        $this->manager                = $manager;
-        $this->engine                 = $engine;
+        $this->audienceRepository = $audienceRepository;
+        $this->memberRepository = $memberRepository;
+        $this->factoryFactory = $factoryFactory;
+        $this->formFactory = $formFactory;
+        $this->tableFactory = $tableFactory;
+        $this->gatewayRegistry = $gatewayRegistry;
+        $this->dispatcher = $dispatcher;
+        $this->validator = $validator;
+        $this->manager = $manager;
+        $this->engine = $twig;
     }
 
     /**
@@ -180,11 +128,12 @@ class SubscriptionHelper
             $data = $form->getData();
 
             if (!$member = $this->memberRepository->findOneByEmail($data->getEmail())) {
-                $member = $this->memberRepository->createNew();
+                /** @var MemberInterface $member */
+                $member = $this->factoryFactory->getFactory(MemberInterface::class)->create();
                 $member->setEmail($data->getEmail());
 
                 // Pre create the member
-                $event = $this->dispatch(MemberEvents::PRE_CREATE, $member);
+                $event = $this->dispatch($member, MemberEvents::PRE_CREATE);
                 if ($event->hasErrors()) {
                     foreach ($event->getErrors() as $error) {
                         $form->addError(new FormError($error->getMessage()));
@@ -196,7 +145,8 @@ class SubscriptionHelper
 
             foreach ($data->getAudiences() as $audience) {
                 if (!$subscription = $member->getSubscription($audience)) {
-                    $subscription = $this->subscriptionRepository->createNew();
+                    /** @var SubscriptionInterface $subscription */
+                    $subscription = $this->factoryFactory->getFactory(SubscriptionInterface::class)->create();
                     $subscription
                         ->setAudience($audience)
                         ->setMember($member);
@@ -270,7 +220,7 @@ class SubscriptionHelper
         $customer = $parameters['customer'];
         if ($customer instanceof CustomerInterface) {
             $parameters['customer'] = $customer->getKey();
-            $parameters['email']    = $customer->getEmail();
+            $parameters['email'] = $customer->getEmail();
         }
 
         $member = $this->memberRepository->findOneByEmail($parameters['email']);
@@ -377,10 +327,11 @@ class SubscriptionHelper
         $member = $this->memberRepository->findOneByEmail($email);
         if (!$member) {
             // Member not found -> create member
-            $member = $this->memberRepository->createNew();
+            /** @var MemberInterface $member */
+            $member = $this->factoryFactory->getFactory(MemberInterface::class)->create();
             $member->setEmail($email);
 
-            $event = $this->dispatch(MemberEvents::PRE_CREATE, $member);
+            $event = $this->dispatch($member, MemberEvents::PRE_CREATE);
 
             if ($event->isPropagationStopped()) {
                 $error = array_map(function (ResourceMessage $message) {
@@ -404,12 +355,13 @@ class SubscriptionHelper
         $subscription = $member->getSubscription($audience);
         if (!$subscription) {
             // subscription not found -> create subscription
-            $subscription = $this->subscriptionRepository->createNew();
+            /** @var SubscriptionInterface $subscription */
+            $subscription = $this->factoryFactory->getFactory(SubscriptionInterface::class)->create();
             $subscription
                 ->setAudience($audience)
                 ->setMember($member);
 
-            $event = $this->dispatch(SubscriptionEvents::PRE_CREATE, $subscription);
+            $event = $this->dispatch($subscription, SubscriptionEvents::PRE_CREATE);
             if ($event->isPropagationStopped()) {
                 $error = array_map(function (ResourceMessage $message) {
                     return $message->getMessage();
@@ -442,9 +394,9 @@ class SubscriptionHelper
         $list = $this->validator->validate($member);
         if ($list->count()) {
             $errors = [];
-            /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+            /** @var ConstraintViolationInterface $violation */
             foreach ($list as $violation) {
-                $index          = 'email' === $violation->getPropertyPath() ? 'email' : $key;
+                $index = 'email' === $violation->getPropertyPath() ? 'email' : $key;
                 $errors[$index] = $violation->getMessage();
             }
 
@@ -457,7 +409,7 @@ class SubscriptionHelper
         try {
             $this->manager->persist($member);
             $this->manager->flush();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'errors'  => [
@@ -476,8 +428,6 @@ class SubscriptionHelper
      *
      * @param string $key   The audience key
      * @param string $email The email address
-     *
-     * @return array
      */
     public function unsubscribe(string $key, string $email): array
     {
@@ -510,7 +460,7 @@ class SubscriptionHelper
         try {
             $this->manager->persist($member);
             $this->manager->flush();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'errors'  => [
@@ -524,10 +474,6 @@ class SubscriptionHelper
 
     /**
      * Returns the audiences.
-     *
-     * @param bool $public
-     *
-     * @return array
      */
     private function findAudiences(bool $public): array
     {
@@ -540,18 +486,13 @@ class SubscriptionHelper
 
     /**
      * Dispatches the resource event.
-     *
-     * @param string            $name
-     * @param ResourceInterface $resource
-     *
-     * @return ResourceEventInterface
      */
-    private function dispatch(string $name, ResourceInterface $resource): ResourceEventInterface
+    private function dispatch(ResourceInterface $resource, string $name): ResourceEventInterface
     {
         $event = new ResourceEvent();
         $event->setResource($resource);
 
-        $this->dispatcher->dispatch($name, $event);
+        $this->dispatcher->dispatch($event, $name);
 
         return $event;
     }

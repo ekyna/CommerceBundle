@@ -1,69 +1,74 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentTypes;
-use Ekyna\Bundle\CoreBundle\Form\Type\CollectionPositionType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
+use Ekyna\Bundle\ResourceBundle\Model\ConstantsInterface;
+use Ekyna\Bundle\UiBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as AM;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes as AT;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class AdjustmentType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AdjustmentType extends ResourceFormType
+class AdjustmentType extends AbstractResourceType
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('designation', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.designation',
+                'label'    => t('field.designation', [], 'EkynaUi'),
                 'required' => false,
                 'attr'     => [
-                    'placeholder' => 'ekyna_core.field.designation',
+                    'placeholder' => t('field.designation', [], 'EkynaUi'),
                 ],
             ])
-            ->add('type', Type\ChoiceType::class, [
-                'label'             => 'ekyna_core.field.type',
-                'choices'           => AdjustmentTypes::getChoices($options['types'], AdjustmentTypes::FILTER_RESTRICT),
+            ->add('type', ConstantChoiceType::class, [
+                'label'             => t('field.type', [], 'EkynaUi'),
+                'class'             => AdjustmentTypes::class,
+                'filter'            => $options['types'],
+                'filter_mode'       => ConstantsInterface::FILTER_RESTRICT,
                 'preferred_choices' => [AT::TYPE_DISCOUNT],
                 'select2'           => false,
                 'attr'              => [
-                    'placeholder' => 'ekyna_core.field.type',
+                    'placeholder' => t('field.type', [], 'EkynaUi'),
                 ],
             ])
-            ->add('mode', Type\ChoiceType::class, [
-                'label'             => 'ekyna_core.field.mode',
-                'choices'           => AdjustmentModes::getChoices($options['modes'], AdjustmentModes::FILTER_RESTRICT),
+            ->add('mode', ConstantChoiceType::class, [
+                'label'             => t('field.mode', [], 'EkynaUi'),
+                'class'             => AdjustmentModes::class,
+                'filter'            => $options['modes'],
+                'filter_mode'       => ConstantsInterface::FILTER_RESTRICT,
                 'preferred_choices' => [AM::MODE_PERCENT],
                 'select2'           => false,
                 'attr'              => [
-                    'placeholder' => 'ekyna_core.field.mode',
+                    'placeholder' => t('field.mode', [], 'EkynaUi'),
                 ],
             ])
             ->add('amount', Type\NumberType::class, [
-                'label' => 'ekyna_core.field.value',
-                'scale' => 2,
-                'attr'  => [
-                    'placeholder' => 'ekyna_core.field.value',
+                'label'   => t('field.value', [], 'EkynaUi'),
+                'decimal' => true,
+                'scale'   => 5,
+                'attr'    => [
+                    'placeholder' => t('field.value', [], 'EkynaUi'),
                 ],
             ])
             ->add('position', CollectionPositionType::class);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -76,10 +81,7 @@ class AdjustmentType extends ResourceFormType
             ->setAllowedTypes('modes', 'array');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_adjustment';
     }

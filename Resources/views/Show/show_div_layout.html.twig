@@ -1,15 +1,15 @@
-{%- block widget_attributes -%}{% for key, value in attr %} {{ key }}="{{ value }}"{% endfor -%}{% endblock widget_attributes -%}
+{% use '@EkynaAdmin/Show/show_div_layout.html.twig' %}
 
 
 {%- block commerce_customer_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
     {%- if value -%}
-        <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': value.id}) }}" class="show-entity">
-            {{- customer|identity -}}
+        <a href="{{ admin_resource_path(value, 'Ekyna\\Bundle\\AdminBundle\\Action\\ReadAction') }}" class="show-entity">
+            {{- value|identity -}}
         </a>
     {%- else -%}
-        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+        <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
     {%- endif -%}
     </div>
 {%- endblock commerce_customer_widget -%}
@@ -35,7 +35,7 @@
 {%- endblock commerce_phone_widget -%}
 
 
-{%- block commerce_currency_subject_amount_widget -%}
+{%- block commerce_amount_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
         {%- if value is not empty -%}
@@ -48,12 +48,12 @@
             &nbsp;&nbsp;
         {%- endif -%}
     </div>
-{%- endblock commerce_currency_subject_amount_widget -%}
+{%- endblock commerce_amount_widget -%}
 
 
-{%- block commerce_vat_display_mode_widget -%}
+{%- block commerce_vat_mode_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
-        <span class="label label-{{ theme }}">{{ value|trans }}</span>
+        <span class="label label-{{ theme }}">{{ value|trans({}, domain|default(null)) }}</span>
     </div>
-{%- endblock commerce_vat_display_mode_widget -%}
+{%- endblock commerce_vat_mode_widget -%}

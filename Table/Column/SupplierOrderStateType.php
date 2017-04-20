@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
@@ -16,42 +18,24 @@ use Ekyna\Component\Table\View\CellView;
  */
 class SupplierOrderStateType extends AbstractColumnType
 {
-    /**
-     * @var ConstantsHelper
-     */
-    private $constantHelper;
+    private ConstantsHelper $constantHelper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param ConstantsHelper $constantHelper
-     */
     public function __construct(ConstantsHelper $constantHelper)
     {
         $this->constantHelper = $constantHelper;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $view->vars['value'] = $this->constantHelper->renderSupplierOrderStateBadge($view->vars['value']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

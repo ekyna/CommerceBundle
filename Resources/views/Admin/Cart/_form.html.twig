@@ -1,144 +1,134 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    <li class="active">
-        <a href="#cart-general" id="toggle-general" data-toggle="tab">
-            {{ 'ekyna_core.field.general'|trans }}
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_tabs -%}
+    {{ parent() }}
+    <li>
+        <a href="#{{ resource_name }}-addresses" id="toggle-addresses" data-toggle="tab">
+            {{ 'address.label.plural'|trans({}, 'EkynaCommerce') }}
         </a>
     </li>
     <li>
-        <a href="#cart-addresses" id="toggle-addresses" data-toggle="tab">
-            {{ 'ekyna_commerce.address.label.plural'|trans }}
+        <a href="#{{ resource_name }}-information" id="toggle-information" data-toggle="tab">
+            {{ 'field.information'|trans({}, 'EkynaUi') }}
         </a>
     </li>
-    <li>
-        <a href="#cart-information" id="toggle-information" data-toggle="tab">
-            {{ 'ekyna_core.field.information'|trans }}
-        </a>
-    </li>
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="cart-general">
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.number, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.currency, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.locale, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-4">
+                {{ form_row(form.number, {'label_col': 6, 'widget_col': 6}) }}
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.customer, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+            <div class="col-md-4">
+                {{ form_row(form.currency, {'label_col': 6, 'widget_col': 6}) }}
             </div>
-            <hr>
-            <div class="form-group">
-                <div class="col-md-10 col-md-offset-2">
-                    <p><em>{{ 'ekyna_commerce.sale.message.provide_customer_or_data'|trans }}</em></p>
-                </div>
-            </div>
-            {{ form_row(form.identity) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.email, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.companyNumber, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.vatValid, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.shipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.paymentMethod, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.autoShipping, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.depositTotal, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.autoDiscount, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.autoNotify, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.outstandingLimit, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.taxExempt, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.expiresAt, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+            <div class="col-md-4">
+                {{ form_row(form.locale, {'label_col': 6, 'widget_col': 6}) }}
             </div>
         </div>
-        <div class="tab-pane" id="cart-addresses">
-            {{ form_row(form.invoiceAddress) }}
-            <hr>
-            {{ form_row(form.deliveryAddress) }}
-            <hr>
-            {{ form_row(form.relayPoint) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.customer, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
         </div>
-        <div class="tab-pane" id="cart-information">
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.voucherNumber, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.originNumber, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+        <hr>
+        <div class="form-group">
+            <div class="col-md-10 col-md-offset-2">
+                <p><em>{{ 'sale.message.provide_customer_or_data'|trans({}, 'EkynaCommerce') }}</em></p>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    {{ form_row(form.title) }}
-                </div>
+        </div>
+        {{ form_row(form.identity) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.email, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            {{ form_row(form.comment) }}
-            {{ form_row(form.documentComment) }}
-            {{ form_row(form.description) }}
-            {{ form_row(form.preparationNote) }}
+            <div class="col-md-6">
+                {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.companyNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.vatValid, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.shipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.paymentMethod, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.autoShipping, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.depositTotal, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.autoDiscount, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.autoNotify, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.outstandingLimit, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.taxExempt, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.expiresAt, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
         </div>
     </div>
-    {{ ivory_google_api() }}
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+    <div class="tab-pane" id="{{ resource_name }}-addresses">
+        {{ form_row(form.invoiceAddress) }}
+        <hr>
+        {{ form_row(form.deliveryAddress) }}
+        <hr>
+        {{ form_row(form.relayPoint) }}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-information">
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.voucherNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.originNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ form_row(form.title) }}
+            </div>
+        </div>
+        {{ form_row(form.comment) }}
+        {{ form_row(form.documentComment) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.preparationNote) }}
+    </div>
+{%- endblock main_contents %}

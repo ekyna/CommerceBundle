@@ -1,0 +1,5 @@
+namespaces:
+    ekyna_commerce:
+        label: label
+        trans_domain: EkynaCommerce
+        prefix: /commerce

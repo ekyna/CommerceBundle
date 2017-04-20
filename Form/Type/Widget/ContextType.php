@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Widget;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
@@ -11,6 +13,11 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function count;
+use function json_decode;
+use function json_encode;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ContextType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Widget
@@ -18,10 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ContextType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $param = $builder
             ->create('param', HiddenType::class)
@@ -31,20 +35,20 @@ class ContextType extends AbstractType
                         return null;
                     }
 
-                    return \json_encode($value);
+                    return json_encode($value);
                 },
                 function ($value) {
                     if (empty($value)) {
                         return null;
                     }
 
-                    return \json_decode($value, true);
+                    return json_decode($value, true);
                 }
             ));
 
         $builder
             ->add('country', CountryChoiceType::class, [
-                'label'   => 'ekyna_commerce.context.field.delivery_country',
+                'label'   => t('context.field.delivery_country', [], 'EkynaCommerce'),
                 'select2' => true,
             ])
             ->add('currency', CurrencyChoiceType::class, [
@@ -63,10 +67,7 @@ class ContextType extends AbstractType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('locales')

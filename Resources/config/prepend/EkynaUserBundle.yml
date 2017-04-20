@@ -1,7 +1,0 @@
-ekyna_user:
-    account:
-        enable: true
-        resetting: true
-        username: false
-        register: false
-        profile: false

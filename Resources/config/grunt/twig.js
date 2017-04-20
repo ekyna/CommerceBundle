@@ -5,6 +5,7 @@ module.exports = function (grunt, options) {
                 amd_wrapper: true,
                 amd_define: 'ekyna-commerce/templates',
                 variable: 'templates',
+                each_template: '{{ variable }}["{{ filepath }}"] = Twig.twig({ allowInlineIncludes: true, id: "{{ filepath }}", data: {{ compiled }} });',
                 template_key: function(path) {
                     var split = path.split('/');
                     return '@EkynaCommerce/Js/' + split[split.length-1];
@@ -18,6 +19,7 @@ module.exports = function (grunt, options) {
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/relay_point_list.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/stock_unit_rows.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/ticket.html.twig',
+                    'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/ticket_attachment.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/ticket_body.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/ticket_footer.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/ticket_header.html.twig',

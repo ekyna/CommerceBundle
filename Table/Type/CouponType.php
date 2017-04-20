@@ -1,33 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
-use Ekyna\Component\Table\Exception\InvalidArgumentException;
+use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CouponType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CouponType extends ResourceTableType
+class CouponType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $source = $builder->getSource();
         if (!$source instanceof EntitySource) {
-            throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+            throw new UnexpectedTypeException($source, EntitySource::class);
         }
 
         if ($customer = $options['customer']) {
@@ -39,13 +42,13 @@ class CouponType extends ResourceTableType
                 ->setExportable(false)
                 ->setProfileable(false);
 
-            $initializer = function (QueryBuilder $qb, $alias) use ($customer) {
+            $initializer = function (QueryBuilder $qb, string $alias) use ($customer): void {
                 $qb
                     ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
                     ->setParameter('customer', $customer);
             };
         } else {
-            $initializer = function (QueryBuilder $qb, $alias) {
+            $initializer = function (QueryBuilder $qb, string $alias): void {
                 $qb->andWhere($qb->expr()->isNull($alias . '.customer'));
             };
         }
@@ -54,113 +57,97 @@ class CouponType extends ResourceTableType
 
         $builder
             ->addColumn('code', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.code',
+                'label'                => t('field.code', [], 'EkynaUi'),
                 'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_coupon_admin_show',
-                'route_parameters_map' => ['couponId' => 'id'],
                 'position'             => 10,
             ])
             // TODO usage column
             ->addColumn('usage', CType\Column\NumberType::class, [
-                'label'     => 'ekyna_commerce.coupon.field.usage',
+                'label'     => t('coupon.field.usage', [], 'EkynaCommerce'),
                 'precision' => 0,
                 'sortable'  => true,
                 'position'  => 20,
             ])
             ->addColumn('limit', CType\Column\NumberType::class, [
-                'label'     => 'ekyna_commerce.coupon.field.limit',
+                'label'     => t('coupon.field.limit', [], 'EkynaCommerce'),
                 'precision' => 0,
                 'sortable'  => true,
                 'position'  => 30,
             ])
             ->addColumn('mode', CType\Column\ChoiceType::class, [
-                'label'    => 'ekyna_core.field.mode',
+                'label'    => t('field.mode', [], 'EkynaUi'),
                 'choices'  => AdjustmentModes::getChoices(),
                 'sortable' => true,
                 'position' => 40,
             ])
             ->addColumn('amount', CType\Column\NumberType::class, [
                 // TODO format regarding to mode
-                'label'    => 'ekyna_core.field.amount',
+                'label'    => t('field.amount', [], 'EkynaUi'),
                 'sortable' => true,
                 'position' => 50,
             ])
             ->addColumn('startAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.from_date',
+                'label'       => t('field.from_date', [], 'EkynaUi'),
                 'time_format' => 'none',
                 'sortable'    => true,
                 'position'    => 60,
             ])
             ->addColumn('endAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.from_date',
+                'label'       => t('field.from_date', [], 'EkynaUi'),
                 'time_format' => 'none',
                 'sortable'    => true,
                 'position'    => 70,
             ])
             ->addColumn('designation', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.designation',
+                'label'    => t('field.designation', [], 'EkynaUi'),
                 'sortable' => true,
                 'position' => 80,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_coupon_admin_edit',
-                        'route_parameters_map' => ['couponId' => 'id'],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_coupon_admin_remove',
-                        'route_parameters_map' => ['couponId' => 'id'],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    UpdateAction::class,
+                    DeleteAction::class,
                 ],
             ])
             ->addFilter('code', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.code',
+                'label'    => t('field.code', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('usage', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.coupon.field.usage',
+                'label'    => t('coupon.field.usage', [], 'EkynaCommerce'),
                 'position' => 20,
             ])
             ->addFilter('limit', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.coupon.field.limit',
+                'label'    => t('coupon.field.limit', [], 'EkynaCommerce'),
                 'position' => 30,
             ])
             ->addFilter('mode', CType\Filter\ChoiceType::class, [
-                'label'    => 'ekyna_core.field.mode',
+                'label'    => t('field.mode', [], 'EkynaUi'),
                 'choices'  => AdjustmentModes::getChoices(),
                 'position' => 40,
             ])
             ->addFilter('amount', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_core.field.value',
+                'label'    => t('field.value', [], 'EkynaUi'),
                 'position' => 50,
             ])
             ->addFilter('startAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.from_date',
+                'label'    => t('field.from_date', [], 'EkynaUi'),
                 'time'     => false,
                 'position' => 60,
             ])
             ->addFilter('endAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.to_date',
+                'label'    => t('field.to_date', [], 'EkynaUi'),
                 'time'     => false,
                 'position' => 70,
             ])
             ->addFilter('designation', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.designation',
+                'label'    => t('field.designation', [], 'EkynaUi'),
                 'position' => 80,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

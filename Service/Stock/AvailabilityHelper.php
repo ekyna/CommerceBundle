@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Stock\Helper\AbstractAvailabilityHelper;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AvailabilityHelper
@@ -13,42 +15,25 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class AvailabilityHelper extends AbstractAvailabilityHelper
 {
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
+    protected TranslatorInterface $translator;
+    protected string              $prefix;
 
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-
-    /**
-     * Constructor.
-     *
-     * @param FormatterFactory    $formatterFactory
-     * @param TranslatorInterface $translator
-     * @param int                 $inStockLimit
-     * @param string              $prefix
-     */
     public function __construct(
-        FormatterFactory $formatterFactory,
+        FormatterFactory    $formatterFactory,
         TranslatorInterface $translator,
-        int $inStockLimit = 100,
-        string $prefix = 'ekyna_commerce.stock_subject.availability.'
+        int                 $inStockLimit = 100,
+        string              $prefix = 'stock_subject.availability.'
     ) {
         parent::__construct($formatterFactory, $inStockLimit);
 
         $this->translator = $translator;
-        $this->prefix     = $prefix;
+        $this->prefix = $prefix;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function translate(string $id, array $parameters = [], $short = false): string
+    protected function translate(string $id, array $parameters = [], bool $short = false): string
     {
-        return $this->translator->trans($this->prefix . ($short ? 'short.' : 'long.') . $id, $parameters);
+        return $this
+            ->translator
+            ->trans($this->prefix . ($short ? 'short.' : 'long.') . $id, $parameters, 'EkynaCommerce');
     }
 }

@@ -41,7 +41,7 @@ class DocumentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getFilename()
     {
@@ -72,7 +72,7 @@ class DocumentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getTemplate()
     {
@@ -80,7 +80,7 @@ class DocumentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getParameters()
     {

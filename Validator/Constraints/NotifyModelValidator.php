@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Validator\Constraints;
 
-use Ekyna\Bundle\CommerceBundle\Entity\NotifyModel as Entity;
+use Ekyna\Bundle\CommerceBundle\Model\NotifyModelInterface;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
-use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
+use Ekyna\Component\Resource\Repository\ResourceRepositoryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -44,8 +44,8 @@ class NotifyModelValidator extends ConstraintValidator
      */
     public function validate($model, Constraint $constraint)
     {
-        if (!$model instanceof Entity) {
-            throw new UnexpectedTypeException($model, Entity::class);
+        if (!$model instanceof NotifyModelInterface) {
+            throw new UnexpectedTypeException($model, NotifyModelInterface::class);
         }
         if (!$constraint instanceof NotifyModel) {
             throw new UnexpectedTypeException($constraint, NotifyModel::class);
@@ -67,7 +67,7 @@ class NotifyModelValidator extends ConstraintValidator
             return;
         }
 
-        /** @var Entity $found */
+        /** @var NotifyModelInterface $found */
         if (!$found = $this->repository->findOneBy(['type' => $type])) {
             return;
         }

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Bundle\CommerceBundle\Form\ChoiceList\CurrencyChoiceLoader;
-use Ekyna\Bundle\CoreBundle\Form\DataTransformer\ObjectToIdentifierTransformer;
+use Ekyna\Bundle\ResourceBundle\Form\DataTransformer\ResourceToIdentifierTransformer;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
 use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;
@@ -14,6 +16,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function strtoupper;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class CurrencyChoiceType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
@@ -21,36 +26,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CurrencyChoiceType extends AbstractType
 {
-    /**
-     * @var CurrencyProviderInterface
-     */
-    private $currencyProvider;
-
-    /**
-     * @var LocaleProviderInterface
-     */
-    private $localeProvider;
+    private CurrencyProviderInterface $currencyProvider;
+    private LocaleProviderInterface   $localeProvider;
 
 
-    /**
-     * Constructor.
-     *
-     * @param CurrencyProviderInterface $currencyProvider
-     * @param LocaleProviderInterface   $localeProvider
-     */
     public function __construct(CurrencyProviderInterface $currencyProvider, LocaleProviderInterface $localeProvider)
     {
         $this->currencyProvider = $currencyProvider;
         $this->localeProvider = $localeProvider;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @noinspection PhpParamsInspection */
-        $builder->addModelTransformer(new ObjectToIdentifierTransformer(
+        $builder->addModelTransformer(new ResourceToIdentifierTransformer(
             $this->currencyProvider->getCurrencyRepository(),
             'code',
             $options['multiple']
@@ -63,10 +51,7 @@ class CurrencyChoiceType extends AbstractType
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $userCurrency = $this->currencyProvider->getCurrency();
 
@@ -77,7 +62,8 @@ class CurrencyChoiceType extends AbstractType
                         return $value;
                     }
 
-                    return 'ekyna_commerce.currency.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    $id = 'currency.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    return t($id, [], 'EkynaCommerce');
                 },
                 'enabled'                   => true,
                 'choice_loader'             => function (Options $options) {
@@ -88,7 +74,7 @@ class CurrencyChoiceType extends AbstractType
                     );
                 },
                 'choice_translation_domain' => false,
-                'preferred_choices'         => function (string $code) use ($userCurrency) {
+                'preferred_choices'         => function (string $code) use ($userCurrency): bool {
                     return strtoupper($code) === strtoupper($userCurrency->getCode());
                 },
             ])
@@ -97,18 +83,15 @@ class CurrencyChoiceType extends AbstractType
                 $value = (array)$value;
 
                 if (!isset($value['placeholder'])) {
-                    $value['placeholder'] = 'ekyna_commerce.currency.label.' .
-                        ($options['multiple'] ? 'plural' : 'singular');
+                    $id = 'currency.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    $value['placeholder'] = t($id, [], 'EkynaCommerce');
                 }
 
                 return $value;
             });
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }

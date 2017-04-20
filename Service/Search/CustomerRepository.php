@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Search;
 
-use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
+use Ekyna\Component\Resource\Bridge\Symfony\Elastica\SearchRepository;
 use Ekyna\Component\Resource\Search\Request;
 use Ekyna\Component\Resource\Search\Result;
 use Elastica\Query;
@@ -12,11 +14,8 @@ use Elastica\Query;
  * @package Ekyna\Bundle\CommerceBundle\Service\Search
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class CustomerRepository extends ResourceRepository
+class CustomerRepository extends SearchRepository
 {
-    /**
-     * @inheritDoc
-     */
     protected function createQuery(Request $request): Query\AbstractQuery
     {
         $query = parent::createQuery($request);
@@ -49,13 +48,10 @@ class CustomerRepository extends ResourceRepository
         return $result
             ->setTitle($source['text'])
             ->setIcon('fa fa-user')
-            ->setRoute('ekyna_commerce_customer_admin_show')
+            ->setRoute('admin_ekyna_commerce_customer_read') // TODO Use resource/action
             ->setParameters(['customerId' => $source['id']]);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getDefaultFields(): array
     {
         return [

@@ -1,0 +1,14 @@
+{% extends '@EkynaAdmin/Entity/Crud/delete.html.twig' %}
+
+{% block title %}
+    <h1>{{ ((resource.credit ? 'credit' : 'invoice') ~ '.header.remove')|trans({'%name%': resource.number}, 'EkynaCommerce')|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block side %}
+    {{ parent() }}
+    {% if resource.sale is not null %}
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' with {'sale': resource.sale} %}
+    {% endif %}
+{% endblock side %}

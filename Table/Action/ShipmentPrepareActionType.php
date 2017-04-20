@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_map;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentPrepareActionType
@@ -16,17 +22,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentPrepareActionType extends AbstractActionType
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -44,11 +41,11 @@ class ShipmentPrepareActionType extends AbstractActionType
             $table->getContext()
         );
 
-        $shipments = array_map(function(RowInterface $row) {
-            return $row->getData();
+        $shipments = array_map(function (RowInterface $row) {
+            return $row->getData(null);
         }, $rows);
 
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+        /** @var ShipmentInterface $shipment */
         foreach ($shipments as $shipment) {
             $state = $shipment->getState();
             if (!(ShipmentStates::isPreparableState($state) || $state === ShipmentStates::STATE_CANCELED)) {
@@ -65,11 +62,8 @@ class ShipmentPrepareActionType extends AbstractActionType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'ekyna_commerce.shipment.action.prepare');
+        $resolver->setDefault('label', t('shipment.action.prepare', [], 'EkynaCommerce'));
     }
 }

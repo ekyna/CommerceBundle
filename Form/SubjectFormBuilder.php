@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type as CO;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\PriceType;
 use Ekyna\Component\Commerce\Common\Model as Common;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Extension\Core\Type as SF;
-use Ekyna\Bundle\CommerceBundle\Form\Type as CO;
+use Symfony\Component\Form\FormInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SubjectFormBuilder
@@ -15,33 +19,17 @@ use Ekyna\Bundle\CommerceBundle\Form\Type as CO;
  */
 class SubjectFormBuilder
 {
-    /**
-     * @var FormInterface
-     */
-    protected $form;
+    protected FormInterface $form;
 
-
-    /**
-     * Initializes the builder.
-     *
-     * @param FormInterface $form
-     */
     public function initialize(FormInterface $form)
     {
         $this->form = $form;
     }
 
-    /**
-     * Adds the customer groups field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addCustomerGroupsField(array $options = [])
+    public function addCustomerGroupsField(array $options = []): SubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.customer_group.label.plural',
+            'label'    => t('customer_group.label.plural', [], 'EkynaCommerce'),
             'multiple' => true,
             'required' => false,
         ], $options);
@@ -51,17 +39,10 @@ class SubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the designation field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addDesignationField(array $options = [])
+    public function addDesignationField(array $options = []): SubjectFormBuilder
     {
         $options = array_replace([
-            'label' => 'ekyna_core.field.designation',
+            'label' => t('field.designation', [], 'EkynaUi'),
         ], $options);
 
         $this->form->add('designation', SF\TextType::class, $options);
@@ -69,17 +50,10 @@ class SubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the net price field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addNetPriceField(array $options = [])
+    public function addNetPriceField(array $options = []): SubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.field.net_price',
+            'label'    => t('field.net_price', [], 'EkynaCommerce'),
             'required' => !(isset($options['disabled']) && $options['disabled']),
         ], $options);
 
@@ -88,19 +62,12 @@ class SubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the adjustments field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addAdjustmentsField(array $options = [])
+    public function addAdjustmentsField(array $options = []): SubjectFormBuilder
     {
         $options = array_replace([
-            'label'                 => 'ekyna_commerce.adjustment.label.plural',
-            'add_button_text'       => 'ekyna_commerce.sale.form.add_item_adjustment',
-            'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_item_adjustment',
+            'label'                 => t('adjustment.label.plural', [], 'EkynaCommerce'),
+            'add_button_text'       => t('sale.form.add_item_adjustment', [], 'EkynaCommerce'),
+            'delete_button_confirm' => t('sale.form.remove_item_adjustment', [], 'EkynaCommerce'),
             'attr'                  => ['label_col' => 2, 'widget_col' => 10],
             'modes'                 => [Common\AdjustmentModes::MODE_FLAT],
             'types'                 => [Common\AdjustmentTypes::TYPE_INCLUDED],
@@ -112,14 +79,7 @@ class SubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the tax group field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addTaxGroupField(array $options = [])
+    public function addTaxGroupField(array $options = []): SubjectFormBuilder
     {
         /*$options = array_replace([
             'allow_new' => true,

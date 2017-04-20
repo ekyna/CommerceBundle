@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
 use Ekyna\Bundle\AdminBundle\Show\View;
 use Ekyna\Bundle\CommerceBundle\Model\VatDisplayModes;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class VatDisplayModeType
@@ -17,7 +21,7 @@ class VatDisplayModeType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function build(View $view, $value, array $options = [])
+    public function build(View $view, $value, array $options = []): void
     {
         parent::build($view, $value, $options);
 
@@ -25,24 +29,22 @@ class VatDisplayModeType extends AbstractType
             $view->vars['value'] = VatDisplayModes::getLabel($value);
             $view->vars['theme'] = VatDisplayModes::getTheme($value);
         } else {
-            $view->vars['value'] = 'ekyna_core.field.default';
+            $view->vars['value'] = t('field.default', [], 'EkynaUi');
             $view->vars['theme'] = 'default';
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'ekyna_commerce.pricing.field.vat_display_mode');
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults([
+            'label' => t('pricing.field.vat_display_mode', [], 'EkynaCommerce'),
+        ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getWidgetPrefix()
+    public static function getName(): string
     {
-        return 'commerce_vat_display_mode';
+        return 'commerce_vat_mode';
     }
 }

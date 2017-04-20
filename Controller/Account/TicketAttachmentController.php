@@ -1,15 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketAttachmentType;
-use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
-use Ekyna\Bundle\CoreBundle\Modal\Modal;
-use Ekyna\Component\Resource\Model\Actions;
-use Symfony\Component\Form\FormError;
+use Ekyna\Bundle\ResourceBundle\Service\Filesystem\FilesystemHelper;
+use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UiBundle\Model\Modal;
+use Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface;
+use Ekyna\Component\Resource\Action\Permission;
+use League\Flysystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class TicketAttachmentController
@@ -18,29 +26,29 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
  */
 class TicketAttachmentController extends AbstractTicketController
 {
-    /**
-     * Ticket attachment new action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function newAction(Request $request)
+    private Filesystem $filesystem;
+
+    public function setFilesystem(Filesystem $filesystem): void
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    public function create(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $message = $this->findMessage($request);
 
-        /** @var \Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface $attachment */
-        $attachment = $this->get('ekyna_commerce.ticket_attachment.repository')->createNew();
+        /** @var TicketAttachmentInterface $attachment */
+        $attachment = $this->factoryFactory->getFactory(TicketAttachmentInterface::class)->create();
         $attachment->setMessage($message);
 
-        $this->denyAccessUnlessGranted(Actions::CREATE, $attachment);
+        $this->denyAccessUnlessGranted(Permission::CREATE, $attachment);
 
-        $form = $this->createForm(TicketAttachmentType::class, $attachment, [
-            'action' => $this->generateUrl('ekyna_commerce_account_ticket_attachment_new', [
+        $form = $this->formFactory->create(TicketAttachmentType::class, $attachment, [
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_ticket_attachment_create', [
                 'ticketId'        => $message->getTicket()->getId(),
                 'ticketMessageId' => $message->getId(),
             ]),
@@ -53,7 +61,7 @@ class TicketAttachmentController extends AbstractTicketController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket_attachment.operator')->create($attachment);
+            $event = $this->managerFactory->getManager(TicketAttachmentInterface::class)->create($attachment);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -67,44 +75,36 @@ class TicketAttachmentController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.attachment.header.new', $form->createView())
+            ->createModal('attachment.header.new')
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_attachment.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 
-    /**
-     * Ticket attachment edit action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function editAction(Request $request)
+    public function update(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $attachment = $this->findAttachment($request);
 
-        $this->denyAccessUnlessGranted(Actions::EDIT, $attachment);
+        $this->denyAccessUnlessGranted(Permission::UPDATE, $attachment);
 
         $message = $attachment->getMessage();
         if (!$message->isCustomer()) {
-            throw $this->createAccessDeniedException("You cannot edit this attachment.");
+            throw new AccessDeniedHttpException('You cannot edit this attachment.');
         }
 
-        $form = $this->createForm(TicketAttachmentType::class, $attachment, [
-            'action' => $this->generateUrl('ekyna_commerce_account_ticket_attachment_edit', [
+        $form = $this->formFactory->create(TicketAttachmentType::class, $attachment, [
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_ticket_attachment_update', [
                 'ticketId'           => $attachment->getMessage()->getTicket()->getId(),
                 'ticketMessageId'    => $attachment->getMessage()->getId(),
                 'ticketAttachmentId' => $attachment->getId(),
@@ -118,7 +118,7 @@ class TicketAttachmentController extends AbstractTicketController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket_attachment.operator')->update($attachment);
+            $event = $this->managerFactory->getManager(TicketAttachmentInterface::class)->update($attachment);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -132,44 +132,36 @@ class TicketAttachmentController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.attachment.header.edit', $form->createView())
+            ->createModal('attachment.header.edit')
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_attachment.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 
-    /**
-     * Ticket attachment remove action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function removeAction(Request $request)
+    public function delete(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $attachment = $this->findAttachment($request);
 
-        $this->denyAccessUnlessGranted(Actions::DELETE, $attachment);
+        $this->denyAccessUnlessGranted(Permission::DELETE, $attachment);
 
         $message = $attachment->getMessage();
         if (!$message->isCustomer()) {
-            throw $this->createAccessDeniedException("You cannot remove this attachment.");
+            throw new AccessDeniedHttpException('You cannot remove this attachment.');
         }
 
-        $form = $this->createForm(ConfirmType::class, null, [
-            'action'  => $this->generateUrl('ekyna_commerce_account_ticket_attachment_remove', [
+        $form = $this->formFactory->create(ConfirmType::class, null, [
+            'action'  => $this->urlGenerator->generate('ekyna_commerce_account_ticket_attachment_delete', [
                 'ticketId'           => $attachment->getMessage()->getTicket()->getId(),
                 'ticketMessageId'    => $attachment->getMessage()->getId(),
                 'ticketAttachmentId' => $attachment->getId(),
@@ -178,14 +170,14 @@ class TicketAttachmentController extends AbstractTicketController
             'attr'    => [
                 'class' => 'form-horizontal',
             ],
-            'message' => 'ekyna_commerce.attachment.message.remove_confirm',
+            'message' => t('attachment.message.remove_confirm', [], 'EkynaCommerce'),
             'buttons' => false,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket_attachment.operator')->delete($attachment);
+            $event = $this->managerFactory->getManager(TicketAttachmentInterface::class)->delete($attachment);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -199,52 +191,32 @@ class TicketAttachmentController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.attachment.header.remove', $form->createView(), 'confirm')
+            ->createModal('attachment.header.remove', 'confirm')
+            ->setForm($form->createView())
             ->setSize(Modal::SIZE_NORMAL)
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_confirm.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 
-    /**
-     * Ticket attachment download action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function downloadAction(Request $request)
+    public function download(Request $request): Response
     {
         $attachment = $this->findAttachment($request);
 
-        $this->denyAccessUnlessGranted(Actions::VIEW, $attachment);
+        $this->denyAccessUnlessGranted(Permission::READ, $attachment);
 
-        $fs = $this->get('local_commerce_filesystem');
-        if (!$fs->has($attachment->getPath())) {
-            throw $this->createNotFoundException('File not found');
+        $helper = new FilesystemHelper($this->filesystem);
+
+        if (!$helper->fileExists($attachment->getPath(), false)) {
+            throw new NotFoundHttpException('File not found');
         }
 
-        /** @var \League\Flysystem\File $file */
-        $file = $fs->get($attachment->getPath());
-
-        $response = new Response($file->read());
-        $response->setPrivate();
-
-        $response->headers->set('Content-Type', $file->getMimetype());
-        $header = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_INLINE,
-            $attachment->guessFilename()
-        );
-        $response->headers->set('Content-Disposition', $header);
-
-        return $response;
+        return $helper->createFileResponse($attachment->getPath(), $request, true)->setPrivate();
     }
 }

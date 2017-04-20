@@ -1,18 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
 use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function in_array;
 
 /**
  * Class PaymentMethodChoiceType
@@ -21,29 +26,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PaymentMethodChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    protected $dataClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     */
-    public function __construct($dataClass)
-    {
-        $this->dataClass = $dataClass;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $queryBuilder = function (Options $options) {
-            return function (EntityRepository $repository) use ($options) {
+            return function (EntityRepository $repository) use ($options): QueryBuilder {
                 $qb = $repository
                     ->createQueryBuilder('m')
                     ->orderBy('m.position', 'ASC');
@@ -83,23 +69,16 @@ class PaymentMethodChoiceType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'label'             => function (Options $options, $value) {
-                    if ($value) {
-                        return $value;
-                    }
-
-                    return 'ekyna_commerce.payment_method.label.' . ($options['multiple'] ? 'plural' : 'singular');
-                },
                 'enabled'           => false, // Whether to exclude disabled methods
                 'available'         => false, // Whether to exclude unavailable methods
                 'public'            => true,  // Whether to exclude private methods
                 'offline'           => true,  // Whether to include offline factories
                 'credit'            => true,  // Whether to include credit factory
                 'outstanding'       => true,  // Whether to include outstanding factory
-                'class'             => $this->dataClass,
+                'resource'          => 'ekyna_commerce.payment_method',
                 'query_builder'     => $queryBuilder,
                 'invoice'           => null,
-                'preferred_choices' => function (Options $options, $value) {
+                'preferred_choices' => function (Options $options, $value): array {
                     return $this->getPreferredChoices($options, $value);
                 },
             ])
@@ -115,25 +94,13 @@ class PaymentMethodChoiceType extends AbstractType
                 }
 
                 return $value;
-            })
-            ->setNormalizer('placeholder', function (Options $options, $value) {
-                if (empty($value) && !$options['required']) {
-                    $value = 'ekyna_core.value.none';
-                }
-
-                return $value;
             });
     }
 
     /**
      * Returns the preferred choices.
-     *
-     * @param Options $options
-     * @param mixed   $value
-     *
-     * @return array
      */
-    private function getPreferredChoices(Options $options, $value)
+    private function getPreferredChoices(Options $options, $value): array
     {
         if (!empty($value)) {
             return $value;
@@ -167,18 +134,12 @@ class PaymentMethodChoiceType extends AbstractType
         return $preferredChoices;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return EntityType::class;
+        return ResourceChoiceType::class;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_payment_method_choice';
     }

@@ -1,72 +1,60 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Stock;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class WarehouseType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Stock
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class WarehouseType extends ResourceFormType
+class WarehouseType extends AbstractResourceType
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorization;
+    private AuthorizationCheckerInterface $authorization;
 
-
-    /**
-     * Constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param string                        $dataClass
-     */
-    public function __construct(AuthorizationCheckerInterface $authorization, string $dataClass)
+    public function __construct(AuthorizationCheckerInterface $authorization)
     {
-        parent::__construct($dataClass);
-
         $this->authorization = $authorization;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', Type\TextType::class, [
-                'label' => 'ekyna_core.field.name',
+                'label' => t('field.name', [], 'EkynaUi'),
             ])
             ->add('countries', CountryChoiceType::class, [
-                'label'    => 'ekyna_commerce.country.label.plural',
                 'enabled'  => false,
                 'multiple' => true,
             ])
             ->add('office', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.warehouse.field.office',
+                'label'    => t('warehouse.field.office', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('default', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.default',
+                'label'    => t('field.default', [], 'EkynaUi'),
                 'required' => false,
-                // TODO Remove when IsDefault resource behavior will be implemented
+                // TODO Remove when resource IsDefaultBehavior will be implemented
                 'disabled' => !$this->authorization->isGranted('ROLE_SUPER_ADMIN'),
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('enabled', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.enabled',
+                'label'    => t('field.enabled', [], 'EkynaUi'),
                 'required' => false,
                 'disabled' => !$this->authorization->isGranted('ROLE_SUPER_ADMIN'),
                 'attr'     => [
@@ -74,7 +62,7 @@ class WarehouseType extends ResourceFormType
                 ],
             ])
             ->add('priority', Type\IntegerType::class, [
-                'label' => 'ekyna_core.field.priority',
+                'label' => t('field.priority', [], 'EkynaUi'),
             ])
             ->add('address', AddressType::class, [
                 'label'        => false,

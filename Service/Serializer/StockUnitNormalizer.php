@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
-use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\CommerceBundle\Action\Admin\StockUnit\CreateAdjustmentAction;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockUnitNormalizer as BaseNormalizer;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
@@ -17,25 +21,9 @@ use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
  */
 class StockUnitNormalizer extends BaseNormalizer
 {
-    /**
-     * @var ConstantsHelper
-     */
-    protected $constantHelper;
+    protected ConstantsHelper $constantHelper;
+    protected ResourceHelper $resourceHelper;
 
-    /**
-     * @var ResourceHelper
-     */
-    protected $resourceHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param FormatterFactory           $formatterFactory
-     * @param CurrencyConverterInterface $currencyConverter
-     * @param ConstantsHelper            $constantHelper
-     * @param ResourceHelper             $resourceHelper
-     */
     public function __construct(
         FormatterFactory $formatterFactory,
         CurrencyConverterInterface $currencyConverter,
@@ -49,25 +37,25 @@ class StockUnitNormalizer extends BaseNormalizer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
-     * @param StockUnitInterface $unit
+     * @param StockUnitInterface $object
      */
-    public function normalize($unit, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = [])
     {
-        $data = parent::normalize($unit, $format, $context);
+        $data = parent::normalize($object, $format, $context);
 
         if ($this->contextHasGroup(['StockView', 'StockAssignment'], $context)) {
             $translator = $this->constantHelper->getTranslator();
 
             if (null === $eda = $data['eda']) {
-                $eda = '<em>' . $translator->trans('ekyna_core.value.undefined') . '</em>';
+                $eda = '<em>' . $translator->trans('value.undefined', [], 'EkynaUi') . '</em>';
             }
 
             $actions = [];
 
             if ($this->contextHasGroup('StockView', $context)) {
-                if (null !== $supplierOrderItem = $unit->getSupplierOrderItem()) {
+                if (null !== $supplierOrderItem = $object->getSupplierOrderItem()) {
                     $supplierOrder = $supplierOrderItem->getOrder();
 
                     $actions[] = [
@@ -75,7 +63,7 @@ class StockUnitNormalizer extends BaseNormalizer
                             $supplierOrder->getNumber(),
                             $this->constantHelper->renderSupplierOrderStateLabel($supplierOrder)
                         ),
-                        'href'  => $this->resourceHelper->generateResourcePath($supplierOrder),
+                        'href'  => $this->resourceHelper->generateResourcePath($supplierOrder, ReadAction::class),
                         'theme' => SupplierOrderStates::getTheme($supplierOrder->getState()),
                         'modal' => false,
                     ];
@@ -83,15 +71,15 @@ class StockUnitNormalizer extends BaseNormalizer
 
                 $actions[] = [
                     'label' => '<i class="fa fa-pencil"></i>',
-                    'href'  => $this->resourceHelper->generateResourcePath($unit, 'adjustment_new'),
+                    'href'  => $this->resourceHelper->generateResourcePath($object, CreateAdjustmentAction::class),
                     'theme' => 'success',
                     'modal' => true,
                 ];
             }
 
             $data = array_replace($data, [
-                'state_label' => $this->constantHelper->renderStockUnitStateLabel($unit),
-                'state_badge' => $this->constantHelper->renderStockUnitStateBadge($unit),
+                'state_label' => $this->constantHelper->renderStockUnitStateLabel($object),
+                'state_badge' => $this->constantHelper->renderStockUnitStateBadge($object),
                 'eda'         => $eda,
                 'actions'     => $actions,
             ]);

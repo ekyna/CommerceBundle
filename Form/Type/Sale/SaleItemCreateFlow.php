@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Craue\FormFlowBundle\Form\FormFlow;
@@ -12,10 +14,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type;
  */
 class SaleItemCreateFlow extends FormFlow
 {
-    /**
-     * @inheritdoc
-     */
-    protected function loadStepsConfig()
+    protected function loadStepsConfig(): array
     {
         return [
             [

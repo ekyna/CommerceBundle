@@ -4,29 +4,29 @@
 <table class="table table-stripped">
     <thead>
     <tr>
-        <th>{{ 'ekyna_core.field.number'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
+        <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce') }}</th>
         {% if show_origin_customer -%}
-            <th>{{ 'ekyna_commerce.sale.field.origin_customer'|trans }}</th>
+            <th>{{ 'sale.field.origin_customer'|trans({}, 'EkynaCommerce') }}</th>
         {%- endif %}
-        <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-        <th>{{ 'ekyna_commerce.field.status'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.shipment_state'|trans }}</th>
-        <th>{{ 'ekyna_core.field.date'|trans }}</th>
+        <th>{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'field.status'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'sale.field.payment_state'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'sale.field.shipment_state'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'field.date'|trans({}, 'EkynaUi') }}</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
     <tbody>
     {% for order in orders %}
-        {% set path = path('ekyna_commerce_account_order_show', {'number': order.number}) %}
+        {% set path = path('ekyna_commerce_account_order_read', {'number': order.number}) %}
         <tr>
             <td>
                 <a href="{{ path }}">{{ order.number }}</a>
             </td>
             <td>
                 {%- if order.sample -%}
-                    <span class="label label-purple">{{ 'ekyna_commerce.field.sample'|trans }}</span>
+                    <span class="label label-purple">{{ 'field.sample'|trans({}, 'EkynaCommerce') }}</span>
                 {%- elseif order.voucherNumber is not empty -%}
                     {{ order.voucherNumber }}
                 {%- else -%}
@@ -59,18 +59,18 @@
                 {{- order.shipmentState|shipment_state_badge -}}
             </td>
             <td>
-                {{- order.createdAt|localizeddate('short', 'none') -}}
+                {{- order.createdAt|format_datetime('short', 'none') -}}
             </td>
             <td class="text-right">
                 <a href="{{ path }}" class="btn btn-xs btn-default">
-                    {{- 'ekyna_core.button.show'|trans -}}
+                    {{- 'button.show'|trans({}, 'EkynaUi') -}}
                 </a>
             </td>
         </tr>
     {% else %}
         <tr>
             <td colspan="{{ show_origin_customer ? 9 : 8 }}">
-                <em>{{ 'ekyna_commerce.account.order.empty_list'|trans }}</em>
+                <em>{{ 'account.order.empty_list'|trans({}, 'EkynaCommerce') }}</em>
             </td>
         </tr>
     {% endfor %}

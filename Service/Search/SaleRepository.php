@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Search;
 
+use Ekyna\Component\Resource\Bridge\Symfony\Elastica\SearchRepository;
 use Ekyna\Component\Resource\Exception\UnexpectedTypeException;
-use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
 use Ekyna\Component\Resource\Search\Request;
 use Ekyna\Component\Resource\Search\Result;
 
@@ -12,7 +14,7 @@ use Ekyna\Component\Resource\Search\Result;
  * @package Ekyna\Bundle\CommerceBundle\Service\Search
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-abstract class SaleRepository extends ResourceRepository
+abstract class SaleRepository extends SearchRepository
 {
     /**
      * @inheritDoc
@@ -56,7 +58,7 @@ abstract class SaleRepository extends ResourceRepository
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getDefaultFields(): array
     {

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
-use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Bundle\GoogleBundle\Form\Type\CoordinateType;
+use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -13,6 +15,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_replace;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class AddressType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
@@ -20,21 +25,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class AddressType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $section = $options['section'] ? 'section-' . $options['section'] . ' ' : '';
 
         if ($options['company']) {
             $builder->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
+                'label'    => t('address.field.company', [], 'EkynaCommerce'),
                 'required' => $options['company_required'],
                 // todo constraint if required ?
                 'attr'     => [
                     'class'        => 'address-company',
-                    'placeholder'  => 'ekyna_commerce.address.field.company',
+                    'placeholder'  => t('address.field.company', [], 'EkynaCommerce'),
                     'maxlength'    => 35,
                     'autocomplete' => $section . 'organization',
                 ],
@@ -53,60 +55,60 @@ class AddressType extends AbstractType
 
         $builder
             ->add('street', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.street',
+                'label'    => t('address.field.street', [], 'EkynaCommerce'),
                 'required' => $options['required'],
                 'attr'     => [
                     'class'        => 'address-street',
-                    'placeholder'  => 'ekyna_commerce.address.help.street',
+                    'placeholder'  => t('address.field.street', [], 'EkynaCommerce'),
                     'maxlength'    => 35,
                     'autocomplete' => $section . 'address-line1',
                 ],
             ])
             ->add('complement', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.address.field.complement',
+                'label'    => t('address.field.complement', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class'        => 'address-complement',
-                    'placeholder'  => 'ekyna_commerce.address.help.complement',
+                    'placeholder'  => t('address.field.complement', [], 'EkynaCommerce'),
                     'maxlength'    => 35,
                     'autocomplete' => $section . 'address-line2',
                 ],
             ])
             ->add('supplement', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.address.field.supplement',
+                'label'    => t('address.field.supplement', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class'        => 'address-supplement',
-                    'placeholder'  => 'ekyna_commerce.address.help.supplement',
+                    'placeholder'  => t('address.field.supplement', [], 'EkynaCommerce'),
                     'maxlength'    => 35,
                     'autocomplete' => $section . 'address-line3',
                 ],
             ])
             ->add('extra', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.address.field.extra',
+                'label'    => t('address.field.extra', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class'       => 'address-supplement',
-                    'placeholder' => 'ekyna_commerce.address.help.extra',
+                    'placeholder' => t('address.field.extra', [], 'EkynaCommerce'),
                     'maxlength'   => 35,
                 ],
             ])
             ->add('city', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.city',
+                'label'    => t('field.city', [], 'EkynaUi'),
                 'required' => $options['required'],
                 'attr'     => [
                     'class'        => 'address-city',
-                    'placeholder'  => 'ekyna_core.field.city',
+                    'placeholder'  => t('field.city', [], 'EkynaUi'),
                     'maxlength'    => 35,
                     'autocomplete' => $section . 'address-level2',
                 ],
             ])
             ->add('postalCode', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.postal_code',
+                'label'    => t('field.postal_code', [], 'EkynaUi'),
                 'required' => $options['required'],
                 'attr'     => [
                     'class'        => 'address-postal-code',
-                    'placeholder'  => 'ekyna_core.field.postal_code',
+                    'placeholder'  => t('field.postal_code', [], 'EkynaUi'),
                     'maxlength'    => 10,
                     'autocomplete' => $section . 'postal-code',
                 ],
@@ -120,48 +122,48 @@ class AddressType extends AbstractType
                 ],
             ])
             ->add('digicode1', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.address.field.digicode1',
+                'label'    => t('address.field.digicode1', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class'        => 'address-digicode1',
-                    'placeholder'  => 'ekyna_commerce.address.field.digicode1',
+                    'placeholder'  => t('address.field.digicode1', [], 'EkynaCommerce'),
                     'maxlength'    => 8,
                     'autocomplete' => 'digicode1', // Non standard to suppress warning
                 ],
             ])
             ->add('digicode2', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.address.field.digicode2',
+                'label'    => t('address.field.digicode2', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class'        => 'address-digicode2',
-                    'placeholder'  => 'ekyna_commerce.address.field.digicode2',
+                    'placeholder'  => t('address.field.digicode2', [], 'EkynaCommerce'),
                     'maxlength'    => 8,
                     'autocomplete' => 'digicode2', // Non standard to suppress warning
                 ],
             ])
             ->add('intercom', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.address.field.intercom',
+                'label'    => t('address.field.intercom', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class'        => 'address-intercom',
-                    'placeholder'  => 'ekyna_commerce.address.field.intercom',
+                    'placeholder'  => t('address.field.intercom', [], 'EkynaCommerce'),
                     'maxlength'    => 10,
                     'autocomplete' => 'intercomid', // Non standard to suppress warning
                 ],
             ]);
-            /*->add('state', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
-                'required' => false,
-                'sizing' => 'sm',
-                'attr' => [
-                    'class' => 'address-state',
-                ]
-            ])*/
+        /*->add('state', Type\TextType::class, [
+            'label'    => t('field.company', [], 'EkynaUi'),
+            'required' => false,
+            'sizing' => 'sm',
+            'attr' => [
+                'class' => 'address-state',
+            ]
+        ])*/
 
         if ($options['phones']) {
             $builder
                 ->add('phone', PhoneNumberType::class, [
-                    'label'         => 'ekyna_core.field.phone',
+                    'label'         => t('field.phone', [], 'EkynaUi'),
                     'required'      => $options['phone_required'],
                     'country_field' => 'country',
                     'attr'          => [
@@ -172,7 +174,7 @@ class AddressType extends AbstractType
                     ],
                 ])
                 ->add('mobile', PhoneNumberType::class, [
-                    'label'         => 'ekyna_core.field.mobile',
+                    'label'         => t('field.mobile', [], 'EkynaUi'),
                     'required'      => $options['mobile_required'],
                     'type'          => PhoneType::MOBILE,
                     'country_field' => 'country',
@@ -192,18 +194,12 @@ class AddressType extends AbstractType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         FormUtil::addClass($view, 'address');
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -236,10 +232,7 @@ class AddressType extends AbstractType
             ->setAllowedTypes('section', 'string');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_address';
     }

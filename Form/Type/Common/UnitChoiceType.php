@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Bundle\CommerceBundle\Model\Units;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class UnitChoiceType
@@ -14,23 +18,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class UnitChoiceType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'   => 'ekyna_commerce.unit.label',
-                'choices' => Units::getChoices(),
+                'label' => t('unit.label', [], 'EkynaCommerce'),
+                'class' => Units::class,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return ChoiceType::class;
+        return ConstantChoiceType::class;
     }
 }

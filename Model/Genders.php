@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Common\Model\Genders as Constants;
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class Genders
@@ -12,13 +17,10 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  */
 final class Genders extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
     public static function getConfig(): array
     {
-        $short = 'ekyna_commerce.gender.short.';
-        $long  = 'ekyna_commerce.gender.long.';
+        $short = 'gender.short.';
+        $long  = 'gender.long.';
 
         return [
             Constants::GENDER_MR   => [$short.Constants::GENDER_MR,   $long.Constants::GENDER_MR],
@@ -27,26 +29,20 @@ final class Genders extends AbstractConstants
         ];
     }
 
-    /**
-     * Returns the label for the given constant.
-     *
-     * @param mixed $constant
-     * @param bool  $long
-     *
-     * @return string
-     */
-    public static function getLabel(string $constant, bool $long = false): string
+    public static function getLabel(string $constant, bool $long = false): TranslatableInterface
     {
-        static::isValid($constant, true);
+        Genders::isValid($constant, true);
 
-        return static::getConfig()[$constant][$long ? 1 : 0];
+        return t(Genders::getConfig()[$constant][$long ? 1 : 0], [], 'EkynaCommerce');
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

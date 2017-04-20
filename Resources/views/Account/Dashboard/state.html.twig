@@ -2,7 +2,7 @@
     {% if customer.inCharge is not null %}
         <div class="form-group">
             <label class="control-label col-md-3">
-                {{- 'ekyna_commerce.customer.field.in_charge'|trans -}}
+                {{- 'customer.field.in_charge'|trans({}, 'EkynaCommerce') -}}
             </label>
             <div class="col-md-9">
                 <p class="form-control">
@@ -17,11 +17,11 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label col-md-6">
-                    {{- 'ekyna_commerce.sale.field.outstanding_limit'|trans -}}
+                    {{- 'sale.field.outstanding_limit'|trans({}, 'EkynaCommerce') -}}
                 </label>
                 <div class="col-md-6">
                     <p class="form-control">
-                        {{- customer.outstandingLimit|localizedcurrency(commerce_default_currency) -}}
+                        {{- customer.outstandingLimit|format_currency(commerce_default_currency) -}}
                     </p>
                 </div>
             </div>
@@ -29,11 +29,11 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label col-md-6">
-                    {{- 'ekyna_commerce.customer.field.outstanding_balance'|trans -}}
+                    {{- 'customer.field.outstanding_balance'|trans({}, 'EkynaCommerce') -}}
                 </label>
                 <div class="col-md-6">
                     <p class="form-control">
-                        {{- customer.outstandingBalance|localizedcurrency(commerce_default_currency) -}}
+                        {{- customer.outstandingBalance|format_currency(commerce_default_currency) -}}
                     </p>
                 </div>
             </div>
@@ -41,7 +41,7 @@
     </div>
     <p class="text-center">
         <a class="btn btn-primary" href="{{ path('ekyna_commerce_account_balance_index') }}">
-            {{- 'ekyna_commerce.account.balance.title'|trans -}}
+            {{- 'account.balance.title'|trans({}, 'EkynaCommerce') -}}
         </a>
     </p>
 </div>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -11,10 +13,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 trait TicketNormalizerTrait
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    protected $authorization;
+    protected AuthorizationCheckerInterface $authorization;
 
 
     /**
@@ -35,7 +34,7 @@ trait TicketNormalizerTrait
      *
      * @return bool
      */
-    protected function isGranted($attributes, $subject)
+    protected function isGranted($attributes, $subject): bool
     {
         return $this->authorization->isGranted($attributes, $subject);
     }

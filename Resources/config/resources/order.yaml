@@ -1,0 +1,263 @@
+resources:
+    ekyna_commerce:
+        order:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\Order
+            repository:
+                interface: Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface
+                class: Ekyna\Bundle\CommerceBundle\Repository\OrderRepository
+#            manager:
+#                interface: ~
+#                class: ~
+            factory: Ekyna\Bundle\CommerceBundle\Factory\OrderFactory
+#            normalizer: ~
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\OrderRepository
+                global: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderType
+            trans_domain: EkynaCommerce
+            actions:
+                api_crud:
+                    search: true
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/Order'
+                    summary: '@EkynaCommerce/Admin/Common/Sale/summary.html.twig'
+                    read:
+                        expose: true
+                admin_toggle:
+                    properties: [autoDiscount,autoShipping,autoNotify]
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Order\AbortAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Order\ExportToDeliverAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Order\PrepareAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Order\PrioritizeAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Order\ReleaseAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentGenerateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentRenderAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DuplicateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\ExportAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\NotifyAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\NotifyModelAction:
+                    expose: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\RecalculateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\RefreshAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\SetExchangeRateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\TransformAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateShipmentAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateStateAction: ~
+
+        order_address:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderAddressInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderAddress
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAddressType
+            parent: ekyna_commerce.order
+            trans_prefix: address
+            trans_domain: EkynaCommerce
+
+        order_adjustment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderAdjustmentInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderAdjustment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAdjustmentType
+            parent: ekyna_commerce.order
+            trans_prefix: adjustment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\UpdateAction: ~
+
+        order_attachment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderAttachmentInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderAttachment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType
+            parent: ekyna_commerce.order
+            trans_prefix: attachment
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    list: false
+                    read: false
+                    templates: '@EkynaCommerce/Admin/Common/Attachment'
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\ArchiveAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\DownloadAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Attachment\GenerateAction: ~
+            behaviors:
+                uploadable:
+                    uploader: ekyna_commerce.uploader
+
+        order_invoice:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderInvoice
+            repository:
+                interface : Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderInvoiceRepository
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType
+            parent: ekyna_commerce.order
+            trans_prefix: invoice
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    create: false
+                    read: false
+                    delete: false
+                    templates: '@EkynaCommerce/Admin/Common/Invoice'
+                    summary: '@EkynaCommerce/Admin/Common/Invoice/summary.html.twig'
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\ArchiveAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\RecalculateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\RenderAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\UnlinkAction: ~
+
+        order_invoice_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderInvoiceItemInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderInvoiceItem
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceItemType
+            parent: ekyna_commerce.order_invoice
+            trans_domain: EkynaCommerce
+
+        order_invoice_line:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderInvoiceLineInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderInvoiceLine
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceLineNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceLineType
+            parent: ekyna_commerce.order_invoice
+            trans_domain: EkynaCommerce
+
+        order_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderItemInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderItem
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemType
+            parent: ekyna_commerce.order
+            trans_prefix: sale_item
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\AddAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\ConfigureAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveDownAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveUpAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\PrioritizeAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\UpdateAction: ~
+
+        order_item_adjustment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderItemAdjustmentInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemAdjustmentType
+            parent: ekyna_commerce.order_item
+            trans_prefix: adjustment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\UpdateAction: ~
+
+        order_item_stock_assignment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderItemStockAssignmentInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderItemStockAssignment
+            parent: ekyna_commerce.order_item
+            trans_prefix: sale_item
+            trans_domain: EkynaCommerce
+
+        order_notification:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderNotificationInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderNotification
+            parent: ekyna_commerce.order
+            trans_prefix: notification
+            trans_domain: EkynaCommerce
+
+        order_payment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderPayment
+            repository:
+                interface : Ekyna\Component\Commerce\Order\Repository\OrderPaymentRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderPaymentRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderPaymentType
+            parent: ekyna_commerce.order
+            trans_prefix: payment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\ActionAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\UpdateAction: ~
+
+        order_shipment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderShipment
+            # TODO repository:
+            #    interface : Ekyna\Component\Commerce\Order\Repository\OrderShipmentRepositoryInterface
+            #    class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderShipmentRepository
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderShipmentType
+            parent: ekyna_commerce.order
+            trans_prefix: shipment
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    list: false
+                    read: false
+                    create: false
+                    templates: '@EkynaCommerce/Admin/Common/Shipment'
+                    summary: '@EkynaCommerce/Admin/Common/Shipment/summary.html.twig'
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\GatewayAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\GatewayFormAction:
+                    expose: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\RenderAction: ~
+
+        order_shipment_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Order\Model\OrderShipmentItemInterface
+                class: Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentItemNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentItemType
+            parent: ekyna_commerce.order_shipment
+            trans_prefix: sale_item
+            trans_domain: EkynaCommerce
+
+        order_shipment_parcel:
+            driver: doctrine/orm
+            entity:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Order\Entity\OrderShipmentParcel
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentParcelNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentParcelType
+            parent: ekyna_commerce.order_shipment
+            trans_domain: EkynaCommerce
+
+

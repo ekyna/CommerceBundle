@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
 use Ekyna\Bundle\CommerceBundle\Event\SubjectLabelEvent;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
-use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Resource\Exception\PdfException;
+use Ekyna\Component\Resource\Helper\PdfGenerator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class LabelRenderer
@@ -16,50 +19,27 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class LabelRenderer
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var PdfGenerator
-     */
-    private $pdfGenerator;
+    private EventDispatcherInterface $dispatcher;
+    private Environment              $templating;
+    private PdfGenerator             $pdfGenerator;
 
 
-    /**
-     * Constructor.
-     *
-     * @param EventDispatcherInterface $dispatcher
-     * @param EngineInterface          $templating
-     * @param PdfGenerator             $pdfGenerator
-     */
     public function __construct(
         EventDispatcherInterface $dispatcher,
-        EngineInterface $templating,
+        Environment $twig,
         PdfGenerator $pdfGenerator
     ) {
         $this->dispatcher = $dispatcher;
-        $this->templating = $templating;
+        $this->templating = $twig;
         $this->pdfGenerator = $pdfGenerator;
     }
 
     /**
      * Renders the subject labels.
      *
-     * @param array  $labels
-     * @param string $format
-     *
-     * @return string
-     *
-     * @throws \Ekyna\Component\Commerce\Exception\PdfException
+     * @throws PdfException
      */
-    public function render(array $labels, $format = SubjectLabel::FORMAT_LARGE)
+    public function render(array $labels, string $format = SubjectLabel::FORMAT_LARGE): string
     {
         $content = $this->templating->render('@EkynaCommerce/Admin/Subject/label.html.twig', [
             'labels' => $labels,
@@ -72,11 +52,9 @@ class LabelRenderer
     /**
      * Builds the subject labels.
      *
-     * @param array $subjects
-     *
-     * @return SubjectLabel[]
+     * @return array<SubjectLabel>
      */
-    public function buildLabels(array $subjects)
+    public function buildLabels(array $subjects): array
     {
         $event = new SubjectLabelEvent();
 
@@ -86,19 +64,15 @@ class LabelRenderer
             $event->addLabel($label);
         }
 
-        $this->dispatcher->dispatch(SubjectLabelEvent::BUILD, $event);
+        $this->dispatcher->dispatch($event, SubjectLabelEvent::BUILD);
 
         return $event->getLabels();
     }
 
     /**
      * Returns the pdf options for the given format.
-     *
-     * @param string $format
-     *
-     * @return array
      */
-    private function getPdfOptionsByFormat($format)
+    private function getPdfOptionsByFormat(string $format): array
     {
         switch ($format) {
             case SubjectLabel::FORMAT_LARGE:
@@ -124,10 +98,10 @@ class LabelRenderer
                         'unit'   => 'mm',
                     ],
                     'margins' => [
-                        'bottom' => 2,
-                        'left'   => 2,
-                        'right'  => 2,
-                        'top'    => 2,
+                        'bottom' => 3,
+                        'left'   => 3,
+                        'right'  => 3,
+                        'top'    => 3,
                         'unit'   => 'mm',
                     ],
                 ];

@@ -4,7 +4,7 @@
 {% apply spaceless %}
     {{ parent() }}
     {% if notify.includeView != 'none' %}
-    <style type="text/css">
+    <style>
         .sale-view th, .sale-view td {
             font-size: 13px;
         }
@@ -22,7 +22,11 @@
 {% apply spaceless %}
     {% do trans_set_locale(sale.locale) %}
     {% if notify.includeView == 'before' -%}
-        {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
+        {{ render_sale_view(sale|sale_view({
+            'private': false,
+            'editable': false,
+            'taxes_view': false
+        })) }}
     {%- endif %}
 
     {% if notify.customMessage is not empty -%}
@@ -46,7 +50,7 @@
     <hr>
 
     {% if 0 < attachments|length -%}
-    <p>{{ 'ekyna_commerce.notify.message.attachment_list'|trans }}:</p>
+    <p>{{ 'notify.message.attachment_list'|trans({}, 'EkynaCommerce') }}:</p>
     <ul>
         {% for filename, title in attachments -%}
         <li>{{ title }} : <em>{{ filename }}</em></li>
@@ -55,7 +59,11 @@
     {%- endif %}
 
     {% if notify.includeView == 'after' -%}
-        {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
+        {{ render_sale_view(sale|sale_view({
+            'private': false,
+            'editable': false,
+            'taxes_view': false
+        })) }}
     {%- endif %}
 
     {% if notify.buttonUrl is not empty -%}

@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
-use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
-use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
+use Ekyna\Bundle\UiBundle\Form\Type\CollectionType;
+use Ekyna\Component\Resource\Factory\ResourceFactoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SupplierOrderItemsType
@@ -15,35 +19,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SupplierOrderItemsType extends AbstractType
 {
-    /**
-     * @var ResourceRepositoryInterface
-     */
-    private $supplierOrderItemRepository;
+    private ResourceFactoryInterface $factory;
 
 
-    /**
-     * Constructor.
-     *
-     * @param ResourceRepositoryInterface $supplierOrderItemRepository
-     */
-    public function __construct(ResourceRepositoryInterface $supplierOrderItemRepository)
+    public function __construct(ResourceFactoryInterface $factory)
     {
-        $this->supplierOrderItemRepository = $supplierOrderItemRepository;
+        $this->factory = $factory;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
                 'currency'              => null,
                 'entry_type'            => SupplierOrderItemType::class,
                 'entry_options'         => [],
-                'prototype_data'        => $this->supplierOrderItemRepository->createNew(),
-                'add_button_text'       => 'ekyna_commerce.supplier_order.button.add_item',
-                'delete_button_confirm' => 'ekyna_commerce.supplier_order.message.confirm_item_removal',
+                'prototype_data'        => $this->factory->create(),
+                'add_button_text'       => t('supplier_order.button.add_item', [], 'EkynaCommerce'),
+                'delete_button_confirm' => t('supplier_order.message.confirm_item_removal', [], 'EkynaCommerce'),
             ])
             ->setAllowedTypes('currency', 'string')
             ->setNormalizer('entry_options', function (Options $options, $value) {
@@ -53,18 +46,12 @@ class SupplierOrderItemsType extends AbstractType
             });
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return CollectionType::class;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_supplier_order_items';
     }

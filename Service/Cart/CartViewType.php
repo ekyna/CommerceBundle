@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
+use Ekyna\Bundle\CommerceBundle\Action\Admin;
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Component\Commerce\Cart\Model as Cart;
 use Ekyna\Component\Commerce\Common\Model as Common;
@@ -15,25 +18,13 @@ use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
  */
 class CartViewType extends AbstractViewType
 {
-    /**
-     * @var ShipmentPriceResolverInterface
-     */
-    private $shipmentPriceResolver;
+    private ShipmentPriceResolverInterface $shipmentPriceResolver;
 
-
-    /**
-     * Sets the shipment price resolver.
-     *
-     * @param ShipmentPriceResolverInterface $resolver
-     */
-    public function setShipmentPriceResolver(ShipmentPriceResolverInterface $resolver)
+    public function setShipmentPriceResolver(ShipmentPriceResolverInterface $resolver): void
     {
         $this->shipmentPriceResolver = $resolver;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
@@ -41,54 +32,49 @@ class CartViewType extends AbstractViewType
         }
 
         // Refresh button
-        $refreshPath = $this->generateUrl('ekyna_commerce_cart_admin_refresh', [
-            'cartId' => $sale->getId(),
-        ]);
+        $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
         $view->addButton(new View\Button(
             $refreshPath,
-            $this->trans('ekyna_core.button.refresh'),
+            $this->trans('button.refresh', [], 'EkynaUi'),
             'fa fa-refresh',
             [
-                'title'         => $this->trans('ekyna_core.button.refresh'),
+                'title'         => $this->trans('button.refresh', [], 'EkynaUi'),
                 'class'         => 'btn btn-sm btn-default',
                 'data-sale-xhr' => 'get',
             ]
         ));
 
         // Add item button
-        $addItemPath = $this->generateUrl('ekyna_commerce_cart_item_admin_add', [
+        $addItemPath = $this->resourceUrl('ekyna_commerce.cart_item', Admin\Sale\Item\AddAction::class, [
             'cartId' => $sale->getId(),
         ]);
         $view->addButton(new View\Button(
             $addItemPath,
-            $this->trans('ekyna_commerce.sale.button.item.add'),
+            $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
             'fa fa-plus',
             [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.add'),
+                'title'           => $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
                 'class'           => 'btn btn-sm btn-primary',
                 'data-sale-modal' => null,
             ]
         ));
 
         // New item button
-        $newItemPath = $this->generateUrl('ekyna_commerce_cart_item_admin_new', [
+        $newItemPath = $this->resourceUrl('ekyna_commerce.cart_item', Admin\Sale\Item\CreateAction::class, [
             'cartId' => $sale->getId(),
         ]);
         $view->addButton(new View\Button(
             $newItemPath,
-            $this->trans('ekyna_commerce.sale.button.item.new'),
+            $this->trans('sale.button.item.new', [], 'EkynaCommerce'),
             'fa fa-plus',
             [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.new'),
+                'title'           => $this->trans('sale.button.item.new', [], 'EkynaCommerce'),
                 'class'           => 'btn btn-sm btn-default',
                 'data-sale-modal' => null,
             ]
         ));
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options): void
     {
         if ($item->isImmutable() || $item->getParent() || !$options['editable']) {
@@ -98,17 +84,14 @@ class CartViewType extends AbstractViewType
         // Configure action
         if ($item->isConfigurable()) {
             if ($options['private']) {
-                $configurePath = $this->generateUrl('ekyna_commerce_cart_item_admin_configure', [
-                    'cartId'     => $item->getSale()->getId(),
-                    'cartItemId' => $item->getId(),
-                ]);
+                $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
             } else {
                 $configurePath = $this->generateUrl('ekyna_commerce_cart_item_configure', [
                     'itemId' => $item->getId(),
                 ]);
             }
             $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
+                'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',
             ]));
@@ -116,24 +99,18 @@ class CartViewType extends AbstractViewType
 
         if ($options['private']) {
             // Edit action
-            $editPath = $this->generateUrl('ekyna_commerce_cart_item_admin_edit', [
-                'cartId'     => $item->getSale()->getId(),
-                'cartItemId' => $item->getId(),
-            ]);
+            $editPath = $this->resourceUrl($item, Admin\Sale\Item\UpdateAction::class);
             $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
+                'title'           => $this->trans('sale.button.item.edit', [], 'EkynaCommerce'),
                 'data-sale-modal' => null,
                 'class'           => 'text-warning',
             ]));
 
             // Move up
             if (0 < $item->getPosition()) {
-                $moveUpPath = $this->generateUrl('ekyna_commerce_cart_item_admin_move_up', [
-                    'cartId'     => $item->getSale()->getId(),
-                    'cartItemId' => $item->getId(),
-                ]);
+                $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
                 $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
-                    'title'         => $this->trans('ekyna_core.button.move_up'),
+                    'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
                 ]));
@@ -141,12 +118,9 @@ class CartViewType extends AbstractViewType
 
             // Move down
             if (!$item->isLast()) {
-                $moveUpPath = $this->generateUrl('ekyna_commerce_cart_item_admin_move_down', [
-                    'cartId'     => $item->getSale()->getId(),
-                    'cartItemId' => $item->getId(),
-                ]);
-                $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
-                    'title'         => $this->trans('ekyna_core.button.move_down'),
+                $moveDownPath = $this->resourceUrl($item, Admin\Sale\Item\MoveDownAction::class);
+                $view->addAction(new View\Action($moveDownPath, 'fa fa-arrow-down', [
+                    'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
                 ]));
@@ -155,26 +129,20 @@ class CartViewType extends AbstractViewType
 
         // Remove action
         if ($options['private']) {
-            $removePath = $this->generateUrl('ekyna_commerce_cart_item_admin_remove', [
-                'cartId'     => $item->getSale()->getId(),
-                'cartItemId' => $item->getId(),
-            ]);
+            $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
         } else {
             $removePath = $this->generateUrl('ekyna_commerce_cart_item_remove', [
                 'itemId' => $item->getId(),
             ]);
         }
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-            'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
+            'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
+            'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
             'data-sale-xhr' => null,
             'class'         => 'text-danger',
         ]));
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
@@ -187,11 +155,9 @@ class CartViewType extends AbstractViewType
             return;
         }
 
-        $editPath = $this->generateUrl('ekyna_commerce_cart_admin_edit_shipment', [
-            'cartId' => $sale->getId(),
-        ]);
+        $editPath = $this->resourceUrl($sale, Admin\Sale\UpdateShipmentAction::class);
         $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
-            'title'           => $this->trans('ekyna_commerce.sale.button.shipment.edit'),
+            'title'           => $this->trans('sale.button.shipment.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',
         ]));
@@ -199,11 +165,8 @@ class CartViewType extends AbstractViewType
 
     /**
      * Sets the shipment line view's class.
-     *
-     * @param Common\SaleInterface $sale
-     * @param View\LineView        $view
      */
-    private function setShipmentViewClass(Common\SaleInterface $sale, View\LineView $view)
+    private function setShipmentViewClass(Common\SaleInterface $sale, View\LineView $view): void
     {
         if (null === $p = $this->shipmentPriceResolver->getPriceBySale($sale)) {
             $view->addClass('danger');
@@ -211,22 +174,16 @@ class CartViewType extends AbstractViewType
             return;
         }
 
-        if (0 !== bccomp($p->getPrice(), $sale->getShipmentAmount(), 3)) {
+        if (!$p->getPrice()->equals($sale->getShipmentAmount())) {
             $view->addClass('warning');
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function supportsSale(Common\SaleInterface $sale): bool
     {
         return $sale instanceof Cart\CartInterface;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getName(): string
     {
         return 'ekyna_commerce_cart';

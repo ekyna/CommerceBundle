@@ -1,0 +1,48 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ show_row(paymentTerm.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'payment_term_name'
+        }) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(paymentTerm.days, 'number', {
+                    'label': 'payment_term.field.days',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'payment_term_days',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(paymentTerm.endOfMonth, 'boolean', {
+                    'label': 'payment_term.field.end_of_month',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'payment_term_endOfMonth',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(paymentTerm|payment_term_trigger_label, 'text', {
+            'label': 'payment_term.field.trigger',
+            'label_trans_domain': 'EkynaCommerce',
+            'id': 'payment_term_trigger'
+        }) }}
+        {{ show_row(paymentTerm.translations, 'translations', {
+            'id': 'payment_term_translations',
+            'fields': {
+                'title': {
+                    'label': 'field.title',
+                    'options': {'label_trans_domain': 'EkynaUi'}
+                },
+                'description': {
+                    'label': 'field.description',
+                    'type': 'textarea',
+                    'options': {'label_trans_domain': 'EkynaUi'}
+                }
+            }
+        }) }}
+    </div>
+{%- endblock main_contents %}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
@@ -17,41 +19,26 @@ use Twig\Environment;
  */
 class ExportWidget extends AbstractWidgetType
 {
-    /**
-     * @var FormFactoryInterface
-     */
-    private $factory;
+    public const NAME = 'commerce_export';
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private FormFactoryInterface  $factory;
+    private UrlGeneratorInterface $urlGenerator;
 
-
-    /**
-     * Constructor.
-     *
-     * @param FormFactoryInterface  $factory
-     * @param UrlGeneratorInterface $urlGenerator
-     */
     public function __construct(FormFactoryInterface $factory, UrlGeneratorInterface $urlGenerator)
     {
         $this->factory = $factory;
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function render(WidgetInterface $widget, Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig): string
     {
         $accountingForm = $this->factory->create(ExportType::class, null, [
-            'action' => $this->urlGenerator->generate('ekyna_commerce_export_admin_accounting'),
+            'action' => $this->urlGenerator->generate('admin_ekyna_commerce_export_accounting'),
             'method' => 'POST',
         ]);
 
         $costsForm = $this->factory->create(ExportType::class, null, [
-            'action' => $this->urlGenerator->generate('ekyna_commerce_export_admin_invoice_costs'),
+            'action' => $this->urlGenerator->generate('admin_ekyna_commerce_export_invoice_costs'),
             'method' => 'POST',
         ]);
 
@@ -61,10 +48,7 @@ class ExportWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -75,11 +59,8 @@ class ExportWidget extends AbstractWidgetType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getName()
+    public static function getName(): string
     {
-        return 'commerce_export';
+        return self::NAME;
     }
 }

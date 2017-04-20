@@ -1,81 +1,111 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType;
-use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
+use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UiBundle\Service\FlashHelper;
+use Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface;
+use Ekyna\Component\Commerce\Customer\Repository\CustomerAddressRepositoryInterface;
+use Ekyna\Component\Resource\Factory\ResourceFactoryInterface;
+use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Environment;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class AddressController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AddressController extends AbstractController
+class AddressController implements ControllerInterface
 {
-    /**
-     * Address index action.
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function indexAction()
+    use CustomerTrait;
+
+    private CustomerAddressRepositoryInterface $addressRepository;
+    private ResourceFactoryInterface           $addressFactory;
+    private ResourceManagerInterface           $addressManager;
+    private Environment                        $twig;
+    private FormFactoryInterface               $formFactory;
+    private FlashHelper                        $flashHelper;
+    private UrlGeneratorInterface              $urlGenerator;
+
+    public function __construct(
+        CustomerAddressRepositoryInterface $addressRepository,
+        ResourceFactoryInterface           $addressFactory,
+        ResourceManagerInterface           $addressManager,
+        Environment                        $twig,
+        FormFactoryInterface               $formFactory,
+        FlashHelper                        $flashHelper,
+        UrlGeneratorInterface              $urlGenerator
+    ) {
+        $this->addressRepository = $addressRepository;
+        $this->addressFactory = $addressFactory;
+        $this->addressManager = $addressManager;
+        $this->twig = $twig;
+        $this->formFactory = $formFactory;
+        $this->flashHelper = $flashHelper;
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    public function index(): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
         $parameters = [];
 
         $parameters['addresses'] = $this
-            ->get('ekyna_commerce.customer_address.repository')
+            ->addressRepository
             ->findByCustomer($customer);
 
         if (null !== $parent = $customer->getParent()) {
             $parameters['parent_addresses'] = $this
-                ->get('ekyna_commerce.customer_address.repository')
+                ->addressRepository
                 ->findByCustomer($parent);
         }
 
-        return $this->render('@EkynaCommerce/Account/Address/index.html.twig', $parameters);
+        $content = $this->twig->render('@EkynaCommerce/Account/Address/index.html.twig', $parameters);
+
+        return (new Response($content))->setPrivate();
     }
 
-    /**
-     * Add address action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function addAction(Request $request)
+    public function add(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface $address */
-        $address = $this
-            ->get('ekyna_commerce.customer_address.repository')
-            ->createNew();
-
+        /** @var CustomerAddressInterface $address */
+        $address = $this->addressFactory->create();
         $address->setCustomer($customer);
 
-        $form = $this->createForm(CustomerAddressType::class, $address, [
+        $form = $this->formFactory->create(CustomerAddressType::class, $address, [
             'method' => 'POST',
-            'action' => $this->generateUrl('ekyna_commerce_account_address_add'),
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_address_add'),
         ]);
 
-        $this->createFormFooter($form, [
-            'cancel_path' => $this->generateUrl('ekyna_commerce_account_address_index'),
+        $redirect = $this->urlGenerator->generate('ekyna_commerce_account_address_index');
+
+        FormUtil::addFooter($form, [
+            'cancel_path' => $redirect,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this
-                ->get('ekyna_commerce.customer_address.operator')
-                ->update($address);
+            $event = $this->addressManager->update($address);
 
             if (!$event->hasErrors()) {
-                $this->addFlash('ekyna_commerce.account.address.edit.success', 'success');
+                $this->flashHelper->addFlash(t('account.address.edit.success', [], 'EkynaCommerce'), 'success');
 
-                return $this->redirectToRoute('ekyna_commerce_account_address_index');
+                return new RedirectResponse($redirect);
             }
 
             foreach ($event->getErrors() as $error) {
@@ -84,53 +114,49 @@ class AddressController extends AbstractController
         }
 
         $addresses = $this
-            ->get('ekyna_commerce.customer_address.repository')
+            ->addressRepository
             ->findByCustomer($customer);
 
-        return $this->render('@EkynaCommerce/Account/Address/add.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Account/Address/add.html.twig', [
             'form'      => $form->createView(),
             'addresses' => $addresses,
         ]);
+
+        return (new Response($content))->setPrivate();
     }
 
-    /**
-     * Edit address action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function editAction(Request $request)
+    public function edit(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        if (null === $address = $this->findAddressByRequest($request)) {
-            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        $redirect = $this->urlGenerator->generate('ekyna_commerce_account_address_index');
+
+        if (!$address = $this->findAddressByRequest($request)) {
+            return new RedirectResponse($redirect);
         }
 
-        $form = $this
-            ->createForm(CustomerAddressType::class, $address, [
-                'method' => 'POST',
-                'action' => $this->generateUrl('ekyna_commerce_account_address_edit', [
-                    'addressId' => $address->getId(),
-                ]),
-            ]);
+        $form = $this->formFactory->create(CustomerAddressType::class, $address, [
+            'method' => 'POST',
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_address_edit', [
+                'addressId' => $address->getId(),
+            ]),
+        ]);
 
-        $this->createFormFooter($form, [
-            'cancel_path' => $this->generateUrl('ekyna_commerce_account_address_index'),
+        FormUtil::addFooter($form, [
+            'cancel_path' => $redirect,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $this
-                ->get('ekyna_commerce.customer_address.operator')
+                ->addressManager
                 ->update($address);
 
             if (!$event->hasErrors()) {
-                $this->addFlash('ekyna_commerce.account.address.edit.success', 'success');
+                $this->flashHelper->addFlash(t('account.address.edit.success', [], 'EkynaCommerce'), 'success');
 
-                return $this->redirectToRoute('ekyna_commerce_account_address_index');
+                return new RedirectResponse($redirect);
             }
 
             foreach ($event->getErrors() as $error) {
@@ -139,51 +165,47 @@ class AddressController extends AbstractController
         }
 
         $addresses = $this
-            ->get('ekyna_commerce.customer_address.repository')
+            ->addressRepository
             ->findByCustomer($customer);
 
-        return $this->render('@EkynaCommerce/Account/Address/edit.html.twig', [
-            'form' => $form->createView(),
+        $content = $this->twig->render('@EkynaCommerce/Account/Address/edit.html.twig', [
+            'form'      => $form->createView(),
             'addresses' => $addresses,
         ]);
+
+        return (new Response($content))->setPrivate();
     }
 
-    /**
-     * Remove address action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function removeAction(Request $request)
+    public function remove(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        if (null === $address = $this->findAddressByRequest($request)) {
-            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        $redirect = $this->urlGenerator->generate('ekyna_commerce_account_address_index');
+
+        if (!$address = $this->findAddressByRequest($request)) {
+            return new RedirectResponse($redirect);
         }
 
-        $form = $this
-            ->createForm(ConfirmType::class, null, [
-                'method'      => 'POST',
-                'action'      => $this->generateUrl('ekyna_commerce_account_address_remove', [
-                    'addressId' => $address->getId(),
-                ]),
-                'message'     => 'ekyna_commerce.account.address.remove.confirm',
-                'cancel_path' => $this->generateUrl('ekyna_commerce_account_address_index'),
-            ]);
+        $form = $this->formFactory->create(ConfirmType::class, null, [
+            'method'      => 'POST',
+            'action'      => $this->urlGenerator->generate('ekyna_commerce_account_address_remove', [
+                'addressId' => $address->getId(),
+            ]),
+            'message'     => t('account.address.remove.confirm', [], 'EkynaCommerce'),
+            'cancel_path' => $redirect,
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $this
-                ->get('ekyna_commerce.customer_address.operator')
+                ->addressManager
                 ->delete($address);
 
             if (!$event->hasErrors()) {
-                $this->addFlash('ekyna_commerce.account.address.remove.success', 'success');
+                $this->flashHelper->addFlash(t('account.address.remove.success', [], 'EkynaCommerce'), 'success');
 
-                return $this->redirectToRoute('ekyna_commerce_account_address_index');
+                return new RedirectResponse($redirect);
             }
 
             foreach ($event->getErrors() as $error) {
@@ -192,117 +214,103 @@ class AddressController extends AbstractController
         }
 
         $addresses = $this
-            ->get('ekyna_commerce.customer_address.repository')
+            ->addressRepository
             ->findByCustomer($customer);
 
-        return $this->render('@EkynaCommerce/Account/Address/remove.html.twig', [
-            'address' => $address,
-            'form'    => $form->createView(),
+        $content = $this->twig->render('@EkynaCommerce/Account/Address/remove.html.twig', [
+            'address'   => $address,
+            'form'      => $form->createView(),
             'addresses' => $addresses,
         ]);
+
+        return (new Response($content))->setPrivate();
     }
 
-    /**
-     * Invoice default action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function invoiceDefaultAction(Request $request)
+    public function invoiceDefault(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        if (null === $address = $this->findAddressByRequest($request)) {
-            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        $redirect = $this->urlGenerator->generate('ekyna_commerce_account_address_index');
+
+        if (!$address = $this->findAddressByRequest($request)) {
+            return new RedirectResponse($redirect);
         }
 
         if (
-            $address->isInvoiceDefault() && !(
-                $customer->hasParent() &&
-                null !== $customer->getParent()->getDefaultInvoiceAddress(true)
+            $address->isInvoiceDefault()
+            && !(
+                $customer->hasParent()
+                && null !== $customer->getParent()->getDefaultInvoiceAddress(true)
             )
         ) {
-            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+            return new RedirectResponse($redirect);
         }
 
         $address->setInvoiceDefault(!$address->isInvoiceDefault());
 
         $event = $this
-            ->get('ekyna_commerce.customer_address.operator')
+            ->addressManager
             ->update($address);
 
         if ($event->hasErrors()) {
-            $event->toFlashes($this->getFlashBag());
+            $this->flashHelper->fromEvent($event);
         } else {
-            $this->addFlash('ekyna_commerce.account.address.edit.success', 'success');
+            $this->flashHelper->addFlash(t('account.address.edit.success', [], 'EkynaCommerce'), 'success');
         }
 
-        return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        return new RedirectResponse($redirect);
     }
 
-    /**
-     * Delivery default action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function deliveryDefaultAction(Request $request)
+    public function deliveryDefault(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        if (null === $address = $this->findAddressByRequest($request)) {
-            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        $redirect = $this->urlGenerator->generate('ekyna_commerce_account_address_index');
+
+        if (!$address = $this->findAddressByRequest($request)) {
+            return new RedirectResponse($redirect);
         }
 
         if (
-            $address->isDeliveryDefault() && !(
-                $customer->hasParent() &&
-                null !== $customer->getParent()->getDefaultDeliveryAddress(true)
+            $address->isDeliveryDefault()
+            && !(
+                $customer->hasParent()
+                && null !== $customer->getParent()->getDefaultDeliveryAddress(true)
             )
         ) {
-            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+            return new RedirectResponse($redirect);
         }
 
         $address->setDeliveryDefault(!$address->isDeliveryDefault());
 
         $event = $this
-            ->get('ekyna_commerce.customer_address.operator')
+            ->addressManager
             ->update($address);
 
         if ($event->hasErrors()) {
-            $event->toFlashes($this->getFlashBag());
+            $this->flashHelper->fromEvent($event);
         } else {
-            $this->addFlash('ekyna_commerce.account.address.edit.success', 'success');
+            $this->flashHelper->addFlash(t('account.address.edit.success', [], 'EkynaCommerce'), 'success');
         }
 
-        return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        return new RedirectResponse($redirect);
     }
 
-    /**
-     * Finds the address by request.
-     *
-     * @param Request $request
-     *
-     * @return \Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface
-     */
-    protected function findAddressByRequest(Request $request)
+    protected function findAddressByRequest(Request $request): ?CustomerAddressInterface
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
-        $id = intval($request->attributes->get('addressId'));
+        $id = $request->attributes->getInt('addressId');
 
-        if (0 < $id) {
-            /** @noinspection PhpIncompatibleReturnTypeInspection */
-            return $this
-                ->get('ekyna_commerce.customer_address.repository')
-                ->findOneBy([
-                    'id'       => $id,
-                    'customer' => $customer,
-                ]);
+        if (0 >= $id) {
+            return null;
         }
 
-        return null;
+        return $this
+            ->addressRepository
+            ->findOneBy([
+                'id'       => $id,
+                'customer' => $customer,
+            ]);
     }
 }

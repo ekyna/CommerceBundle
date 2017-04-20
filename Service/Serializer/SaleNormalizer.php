@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
@@ -19,66 +21,49 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
  */
 class SaleNormalizer extends BaseNormalizer
 {
-    /**
-     * @var ConstantsHelper
-     */
-    private $constantsHelper;
+    private ConstantsHelper $constantsHelper;
+    private FlagRenderer    $flagRenderer;
 
-    /**
-     * @var FlagRenderer
-     */
-    private $flagRenderer;
+    protected ?TagRenderer $tagRenderer = null;
 
-    /**
-     * @var TagRenderer
-     */
-    protected $tagRenderer;
-
-
-    /**
-     * Constructor.
-     *
-     * @param ConstantsHelper $constantsHelper
-     * @param FlagRenderer    $flagRenderer
-     */
     public function __construct(ConstantsHelper $constantsHelper, FlagRenderer $flagRenderer)
     {
         $this->constantsHelper = $constantsHelper;
-        $this->flagRenderer    = $flagRenderer;
+        $this->flagRenderer = $flagRenderer;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function normalize($sale, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = [])
     {
-        $data = parent::normalize($sale, $format, $context);
+        $data = parent::normalize($object, $format, $context);
 
         if ($this->contextHasGroup('Summary', $context)) {
             $data['state_badge'] = $this
                 ->constantsHelper
-                ->renderSaleStateBadge($sale);
+                ->renderSaleStateBadge($object);
 
             $data['payment_state_badge'] = $this
                 ->constantsHelper
-                ->renderPaymentStateBadge($sale->getPaymentState());
+                ->renderPaymentStateBadge($object->getPaymentState());
 
-            if ($sale instanceof InvoiceSubjectInterface) {
+            if ($object instanceof InvoiceSubjectInterface) {
                 $data['invoice_state_badge'] = $this
                     ->constantsHelper
-                    ->renderInvoiceStateBadge($sale->getInvoiceState());
+                    ->renderInvoiceStateBadge($object->getInvoiceState());
             }
 
-            if ($sale instanceof ShipmentSubjectInterface) {
+            if ($object instanceof ShipmentSubjectInterface) {
                 $data['shipment_state_badge'] = $this
                     ->constantsHelper
-                    ->renderShipmentStateBadge($sale->getShipmentState());
+                    ->renderShipmentStateBadge($object->getShipmentState());
             }
 
-            $data['flags'] = $this->flagRenderer->renderSaleFlags($sale, ['badge' => false]);
+            $data['flags'] = $this->flagRenderer->renderSaleFlags($object, ['badge' => false]);
 
-            if ($sale instanceof TagsSubjectInterface) {
-                $data['tags'] = $this->getTagRenderer()->renderTags($sale, ['text' => false, 'badge' => false]);
+            if ($object instanceof TagsSubjectInterface) {
+                $data['tags'] = $this->getTagRenderer()->renderTags($object, ['text' => false, 'badge' => false]);
             } else {
                 $data['tags'] = '';
             }
@@ -92,7 +77,7 @@ class SaleNormalizer extends BaseNormalizer
      */
     protected function normalizePayment(PaymentInterface $payment): array
     {
-        $data =  parent::normalizePayment($payment);
+        $data = parent::normalizePayment($payment);
 
         $data['state_badge'] = $this->constantsHelper->renderPaymentStateBadge($payment);
 
@@ -104,7 +89,7 @@ class SaleNormalizer extends BaseNormalizer
      */
     protected function normalizeShipment(ShipmentInterface $shipment): array
     {
-        $data =  parent::normalizeShipment($shipment);
+        $data = parent::normalizeShipment($shipment);
 
         $data['state_badge'] = $this->constantsHelper->renderShipmentStateBadge($shipment);
 
@@ -116,7 +101,7 @@ class SaleNormalizer extends BaseNormalizer
      *
      * @return TagRenderer
      */
-    private function getTagRenderer()
+    private function getTagRenderer(): TagRenderer
     {
         if ($this->tagRenderer) {
             return $this->tagRenderer;

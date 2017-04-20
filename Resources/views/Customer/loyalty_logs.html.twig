@@ -2,9 +2,9 @@
 <table class="table table-alt-head">
 <thead>
 <tr>
-    <th>{{ 'ekyna_commerce.customer.field.loyalty_origin'|trans }}</th>
-    <th>{{ 'ekyna_core.field.amount'|trans }}</th>
-    <th>{{ 'ekyna_core.field.date'|trans }}</th>
+    <th>{{ 'customer.field.loyalty_origin'|trans({}, 'EkynaCommerce') }}</th>
+    <th>{{ 'field.amount'|trans({}, 'EkynaUi') }}</th>
+    <th>{{ 'field.date'|trans({}, 'EkynaUi') }}</th>
 </tr>
 </thead>
 <tbody>
@@ -12,11 +12,11 @@
 <tr>
     <td>{{ log.origin }}</td>
     <td>{% if log.debit %}-{% endif %}{{ log.amount }}</td>
-    <td>{{ log.createdAt|localizeddate('short', 'short') }}</td>
+    <td>{{ log.createdAt|format_datetime('short', 'short') }}</td>
 </tr>
 {% else %}
 <tr>
-    <td colspan="3">{{ 'ekyna_core.value.no_item'|trans }}</td>
+    <td colspan="3">{{ 'value.no_item'|trans({}, 'EkynaUi') }}</td>
 </tr>
 {% endfor %}
 </tbody>

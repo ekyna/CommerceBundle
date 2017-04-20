@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Event;
 
-use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Cart\Model\CartItemInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class AddToCartEvent
@@ -15,149 +17,76 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AddToCartEvent extends Event
 {
-    const INITIALIZE = 'ekyna_commerce.add_to_cart.initialize';
-    const SUCCESS    = 'ekyna_commerce.add_to_cart.success';
-    const FAILURE    = 'ekyna_commerce.add_to_cart.failure';
-
-    /**
-     * @var SubjectInterface
-     */
-    private $subject;
-
-    /**
-     * @var Modal
-     */
-    private $modal;
-
-    /**
-     * @var CartItemInterface
-     */
-    private $item;
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
-     * @var Response
-     */
-    private $response;
+    public const INITIALIZE = 'ekyna_commerce.add_to_cart.initialize';
+    public const SUCCESS    = 'ekyna_commerce.add_to_cart.success';
+    public const FAILURE    = 'ekyna_commerce.add_to_cart.failure';
 
 
-    /**
-     * Constructor.
-     *
-     * @param SubjectInterface  $subject
-     * @param Modal             $modal
-     * @param CartItemInterface $item
-     */
-    public function __construct(SubjectInterface $subject, Modal $modal = null, CartItemInterface $item = null)
+    private SubjectInterface   $subject;
+    private ?Modal             $modal;
+    private ?CartItemInterface $item;
+
+    private ?string   $message  = null;
+    private ?Response $response = null;
+
+
+    public function __construct(SubjectInterface $subject, ?Modal $modal, ?CartItemInterface $item)
     {
         $this->subject = $subject;
         $this->modal = $modal;
         $this->item = $item;
     }
 
-    /**
-     * Returns the subject.
-     *
-     * @return SubjectInterface
-     */
-    public function getSubject()
+    public function getSubject(): SubjectInterface
     {
         return $this->subject;
     }
 
-    /**
-     * Returns the modal.
-     *
-     * @return Modal|null
-     */
-    public function getModal()
-    {
-        return $this->modal;
-    }
-
-    /**
-     * Sets the modal.
-     *
-     * @param Modal $modal
-     *
-     * @return AddToCartEvent
-     */
-    public function setModal(Modal $modal = null)
+    public function setModal(?Modal $modal): AddToCartEvent
     {
         $this->modal = $modal;
 
         return $this;
     }
 
-    /**
-     * Returns the item.
-     *
-     * @return CartItemInterface|null
-     */
-    public function getItem()
+    public function getModal(): ?Modal
+    {
+        return $this->modal;
+    }
+
+    public function setItem(?CartItemInterface $item): AddToCartEvent
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    public function getItem(): ?CartItemInterface
     {
         return $this->item;
     }
 
-    /**
-     * Sets the item.
-     *
-     * @param CartItemInterface $item
-     */
-    public function setItem(CartItemInterface $item = null)
-    {
-        $this->item = $item;
-    }
-
-    /**
-     * Returns the message.
-     *
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * Sets the message.
-     *
-     * @param string $message
-     *
-     * @return AddToCartEvent
-     */
-    public function setMessage($message)
+    public function setMessage(?string $message): AddToCartEvent
     {
         $this->message = $message;
 
         return $this;
     }
 
-    /**
-     * Returns the response.
-     *
-     * @return Response
-     */
-    public function getResponse()
+    public function getMessage(): ?string
     {
-        return $this->response;
+        return $this->message;
     }
 
-    /**
-     * Sets the response.
-     *
-     * @param Response $response
-     *
-     * @return AddToCartEvent
-     */
-    public function setResponse(Response $response = null)
+    public function setResponse(?Response $response): AddToCartEvent
     {
         $this->response = $response;
 
         return $this;
+    }
+
+    public function getResponse(): ?Response
+    {
+        return $this->response;
     }
 }

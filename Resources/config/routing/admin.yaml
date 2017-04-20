@@ -1,0 +1,58 @@
+admin_ekyna_commerce_customer_address:
+    resource: "admin/customer_address.yaml"
+    prefix:   /customer/{customerId}/customer-address
+
+admin_ekyna_commerce_inventory:
+    resource: "admin/inventory.yaml"
+    prefix:   /inventory
+
+admin_ekyna_commerce_map:
+    resource: "admin/map.yaml"
+    prefix:   /map
+
+admin_ekyna_commerce_shipment_platform:
+    resource: "admin/shipment_platform.yaml"
+    prefix:   /shipment-platform
+
+admin_ekyna_commerce_export:
+    resource: "admin/export.yaml"
+    prefix:   /export
+
+admin_ekyna_commerce_payment_status:
+    path: /payment/status
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\PaymentStatusController
+    methods: GET
+
+admin_ekyna_commerce_list_order_invoice:
+    path: /order-invoice
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderList\InvoiceListController
+
+admin_ekyna_commerce_list_order_payment:
+    path: /order-payment
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderList\PaymentListController
+
+admin_ekyna_commerce_list_order_shipment:
+    path: /order-shipment
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderList\ShipmentListController
+
+admin_ekyna_commerce_list_order_invoice_document:
+    path: /order-invoice/documents.{_format}
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderList\InvoiceDocumentController
+    defaults:
+        _format: pdf
+    requirements:
+        _format: pdf|html|jpg
+
+admin_ekyna_commerce_list_order_shipment_document:
+    path: /order-shipment/documents/{type}.{_format}
+    methods: GET
+    controller: \Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderList\ShipmentDocumentController
+    defaults:
+        _format: pdf
+    requirements:
+        type: shipment_form|shipment_bill
+        _format: pdf|html|jpg

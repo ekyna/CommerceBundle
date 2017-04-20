@@ -5,14 +5,12 @@ namespace Ekyna\Bundle\CommerceBundle\Repository;
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Component\Commerce\Support\Repository\TicketMessageRepositoryInterface;
-use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepository;
+use Ekyna\Component\Resource\Doctrine\ORM\Repository\ResourceRepository;
 
 /**
  * Class TicketMessageRepository
  * @package Ekyna\Bundle\CommerceBundle\Repository
  * @author  Etienne Dauvergne <contact@ekyna.com>
- *
- * @method TicketMessageInterface createNew()
  */
 class TicketMessageRepository extends ResourceRepository implements TicketMessageRepositoryInterface
 {

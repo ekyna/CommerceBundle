@@ -2,14 +2,16 @@
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale.voucherNumber, 'text', {
-            'label': 'ekyna_commerce.sale.field.voucher_number',
+            'label': 'sale.field.voucher_number',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_voucherNumber',
             'label_col': 4
         }) }}
     </div>
     <div class="col-md-6">
         {{ show_row(sale.originNumber, 'text', {
-            'label': 'ekyna_commerce.sale.field.origin_number',
+            'label': 'sale.field.origin_number',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_originNumber',
             'label_col': 4
         }) }}
@@ -19,24 +21,25 @@
     {% if sale is sale_cart %}
     <div class="col-md-12">
         {{ show_row(sale.title, 'text', {
-            'label': 'ekyna_core.field.title',
+            'label': 'field.title',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_title'
         }) }}
     </div>
     {% else %}
     <div class="col-md-6">
         {{ show_row(sale.title, 'text', {
-            'label': 'ekyna_core.field.title',
+            'label': 'field.title',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_title',
             'label_col': 4
         }) }}
     </div>
     <div class="col-md-6">
-        {{ show_row(sale.inCharge, 'entity', {
-            'label': 'ekyna_commerce.customer.field.in_charge',
+        {{ show_row(sale.inCharge, 'resource', {
+            'label': 'customer.field.in_charge',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_user',
-            'route': 'ekyna_admin_user_admin_show',
-            'route_parameters_map': {'userId': 'id'},
             'label_col': 4
         }) }}
     </div>
@@ -44,20 +47,24 @@
 </div>
 <hr>
 {{ show_row(sale.comment, 'textarea', {
-    'label': 'ekyna_core.field.comment',
+    'label': 'field.comment',
+    'label_trans_domain': 'EkynaUi',
     'id': 'sale_comment',
 }) }}
 {{ show_row(sale.documentComment, 'textarea', {
-    'label': 'ekyna_commerce.sale.field.document_comment',
+    'label': 'sale.field.document_comment',
+    'label_trans_domain': 'EkynaCommerce',
     'id': 'sale_documentComment',
 }) }}
 <hr>
 {{ show_row(sale.description, 'textarea', {
-    'label': 'ekyna_commerce.field.description',
+    'label': 'field.description',
+    'label_trans_domain': 'EkynaCommerce',
     'id': 'sale_description',
 }) }}
 {{ show_row(sale.preparationNote, 'textarea', {
-    'label': 'ekyna_commerce.sale.field.preparation_note',
+    'label': 'sale.field.preparation_note',
+    'label_trans_domain': 'EkynaCommerce',
     'id': 'sale_premaration_note',
 }) }}
 {% endapply %}

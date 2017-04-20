@@ -1,25 +1,25 @@
 {% apply spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        {{ 'ekyna_commerce.supplier.label.singular'|trans }}
+        {{ 'supplier.label.singular'|trans({}, 'EkynaCommerce') }}
     </div>
     <div class="panel-body">
         <table class="table table-condensed table-alt-head">
             <tbody>
             <tr>
-                <th>{{ 'ekyna_core.field.name'|trans }}</th>
+                <th>{{ 'field.name'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ supplier.name }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_core.field.locale'|trans }}</th>
+                <th>{{ 'field.locale'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ supplier.locale|language|capitalize }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.supplier_carrier.label.singular'|trans }}</th>
+                <th>{{ 'supplier_carrier.label.singular'|trans({}, 'EkynaCommerce') }}</th>
                 <td>{{ supplier.carrier }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_core.field.description'|trans }}</th>
+                <th>{{ 'field.description'|trans({}, 'EkynaUi') }}</th>
                 <td>{{ supplier.description|raw }}</td>
             </tr>
             </tbody>
@@ -27,11 +27,3 @@
     </div>
 </div>
 {% endapply %}
-
-{#<p><strong>{{ supplier.name }}</strong> ({{ supplier.locale|language }}</p>
-<p>{{ supplier.email }}</p>
-<p>{{ supplier|address }}</p>
-{% if supplier.description is not empty %}
-<p></p>
-{% endif %}#}
-

@@ -1,4 +1,4 @@
-define(['jquery', 'ekyna-dispatcher', 'ekyna-modal', 'ekyna-commerce/templates', 'ekyna-ui'], function ($, Dispatcher, Modal, Templates) {
+define(['jquery', 'ekyna-dispatcher', 'ekyna-modal', 'ekyna-commerce/templates', 'ekyna-spinner'], function ($, Dispatcher, Modal, Templates) {
 
     var StockUnits = function (id) {
         this.$element = $('#' + id);

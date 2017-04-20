@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
+use Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
@@ -11,6 +14,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use function array_map;
+use function count;
+use function reset;
+
 /**
  * Class ShipmentDocumentActionType
  * @package Ekyna\Bundle\CommerceBundle\Table\Action
@@ -18,17 +25,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ShipmentDocumentActionType extends AbstractActionType
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private UrlGeneratorInterface $urlGenerator;
 
-
-    /**
-     * Constructor.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     */
     public function __construct(UrlGeneratorInterface $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
@@ -47,7 +45,7 @@ class ShipmentDocumentActionType extends AbstractActionType
         );
 
         $shipments = array_map(function (RowInterface $row) {
-            return $row->getData();
+            return $row->getData(null);
         }, $rows);
 
         if (empty($shipments)) {
@@ -55,17 +53,17 @@ class ShipmentDocumentActionType extends AbstractActionType
         }
 
         if (1 === count($shipments)) {
-            /** @var \Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface $shipment */
+            /** @var OrderShipmentInterface $shipment */
             $shipment = reset($shipments);
 
-            return new RedirectResponse($this->urlGenerator->generate('ekyna_commerce_order_shipment_admin_render', [
+            return new RedirectResponse($this->urlGenerator->generate('admin_ekyna_commerce_order_shipment_render', [
                 'orderId'         => $shipment->getOrder()->getId(),
                 'orderShipmentId' => $shipment->getId(),
                 'type'            => $options['type'],
             ]));
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('ekyna_commerce_admin_order_list_shipment_document', [
+        return new RedirectResponse($this->urlGenerator->generate('admin_ekyna_commerce_list_order_shipment_document', [
             'id'   => array_map(function (ShipmentInterface $shipment) {
                 return $shipment->getId();
             }, $shipments),
@@ -73,10 +71,7 @@ class ShipmentDocumentActionType extends AbstractActionType
         ]));
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('type')

@@ -1,0 +1,96 @@
+ekyna_commerce_cart_checkout_index:
+    path: ''
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::index
+    methods: [GET, POST]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Mon panier
+            menus: [footer]
+            locked: true
+            advanced: false
+            position: 50
+
+ekyna_commerce_cart_checkout_quote:
+    path:
+        en: /transform-to-quote
+        fr: /transformer-en-devis
+        es: /transformar-en-cotizacion
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::quote
+    methods: [GET, POST]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Transformer en devis
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false
+            seo:
+                index: false
+                follow: false
+
+ekyna_commerce_cart_checkout_shipment:
+    path:
+        en: /shipment
+        fr: /livraison
+        es: /entrega
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::shipment
+    methods: [GET, POST]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Livraison
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false
+            seo:
+                index: false
+                follow: false
+
+ekyna_commerce_cart_checkout_payment:
+    path:
+        en: /payment
+        fr: /paiement
+        es: /pago
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::payment
+    methods: [GET, POST]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Paiement
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false
+            seo:
+                index: false
+                follow: false
+
+ekyna_commerce_cart_checkout_unlock:
+    path: /unlock
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::unlock
+    methods: [GET]
+
+ekyna_commerce_cart_checkout_status:
+    path: /status
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::status
+    methods: [GET]
+
+ekyna_commerce_cart_checkout_confirmation:
+    path:
+        en: /confirmation/{orderKey}
+        fr: /confirmation/{orderKey}
+        es: /confirmation/{orderKey}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::confirmation
+    methods: [GET]
+    requirements:
+        orderKey: "[a-zA-Z0-9]+"
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Confirmation
+            parent: ekyna_commerce_cart_checkout_index
+            locked: true
+            advanced: false
+            seo:
+                index: false
+                follow: false

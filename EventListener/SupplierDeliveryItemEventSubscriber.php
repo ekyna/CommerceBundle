@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierDeliveryItemEventSubscriber as BaseSubscriber;
@@ -14,18 +16,15 @@ use Ekyna\Component\Resource\Event\ResourceMessage;
  */
 class SupplierDeliveryItemEventSubscriber extends BaseSubscriber
 {
-    /**
-     * @inheritdoc
-     */
-    public function onPreDelete(ResourceEventInterface $event)
+    public function onPreDelete(ResourceEventInterface $event): void
     {
         try {
             parent::onPreDelete($event);
         } catch (IllegalOperationException $e) {
-            $event->addMessage(new ResourceMessage(
-                'ekyna_commerce.supplier_order.message.relative_stock_unit_is_shipped',
+            $event->addMessage(ResourceMessage::create(
+                'supplier_order.message.relative_stock_unit_is_shipped',
                 ResourceMessage::TYPE_ERROR
-            ));
+            )->setDomain('EkynaCommerce'));
         }
     }
 }

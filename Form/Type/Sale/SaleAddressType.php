@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerAddressRepositoryInterface;
-use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
+use Ekyna\Component\Resource\Repository\ResourceRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,6 +18,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class SaleAddressType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
@@ -23,53 +27,32 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class SaleAddressType extends AbstractType
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var ResourceRepositoryInterface
-     */
-    private $customerRepository;
-
-    /**
-     * @var CustomerAddressRepositoryInterface
-     */
-    private $customerAddressRepository;
+    private SerializerInterface                $serializer;
+    private ResourceRepositoryInterface        $customerRepository;
+    private CustomerAddressRepositoryInterface $customerAddressRepository;
 
 
-    /**
-     * Constructor.
-     *
-     * @param SerializerInterface                $serializer
-     * @param ResourceRepositoryInterface        $customerRepository
-     * @param CustomerAddressRepositoryInterface $customerAddressRepository
-     */
     public function __construct(
         SerializerInterface $serializer,
         ResourceRepositoryInterface $customerRepository,
         CustomerAddressRepositoryInterface $customerAddressRepository
     ) {
-        $this->serializer                = $serializer;
-        $this->customerRepository        = $customerRepository;
+        $this->serializer = $serializer;
+        $this->customerRepository = $customerRepository;
         $this->customerAddressRepository = $customerAddressRepository;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $propertyPath = 'invoiceAddress';
-        $required     = true;
+        $required = true;
 
         if ($options['delivery']) {
-            $required     = false;
+            $required = false;
             $propertyPath = 'deliveryAddress';
 
             $builder->add('sameAddress', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale.field.same_address',
+                'label'    => t('sale.field.same_address', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'class'             => 'sale-address-same',
@@ -88,7 +71,7 @@ class SaleAddressType extends AbstractType
             ],
         ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $sale = $event->getData();
             $form = $event->getForm();
 
@@ -109,7 +92,7 @@ class SaleAddressType extends AbstractType
 
             if ($options['admin_mode'] || ($customer && $customer->getCustomerGroup()->isBusiness())) {
                 $form->get('address')->add('information', Type\TextareaType::class, [
-                    'label'    => 'ekyna_core.field.information',
+                    'label'    => t('field.information', [], 'EkynaUi'),
                     'required' => false,
                 ]);
             }
@@ -117,7 +100,7 @@ class SaleAddressType extends AbstractType
             $this->buildChoiceField($form, $customer);
         }, 2048);
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $data = $event->getData();
             $form = $event->getForm();
 
@@ -132,7 +115,7 @@ class SaleAddressType extends AbstractType
             }
 
             /** @var CustomerInterface $customer */
-            $customer = $this->customerRepository->find($data['customer']);
+            $customer = $this->customerRepository->find((int)$data['customer']);
 
             if (!$options['customer_field'] && !$customer) {
                 return;
@@ -141,7 +124,7 @@ class SaleAddressType extends AbstractType
             $this->buildChoiceField($form, $customer);
         }, 2048);
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             $sale = $event->getData();
 
             // Check if data (sale) is set.
@@ -157,21 +140,16 @@ class SaleAddressType extends AbstractType
         }, 2048);
     }
 
-    /**
-     * Builds the choice field.
-     *
-     * @param FormInterface     $form
-     * @param CustomerInterface $customer
-     */
-    private function buildChoiceField(FormInterface $form, CustomerInterface $customer = null)
+    private function buildChoiceField(FormInterface $form, CustomerInterface $customer = null): void
     {
         $choiceOptions = [
-            'label'    => 'ekyna_commerce.sale.field.address_choice',
-            'choices'  => [],
-            'disabled' => true,
-            'required' => false,
-            'mapped'   => false,
-            'attr'     => [
+            'label'                     => t('sale.field.address_choice', [], 'EkynaCommerce'),
+            'choices'                   => [],
+            'choice_translation_domain' => false,
+            'disabled'                  => true,
+            'required'                  => false,
+            'mapped'                    => false,
+            'attr'                      => [
                 'class' => 'sale-address-choice',
             ],
         ];
@@ -185,8 +163,8 @@ class SaleAddressType extends AbstractType
                     $choices[(string)$address] = $address->getId();
                 }
 
-                $choiceOptions['disabled']    = false;
-                $choiceOptions['choices']     = $choices;
+                $choiceOptions['disabled'] = false;
+                $choiceOptions['choices'] = $choices;
                 $choiceOptions['choice_attr'] = function ($val) use ($addresses) {
                     if (!isset($addresses[$val])) {
                         return [];
@@ -204,14 +182,11 @@ class SaleAddressType extends AbstractType
         $form->add('choice', Type\ChoiceType::class, $choiceOptions);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        if (0 < strlen($options['customer_field'])) {
+        if (!empty($options['customer_field'])) {
             $view->vars['attr']['data-customer-field'] = $view->parent->vars['id'] . '_' . $options['customer_field'];
-            $view->vars['attr']['data-mode']           = $options['delivery'] ? 'delivery' : 'invoice';
+            $view->vars['attr']['data-mode'] = $options['delivery'] ? 'delivery' : 'invoice';
         }
 
         /** @var SaleInterface $sale */
@@ -220,10 +195,7 @@ class SaleAddressType extends AbstractType
         $view->vars['wrapped'] = $options['delivery'] && $sale->isSameAddress();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
@@ -236,10 +208,7 @@ class SaleAddressType extends AbstractType
             ->setAllowedTypes('customer_field', ['null', 'string']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_sale_address';
     }

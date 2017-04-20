@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
-use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceSearchType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CustomerSearchType
@@ -14,46 +18,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CustomerSearchType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $customerClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $class
-     */
-    public function __construct(string $class)
-    {
-        $this->customerClass = $class;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'    => function (Options $options, $value) {
-                    if (null !== $value) {
-                        return $value;
-                    }
-
-                    return 'ekyna_commerce.customer.label.' . ($options['multiple'] ? 'plural' : 'singular');
-                },
-                'class'    => $this->customerClass,
-                'route'    => 'ekyna_commerce_customer_admin_search',
+                'resource'    => 'ekyna_commerce.customer',
                 'required' => false,
                 'parent'   => false,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.customer.help.hierarchy',
+                    'help_text' => t('customer.help.hierarchy', [], 'EkynaCommerce'),
                 ],
             ])
             ->setAllowedTypes('parent', 'bool')
-            ->setNormalizer('route_params', function (Options $options, $value) {
+            ->setNormalizer('search_parameters', function (Options $options, $value) {
                 if ($options['parent'] && !isset($value['parent'])) {
                     $value['parent'] = 1;
                 }
@@ -62,11 +39,8 @@ class CustomerSearchType extends AbstractType
             });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return EntitySearchType::class;
+        return ResourceSearchType::class;
     }
 }

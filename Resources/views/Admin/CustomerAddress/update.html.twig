@@ -1,0 +1,8 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block actions %}{% endblock actions %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ ivory_google_api() }}
+{% endblock javascripts %}

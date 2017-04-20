@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
@@ -18,10 +20,7 @@ use Twig\TwigTest;
  */
 class PaymentExtension extends AbstractExtension
 {
-    /**
-     * @inheritdoc
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -37,10 +36,7 @@ class PaymentExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -80,10 +76,7 @@ class PaymentExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('payment', function ($subject) {

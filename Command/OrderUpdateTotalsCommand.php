@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
@@ -25,92 +27,29 @@ class OrderUpdateTotalsCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:order:update-totals';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    private EntityManagerInterface $manager;
+    private SaleUpdaterInterface   $saleUpdater;
+    private OrderUpdaterInterface  $orderUpdater;
+    private NotifyQueue            $notifyQueue;
+    private string                 $orderClass;
 
-    /**
-     * @var SaleUpdaterInterface
-     */
-    private $saleUpdater;
-
-    /**
-     * @var OrderUpdaterInterface
-     */
-    private $orderUpdater;
-
-    /**
-     * @var NotifyQueue
-     */
-    private $notifyQueue;
-
-    /**
-     * @var string
-     */
-    private $orderClass;
-
-    /**
-     * @var Query
-     */
-    private $nextOrderQuery;
-
-    /**
-     * @var int
-     */
-    private $lastId;
-
-    /**
-     * @var bool
-     */
-    private $amount;
-
-    /**
-     * @var bool
-     */
-    private $payment;
-
-    /**
-     * @var bool
-     */
-    private $invoice;
-
-    /**
-     * @var bool
-     */
-    private $margin;
-
-    /**
-     * @var bool
-     */
-    private $dryRun;
-
-    /**
-     * @var int
-     */
-    private $totalCount = 0;
-
-    /**
-     * @var int
-     */
-    private $updatedCount = 0;
+    private Query $nextOrderQuery;
+    private int   $lastId;
+    private bool  $amount;
+    private bool  $payment;
+    private bool  $invoice;
+    private bool  $margin;
+    private bool  $dryRun;
+    private int   $totalCount   = 0;
+    private int   $updatedCount = 0;
 
 
-    /**
-     * Constructor.
-     *
-     * @param EntityManagerInterface $manager
-     * @param SaleUpdaterInterface   $saleUpdater
-     * @param OrderUpdaterInterface  $orderUpdater
-     * @param NotifyQueue            $notifyQueue
-     * @param string                 $orderClass
-     */
     public function __construct(
         EntityManagerInterface $manager,
-        SaleUpdaterInterface $saleUpdater,
-        OrderUpdaterInterface $orderUpdater,
-        NotifyQueue $notifyQueue,
-        string $orderClass
+        SaleUpdaterInterface   $saleUpdater,
+        OrderUpdaterInterface  $orderUpdater,
+        NotifyQueue            $notifyQueue,
+        string                 $orderClass
     ) {
         parent::__construct();
 
@@ -121,13 +60,10 @@ class OrderUpdateTotalsCommand extends Command
         $this->orderClass = $orderClass;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            ->setDescription("Recalculates and updates order totals.")
+            ->setDescription('Recalculates and updates order totals.')
             ->addOption('id', null, InputOption::VALUE_REQUIRED, 'Update single order having this ID')
             ->addOption('from', null, InputOption::VALUE_REQUIRED, 'Update orders starting to this ID', 0)
             ->addOption('amount', 'a', InputOption::VALUE_NONE, 'To update only amount totals')
@@ -137,10 +73,7 @@ class OrderUpdateTotalsCommand extends Command
             ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'To not persist');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->amount = (bool)$input->getOption('amount');
         $this->payment = (bool)$input->getOption('payment');
@@ -172,7 +105,7 @@ class OrderUpdateTotalsCommand extends Command
             $operations[] = '(dry run)';
         }
 
-        $output->writeln("Updating " . implode(", ", $operations) . ".");
+        $output->writeln('Updating ' . implode(', ', $operations) . '.');
 
         $output->writeln('<error>This is a dangerous operation.</error>');
 
@@ -180,7 +113,7 @@ class OrderUpdateTotalsCommand extends Command
             $helper = $this->getHelper('question');
             $question = new ConfirmationQuestion("Recalculate and update order with id $id ?", false);
             if (!$helper->ask($input, $output, $question)) {
-                return 0;
+                return Command::SUCCESS;
             }
 
             if ($order = $this->findOrder($id)) {
@@ -188,10 +121,10 @@ class OrderUpdateTotalsCommand extends Command
             } else {
                 $output->writeln("Order #$id not found");
 
-                return 1;
+                return Command::FAILURE;
             }
 
-            return 0;
+            return Command::SUCCESS;
         }
 
         $this->lastId = (int)$input->getOption('from');
@@ -199,7 +132,7 @@ class OrderUpdateTotalsCommand extends Command
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion("Recalculate and update orders from id $this->lastId ?", false);
         if (!$helper->ask($input, $output, $question)) {
-            return 0;
+            return Command::SUCCESS;
         }
 
         while ($order = $this->findNextOrder()) {
@@ -208,14 +141,14 @@ class OrderUpdateTotalsCommand extends Command
 
         $output->writeln("\nUpdated $this->updatedCount / $this->totalCount\n");
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function updateOrder(OrderInterface $order, OutputInterface $output): void
     {
         $this->totalCount++;
 
-        $this->lastId = $order->getId();
+        $this->lastId = $order->getId() ?? 0;
 
         $output->write(sprintf(
             '<comment>[%d] %s</comment> ... ',
@@ -227,16 +160,16 @@ class OrderUpdateTotalsCommand extends Command
 
         try {
             if ($this->amount) {
-                $changed |= $this->saleUpdater->updateAmountTotals($order);
+                $changed = $this->saleUpdater->updateAmountTotals($order) || $changed;
             }
             if ($this->payment) {
-                $changed |= $this->saleUpdater->updatePaymentTotals($order);
+                $changed = $this->saleUpdater->updatePaymentTotals($order) || $changed;
             }
             if ($this->invoice) {
-                $changed |= $this->saleUpdater->updateInvoiceTotals($order);
+                $changed = $this->saleUpdater->updateInvoiceTotals($order) || $changed;
             }
             if ($this->margin) {
-                $changed |= $this->orderUpdater->updateMarginTotals($order);
+                $changed = $this->orderUpdater->updateMarginTotals($order) || $changed;
             }
 
             if ($changed) {

@@ -3,13 +3,13 @@
     <table class="table table-hover table-alt-head">
         <thead>
         <tr>
-            <th>{{ 'ekyna_core.field.number'|trans }}</th>
-            <th>{{ 'ekyna_core.field.method'|trans }}</th>
-            <th>{{ 'ekyna_core.field.amount'|trans }}</th>
-            <th>{{ 'ekyna_core.field.currency'|trans }}</th>
-            <th>{{ 'ekyna_core.field.status'|trans }}</th>
-            <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
-            <th>{{ 'ekyna_core.field.completed_at'|trans }}</th>
+            <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.method'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.amount'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.currency'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.status'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.completed_at'|trans({}, 'EkynaUi') }}</th>
             <th></th>
         </tr>
         </thead>
@@ -22,7 +22,7 @@
                 <td id="{{ paymentId }}_number">
                     {{ payment.getNumber() }}
                     {% if locked -%}
-                        <span class="fa fa-lock text-danger" title="{{ 'ekyna_core.field.locked'|trans }}"></span>
+                        <span class="fa fa-lock text-danger" title="{{ 'field.locked'|trans({}, 'EkynaUi') }}"></span>
                     {%- endif %}
                 </td>
                 <td id="{{ paymentId }}_method">{{ payment.getMethod() }}</td>
@@ -35,12 +35,12 @@
                     {%- endif -%}
                 </td>
                 <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
-                <td id="{{ paymentId }}_createdAt">{{ payment.getCreatedAt()|localizeddate('short', 'short') }}</td>
+                <td id="{{ paymentId }}_createdAt">{{ payment.getCreatedAt()|format_datetime('short', 'short') }}</td>
                 <td id="{{ paymentId }}_completedAt">
                     {%- if payment.getCompletedAt() is not null -%}
-                        {{ payment.getCompletedAt()|localizeddate('short', 'short') }}
+                        {{ payment.getCompletedAt()|format_datetime('short', 'short') }}
                     {%- else -%}
-                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                        <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
                     {%- endif -%}
                 </td>
                 <td class="actions">
@@ -68,7 +68,7 @@
         {% else %}
             <tr>
                 <td colspan="8" class="text-center">
-                    <em>{{ 'ekyna_commerce.payment.alert.no_item'|trans }}</em>
+                    <em>{{ 'payment.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
                 </td>
             </tr>
         {% endfor %}

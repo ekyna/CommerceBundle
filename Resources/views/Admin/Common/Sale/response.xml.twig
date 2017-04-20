@@ -3,23 +3,19 @@
 <response>
     <fields>
         <state><![CDATA[{{ sale|sale_state_badge }}]]></state>
-        <weightTotal><![CDATA[{{ (sale.weightTotal|localizednumber ~ '&nbsp;kg')|raw }}]]></weightTotal>
+        <weightTotal><![CDATA[{{ (sale.weightTotal|format_number ~ '&nbsp;kg')|raw }}]]></weightTotal>
         <shipmentMethod><![CDATA[
             {%- if sale.shipmentMethod is null -%}
-                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
             {%- else -%}
-                <a href="{{ path('ekyna_commerce_shipment_method_admin_show', {
-                    'shipmentMethodId': sale.shipmentMethod.id
-                }) }}" class="show-entity">{{ sale.shipmentMethod }}</a>
+                <a href="{{ admin_resource_path(sale.shipmentMethod) }}" class="show-entity">{{ sale.shipmentMethod }}</a>
             {%- endif -%}
         ]]></shipmentMethod>
         <paymentMethod><![CDATA[
             {%- if sale.paymentMethod is null -%}
-                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
             {%- else -%}
-                <a href="{{ path('ekyna_commerce_payment_method_admin_show', {
-                    'paymentMethodId': sale.paymentMethod.id
-                }) }}" class="show-entity">{{ sale.paymentMethod }}</a>
+                <a href="{{ admin_resource_path(sale.paymentMethod) }}" class="show-entity">{{ sale.paymentMethod }}</a>
             {%- endif -%}
         ]]></paymentMethod>
 
@@ -31,18 +27,16 @@
         <outstandingLimit><![CDATA[{{ sale.outstandingLimit|currency_quote(sale, true) }}]]></outstandingLimit>
         <outstandingDate><![CDATA[
             {%- if sale.outstandingDate is empty -%}
-                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
             {%- else -%}
-                {{- sale.outstandingDate|localizeddate('short', 'none') -}}
+                {{- sale.outstandingDate|format_datetime('short', 'none') -}}
             {%- endif -%}
         ]]></outstandingDate>
         <paymentTerm><![CDATA[
             {%- if sale.paymentTerm is null -%}
-                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
             {%- else -%}
-                <a href="{{ path('ekyna_commerce_payment_term_admin_show', {
-                    'paymentTermId': sale.paymentTerm.id
-                }) }}" class="show-entity">{{ sale.paymentTerm }}</a>
+                <a href="{{ admin_resource_path(sale.paymentTerm) }}" class="show-entity">{{ sale.paymentTerm }}</a>
             {%- endif -%}
         ]]></paymentTerm>
         <paymentState><![CDATA[{{ sale.paymentState|payment_state_badge }}]]></paymentState>

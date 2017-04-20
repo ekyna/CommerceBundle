@@ -2,7 +2,7 @@
 
 {% block account %}
 {% apply spaceless %}
-    <h3>{{ 'ekyna_commerce.account.balance.title'|trans }}</h3>
+    <h3>{{ 'account.balance.title'|trans({}, 'EkynaCommerce') }}</h3>
     <hr>
     {{ customer|payment_method_notice }}
     {% include "@EkynaCommerce/Customer/balance.html.twig" with {

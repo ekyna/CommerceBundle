@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\UnitChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\StockSubjectModes;
 use Ekyna\Bundle\ProductBundle\Exception\UnexpectedTypeException;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
+use Symfony\Component\Form\Extension\Core\Type as SF;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Extension\Core\Type as SF;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class StockSubjectFormBuilder
@@ -24,22 +29,18 @@ class StockSubjectFormBuilder
 
 
     /**
-     * Initializes the builder.
-     *
      * @param FormInterface|FormBuilderInterface $form
      */
-    public function initialize($form)
+    public function initialize($form): void
     {
         if (!($form instanceof FormInterface || $form instanceof FormBuilderInterface)) {
-            throw new UnexpectedTypeException($form, [FormInterface::class,FormBuilderInterface::class]);
+            throw new UnexpectedTypeException($form, [FormInterface::class, FormBuilderInterface::class]);
         }
 
         $this->form = $form;
     }
 
     /**
-     * Returns the form.
-     *
      * @return FormInterface|FormBuilderInterface
      */
     protected function getForm()
@@ -47,17 +48,10 @@ class StockSubjectFormBuilder
         return $this->form;
     }
 
-    /**
-     * Adds the "end of life" field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addEndOfLifeField(array $options = [])
+    public function addEndOfLifeField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.end_of_life',
+            'label'    => t('stock_subject.field.end_of_life', [], 'EkynaCommerce'),
             'required' => false,
             'attr'     => [
                 'align_with_widget' => true,
@@ -69,17 +63,10 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the geocode field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addGeocodeField(array $options = [])
+    public function addGeocodeField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.field.geocode',
+            'label'    => t('field.geocode', [], 'EkynaCommerce'),
             'required' => false,
         ], $options);
 
@@ -88,17 +75,11 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the minimum order quantity field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addMinimumOrderQuantity(array $options = [])
+    public function addMinimumOrderQuantity(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.minimum_order_quantity',
+            'label'    => t('stock_subject.field.minimum_order_quantity', [], 'EkynaCommerce'),
+            'decimal'  => true,
             'scale'    => 3, // TODO Packaging format
             'required' => true,
         ], $options);
@@ -108,17 +89,10 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the quote only field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addQuoteOnlyField(array $options = [])
+    public function addQuoteOnlyField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.quote_only',
+            'label'    => t('stock_subject.field.quote_only', [], 'EkynaCommerce'),
             'required' => false,
             'attr'     => [
                 'align_with_widget' => true,
@@ -130,17 +104,10 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the stock replenishment time field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addReplenishmentTime(array $options = [])
+    public function addReplenishmentTime(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.replenishment_time',
+            'label'    => t('stock_subject.field.replenishment_time', [], 'EkynaCommerce'),
             'required' => true,
         ], $options);
 
@@ -149,37 +116,24 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the stock mode field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addStockMode(array $options = [])
+    public function addStockMode(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'   => 'ekyna_commerce.stock_subject.field.mode',
-            'choices' => StockSubjectModes::getChoices(),
+            'label'   => t('stock_subject.field.mode', [], 'EkynaCommerce'),
+            'class'   => StockSubjectModes::class,
             'select2' => false,
         ], $options);
 
-        $this->form->add('stockMode', SF\ChoiceType::class, $options);
+        $this->form->add('stockMode', ConstantChoiceType::class, $options);
 
         return $this;
     }
 
-    /**
-     * Adds the stock floor field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addStockFloor(array $options = [])
+    public function addStockFloor(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.floor',
+            'label'    => t('stock_subject.field.floor', [], 'EkynaCommerce'),
+            'decimal'  => true,
             'scale'    => 3, // TODO Packaging format
             'required' => false,
         ], $options);
@@ -189,20 +143,14 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the weight field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addWeightField(array $options = [])
+    public function addWeightField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_core.field.weight',
+            'label'    => t('field.weight', [], 'EkynaUi'),
+            'decimal'  => true,
             'scale'    => 3,
             'attr'     => [
-                'placeholder' => 'ekyna_core.field.weight',
+                'placeholder' => t('field.weight', [], 'EkynaUi'),
                 'input_group' => ['append' => Units::getSymbol(Units::KILOGRAM)],
             ],
             'required' => !(isset($options['disabled']) && $options['disabled']),
@@ -213,19 +161,12 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the width field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addWidthField(array $options = [])
+    public function addWidthField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_core.field.width',
+            'label'    => t('field.width', [], 'EkynaUi'),
             'attr'     => [
-                'placeholder' => 'ekyna_core.field.width',
+                'placeholder' => t('field.width', [], 'EkynaUi'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,
@@ -236,19 +177,12 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the height field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addHeightField(array $options = [])
+    public function addHeightField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_core.field.height',
+            'label'    => t('field.height', [], 'EkynaUi'),
             'attr'     => [
-                'placeholder' => 'ekyna_core.field.height',
+                'placeholder' => t('field.height', [], 'EkynaUi'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,
@@ -259,19 +193,12 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the depth field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addDepthField(array $options = [])
+    public function addDepthField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_core.field.depth',
+            'label'    => t('field.depth', [], 'EkynaUi'),
             'attr'     => [
-                'placeholder' => 'ekyna_core.field.depth',
+                'placeholder' => t('field.depth', [], 'EkynaUi'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,
@@ -282,22 +209,15 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the quantity unit field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addUnitField(array $options = [])
+    public function addUnitField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.unit.label',
+            'label'    => t('unit.label', [], 'EkynaCommerce'),
             'attr'     => [
-                'placeholder' => 'ekyna_commerce.unit.label',
+                'placeholder' => t('unit.label', [], 'EkynaCommerce'),
             ],
             'required' => true,
-            'select2' => false,
+            'select2'  => false,
         ], $options);
 
         $this->form->add('unit', UnitChoiceType::class, $options);
@@ -305,20 +225,14 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the package weight field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addPackageWeightField(array $options = [])
+    public function addPackageWeightField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.package_weight',
+            'label'    => t('stock_subject.field.package_weight', [], 'EkynaCommerce'),
+            'decimal'  => true,
             'scale'    => 3,
             'attr'     => [
-                'placeholder' => 'ekyna_commerce.stock_subject.field.package_weight',
+                'placeholder' => t('stock_subject.field.package_weight', [], 'EkynaCommerce'),
                 'input_group' => ['append' => Units::getSymbol(Units::KILOGRAM)],
             ],
             'required' => true,
@@ -329,19 +243,12 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the package width field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addPackageWidthField(array $options = [])
+    public function addPackageWidthField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.package_width',
+            'label'    => t('stock_subject.field.package_width', [], 'EkynaCommerce'),
             'attr'     => [
-                'placeholder' => 'ekyna_commerce.stock_subject.field.package_width',
+                'placeholder' => t('stock_subject.field.package_width', [], 'EkynaCommerce'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,
@@ -352,19 +259,12 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the package height field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addPackageHeightField(array $options = [])
+    public function addPackageHeightField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.package_height',
+            'label'    => t('stock_subject.field.package_height', [], 'EkynaCommerce'),
             'attr'     => [
-                'placeholder' => 'ekyna_commerce.stock_subject.field.package_height',
+                'placeholder' => t('stock_subject.field.package_height', [], 'EkynaCommerce'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,
@@ -375,19 +275,12 @@ class StockSubjectFormBuilder
         return $this;
     }
 
-    /**
-     * Adds the package depth field.
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function addPackageDepthField(array $options = [])
+    public function addPackageDepthField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.package_depth',
+            'label'    => t('stock_subject.field.package_depth', [], 'EkynaCommerce'),
             'attr'     => [
-                'placeholder' => 'ekyna_commerce.stock_subject.field.package_depth',
+                'placeholder' => t('stock_subject.field.package_depth', [], 'EkynaCommerce'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,

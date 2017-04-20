@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class VatNumberType
@@ -17,43 +22,27 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class VatNumberType extends AbstractType
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
+    private UrlGeneratorInterface $urlGenerator;
+    private Environment           $templating;
 
 
-    /**
-     * Constructor.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param EngineInterface       $templating
-     */
-    public function __construct(UrlGeneratorInterface $urlGenerator, EngineInterface $templating)
+    public function __construct(UrlGeneratorInterface $urlGenerator, Environment $templating)
     {
         $this->urlGenerator = $urlGenerator;
         $this->templating = $templating;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         if ($options['admin_mode'] || $form->getParent()->getConfig()->getOption('admin_mode')) {
             $config = [
-                'path'       => $this->urlGenerator->generate('ekyna_commerce_api_pricing_validate_vat'),
+                'path'       => $this->urlGenerator->generate('api_ekyna_commerce_pricing_validate_vat'),
                 'checkbox'   => $options['valid_checkbox'],
                 'lastNumber' => null,
                 'lastResult' => null,
             ];
 
-            /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+            /** @var CustomerInterface $customer */
             if (null !== $customer = $form->getParent()->getData()) {
                 $config['lastNumber'] = $customer->getVatNumber();
 
@@ -73,32 +62,23 @@ class VatNumberType extends AbstractType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label'          => 'ekyna_commerce.pricing.field.vat_number',
+                'label'          => t('pricing.field.vat_number', [], 'EkynaCommerce'),
                 'required'       => false,
                 'valid_checkbox' => '#customer_vatValid',
             ])
             ->setAllowedTypes('valid_checkbox', ['string', 'null']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_vat_number';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return TextType::class;
     }

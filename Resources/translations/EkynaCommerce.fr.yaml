@@ -1,0 +1,2086 @@
+label: Commerce
+
+field:
+    balance: Solde
+    eta: ETA
+    sample: Échantillon
+    description: Note interne
+    taxes_total: Taxes
+    shipped: Expedié
+    expected: Attendu
+    available: Disponible
+    invoiced: Facturé
+    tax_group: Groupe
+    private: Masqué
+    max_quantity: Quantité max
+    net_price: Prix HT
+    buy_net_price: Prix d'achat HT
+    vat: TVA
+    exchange_rate: Taux de change
+    exchange_date: Date de change
+    geocode: Geocode
+    in_stock: Stock réel
+    available_stock: Stock disponible
+    virtual_stock: Stock prévisionnel
+    replenishment_eda: Date de réappro.
+    estimated_date_of_arrival: Date de livraison estimée
+    status: Statut
+    front_office: Partie publique
+    factory_name: Passerelle
+    internal: Interne
+    revenue: Chiffre d'affaire
+    template: Modèle
+
+placeholder:
+    template: Choisissez un modèle
+
+notice:
+    exchange: >
+        Les tarifs et montants sont fixés en euros. Tous les prix
+        et montants affichés dans d'autres devises sont
+        <strong>sujet à variation sans préavis</strong>
+        selon les variations des taux de change.
+
+button:
+    print_label: Étiquette
+    toggle_quantities: Tout / Aucun
+    add_to_cart: Ajouter au panier
+    pre_order: Pré-commander
+    resupply_alert: Alerte réassort
+
+status:
+    accepted: Acceptée
+    canceled: Annulé
+    closed: Fermée
+    completed: Complété
+    credited: Remboursé
+    fraudster: Fraudeur
+    invoiced: Facturé
+    new: Nouveau
+    none: Aucun
+    ordered: Commandé
+    validated: Validé
+    partial: Partiel
+    pending: En attente
+    preparation: Préparation
+    ready: Prêt
+    received: Réceptionnée
+    refunded: Remboursée
+    refused: Refusée
+    returned: Retourné
+    shipped: Expédié
+    valid: Validé
+    opened: Ouvert
+    internal: Interne
+
+unit:
+    label: Unité
+    piece:
+        singular: Pièce
+        plural: Pièces
+    meter:
+        singular: Mètre
+        plural: Mètres
+    centimeter:
+        singular: Centimètre
+        plural: Centimètres
+    millimeter:
+        singular: Millimètre
+        plural: Millimètres
+    inch:
+        singular: Pouce
+        plural: Pouces
+        format: "%s pouces"
+    foot:
+        singular: Pied
+        plural: Pieds
+        format: "%s pieds"
+    kilogram:
+        singular: Kilogramme
+        plural: Kilogrammes
+    gram:
+        singular: Gramme
+        plural: Grammes
+    cubic_meter:
+        singular: Mètre cube
+        plural: Mètres cube
+    litre:
+        singular: Litre
+        plural: Litres
+    milliliter:
+        singular: Millilitre
+        plural: Millilitres
+    day:
+        singular: Jour
+        plural: Jours
+        format: "%s jours"
+    hour:
+        singular: Heure
+        plural: Heures
+        format: "%s heures"
+    minute:
+        singular: Minute
+        plural: Minutes
+        format: "%s minutes"
+    second:
+        singular: Seconde
+        plural: Secondes
+
+account:
+    address:
+        title: Mes adresses
+        parent_title: Adresses de votre compte facturation
+        add:
+            title: Ajouter une adresse
+            success: L'adresse a bien été enregistrée.
+        edit:
+            title: Modifier l'adresse
+            success: L'adresse a bien été modifiée.
+        remove:
+            title: Supprimer l'adresse
+            confirm: Êtes-vous sûr de vouloir supprimer cette adresse ?
+            success: L'adresse a bien été supprimée.
+    contact:
+        title: Mes contacts
+        add:
+            title: Ajouter un contact
+            success: Le contact a bien été enregistré.
+        edit:
+            title: Modifier le contact
+            success: Le contact a bien été modifié.
+        remove:
+            title: Supprimer le contact
+            confirm: Êtes-vous sûr de vouloir supprimer ce contact ?
+            success: Le contact a bien été supprimé.
+    information:
+        title: Mes informations
+        edit:
+            title: Modifier mes informations
+            success: Vos informations ont bien été enregistrées.
+    balance:
+        title: Solde de compte
+    welcome:
+        title: Bonjour %identity%
+    state:
+        title: Situation de mon compte
+    order:
+        title: Mes commandes
+        summary: Ma commande
+        latest: Commandes récentes
+        all: Toutes mes commandes
+        show: Détail de la commande <em>%number%</em>
+        payment: Paiement de la commande <em>%number%</em>
+        attachment: Ajouter une pièce jointe à la commande <em>%number%</em>
+        empty_list: Aucune commande enregistré
+        button:
+            pay: Régler la commande
+        message:
+            payment_denied: >
+                Contactez votre service d'achat pour le réglement de cette commande
+                (Vous devez être connecté en tant que %identity%).
+    quote:
+        title: Mes devis
+        summary: Mon devis
+        latest: Devis récents
+        all: Tous mes devis
+        show: Détail du devis <em>%number%</em>
+        voucher: Bon d'achat du devis <em>%number%</em>
+        payment: Paiement du devis <em>%number%</em>
+        attachment: Ajouter une pièce jointe au devis <em>%number%</em>
+        empty_list: Aucun devis enregistré
+        button:
+            voucher: Ajouter/modifier votre bon d'achat
+            pay: Régler le devis
+        message:
+            expired: Ce devis est expiré, veuillez nous contacter pour l'actualiser.
+            voucher_required: >
+                Avant de procéder au réglement du devis, nous vous prions de bien vouloir ajouter votre bon d'achat.
+            voucher_denied: Contactez votre service d'achat pour la gestion du bon d'achat.
+            payment_denied: Contactez votre service d'achat pour le réglement de ce devis.
+    invoice:
+        title: Mes factures
+        latest: Factures récentes
+        all: Toutes mes factures
+        show: Détail de la facture <em>%number%</em>
+        empty_list: Aucune facture enregistré
+    payment:
+        confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment %number% ?
+    attachment:
+        title: Documents
+    registration:
+        title: Ouverture de compte
+        credentials: Identifiants
+        information: Informations
+        invoice_contact: Contact facturation <small><em>(Si différent)</em></small>
+        invoice_address: Adresse facturation
+        field:
+            company: Raison sociale
+            email_confirm: Confirmation email
+            password_confirm: Conf. mot de passe
+            apply_group: Type de compte
+            invoice_name: Contact facturation
+            invoice_email: Email facturation
+            invoice_phone: Téléphone facturation
+            newsletter: Je souhaite recevoir des actualités et des offres par email
+        help:
+            apply_group: >
+                Choisissez votre type de compte : nous validerons votre demande
+                pour appliquer des tarifs préférentiels le cas échéant.
+    loyalty:
+        title: Mes points fidélité
+    ticket:
+        title: Mes tickets
+        go_to_sale_details: >
+            Pour créer un nouveau ticket, veuillez vous rendre sur le détail d'une commande ou d'un devis.
+
+audience:
+    label:
+        singular: Audience
+        plural: Audiences
+    header:
+        list: Audiences <small>Liste des audiences</small>
+        show: Détail de l'audience <small>%name%</small>
+        new: Créer une nouvelle audience
+        edit: Modifier l'audience <small>%name%</small>
+        remove: Supprimer l'audience <small>%name%</small>
+    button:
+        list: Liste des audiences
+        show: Détail de l'audience
+        new: Nouvelle audience
+        edit: Modifier l'audience
+        remove: Supprimer l'audience
+        synchronize: Synchronizer depuis MailChimp
+    field:
+        public: Disponible pour inscription
+    alert:
+        empty_list: Aucune audience configuré
+
+dashboard:
+    export:
+        title: Exports
+        due_orders: Commandes échues
+        field:
+            due_amount: Montant dû
+    debt:
+        title:
+            customer: Créances clients
+            supplier: Créances fournisseurs
+            carrier: Créances transitaires
+        field:
+            unpaid: Non réglé
+            due_invoices: Factures échues
+            fall_invoices: Factures à échoir
+            remaining_orders: Commandes à facturer
+            expired: Échus
+            fall: À échoir
+            total: Total
+    stat:
+        title:
+            daily: CA journalier
+            monthly: CA mensuel
+            yearly: CA annuel
+            stock: Stock
+        field:
+            revenue: CA
+            margin: Marge
+            order: Cdes
+            average: Panier
+
+accounting:
+    label:
+        singular: Compte
+        plural: Comptabilité
+    header:
+        list: Comptabilité <small>Liste des comptes</small>
+        show: Détail du compte <small>%name%</small>
+        new: Créer un nouveau compte
+        edit: Modifier le compte <small>%name%</small>
+        remove: Supprimer le compte <small>%name%</small>
+    button:
+        list: Liste des comptes
+        show: Détail du compte
+        new: Nouveau compte
+        edit: Modifier le compte
+        remove: Supprimer le compte
+    type:
+        good: Marchandises
+        services: Services
+        shipping: Port
+        tax: Taxes
+        payment: Paiements
+        unpaid: Impayé
+        exchange_gain: Gain de change
+        exchange_loss: Perte de change
+        adjustment: Ajustement
+    alert:
+        no_item: Aucun compte configuré
+
+address:
+    label:
+        singular: Adresse
+        plural: Adresses
+    field:
+        street: Rue
+        company: Raison sociale
+        complement: Complément 1
+        supplement: Complément 2
+        extra: Complément 3
+        digicode1: Code porte 1
+        digicode2: Code porte 2
+        intercom: Interphone
+    help:
+        street: Numéro et libellé de voie
+        complement: Entrée, bâtiment, immeuble, résidence
+        supplement: Étage, couloir, escalier, appartement
+        extra: Lieu-dit ou autre mention
+
+adjustment:
+    label:
+        singular: Ajustement
+        plural: Ajustements
+    type:
+        taxation: Taxe
+        included: Inclus
+        discount: Remise
+    mode:
+        flat: Montant
+        percent: Pourcentage
+
+attachment:
+    label:
+        singular: Pièce jointe
+        plural: Pièces jointes
+    header:
+        new: Créer un nouvelle pièce jointe
+        edit: Modifier la pièce jointe
+        remove: Supprimer la pièce jointe
+    button:
+        create: Éditer
+        new: Nouvelle pièce jointe
+        edit: Modifier la pièce jointe
+        remove: Supprimer la pièce jointe
+    alert:
+        no_item: Aucune pièce jointe configuré
+    message:
+        update_confirm: Souhaitez-vous réellement ré-éditer cette pièce jointe ?
+        archive_confirm: Souhaitez-vous réellement archiver cette pièce jointe ?
+        remove_confirm: Souhaitez-vous réellement supprimer cette pièce jointe ?
+
+cart:
+    label:
+        singular: Panier
+        plural: Paniers
+    header:
+        list: Paniers <small>Liste des paniers</small>
+        show: Détail du panier <small>%name%</small>
+        new: Créer un nouveau panier
+        edit: Modifier le panier <small>%name%</small>
+        remove: Supprimer le panier <small>%name%</small>
+        transform: Transformer le panier <small>%name% en %target%</small>
+        duplicate: Dupliquer le panier <small>%name% en %target%</small>
+        notify: Notifier le panier <small>%name%</small>
+    button:
+        list: Liste des paniers
+        show: Détail du panier
+        new: Nouveau panier
+        edit: Modifier le panier
+        remove: Supprimer le panier
+        transform: Transformer le panier
+        notify: Notifier le panier
+        continue: Continuer mes achats
+        cart: Voir mon panier
+        add: Ajouter au panier
+    alert:
+        no_item: Aucun panier configuré
+    message:
+        transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
+        already_paid: Ce panier est déjà réglée en totalité
+        cant_be_deleted: Ce panier a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
+        success: >
+            <p>L'article <strong><a href="%subject_url%">%designation%</a></strong>
+            a bien été ajouté à <a href="%cart_url%">votre panier</a>.</p>
+        failure: >
+            <p>L'application a rencontré une erreur lors de l'ajout à votre panier de
+            l'article <strong><a href="%subject_url%">%designation%</a></strong>.<br>
+            Nous vous invitons à réessayer ultérieurement</p>
+
+checkout:
+    summary: Mon panier
+    index:
+        empty: Votre panier est vide
+        information: Informations
+        invoice: Facturation
+        delivery: Livraison
+        comment: Commentaire
+        attachments: Pièces jointes
+        place_order: Commander
+        to_quote: Créer un devis
+        sign_in: Connexion
+        register: Ouverture de compte
+    confirmation:
+        order_state: Votre commande est
+        see_details: Retrouvez tous les détails de cette commande dans votre espace client
+    message:
+        register: >
+            <strong>Créez votre compte client</strong> pour voir vos <em>tarifs préférentiels</em> et accéder
+            <em>à votre carnet d'adresses</em>.<br>Ou saisissez vos <strong>Informations</strong> et addresse
+            de <strong>Facturation</strong> en cliquant sur les boutons &laquo;Modifier&raquo; ci-dessous.
+        sign_in_or_register: >
+            <strong>Connectez-vous à votre compte client</strong> pour voir vos <em>tarifs préférentiels</em>
+            et accéder à votre <em>carnet d'adresses</em>.<br>Sinon, veuillez saisir vos <strong>Informations</strong>
+            et addresse de <strong>Facturation</strong> en cliquant sur les boutons Modifier respectifs.
+        submit_prevented:
+            Veuillez vous <strong>Connecter</strong> à votre compte client ou saisir vos
+            <strong>Informations</strong> et adresse de <strong>Facturation</strong>
+            (en cliquant sur les boutons &laquo;Modifier&raquo;) avant de pouvoir continuer.
+        shipment_submit_prevented:
+            Veuillez choisir un mode de livraison.
+        quote_confirm: >
+            Confirmer la transformation en devis ?<br>
+            <em>Vous serez redirigé vers le détail du devis dans votre espace client</em>.
+        shipment_defaults: >
+            <sup class="text-danger">&starf;</sup> Frais de port par défaut,
+            choix du mode de livraion à la prochaine étape.
+        empty_information: Saisissez vos nom, prénom et adresse email
+        unlock: >
+            Si vous n'avez effectué aucun paiement, vous pouvez
+            <a href="{{url}}">cliquer sur ce lien pour déverrouiller votre panier</a>.
+        empty_invoice: Saisissez votre adresse de facturation
+        empty_delivery: (Si différente) Saisissez votre adresse de livraison
+        empty_comment: (Optionnel) Ajoutez un commentaire à votre commande
+        empty_attachments: (Optionnel) Ajoutez des pièces jointes à votre commande
+    button:
+        attachment_add: Ajouter une pièce jointe
+        attachment_remove: Supprimer cette pièce jointe
+        edit_information: Modifier vos informations
+        edit_invoice: Modifier l'adresse de facturation
+        edit_delivery: Modifier l'adresse de livraison
+        edit_comment: Modifier le commentaire
+    confirm:
+        attachment_remove: Êtes-vous sûr de vouloir supprimer cette pièce jointe ?
+    payment:
+        last_step: >
+            Cliquer sur un bouton &laquo;Régler par&hellip;&raquo; <strong>validera votre commande</strong>.
+        pay_by: "Régler par %method%"
+        refund_by: "Rembourser par %method%"
+        grand_total: >
+            Montant total de la commande : <strong>%amount%</strong>
+        deposit_amount: >
+            Montant de l'acompte : <strong>%amount%</strong>
+        remaining_amount: >
+            Montant du paiement : <strong>%amount%</strong>
+        available_fund: >
+            Fonds disponibles : <strong>%amount%</strong>
+        insuffisant_fund: >
+            Vous avez utilisé la totalité de votre encours client.<br> Rendez-vous
+            dans votre espace client pour régler les factures échues ou non réglées.
+        voucher_mandatory: >
+            Veuillez <a href="%url%">ajouter votre bon d'achat</a> si vous souhaitez utiliser votre encours.
+    shipment:
+        total_weight: Poids total de votre commande
+        free_shipping: Offert
+        mobile_required: Ce mode d'expédition nécéssite un numéro de téléphone mobile.
+
+country:
+    label:
+        singular: Pays
+        plural: Pays
+    header:
+        list: Pays <small>Liste des pays</small>
+        show: Détail du pays <small>%name%</small>
+        new: Créer un nouveau pays
+        edit: Modifier le pays <small>%name%</small>
+        remove: Supprimer le pays <small>%name%</small>
+    button:
+        list: Liste des pays
+        show: Détail du pays
+        new: Nouveau pays
+        edit: Modifier le pays
+        remove: Supprimer le pays
+    message:
+        all: Tout pays
+    alert:
+        no_item: Aucun pays configuré
+
+coupon:
+    label:
+        singular: Code promotion
+        plural: Codes promotions
+    header:
+        list: Codes promotions <small>Liste des codes</small>
+        show: Détail du code promotion <small>%name%</small>
+        new: Créer un code promotion
+        edit: Modifier le code promotion <small>%name%</small>
+        remove: Supprimer le code promotion <small>%name%</small>
+    button:
+        list: Liste des codes promotions
+        show: Détail du code promotion
+        new: Nouveau code promotion
+        edit: Modifier le code promotion
+        remove: Supprimer le code promotion
+    field:
+        limit: Limite
+        usage: Utilisation
+        min_gross: Sous-total minimum
+        cumulative: Cumulable
+        valid_until: "Valable jusqu'au %date%"
+        value: "%amount% de remise"
+    message:
+        designation: Code promo %code%
+        not_found: Code promotion inconnu.
+        usage: Ce code promotion n'est plus disponible.
+        start_at: Ce code promotion sera disponible depuis le %date%.
+        end_at: Ce code promotion n'est plus disponible depuis le %date%.
+        min_gross: Ce code promotion nécéssite un total d'articles hors taxes supérieur ou égal à %gross%.
+        cumulative: Ce code promotion n'est pas cumulable avec des remises sur les articles.
+        owner: Ce code promotion appartient à un autre compte client.
+    notify:
+        customer:
+            subject: "Pour votre fidélité à %site_name%"
+            content_single: >
+                <p>Pour vous remercier de votre fidélité à notre boutique, nous
+                voulions vous adresser ce bon de réduction en guise de cadeau !</p>
+            content_multiple: >
+                <p>Pour vous remercier de votre fidélité à notre boutique, nous
+                voulions vous adresser ces bons de réduction en guise de cadeau !</p>
+            content_foot: >
+                <p>Retrouvez toutes les informations sur vos points de
+                fidélité dans <a href="%url%">votre espace client</a>.</p>
+    help:
+        cumulative: Applicable à une vente avec des remises automatiques sur les lignes produit.
+        not_cumulative: Non cumulable avec d'autres remises.
+    alert:
+        immutable_code: Ce code ne pourra plus être modifié
+        no_item: Aucun code promotion configuré
+
+context:
+    field:
+        delivery_country: Pays de livraison
+        invoice_country: Pays de facturation
+
+credit:
+    label:
+        singular: Avoir
+        plural: Avoirs
+    header:
+        new: Créer un nouvel avoir
+        edit: Modifier l'avoir <small>%name%</small>
+        remove: Supprimer l'avoir <small>%name%</small>
+    button:
+        new: Nouvel avoir
+        edit: Modifier l'avoir
+        remove: Supprimer l'avoir
+
+document:
+    label:
+        singular: Document
+        plural: Documents
+    type:
+        form: Bon de commande
+        voucher: Bon d'achat
+        quote: Devis
+        proforma: Facture Proforma
+        confirmation: Confirmation de commande
+        shipment_form: Bon de préparation
+        shipment_bill: Bon de livraison
+        return_bill: Bon de retour
+        invoice: Facture
+        credit: Avoir
+    mention:
+        cash_payment: Paiment comptant à la commande
+        due_date: Date d'échéance
+        remaining_unknown: Les éléments suivants vous seront livrés ultérieurement.
+        remaining_with_date: Les éléments suivants vous seront livrés à partir du %date%.
+        deposit: "Acompte de %percent% (d'un montant de %amount%)"
+        deposit_remaining: Le reste à réception de la marchandise
+    message:
+        failed_to_generate: Erreur lors de la génération du PDF.
+
+invoice:
+    tab: Factures et avoirs
+    label:
+        singular: Facture
+        plural: Factures
+    header:
+        new: Créer un nouvelle facture
+        edit: Modifier la facture <small>%name%</small>
+        remove: Supprimer la facture <small>%name%</small>
+    button:
+        new: Nouvelle facture
+        edit: Modifier la facture
+        remove: Supprimer la facture
+        recalculate: Recalculer
+        synchronize: Synchroniser avec l'expédition
+        unlink: Délier
+        documents: Afficher les factures/avoirs
+    field:
+        lines: Lignes commande
+        items: Lignes supplémentaires
+        goods_base: Marchandises HT
+        shipment_base: Frais de port HT
+        payment_method: Mode de remboursement
+        invoiced_at: Date de facturation
+        sale_total: Total Cde
+        sale_paid: Réglé
+        ignore_stock: Avoir d'ajustement
+    help:
+        ignore_stock: Les avoirs d'ajustement doivent être refacturés.
+    message:
+        remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
+        recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
+        synchronize_confirm: >
+            Êtes-vous sûr de vouloir synchroniser cette facture avec l'expédition qui lui est liée ?
+            (Opération non réversible).
+        unlink_confirm: >
+            Êtes-vous sûr de vouloir supprimer le lien avec l'expédition %number% ? (Opération non réversible).
+        cant_be_deleted: Cette facture ne peut pas être supprimée.
+    alert:
+        no_item: Aucune facture configuré
+        invoice_edit_prevented: Cette facture est liée à une expedition et ne peut être modifiée directement.
+        credit_edit_prevented: Cet avoir est lié à un retour et ne peut être modifié directement.
+
+currency:
+    label:
+        singular: Devise
+        plural: Devises
+    header:
+        list: Devises <small>Liste des devises</small>
+        show: Détail de la devise <small>%name%</small>
+        new: Créer une nouvelle devise
+        edit: Modifier la devise <small>%name%</small>
+        remove: Supprimer la devise <small>%name%</small>
+    button:
+        list: Liste des devises
+        show: Détail de la devise
+        new: Nouvelle devise
+        edit: Modifier la devise
+        remove: Supprimer la devise
+    alert:
+        no_item: Aucune devise configuré
+
+customer:
+    label:
+        singular: Client
+        plural: Clients
+    header:
+        list: Clients <small>Liste des clients</small>
+        show: Détail du client <small>%name%</small>
+        new: Créer un nouveau client
+        edit: Modifier le client <small>%name%</small>
+        remove: Supprimer le client <small>%name%</small>
+        children: Liste des commerciaux
+        quotes: Liste des devis
+        orders: Liste des commandes
+        invoices: Liste des factures
+        shipments: Liste des expéditions
+        create_user: Création de l'utilisateur
+        balance: Solde de compte
+        export: Export client
+    button:
+        list: Liste des clients
+        show: Détail du client
+        new: Nouveau client
+        edit: Modifier le client
+        remove: Supprimer le client
+        create_user: Créer l'utilisateur
+        balance: Solde de compte
+        export: Export client
+    field:
+        parent: Compte service achat
+        company_number: N° Siret
+        in_charge: Responsable
+        children: Commerciaux
+        outstanding_overflow: Dépassement d'encours autorisé
+        outstanding_balance: Solde d'encours
+        credit_balance: Solde avoirs
+        default_payment_method: Mode de paiement par défaut
+        payment_methods: Modes de paiement autorisés
+        loyalty_points: Points de fidélité
+        loyalty_logs: Historique fidélité
+        loyalty_origin: Raison
+        graphics: Design
+        document_types: Utiliser pour
+        newsletter: Newsletter
+    short:
+        outstanding_balance: Encours
+        credit_balance: Avoir
+    help:
+        hierarchy: >
+            ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
+        outstanding_overflow: >
+            Possibilité de saisir une limite d'encours par vente
+        default_payment_method: >
+            Détermine les mentions et pied de page des documents
+        payment_methods: >
+            Restreint les modes de paiment utilisables.
+            Le mode de paiment par défaut sélectionné ci-dessus est inclus dans ces restrictions.
+    notify:
+        admin_link: Voir la fiche client dans l'administration
+        registration:
+            subject: Création de compte client
+        fraudster:
+            subject: Potientiel fraudeur détecté
+            message: >
+                Le client {identity} a été détecté comme fraudeur potentiel lors du paiement de son panier.<br>
+                Son statut à été défini à "Fraudeur" et il n'a plus accès au réglement en ligne.
+    message:
+        create_user: >
+            Un utilisateur va être généré pour le client <strong>{identity}</strong>.
+            Les identifiants de connexion seront envoyé à l'adresse email <strong>{email}</strong>.
+        create_user_confirm: Confirmer la création de l'utilisateur ?
+        user_exists: Ce client a déjà un utilisateur.
+    alert:
+        no_item: Aucun client configuré
+        no_invoice_address: Aucune adresse de facturation configuré.
+    balance:
+        debit: Débit
+        credit: Crédit
+        all: Tout
+        forward: À nouveau
+        due_invoices: Factures échues
+        befall_invoices: Factures à échoir
+        order_date: Date commande
+        due_date: Date d'échéance
+
+customer_address:
+    label:
+        singular: Adresse de client
+        plural: Adresses de client
+    header:
+        list: Adresses <small>Liste des adresses</small>
+        show: Détail de l'adresse <small>%name%</small>
+        new: Créer une nouvelle adresse
+        edit: Modifier l'adresse <small>%name%</small>
+        remove: Supprimer l'adresse <small>%name%</small>
+    button:
+        list: Liste des adresses
+        show: Détail de l'adresse
+        new: Nouvelle adresse
+        edit: Modifier l'adresse
+        remove: Supprimer l'adresse
+        import: Importer des adresses
+        invoice_default: Definir par défaut pour la facturation
+        delivery_default: Definir par défaut pour la livraison
+    field:
+        invoice_default: Par défaut pour la facturation
+        delivery_default: Par défaut pour la livraison
+        import_from: Première ligne
+        import_to: Dernière ligne
+        default_country: Pays par défaut
+    message:
+        cant_be_deleted: Les adresses par défaut pour la facturation ou la livraison ne peut être supprimées.
+    alert:
+        no_item: Aucune adresse configuré
+
+customer_contact:
+    label:
+        singular: Contact de client
+        plural: Contacts de client
+    header:
+        list: Contacts <small>Liste des contacts</small>
+        show: Détail du contact <small>%name%</small>
+        new: Créer un nouveau contact
+        edit: Modifier le contact <small>%name%</small>
+        remove: Supprimer le contact <small>%name%</small>
+    button:
+        list: Liste des contacts
+        show: Détail du contact
+        new: Nouveau contact
+        edit: Modifier le contact
+        remove: Supprimer le contact
+    alert:
+        no_item: Aucun contact configuré
+
+customer_group:
+    label:
+        singular: Groupe de clients
+        plural: Groupes de clients
+    header:
+        list: Groupes de clients <small>Liste des groupes</small>
+        show: Détail du groupes de clients <small>%name%</small>
+        new: Créer un nouveau groupe de clients
+        edit: Modifier le groupe de clients <small>%name%</small>
+        remove: Supprimer le groupe de clients <small>%name%</small>
+    button:
+        list: Liste des groupes de clients
+        show: Détail du groupe de clients
+        new: Nouveau groupe de clients
+        edit: Modifier le groupe de clients
+        remove: Supprimer le groupe de clients
+    field:
+        business: Entreprise
+        registration: Dispo à l'inscription
+        quote_allowed: Création de devis
+    message:
+        cant_be_deleted: Le groupe de client par défaut ne peut être supprimé.
+        all: Tout groupes
+    alert:
+        no_item: Aucun groupe de clients configuré
+
+gender:
+    short:
+        mr: Mr
+        mrs: Mme
+        miss: Melle
+    long:
+        mr: Monsieur
+        mrs: Madame
+        miss: Mademoiselle
+
+marketing:
+    title: Marketing
+
+marketplace:
+    label:
+        singular: Marketplace
+        plural: Marketplaces
+
+marketplace_product:
+    label:
+        singular: Marketplaces
+        plural: Marketplaces
+    header:
+        list: Produits <small>Liste des produits</small>
+        show: Détail du produit <small>%name%</small>
+        new: Créer un nouveau produit
+        edit: Modifier le produit <small>%name%</small>
+        remove: Supprimer le produit <small>%name%</small>
+    button:
+        list: Liste des produits
+        show: Détail du produit
+        new: Nouveau produit
+        edit: Modifier le produit
+        remove: Supprimer le produit
+    alert:
+        no_item: Aucun produit configuré
+
+member:
+    label:
+        singular: Membre
+        plural: Membres
+    header:
+        list: Membres <small>Liste des membres</small>
+        show: Détail du membre <small>%name%</small>
+        new: Créer un nouveau membre
+        edit: Modifier le membre <small>%name%</small>
+        remove: Supprimer le membre <small>%name%</small>
+    button:
+        list: Liste des membres
+        show: Détail du membre
+        new: Nouveau membre
+        edit: Modifier le membre
+        remove: Supprimer le membre
+    alert:
+        empty_list: Aucun membre configuré
+
+subscription:
+    status:
+        subscribed: Inscrit
+        unsubscribed: Désinscrit
+
+mention:
+    label:
+        singular: Mention document
+        plural: Mentions document
+    alert:
+        empty_list: Aucune mention configuré
+
+message:
+    label:
+        singular: Message
+        plural: Messages
+    field:
+        flash: Flash
+        email: Email
+
+newsletter:
+    title: Newsletter
+    audiences: Listes de diffusions
+    subscription:
+        title: Abonnez-vous à notre newsletter
+        content: Pour recevoir nos actualités et des offres spéciales !
+        success: Vous êtes bien inscris à notre newsletter
+        unavailable: L'inscription à la newsletter n'est pas encore disponible.
+    button:
+        subscribe: S'inscrire
+        unsubscribe: Se désinscrire
+        more_options: Plus d'options
+
+notify:
+    type:
+        manual:
+            label: Manuelle
+            subject: Votre %type% numéro %number%
+            message: >
+                <p>Bonjour,</p>
+                <p>Veuillez trouver les éléments en pièces jointes.</p>
+        balance:
+            subject: Situation de compte
+            message: Votre situation de compte à ce jour.
+        cart_remind:
+            label: Rappel panier abandonné
+        order_accepted:
+            label: Confirmation de commande
+            subject: Confirmation de votre commande %number%
+            message: >
+                Votre commande a bien été enregistrée et sera traitée dans les plus brefs délais.
+        quote_remind:
+            label: Rappel devis proche expiration
+        payment_authorized:
+            label: Paiement (hors ligne) authorisé
+            subject: Réglement de votre commande %number%
+            message: >
+                Nous avons bien reçu le réglement de votre commande.
+        payment_captured:
+            label: Paiement (hors ligne) accepté
+            subject: Réglement de votre commande %number%
+            message: >
+                Nous avons bien reçu le réglement de votre commande.
+        payment_payedout:
+            label: Paiement (hors ligne) fonds versés
+            subject: Réglement de votre commande %number%
+            message: >
+                Nous avons bien reçu le réglement de votre commande.
+        payment_expired:
+            label: Encours échu
+        shipment_ready:
+            label: Expédition prête au retrait
+            subject: Retrait de votre commande %number%
+            message: >
+                Nous avons préparé votre commande : vous pouvez venir la retirer dans nos locaux. Vous trouverez
+                en pièce jointe à ce mail votre bon de livraison.
+        shipment_complete:
+            label: Expédition complète
+            subject: Expédition de votre commande %number%
+            message: >
+                Nous venons de procéder à l'expédition de votre commande. Vous trouverez en pièce jointe à ce mail
+                votre bon de livraison. Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
+        shipment_partial:
+            label: Expédition partielle
+            subject: Expédition partielle de votre commande %number%
+            message: >
+                Nous venons de procéder à l'expédition <strong>partielle</strong> de votre commande.
+                Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
+        invoice_complete:
+            label: Facture complète
+            subject: Facture pour votre commande %number%
+            message: >
+                Veuillez trouver en pièce jointe à ce mail votre facture.
+        invoice_partial:
+            label: Facture partielle
+            subject: Facture partielle pour votre commande %number%
+            message: >
+                Veuillez trouver en pièce jointe à ce mail votre facture.
+        return_pending:
+            label: Retour en attente
+            subject: Retour de votre commande %number%
+            message: >
+                Vous pouvez procéder au retour de votre commande, d'après le bon de retour en pièce jointe à ce mail.
+        return_received:
+            label: Retour réceptionné
+            subject: Retour de votre commande %number%
+            message: >
+                Nous avons bien reçu les articles que vous nous avez retourné.
+    field:
+        from: Expéditeur
+        recipients: Destinataires
+        copies: Copies
+        invoices: Factures et avoirs
+        shipments: Bons de livraison/retour
+        payment_message: Message paiement
+        shipment_message: Message livraison
+        custom_message: Message personnalisé
+        include_view: Détail
+        include_form: Joindre le bon de commande
+        voucher: Bon de commande %number%
+    recipient:
+        website: Site internet
+        user: Vous
+        administrator: Administrateur
+        in_charge: Responsable
+        customer: Client
+        contact: Contact
+        salesman: Commercial
+        accountable: Service achat
+        supplier: Fournisseur
+    include_view:
+        none: Non
+        after: Après le message
+        before: Avant le message
+    message:
+        attachment_list: Liste des pièces jointes à cet email
+        customer_area:
+            default: Retrouvez toutes les informations concernant vos devis et commandes dans votre espace client.
+            order: Retrouvez toutes les informations concernant votre commande dans votre espace client.
+            quote: Retrouvez toutes les informations concernant votre devis dans votre espace client.
+        sent: L'email a été envoyé.
+
+notification:
+    label:
+        singular: Notification
+        plural: Notifications
+    alert:
+        no_item: Aucune notification configuré
+
+notify_model:
+    label:
+        singular: Notification
+        plural: Notifications
+    header:
+        list: Notifications <small>Liste des modèles</small>
+        show: Détail du modèle <small>%name%</small>
+        new: Créer un nouveau modèle
+        edit: Modifier le modèle <small>%name%</small>
+        test: Tester le modèle <small>%name%</small>
+        remove: Supprimer le modèle <small>%name%</small>
+    button:
+        list: Liste des modèles
+        show: Détail du modèle
+        new: Nouveau modèle
+        edit: Modifier le modèle
+        test: Tester le modèle
+        remove: Supprimer le modèle
+    field:
+        document_types: Pièces jointes
+    message:
+        test_success: L'email de test a été envoyé.
+        test_failure: Erreur lors de l'envoi de l'email de test.
+        source_failure: Impossible de trouver une source pour le test.
+    help:
+        subject: >
+            Insérez l'expression &laquo; <strong>%number%</strong> &raquo; si besoin : elle sera
+            remplacée par le numéro de la commande (ou du devis).
+        payment_message: >
+            Ajouter le message correspondant au statut du payment
+            (si configuré dans les <em>Modes de paiement</em>).
+        shipment_message: >
+            Ajouter le message correspondant au statut d'expédition
+            (si configuré dans les <em>Modes de livraison</em>).
+        include_view: Ajouter le détail de la commande.
+        document_types: >
+            Documents à ajouter en pièces jointes (si disponibles).
+            Ne rien cocher pour utiliser le comportement par défaut.
+    alert:
+        no_item: Aucun modèle configuré
+
+order:
+    label:
+        singular: Commande
+        plural: Commandes
+    header:
+        list: Commandes <small>Liste des commandes</small>
+        show: Détail de la commande <small>%name%</small>
+        new: Créer une nouvelle commande
+        edit: Modifier la commande <small>%name%</small>
+        remove: Supprimer la commande <small>%name%</small>
+        transform: Transformer la commande <small>%name% en %target%</small>
+        duplicate: Dupliquer la commande <small>%name% en %target%</small>
+        notify: Notifier la commande <small>%name%</small>
+        export_to_deliver: Exporter les commandes à livrer
+    button:
+        list: Liste des commandes
+        show: Détail de la commande
+        new: Nouvelle commande
+        edit: Modifier la commande
+        remove: Supprimer la commande
+        transform: Transformer la commande
+        notify: Notifier la commande
+        release: Clôturer
+        unrelease: Réouvrir
+    alert:
+        no_item: Aucune commande configuré
+    message:
+        already_paid: Cette commande est déjà réglée en totalité
+        can_be_released: >
+            Cette commande d'échantillons peut être clôturée si aucun autre retour n'est prévu ou attendu.
+        cant_be_deleted: >
+            Cette commande a des paiement(s) valide(s), des livraison(s)
+            et/ou des facture(s) et ne peut être supprimée.
+    dashboard:
+        title: Commandes à traiter
+        none: Aucune commande à traiter
+
+payment:
+    label:
+        singular: Paiement
+        plural: Paiements
+    header:
+        new: Créer un nouveau paiement
+        edit: Modifier le paiement
+        remove: Supprimer le paiement
+    button:
+        new: Nouveau paiement
+        edit: Modifier le paiement
+        remove: Supprimer le paiement
+    alert:
+        no_item: Aucun paiement configuré
+    message:
+        cant_be_deleted: Ce paiement est valide et ne peut être supprimé.
+    state:
+        new:
+            label: Création
+            message: Votre paiement a bien été créé.
+        pending:
+            label: En attente
+            message: Votre paiement est en attente.
+        authorized:
+            label: Autorisé
+            message: Votre paiement est autorisé.
+        captured:
+            label: Accepté
+            message: Votre paiement est accepté.
+        failed:
+            label: Refusé
+            message: Votre paiement est refusé.
+        canceled:
+            label: Annulé
+            message: Votre paiement a été annulé.
+        refunded:
+            label: Remboursé
+            message: Votre paiement est remboursé.
+        suspended:
+            label: Suspendu
+            message: Votre paiement est supendu.
+        payedout:
+            label: Fond versés
+            message: Les fonds ont été versés.
+        expired:
+            label: Expiré
+            message: Votre paiement a expiré.
+        unknown:
+            label: Inconnu
+            message: Le statut de votre paiement est inconnu.
+        outstanding:
+            label: Impayé
+            message: La date limite d'utilisation de votre encours est passée.
+        deposit:
+            label: Acompte
+            message: Votre acompte est accepté.
+        completed:
+            label: Complété
+            message: Le total de la commande est réglé.
+    transition:
+        hang:
+            label: Attendre
+            confirm: Êtes-vous sûr de vouloir mettre ce paiement EN ATTENTE ?
+        authorize:
+            label: Autoriser
+            confirm: Êtes-vous sûr de vouloir AUTORISER ce paiement ?
+        accept:
+            label: Accepter
+            confirm: Êtes-vous sûr de vouloir ACCEPTER ce paiement ?
+        payout:
+            label: Fonds versés
+            confirm: Êtes-vous sûr de vouloir passer ce paiement au statut FONDS VERSÉS ?
+        reject:
+            label: Refuser
+            confirm: Êtes-vous sûr de vouloir REFUSER ce paiement ?
+        cancel:
+            label: Annuler
+            confirm: Êtes-vous sûr de vouloir ANNULER ce paiement ?
+        refund:
+            label: Rembourser
+            confirm: Êtes-vous sûr de vouloir REMBOURSER ce paiement ?
+
+payment_method:
+    label:
+        singular: Mode de paiement
+        plural: Modes de paiement
+    header:
+        list: Modes de paiement <small>Liste des modes</small>
+        show: Détail du mode de paiement <small>%name%</small>
+        new: Créer un nouveau mode de paiement
+        edit: Modifier le mode de paiement <small>%name%</small>
+        remove: Supprimer le mode de paiement <small>%name%</small>
+    button:
+        list: Liste des modes
+        show: Détail du mode
+        new: Nouveau mode
+        edit: Modifier le mode
+        remove: Supprimer le mode
+        choose: "Régler par %gateway_name%"
+    field:
+        use_default_currency: Devise par défaut
+        private: Privée
+        notice: Remarque commande
+        mention: Mention document
+        mention_types: Mention sur documents
+        footer: Pied de page document
+    alert:
+        empty_list: Aucun mode de paiement configuré
+
+payment_term:
+    label:
+        singular: Condition de paiement
+        plural: Conditions de paiement
+    header:
+        list: Conditions de paiement <small>Liste des conditions</small>
+        show: Détail de la condition de paiement <small>%name%</small>
+        new: Créer une nouvelle condition de paiement
+        edit: Modifier la condition de paiement <small>%name%</small>
+        remove: Supprimer la condition de paiement <small>%name%</small>
+    trigger:
+        shipped: Expédition partielle
+        fully_shipped: Expédition complète
+        invoiced: Facturation partielle
+        fully_invoiced: Facturation complète
+    button:
+        list: Liste des conditions
+        show: Détail de la condition
+        new: Nouvelle condition
+        edit: Modifier la condition
+        remove: Supprimer la condition
+    field:
+        days: Nombre de jours
+        end_of_month: Fin de mois
+        trigger: Déclencheur
+    alert:
+        empty_list: Aucune condition de paiement configuré
+
+pricing:
+    field:
+        vat_number: Numéro de TVA
+        vat_details: Détails N°TVA
+        vat_valid: N°TVA valide
+        vat_display_mode: Affichage TVA
+    vat_display_mode:
+        ati: TTC
+        net: HT
+
+quote:
+    label:
+        singular: Devis
+        plural: Devis
+    header:
+        list: Devis <small>Liste des devis</small>
+        show: Détail du devis <small>%name%</small>
+        new: Créer un nouveau devis
+        edit: Modifier le devis <small>%name%</small>
+        remove: Supprimer le devis <small>%name%</small>
+        transform: Transformer le devis <small>%name% en %target%</small>
+        duplicate: Dupliquer le devis <small>%name% en %target%</small>
+        notify: Notifier le devis <small>%name%</small>
+    button:
+        list: Liste des devis
+        show: Détail du devis
+        new: Nouveau devis
+        edit: Modifier le devis
+        remove: Supprimer le devis
+        transform: Transformer le devis
+        notify: Notifier le devis
+    field:
+        editable: Modifiable par le client
+    alert:
+        no_item: Aucun devis configuré
+    message:
+        transformation_to_order_is_ready: Ce devis est prêt à être transformé en commande.
+        already_paid: Ce devis est déjà réglée en totalité
+        cant_be_deleted: Ce devis a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
+    dashboard:
+        title: Devis à traiter
+        none: Aucun devis à traiter
+
+refund:
+    label:
+        singular: Remboursement
+        plural: Remboursements
+    header:
+        new: Créer un nouveau remboursement
+        edit: Modifier le remboursement
+        remove: Supprimer le remboursement
+    button:
+        new: Nouveau remboursement
+        edit: Modifier le remboursement
+        remove: Supprimer le remboursement
+
+relay_point:
+    label:
+        singular: Point relais
+        plural: Points relais
+    message:
+        choose: Veuillez choisir un point relais.
+
+resupply_alert:
+    subscribe:
+        message: >
+            Saisissez votre adresse email et validez ce formulaire pour recevoir
+            une notification lorsque cet article sera de nouveau disponible.
+        success: >
+            Votre demande a bien été prise en compte : vous recevrez
+            une notification lorsque cet article sera de nouveau disponible.
+    unsubscribe:
+        message: >
+            Vous êtes déjà enregistré pour recevoir une notification sur
+            la disponibilité de cet article. Souhaitez-vous vous désinscrire ?
+        confirm: Confirmer la désinscription
+        success: >
+            Votre demande a bien été prise en compte: vous ne recevrez plus
+            de notification concernant la disponibilité de cet article.
+return:
+    label:
+        singular: Retour
+        plural: Retours
+    header:
+        new: Créer un nouveau retour
+        edit: Modifier le retour
+        remove: Supprimer le retour
+    button:
+        new: Nouveau retour
+        edit: Modifier le retour
+        remove: Supprimer le retour
+
+sale:
+    label:
+        singular: Vente
+        plural: Ventes
+    header:
+        adjustment:
+            new: Ajouter une remise
+            edit: Modifier la remise
+            remove: Supprimer la remise
+        item:
+            add: Ajouter un article
+            configure: Configurer l'article
+            new: Créer une ligne
+            edit: Modifier la ligne
+            prioritize: Réassigner le stock
+            remove: Supprimer la ligne
+        item_adjustment:
+            new: Ajouter une remise de ligne
+            edit: Modifier la remise de ligne
+            remove: Supprimer la remise de ligne
+        shipment:
+            edit: Modifier les frais de port
+    button:
+        recalculate: Recalculer
+        prioritize: Réassigner le stock
+        prepare: Préparer l'expédition
+        abort: Annuler la préparation
+        adjustment:
+            new: Ajouter une remise
+            edit: Modifier la remise
+            remove: Supprimer la remise
+        item:
+            add: Ajouter un article
+            new: Ajouter une ligne
+            configure: Configurer l'article
+            edit: Modifier la ligne
+            sync_subject: Synchroniser avec le produit
+            remove: Supprimer la ligne
+            information: Afficher les information
+            detail: Afficher le détail
+        item_adjustment:
+            new: Ajouter une remise de ligne
+            edit: Modifier la remise de ligne
+            remove: Supprimer la remise de ligne
+        shipment:
+            edit: Modifier les frais de port
+    action:
+        prepare: Préparer les expéditions
+        abort: Annuler les préparations
+    confirm:
+        prioritize: Confirmer la réassignation du stock ?
+        transform: Confirmer la transformation en <strong>%target%</strong> ?
+        duplicate: Confirmer la duplication ?
+        item:
+            remove: Souhaitez-vous réellement supprimer cette article ?
+            sync_subject: >
+                Souhaitez-vous réellement mettre à jour cette ligne d'après les données de l'article associé ?
+                (Opération non réversible).
+        adjustment:
+            remove: Souhaitez-vous réellement supprimer cette remise ?
+    prepare:
+        success: L'expédition a bien été préparée.
+        failure: Cette commande ne peut pas être préparée.
+    abort:
+        success: La préparation a bien été annulée.
+    prioritize:
+        info: >
+            Certaines lignes de cette commande peuvent être réassignées pour
+            tenter d'obtenir du stock disponible pour l'expédition.
+        success: Certains articles ont pu être réassignés pour expédition.
+        failure: Aucun article n'a pu être réassigné pour expédition.
+    message:
+        transform_prevented: Cette vente ne peut pas être transformée.
+        provide_customer_or_data: >
+            Si vous sélectionnez un client, les champs suivant seront remplis automatiquement
+            lors de l'enregistrement. Sinon veuillez saisir ces informations.
+        already_exists: Un document de ce type existe déjà dans les pièces jointes.
+        immutable_element: Cet élément ne peut pas être modifié ou supprimé.
+        null_exchange_rate: >
+            Le taux de change n'est pas fixé. <a href="{{url}}">Fixer le taux de change</a>.
+    form:
+        add_item: Ajouter une ligne produit
+        remove_item: Supprimer la ligne produit ?
+        add_child_item: Ajouter une ligne sous-produit
+        remove_child_item: Supprimer la ligne sous-produit ?
+        add_item_adjustment: Ajouter un ajustement produit
+        remove_item_adjustment: Supprimer l'ajustement produit ?
+        add_adjustment: Ajouter un ajustement
+        remove_adjustment: Supprimer l'ajustement ?
+    field:
+        details: Détail
+        origin_customer: Commercial
+        address_choice: Carnet d'adresses
+        invoice_address: Adresse de facturation
+        delivery_address: Adresse de livraison
+        same_address: Même adresse
+        tax_exempt: Hors taxe
+        auto_discount: Remises auto.
+        auto_notify: Notifications auto.
+        auto_shipping: Frais de port auto.
+        availability: Dispo.
+        net_unit: PU HT
+        ati_unit: PU TTC
+        net_gross: Base HT
+        ati_gross: Base TTC
+        net_total: Total HT
+        ati_total: Total TTC
+        shipment_net_total: Port HT
+        shipment_ati_total: Port TTC
+        shipment_label: Libellé expédition
+        shipping_cost: Frais de port
+        discount: Remise
+        tax_name: Taxe
+        tax_amount: Montant
+        tax_rate: Taux TVA
+        tax_total: Total TVA
+        adjustment_total: Total remises
+        paid_total: Total réglé
+        refunded_total: Total remboursé
+        invoice_total: Total factures
+        credit_total: Total avoirs
+        balance: Solde
+        outstanding_accepted: Encours accepté
+        outstanding_expired: Encours expiré
+        outstanding_limit: Limite d'encours
+        outstanding_date: Date limite
+        paid_at: Réglé le
+        coupon_code: Code promotion
+        voucher_number: N° bon d'achat
+        origin_number: N° d'origine
+        gross_totals: Sous-total
+        deposit_total: Acompte TTC
+        margin: Marge
+        weight_total: Poids total
+        preparation_note: Note préparation
+        document_comment: Commentaire documents
+        document_footer: Pied de page des documents
+        payment_state: Statut paiement
+        shipment_state: Statut livraison
+        invoice_state: Statut facturation
+    flag:
+        first_order: Première commande
+        can_be_released: Peut être clôturée
+    source:
+        website: Site internet
+        marketplace: Marketplace
+        commercial: Commercial
+    table:
+        payment_state: Paiement
+        shipment_state: Livraison
+        invoice_state: Facturation
+
+sale_item:
+    label:
+        singular: Ligne
+        plural: Lignes
+
+setting:
+    invoice_footer: Pied de page documents
+    email_signature: Signature email
+    vat_display_mode: Affichage TVA par défaut
+    shipment_label:
+        label: Étiquette expédition
+        size: Format
+        width: Largeur
+        height: Hauteur
+        margin: Marges
+        download: Forcer le téléchargement
+
+shipment:
+    label:
+        singular: Expédition
+        plural: Expéditions
+    header:
+        new: Créer une nouvelle expédition
+        edit: Modifier l'expédition
+        remove: Supprimer l'expédition
+    button:
+        new: Nouvelle expédition
+        edit: Modifier l'expédition
+        remove: Supprimer l'expédition
+    field:
+        return: Retour
+        items: Articles
+        valorization: Valorisation
+        parcels: Colisage
+        shipped_at: Date d'expédition
+        tracking_number: N° de suivi
+        auto_invoice: Générer la facture
+        auto_credit: Générer l'avoir
+        sender_address: Addresse expéditeur
+        receiver_address: Addresse destinataire
+    action:
+        ship: Expédier
+        cancel: Annuler
+        complete: Finaliser
+        prepare: Passer en statut &laquo;Préparation&raquo;
+        export: Exporter vers logiciel
+        import: Importer les numéros de suivi
+        print_label: Imprimer étiquette
+        shipment_labels: Imprimer étiquettes expéditions
+        summary_labels: Imprimer étiquettes récapitulatives
+        list_relay_points: Rechercher des points relais
+        get_relay_point: Rechercher un point relais
+        bills: Afficher les bons de livraison
+        forms: Afficher les bons de préparation
+    confirm:
+        cancel: >
+            Êtes-vous sûr de vouloir ANNULER cette expédition ou ce retour
+            et supprimer l'étiquette et le numéro de suivi ?
+        complete: Êtes-vous sûr de vouloir FINALISER cette expédition ou ce retour ?
+    message:
+        remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
+        edit_prevented: Veuillez annuler l'expédition pour pouvoir la modifier.
+        cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
+        sale_is_not_stockable: >
+            Le statut de la vente n'étant pas accepté, les statuts
+            disponibles pour l'expédition ont été restreints.
+        credit_method: Mode de remboursement qui sera associé à l'avoir généré.
+        unsupported_action: Cette action n'est pas prise en charge par la plateforme.
+    alert:
+        unlocked_items: >
+            Certaines lignes sont déverouillées : ces articles
+            (normalement invisibles) apparaîtront sur le document.
+        no_item: Aucune expédition configuré
+    platforms: Plateformes
+
+shipment_label:
+    label:
+        singular: Étiquette expédition
+        plural: Étiquettes expédition
+
+shipment_method:
+    label:
+        singular: Mode de livraison
+        plural: Modes de livraison
+    header:
+        list: Modes de livraison <small>Liste des modes</small>
+        show: Détail du mode de livraison <small>%name%</small>
+        new: Créer un nouveau mode de livraison
+        edit: Modifier le mode de livraison <small>%name%</small>
+        remove: Supprimer le mode de livraison <small>%name%</small>
+    button:
+        list: Liste des modes
+        show: Détail du mode
+        new: Nouveau mode
+        edit: Modifier le mode
+        remove: Supprimer le mode
+        choose: "Je choisi une livraison par %gateway_name%"
+    alert:
+        none_available_for_country: >
+            Aucun mode de livraison disponible pour le pays &laquo;%country%&raquo;.
+        none_available: Aucun mode de livraison disponible.
+        empty_list: Aucun mode de livraison configuré
+
+shipment_price:
+    label:
+        singular: Frais de port
+        plural: Frais de port
+    field:
+        weight: Poids max (kg)
+    alert:
+        empty_list: Aucun frais de port configuré
+
+shipment_rule:
+    label:
+        singular: Règle livraison
+        plural: Règles livraison
+    header:
+        list: Règles livraison <small>Liste des règles</small>
+        show: Détail de la règle <small>%name%</small>
+        new: Créer une nouvelle règle
+        edit: Modifier la règle <small>%name%</small>
+        remove: Supprimer la règle <small>%name%</small>
+    button:
+        list: Liste des règles
+        show: Détail de la règle
+        new: Nouvelle règle
+        edit: Modifier la règle
+        remove: Supprimer la règle
+    field:
+        start_at: Début le
+        end_at: Fin le
+        base_total: Total articles
+        vat_mode: Mode TVA
+    help:
+        methods: Laisser vide pour tout mode de livraison
+        countries: Laisser vide pour tout pays
+        customer_groups: Laisser vide pour tout groupe de client
+        base_total: Minimum hors réduction(s) sur la commande
+        vat_mode: Total articles HT ou TTC
+    alert:
+        empty_list: Aucune règle de gratuité configuré
+
+shipment_zone:
+    label:
+        singular: Zone de livraison
+        plural: Zones de livraison
+    header:
+        list: Zones de livraison <small>Liste des zones</small>
+        show: Détail de la zone de livraison <small>%name%</small>
+        new: Créer une nouvelle zone de livraison
+        edit: Modifier la zone de livraison <small>%name%</small>
+        remove: Supprimer la zone de livraison <small>%name%</small>
+    button:
+        list: Liste des zones
+        show: Détail de la zone
+        new: Nouvelle zone
+        edit: Modifier la zone
+        remove: Supprimer la zone
+    alert:
+        empty_list: Aucune zone de livraison configuré
+
+stock_unit:
+    label:
+        singular: Unité de stock
+        plural: Unité de stock
+    header:
+        list: Liste des unité de stock
+        show: Détail de l'unité
+        new: Créer une nouvelle unité
+        edit: Modifier l'unité
+        remove: Supprimer l'unité
+    field:
+        ordered_quantity: Qte commandée
+        received_quantity: Qte reçue
+        adjusted_quantity: Qte ajustée
+        sold_quantity: Qte vendue
+        shipped_quantity: Qte expédiée
+    button:
+        new: Créer une unité de stock
+    alert:
+        empty_list: Aucune unité de stock configuré
+
+stock_adjustment:
+    label:
+        singular: Ajustement de stock
+        plural: Ajustements de stock
+    header:
+        list: Liste des ajustement de stock
+        show: Détail de l'ajustement
+        new: Créer un nouvel ajustement
+        edit: Modifier l'ajustement
+        remove: Supprimer l'ajustement
+    field:
+        debit: Débit
+        credit: Crédit
+        reason: Raison
+    reason:
+        faulty: Défectueux (débit)
+        improper: Non conforme (débit)
+        debit: Inventaire (débit)
+        credit: Inventaire (crédit)
+        found: Retrouvé (crédit)
+    confirm:
+        remove: Êtes-vous sûr de vouloir supprimer cet ajustement de stock ?
+    alert:
+        empty_list: Aucun ajustment de stock configuré
+
+stock_subject:
+    field:
+        mode: Mode stock
+        state: État stock
+        floor: Stock de rupture
+        replenishment_time: Délai de réappro.
+        minimum_order_quantity: Qté Min Com
+        end_of_life: Fin de vie
+        quote_only: Sur devis uniquement
+        package_weight: Poids emballé
+        # TODO rename width->length, height->width, depth->height
+        package_width: Longueur emballé
+        package_height: Largeur emballé
+        package_depth: Hauteur emballé
+    mode:
+        disabled: Désactivé
+        manual: Manuel
+        auto: Automatique
+        just_in_time: Flux tendu
+    state:
+        in_stock: En stock
+        pre_order: Pré-commande
+        out_of_stock: En rupture
+    availability:
+        short:
+            quote_only: Sur devis
+            available: Dispo
+            in_stock: Dispo (%qty%)
+            pre_order: "%eda% (%qty%)"
+            replenishment: ~%days% jours
+            end_of_life: Fin de vie
+            out_of_stock: Rupture
+            min_quantity: Min %min%
+            max_quantity: Max %max%
+        long:
+            quote_only: Sur devis uniquement
+            available: Disponible
+            in_stock: Disponible (%qty%)
+            pre_order: Réassort le %eda% (%qty%)
+            replenishment: Réassort ~%days% jours
+            end_of_life: En fin de vie
+            out_of_stock: En rupture
+            min_quantity: "Quantité min. d'achat : %min%"
+            max_quantity: "Quantité max. disponible : %max%"
+
+subject:
+    label:
+        singular: Article
+        plural: Articles
+    price_from: >
+        <small>À partir de</small>
+
+supplier:
+    label:
+        singular: Fournisseur
+        plural: Fournisseurs
+    header:
+        list: Fournisseurs <small>Liste des fournisseurs</small>
+        show: Détail du fournisseur <small>%name%</small>
+        new: Créer un nouveau fournisseur
+        edit: Modifier le fournisseur <small>%name%</small>
+        remove: Supprimer le fournisseur <small>%name%</small>
+    button:
+        list: Liste des fournisseurs
+        show: Détail du fournisseur
+        new: Nouveau fournisseur
+        edit: Modifier le fournisseur
+        remove: Supprimer le fournisseur
+    field:
+        customer_code: Code client
+    tab:
+        catalog: Catalogue
+    alert:
+        no_item: Aucun fournisseur configuré
+
+supplier_delivery:
+    label:
+        singular: Livraison fournisseur
+        plural: Livraisons fournisseur
+    header:
+        list: Liste des livraisons
+        show: Détail de la livraison du <strong>%date%</strong>
+        new: Créer une nouvelle livraison
+        edit: Modifier la livraison du <small>%date%</small>
+        remove: Supprimer la livraison du <small>%date%</small>
+    button:
+        show: Détail de la livraison
+        new: Nouvelle livraison
+        edit: Modifier la livraison
+        remove: Supprimer la livraison
+    alert:
+        no_item: Aucune livraison fournisseur configuré
+
+supplier_delivery_item:
+    field:
+        remaining: Attendu
+
+supplier_order:
+    label:
+        singular: Commande fournisseur
+        plural: Commandes fournisseur
+    header:
+        list: Commandes fournisseur <small>Liste des commandes</small>
+        show: Détail de la commande <small>%name%</small>
+        new: Créer une nouvelle commande
+        edit: Modifier la commande <small>%name%</small>
+        remove: Supprimer la commande <small>%name%</small>
+        submit: Soumettre la commande <small>%name%</small>
+        notify: Notifier la commande <small>%name%</small>
+    tab:
+        deliveries: Livraisons
+    button:
+        list: Liste des commandes
+        show: Détail de la commande
+        new: Nouvelle commande
+        edit: Modifier la commande
+        remove: Supprimer la commande
+        add_item: Ajouter une ligne
+        submit: Soumettre au fournisseur
+        render: Bon de commande
+    message:
+        confirm_item_removal: Confirmer la suppression de cette ligne ?
+        confirm_cancel: Êtes-vous sûr de vouloir annuler cette commande ?
+        cant_be_deleted: Cette commande fournisseur a été réceptionnée et ne peut être supprimée.
+        cant_be_submitted: Cette commande a déjà été soumise au fournisseur.
+        relative_stock_unit_is_shipped: >
+            Tout ou partie des stocks liés à cette commande ont été livrés à des clients,
+            cette commande et/ou ses lignes ne peuvent donc pas être supprimée(s).
+        submit:
+            success: Le bon de commande a bien été envoyé au fournisseur.
+            failure: Erreur lors de l'envoi du bon de commande au fournisseur.
+    field:
+        shipping_cost: Frais transport HT
+        discount_total: Total remise
+        tax_total: Total TVA
+        items_total: Total articles
+        ordered_at: Commandée le
+        payment_total: Total fournisseur
+        payment_due_date: Échéance fournisseur
+        payment_date: Réglement fournisseur
+        customs_tax: Taxe douane
+        customs_vat: TVA en douane
+        forwarder_fee: Frais transitaire HT
+        forwarder_total: Total transitaire
+        forwarder_due_date: Échéance transitaire
+        forwarder_date: Réglement transitaire
+        tracking_urls: Tracking
+        send_email: Envoyer l'email au fournisseur
+        send_labels: Envoyer les étiquettes
+    alert:
+        no_item: Aucune commande fournisseur configuré
+        empty: Aucun article configuré
+    dashboard:
+        title: Commandes fournisseur à traiter
+        none: Aucune commande fournisseur à traiter
+
+supplier_order_item:
+    field:
+        supplier_data: Données Four.
+        subject: Article
+
+supplier_order_attachment:
+    type:
+        form: Bon de commande
+        proforma: Facture proforma
+        payment: Justificatif payment
+        forwarder: Facture transitaire
+        import: Justificatif d'import
+        delivery: Bon de livraison
+
+supplier_product:
+    label:
+        singular: Référence fournisseur
+        plural: Références fournisseur
+    header:
+        list: Références fournisseur <small>Liste des références</small>
+        show: Détail de la référence <small>%name%</small>
+        new: Créer une nouvelle référence
+        edit: Modifier la référence <small>%name%</small>
+        remove: Supprimer la référence <small>%name%</small>
+    button:
+        list: Liste des références
+        show: Détail de la référence
+        new: Nouvelle référence
+        edit: Modifier la référence
+        remove: Supprimer la référence
+    field:
+        available: Dispo.
+        ordered_stock: Stock réappro.
+        ordered: Réappro.
+        eda: E.D.A.
+        subject: Article
+    alert:
+        no_item: Aucune référence fournisseur configuré
+
+supplier_carrier:
+    label:
+        singular: Transitaire
+        plural: Transitaires
+    header:
+        list: Transitaires <small>Liste des transitaires</small>
+        show: Détail du transitaire <small>%name%</small>
+        new: Créer un nouveau transitaire
+        edit: Modifier le transitaire <small>%name%</small>
+        remove: Supprimer le transitaire <small>%name%</small>
+    button:
+        list: Liste des transitaires
+        show: Détail du transitaire
+        new: Nouveau transitaire
+        edit: Modifier le transitaire
+        remove: Supprimer le transitaire
+    alert:
+        no_item: Aucun transitaire configuré
+
+supplier_template:
+    label:
+        singular: Modèle fournisseur
+        plural: Modèles fournisseur
+    header:
+        list: Modèles fournisseur <small>Liste des modèles</small>
+        show: Détail du modèle <small>%name%</small>
+        new: Créer un nouveau modèle
+        edit: Modifier le modèle <small>%name%</small>
+        remove: Supprimer le modèle <small>%name%</small>
+    button:
+        list: Liste des modèles
+        show: Détail du modèle
+        new: Nouveau modèle
+        edit: Modifier le modèle
+        remove: Supprimer le modèle
+    help:
+        message: >
+            Utilisez &laquo; <strong>%number%</strong> &raquo; et &laquo; <strong>%date%</strong> &raquo;
+            pour insérer respectivement le numéro et la date de la commande.
+    alert:
+        no_item: Aucun modèle fournisseur configuré
+
+state:
+    label:
+        singular: État/Région
+        plural: États/Régions
+
+tax:
+    label:
+        singular: Taxe
+        plural: Taxes
+    header:
+        list: Taxes <small>Liste des taxes</small>
+        show: Détail de la taxe <small>%name%</small>
+        new: Créer une nouvelle taxe
+        edit: Modifier la taxe <small>%name%</small>
+        remove: Supprimer la taxe <small>%name%</small>
+    button:
+        list: Liste des taxes
+        show: Détail de la taxe
+        new: Nouvelle taxe
+        edit: Modifier la taxe
+        remove: Supprimer la taxe
+    field:
+        postal_code_match: Masque code postal
+    alert:
+        no_item: Aucune tax configuré
+
+tax_group:
+    label:
+        singular: Groupe de taxes
+        plural: Groupes de taxes
+    header:
+        list: Groupes de taxes <small>Liste des groupes</small>
+        show: Détail du groupe de taxes <small>%name%</small>
+        new: Créer un nouveau groupe de taxes
+        edit: Modifier le groupe de taxes <small>%name%</small>
+        remove: Supprimer le groupe de taxes <small>%name%</small>
+    button:
+        list: Liste des groupes
+        show: Détail du groupe
+        new: Nouveau groupe
+        edit: Modifier le groupe
+        remove: Supprimer le groupe
+    message:
+        cant_be_deleted: Le groupe de taxes par défaut ne peut être supprimé.
+    alert:
+        no_item: Aucun groupe de taxes configuré
+
+tax_rule:
+    label:
+        singular: Règle de taxes
+        plural: Règles de taxes
+    header:
+        list: Règle de taxes <small>Liste des règles</small>
+        show: Détail de la règle de taxes <small>%name%</small>
+        new: Créer une nouvelle règle de taxes
+        edit: Modifier la règle de taxes <small>%name%</small>
+        remove: Supprimer la règle de taxes <small>%name%</small>
+    button:
+        list: Liste des règles
+        show: Détail de la règle
+        new: Nouvelle règle
+        edit: Modifier la règle
+        remove: Supprimer la règle
+    field:
+        customer: Particulier
+        business: Entreprise
+        notices: Mentions (facture)
+        sources: Pays expéditeurs
+        targets: Pays destinataires
+    alert:
+        no_item: Aucune règle de taxes configuré
+
+ticket:
+    label:
+        singular: Ticket
+        plural: Tickets
+    header:
+        list: Tickets <small>Liste des tickets</small>
+        show: Détails du ticket <small>%name%</small>
+        new: Créer un nouveau ticket
+        edit: Modifier le ticket
+        remove: Supprimer le ticket
+        open: Réouvrir le ticket
+        close: Fermer le ticket
+    button:
+        list: Liste des tickets
+        show: Détail du ticket
+        new: Nouveau ticket
+        edit: Modifier le ticket
+        remove: Supprimer le ticket
+        open: Réouvrir le ticket
+        close: Fermer le ticket
+        answer: Ajouter une réponse
+    field:
+        created_at: Créé le
+        updated_at: Modifié le
+    alert:
+        no_item: Aucun ticket configuré
+    message:
+        close_confirm: Confirmer la clôture du ticket ?
+        open_confirm: Confirmer la réouverture du ticket ?
+        remove_confirm: Confirmer la suppression du ticket ?
+
+ticket_message:
+    label:
+        singular: Message
+        plural: Messages
+    header:
+        new: Ajouter un nouveau message
+        edit: Modifier le message
+        remove: Supprimer le message
+    notify:
+        customer:
+            subject: "Service client %site_name%"
+            content_head: >
+                <p>Vous avez reçu un nouveau message pour votre ticket <strong>%number%</strong>
+                &laquo;<em>%subject%<em>&raquo;.</p>
+            content_foot: >
+                <p>Cliquez sur le lien suivant pour répondre à ce message :</p>
+                <p style="text-align:center"><a href="%url%" class="message-reply">Répondre au message</a>.</p>
+                <p>Pour répondre à ce message, rendez-vous dans votre espace client.
+                <u>Ne répondez pas à cet email</u>.</p>
+        admin:
+            subject: "Service client : nouveau messages"
+            content: Vous avez reçu de nouveaux messages dans les tickets qui vous sont assignés.
+
+    message:
+        remove_confirm: Confirmer la suppression du message.
+
+widget:
+    customer:
+        title: Espace client
+    cart:
+        title: Mon panier
+        show_cart: Voir votre panier
+        empty: Votre panier est vide.
+    context:
+        title: Préférences
+
+warehouse:
+    label:
+        singular: Entrepôt
+        plural: Entrepôts
+    header:
+        list: Entrepôts <small>Liste des entrepôts</small>
+        show: Détails de l'entrepôt <small>%name%</small>
+        new: Créer un nouvel entrepôt
+        edit: Modifier l'entrepôt <small>%name%</small>
+        remove: Supprimer l'entrepôt <small>%name%</small>
+    button:
+        list: Liste des entrepôts
+        show: Détail de l'entrepôt
+        new: Nouvel entrepôt
+        edit: Modifier l'entrepôt
+        remove: Supprimer l'entrepôt
+    field:
+        office: Office
+    alert:
+        no_item: Aucun entrepôt configuré

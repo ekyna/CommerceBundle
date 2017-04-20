@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierHelper;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
@@ -20,26 +22,8 @@ use Twig\TwigTest;
  */
 class SupplierExtension extends AbstractExtension
 {
-    /**
-     * @var SupplierOrderCalculatorInterface
-     */
-    private $calculator;
 
-
-    /**
-     * Constructor.
-     *
-     * @param SupplierOrderCalculatorInterface $calculator
-     */
-    public function __construct(SupplierOrderCalculatorInterface $calculator)
-    {
-        $this->calculator = $calculator;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -49,10 +33,7 @@ class SupplierExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -67,11 +48,11 @@ class SupplierExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'supplier_order_weight_total',
-                [$this->calculator, 'calculateWeightTotal']
+                [SupplierHelper::class, 'calculateWeightTotal']
             ),
             new TwigFilter(
                 'supplier_order_items_total',
-                [$this->calculator, 'calculateItemsTotal']
+                [SupplierHelper::class, 'calculateItemsTotal']
             ),
             new TwigFilter(
                 'supplier_order_item_received_quantity',
@@ -85,10 +66,7 @@ class SupplierExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('supplier_order', function ($subject) {

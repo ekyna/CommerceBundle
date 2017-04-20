@@ -1,65 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View\AbstractViewType as BaseType;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Component\Resource\Model\ResourceInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AbstractViewType
  * @package Ekyna\Bundle\CommerceBundle\Service
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO PHP8 Union types
  */
 abstract class AbstractViewType extends BaseType
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private UrlGeneratorInterface $urlGenerator;
+    private TranslatorInterface $translator;
+    private ResourceHelper $resourceHelper;
+    private SubjectHelperInterface $subjectHelper;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
-
-
-    /**
-     * Sets the url generator.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     */
-    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator): void
     {
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * Sets the translator.
-     *
-     * @param TranslatorInterface $translator
-     */
-    public function setTranslator(TranslatorInterface $translator)
+    public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
-    /**
-     * Sets the subject provider registry.
-     *
-     * @param SubjectHelperInterface $subjectHelper
-     */
-    public function setSubjectHelper(SubjectHelperInterface $subjectHelper)
+    public function setResourceHelper(ResourceHelper $resourceHelper): void
+    {
+        $this->resourceHelper = $resourceHelper;
+    }
+
+    public function setSubjectHelper(SubjectHelperInterface $subjectHelper): void
     {
         $this->subjectHelper = $subjectHelper;
     }
@@ -68,10 +53,8 @@ abstract class AbstractViewType extends BaseType
      * Returns the subject public url.
      *
      * @param SubjectRelativeInterface|SubjectInterface $subject
-     *
-     * @return null|string
      */
-    public function getPublicUrl($subject)
+    public function getPublicUrl($subject): ?string
     {
         return $this->subjectHelper->generatePublicUrl($subject, false);
     }
@@ -80,37 +63,34 @@ abstract class AbstractViewType extends BaseType
      * Returns the subject public url.
      *
      * @param SubjectRelativeInterface|SubjectInterface $subject
-     *
-     * @return null|string
      */
-    public function getPrivateUrl($subject)
+    public function getPrivateUrl($subject): ?string
     {
         return $this->subjectHelper->generatePrivateUrl($subject, false);
     }
 
     /**
-     * Generates the url.
+     * Generates the resource url.
      *
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return string
+     * @param ResourceInterface|string $resource
      */
-    protected function generateUrl($name, array $parameters = [])
+    protected function resourceUrl($resource, string $action, array $parameters = []): string
+    {
+        return $this->resourceHelper->generateResourcePath($resource, $action, $parameters, true);
+    }
+
+    /**
+     * Generates the url.
+     */
+    protected function generateUrl(string $name, array $parameters = []): string
     {
         return $this->urlGenerator->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**
      * Translates the given message.
-     *
-     * @param string $id
-     * @param array  $parameters
-     * @param string $domain
-     *
-     * @return string
      */
-    protected function trans($id, array $parameters = [], $domain = null)
+    protected function trans(string $id, array $parameters = [], string $domain = null): string
     {
         return $this->translator->trans($id, $parameters, $domain);
     }
@@ -118,14 +98,9 @@ abstract class AbstractViewType extends BaseType
     /**
      * Resolves the item's subject.
      *
-     * @param Model\SaleItemInterface $item
-     * @param bool                    $throw
-     *
-     * @return mixed
-     *
      * @see SubjectProviderRegistryInterface
      */
-    protected function resolveItemSubject(Model\SaleItemInterface $item, $throw = true)
+    protected function resolveItemSubject(Model\SaleItemInterface $item, bool $throw = true): ?SubjectInterface
     {
         return $this->subjectHelper->resolve($item, $throw);
     }

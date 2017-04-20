@@ -1,9 +1,9 @@
 {% extends '@EkynaAdmin/Entity/sided.html.twig' %}
 
-{% block page_title %}{{ (trans_prefix ~ '.button.import')|trans|raw }} - {{ parent() }}{% endblock page_title %}
+{% block page_title %}{{ (context.config.transPrefix ~ '.button.import')|trans({}, context.config.transDomain)|raw }}{% endblock page_title %}
 
 {% block title %}
-    <h1>{{ (trans_prefix ~ '.button.import')|trans|raw }}</h1>
+    <h1>{{ (context.config.transPrefix ~ '.button.import')|trans({}, context.config.transDomain)|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}{% endblock actions %}

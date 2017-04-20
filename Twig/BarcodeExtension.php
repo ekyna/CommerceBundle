@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Com\Tecnick\Barcode\Barcode;
@@ -13,10 +15,7 @@ use Twig\TwigFilter;
  */
 class BarcodeExtension extends AbstractExtension
 {
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -32,14 +31,8 @@ class BarcodeExtension extends AbstractExtension
 
     /**
      * Returns the base64 PNG barcode datamatrix.
-     *
-     * @param string $data
-     * @param int    $width
-     * @param int    $height
-     *
-     * @return string
      */
-    public function getBarcodeDatamatrix(string $data, $width = 256, $height = 256)
+    public function getBarcodeDatamatrix(string $data, int $width = 256, int $height = 256): string
     {
         $barcode = new Barcode();
 
@@ -52,14 +45,8 @@ class BarcodeExtension extends AbstractExtension
 
     /**
      * Returns the base64 PNG barcode 128.
-     *
-     * @param string $data
-     * @param int    $width
-     * @param int    $height
-     *
-     * @return string
      */
-    public function getBarcode128(string $data, $width = 380, $height = 135)
+    public function getBarcode128(string $data, int $width = 380, int $height = 135): string
     {
         $barcode = new Barcode();
 

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Api;
 
+use Ekyna\Bundle\ResourceBundle\Service\Filesystem\FilesystemHelper;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerRepositoryInterface;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -16,36 +18,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class CustomerController
 {
-    /**
-     * @var CustomerRepositoryInterface
-     */
-    private $customerRepository;
+    private CustomerRepositoryInterface $customerRepository;
+    private Filesystem                  $filesystem;
 
-    /**
-     * @var FilesystemInterface
-     */
-    private $filesystem;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CustomerRepositoryInterface $customerRepository
-     * @param FilesystemInterface         $filesystem
-     */
-    public function __construct(CustomerRepositoryInterface $customerRepository, FilesystemInterface $filesystem)
+    public function __construct(CustomerRepositoryInterface $customerRepository, Filesystem $filesystem)
     {
         $this->customerRepository = $customerRepository;
-        $this->filesystem         = $filesystem;
+        $this->filesystem = $filesystem;
     }
 
-    /**
-     * Customer logo action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function logo(Request $request): Response
     {
         if (empty($number = $request->attributes->get('customerNumber'))) {
@@ -60,21 +41,14 @@ class CustomerController
             throw new NotFoundHttpException();
         }
 
-        if (!$this->filesystem->has($logo->getPath())) {
-            throw new NotFoundHttpException();
+        $helper = new FilesystemHelper($this->filesystem);
+
+        if (!$helper->fileExists($logo->getPath(), false)) {
+            throw new NotFoundHttpException('');
         }
-        $file = $this->filesystem->get($logo->getPath());
 
-        $response = new Response($file->read());
-        $response->setPrivate();
-
-        $response->headers->set('Content-Type', $file->getMimetype());
-        $header = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_INLINE,
-            $logo->guessFilename()
-        );
-        $response->headers->set('Content-Disposition', $header);
-
-        return $response;
+        return $helper
+            ->createFileResponse($logo->getPath(), $request, true)
+            ->setPrivate();
     }
 }

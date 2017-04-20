@@ -34,7 +34,7 @@ class PaymentMethodEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function onInsert(ResourceEventInterface $event)
     {
@@ -44,7 +44,7 @@ class PaymentMethodEventSubscriber implements EventSubscriberInterface
             throw new InvalidArgumentException('Expected instance of PaymentMethodInterface');
         }
 
-        if (0 == strlen($method->getGatewayName())) {
+        if (empty($method->getGatewayName())) {
             $method->setGatewayName(sprintf(
                 '%s-%s',
                 Transliterator::transliterate($method->getFactoryName()),
@@ -58,7 +58,7 @@ class PaymentMethodEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public static function getSubscribedEvents()
     {

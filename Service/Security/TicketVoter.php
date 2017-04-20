@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Security;
 use Ekyna\Bundle\CommerceBundle\Model\TicketInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketStates;
-use Ekyna\Component\Resource\Model\Actions;
+use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -28,9 +28,13 @@ class TicketVoter extends Voter
             return false;
         }
 
+        if ($subject->isInternal()) {
+            return false;
+        }
+
         if ($subject->getState() === TicketStates::STATE_CLOSED) {
             return false;
-        } elseif ($attribute === Actions::DELETE) {
+        } elseif ($attribute === Permission::DELETE) {
             return false;
         }
 

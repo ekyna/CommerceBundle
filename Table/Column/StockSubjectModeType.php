@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
@@ -10,6 +12,8 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class StockSubjectModeType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
@@ -17,50 +21,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class StockSubjectModeType extends AbstractColumnType
 {
-    /**
-     * @var \Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper
-     */
-    private $constantHelper;
+    private ConstantsHelper $constantHelper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param ConstantsHelper $constantHelper
-     */
     public function __construct(ConstantsHelper $constantHelper)
     {
         $this->constantHelper = $constantHelper;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $view->vars['value'] = $this->constantHelper->renderStockSubjectModeBadge($view->vars['value']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'ekyna_commerce.stock_subject.field.mode');
+        $resolver->setDefault('label', t('stock_subject.field.mode', [], 'EkynaCommerce'));
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

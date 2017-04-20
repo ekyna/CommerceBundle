@@ -1,0 +1,103 @@
+resources:
+    ekyna_commerce:
+        shipment_method:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod
+            repository:
+                interface: Ekyna\Component\Commerce\Shipment\Repository\ShipmentMethodRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentMethodRepository
+#            manager:
+#                interface: ~
+#                class: ~
+            factory: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\ShipmentMethodFactory
+#            normalizer: ~
+#            search:
+#                class: ~
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\ShipmentMethodType
+            trans_domain: EkynaCommerce
+            translation:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Shipment\Entity\ShipmentMethodTranslation
+                fields: [title, description]
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/ShipmentMethod'
+                    create: false
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ShipmentMethod\CreateAction:
+                    form_template: '@EkynaCommerce/Admin/ShipmentMethod/_flow.html.twig'
+                admin_toggle:
+                    properties: [enabled,available]
+                admin_move_up: ~
+                admin_move_down: ~
+
+        shipment_message:
+            driver: doctrine/orm
+            entity:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Shipment\Entity\ShipmentMessage
+#            repository:
+#                interface: Ekyna\Component\Commerce\Shipment\Repository\RelayPointRepositoryInterface
+#                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\RelayPointRepository
+            trans_domain: EkynaCommerce
+            translation:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Shipment\Entity\ShipmentMessageTranslation
+                fields: [content]
+            # TODO actions:
+
+        shipment_zone:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface
+                class: Ekyna\Component\Commerce\Shipment\Entity\ShipmentZone
+            repository:
+                interface: Ekyna\Component\Commerce\Shipment\Repository\ShipmentZoneRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentZoneRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentZoneType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\ShipmentZoneType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/ShipmentZone/read.html.twig'
+                    form: '@EkynaCommerce/Admin/ShipmentZone/_form.html.twig'
+
+        shipment_rule:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Shipment\Model\ShipmentRuleInterface
+                class: Ekyna\Component\Commerce\Shipment\Entity\ShipmentRule
+            repository:
+                interface: Ekyna\Component\Commerce\Shipment\Repository\ShipmentRuleRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentRuleRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentRuleType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\ShipmentRuleType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/ShipmentRule/read.html.twig'
+                    form: '@EkynaCommerce/Admin/ShipmentRule/_form.html.twig'
+
+        shipment_price:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface
+                class: Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice
+            repository:
+                interface: Ekyna\Component\Commerce\Shipment\Repository\ShipmentPriceRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentPriceRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPriceType
+            trans_domain: EkynaCommerce
+
+        relay_point:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Shipment\Model\RelayPointInterface
+                class: Ekyna\Component\Commerce\Shipment\Entity\RelayPoint
+            repository:
+                interface: Ekyna\Component\Commerce\Shipment\Repository\RelayPointRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\RelayPointRepository
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\RelayPointNormalizer
+            trans_domain: EkynaCommerce

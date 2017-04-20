@@ -1,0 +1,141 @@
+resources:
+    ekyna_commerce:
+        cart:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\Cart
+            repository:
+                interface: Ekyna\Component\Commerce\Cart\Repository\CartRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CartRepository
+            factory: Ekyna\Bundle\CommerceBundle\Factory\CartFactory
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CartType
+            trans_domain: EkynaCommerce
+            actions:
+                api_crud:
+                    search: true
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/Cart'
+                    summary: '@EkynaCommerce/Admin/Common/Sale/summary.html.twig'
+                    read:
+                        expose: true
+                admin_toggle:
+                    properties: [autoDiscount,autoShipping,autoNotify]
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentGenerateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentRenderAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DuplicateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\ExportAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\RecalculateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\RefreshAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\SetExchangeRateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\TransformAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateShipmentAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateStateAction: ~
+
+        cart_address:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartAddressInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\CartAddress
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType
+            parent: ekyna_commerce.cart
+            trans_prefix: address
+            trans_domain: EkynaCommerce
+
+        cart_adjustment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartAdjustmentInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\CartAdjustment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAdjustmentType
+            parent: ekyna_commerce.cart
+            trans_prefix: adjustment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\UpdateAction: ~
+
+        cart_attachment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartAttachmentInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\CartAttachment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAttachmentType
+            parent: ekyna_commerce.cart
+            trans_prefix: attachment
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    list: false
+                    read: false
+                    templates: '@EkynaCommerce/Admin/Common/Attachment'
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\ArchiveAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\DownloadAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Attachment\GenerateAction: ~
+            behaviors:
+                uploadable:
+                    uploader: ekyna_commerce.uploader
+
+        cart_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartItemInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\CartItem
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemType
+            parent: ekyna_commerce.cart
+            trans_prefix: sale_item
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\AddAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\ConfigureAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveDownAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveUpAction: ~
+                # TODO (?) Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\UpdateAction: ~
+
+        cart_item_adjustment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartItemAdjustmentInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemAdjustmentType
+            parent: ekyna_commerce.cart_item
+            trans_prefix: adjustment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\UpdateAction: ~
+
+        cart_notification:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartNotificationInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\CartNotification
+            parent: ekyna_commerce.cart
+            trans_prefix: notification
+            trans_domain: EkynaCommerce
+
+        cart_payment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Cart\Model\CartPaymentInterface
+                class: Ekyna\Component\Commerce\Cart\Entity\CartPayment
+            repository:
+                interface : Ekyna\Component\Commerce\Cart\Repository\CartPaymentRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CartPaymentRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType
+            parent: ekyna_commerce.cart
+            trans_prefix: payment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\ActionAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\UpdateAction: ~
+
+

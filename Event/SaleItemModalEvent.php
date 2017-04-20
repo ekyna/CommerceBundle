@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Event;
 
-use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class SaleItemModalEvent
@@ -13,50 +15,26 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class SaleItemModalEvent extends Event
 {
-    const MODAL = 'ekyna_commerce.sale_item.modal';
+    public const MODAL           = 'ekyna_commerce.sale_item.modal';
+    public const EVENT_ADD       = 'ekyna_commerce.sale_item.add';
+    public const EVENT_CONFIGURE = 'ekyna_commerce.sale_item.configure';
 
-    const EVENT_ADD       = 'ekyna_commerce.sale_item.add';
-    const EVENT_CONFIGURE = 'ekyna_commerce.sale_item.configure';
-
-    /**
-     * @var Modal
-     */
-    private $modal;
-
-    /**
-     * @var SaleItemInterface
-     */
-    private $item;
+    private Modal             $modal;
+    private SaleItemInterface $item;
 
 
-    /**
-     * Constructor.
-     *
-     * @param Modal             $modal
-     * @param SaleItemInterface $item
-     */
     public function __construct(Modal $modal, SaleItemInterface $item)
     {
         $this->modal = $modal;
         $this->item = $item;
     }
 
-    /**
-     * Returns the modal.
-     *
-     * @return Modal
-     */
-    public function getModal()
+    public function getModal(): Modal
     {
         return $this->modal;
     }
 
-    /**
-     * Returns the item.
-     *
-     * @return SaleItemInterface
-     */
-    public function getItem()
+    public function getItem(): SaleItemInterface
     {
         return $this->item;
     }

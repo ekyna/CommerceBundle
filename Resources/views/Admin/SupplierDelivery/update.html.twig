@@ -1,0 +1,11 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block title %}
+<h1>
+    {{- 'supplier_delivery.header.edit'|trans({
+        '%date%': resource.createdAt|format_datetime('short', 'none')
+    }, 'EkynaCommerce')|raw -}}
+</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}

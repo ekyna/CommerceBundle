@@ -1,0 +1,61 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% import '@EkynaCommerce/Admin/macros.html.twig' as macros %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\SupplierProduct\\CreateAction') }}
+{% endblock actions %}
+
+{% block main_contents -%}
+    {% set currency = supplierProduct.supplier.currency.code %}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ show_row(supplierProduct.designation, 'text', {
+            'label': t('field.designation', [], 'EkynaUi')
+        }) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.reference, 'text', {
+                    'label': t('field.reference', [], 'EkynaUi'),
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.netPrice|format_currency(currency), 'text', {
+                    'label': t('field.buy_net_price', [], 'EkynaCommerce'),
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.availableStock, 'number', {
+                    'label': t('field.available_stock', [], 'EkynaCommerce'),
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.weight, 'number', {
+                    'label': t('field.weight', [], 'EkynaUi'),
+                    'label_col': 4,
+                    'append': ' Kg'
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.orderedStock, 'number', {
+                    'label': t('supplier_product.field.ordered_stock', [], 'EkynaCommerce'),
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.estimatedDateOfArrival, 'datetime', {
+                    'label': t('field.replenishment_eda', [], 'EkynaCommerce'),
+                    'time': false,
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ macros.show_subject(supplierProduct, t('supplier_product.field.subject', [], 'EkynaCommerce')) }}
+    </div>
+{%- endblock main_contents %}

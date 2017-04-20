@@ -1,68 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
-use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
-use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
-use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
-use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
-use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
-use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
+use Ekyna\Bundle\CommerceBundle\EventListener\AddressEventSubscriber;
+use Ekyna\Bundle\ResourceBundle\DependencyInjection\PrependBundleConfigTrait;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
-use Ekyna\Component\Commerce\Bridge\Mailchimp;
-use Ekyna\Component\Commerce\Bridge\SendInBlue;
 use Ekyna\Component\Commerce\Cart;
 use Ekyna\Component\Commerce\Customer;
-use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order;
 use Ekyna\Component\Commerce\Pricing\Api;
 use Ekyna\Component\Commerce\Quote;
-use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
+
+use function array_replace;
+use function class_exists;
+use function in_array;
 
 /**
  * Class EkynaCommerceExtension
  * @package Ekyna\Bundle\CommerceBundle\DependencyInjection
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class EkynaCommerceExtension extends AbstractExtension
+class EkynaCommerceExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    use PrependBundleConfigTrait;
+
+    public function prepend(ContainerBuilder $container): void
     {
-        $config = $this->configure($configs, 'ekyna_commerce', new Configuration(), $container);
-
-        $this->configureAccounting($config['accounting'], $container);
-        $this->configureCache($config['cache'], $container);
-        $this->configureDefaults($config['default'], $container);
-        $this->configurePdf($config['pdf'], $container);
-        $this->configureDocument($config['document'], $container);
-        $this->configureFeatures($config['feature'], $container);
-        $this->configurePricing($config['pricing'], $container);
-        $this->configureStock($config['stock'], $container);
-        $this->configureSubject($config['subject'], $container);
-        $this->configureWidget($config['widget'], $container);
-        $this->configureSaleFactory($container);
-
-        if (in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
-            $this->loader->load('services_dev_test.xml');
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function prepend(ContainerBuilder $container)
-    {
-        parent::prepend($container);
+        $this->prependBundleConfigFiles($container);
 
         $container->prependExtensionConfig('doctrine', [
             'dbal' => [
@@ -74,126 +48,154 @@ class EkynaCommerceExtension extends AbstractExtension
         ]);
     }
 
-    /**
-     * Configures the defaults.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureDefaults(array $config, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
-        $container->setParameter('ekyna_commerce.default.company_logo', $config['company_logo']);
-        $container->setParameter('ekyna_commerce.default.country', $config['country']);
-        $container->setParameter('ekyna_commerce.default.currency', $config['currency']);
-        $container->setParameter('ekyna_commerce.default.vat_display_mode', $config['vat_display_mode']);
-        $container->setParameter('ekyna_commerce.default.fraud', $config['fraud']);
-        $container->setParameter('ekyna_commerce.default.expiration.cart', $config['expiration']['cart']);
-        $container->setParameter('ekyna_commerce.default.expiration.quote', $config['expiration']['quote']);
-        $container->setParameter('ekyna_commerce.default.notify', $config['notify']);
+        $config = $this->processConfiguration(new Configuration(), $configs);
 
-        // Configure the locking helper
+        $this->configureParameters($config, $container);
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services/accounting.php');
+        $loader->load('services/actions.php');
+        $loader->load('services/cart.php');
+        $loader->load('services/command.php');
+        $loader->load('services/common.php');
+        $loader->load('services/controller.php');
+        $loader->load('services/customer.php');
+        $loader->load('services/document.php');
+        $loader->load('services/form.php');
+        $loader->load('services/helper.php');
+        $loader->load('services/invoice.php');
+        $loader->load('services/loyalty.php');
+        $loader->load('services/map.php');
+        $loader->load('services/notify.php');
+        $loader->load('services/order.php');
+        $loader->load('services/payment.php');
+        $loader->load('services/pricing.php');
+        $loader->load('services/quote.php');
+        $loader->load('services/sale.php');
+        $loader->load('services/serializer.php');
+        $loader->load('services/shipment.php');
+        $loader->load('services/show.php');
+        $loader->load('services/stat.php');
+        $loader->load('services/stock.php');
+        $loader->load('services/subject.php');
+        $loader->load('services/supplier.php');
+        $loader->load('services/support.php'); // TODO Regarding enabled features
+        $loader->load('services/table.php');
+        $loader->load('services/twig.php');
+        $loader->load('services/validator.php');
+        $loader->load('services/view.php');
+        $loader->load('services.php');
+
+        if (in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
+            $loader->load('services/dev.php');
+        }
+
+        $this->configureAccounting($config['accounting'], $container);
+        $this->configureCache($config['cache'], $container);
+        $this->configureDocument($config['document'], $container);
+        $this->configureFeatures($config['feature'], $container, $loader);
+        $this->configureGoogle($container);
+        $this->configureLocking($config['default'], $container);
+        $this->configurePricing($config['pricing'], $container);
+        $this->configureShipment($config['default'], $container);
+        $this->configureStock($config['stock'], $container);
+        $this->configureSubject($config['subject'], $container);
+        $this->configureTemplates($config['template'], $container);
+        $this->configureWidget($config['widget'], $container);
+    }
+
+    private function configureParameters(array $config, ContainerBuilder $container): void
+    {
+        $default = $config['default'];
+        $container->setParameter('ekyna_commerce.default.company_logo', $default['company_logo']);
+        $container->setParameter('ekyna_commerce.default.country', $default['country']);
+        $container->setParameter('ekyna_commerce.default.currency', $default['currency']);
+        $container->setParameter('ekyna_commerce.default.vat_display_mode', $default['vat_display_mode']);
+        $container->setParameter('ekyna_commerce.default.fraud', $default['fraud']);
+        $container->setParameter('ekyna_commerce.default.expiration.cart', $default['expiration']['cart']);
+        $container->setParameter('ekyna_commerce.default.expiration.quote', $default['expiration']['quote']);
+        $container->setParameter('ekyna_commerce.default.notify', $default['notify']);
+
+        $classes = $config['class'];
+        $container->setParameter('ekyna_commerce.class.context', $classes['context']);
+        $container->setParameter('ekyna_commerce.class.genders', $classes['genders']);
+    }
+
+    private function configureLocking(array $config, ContainerBuilder $container): void
+    {
         $container
-            ->getDefinition(LockChecker::class)
+            ->getDefinition('ekyna_commerce.checker.locking')
             ->replaceArgument(1, $config['locking']['start'])
             ->replaceArgument(2, $config['locking']['end'])
             ->replaceArgument(3, $config['locking']['since']);
-
-        $container
-            ->getDefinition(ShipmentLabelPurgeCommand::class)
-            ->replaceArgument(1, $config['shipment']['label_retention']);
     }
 
-    /**
-     * Configures the cache.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureCache(array $config, ContainerBuilder $container)
+    private function configureCache(array $config, ContainerBuilder $container): void
     {
         $container->setParameter('ekyna_commerce.cache.countries', $config['countries']);
     }
 
-    /**
-     * Configures accounting.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureAccounting(array $config, ContainerBuilder $container)
+    private function configureAccounting(array $config, ContainerBuilder $container): void
     {
         $container
-            ->getDefinition('ekyna_commerce.accounting.exporter')
+            ->getDefinition('ekyna_commerce.exporter.accounting')
             ->replaceArgument(8, $config);
     }
 
-    /**
-     * Configures PDF (generator).
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configurePdf(array $config, ContainerBuilder $container)
+    private function configureDocument(array $config, ContainerBuilder $container): void
     {
         $container
-            ->getDefinition(PdfGenerator::class)
-            ->setArguments([$config['entry_point'], $config['token']]);
-    }
-
-    /**
-     * Configures document.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureDocument(array $config, ContainerBuilder $container)
-    {
-        $container
-            ->getDefinition(DocumentHelper::class)
+            ->getDefinition('ekyna_commerce.helper.document')
             ->replaceArgument(6, array_replace([
                 'logo_path' => '%ekyna_commerce.default.company_logo%',
             ], $config));
 
         $container
-            ->getDefinition(DocumentPageBuilder::class)
+            ->getDefinition('ekyna_commerce.builder.document_page')
             ->replaceArgument(2, $config);
 
         $container
-            ->getDefinition(RendererFactory::class)
+            ->getDefinition('ekyna_commerce.factory.document_renderer')
             ->replaceArgument(2, [
                 'shipment_remaining_date' => $config['shipment_remaining_date'],
                 'debug'                   => '%kernel.debug%',
             ]);
     }
 
-    /**
-     * Configures the features.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureFeatures(array $config, ContainerBuilder $container)
+    private function configureFeatures(array $config, ContainerBuilder $container, PhpFileLoader $loader): void
     {
         // Set features parameter
         $container->setParameter('ekyna_commerce.features', $config);
         // Set service config
-        $container->getDefinition(Features::class)->replaceArgument(0, $config);
+        $container->getDefinition('ekyna_commerce.features')->replaceArgument(0, $config);
 
-        if ($config[Features::NEWSLETTER]['enabled']) {
-            $this->loader->load('services/newsletter.xml');
+        if (!$config[Features::NEWSLETTER]['enabled']) {
+            return;
+        }
 
-            $this->configureMailchimp($config[Features::NEWSLETTER]['mailchimp'], $container);
-            $this->configureSendInBlue($config[Features::NEWSLETTER]['sendinblue'], $container);
+        $loader->load('services/newsletter.php');
+
+        $this->configureMailchimp($config[Features::NEWSLETTER]['mailchimp'], $container, $loader);
+        $this->configureSendInBlue($config[Features::NEWSLETTER]['sendinblue'], $container, $loader);
+    }
+
+    private function configureGoogle(ContainerBuilder $container): void
+    {
+        if ($container->has('ivory.google_map.geocoder')) {
+            // Address event listener (geocoding)
+            $container
+                ->register('ekyna_commerce.listener.address', AddressEventSubscriber::class)
+                ->setArguments([
+                    new Reference('ekyna_resource.orm.persistence_helper'),
+                    new Reference('ivory.google_map.geocoder'),
+                ])
+                ->addTag('resource.event_subscriber');
         }
     }
 
-    /**
-     * Configures mailchimp newsletter gateway.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureMailchimp(array $config, ContainerBuilder $container): void
+    private function configureMailchimp(array $config, ContainerBuilder $container, PhpFileLoader $loader): void
     {
         if (empty($config['api_key'])) {
             return;
@@ -201,25 +203,19 @@ class EkynaCommerceExtension extends AbstractExtension
 
         if (!class_exists('DrewM\\MailChimp\\MailChimp')) {
             throw new LogicException(
-                "To use MailChimp newsletter gateway, you must install drewm/mailchimp-api first.\n" .
-                "Please run: composer require drewm/mailchimp-api:^2.5"
+                'To use MailChimp newsletter gateway, you must install drewm/mailchimp-api first. ' .
+                'Please run: composer require drewm/mailchimp-api:^2.5'
             );
         }
 
-        $this->loader->load('services/newsletter/mailchimp.xml');
+        $loader->load('services/newsletter/mailchimp.php');
 
         $container
-            ->getDefinition(Mailchimp\Api::class)
+            ->getDefinition('ekyna_commerce.newsletter.api.mailchimp')
             ->replaceArgument(1, $config['api_key']);
     }
 
-    /**
-     * Configures sendInBlue newsletter gateway.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureSendInBlue(array $config, ContainerBuilder $container): void
+    private function configureSendInBlue(array $config, ContainerBuilder $container, PhpFileLoader $loader): void
     {
         if (empty($config['api_key'])) {
             return;
@@ -227,25 +223,19 @@ class EkynaCommerceExtension extends AbstractExtension
 
         if (!class_exists('SendinBlue\\Client\\Configuration')) {
             throw new LogicException(
-                "To use SendInBlue newsletter gateway, you must install sendinblue/api-v3-sdk first.\n" .
-                "Please run: composer require sendinblue/api-v3-sdk:^6.4"
+                'To use SendInBlue newsletter gateway, you must install sendinblue/api-v3-sdk first. ' .
+                'Please run: composer require sendinblue/api-v3-sdk:^6.4'
             );
         }
 
-        $this->loader->load('services/newsletter/sendinblue.xml');
+        $loader->load('services/newsletter/sendinblue.php');
 
         $container
-            ->getDefinition(SendInBlue\Api::class)
+            ->getDefinition('ekyna_commerce.newsletter.api.sendinblue')
             ->replaceArgument(1, $config['api_key']);
     }
 
-    /**
-     * Configures pricing.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configurePricing(array $config, ContainerBuilder $container)
+    private function configurePricing(array $config, ContainerBuilder $container): void
     {
         $configs = $config['provider'];
 
@@ -276,100 +266,52 @@ class EkynaCommerceExtension extends AbstractExtension
         }
     }
 
-    /**
-     * Configures the sale factory classes.
-     *
-     * @param ContainerBuilder $container
-     */
-    private function configureSaleFactory(ContainerBuilder $container)
-    {
-        $factoryDefinition = $container->getDefinition('ekyna_commerce.sale_factory');
-
-        $factoryDefinition->replaceArgument(0, [
-            'address'         => [
-                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_address.class%',
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_address.class%',
-                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_address.class%',
-            ],
-            'adjustment'      => [
-                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_adjustment.class%',
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_adjustment.class%',
-                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_adjustment.class%',
-            ],
-            'invoice'         => [
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_invoice.class%',
-            ],
-            'invoice_line'    => [
-                Order\Model\OrderInvoiceInterface::class => '%ekyna_commerce.order_invoice_line.class%',
-            ],
-            'item'            => [
-                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_item.class%',
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_item.class%',
-                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_item.class%',
-            ],
-            'item_adjustment' => [
-                Cart\Model\CartItemInterface::class   => '%ekyna_commerce.cart_item_adjustment.class%',
-                Order\Model\OrderItemInterface::class => '%ekyna_commerce.order_item_adjustment.class%',
-                Quote\Model\QuoteItemInterface::class => '%ekyna_commerce.quote_item_adjustment.class%',
-            ],
-            'payment'         => [
-                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_payment.class%',
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_payment.class%',
-                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_payment.class%',
-            ],
-            'shipment'        => [
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_shipment.class%',
-            ],
-            'shipment_item'   => [
-                Order\Model\OrderShipmentInterface::class => '%ekyna_commerce.order_shipment_item.class%',
-            ],
-        ]);
-    }
-
-    /**
-     * Configures the stock services.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureStock(array $config, ContainerBuilder $container)
+    private function configureShipment(array $config, ContainerBuilder $container): void
     {
         $container
-            ->getDefinition(StockSubjectUpdaterInterface::class)
+            ->getDefinition('ekyna_commerce.command.shipment_label_purge')
+            ->replaceArgument(1, $config['shipment']['label_retention']);
+    }
+
+    private function configureStock(array $config, ContainerBuilder $container): void
+    {
+        $container
+            ->getDefinition('ekyna_commerce.updater.stock_subject')
             ->replaceArgument(2, $config['subject_default']);
 
         $container
-            ->getDefinition(AvailabilityHelper::class)
+            ->getDefinition('ekyna_commerce.helper.availability')
             ->replaceArgument(2, $config['availability']['in_stock_limit']);
     }
 
-    /**
-     * Configures the subject services.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureSubject(array $config, ContainerBuilder $container)
+    private function configureSubject(array $config, ContainerBuilder $container): void
     {
         $container
-            ->getDefinition(SubjectHelper::class)
-            ->replaceArgument(5, $config);
+            ->getDefinition('ekyna_commerce.helper.subject')
+            ->addMethodCall('setConfig', [$config]);
     }
 
-    /**
-     * Configures the widgets services.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureWidget(array $config, ContainerBuilder $container)
+    private function configureTemplates(array $config, ContainerBuilder $container): void
     {
         $container
-            ->getDefinition(WidgetHelper::class)
+            ->getDefinition('ekyna_commerce.renderer.stock')
+            ->replaceArgument(2, $config['stock_unit_list'])
+            ->replaceArgument(3, $config['stock_assignment_list'])
+            ->replaceArgument(4, $config['subject_stock_list']);
+
+        $container
+            ->getDefinition('ekyna_commerce.renderer.shipment')
+            ->replaceArgument(3, $config['shipment_price_list']);
+    }
+
+    private function configureWidget(array $config, ContainerBuilder $container): void
+    {
+        $container
+            ->getDefinition('ekyna_commerce.helper.widget')
             ->replaceArgument(8, $config['data']);
 
         $container
-            ->getDefinition(WidgetRenderer::class)
+            ->getDefinition('ekyna_commerce.renderer.widget')
             ->replaceArgument(2, $config['template']);
     }
 }

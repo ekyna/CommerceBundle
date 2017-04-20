@@ -81,6 +81,7 @@ define(['jquery', 'jquery-ui/widget', 'ekyna-polyfill'], function ($) {
             }
 
             if (0 < this.rates.length) {
+                this.rates = this.rates.map(parseFloat)
                 this.$rates.html('&nbsp;(' + this.rates.map(function(rate) {
                     return (rate * 100) + '%';
                 }).join(',&nbsp;') + ')');

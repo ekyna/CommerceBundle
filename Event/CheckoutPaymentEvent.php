@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Event;
 
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class CheckoutPaymentEvent
@@ -14,36 +16,14 @@ use Symfony\Component\Form\FormInterface;
  */
 class CheckoutPaymentEvent extends Event
 {
-    const BUILD_FORM = 'ekyna_commerce.checkout.build_payment_form';
+    public const BUILD_FORM = 'ekyna_commerce.checkout.build_payment_form';
 
-    /**
-     * @var SaleInterface
-     */
-    private $sale;
-
-    /**
-     * @var PaymentInterface
-     */
-    private $payment;
-
-    /**
-     * @var array
-     */
-    private $formOptions;
-
-    /**
-     * @var FormInterface
-     */
-    private $form;
+    private SaleInterface    $sale;
+    private PaymentInterface $payment;
+    private array            $formOptions;
+    private ?FormInterface   $form = null;
 
 
-    /**
-     * Constructor.
-     *
-     * @param SaleInterface    $sale
-     * @param PaymentInterface $payment
-     * @param array            $formOptions
-     */
     public function __construct(SaleInterface $sale, PaymentInterface $payment, array $formOptions = [])
     {
         $this->sale = $sale;
@@ -53,53 +33,28 @@ class CheckoutPaymentEvent extends Event
         ]);
     }
 
-    /**
-     * Returns the sale.
-     *
-     * @return SaleInterface
-     */
-    public function getSale()
+    public function getSale(): SaleInterface
     {
         return $this->sale;
     }
 
-    /**
-     * Returns the payment.
-     *
-     * @return PaymentInterface
-     */
-    public function getPayment()
+    public function getPayment(): PaymentInterface
     {
         return $this->payment;
     }
 
-    /**
-     * Returns the form options.
-     *
-     * @return array
-     */
-    public function getFormOptions()
+    public function getFormOptions(): array
     {
         return $this->formOptions;
     }
 
-    /**
-     * Returns the form.
-     *
-     * @return FormInterface
-     */
-    public function getForm()
-    {
-        return $this->form;
-    }
-
-    /**
-     * Sets the form.
-     *
-     * @param FormInterface $form
-     */
-    public function setForm(FormInterface $form = null)
+    public function setForm(?FormInterface $form): void
     {
         $this->form = $form;
+    }
+
+    public function getForm(): ?FormInterface
+    {
+        return $this->form;
     }
 }

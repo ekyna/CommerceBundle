@@ -1,5 +1,5 @@
 define([
-    'jquery', 'bootstrap/dialog', 'ekyna-commerce/templates', 'routing', 'ekyna-ui'
+    'jquery', 'bootstrap/dialog', 'ekyna-commerce/templates', 'routing', 'ekyna-spinner'
 ], function ($, BootstrapDialog, Templates, Router) {
     "use strict";
 
@@ -122,7 +122,7 @@ define([
                         setRelayPoint();
 
                         var rpXhr = $.ajax({
-                            url: Router.generate('ekyna_commerce_api_shipment_gateway_get_relay_point', {gateway: gateway}),
+                            url: Router.generate('api_ekyna_commerce_shipment_gateway_get_relay_point', {gateway: gateway}),
                             method: 'GET',
                             data: {
                                 number: $choice.val()
@@ -394,7 +394,7 @@ define([
                 $modalError.hide();
 
                 queryXhr = $.ajax({
-                    url: Router.generate('ekyna_commerce_api_shipment_gateway_list_relay_points', {gateway: gateway}),
+                    url: Router.generate('api_ekyna_commerce_shipment_gateway_list_relay_points', {gateway: gateway}),
                     method: 'GET',
                     data: data
                 });

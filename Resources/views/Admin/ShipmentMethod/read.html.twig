@@ -1,0 +1,128 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% import '@EkynaCommerce/Admin/macros.html.twig' as _commerce %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ShipmentMethod\\CreateAction') }}
+{% endblock actions %}
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{ 'field.general'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-content" id="toggle-content" data-toggle="tab">
+            {{ 'field.content'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-pricing" id="toggle-pricing" data-toggle="tab">
+            {{ 'field.pricing'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-messages" id="toggle-messages" data-toggle="tab">
+            {{ 'message.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ show_row(shipmentMethod.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'shipment_method_name'
+        }) }}
+        {{ show_row(shipmentMethod.taxGroup, 'resource', {
+            'resource': 'ekyna_commerce.tax_group',
+            'id': 'shipment_method_taxGroup',
+        }) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(shipmentMethod.available, 'boolean', {
+                    'label': 'field.front_office',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'shipment_method_available',
+                    'label_col': 4,
+                    'color': true
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(shipmentMethod.enabled, 'boolean', {
+                    'label': 'field.enabled',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'shipment_method_enabled',
+                    'label_col': 4,
+                    'color': true
+                }) }}
+            </div>
+        </div>
+        {{ show_row(shipmentMethod.platformName, 'text', {
+            'label': 'field.factory_name',
+            'label_trans_domain': 'EkynaCommerce'
+        }) }}
+        {# TODO gatewayConfig #}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-content">
+        {{ show_row(shipmentMethod.media, 'media_media', {
+            'label': 'field.image',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'shipment_method_image',
+        }) }}
+        {{ show_row(shipmentMethod.translations, 'translations', {
+            'id': 'shipmentMethod_translations',
+            'fields': {
+                'title': {
+                    'label': 'field.title',
+                    'options': {'label_trans_domain': 'EkynaUi'}
+                },
+                'description': {
+                    'label': 'field.description',
+                    'type': 'textarea',
+                    'options': {'html': true, 'label_trans_domain': 'EkynaUi'}
+                },
+            }
+        }) }}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-pricing">
+        {{ display_shipment_prices(shipmentMethod) }}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-messages">
+        <ul class="nav nav-tabs">
+            {% for message in shipmentMethod.messages -%}
+                <li{% if loop.first %} class="active"{% endif %}>
+                    <a href="#{{ resource_name }}-state-{{ message.state }}" id="toggle-state-{{ message.state }}" data-toggle="tab">
+                        {{ message.state|shipment_state_label }}
+                    </a>
+                </li>
+            {%- endfor %}
+        </ul>
+        <div class="panel-body" style="border: 1px solid #ddd; border-top: none; padding:15px 15px 1px 15px; margin-bottom: 15px;">
+            <div class="tab-content">
+                {% for message in shipmentMethod.messages -%}
+                    <div class="tab-pane{% if loop.first %} active{% endif %}"
+                         id="{{ resource_name }}-state-{{ message.state }}">
+                        {{- show_row(message.translations, 'translations', {
+                            'fields': {
+                                'content': {
+                                    'label': 'field.content',
+                                    'type': 'textarea',
+                                    'options': {'html': true, 'label_trans_domain': 'EkynaUi'}
+                                }
+                            }
+                        }) -}}
+                    </div>
+                {%- endfor %}
+            </div>
+        </div>
+    </div>
+{%- endblock main_contents %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['bundles/ekynacommerce/js/show/shipment-prices']);</script>
+{% endblock javascripts %}

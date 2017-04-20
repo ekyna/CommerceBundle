@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Bundle\AdminBundle\Service\Security\UserProviderInterface;
+use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Ekyna\Component\User\Service\UserProviderInterface;
 
 /**
  * Class InChargeResolver
@@ -16,37 +17,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class InChargeResolver
 {
-    /**
-     * @var UserProviderInterface
-     */
-    private $userProvider;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $userManager;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
+    private UserProviderInterface $userProvider;
 
 
-    /**
-     * Constructor.
-     *
-     * @param UserProviderInterface         $userProvider
-     * @param EntityManagerInterface        $userManager
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     */
-    public function __construct(
-        UserProviderInterface $userProvider,
-        EntityManagerInterface $userManager,
-        AuthorizationCheckerInterface $authorizationChecker
-    ) {
+    public function __construct(UserProviderInterface $userProvider)
+    {
         $this->userProvider = $userProvider;
-        $this->userManager = $userManager;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -56,15 +32,13 @@ class InChargeResolver
      *
      * @return bool Whether or not the subject has been updated.
      */
-    public function update(InChargeSubjectInterface $subject)
+    public function update(InChargeSubjectInterface $subject): bool
     {
         if (null !== $subject->getInCharge()) {
             return false;
         }
 
         if (null !== $inCharge = $this->resolve($subject)) {
-            $inCharge = $this->userManager->merge($inCharge);
-
             $subject->setInCharge($inCharge);
 
             return true;
@@ -78,18 +52,21 @@ class InChargeResolver
      *
      * @param InChargeSubjectInterface $subject
      *
-     * @return \Ekyna\Bundle\AdminBundle\Model\UserInterface|null
+     * @return UserInterface|null
      */
-    public function resolve(InChargeSubjectInterface $subject)
+    public function resolve(InChargeSubjectInterface $subject): ?UserInterface
     {
+        $this->userProvider->reset();
+
+        /** @var UserInterface $user */
+        if (null !== $user = $this->userProvider->getUser()) {
+            return $user;
+        }
+
         if ($subject instanceof SaleInterface) {
             if (null !== $inCharge = $this->resolveSale($subject)) {
                 return $inCharge;
             }
-        }
-
-        if (null !== $user = $this->userProvider->getUser()) {
-            return $user;
         }
 
         return null;
@@ -100,9 +77,9 @@ class InChargeResolver
      *
      * @param SaleInterface $sale
      *
-     * @return \Ekyna\Bundle\AdminBundle\Model\UserInterface|null
+     * @return UserInterface|null
      */
-    private function resolveSale(SaleInterface $sale)
+    private function resolveSale(SaleInterface $sale): ?UserInterface
     {
         /** @var CustomerInterface $customer */
         if (null !== $customer = $sale->getCustomer()) {
@@ -110,6 +87,7 @@ class InChargeResolver
                 return $inCharge;
             }
 
+            /** @var CustomerInterface $customer */
             if (null !== $customer = $customer->getParent()) {
                 if (null !== $inCharge = $customer->getInCharge()) {
                     return $inCharge;

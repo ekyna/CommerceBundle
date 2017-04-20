@@ -1,0 +1,29 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(tax.name, 'text', {
+                    'label': 'field.name',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'tax_name',
+                    'label_col': 4,
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(tax.rate, 'number', {
+                    'label': 'field.rate',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'tax_rate',
+                    'label_col': 4,
+                    'append': '%'
+                }) }}
+            </div>
+        </div>
+        {{ show_row(tax.country, 'resource', {
+            'resource': 'ekyna_commerce.country',
+            'id': 'tax_country',
+        }) }}
+    </div>
+{%- endblock main_contents %}

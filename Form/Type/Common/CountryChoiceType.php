@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Bundle\CommerceBundle\Form\ChoiceList\CountryChoiceLoader;
-use Ekyna\Bundle\CoreBundle\Form\DataTransformer\ObjectToIdentifierTransformer;
+use Ekyna\Bundle\ResourceBundle\Form\DataTransformer\ResourceToIdentifierTransformer;
 use Ekyna\Component\Commerce\Common\Country\CountryProviderInterface;
 use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;
@@ -14,6 +16,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class CountryChoiceType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
@@ -21,36 +25,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CountryChoiceType extends AbstractType
 {
-    /**
-     * @var CountryProviderInterface
-     */
-    private $countryProvider;
+    private CountryProviderInterface $countryProvider;
+    private LocaleProviderInterface  $localeProvider;
 
-    /**
-     * @var LocaleProviderInterface
-     */
-    private $localeProvider;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CountryProviderInterface $countryProvider
-     * @param LocaleProviderInterface  $localeProvider
-     */
     public function __construct(CountryProviderInterface $countryProvider, LocaleProviderInterface $localeProvider)
     {
         $this->countryProvider = $countryProvider;
         $this->localeProvider = $localeProvider;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @noinspection PhpParamsInspection */
-        $builder->addModelTransformer(new ObjectToIdentifierTransformer(
+        $builder->addModelTransformer(new ResourceToIdentifierTransformer(
             $this->countryProvider->getCountryRepository(),
             'code',
             $options['multiple']
@@ -63,10 +49,7 @@ class CountryChoiceType extends AbstractType
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $userCountry = $this->countryProvider->getCountry();
 
@@ -77,20 +60,10 @@ class CountryChoiceType extends AbstractType
                         return $value;
                     }
 
-                    return 'ekyna_commerce.country.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    return t('country.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
                 },
                 'enabled'                   => true,
                 'choice_loader'             => function (Options $options) {
-                    if ($options['choices']) {
-                        @trigger_error(sprintf(
-                            'Using the "choices" option in %s has been deprecated since Symfony 3.3 and will be ' .
-                            'ignored in 4.0. Override the "choice_loader" option instead or set it to null.',
-                            __CLASS__
-                        ), E_USER_DEPRECATED);
-
-                        return null;
-                    }
-
                     return new CountryChoiceLoader(
                         $this->countryProvider->getCountryRepository(),
                         $this->localeProvider->getCurrentLocale(),
@@ -107,18 +80,15 @@ class CountryChoiceType extends AbstractType
                 $value = (array)$value;
 
                 if (!isset($value['placeholder'])) {
-                    $value['placeholder'] = 'ekyna_commerce.country.label.' .
-                        ($options['multiple'] ? 'plural' : 'singular');
+                    $value['placeholder'] =
+                        t('country.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
                 }
 
                 return $value;
             });
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }

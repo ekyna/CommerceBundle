@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout as CheckoutType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale as SaleType;
-use Ekyna\Bundle\CoreBundle\Modal;
+use Ekyna\Bundle\ResourceBundle\Service\Filesystem\FilesystemHelper;
+use Ekyna\Bundle\UiBundle\Model\Modal;
+use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
 use Ekyna\Component\Commerce\Common\Helper\CouponHelper;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\LogicException;
@@ -15,9 +19,10 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use function array_replace;
 
 /**
  * Class CartController
@@ -26,46 +31,20 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class CartController extends AbstractController
 {
-    /**
-     * @var CouponHelper
-     */
-    private $couponSetter;
+    private CouponHelper $couponSetter;
+    private ModalRenderer $modalRenderer;
+    private Filesystem $fileSystem;
 
-    /**
-     * @var Modal\Renderer
-     */
-    private $modalRenderer;
-
-    /**
-     * @var Filesystem
-     */
-    private $fileSystem;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CouponHelper   $couponSetter
-     * @param Modal\Renderer $modalRenderer
-     * @param Filesystem     $fileSystem
-     */
     public function __construct(
-        CouponHelper $couponSetter,
-        Modal\Renderer $modalRenderer,
-        Filesystem $fileSystem
+        CouponHelper  $couponSetter,
+        ModalRenderer $modalRenderer,
+        Filesystem    $fileSystem
     ) {
         $this->couponSetter = $couponSetter;
         $this->modalRenderer = $modalRenderer;
         $this->fileSystem = $fileSystem;
     }
 
-    /**
-     * Coupon set action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function couponSet(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
@@ -73,7 +52,7 @@ class CartController extends AbstractController
         }
 
         if (!$this->features->isEnabled(Features::COUPON)) {
-            throw new LogicException("Coupon feature is disabled");
+            throw new LogicException('Coupon feature is disabled');
         }
 
         if (null === $cart = $this->getCart()) {
@@ -115,7 +94,7 @@ class CartController extends AbstractController
         }
 
         if (!$this->features->isEnabled(Features::COUPON)) {
-            throw new LogicException("Coupon feature is disabled");
+            throw new LogicException('Coupon feature is disabled');
         }
 
         if (null === $cart = $this->getCart()) {
@@ -192,8 +171,9 @@ class CartController extends AbstractController
             return $this->buildXhrCartViewResponse();
         }
 
-        $modal = $this->createModal('ekyna_commerce.sale.button.item.configure', $form->createView());
-        $modal->setCondensed(true);
+        $modal = $this->createModal('sale.button.item.configure')
+            ->setForm($form->createView())
+            ->setCondensed(true);
 
         return $this->modalRenderer->render($modal);
     }
@@ -224,9 +204,9 @@ class CartController extends AbstractController
                 } else {
                     $this->getCartHelper()->getCartProvider()->clearCart();
                 }
-            } else {
+            } /*else {
                 // TODO Warn about immutable item ?
-            }
+            }*/
         } else {
             throw new NotFoundHttpException('Unexpected item identifier.');
         }
@@ -293,7 +273,7 @@ class CartController extends AbstractController
             return $this->buildXhrCartViewResponse();
         }
 
-        $modal = $this->createModal('ekyna_commerce.checkout.button.attachment_add', $form->createView());
+        $modal = $this->createModal('checkout.button.attachment_add')->setForm($form->createView());
 
         return $this->modalRenderer->render($modal);
     }
@@ -324,9 +304,9 @@ class CartController extends AbstractController
                 } else {
                     $this->getCartHelper()->getCartProvider()->clearCart();
                 }
-            } else {
+            } /*else {
                 // TODO Warn about internal attachment ?
-            }
+            }*/
         } else {
             throw new NotFoundHttpException('Unexpected attachment identifier.');
         }
@@ -365,21 +345,13 @@ class CartController extends AbstractController
             throw new NotFoundHttpException('Attachment not found.');
         }
 
-        if (!$this->fileSystem->has($attachment->getPath())) {
+        $helper = new FilesystemHelper($this->fileSystem);
+
+        if (!$helper->fileExists($attachment->getPath(), false)) {
             throw new NotFoundHttpException('File not found');
         }
-        $file = $this->fileSystem->get($attachment->getPath());
 
-        $response = new Response($file->read());
-        $response->setPrivate();
-
-        $response->headers->set('Content-Type', $file->getMimetype());
-        $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $attachment->guessFilename()
-        );
-
-        return $response;
+        return $helper->createFileResponse($attachment->getPath());
     }
 
     /**
@@ -394,7 +366,7 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             CheckoutType\InformationType::class,
-            'ekyna_commerce.checkout.button.edit_information',
+            'checkout.button.edit_information',
             'ekyna_commerce_cart_information',
             [
                 'validation_groups' => ['Identity'],
@@ -414,7 +386,7 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             SaleType\SaleAddressType::class,
-            'ekyna_commerce.checkout.button.edit_invoice',
+            'checkout.button.edit_invoice',
             'ekyna_commerce_cart_invoice_address',
             [
                 'address_type'      => CartAddressType::class,
@@ -435,7 +407,7 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             SaleType\SaleAddressType::class,
-            'ekyna_commerce.checkout.button.edit_delivery',
+            'checkout.button.edit_delivery',
             'ekyna_commerce_cart_delivery_address',
             [
                 'address_type'      => CartAddressType::class,
@@ -457,7 +429,7 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             CheckoutType\CommentType::class,
-            'ekyna_commerce.checkout.button.edit_comment',
+            'checkout.button.edit_comment',
             'ekyna_commerce_cart_comment',
             [
                 'validation_groups' => ['Comment'],
@@ -476,8 +448,13 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function handleForm(Request $request, $type, $title, $route, array $options = []): Response
-    {
+    public function handleForm(
+        Request $request,
+        string  $type,
+        string  $title,
+        string  $route,
+        array   $options = []
+    ): Response {
         if (!$request->isXmlHttpRequest()) {
             throw new NotFoundHttpException('Not yet implemented.');
         }
@@ -508,50 +485,32 @@ class CartController extends AbstractController
             return $this->buildXhrCartViewResponse();
         }
 
-        $modal = $this->createModal($title, $form->createView());
+        $modal = $this->createModal($title)->setForm($form->createView());
 
         return $this->modalRenderer->render($modal);
     }
 
     /**
      * Creates a modal.
-     *
-     * @param string $title
-     * @param mixed  $content
-     * @param array  $buttons
-     *
-     * @return Modal\Modal
      */
-    protected function createModal($title, $content = null, $buttons = []): Modal\Modal
+    protected function createModal(string $title, array $buttons = []): Modal
     {
         if (empty($buttons)) {
             $buttons = [
-                [
-                    'id'       => 'submit',
-                    'label'    => 'ekyna_core.button.save',
-                    'icon'     => 'glyphicon glyphicon-ok',
-                    'cssClass' => 'btn-success',
-                    'autospin' => true,
-                ],
-                [
-                    'id'       => 'close',
-                    'label'    => 'ekyna_core.button.cancel',
-                    'icon'     => 'glyphicon glyphicon-remove',
-                    'cssClass' => 'btn-default',
-                ],
+                array_replace(Modal::BTN_SUBMIT, [
+                    'label'    => 'button.save',
+                ]),
+                Modal::BTN_CANCEL,
             ];
         }
 
-        return new Modal\Modal($title, $content, $buttons);
+        return (new Modal($title))
+            ->setDomain('EkynaCommerce')
+            ->setButtons($buttons);
     }
 
     /**
      * Returns the XHR cart view response.
-     *
-     * @param FormInterface $quantities
-     * @param FormInterface $coupon
-     *
-     * @return Response
      */
     protected function buildXhrCartViewResponse(
         FormInterface $quantities = null,

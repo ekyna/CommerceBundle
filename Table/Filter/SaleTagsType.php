@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Util\FilterUtil;
 use Ekyna\Component\Table\Context\ActiveFilter;
-use Ekyna\Component\Table\Exception\InvalidArgumentException;
+use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Filter\AbstractFilterType;
 use Ekyna\Component\Table\Filter\FilterInterface;
 use Ekyna\Component\Table\Source\AdapterInterface;
 use Ekyna\Component\Table\Util\FilterOperator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SaleTagsType
@@ -21,33 +24,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleTagsType extends AbstractFilterType
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private string $tagClass;
 
-    /**
-     * @var string
-     */
-    private $tagClass;
-
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(EntityManagerInterface $em, $tagClass)
+    public function __construct(string $tagClass)
     {
-        $this->em = $em;
         $this->tagClass = $tagClass;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function applyFilter(AdapterInterface $adapter, FilterInterface $filter, ActiveFilter $activeFilter, array $options)
-    {
+    public function applyFilter(
+        AdapterInterface $adapter,
+        FilterInterface $filter,
+        ActiveFilter $activeFilter,
+        array $options
+    ): bool {
         if (!$adapter instanceof EntityAdapter) {
-            throw new InvalidArgumentException("Expected instance of " . EntityAdapter::class);
+            throw new UnexpectedTypeException($adapter, EntityAdapter::class);
         }
 
         $parameter = FilterUtil::buildParameterName('tags');
@@ -69,22 +60,16 @@ class SaleTagsType extends AbstractFilterType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'        => 'ekyna_cms.tag.label.plural',
+            'label'        => t('tag.label.plural', [], 'EkynaCms'),
             'class'        => $this->tagClass,
             'entity_label' => 'name',
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return EntityType::class;
     }

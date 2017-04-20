@@ -1,0 +1,56 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+{% endblock %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="audience-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(audience.gateway|title, 'text', {
+                    'label': t('field.factory_name', [], 'EkynaCommerce'),
+                    'id': 'audience_gateway',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(audience.name, 'text', {
+                    'label': t('field.name', [], 'EkynaUi'),
+                    'id': 'audience_name',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(audience.public, 'boolean', {
+                    'label': t('audience.field.public', [], 'EkynaCommerce'),
+                    'id': 'audience_public',
+                    'color': true,
+                    'false_class': 'label label-default',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(audience.default, 'boolean', {
+                    'label': t('field.default', [], 'EkynaUi'),
+                    'id': 'audience_default',
+                    'color': true,
+                    'false_class': 'label label-default',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(audience.translations, 'translations', {
+            'id': 'audience_translations',
+            'fields': {
+                'title': {'label': t('field.title', [], 'EkynaUi')},
+                'description': {
+                    'label': t('field.description', [], 'EkynaUi'),
+                    'type': 'textarea'
+                }
+            }
+        }) }}
+    </div>
+{%- endblock main_contents %}

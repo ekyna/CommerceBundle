@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Support;
 
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
@@ -9,8 +11,8 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketInterface;
 use Ekyna\Component\Commerce\Support\Repository\TicketRepositoryInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 /**
  * Class TicketRenderer
@@ -25,45 +27,22 @@ class TicketRenderer
         'new'        => null,
     ];
 
-    /**
-     * @var TicketRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var NormalizerInterface
-     */
-    private $normalizer;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
+    private TicketRepositoryInterface $repository;
+    private NormalizerInterface $normalizer;
+    private TranslatorInterface $translator;
+    private Environment         $twig;
 
 
-    /**
-     * Constructor.
-     *
-     * @param TicketRepositoryInterface $repository
-     * @param NormalizerInterface       $normalizer
-     * @param TranslatorInterface       $translator
-     * @param EngineInterface           $templating
-     */
     public function __construct(
         TicketRepositoryInterface $repository,
         NormalizerInterface $normalizer,
         TranslatorInterface $translator,
-        EngineInterface $templating
+        Environment $twig
     ) {
         $this->repository = $repository;
         $this->normalizer = $normalizer;
         $this->translator = $translator;
-        $this->templating = $templating;
+        $this->twig = $twig;
     }
 
     /**
@@ -74,7 +53,7 @@ class TicketRenderer
      *
      * @return string
      */
-    public function renderTickets($source, array $config = [])
+    public function renderTickets($source, array $config = []): string
     {
         $config = array_replace(self::CONFIG_DEFAULTS, $config);
 
@@ -95,7 +74,7 @@ class TicketRenderer
 
         $this->addRoutes($config);
 
-        return $this->templating->render('@EkynaCommerce/Js/support.html.twig', [
+        return $this->twig->render('@EkynaCommerce/Js/support.html.twig', [
             'tickets' => $this->normalize($tickets, $config['admin']),
             'trans'   => $this->getTranslations(),
             'config'  => $config,
@@ -110,7 +89,7 @@ class TicketRenderer
      *
      * @return string
      */
-    public function renderTicket(TicketInterface $ticket, array $config = [])
+    public function renderTicket(TicketInterface $ticket, array $config = []): string
     {
         $config = array_replace(self::CONFIG_DEFAULTS, $config);
 
@@ -118,7 +97,7 @@ class TicketRenderer
 
         $config['standalone'] = true;
 
-        return $this->templating->render('@EkynaCommerce/Js/ticket.html.twig', [
+        return $this->twig->render('@EkynaCommerce/Js/ticket.html.twig', [
             'ticket' => $this->normalize($ticket, $config['admin']),
             'trans'  => $this->getTranslations(),
             'config' => $config,
@@ -130,16 +109,16 @@ class TicketRenderer
      *
      * @param array $config
      */
-    private function addRoutes(array &$config)
+    private function addRoutes(array &$config): void
     {
         if ($config['admin']) {
             $config['routes'] = [
-                'ticket'     => 'ekyna_commerce_ticket_admin',
-                'message'    => 'ekyna_commerce_ticket_message_admin',
-                'attachment' => 'ekyna_commerce_ticket_attachment_admin',
-                'order'      => 'ekyna_commerce_order_admin',
-                'quote'      => 'ekyna_commerce_quote_admin',
-                'customer'   => 'ekyna_commerce_customer_admin',
+                'ticket'     => 'admin_ekyna_commerce_ticket',
+                'message'    => 'admin_ekyna_commerce_ticket_message',
+                'attachment' => 'admin_ekyna_commerce_ticket_attachment',
+                'order'      => 'admin_ekyna_commerce_order',
+                'quote'      => 'admin_ekyna_commerce_quote',
+                'customer'   => 'admin_ekyna_commerce_customer',
             ];
 
             return;
@@ -162,7 +141,7 @@ class TicketRenderer
      *
      * @return array
      */
-    private function normalize($data, bool $admin)
+    private function normalize($data, bool $admin): array
     {
         return $this->normalizer->normalize($data, 'json', [
             'groups' => ['Default', 'Ticket'],
@@ -175,24 +154,24 @@ class TicketRenderer
      *
      * @return array
      */
-    private function getTranslations()
+    private function getTranslations(): array
     {
         return [
-            'create'     => $this->translator->trans('ekyna_core.button.create'),
-            'edit'       => $this->translator->trans('ekyna_core.button.edit'),
-            'remove'     => $this->translator->trans('ekyna_core.button.remove'),
-            'download'   => $this->translator->trans('ekyna_core.button.download'),
-            'attachment' => $this->translator->trans('ekyna_commerce.attachment.button.new'),
-            'close'      => $this->translator->trans('ekyna_commerce.ticket.button.close'),
-            'open'       => $this->translator->trans('ekyna_commerce.ticket.button.open'),
-            'answer'     => $this->translator->trans('ekyna_commerce.ticket.button.answer'),
-            'no_ticket'  => $this->translator->trans('ekyna_commerce.ticket.alert.no_item'),
-            'customer'   => $this->translator->trans('ekyna_commerce.customer.label.singular'),
-            'in_charge'  => $this->translator->trans('ekyna_commerce.customer.field.in_charge'),
-            'created_at' => $this->translator->trans('ekyna_commerce.ticket.field.created_at'),
-            'updated_at' => $this->translator->trans('ekyna_commerce.ticket.field.updated_at'),
-            'orders'     => $this->translator->trans('ekyna_commerce.order.label.plural'),
-            'quotes'     => $this->translator->trans('ekyna_commerce.quote.label.plural'),
+            'create'     => $this->translator->trans('button.create', [], 'EkynaUi'),
+            'edit'       => $this->translator->trans('button.edit', [], 'EkynaUi'),
+            'remove'     => $this->translator->trans('button.remove', [], 'EkynaUi'),
+            'download'   => $this->translator->trans('button.download', [], 'EkynaUi'),
+            'attachment' => $this->translator->trans('attachment.button.new', [], 'EkynaCommerce'),
+            'close'      => $this->translator->trans('ticket.button.close', [], 'EkynaCommerce'),
+            'open'       => $this->translator->trans('ticket.button.open', [], 'EkynaCommerce'),
+            'answer'     => $this->translator->trans('ticket.button.answer', [], 'EkynaCommerce'),
+            'no_ticket'  => $this->translator->trans('ticket.alert.no_item', [], 'EkynaCommerce'),
+            'customer'   => $this->translator->trans('customer.label.singular', [], 'EkynaCommerce'),
+            'in_charge'  => $this->translator->trans('customer.field.in_charge', [], 'EkynaCommerce'),
+            'created_at' => $this->translator->trans('ticket.field.created_at', [], 'EkynaCommerce'),
+            'updated_at' => $this->translator->trans('ticket.field.updated_at', [], 'EkynaCommerce'),
+            'orders'     => $this->translator->trans('order.label.plural', [], 'EkynaCommerce'),
+            'quotes'     => $this->translator->trans('quote.label.plural', [], 'EkynaCommerce'),
         ];
     }
 }

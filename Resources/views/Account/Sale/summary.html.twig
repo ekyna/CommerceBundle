@@ -1,25 +1,25 @@
 <div class="summary-frame">
-    <p class="h4">{{ title|trans }}</p>
+    <p class="h4">{{ title|trans({}, 'EkynaCommerce') }}</p>
     <table class="table table-condensed">
         <tbody>
         <tr>
-            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+            <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
         </tr>
         {% for item in sale.items %}
             <tr>
                 <td><span title="{{ item.designation }}">{{ item.designation }}</span></td>
-                <td class="text-right">{{ item.quantity|localizednumber }}</td>
+                <td class="text-right">{{ item.quantity|format_number }}</td>
             </tr>
         {% endfor %}
         </tbody>
         <tbody>
         {#<tr>
-            <th class="text-right">{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
+            <th class="text-right">{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
             <td>{{ sale.netTotal|currency_quote(sale) }}</td>
         </tr>
         <tr>
-            <th class="text-right">{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
+            <th class="text-right">{{ 'sale.field.tax_total'|trans({}, 'EkynaCommerce') }}</th>
             <td>{{ sale.taxTotal|currency_quote(sale) }}</td>
         </tr>#}
         {% if delivery and sale.shipmentMethod is not null -%}
@@ -29,7 +29,7 @@
         </tr>
         {%- endif %}
         <tr>
-            <th class="text-right">{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
+            <th class="text-right">{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
             <td class="text-right">
                 {{- sale.grandTotal|currency_quote(sale, true) -}}
                 {% if sale.currency.code != commerce_default_currency -%}
@@ -39,8 +39,8 @@
         </tr>
         {% if not delivery or sale.shipmentMethod is null -%}
         <tr>
-            <th class="text-right">{{ 'ekyna_commerce.sale.field.weight_total'|trans }}</th>
-            <td class="text-right">{{ sale.weightTotal|localizednumber }}&nbsp;kg</td>
+            <th class="text-right">{{ 'sale.field.weight_total'|trans({}, 'EkynaCommerce') }}</th>
+            <td class="text-right">{{ sale.weightTotal|format_number }}&nbsp;kg</td>
         </tr>
         {%- endif %}
         </tbody>
@@ -49,16 +49,16 @@
 {% if delivery %}
     <div class="summary-frame">
     {% if sale.relayPoint is not null -%}
-        <p class="h4">{{ 'ekyna_commerce.relay_point.label.singular'|trans }}</p>
+        <p class="h4">{{ 'relay_point.label.singular'|trans({}, 'EkynaCommerce') }}</p>
         <p>{{ sale.relayPoint|address }}</p>
     {%- else -%}
         {% set deliveryAddress = sale.sameAddress ? sale.invoiceAddress : sale.deliveryAddress -%}
-        <p class="h4">{{ 'ekyna_commerce.sale.field.delivery_address'|trans }}</p>
+        <p class="h4">{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</p>
         <p>{{ deliveryAddress|address }}</p>
     {%- endif %}
     </div>
 {% endif %}
 <div class="summary-frame">
-    <p class="h4">{{ 'ekyna_commerce.sale.field.invoice_address'|trans }}</p>
+    <p class="h4">{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</p>
     <p>{{ sale.invoiceAddress|address }}</p>
 </div>

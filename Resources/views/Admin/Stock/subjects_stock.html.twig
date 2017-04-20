@@ -4,22 +4,22 @@
             <thead>
             <tr>
                 <th>
-                    {{- 'ekyna_commerce.stock_subject.field.mode'|trans -}}
+                    {{- 'stock_subject.field.mode'|trans({}, 'EkynaCommerce') -}}
                 </th>
                 <th>
-                    {{- 'ekyna_commerce.stock_subject.field.state'|trans -}}
+                    {{- 'stock_subject.field.state'|trans({}, 'EkynaCommerce') -}}
                 </th>
                 <th>
-                    {{- 'ekyna_commerce.field.in_stock'|trans -}}
+                    {{- 'field.in_stock'|trans({}, 'EkynaCommerce') -}}
                 </th>
                 <th>
-                    {{- 'ekyna_commerce.field.available_stock'|trans -}}
+                    {{- 'field.available_stock'|trans({}, 'EkynaCommerce') -}}
                 </th>
                 <th>
-                    {{- 'ekyna_commerce.field.virtual_stock'|trans -}}
+                    {{- 'field.virtual_stock'|trans({}, 'EkynaCommerce') -}}
                 </th>
                 <th>
-                    {{- 'ekyna_commerce.field.replenishment_eda'|trans -}}
+                    {{- 'field.replenishment_eda'|trans({}, 'EkynaCommerce') -}}
                 </th>
             </tr>
             </thead>
@@ -34,26 +34,26 @@
                         {{- subject|stock_subject_state_badge -}}
                     </td>
                     <td id="{{ subjectId ~ '_inStock' }}" class="text-right">
-                        {{- subject.inStock|localizednumber -}}
+                        {{- subject.inStock|format_number -}}
                     </td>
                     <td id="{{ subjectId ~ '_availableStock' }}" class="text-right">
-                        {{- subject.availableStock|localizednumber -}}
+                        {{- subject.availableStock|format_number -}}
                     </td>
                     <td id="{{ subjectId ~ '_virtualStock' }}" class="text-right">
-                        {{- subject.virtualStock|localizednumber -}}
+                        {{- subject.virtualStock|format_number -}}
                     </td>
                     <td id="{{ subjectId ~ '_estimatedDateOfArrival' }}">
                         {%- if subject.estimatedDateOfArrival is not empty -%}
-                            {{ subject.estimatedDateOfArrival|localizeddate('short', 'none') }}
+                            {{ subject.estimatedDateOfArrival|format_datetime('short', 'none') }}
                         {%- else -%}
-                            <em>{{ 'ekyna_core.value.unknown'|trans }}</em>
+                            <em>{{ 'value.unknown'|trans({}, 'EkynaUi') }}</em>
                         {%- endif -%}
                     </td>
                 </tr>
             {%- else -%}
                 <tr>
                     <td colspan="6" class="text-center">
-                        <em>{{ 'ekyna_commerce.stock_unit.alert.empty_list'|trans }}</em>
+                        <em>{{ 'stock_unit.alert.empty_list'|trans({}, 'EkynaCommerce') }}</em>
                     </td>
                 </tr>
             {%- endfor -%}

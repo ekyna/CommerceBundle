@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\GatewayAction;
+use Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\RenderAction;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentGatewayActions;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Bundle\TableBundle\Extension\Type\Column\ActionsType;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
@@ -13,6 +20,9 @@ use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 
+use function array_replace;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ShipmentStateType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
@@ -20,28 +30,18 @@ use Ekyna\Component\Table\View\CellView;
  */
 class ShipmentActionsType extends AbstractColumnType
 {
-    /**
-     * @var ShipmentHelper
-     */
-    private $shipmentHelper;
+    private ShipmentHelper $shipmentHelper;
+    private ResourceHelper $resourceHelper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param ShipmentHelper $shipmentHelper
-     */
-    public function __construct(ShipmentHelper $shipmentHelper)
+    public function __construct(ShipmentHelper $shipmentHelper, ResourceHelper $resourceHelper)
     {
         $this->shipmentHelper = $shipmentHelper;
+        $this->resourceHelper = $resourceHelper;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $shipment = $row->getData();
+        $shipment = $row->getData(null);
         if (!$shipment instanceof ShipmentInterface) {
             return;
         }
@@ -51,119 +51,88 @@ class ShipmentActionsType extends AbstractColumnType
             return;
         }
 
-        $buttons = isset($view->vars['buttons']) ? $view->vars['buttons'] : [];
+        $buttons = $view->vars['buttons'] ?? [];
 
         // TODO Refactor
-        /** @see \Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension */
+        /** @see \Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentRenderer::getGatewayButtons */
 
         foreach ($actions as $action) {
             $buttons[] = [
-                'label'      => ShipmentGatewayActions::getLabel($action),
-                'icon'       => ShipmentGatewayActions::getIcon($action),
-                'fa_icon'    => false,
-                'class'      => ShipmentGatewayActions::getTheme($action),
-                'confirm'    => ShipmentGatewayActions::getConfirm($action),
-                'target'     => ShipmentGatewayActions::getTarget($action),
-                'route'      => 'ekyna_commerce_order_shipment_admin_' . $action,
-                'parameters' => [
-                    'orderId'         => $shipment->getSale()->getId(),
-                    'orderShipmentId' => $shipment->getId(),
-                ],
-                'disabled'   => false,
-                //'permission' => 'EDIT', // TODO see admin actions type extension
+                'label'    => ShipmentGatewayActions::getLabel($action),
+                'icon'     => ShipmentGatewayActions::getIcon($action),
+                'theme'    => ShipmentGatewayActions::getTheme($action),
+                'confirm'  => ShipmentGatewayActions::getConfirm($action),
+                'target'   => ShipmentGatewayActions::getTarget($action),
+                'path'     => $this->resourceHelper->generateResourcePath($shipment, GatewayAction::class, [
+                    'action' => $action,
+                ]),
+                'disabled' => !$this->resourceHelper->isGranted(GatewayAction::class, $shipment),
             ];
         }
 
         // Bill document
         $buttons[] = [
-            'label'      => 'ekyna_commerce.document.type.' . ($shipment->isReturn() ? 'return' : 'shipment') . '_bill',
-            'icon'       => 'file',
-            'fa_icon'    => 'true',
-            'class'      => 'primary',
-            'confirm'    => null,
-            'target'     => '_blank',
-            'route'      => 'ekyna_commerce_order_shipment_admin_render',
-            'parameters' => [
-                'orderId'         => $shipment->getSale()->getId(),
-                'orderShipmentId' => $shipment->getId(),
-                'type'            => DocumentTypes::TYPE_SHIPMENT_BILL,
-            ],
-            'disabled'   => false,
-            //'permission' => 'EDIT', // TODO see admin actions type extension
+            'label'    => t('document.type.' . ($shipment->isReturn() ? 'return' : 'shipment')
+                . '_bill', [], 'EkynaCommerce'),
+            'icon'     => 'file',
+            'fa_icon'  => true,
+            'theme'    => 'primary',
+            'target'   => '_blank',
+            'path'     => $this->resourceHelper->generateResourcePath($shipment, RenderAction::class, [
+                'type' => DocumentTypes::TYPE_SHIPMENT_BILL,
+            ]),
+            'disabled' => !$this->resourceHelper->isGranted(RenderAction::class, $shipment),
         ];
 
         if (!ShipmentStates::isStockableState($shipment, false)) {
             if (!$shipment->isReturn() && !$shipment->getSale()->isReleased()) {
                 // Form document
                 $buttons[] = [
-                    'label'      => 'ekyna_commerce.document.type.shipment_form',
-                    'icon'       => 'check-square-o',
-                    'fa_icon'    => 'true',
-                    'class'      => 'primary',
-                    'confirm'    => null,
-                    'target'     => '_blank',
-                    'route'      => 'ekyna_commerce_order_shipment_admin_render',
-                    'parameters' => [
-                        'orderId'         => $shipment->getSale()->getId(),
-                        'orderShipmentId' => $shipment->getId(),
-                        'type'            => DocumentTypes::TYPE_SHIPMENT_FORM,
-                    ],
-                    'disabled'   => false,
-                    //'permission' => 'EDIT', // TODO see admin actions type extension
+                    'label'    => t('document.type.shipment_form', [], 'EkynaCommerce'),
+                    'icon'     => 'check-square-o',
+                    'fa_icon'  => true,
+                    'theme'    => 'primary',
+                    'target'   => '_blank',
+                    'path'     => $this->resourceHelper->generateResourcePath($shipment, RenderAction::class, [
+                        'type' => DocumentTypes::TYPE_SHIPMENT_FORM,
+                    ]),
+                    'disabled' => !$this->resourceHelper->isGranted(GatewayAction::class, $shipment),
                 ];
             }
 
             if ($shipment->getState() === ShipmentStates::STATE_PREPARATION) {
                 $buttons[] = [
-                    'label'      => 'ekyna_core.button.edit',
-                    'icon'       => 'pencil',
-                    'fa_icon'    => 'true',
-                    'class'      => 'warning',
-                    'confirm'    => null,
-                    'target'     => null,
-                    'route'      => 'ekyna_commerce_order_shipment_admin_edit',
-                    'parameters' => [
-                        'orderId'         => $shipment->getSale()->getId(),
-                        'orderShipmentId' => $shipment->getId(),
-                    ],
-                    'disabled'   => false,
-                    //'permission' => 'EDIT', // TODO see admin actions type extension
+                    'label'    => t('button.edit', [], 'EkynaUi'),
+                    'icon'     => 'pencil',
+                    'fa_icon'  => true,
+                    'theme'    => 'warning',
+                    'path'     => $this->resourceHelper->generateResourcePath($shipment, UpdateAction::class),
+                    'disabled' => !$this->resourceHelper->isGranted(UpdateAction::class, $shipment),
                 ];
             }
 
             // Remove
             $buttons[] = [
-                'label'      => 'ekyna_core.button.remove',
-                'icon'       => 'trash',
-                'fa_icon'    => 'true',
-                'class'      => 'danger',
-                'confirm'    => null,
-                'target'     => null,
-                'route'      => 'ekyna_commerce_order_shipment_admin_remove',
-                'parameters' => [
-                    'orderId'         => $shipment->getSale()->getId(),
-                    'orderShipmentId' => $shipment->getId(),
-                ],
-                'disabled'   => false,
-                //'permission' => 'EDIT', // TODO see admin actions type extension
+                'label'    => t('button.remove', [], 'EkynaUi'),
+                'icon'     => 'trash',
+                'fa_icon'  => true,
+                'theme'    => 'danger',
+                'path'     => $this->resourceHelper->generateResourcePath($shipment, DeleteAction::class),
+                'disabled' => !$this->resourceHelper->isGranted(DeleteAction::class, $shipment),
             ];
         }
 
-        $view->vars['buttons'] = $buttons;
+        $view->vars['buttons'] = array_map(function (array $button): array {
+            return array_replace(ActionsType::BUTTON_DEFAULTS, $button);
+        }, $buttons);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'actions';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ActionsType::class;
     }

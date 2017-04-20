@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
@@ -18,10 +21,7 @@ use Twig\TwigTest;
  */
 class SubjectExtension extends AbstractExtension
 {
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -50,16 +50,17 @@ class SubjectExtension extends AbstractExtension
                 [SubjectHelper::class, 'generatePrivateUrl']
             ),
             new TwigFilter(
+                'subject_create_supplier_product_form',
+                [SubjectHelper::class, 'getCreateSupplierProductForm']
+            ),
+            new TwigFilter(
                 'subject_purchase_cost',
                 [PurchaseCostGuesserInterface::class, 'guess']
             ),
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('subject', function ($subject) {
@@ -101,7 +102,7 @@ class SubjectExtension extends AbstractExtension
                 }
 
                 if ((0 < $vQty = $subject->getVirtualStock()) && (null !== $eda = $subject->getEstimatedDateOfArrival())) {
-                    $today = new \DateTime();
+                    $today = new DateTime();
                     $today->setTime(23, 59, 59, 999999);
                     if (($today < $eda) && (0 < $vQty - $aQty)) {
                         return true;
@@ -116,7 +117,7 @@ class SubjectExtension extends AbstractExtension
                 }
 
                 if ((0 < $subject->getVirtualStock()) && (null !== $eda = $subject->getEstimatedDateOfArrival())) {
-                    $today = new \DateTime();
+                    $today = new DateTime();
                     $today->setTime(23, 59, 59, 999999);
                     if ($today < $eda) {
                         return false;

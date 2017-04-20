@@ -1,0 +1,119 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block actions -%}
+    {# TODO Create order button #}
+    {{ parent() }}
+{%- endblock actions %}
+
+{% block main_tabs -%}
+    {{ parent() }}
+    <li>
+        <a href="#{{ resource_name }}-address" id="toggle-address" data-toggle="tab">
+            {{- 'field.address'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplier.name, 'text', {
+                    'label': 'field.name',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(supplier.carrier, 'resource', {
+                    'resource': 'ekyna_commerce.supplier_carrier',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplier.currency, 'resource', {
+                    'resource': 'ekyna_commerce.currency',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(supplier.locale|language|capitalize, 'text', {
+                    'label': 'field.locale',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'sale_locale',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplier.customerCode, 'text', {
+                    'label': 'supplier.field.customer_code',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(supplier.tax, 'resource', {
+                    'resource': 'ekyna_commerce.tax',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row show-row">
+            <div class="col-md-2 show-label">
+                {{ 'field.identity'|trans({}, 'EkynaUi') }}
+            </div>
+            <div class="col-md-10">
+                <div class="show-widget show-widget-inline">
+                    {{ supplier|identity }}
+                </div>
+            </div>
+        </div>
+        {{ show_row(supplier.email, 'text', {
+            'label': 'field.email',
+            'label_trans_domain': 'EkynaUi'
+        }) }}
+        {{ show_row(supplier.customerCode, 'text', {
+            'label': 'supplier.field.customer_code',
+            'label_trans_domain': 'EkynaCommerce'
+        }) }}
+        {{ show_row(supplier.description, 'textarea', {
+            'label': 'field.description',
+            'label_trans_domain': 'EkynaUi',
+            'html': true,
+        }) }}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-address">
+        <div class="row show-row">
+            <div class="col-md-2 show-label">
+                {{ 'field.address'|trans({}, 'EkynaUi') }}
+            </div>
+            <div class="col-md-10">
+                {% if supplier.address is not same as(null) %}
+                    <div class="show-widget show-widget-block">
+                        {{ supplier.address|address }}
+                    </div>
+                {% else %}
+                    <div class="show-widget show-widget-inline">
+                        <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{%- endblock main_contents %}
+
+{% block post_main -%}
+<div class="sub-header">
+    <h2>{{ 'supplier_product.header.list'|trans({}, 'EkynaCommerce')|raw }}</h2>
+</div>
+<div class="actions">
+    {{ admin_resource_btn('ekyna_commerce.supplier_product', 'commerce_supplier_product_create') }}
+</div>
+{{ ekyna_table_render(admin_resource_table('ekyna_commerce.supplier_product', {
+    'supplier': supplier
+})) }}
+{%- endblock post_main %}

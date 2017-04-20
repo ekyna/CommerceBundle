@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
+use DateTime;
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerFactory;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
@@ -13,25 +16,26 @@ use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer as ShipmentLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer as SubjectLabelRenderer;
-use Ekyna\Bundle\CoreBundle\Service\SwiftMailer\ImapCopyPlugin;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
 use Ekyna\Component\Commerce\Exception\LogicException;
-use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
-use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use League\Flysystem\FilesystemInterface;
-use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Ekyna\Component\Resource\Exception\PdfException;
+use League\Flysystem\FilesystemOperator;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 /**
  * Class Mailer
@@ -40,75 +44,27 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class Mailer
 {
-    /**
-     * @var MailerFactory
-     */
-    protected $mailer;
-
-    /**
-     * @var EngineInterface
-     */
-    protected $templating;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var SettingsManagerInterface
-     */
-    protected $settingsManager;
-
-    /**
-     * @var RendererFactory
-     */
-    protected $rendererFactory;
-
-    /**
-     * @var ShipmentLabelRenderer
-     */
-    protected $shipmentLabelRenderer;
-
-    /**
-     * @var SubjectLabelRenderer
-     */
-    protected $subjectLabelRenderer;
-
-    /**
-     * @var SubjectHelperInterface
-     */
-    protected $subjectHelper;
-
-    /**
-     * @var FilesystemInterface
-     */
-    protected $filesystem;
+    protected MailerFactory           $mailer;
+    protected Environment             $templating;
+    protected TranslatorInterface     $translator;
+    protected SettingManagerInterface $settingsManager;
+    protected RendererFactory         $rendererFactory;
+    protected ShipmentLabelRenderer   $shipmentLabelRenderer;
+    protected SubjectLabelRenderer    $subjectLabelRenderer;
+    protected SubjectHelperInterface  $subjectHelper;
+    protected FilesystemOperator      $filesystem;
 
 
-    /**
-     * Constructor.
-     *
-     * @param MailerFactory            $mailer
-     * @param EngineInterface          $templating
-     * @param TranslatorInterface      $translator
-     * @param SettingsManagerInterface $settingsManager
-     * @param RendererFactory          $rendererFactory
-     * @param ShipmentLabelRenderer    $shipmentLabelRenderer
-     * @param SubjectLabelRenderer     $subjectLabelRenderer
-     * @param SubjectHelperInterface   $subjectHelper
-     * @param FilesystemInterface      $filesystem
-     */
     public function __construct(
         MailerFactory $mailer,
-        EngineInterface $templating,
+        Environment $templating,
         TranslatorInterface $translator,
-        SettingsManagerInterface $settingsManager,
+        SettingManagerInterface $settingsManager,
         RendererFactory $rendererFactory,
         ShipmentLabelRenderer $shipmentLabelRenderer,
         SubjectLabelRenderer $subjectLabelRenderer,
         SubjectHelperInterface $subjectHelper,
-        FilesystemInterface $filesystem
+        FilesystemOperator $filesystem
     ) {
         $this->mailer = $mailer;
         $this->templating = $templating;
@@ -123,10 +79,6 @@ class Mailer
 
     /**
      * Notifies the administrator about a potential fraudster.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return bool
      */
     public function sendAdminFraudsterAlert(CustomerInterface $customer): bool
     {
@@ -134,17 +86,13 @@ class Mailer
             'customer' => $customer,
         ]);
 
-        $subject = $this->translator->trans('ekyna_commerce.customer.notify.fraudster.subject');
+        $subject = $this->translator->trans('customer.notify.fraudster.subject', [], 'EkynaCommerce');
 
-        return 0 < $this->mailer->send($this->createMessage($subject, $body));
+        return $this->mailer->send($this->createMessage($subject, $body));
     }
 
     /**
      * Notifies the administrator about a customer registration.
-     *
-     * @param CustomerInterface $customer
-     *
-     * @return bool
      */
     public function sendAdminCustomerRegistration(CustomerInterface $customer): bool
     {
@@ -152,19 +100,18 @@ class Mailer
             'customer' => $customer,
         ]);
 
-        $subject = $this->translator->trans('ekyna_commerce.customer.notify.registration.subject');
+        $subject = $this->translator->trans('customer.notify.registration.subject', [], 'EkynaCommerce');
 
-        return 0 < $this->mailer->send($this->createMessage($subject, $body));
+        return $this->mailer->send($this->createMessage($subject, $body));
+    }
+
+    public function sendCustomerRegistrationConfirmation(CustomerInterface $customer): void
+    {
+        // TODO
     }
 
     /**
      * Notifies the customer about his account balance.
-     *
-     * @param CustomerInterface $customer
-     * @param array             $balance
-     * @param string            $csvPath
-     *
-     * @return bool
      */
     public function sendCustomerBalance(CustomerInterface $customer, array $balance, string $csvPath = null): bool
     {
@@ -176,7 +123,7 @@ class Mailer
 
         $subject = $this
             ->translator
-            ->trans('ekyna_commerce.notify.type.balance.subject', [], null, $locale);
+            ->trans('notify.type.balance.subject', [], 'EkynaCommerce', $locale);
 
         $body = $this->templating->render('@EkynaCommerce/Email/customer_balance.html.twig', [
             'subject'  => $subject,
@@ -191,25 +138,17 @@ class Mailer
 
         // CSV attachment if any
         if (!empty($csvPath) && is_file($csvPath)) {
-            $message->attach(
-                \Swift_Attachment::newInstance(file_get_contents($csvPath), 'account-balance.csv', 'text/csv')
-            );
+            $message->attach(file_get_contents($csvPath), 'account-balance.csv', 'text/csv');
         }
 
         // Trigger IMAP copy
-        $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
+        // TODO $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
 
-        return 0 < $this->mailer->send($message);
+        return $this->mailer->send($message);
     }
 
     /**
      * Sends the supplier order submit message.
-     *
-     * @param SupplierOrderSubmit $submit
-     *
-     * @return bool
-     *
-     * @throws PdfException
      */
     public function sendSupplierOrderSubmit(SupplierOrderSubmit $submit): bool
     {
@@ -219,11 +158,11 @@ class Mailer
 
         // Form attachment
         $renderer = $this->rendererFactory->createRenderer($order);
-        $message->attach(\Swift_Attachment::newInstance(
+        $message->attach(
             $renderer->render(RendererInterface::FORMAT_PDF),
             $order->getNumber() . '.pdf',
             'application/pdf'
-        ));
+        );
 
         // Subjects labels
         if ($submit->isSendLabels()) {
@@ -234,36 +173,32 @@ class Mailer
 
             $labels = $this->subjectLabelRenderer->buildLabels($subjects);
 
-            $date = $order->getOrderedAt() ?? new \DateTime();
+            $date = $order->getOrderedAt() ?? new DateTime();
             $extra = sprintf('%s (%s)', $order->getNumber(), $date->format('Y-m-d'));
             foreach ($labels as $label) {
                 $label->setExtra($extra);
             }
 
-            $message->attach(\Swift_Attachment::newInstance(
+            $message->attach(
                 $this->subjectLabelRenderer->render($labels),
                 'labels.pdf',
                 'application/pdf'
-            ));
+            );
         }
 
         // Trigger imap copy
-        $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
+        // TODO $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
 
-        return 0 < $this->mailer->send($message);
+        return $this->mailer->send($message);
     }
 
     /**
      * Notifies the customer about the ticket message creation or update.
-     *
-     * @param TicketMessageInterface $message
-     *
-     * @return bool
      */
     public function sendTicketMessageToCustomer(TicketMessageInterface $message): bool
     {
         if ($message->isCustomer()) {
-            throw new LogicException("Expected admin message.");
+            throw new LogicException('Expected admin message.');
         }
 
         if (!$message->isNotify()) {
@@ -273,9 +208,9 @@ class Mailer
         $customer = $message->getTicket()->getCustomer();
         $locale = $customer->getLocale();
 
-        $subject = $this->translator->trans('ekyna_commerce.ticket_message.notify.customer.subject', [
+        $subject = $this->translator->trans('ticket_message.notify.customer.subject', [
             '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
-        ], null, $locale);
+        ], 'EkynaCommerce', $locale);
 
         $body = $this->templating->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
             'subject' => $subject,
@@ -285,29 +220,27 @@ class Mailer
 
         $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
 
-        return 0 < $this->mailer->send($this->createMessage($subject, $body, $to, false));
+        return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
      * Notifies the administrator about the ticket message creation or update.
      *
      * @param TicketMessageInterface[] $messages
-     * @param UserInterface            $admin
-     *
-     * @return bool
      */
     public function sendTicketMessagesToAdmin(array $messages, UserInterface $admin): bool
     {
         foreach ($messages as $message) {
             if (!$message instanceof TicketMessageInterface) {
-                throw new UnexpectedValueException("Expected instance of " . TicketMessageInterface::class);
+                throw new UnexpectedTypeException($message, TicketMessageInterface::class);
             }
+
             if (!$message->isCustomer()) {
-                throw new LogicException("Expected customer messages.");
+                throw new LogicException('Expected customer messages.');
             }
         }
 
-        $subject = $this->translator->trans('ekyna_commerce.ticket_message.notify.admin.subject');
+        $subject = $this->translator->trans('ticket_message.notify.admin.subject', [], 'EkynaCommerce');
 
         $body = $this->templating->render('@EkynaCommerce/Email/admin_ticket_message.html.twig', [
             'subject'  => $subject,
@@ -316,33 +249,30 @@ class Mailer
 
         $to = [$admin->getEmail() => $admin->hasFullName() ? $admin->getFullName() : null];
 
-        return 0 < $this->mailer->send($this->createMessage($subject, $body, $to, false));
+        return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
      * Notifies the customer about the generated coupons.
      *
-     * @param CustomerInterface $customer
      * @param CouponInterface[] $coupons
-     *
-     * @return bool
      */
     public function sendCustomerCoupons(CustomerInterface $customer, array $coupons): bool
     {
         foreach ($coupons as $coupon) {
             if (!$coupon instanceof CouponInterface) {
-                throw new UnexpectedValueException("Expected instance of " . CouponInterface::class);
+                throw new UnexpectedTypeException($coupon, CouponInterface::class);
             }
             if ($customer !== $coupon->getCustomer()) {
-                throw new LogicException("Unexpected coupon owner");
+                throw new LogicException('Unexpected coupon owner');
             }
         }
 
         $locale = $customer->getLocale();
 
-        $subject = $this->translator->trans('ekyna_commerce.coupon.notify.customer.subject', [
+        $subject = $this->translator->trans('coupon.notify.customer.subject', [
             '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
-        ], null, $locale);
+        ], 'EkynaCommerce', $locale);
 
         $body = $this->templating->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
             'subject' => $subject,
@@ -352,15 +282,11 @@ class Mailer
 
         $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
 
-        return 0 < $this->mailer->send($this->createMessage($subject, $body, $to, false));
+        return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
      * Sends the notification message.
-     *
-     * @param Notify $notify
-     *
-     * @return bool
      */
     public function sendNotify(Notify $notify): bool
     {
@@ -368,35 +294,38 @@ class Mailer
             return false;
         }
 
-        $message = new \Swift_Message();
+        $message = new Email();
         $report = '';
         $attachments = [];
 
+
         // FROM
         $from = $notify->getFrom();
-        $message->setFrom($from->getEmail(), $from->getName());
-        $message->setReplyTo($from->getEmail(), $from->getName());
+        $recipientAddress = new Address($from->getEmail(), $from->getName());
+
+        $message->from($recipientAddress);
+        $message->replyTo($recipientAddress);
 
         $report .= "From: {$this->formatRecipient($from)}\n";
         $report .= "Reply-To: {$this->formatRecipient($from)}\n";
 
         // TO
         foreach ($notify->getRecipients() as $recipient) {
-            $message->addTo($recipient->getEmail(), $recipient->getName());
+            $message->addTo($recipientAddress);
             $report .= "To: {$this->formatRecipient($recipient)}\n";
         }
         foreach ($notify->getExtraRecipients() as $recipient) {
-            $message->addTo($recipient->getEmail(), $recipient->getName());
+            $message->addTo($recipientAddress);
             $report .= "To: {$this->formatRecipient($recipient)}\n";
         }
 
         // Copy
         foreach ($notify->getCopies() as $recipient) {
-            $message->addCc($recipient->getEmail(), $recipient->getName());
+            $message->addCc($recipientAddress);
             $report .= "Cc: {$this->formatRecipient($recipient)}\n";
         }
         foreach ($notify->getExtraCopies() as $recipient) {
-            $message->addCc($recipient->getEmail(), $recipient->getName());
+            $message->addCc($recipientAddress);
             $report .= "Cc: {$this->formatRecipient($recipient)}\n";
         }
 
@@ -413,9 +342,9 @@ class Mailer
 
             $filename = $renderer->getFilename() . '.pdf';
 
-            $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+            $message->attach($content, $filename, 'application/pdf');
 
-            $attachments[$filename] = $this->translator->trans('ekyna_commerce.invoice.label.singular');
+            $attachments[$filename] = $this->translator->trans('invoice.label.singular', [], 'EkynaCommerce');
             $report .= "Attachment: $filename\n";
         }
 
@@ -432,10 +361,11 @@ class Mailer
 
             $filename = $renderer->getFilename() . '.pdf';
 
-            $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+            $message->attach($content, $filename, 'application/pdf');
 
             $attachments[$filename] = $this->translator->trans(
-                'ekyna_commerce.document.type.' . ($shipment->isReturn() ? 'return' : 'shipment') . '_bill'
+                'document.type.' . ($shipment->isReturn() ? 'return' : 'shipment') . '_bill',
+                [], 'EkynaCommerce'
             );
             $report .= "Attachment: $filename\n";
         }
@@ -453,10 +383,11 @@ class Mailer
             if (!empty($content)) {
                 $filename = 'labels.pdf';
 
-                $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+                $message->attach($content, $filename, 'application/pdf');
 
                 $attachments[$filename] = $this->translator->trans(
-                    'ekyna_commerce.shipment_label.label.' . (1 < $notify->getLabels()->count() ? 'plural' : 'singular')
+                    'shipment_label.label.' . (1 < $notify->getLabels()->count() ? 'plural' : 'singular'),
+                    [], 'EkynaCommerce'
                 );
                 $report .= "Attachment: $filename\n";
             }
@@ -466,21 +397,21 @@ class Mailer
 
         // Attachments
         foreach ($notify->getAttachments() as $attachment) {
-            if (!$this->filesystem->has($path = $attachment->getPath())) {
+            if (!$this->filesystem->fileExists($path = $attachment->getPath())) {
                 throw new RuntimeException("Attachment file '$path' not found.");
             }
 
-            /** @var \League\Flysystem\File $file */
-            $file = $this->filesystem->get($path);
+            $content = $this->filesystem->readStream($path);
             $filename = pathinfo($path, PATHINFO_BASENAME);
+            $mimeType = $this->filesystem->mimeType($path);
 
-            $message->attach(new \Swift_Attachment($file->read(), $filename, $file->getMimetype()));
+            $message->attach($content, $filename, $mimeType);
 
             if (!empty($type = $attachment->getType())) {
                 if ($source instanceof SupplierOrderInterface) {
-                    $attachments[$filename] = $this->translator->trans(SupplierOrderAttachmentTypes::getLabel($type));
+                    $attachments[$filename] = SupplierOrderAttachmentTypes::getLabel($type)->trans($this->translator);
                 } else {
-                    $attachments[$filename] = $this->translator->trans(BDocumentTypes::getLabel($type));
+                    $attachments[$filename] = BDocumentTypes::getLabel($type)->trans($this->translator);
                 }
             } else {
                 $attachments[$filename] = $attachment->getTitle();
@@ -489,7 +420,7 @@ class Mailer
         }
 
         // SUBJECT
-        $message->setSubject($notify->getSubject());
+        $message->subject($notify->getSubject());
         $report .= "Subject: {$notify->getSubject()}\n";
 
         // CONTENT
@@ -509,9 +440,9 @@ class Mailer
                 if ($content) {
                     $filename = $renderer->getFilename() . '.pdf';
 
-                    $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+                    $message->attach($content, $filename, 'application/pdf');
 
-                    $attachments[$filename] = $this->translator->trans('ekyna_commerce.document.type.form');
+                    $attachments[$filename] = $this->translator->trans('document.type.form', [], 'EkynaCommerce');
                     $report .= "Attachment: $filename\n";
                 }
             }
@@ -539,7 +470,8 @@ class Mailer
                 $report .= "ERROR: failed to generate HTML message for sale {$sale->getNumber()}\n";
             }
         }
-        $message->setBody($content, 'text/html');
+
+        $message->html($content);
 
         if (!empty($notify->getCustomMessage())) {
             $report .= "Message: {$notify->getCustomMessage()}\n";
@@ -549,54 +481,48 @@ class Mailer
 
         // Don't send if it has error(s)
         if ($notify->isError()) {
-            return 0;
+            return false;
         }
 
         // Trigger IMAP copy
         if (!$notify->isTest()) {
-            $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
+            // TODO $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
         }
 
-        return 0 < $this->mailer->send($message);
+        return $this->mailer->send($message);
     }
 
     /**
-     * Sends the notify failure report.
-     *
-     * @param Notify $notify
+     * Sends notify failure report.
      */
     public function sendNotifyFailure(Notify $notify): void
     {
-        $message = new \Swift_Message();
+        $message = new Email();
 
         $message
-            ->setSubject("Notification failed")
-            ->setBody("Notification failure\n\n" . $notify->getReport(), 'text/plain')
-            ->setFrom(
+            ->subject('Notification failed')
+            ->text("Notification failure\n\n" . $notify->getReport())
+            ->setFrom(new Address(
                 $this->settingsManager->getParameter('notification.from_email'),
                 $this->settingsManager->getParameter('notification.from_name')
-            )
+            ))
             ->setTo($notify->getFrom()->getEmail(), $notify->getFrom()->getName());
 
-       $this->mailer->send($message);
+        $this->mailer->send($message);
     }
 
     /**
      * Sends the email.
      *
-     * @param string            $subject
-     * @param string            $body
      * @param string|array      $to
      * @param string|array|bool $from
-     *
-     * @return \Swift_Message
      */
     protected function createMessage(
         string $subject,
         string $body,
         $to = null,
         $from = null
-    ): \Swift_Message {
+    ): Email {
         if (empty($to)) {
             $to = $this->settingsManager->getParameter('notification.to_emails');
         }
@@ -606,29 +532,32 @@ class Mailer
         }
 
         if (empty($from)) {
-            $from = [
-                $this->settingsManager->getParameter('notification.from_email') =>
-                    $this->settingsManager->getParameter('notification.from_name')
-            ];
+            $from = new Address(
+                $this->settingsManager->getParameter('notification.from_email'),
+                $this->settingsManager->getParameter('notification.from_name')
+            );
         }
 
-        $message = new \Swift_Message();
+        if (!is_array($to)) {
+            $to = [$to];
+        }
+        if (!is_array($from)) {
+            $from = [$from];
+        }
+
+        $message = new Email();
 
         return $message
-            ->setSubject($subject)
-            ->setBody($body, 'text/html')
-            ->setTo($to)
-            ->setFrom($from);
+            ->subject($subject)
+            ->html($body)
+            ->to(...$to)
+            ->from(...$from);
     }
 
     /**
      * Formats the recipient.
-     *
-     * @param Recipient $recipient
-     *
-     * @return string
      */
-    private function formatRecipient(Recipient $recipient)
+    private function formatRecipient(Recipient $recipient): string
     {
         if (empty($recipient->getName())) {
             return $recipient->getEmail();
@@ -638,26 +567,22 @@ class Mailer
     }
 
     /**
-     * Returns the sale from the notify object.
-     *
-     * @param Notify $notify
-     *
-     * @return SaleInterface
+     * Returns the sale from notify object.
      */
-    private function getNotifySale(Notify $notify)
+    private function getNotifySale(Notify $notify): SaleInterface
     {
         $source = $notify->getSource();
 
         if ($source instanceof SaleInterface) {
             return $source;
         } elseif (
-            $source instanceof PaymentInterface ||
-            $source instanceof ShipmentInterface ||
-            $source instanceof InvoiceInterface
+            $source instanceof PaymentInterface
+            || $source instanceof ShipmentInterface
+            || $source instanceof InvoiceInterface
         ) {
             return $source->getSale();
         }
 
-        throw new RuntimeException("Failed to fetch the sale from the notify object.");
+        throw new RuntimeException('Failed to fetch the sale from the notify object.');
     }
 }

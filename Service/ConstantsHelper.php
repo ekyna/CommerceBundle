@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Model;
@@ -18,7 +20,10 @@ use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 use Ekyna\Component\Commerce\Stock\Model as Stock;
 use Ekyna\Component\Commerce\Supplier\Model as Supplier;
 use Ekyna\Component\Commerce\Support\Model as Support;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ConstantsHelper
@@ -27,18 +32,9 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class ConstantsHelper extends AbstractConstantsHelper
 {
-    /**
-     * @var string
-     */
-    private $gendersClass;
+    private string $gendersClass;
 
 
-    /**
-     * Constructor.
-     *
-     * @param TranslatorInterface $translator
-     * @param string              $gendersClass
-     */
     public function __construct(TranslatorInterface $translator, string $gendersClass)
     {
         parent::__construct($translator);
@@ -79,7 +75,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\CustomerStates::getLabel($stateOrCustomer));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -120,7 +116,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\OrderStates::getLabel($stateOrOrder));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -161,7 +157,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\QuoteStates::getLabel($stateOrQuote));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -202,7 +198,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\CartStates::getLabel($stateOrCart));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -242,7 +238,7 @@ class ConstantsHelper extends AbstractConstantsHelper
         } elseif ($sale instanceof CartInterface) {
             return $this->renderCartStateLabel($sale);
         } else {
-            throw new InvalidArgumentException("Unexpected sale.");
+            throw new InvalidArgumentException('Unexpected sale.');
         }
     }
 
@@ -262,7 +258,7 @@ class ConstantsHelper extends AbstractConstantsHelper
         } elseif ($sale instanceof CartInterface) {
             return $this->renderCartStateBadge($sale);
         } else {
-            throw new InvalidArgumentException("Unexpected sale.");
+            throw new InvalidArgumentException('Unexpected sale.');
         }
     }
 
@@ -283,7 +279,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\DocumentTypes::getLabel($typeOrInvoice));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -324,7 +320,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\InvoiceStates::getLabel($stateOrSubject));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -361,7 +357,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\NotificationTypes::getLabel($type));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -383,7 +379,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\PaymentStates::getLabel($stateOrPayment));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -426,7 +422,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\PaymentTermTriggers::getLabel($termOrTrigger));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -448,7 +444,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\ShipmentStates::getLabel($stateOrShipment));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -491,7 +487,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\StockSubjectStates::getLabel($stateOrStockSubject));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -532,7 +528,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\StockSubjectModes::getLabel($modeOrStockSubject));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -573,7 +569,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\StockUnitStates::getLabel($stateOrStockUnit));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -624,7 +620,7 @@ class ConstantsHelper extends AbstractConstantsHelper
     {
         $debit = Stock\StockAdjustmentReasons::isDebitReason($adjustment->getReason());
 
-        return $this->renderLabel('ekyna_commerce.stock_adjustment.field.' . ($debit ? 'debit' : 'credit'));
+        return $this->renderLabel(t('stock_adjustment.field.' . ($debit ? 'debit' : 'credit'), [], 'EkynaCommerce'));
     }
 
     /**
@@ -660,7 +656,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\SupplierOrderStates::getLabel($stateOrSupplierOrder));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -701,7 +697,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\TicketStates::getLabel($stateOrTicket));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -743,23 +739,23 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderLabel(Model\SupplierOrderAttachmentTypes::getLabel($typeOrAttachment));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
      * Renders the VAT display mode badge.
      *
-     * @param string $vatDisplayMode
+     * @param string|null $vatDisplayMode
      *
      * @return string
      */
-    public function renderVatDisplayModeBadge($vatDisplayMode): string
+    public function renderVatDisplayModeBadge(?string $vatDisplayMode): string
     {
         if (null !== $vatDisplayMode) {
             $label = Model\VatDisplayModes::getLabel($vatDisplayMode);
             $theme = Model\VatDisplayModes::getTheme($vatDisplayMode);
         } else {
-            $label = 'ekyna_core.field.default';
+            $label = t('field.default', [], 'EkynaUi');
             $theme = 'default';
         }
 
@@ -770,14 +766,14 @@ class ConstantsHelper extends AbstractConstantsHelper
      * Renders the identity.
      *
      * @param Common\IdentityInterface $identity
-     * @param bool                     $gender null: short<br>true: long<br>false: none
+     * @param bool|null                $gender null: short<br>true: long<br>false: none
      *
      * @return string
      */
     public function renderIdentity(Common\IdentityInterface $identity, bool $gender = null): string
     {
         if (empty($identity->getFirstName()) && empty($identity->getLastName())) {
-            return sprintf('<em>%s</em>', $this->translator->trans('ekyna_core.value.undefined'));
+            return sprintf('<em>%s</em>', $this->translator->trans('value.undefined', [], 'EkynaUi'));
         }
 
         if (false === $gender) {
@@ -785,7 +781,7 @@ class ConstantsHelper extends AbstractConstantsHelper
         }
 
         $label = $identity->getGender()
-            ? $this->translator->trans($this->getGenderLabel($identity->getGender(), !!$gender))
+            ? $this->getGenderLabel($identity->getGender(), !!$gender)->trans($this->translator)
             : null;
 
         return trim(sprintf('%s %s %s', $label, $identity->getFirstName(), $identity->getLastName()));
@@ -798,13 +794,13 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function getAdjustmentTypeLabel($type): string
+    public function getAdjustmentTypeLabel(string $type): string
     {
         if (Model\AdjustmentTypes::isValid($type)) {
             return $this->renderLabel(Model\AdjustmentTypes::getLabel($type));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
     /**
@@ -814,24 +810,16 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function getAdjustmentModeLabel($mode): string
+    public function getAdjustmentModeLabel(string $mode): string
     {
         if (Model\AdjustmentModes::isValid($mode)) {
             return $this->renderLabel(Model\AdjustmentModes::getLabel($mode));
         }
 
-        return $this->renderLabel();
+        return $this->renderLabel(null);
     }
 
-    /**
-     * Returns the gender label.
-     *
-     * @param string $gender
-     * @param bool   $long
-     *
-     * @return mixed
-     */
-    public function getGenderLabel($gender, $long = false)
+    public function getGenderLabel(string $gender, bool $long = false): TranslatableInterface
     {
         return call_user_func($this->gendersClass . '::getLabel', $gender, $long);
     }

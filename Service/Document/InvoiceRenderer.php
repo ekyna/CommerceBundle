@@ -13,7 +13,7 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 class InvoiceRenderer extends AbstractRenderer
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getFilename()
     {
@@ -32,7 +32,7 @@ class InvoiceRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function supports($subject)
     {
@@ -40,7 +40,7 @@ class InvoiceRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getTemplate()
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Invoice\InvoiceType;
@@ -12,10 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class OrderInvoiceType extends InvoiceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

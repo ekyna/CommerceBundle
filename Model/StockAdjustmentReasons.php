@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentReasons as Reasons;
@@ -12,12 +14,9 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  */
 class StockAdjustmentReasons extends AbstractConstants
 {
-    /**
-     * @inheritdoc
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.stock_adjustment.reason.';
+        $prefix = 'stock_adjustment.reason.';
 
         return [
             Reasons::REASON_FAULTY   => [$prefix . Reasons::REASON_FAULTY],
@@ -28,11 +27,13 @@ class StockAdjustmentReasons extends AbstractConstants
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

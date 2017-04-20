@@ -1,44 +1,31 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    <li class="active">
-        <a href="#supplier-product-general" id="toggle-general" data-toggle="tab">
-            {{ 'ekyna_core.field.general'|trans }}
-        </a>
-    </li>
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="supplier-product-general">
-            {{ form_row(form.designation) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.reference, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.netPrice, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ form_row(form.designation) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.reference, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.availableStock, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+            <div class="col-md-6">
+                {{ form_row(form.netPrice, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.orderedStock, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.availableStock, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.orderedStock, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
     </div>
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+{%- endblock main_contents %}

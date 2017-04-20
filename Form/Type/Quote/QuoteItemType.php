@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Quote;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemType;
@@ -12,10 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class QuoteItemType extends SaleItemType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

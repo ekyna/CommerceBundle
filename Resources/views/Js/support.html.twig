@@ -15,7 +15,7 @@
     {% if config.new is not empty -%}
     <div class="text-center">
         <button type="button" data-url="{{ config.new }}" class="btn btn-primary btn-sm ticket-new">
-            {{ 'ekyna_commerce.ticket.button.new'|trans }}
+            {{ 'ticket.button.new'|trans({}, 'EkynaCommerce') }}
         </button>
     </div>
     {%- endif %}

@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 
+use Ekyna\Bundle\CommerceBundle\Action\Admin;
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Order\Model as Order;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
+use Exception;
 
 /**
  * Class OrderViewType
@@ -21,85 +24,38 @@ use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
  */
 class OrderViewType extends AbstractViewType
 {
-    /**
-     * @var StockPrioritizerInterface
-     */
-    private $stockPrioritizer;
-
-    /**
-     * @var StockRenderer
-     */
-    private $stockRenderer;
-
-    /**
-     * @var InvoiceSubjectCalculatorInterface
-     */
-    private $invoiceCalculator;
-
-    /**
-     * @var ShipmentSubjectCalculatorInterface
-     */
-    private $shipmentCalculator;
-
-    /**
-     * @var ShipmentPriceResolverInterface
-     */
-    private $shipmentPriceResolver;
+    private StockPrioritizerInterface          $stockPrioritizer;
+    private StockRenderer                      $stockRenderer;
+    private InvoiceSubjectCalculatorInterface  $invoiceCalculator;
+    private ShipmentSubjectCalculatorInterface $shipmentCalculator;
+    private ShipmentPriceResolverInterface     $shipmentPriceResolver;
 
 
-    /**
-     * Sets the stock prioritizer.
-     *
-     * @param StockPrioritizerInterface $prioritizer
-     */
     public function setStockPrioritizer(StockPrioritizerInterface $prioritizer): void
     {
         $this->stockPrioritizer = $prioritizer;
     }
 
-    /**
-     * Sets the stock renderer.
-     *
-     * @param StockRenderer $renderer
-     */
     public function setStockRenderer(StockRenderer $renderer): void
     {
         $this->stockRenderer = $renderer;
     }
 
-    /**
-     * Sets the invoice calculator.
-     *
-     * @param InvoiceSubjectCalculatorInterface $calculator
-     */
     public function setInvoiceCalculator(InvoiceSubjectCalculatorInterface $calculator): void
     {
         $this->invoiceCalculator = $calculator;
     }
 
-    /**
-     * Sets the shipment calculator.
-     *
-     * @param ShipmentSubjectCalculatorInterface $calculator
-     */
-    public function setShipmentCalculator(ShipmentSubjectCalculatorInterface $calculator): void
+    public function setShipmentSubjectCalculator(ShipmentSubjectCalculatorInterface $calculator): void
     {
         $this->shipmentCalculator = $calculator;
     }
 
-    /**
-     * Sets the shipment price resolver.
-     *
-     * @param ShipmentPriceResolverInterface $resolver
-     */
     public function setShipmentPriceResolver(ShipmentPriceResolverInterface $resolver): void
     {
         $this->shipmentPriceResolver = $resolver;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
@@ -108,85 +64,78 @@ class OrderViewType extends AbstractViewType
 
         if ($this->stockPrioritizer->canPrioritizeSale($sale)) {
             // Prioritize button
-            $prioritizePath = $this->generateUrl('ekyna_commerce_order_admin_prioritize', [
-                'orderId' => $sale->getId(),
-            ]);
+            $prioritizePath = $this->resourceUrl($sale, Admin\Order\PrioritizeAction::class);
             $view->addButton(new View\Button(
                 $prioritizePath,
-                $this->trans('ekyna_commerce.sale.button.prioritize'),
+                $this->trans('sale.button.prioritize', [], 'EkynaCommerce'),
                 'fa fa-level-up', [
                     'id'      => 'order_prioritize',
-                    'title'   => $this->trans('ekyna_commerce.sale.button.prioritize'),
+                    'title'   => $this->trans('sale.button.prioritize', [], 'EkynaCommerce'),
                     'class'   => 'btn btn-sm btn-warning',
-                    'confirm' => $this->trans('ekyna_commerce.sale.confirm.prioritize'),
+                    'confirm' => $this->trans('sale.confirm.prioritize', [], 'EkynaCommerce'),
                 ]
             ));
         }
 
         // Refresh button
-        $refreshPath = $this->generateUrl('ekyna_commerce_order_admin_refresh', [
-            'orderId' => $sale->getId(),
-        ]);
+        $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
         $view->addButton(new View\Button(
             $refreshPath,
-            $this->trans('ekyna_core.button.refresh'),
+            $this->trans('button.refresh', [], 'EkynaUi'),
             'fa fa-refresh', [
                 'id'            => 'order_refresh',
-                'title'         => $this->trans('ekyna_core.button.refresh'),
+                'title'         => $this->trans('button.refresh', [], 'EkynaUi'),
                 'class'         => 'btn btn-sm btn-default',
                 'data-sale-xhr' => 'get',
             ]
         ));
 
         // Add item button
-        $addItemPath = $this->generateUrl('ekyna_commerce_order_item_admin_add', [
+        $addItemPath = $this->resourceUrl('ekyna_commerce.order_item', Admin\Sale\Item\AddAction::class, [
             'orderId' => $sale->getId(),
         ]);
         $view->addButton(new View\Button(
             $addItemPath,
-            $this->trans('ekyna_commerce.sale.button.item.add'),
+            $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
             'fa fa-plus', [
                 'id'              => 'order_item_add',
-                'title'           => 'ekyna_commerce.sale.button.item.add',
+                'title'           => $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
                 'class'           => 'btn btn-sm btn-primary',
                 'data-sale-modal' => null,
             ]
         ));
 
         // New item button
-        $newItemPath = $this->generateUrl('ekyna_commerce_order_item_admin_new', [
+        $newItemPath = $this->resourceUrl('ekyna_commerce.order_item', Admin\Sale\Item\CreateAction::class, [
             'orderId' => $sale->getId(),
         ]);
         $view->addButton(new View\Button(
             $newItemPath,
-            $this->trans('ekyna_commerce.sale.button.item.new'),
+            $this->trans('sale.button.item.new', [], 'EkynaCommerce'),
             'fa fa-plus', [
                 'id'              => 'order_item_new',
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.new'),
+                'title'           => $this->trans('sale.button.item.new', [], 'EkynaCommerce'),
                 'class'           => 'btn btn-sm btn-default',
                 'data-sale-modal' => null,
             ]
         ));
 
         // New adjustment button
-        $newAdjustmentPath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_new', [
+        $newAdjustmentPath = $this->resourceUrl('ekyna_commerce.order_adjustment', Admin\Sale\Adjustment\CreateAction::class, [
             'orderId' => $sale->getId(),
         ]);
         $view->addButton(new View\Button(
             $newAdjustmentPath,
-            $this->trans('ekyna_commerce.sale.button.adjustment.new'),
+            $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
             'fa fa-plus', [
                 'id'              => 'order_adjustment_new',
-                'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.new'),
+                'title'           => $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
                 'class'           => 'btn btn-sm btn-default',
                 'data-sale-modal' => null,
             ]
         ));
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
@@ -200,7 +149,7 @@ class OrderViewType extends AbstractViewType
         if (!($item->isCompound() && !$item->hasPrivateChildren())) {
             $lines = [];
 
-            $shipped  = $this->shipmentCalculator->calculateShippedQuantity($item);
+            $shipped = $this->shipmentCalculator->calculateShippedQuantity($item);
             $returned = $this->shipmentCalculator->calculateReturnedQuantity($item);
 
             if (0 < $returned) {
@@ -209,9 +158,9 @@ class OrderViewType extends AbstractViewType
                 $shipped = $this->formatter->number($shipped);
             }
 
-            $lines['ekyna_commerce.field.shipped'] = $shipped;
+            $lines['field.shipped'] = $shipped;
 
-            $lines['ekyna_commerce.field.available'] = $this->formatter->number(
+            $lines['field.available'] = $this->formatter->number(
                 $this->shipmentCalculator->calculateAvailableQuantity($item)
             );
 
@@ -229,12 +178,12 @@ class OrderViewType extends AbstractViewType
                     $invoiced = $this->formatter->number($invoiced);
                 }
 
-                $lines['ekyna_commerce.field.invoiced'] = $invoiced;
+                $lines['field.invoiced'] = $invoiced;
             }
 
             $popover = '<dl class="dl-horizontal" style="font-size:13px">';
             foreach ($lines as $label => $value) {
-                $popover .= sprintf('<dt>%s</dt><dd>%s</dd>', $this->trans($label), $value);
+                $popover .= sprintf('<dt>%s</dt><dd>%s</dd>', $this->trans($label, [], 'EkynaCommerce'), $value);
             }
             $popover .= '</dl>';
         }
@@ -254,35 +203,33 @@ class OrderViewType extends AbstractViewType
         ) {
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
             if (false !== $adjustment) {
-                $routePrefix = 'ekyna_commerce_order_item_adjustment_admin_';
-                $parameters  = [
-                    'orderId'               => $item->getSale()->getId(),
-                    'orderItemId'           => $item->getId(),
-                    'orderItemAdjustmentId' => $adjustment->getId(),
-                ];
-
-                $editPath = $this->generateUrl($routePrefix . 'edit', $parameters);
+                $editPath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\UpdateAction::class);
                 $view->addAction(new View\Action($editPath, 'fa fa-percent', [
-                    'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.edit'),
+                    'title'           => $this->trans('sale.button.adjustment.edit', [], 'EkynaCommerce'),
                     'class'           => 'text-warning',
                     'data-sale-modal' => null,
                 ]));
 
-                $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
+                $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-percent', [
-                    'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
-                    'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
+                    'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
+                    // TODO Remove 'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
+                    // TODO Remove 'data-sale-xhr' => null,
+                    'data-sale-modal' => null,
                     'class'         => 'text-danger',
-                    'data-sale-xhr' => null,
                 ]));
             } else {
                 // New adjustment button
-                $newAdjustmentPath = $this->generateUrl('ekyna_commerce_order_item_adjustment_admin_new', [
-                    'orderId'     => $item->getSale()->getId(),
-                    'orderItemId' => $item->getId(),
-                ]);
+                $newAdjustmentPath = $this->resourceUrl(
+                    'ekyna_commerce.order_item_adjustment',
+                    Admin\Sale\Adjustment\CreateAction::class,
+                    [
+                        'orderId'     => $item->getSale()->getId(),
+                        'orderItemId' => $item->getId(),
+                    ]
+                );
                 $view->addAction(new View\Action($newAdjustmentPath, 'fa fa-percent', [
-                    'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.new'),
+                    'title'           => $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
                     'data-sale-modal' => null,
                     'class'           => 'text-success',
                 ]));
@@ -297,12 +244,9 @@ class OrderViewType extends AbstractViewType
         if (!$item->getParent()) {
             // Move up
             if (0 < $item->getPosition()) {
-                $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_up', [
-                    'orderId'     => $item->getSale()->getId(),
-                    'orderItemId' => $item->getId(),
-                ]);
+                $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
                 $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
-                    'title'         => $this->trans('ekyna_core.button.move_up'),
+                    'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
                 ]));
@@ -310,12 +254,9 @@ class OrderViewType extends AbstractViewType
 
             // Move down
             if (!$item->isLast()) {
-                $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_down', [
-                    'orderId'     => $item->getSale()->getId(),
-                    'orderItemId' => $item->getId(),
-                ]);
-                $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
-                    'title'         => $this->trans('ekyna_core.button.move_down'),
+                $moveDownPath = $this->resourceUrl($item, Admin\Sale\Item\MoveDownAction::class);
+                $view->addAction(new View\Action($moveDownPath, 'fa fa-arrow-down', [
+                    'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
                 ]));
@@ -324,14 +265,12 @@ class OrderViewType extends AbstractViewType
             // If not immutable, invoiced or shipped
             if (!$locked) {
                 // Remove action
-                $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
-                    'orderId'     => $item->getSale()->getId(),
-                    'orderItemId' => $item->getId(),
-                ]);
+                $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-                    'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-                    'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
-                    'data-sale-xhr' => null,
+                    'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
+                    // TODO Remove 'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
+                    // TODO Remove 'data-sale-xhr' => null,
+                    'data-sale-modal' => null,
                     'class'         => 'text-danger',
                 ]));
             }
@@ -339,26 +278,20 @@ class OrderViewType extends AbstractViewType
 
         // Edit action
         // if (!$locked) {
-            $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
-                'orderId'     => $item->getSale()->getId(),
-                'orderItemId' => $item->getId(),
-            ]);
-            $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
-                'data-sale-modal' => null,
-                'class'           => 'text-warning',
-            ]));
+        $editPath = $this->resourceUrl($item, Admin\Sale\Item\UpdateAction::class);
+        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+            'title'           => $this->trans('sale.button.item.edit', [], 'EkynaCommerce'),
+            'data-sale-modal' => null,
+            'class'           => 'text-warning',
+        ]));
         //}
 
         // Configure action
         if (!$locked && !$item->isImmutable() && !$item->getParent()) {
             if ($item->isConfigurable()) {
-                $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
-                    'orderId'     => $item->getSale()->getId(),
-                    'orderItemId' => $item->getId(),
-                ]);
+                $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
                 $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
-                    'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
+                    'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
                     'data-sale-modal' => null,
                     'class'           => 'text-primary',
                 ]));
@@ -366,18 +299,14 @@ class OrderViewType extends AbstractViewType
         }
 
         if (!$item instanceof Order\OrderItemInterface) {
-            throw new \Exception("Unexpected sale item type.");
+            throw new Exception('Unexpected sale item type.');
         }
 
         // Prioritize
         if ($this->stockPrioritizer->canPrioritizeSaleItem($item)) {
-            // Prioritize button
-            $prioritizePath = $this->generateUrl('ekyna_commerce_order_item_admin_prioritize', [
-                'orderId'     => $sale->getId(),
-                'orderItemId' => $item->getId(),
-            ]);
+            $prioritizePath = $this->resourceUrl($item, Admin\Sale\Item\PrioritizeAction::class);
             $view->addAction(new View\Action($prioritizePath, 'fa fa-level-up', [
-                'title'           => $this->trans('ekyna_commerce.sale.button.prioritize'),
+                'title'           => $this->trans('sale.button.prioritize', [], 'EkynaCommerce'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',
             ]));
@@ -385,14 +314,10 @@ class OrderViewType extends AbstractViewType
 
         // Sync with subject
         if ($item->getSubjectIdentity()->hasIdentity()) {
-            // Prioritize button
-            $syncPath = $this->generateUrl('ekyna_commerce_order_item_admin_sync_subject', [
-                'orderId'     => $sale->getId(),
-                'orderItemId' => $item->getId(),
-            ]);
+            $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
             $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
-                'title'         => $this->trans('ekyna_commerce.sale.button.item.sync_subject'),
-                'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.sync_subject'),
+                'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
+                'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
                 'data-sale-xhr' => null,
                 'class'         => 'text-warning',
             ]));
@@ -414,37 +339,26 @@ class OrderViewType extends AbstractViewType
             }
 
             $view->addAction(new View\Action('javascript: void(0)', 'fa fa-tasks', [
-                'title'               => $this->trans('ekyna_commerce.sale.button.item.information'),
+                'title'               => $this->trans('sale.button.item.information', [], 'EkynaCommerce'),
                 'data-toggle-details' => $view->getId() . '_information',
                 'class'               => $class,
             ]));
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options): void
-    {
+    public function buildAdjustmentView(
+        Common\AdjustmentInterface $adjustment,
+        View\LineView $view,
+        array $options
+    ): void {
         if ($adjustment->isImmutable() || (!$options['editable']) || (!$options['private'])) {
             return;
         }
 
-        $adjustable = $adjustment->getAdjustable();
-        if ($adjustable instanceof Order\OrderInterface) {
-            $routePrefix = 'ekyna_commerce_order_adjustment_admin_';
-            $parameters  = [
-                'orderId'           => $adjustable->getId(),
-                'orderAdjustmentId' => $adjustment->getId(),
-            ];
-        } else {
-            throw new InvalidArgumentException("Unexpected adjustable.");
-        }
-
         // Edit action
-        $editPath = $this->generateUrl($routePrefix . 'edit', $parameters);
+        $editPath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\UpdateAction::class);
         $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
-            'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.edit'),
+            'title'           => $this->trans('sale.button.adjustment.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',
         ]));
@@ -456,18 +370,16 @@ class OrderViewType extends AbstractViewType
                 return;
             }
         }
-        $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
+        $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-            'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
-            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
-            'data-sale-xhr' => null,
+            'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
+            // TODO Remove 'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
+            // TODO Remove 'data-sale-xhr' => null,
+            'data-sale-modal' => null,
             'class'         => 'text-danger',
         ]));
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
@@ -480,11 +392,9 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
-        $editPath = $this->generateUrl('ekyna_commerce_order_admin_edit_shipment', [
-            'orderId' => $sale->getId(),
-        ]);
+        $editPath = $this->resourceUrl($sale, Admin\Sale\UpdateShipmentAction::class);
         $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
-            'title'           => $this->trans('ekyna_commerce.sale.button.shipment.edit'),
+            'title'           => $this->trans('sale.button.shipment.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',
         ]));
@@ -496,7 +406,7 @@ class OrderViewType extends AbstractViewType
      * @param Common\SaleInterface $sale
      * @param View\LineView        $view
      */
-    private function setShipmentViewClass(Common\SaleInterface $sale, View\LineView $view)
+    private function setShipmentViewClass(Common\SaleInterface $sale, View\LineView $view): void
     {
         if (null === $p = $this->shipmentPriceResolver->getPriceBySale($sale)) {
             $view->addClass('danger');
@@ -504,22 +414,16 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
-        if (0 !== bccomp($p->getPrice(), $sale->getShipmentAmount(), 3)) {
+        if (!$p->getPrice()->equals($sale->getShipmentAmount())) {
             $view->addClass('warning');
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function supportsSale(Common\SaleInterface $sale): bool
     {
         return $sale instanceof Order\OrderInterface;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getName(): string
     {
         return 'ekyna_commerce_order';

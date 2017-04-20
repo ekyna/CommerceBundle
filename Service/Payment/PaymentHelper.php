@@ -327,7 +327,7 @@ class PaymentHelper
         /** @var PaymentInterface $payment */
         $payment = $notify->getFirstModel();
 
-        $event = $this->dispatcher->dispatch(PaymentEvents::STATUS, new PaymentEvent($payment));
+        $event = $this->dispatcher->dispatch(new PaymentEvent($payment), PaymentEvents::STATUS);
 
         return $event->getPayment();
     }
@@ -354,7 +354,7 @@ class PaymentHelper
         /** @var PaymentInterface $payment */
         $payment = $done->getFirstModel();
 
-        $event = $this->dispatcher->dispatch(PaymentEvents::STATUS, new PaymentEvent($payment));
+        $event = $this->dispatcher->dispatch(new PaymentEvent($payment), PaymentEvents::STATUS);
 
         return $event->getPayment();
     }
@@ -465,14 +465,14 @@ class PaymentHelper
      * Dispatches the payment event.
      *
      * @param PaymentInterface $payment
-     * @param string           $event
+     * @param string           $eventName
      * @param string           $redirect
      *
      * @return Response|null
      */
-    protected function dispatch(PaymentInterface $payment, string $event, string $redirect): ?Response
+    protected function dispatch(PaymentInterface $payment, string $eventName, string $redirect): ?Response
     {
-        $event = $this->dispatcher->dispatch($event, new PaymentEvent($payment));
+        $event = $this->dispatcher->dispatch(new PaymentEvent($payment), $eventName);
 
         if ($event->hasResponse()) {
             return $event->getResponse();

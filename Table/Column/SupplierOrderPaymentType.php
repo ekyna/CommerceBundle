@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
@@ -11,7 +13,9 @@ use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function sprintf;
 
 /**
  * Class SupplierOrderPaymentType
@@ -22,36 +26,21 @@ class SupplierOrderPaymentType extends AbstractColumnType
 {
     use FormatterAwareTrait;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
 
-    /**
-     * Constructor.
-     *
-     * @param FormatterFactory    $formatterFactory
-     * @param TranslatorInterface $translator
-     */
     public function __construct(FormatterFactory $formatterFactory, TranslatorInterface $translator)
     {
         $this->formatterFactory = $formatterFactory;
         $this->translator = $translator;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildColumn(ColumnBuilderInterface $builder, array $options)
+    public function buildColumn(ColumnBuilderInterface $builder, array $options): void
     {
         $builder->setSortable(false);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $date = $row->getData($options['prefix'] . 'Date');
 
@@ -61,10 +50,10 @@ class SupplierOrderPaymentType extends AbstractColumnType
             $label = $formatter->date($date);
             $class = 'success';
         } elseif ($options['prefix'] === 'forwarder' && null === $row->getData('carrier')) {
-            $label = $this->translator->trans('ekyna_core.value.none');
+            $label = $this->translator->trans('value.none', [], 'EkynaUi');
             $class = 'default';
         } else {
-            $label = $this->translator->trans('ekyna_core.value.no');
+            $label = $this->translator->trans('value.no', [], 'EkynaUi');
             $class = 'danger';
 
             if (null !== $due = $row->getData($options['prefix'] . 'DueDate')) {
@@ -75,28 +64,19 @@ class SupplierOrderPaymentType extends AbstractColumnType
         $view->vars['value'] = sprintf('<span class="label label-%s">%s</span>', $class, $label);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('prefix', null)
             ->setAllowedValues('prefix', ['payment', 'forwarder']);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

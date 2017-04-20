@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
@@ -13,8 +14,9 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
@@ -27,36 +29,23 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class SaleType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleType extends ResourceFormType
+class SaleType extends AbstractResourceType
 {
-    /**
-     * @var string
-     */
-    protected $defaultCurrency;
+    protected string $defaultCurrency;
 
-
-    /**
-     * Constructor.
-     *
-     * @param string $class
-     * @param string $defaultCurrency
-     */
-    public function __construct(string $class, string $defaultCurrency)
+    public function __construct(string $defaultCurrency)
     {
-        parent::__construct($class);
-
         $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('customer', CustomerSearchType::class, [
@@ -66,7 +55,7 @@ class SaleType extends ResourceFormType
                 'required' => false,
             ])
             ->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
+                'label'    => t('field.company', [], 'EkynaUi'),
                 'required' => false,
                 'attr'     => [
                     'maxlength'    => 35,
@@ -74,7 +63,7 @@ class SaleType extends ResourceFormType
                 ],
             ])
             ->add('companyNumber', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.customer.field.company_number',
+                'label'    => t('customer.field.company_number', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('identity', IdentityType::class, [
@@ -82,20 +71,20 @@ class SaleType extends ResourceFormType
                 'section'  => 'sale',
             ])
             ->add('email', Type\EmailType::class, [
-                'label'    => 'ekyna_core.field.email',
+                'label'    => t('field.email', [], 'EkynaUi'),
                 'required' => false,
                 'attr'     => [
                     'autocomplete' => 'email',
                 ],
             ])
             ->add('invoiceAddress', SaleAddressType::class, [
-                'label'          => 'ekyna_commerce.sale.field.invoice_address',
+                'label'          => t('sale.field.invoice_address', [], 'EkynaCommerce'),
                 'address_type'   => $options['address_type'],
                 'inherit_data'   => true,
                 'customer_field' => 'customer',
             ])
             ->add('deliveryAddress', SaleAddressType::class, [
-                'label'          => 'ekyna_commerce.sale.field.delivery_address',
+                'label'          => t('sale.field.delivery_address', [], 'EkynaCommerce'),
                 'address_type'   => $options['address_type'],
                 'inherit_data'   => true,
                 'delivery'       => true,
@@ -103,30 +92,30 @@ class SaleType extends ResourceFormType
             ])
             ->add('vatNumber', VatNumberType::class)
             ->add('vatValid', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.pricing.field.vat_valid',
+                'label'    => t('pricing.field.vat_valid', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('comment', Type\TextareaType::class, [
-                'label'    => 'ekyna_core.field.comment',
+                'label'    => t('field.comment', [], 'EkynaUi'),
                 'required' => false,
             ])
             ->add('documentComment', Type\TextareaType::class, [
-                'label'    => 'ekyna_commerce.sale.field.document_comment',
+                'label'    => t('sale.field.document_comment', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('description', Type\TextareaType::class, [
-                'label'    => 'ekyna_commerce.field.description',
+                'label'    => t('field.description', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('preparationNote', Type\TextareaType::class, [
-                'label'    => 'ekyna_commerce.sale.field.preparation_note',
+                'label'    => t('sale.field.preparation_note', [], 'EkynaCommerce'),
                 'required' => false,
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             /** @var SaleInterface $sale */
             $sale = $event->getData();
             $form = $event->getForm();
@@ -151,7 +140,7 @@ class SaleType extends ResourceFormType
                     'disabled' => $locked || $currencyLocked,
                 ])
                 ->add('autoShipping', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.auto_shipping',
+                    'label'    => t('sale.field.auto_shipping', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $locked,
                     'attr'     => [
@@ -159,7 +148,7 @@ class SaleType extends ResourceFormType
                     ],
                 ])
                 ->add('autoDiscount', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.auto_discount',
+                    'label'    => t('sale.field.auto_discount', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $locked,
                     'attr'     => [
@@ -167,7 +156,7 @@ class SaleType extends ResourceFormType
                     ],
                 ])
                 ->add('autoNotify', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.auto_notify',
+                    'label'    => t('sale.field.auto_notify', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $locked,
                     'attr'     => [
@@ -175,7 +164,7 @@ class SaleType extends ResourceFormType
                     ],
                 ])
                 ->add('taxExempt', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.tax_exempt',
+                    'label'    => t('sale.field.tax_exempt', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $locked,
                     'attr'     => [
@@ -196,7 +185,7 @@ class SaleType extends ResourceFormType
                     'credit'      => false,
                     'outstanding' => false,
                     'attr'        => [
-                        'help_text' => 'ekyna_commerce.customer.help.default_payment_method',
+                        'help_text' => t('customer.help.default_payment_method', [], 'EkynaCommerce'),
                     ],
                 ])
                 ->add('paymentTerm', PaymentTermChoiceType::class, [
@@ -204,32 +193,32 @@ class SaleType extends ResourceFormType
                     'disabled' => $locked,
                 ])
                 ->add('title', Type\TextType::class, [
-                    'label'    => 'ekyna_core.field.title',
+                    'label'    => t('field.title', [], 'EkynaUi'),
                     'required' => false,
                     'disabled' => $locked,
                 ])
                 ->add('voucherNumber', Type\TextType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                    'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $locked,
                 ])
                 ->add('originNumber', Type\TextType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.origin_number',
+                    'label'    => t('sale.field.origin_number', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $locked,
                 ])
                 ->add('number', Type\TextType::class, [
-                    'label'    => 'ekyna_core.field.number',
+                    'label'    => t('field.number', [], 'EkynaUi'),
                     'required' => false,
                     'disabled' => null !== $sale->getId(),
                 ])
                 ->add('depositTotal', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.deposit_total',
+                    'label'    => t('sale.field.deposit_total', [], 'EkynaCommerce'),
                     'subject'  => $sale,
                     'disabled' => $locked,
                 ])
                 ->add('outstandingLimit', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
+                    'label'    => t('sale.field.outstanding_limit', [], 'EkynaCommerce'),
                     'subject'  => $sale,
                     'disabled' => $locked,
                 ])
@@ -249,18 +238,12 @@ class SaleType extends ResourceFormType
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         FormUtil::addClass($view, 'commerce-sale');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

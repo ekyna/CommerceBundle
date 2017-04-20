@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -14,12 +16,9 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
  */
 final class DocumentTypes extends AbstractConstants
 {
-    private const LABEL_PREFIX = 'ekyna_commerce.document.type.';
+    private const LABEL_PREFIX = 'document.type.';
 
 
-    /**
-     * @inheritDoc
-     */
     public static function getConfig(): array
     {
         return [
@@ -75,5 +74,10 @@ final class DocumentTypes extends AbstractConstants
     public static function getShipmentChoices(): array
     {
         return self::getChoices(Types::getShipmentTypes(), self::FILTER_RESTRICT);
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

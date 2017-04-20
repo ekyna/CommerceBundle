@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Model\ShipmentGatewayActions;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
-use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentRenderer;
 use Ekyna\Component\Commerce\Shipment\Model;
-use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -21,43 +20,7 @@ use Twig\TwigTest;
  */
 class ShipmentExtension extends AbstractExtension
 {
-    /**
-     * @var PriceListBuilder
-     */
-    private $priceListBuilder;
-
-    /**
-     * @var ShipmentHelper
-     */
-    private $shipmentHelper;
-
-    /**
-     * @var string
-     */
-    private $priceTemplate;
-
-
-    /**
-     * Constructor.
-     *
-     * @param PriceListBuilder $priceListBuilder
-     * @param ShipmentHelper   $shipmentHelper
-     * @param string           $template
-     */
-    public function __construct(
-        PriceListBuilder $priceListBuilder,
-        ShipmentHelper $shipmentHelper,
-        $template = '@EkynaCommerce/Admin/ShipmentPrice/list.html.twig'
-    ) {
-        $this->priceListBuilder = $priceListBuilder;
-        $this->shipmentHelper = $shipmentHelper;
-        $this->priceTemplate = $template;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
@@ -72,59 +35,53 @@ class ShipmentExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'shipment_action_label',
-                [$this->shipmentHelper, 'getActionLabel'],
+                [ShipmentHelper::class, 'getActionLabel'], // TODO Missing ! oO
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
                 'shipment_weight',
-                [$this->shipmentHelper, 'getShipmentWeight']
+                [ShipmentHelper::class, 'getShipmentWeight']
             ),
             new TwigFilter(
                 'shipment_deleteable',
-                [$this->shipmentHelper, 'isShipmentDeleteable']
+                [ShipmentHelper::class, 'isShipmentDeleteable']
             ),
             new TwigFilter(
                 'shipment_sender_address',
-                [$this->shipmentHelper, 'resolveSenderAddress']
+                [ShipmentHelper::class, 'resolveSenderAddress']
             ),
             new TwigFilter(
                 'shipment_receiver_address',
-                [$this->shipmentHelper, 'resolveReceiverAddress']
+                [ShipmentHelper::class, 'resolveReceiverAddress']
             ),
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
                 'display_shipment_prices',
-                [$this, 'renderShipmentPrices'],
-                ['is_safe' => ['html'], 'needs_environment' => true]
+                [ShipmentRenderer::class, 'renderShipmentPrices'],
+                ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'display_shipment_tracking',
-                [$this, 'renderShipmentTracking'],
+                [ShipmentRenderer::class, 'renderShipmentTracking'],
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'shipment_platform_global_actions',
-                [$this->shipmentHelper, 'getPlatformsGlobalActions']
+                [ShipmentHelper::class, 'getPlatformsGlobalActions']
             ),
             new TwigFunction(
                 'shipment_gateway_buttons',
-                [$this, 'getGatewayButtons']
+                [ShipmentRenderer::class, 'getGatewayButtons']
             ),
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('shipment', function ($subject) {
@@ -137,99 +94,5 @@ class ShipmentExtension extends AbstractExtension
                 return $subject instanceof Model\ShipmentSubjectInterface;
             }),
         ];
-    }
-
-    /**
-     * Renders the shipment tracking buttons.
-     *
-     * @param Model\ShipmentDataInterface $shipment
-     *
-     * @return string
-     */
-    public function renderShipmentTracking(Model\ShipmentDataInterface $shipment)
-    {
-        if (empty($number = $shipment->getTrackingNumber())) {
-            return '';
-        }
-
-        $output = $number;
-
-        if (null !== $url = $this->shipmentHelper->getTrackingUrl($shipment)) {
-            /** @noinspection HtmlUnknownTarget */
-            $output = sprintf('<a href="%s" target="_blank"><i class="fa fa-map-marker"></i> %s</a>', $url, $number);
-
-            if (null !== $url = $this->shipmentHelper->getProofUrl($shipment)) {
-                /** @noinspection HtmlUnknownTarget */
-                $output .= sprintf('&nbsp;&nbsp;<a href="%s" target="_blank"><i class="fa fa-check-square-o"></i></a>',
-                    $url);
-            }
-        }
-
-        return $output;
-    }
-
-    /**
-     * Returns the shipment gateway action buttons.
-     *
-     * @param Model\ShipmentInterface $shipment
-     *
-     * @return array
-     */
-    public function getGatewayButtons(Model\ShipmentInterface $shipment)
-    {
-        $actions = $this->shipmentHelper->getGatewayShipmentActions($shipment);
-
-        if (empty($actions)) {
-            return [];
-        }
-
-        $buttons = [];
-
-        foreach ($actions as $action) {
-            // TODO Check permission (EDIT)
-            // TODO Refactor
-            /** @see \Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentActionsType */
-
-            $buttons[] = [
-                'label'      => ShipmentGatewayActions::getLabel($action),
-                'icon'       => ShipmentGatewayActions::getIcon($action),
-                'theme'      => ShipmentGatewayActions::getTheme($action),
-                'confirm'    => ShipmentGatewayActions::getConfirm($action),
-                'target'     => ShipmentGatewayActions::getTarget($action),
-                'route'      => 'ekyna_commerce_order_shipment_admin_' . $action,
-                'parameters' => [
-                    'orderId'         => $shipment->getSale()->getId(),
-                    'orderShipmentId' => $shipment->getId(),
-                ],
-            ];
-        }
-
-        return $buttons;
-    }
-
-    /**
-     * Renders the price list.
-     *
-     * @param Environment                                               $env
-     * @param Model\ShipmentMethodInterface|Model\ShipmentZoneInterface $source
-     *
-     * @return string
-     */
-    public function renderShipmentPrices(Environment $env, $source)
-    {
-        if ($source instanceof Model\ShipmentMethodInterface) {
-            $list = $this->priceListBuilder->buildByMethod($source);
-        } elseif ($source instanceof Model\ShipmentZoneInterface) {
-            $list = $this->priceListBuilder->buildByZone($source);
-        } else {
-            throw new UnexpectedTypeException($source, [
-                Model\ShipmentMethodInterface::class,
-                Model\ShipmentZoneInterface::class,
-            ]);
-        }
-
-        return $env->render($this->priceTemplate, [
-            'list' => $list,
-        ]);
     }
 }

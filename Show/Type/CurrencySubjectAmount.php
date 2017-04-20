@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
@@ -18,7 +20,7 @@ class CurrencySubjectAmount extends AbstractType
     /**
      * @inheritDoc
      */
-    public function build(View $view, $value, array $options = [])
+    public function build(View $view, $value, array $options = []): void
     {
         parent::build($view, $value, $options);
 
@@ -27,25 +29,22 @@ class CurrencySubjectAmount extends AbstractType
         $view->vars['base'] = $options['base'];
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('subject')
-            ->setDefault('quote', true)
-            ->setDefault('base', true)
+            ->setDefaults([
+                'label_trans_domain' => 'EkynaCommerce',
+                'quote'              => true,
+                'base'               => true,
+            ])
             ->setAllowedTypes('subject', [ExchangeSubjectInterface::class, CurrencySubjectInterface::class])
             ->setAllowedTypes('quote', 'bool')
             ->setAllowedTypes('base', 'bool');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getWidgetPrefix()
+    public static function getName(): string
     {
-        return 'commerce_currency_subject_amount';
+        return 'commerce_amount';
     }
 }

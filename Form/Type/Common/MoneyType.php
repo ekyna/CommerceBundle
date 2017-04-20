@@ -1,12 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
+use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\ResourceBundle\Form\DataTransformer\DecimalToStringTransformer;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
 use Ekyna\Component\Commerce\Common\Model\ExchangeSubjectInterface;
+use Locale;
+use NumberFormatter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\RuntimeException;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +21,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function preg_match;
+
 /**
  * Class MoneyType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
@@ -22,36 +30,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MoneyType extends AbstractType
 {
-    protected static $configs = [];
+    protected static array $configs = [];
 
-    /**
-     * @var CurrencyConverterInterface
-     */
-    private $currencyConverter;
+    private CurrencyConverterInterface $currencyConverter;
+    private string $defaultCurrency;
 
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CurrencyConverterInterface $currencyConverter
-     * @param string                     $defaultCurrency
-     */
     public function __construct(CurrencyConverterInterface $currencyConverter, string $defaultCurrency)
     {
         $this->currencyConverter = $currencyConverter;
         $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($options['decimal']) {
+            $builder->addModelTransformer(new DecimalToStringTransformer($options['scale']));
+        }
+
         $builder
             ->addViewTransformer(new MoneyToLocalizedStringTransformer(
                 $options['scale'],
@@ -61,9 +56,6 @@ class MoneyType extends AbstractType
             ));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $rate = $this->getRate($options);
@@ -88,12 +80,8 @@ class MoneyType extends AbstractType
 
     /**
      * Returns the conversion rate.
-     *
-     * @param array $options
-     *
-     * @return float
      */
-    private function getRate(array $options): float
+    private function getRate(array $options): Decimal
     {
         /** @var ExchangeSubjectInterface $subject */
         $subject = $options['subject'];
@@ -112,15 +100,11 @@ class MoneyType extends AbstractType
         throw new RuntimeException("You must define 'subject' or 'quote' option.");
     }
 
-    /**
-     * @inheritDoc
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
-
         $resolver
             ->setDefaults([
+                'decimal' => true,
                 'base'     => $this->defaultCurrency,
                 'quote'    => null,
                 'subject'  => null,
@@ -129,6 +113,7 @@ class MoneyType extends AbstractType
                 'divisor'  => 1,
                 'compound' => false,
             ])
+            ->setAllowedTypes('decimal', 'bool')
             ->setAllowedTypes('scale', 'int')
             ->setAllowedTypes('base', [CurrencyInterface::class, 'string'])
             ->setAllowedTypes('quote', [CurrencyInterface::class, 'string', 'null'])
@@ -163,27 +148,20 @@ class MoneyType extends AbstractType
                 }
 
                 if ($options['required']) {
-                    return "0.0";
+                    return new Decimal(0);
                 }
 
                 return $value;
             });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_money';
     }
 
     /**
      * Returns the config for this currency and locale
-     *
-     * @param string $currency
-     *
-     * @return array
      */
     protected static function getConfig(string $currency = null): array
     {
@@ -191,7 +169,7 @@ class MoneyType extends AbstractType
             return [];
         }
 
-        $locale = \Locale::getDefault();
+        $locale = Locale::getDefault();
 
         if (!isset(self::$configs[$locale])) {
             self::$configs[$locale] = [];
@@ -201,8 +179,8 @@ class MoneyType extends AbstractType
             return self::$configs[$locale][$currency];
         }
 
-        $format = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
-        $pattern = $format->formatCurrency('123', $currency);
+        $format = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+        $pattern = $format->formatCurrency(123.0, $currency);
 
         // the spacings between currency symbol and number are ignored, because
         // a single space leads to better readability in combination with input

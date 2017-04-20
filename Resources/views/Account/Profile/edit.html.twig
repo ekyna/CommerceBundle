@@ -1,0 +1,59 @@
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
+
+{% block account %}
+{% apply spaceless %}
+    <h3>{{ t('account.information.edit.title', {}, 'EkynaCommerce')|trans }}</h3>
+
+    <hr>
+
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ bootstrap_set_sizing('sm') }}
+        {{ bootstrap_set_label_col(2) }}
+        {{ bootstrap_set_widget_col(10) }}
+
+        {{ form_errors(form, {'global_errors': true}) }}
+
+        {{ form_row(form.email) }}
+        {{ form_row(form.identity) }}
+        {%- if form.birthday is defined -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{- form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) -}}
+            </div>
+        </div>
+        {%- endif -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.locale, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.notifications) }}
+        {{ bootstrap_set_sizing('md') }}
+        {{ form_rest(form) }}
+    </div>
+    {{ form_end(form) }}
+
+{% endapply %}
+{% endblock account %}

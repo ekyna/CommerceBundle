@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates as States;
  */
 final class ShipmentStates extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.status.';
+        $prefix = 'status.';
 
         return [
             // Common
@@ -45,7 +44,7 @@ final class ShipmentStates extends AbstractConstants
      *
      * @return array
      */
-    static function getFormChoices($return = false, $restrict = false)
+    public static function getFormChoices(bool $return = false, bool $restrict = false): array
     {
         $states = [States::STATE_NEW, States::STATE_CANCELED];
 
@@ -63,6 +62,11 @@ final class ShipmentStates extends AbstractConstants
             }
         }
 
-        return static::getChoices($states, 1);
+        return ShipmentStates::getChoices($states, 1);
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

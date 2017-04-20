@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Ekyna\Component\Commerce\Payment\Entity\PaymentMessage;
@@ -11,6 +13,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class MessagesType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
@@ -18,10 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MessagesType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired([
@@ -29,7 +30,7 @@ class MessagesType extends AbstractType
                 'translation_class',
             ])
             ->setDefaults([
-                'label'         => 'ekyna_commerce.message.label.plural',
+                'label'         => t('message.label.plural', [], 'EkynaCommerce'),
                 'entry_type'    => MessageType::class,
                 'entry_options' => function (Options $options, $value) {
                     if (!is_array($value)) {
@@ -46,10 +47,7 @@ class MessagesType extends AbstractType
             ->setAllowedTypes('translation_class', 'string');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         if (is_a($options['message_class'], ShipmentMessage::class)) {
             $view->vars['translation_type'] = 'shipment';
@@ -60,18 +58,12 @@ class MessagesType extends AbstractType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return CollectionType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_messages';
     }

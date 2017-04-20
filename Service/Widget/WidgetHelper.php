@@ -1,25 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Widget;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Widget\ContextType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
-use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface;
 use Ekyna\Component\Commerce\Common\Model\CountryInterface;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
+use Ekyna\Component\User\Service\UserProviderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Countries;
+use Symfony\Component\Intl\Currencies;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class WidgetHelper
@@ -28,174 +32,82 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class WidgetHelper
 {
-    /**
-     * @var UserProviderInterface
-     */
-    private $userProvider;
+    private UserProviderInterface     $userProvider;
+    private ContextProviderInterface  $contextProvider;
+    private CurrencyRendererInterface $currencyRenderer;
+    private UrlGeneratorInterface     $urlGenerator;
+    private RequestStack              $requestStack;
+    private FormFactoryInterface      $formFactory;
+    private TranslatorInterface       $translator;
+    private array                     $locales;
+    private array                     $data;
 
-    /**
-     * @var ContextProviderInterface
-     */
-    private $contextProvider;
+    private ?FormInterface $contextForm = null;
 
-    /**
-     * @var CurrencyRendererInterface
-     */
-    private $currencyRenderer;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var array
-     */
-    private $locales;
-
-    /**
-     * @var array
-     */
-    private $data;
-
-    /**
-     * @var FormInterface
-     */
-    private $contextForm;
-
-
-    /**
-     * Constructor.
-     *
-     * @param UserProviderInterface     $userProvider
-     * @param ContextProviderInterface  $contextProvider
-     * @param CurrencyRendererInterface $currencyRenderer
-     * @param UrlGeneratorInterface     $urlGenerator
-     * @param RequestStack              $requestStack
-     * @param FormFactoryInterface      $formFactory
-     * @param TranslatorInterface       $translator
-     * @param array                     $locales
-     * @param array                     $data
-     */
     public function __construct(
-        UserProviderInterface $userProvider,
-        ContextProviderInterface $contextProvider,
+        UserProviderInterface     $userProvider,
+        ContextProviderInterface  $contextProvider,
         CurrencyRendererInterface $currencyRenderer,
-        UrlGeneratorInterface $urlGenerator,
-        RequestStack $requestStack,
-        FormFactoryInterface $formFactory,
-        TranslatorInterface $translator,
-        array $locales,
-        array $data = []
+        UrlGeneratorInterface     $urlGenerator,
+        RequestStack              $requestStack,
+        FormFactoryInterface      $formFactory,
+        TranslatorInterface       $translator,
+        array                     $locales,
+        array                     $data = []
     ) {
-        $this->userProvider     = $userProvider;
-        $this->contextProvider  = $contextProvider;
+        $this->userProvider = $userProvider;
+        $this->contextProvider = $contextProvider;
         $this->currencyRenderer = $currencyRenderer;
-        $this->urlGenerator     = $urlGenerator;
-        $this->requestStack     = $requestStack;
-        $this->formFactory      = $formFactory;
-        $this->translator       = $translator;
-        $this->locales          = $locales;
-        $this->data             = $data;
+        $this->urlGenerator = $urlGenerator;
+        $this->requestStack = $requestStack;
+        $this->formFactory = $formFactory;
+        $this->translator = $translator;
+        $this->locales = $locales;
+        $this->data = $data;
     }
 
-    /**
-     * Returns the customer.
-     *
-     * @return CustomerInterface|null
-     */
     public function getCustomer(): ?CustomerInterface
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->contextProvider->getCustomerProvider()->getCustomer();
     }
 
-    /**
-     * Returns the user.
-     *
-     * @return UserInterface|null
-     */
     public function getUser(): ?UserInterface
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->userProvider->getUser();
     }
 
-    /**
-     * Returns the cart.
-     *
-     * @return CartInterface|null
-     */
     public function getCart(): ?CartInterface
     {
         return $this->contextProvider->getCartProvider()->getCart();
     }
 
-    /**
-     * Returns the current currency.
-     *
-     * @return CurrencyInterface
-     */
     public function getCurrency(): ?CurrencyInterface
     {
         return $this->contextProvider->getCurrencyProvider()->getCurrency();
     }
 
-    /**
-     * Returns the current country.
-     *
-     * @return CountryInterface
-     */
     public function getCountry(): ?CountryInterface
     {
         return $this->contextProvider->getCountryProvider()->getCountry();
     }
 
-    /**
-     * Returns the current locale.
-     *
-     * @return string
-     */
     public function getLocale(): string
     {
         return $this->contextProvider->getLocalProvider()->getCurrentLocale();
     }
 
     /**
-     * Returns the url generator.
-     *
-     * @return UrlGeneratorInterface
-     */
-    public function getUrlGenerator(): UrlGeneratorInterface
-    {
-        return $this->urlGenerator;
-    }
-
-    /**
      * Returns the customer widget data.
-     *
-     * @return array
      */
     public function getCustomerWidgetData(): array
     {
         $data = array_replace([
-            'id'    => 'customer-widget',
-            'title' => 'ekyna_commerce.widget.customer.title',
-            'label' => 'ekyna_commerce.widget.customer.title',
+            'id'           => 'customer-widget',
+            'title'        => 'widget.customer.title',
+            'label'        => 'widget.customer.title',
+            'trans_domain' => 'EkynaCommerce',
         ], $this->data['customer'], [
             'href' => $this->urlGenerator->generate('ekyna_user_account_index'),
             'url'  => [
@@ -205,14 +117,14 @@ class WidgetHelper
         ]);
 
         if (!empty($data['title'])) {
-            $data['title'] = $this->translator->trans($data['title'], [], $this->data['customer']['trans_domain']);
+            $data['title'] = $this->translator->trans($data['title'], [], $data['trans_domain']);
         }
 
         if (!empty($data['label'])) {
             if ($customer = $this->getCustomer()) {
                 $data['label'] = $customer->getFirstName() . ' ' . $customer->getLastName();
             } else {
-                $data['label'] = $this->translator->trans($data['label'], [], $this->data['customer']['trans_domain']);
+                $data['label'] = $this->translator->trans($data['label'], [], $data['trans_domain']);
             }
         }
 
@@ -221,15 +133,14 @@ class WidgetHelper
 
     /**
      * Returns the cart widget data.
-     *
-     * @return array
      */
     public function getCartWidgetData(): array
     {
         $data = array_replace([
-            'id'    => 'cart-widget',
-            'title' => 'ekyna_commerce.widget.cart.title',
-            'label' => 'ekyna_commerce.widget.cart.title',
+            'id'           => 'cart-widget',
+            'title'        => 'widget.cart.title',
+            'label'        => 'widget.cart.title',
+            'trans_domain' => 'EkynaCommerce',
         ], $this->data['cart'], [
             'href' => $this->urlGenerator->generate('ekyna_commerce_cart_checkout_index'),
             'url'  => [
@@ -239,7 +150,7 @@ class WidgetHelper
         ]);
 
         if (!empty($data['title'])) {
-            $data['title'] = $this->translator->trans($data['title'], [], $this->data['cart']['trans_domain']);
+            $data['title'] = $this->translator->trans($data['title'], [], $data['trans_domain']);
         }
 
         if (!empty($data['label'])) {
@@ -247,7 +158,7 @@ class WidgetHelper
                 $count = $cart->getItems()->count();
                 $count = $this
                     ->translator
-                    ->transChoice('ekyna_commerce.widget.cart.items', $count, ['%count%' => $count]);
+                    ->trans('widget.cart.items', ['count' => $count], 'EkynaCommerce');
 
                 $total = $this
                     ->currencyRenderer
@@ -255,7 +166,7 @@ class WidgetHelper
 
                 $data['label'] = $count . ' <strong>' . $total . '</strong>';
             } else {
-                $data['label'] = $this->translator->trans($data['label'], [], $this->data['cart']['trans_domain']);
+                $data['label'] = $this->translator->trans($data['label'], [], $data['trans_domain']);
             }
         }
 
@@ -264,21 +175,17 @@ class WidgetHelper
 
     /**
      * Returns the context widget data.
-     *
-     * @param Request|null $request
-     *
-     * @return array
      */
     public function getContextWidgetData(Request $request = null): array
     {
         if (null === $request) {
-            $request = $this->requestStack->getMasterRequest();
+            $request = $this->requestStack->getMainRequest();
         }
 
         $widgetData = [];
         if ($request) {
             $widgetData['route'] = $request->attributes->get('_route');
-            $parameters          = $request->attributes->get('_route_params');
+            $parameters = $request->attributes->get('_route_params');
             unset($parameters['_locale']);
             if (!empty($parameters)) {
                 $widgetData['param'] = $parameters;
@@ -286,9 +193,10 @@ class WidgetHelper
         }
 
         $data = array_replace([
-            'id'    => 'context-widget',
-            'title' => 'ekyna_commerce.widget.context.title',
-            'label' => '<span class="country-flag %1$s" title="%2$s"></span><span class="currency">%3$s</span><span class="locale">%4$s</span>',
+            'id'           => 'context-widget',
+            'title'        => 'widget.context.title',
+            'trans_domain' => 'EkynaCommerce',
+            'label'        => '<span class="country-flag %1$s" title="%2$s"></span><span class="currency">%3$s</span><span class="locale">%4$s</span>',
         ], $this->data['context'], [
             'href' => 'javascript:void(0)',
             'url'  => [
@@ -299,17 +207,17 @@ class WidgetHelper
         ]);
 
         if (!empty($data['title'])) {
-            $data['title'] = $this->translator->trans($data['title'], [], $this->data['context']['trans_domain']);
+            $data['title'] = $this->translator->trans($data['title'], [], $data['trans_domain']);
         }
 
         if (!empty($data['label'])) {
             $currency = $this->contextProvider->getCurrencyProvider()->getCurrentCurrency();
-            $country  = $this->contextProvider->getCountryProvider()->getCurrentCountry();
-            $locale   = $this->contextProvider->getLocalProvider()->getCurrentLocale();
+            $country = $this->contextProvider->getCountryProvider()->getCurrentCountry();
+            $locale = $this->contextProvider->getLocalProvider()->getCurrentLocale();
 
-            $currencyLabel = Intl::getCurrencyBundle()->getCurrencySymbol($currency, $locale);
-            $countryLabel  = Intl::getRegionBundle()->getCountryName($country, $locale);
-            $localeLabel   = Intl::getLocaleBundle()->getLocaleName($locale, $locale);
+            $currencyLabel = Currencies::getSymbol($currency, $locale);
+            $countryLabel = Countries::getName($country, $locale);
+            $localeLabel = Locales::getName($locale, $locale);
 
             $data['label'] = sprintf(
                 $data['label'],
@@ -325,15 +233,11 @@ class WidgetHelper
 
     /**
      * Handles context change.
-     *
-     * @param Request|null $request
-     *
-     * @return Response|null
      */
     public function handleContextChange(Request $request = null): ?Response
     {
         if (null === $request) {
-            $request = $this->requestStack->getMasterRequest();
+            $request = $this->requestStack->getMainRequest();
         }
 
         $form = $this->getContextForm($request);
@@ -354,7 +258,7 @@ class WidgetHelper
             return null;
         }
 
-        $parameters            = $data['param'] ?? [];
+        $parameters = $data['param'] ?? [];
         $parameters['_locale'] = $data['locale'];
 
         return new RedirectResponse($this->urlGenerator->generate($data['route'], $parameters));
@@ -362,10 +266,6 @@ class WidgetHelper
 
     /**
      * Returns the context form.
-     *
-     * @param Request|null $request
-     *
-     * @return FormInterface
      */
     public function getContextForm(Request $request = null): FormInterface
     {
@@ -384,15 +284,11 @@ class WidgetHelper
 
     /**
      * Returns the context form data.
-     *
-     * @param Request|null $request
-     *
-     * @return array
      */
     public function getContextFormData(Request $request = null): array
     {
         if (null === $request) {
-            $request = $this->requestStack->getMasterRequest();
+            $request = $this->requestStack->getMainRequest();
         }
 
         return [
@@ -406,13 +302,11 @@ class WidgetHelper
 
     /**
      * Handles currency change.
-     *
-     * @param Request|null $request
      */
     public function handleCurrencyChange(Request $request = null): void
     {
         if (null === $request) {
-            $request = $this->requestStack->getMasterRequest();
+            $request = $this->requestStack->getMainRequest();
         }
 
         // Change current currency
@@ -423,8 +317,6 @@ class WidgetHelper
 
     /**
      * Returns the currency widget data.
-     *
-     * @return array
      */
     public function getCurrencyWidgetData(): array
     {

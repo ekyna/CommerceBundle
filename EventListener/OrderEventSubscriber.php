@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
 
@@ -21,70 +23,31 @@ use Ekyna\Component\Resource\Event\ResourceMessage;
  */
 class OrderEventSubscriber extends BaseSubscriber
 {
-    /**
-     * @var SubjectHelperInterface
-     */
-    protected $subjectHelper;
+    protected SubjectHelperInterface $subjectHelper;
+    protected InChargeResolver       $inChargeResolver;
 
-    /**
-     * @var InChargeResolver
-     */
-    protected $inChargeResolver;
-
-
-    /**
-     * Sets the subject helper.
-     *
-     * @param SubjectHelperInterface $subjectHelper
-     */
-    public function setSubjectHelper(SubjectHelperInterface $subjectHelper)
+    public function setSubjectHelper(SubjectHelperInterface $subjectHelper): void
     {
         $this->subjectHelper = $subjectHelper;
     }
 
-    /**
-     * Sets the 'in charge' resolver.
-     *
-     * @param InChargeResolver $inChargeResolver
-     */
-    public function setInChargeResolver(InChargeResolver $inChargeResolver)
+    public function setInChargeResolver(InChargeResolver $inChargeResolver): void
     {
         $this->inChargeResolver = $inChargeResolver;
     }
 
-    /**
-     * Initialize event handler.
-     *
-     * @param ResourceEventInterface $event
-     */
-    public function onInitialize(ResourceEventInterface $event): void
-    {
-        parent::onInitialize($event);
-
-        /** @var OrderInterface $sale */
-        $sale = $this->getSaleFromEvent($event);
-
-        $this->inChargeResolver->update($sale);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function onPreDelete(ResourceEventInterface $event): void
     {
         try {
             parent::onPreDelete($event);
         } catch (CommerceExceptionInterface $e) {
-            $event->addMessage(new ResourceMessage(
-                'ekyna_commerce.order.message.cant_be_deleted',
+            $event->addMessage(ResourceMessage::create(
+                'order.message.cant_be_deleted',
                 ResourceMessage::TYPE_ERROR
-            ));
+            )->setDomain('EkynaCommerce'));
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function onPreUpdate(ResourceEventInterface $event): void
     {
         try {
@@ -103,9 +66,7 @@ class OrderEventSubscriber extends BaseSubscriber
     {
         $changed = parent::handleInsert($sale);
 
-        $changed |= $this->inChargeResolver->update($sale);
-
-        return $changed;
+        return $this->inChargeResolver->update($sale) || $changed;
     }
 
     /**
@@ -117,9 +78,7 @@ class OrderEventSubscriber extends BaseSubscriber
     {
         $changed = parent::handleUpdate($sale);
 
-        $changed |= $this->inChargeResolver->update($sale);
-
-        return $changed;
+        return $this->inChargeResolver->update($sale) || $changed;
     }
 
     /**
@@ -136,7 +95,7 @@ class OrderEventSubscriber extends BaseSubscriber
         // TODO Remove unexpected tags
 
         foreach ($sale->getItems() as $item) {
-            $changed |= $this->mergeItemTags($item, $tags);
+            $changed = $this->mergeItemTags($item, $tags) || $changed;
         }
 
         return $changed;
@@ -145,9 +104,6 @@ class OrderEventSubscriber extends BaseSubscriber
     /**
      * Resolves the item tags.
      *
-     * @param OrderItemInterface $item
-     * @param Collection    $tags
-     *
      * @return bool Whether the order items tags has change.
      */
     private function mergeItemTags(OrderItemInterface $item, Collection $tags): bool
@@ -155,7 +111,7 @@ class OrderEventSubscriber extends BaseSubscriber
         $changed = false;
         if ($item->hasChildren()) {
             foreach ($item->getChildren() as $child) {
-                $changed |= $this->mergeItemTags($child, $tags);
+                $changed = $this->mergeItemTags($child, $tags) || $changed;
             }
         }
 

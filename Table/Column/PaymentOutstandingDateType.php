@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
+use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\DateTimeType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class PaymentOutstandingDateType
@@ -16,13 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PaymentOutstandingDateType extends AbstractColumnType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
-        $payment = $row->getData();
+        /** @var PaymentInterface $payment */
+        $payment = $row->getData(null);
 
         if ($payment->isRefund()) {
             $view->vars['value'] = null;
@@ -33,30 +35,21 @@ class PaymentOutstandingDateType extends AbstractColumnType
         $view->vars['value'] = $payment->getSale()->getOutstandingDate();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'         => 'ekyna_commerce.sale.field.outstanding_date',
+            'label'         => t('sale.field.outstanding_date', [], 'EkynaCommerce'),
             'property_path' => 'order.outstandingDate',
             'time_format'   => 'none',
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'date_time';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return DateTimeType::class;
     }

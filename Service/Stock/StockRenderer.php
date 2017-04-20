@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
-use Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolverInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class StockRenderer
@@ -17,61 +18,25 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class StockRenderer
 {
-    /**
-     * @var StockUnitResolverInterface
-     */
-    private $resolver;
-
-    /**
-     * @var NormalizerInterface
-     */
-    private $normalizer;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var string
-     */
-    private $unitTemplate;
-
-    /**
-     * @var string
-     */
-    private $assignmentTemplate;
-
-    /**
-     * @var string
-     */
-    private $subjectTemplate;
+    private NormalizerInterface $normalizer;
+    private Environment         $twig;
+    private string              $unitTemplate;
+    private string              $assignmentTemplate;
+    private string              $subjectTemplate;
 
 
-    /**
-     * Constructor.
-     *
-     * @param StockUnitResolverInterface $resolver
-     * @param NormalizerInterface        $normalizer
-     * @param EngineInterface            $templating
-     * @param string                     $unitTemplate
-     * @param string                     $assignmentTemplate
-     * @param string                     $subjectTemplate
-     */
     public function __construct(
-        StockUnitResolverInterface $resolver,
         NormalizerInterface $normalizer,
-        EngineInterface $templating,
-        $unitTemplate = '@EkynaCommerce/Admin/Stock/stock_units.html.twig',
-        $assignmentTemplate = '@EkynaCommerce/Admin/Stock/stock_assignments.html.twig',
-        $subjectTemplate = '@EkynaCommerce/Admin/Stock/subjects_stock.html.twig'
+        Environment $twig,
+        string $unitTemplate = '@EkynaCommerce/Admin/Stock/stock_units.html.twig',
+        string $assignmentTemplate = '@EkynaCommerce/Admin/Stock/stock_assignments.html.twig',
+        string $subjectTemplate = '@EkynaCommerce/Admin/Stock/subjects_stock.html.twig'
     ) {
-        $this->resolver           = $resolver;
-        $this->normalizer         = $normalizer;
-        $this->templating         = $templating;
-        $this->unitTemplate       = $unitTemplate;
+        $this->normalizer = $normalizer;
+        $this->twig = $twig;
+        $this->unitTemplate = $unitTemplate;
         $this->assignmentTemplate = $assignmentTemplate;
-        $this->subjectTemplate    = $subjectTemplate;
+        $this->subjectTemplate = $subjectTemplate;
     }
 
     /**
@@ -82,7 +47,7 @@ class StockRenderer
      *
      * @return string
      */
-    public function renderStockAssignments(array $assignments, array $options = [])
+    public function renderStockAssignments(array $assignments, array $options = []): string
     {
         $options = array_replace([
             'template' => $this->assignmentTemplate,
@@ -91,7 +56,7 @@ class StockRenderer
             'actions'  => true,
         ], $options);
 
-        $id = isset($options['id']) ? $options['id'] : $options['prefix'] . '_' . uniqid();
+        $id = $options['id'] ?? $options['prefix'] . '_' . uniqid();
 
         $classes = ['table', 'table-striped', 'table-hover', 'table-alt-head'];
         if (isset($options['class'])) {
@@ -100,7 +65,7 @@ class StockRenderer
 
         $normalized = $this->normalizer->normalize($assignments, 'json', ['groups' => ['StockAssignment']]);
 
-        return $this->templating->render($options['template'], [
+        return $this->twig->render($options['template'], [
             'stockAssignments' => $normalized,
             'prefix'           => $options['prefix'],
             'id'               => $id,
@@ -117,17 +82,17 @@ class StockRenderer
      *
      * @return string
      */
-    public function renderSubjectsStock(array $subjects, array $options = [])
+    public function renderSubjectsStock(array $subjects, array $options = []): string
     {
-        $template = isset($options['template']) ? $options['template'] : $this->subjectTemplate;
-        $id       = isset($options['id']) ? $options['id'] : 'subject';
+        $template = $options['template'] ?? $this->subjectTemplate;
+        $id = $options['id'] ?? 'subject';
 
         $classes = ['table', 'table-striped', 'table-hover'];
         if (isset($options['class'])) {
             $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
         }
 
-        return $this->templating->render($template, [
+        return $this->twig->render($template, [
             'subjects' => $subjects,
             'prefix'   => $id,
             'classes'  => implode(' ', $classes),
@@ -142,7 +107,7 @@ class StockRenderer
      *
      * @return string
      */
-    public function renderSubjectStockUnits(StockSubjectInterface $subject, array $options = [])
+    public function renderSubjectStockUnits(StockSubjectInterface $subject, array $options = []): string
     {
         $options = array_replace([
             'template' => $this->unitTemplate,
@@ -152,7 +117,7 @@ class StockRenderer
             'actions'  => true,
         ], $options);
 
-        $id = isset($options['id']) ? $options['id'] : $options['prefix'] . '_' . uniqid();
+        $id = $options['id'] ?? $options['prefix'] . '_' . uniqid();
 
         $classes = ['table', 'table-striped', 'table-hover'];
         if (isset($options['class'])) {
@@ -161,7 +126,7 @@ class StockRenderer
 
         $normalized = $this->normalizer->normalize($subject, 'json', ['groups' => ['StockView']]);
 
-        return $this->templating->render($options['template'], [
+        return $this->twig->render($options['template'], [
             'stockUnits' => $normalized['stock_units'],
             'prefix'     => $options['prefix'],
             'id'         => $id,

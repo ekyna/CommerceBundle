@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Bundle\CommerceBundle\Model\DocumentDesign;
 use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\MentionSubjectInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
@@ -14,8 +17,8 @@ use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
 use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -28,89 +31,43 @@ use function array_merge;
  */
 class DocumentHelper
 {
-    /**
-     * @var SettingsManagerInterface
-     */
-    private $settings;
-
-    /**
-     * @var Filesystem
-     */
-    private $fileSystem;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var CommonRenderer
-     */
-    private $commonRenderer;
-
-    /**
-     * @var TaxResolverInterface
-     */
-    private $taxResolver;
-
-    /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
-
-    /**
-     * @var array
-     */
-    private $config;
-
-    /**
-     * @var string
-     */
-    private $defaultLocale;
-
-    /**
-     * @var [<locale> => DocumentDesign]
-     */
-    private $defaultDesigns = [];
+    private SettingManagerInterface $settings;
+    private Filesystem              $fileSystem;
+    private UrlGeneratorInterface   $urlGenerator;
+    private CommonRenderer          $commonRenderer;
+    private TaxResolverInterface    $taxResolver;
+    private SubjectHelperInterface  $subjectHelper;
+    private array                   $config;
+    private string                  $defaultLocale;
+    /** @var array<string, DocumentDesign> */
+    private array $defaultDesigns = [];
 
 
-    /**
-     * Constructor.
-     *
-     * @param SettingsManagerInterface $settings
-     * @param Filesystem               $fileSystem
-     * @param UrlGeneratorInterface    $urlGenerator
-     * @param CommonRenderer           $commonRenderer
-     * @param TaxResolverInterface     $taxResolver
-     * @param SubjectHelperInterface   $subjectHelper
-     * @param array                    $config
-     * @param string                   $defaultLocale
-     */
     public function __construct(
-        SettingsManagerInterface $settings,
-        Filesystem $fileSystem,
-        UrlGeneratorInterface $urlGenerator,
-        CommonRenderer $commonRenderer,
-        TaxResolverInterface $taxResolver,
-        SubjectHelperInterface $subjectHelper,
-        array $config,
-        string $defaultLocale
+        SettingManagerInterface $settings,
+        Filesystem              $fileSystem,
+        UrlGeneratorInterface   $urlGenerator,
+        CommonRenderer          $commonRenderer,
+        TaxResolverInterface    $taxResolver,
+        SubjectHelperInterface  $subjectHelper,
+        array                   $config,
+        string                  $defaultLocale
     ) {
-        $this->settings       = $settings;
-        $this->fileSystem     = $fileSystem;
-        $this->urlGenerator   = $urlGenerator;
+        $this->settings = $settings;
+        $this->fileSystem = $fileSystem;
+        $this->urlGenerator = $urlGenerator;
         $this->commonRenderer = $commonRenderer;
-        $this->taxResolver    = $taxResolver;
-        $this->subjectHelper  = $subjectHelper;
-        $this->config         = $config;
-        $this->defaultLocale  = $defaultLocale;
+        $this->taxResolver = $taxResolver;
+        $this->subjectHelper = $subjectHelper;
+        $this->config = $config;
+        $this->defaultLocale = $defaultLocale;
     }
 
     /**
      * Builds the document design.
      *
-     * @param object $document The document
-     * @param string $type     The document type
+     * @param object      $document The document
+     * @param string|null $type     The document type
      *
      * @return DocumentDesign
      */
@@ -154,7 +111,7 @@ class DocumentHelper
                 continue;
             }
 
-            $list = array_map(function($html) {
+            $list = array_map(function ($html) {
                 return strip_tags(strtr($html, ['</p>' => '<br>']), '<br><a><span><em><strong>');
             }, $list);
 
@@ -342,7 +299,11 @@ class DocumentHelper
             return;
         }
 
-        if (!$this->fileSystem->has($logo->getPath())) {
+        try {
+            if (!$this->fileSystem->fileExists($logo->getPath())) {
+                return;
+            }
+        } catch (FilesystemException $exception) {
             return;
         }
 

@@ -1,0 +1,631 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_infos %}
+    {{- customer|cms_tags({'text': false}) -}}
+{% endblock main_infos %}
+
+{% block main_actions -%}
+    {% if customer.user is null -%}
+        {{ admin_resource_btn(customer, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Customer\\CreateUserAction') }}
+    {%- else -%}{# TODO if is_granted(constant('Ekyna\\Component\\Resource\\Action\\Permission::READ'), customer.user) #}
+        {{- admin_resource_btn(customer.user, 'Ekyna\\Bundle\\UserBundle\\Action\\User\\UseSessionAction', {} , {
+            'onclick': ('return confirm(\'' ~ ('user.alert.use_session'|trans({
+                '{email}': customer.user.email
+            }, 'EkynaUser')) ~ '\')'),
+            'target': '_blank'
+        }) -}}
+    {%- endif %}
+    {{ admin_resource_btn(customer, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Customer\\BalanceAction') }}
+    {{ parent() }}
+{%- endblock main_actions %}
+
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{ 'field.general'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-config" id="toggle-config" data-toggle="tab">
+            {{ 'field.config'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-addresses" id="toggle-addresses" data-toggle="tab">
+            {{ 'customer_address.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_CONTACT')) -%}
+    <li>
+        <a href="#{{ resource_name }}-contacts" id="toggle-contacts" data-toggle="tab">
+            {{ 'customer_contact.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {% endif %}
+    {% if customer.children|length > 0 -%}
+        <li>
+            <a href="#{{ resource_name }}-children" id="toggle-children" data-toggle="tab">
+                {{ 'customer.field.children'|trans({}, 'EkynaCommerce') }}
+            </a>
+        </li>
+    {%- endif %}
+    <li>
+        <a href="#{{ resource_name }}-quotes" id="toggle-quotes" data-toggle="tab">
+            {{ 'quote.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-orders" id="toggle-orders" data-toggle="tab">
+            {{ 'order.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-invoices" id="toggle-invoices" data-toggle="tab">
+            {{ 'invoice.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-shipments" id="toggle-shipments" data-toggle="tab">
+            {{ 'shipment.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
+    <li>
+        <a href="#{{ resource_name }}-graphics" id="toggle-graphics" data-toggle="tab">
+            {{ 'customer.field.graphics'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {%- endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::LOYALTY')) -%}
+    <li>
+        <a href="#{{ resource_name }}-loyalty" id="toggle-loyalty" data-toggle="tab">
+            {{ 'customer.field.loyalty_points'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {%- endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
+    <li>
+        <a href="#{{ resource_name }}-newsletter" id="toggle-newsletter" data-toggle="tab">
+            {{ 'customer.field.newsletter'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {%- endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+    <li>
+        <a href="#{{ resource_name }}-tickets" id="toggle-tickets" data-toggle="tab">
+            {{ 'ticket.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {%- endif %}
+{%- endblock main_tabs %}
+
+
+
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {% block general_pane -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.number, 'text', {
+                    'label': 'field.number',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_number',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customer.email, 'text', {
+                    'label': 'field.email',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_email',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.company, 'text', {
+                    'label': 'field.company',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_company',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                <div class="row show-row">
+                    <div class="col-md-4 show-label">
+                        {{ 'field.identity'|trans({}, 'EkynaUi') }}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="show-widget show-widget-inline" id="customer_identity">
+                            {{ customer|identity }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.phone, 'commerce_phone', {
+                    'label': 'field.phone',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_phone',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customer.mobile, 'commerce_phone', {
+                    'label': 'field.mobile',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_mobile',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.birthday, 'datetime', {
+                    'label': 'field.birthday',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_birthday',
+                    'time': false,
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {%- endif %}
+        {{ show_row(customer.description, 'textarea', {
+            'label': 'field.description',
+            'label_trans_domain': 'EkynaCommerce',
+            'id': 'customer_description'
+        }) }}
+        {{ show_row(customer, 'commerce_notifications') }}
+        {{ show_row(customer, 'tags', {
+            'id': 'customer_tags'
+        }) }}
+        {%- endblock general_pane %}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-config">
+        {% block config_pane -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.user, 'entity', {
+                    'label': 'user.label.singular',
+                    'label_trans_domain': 'EkynaUser',
+                    'id': 'customer_user',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customer.inCharge, 'entity', {
+                    'label': 'customer.field.in_charge',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_user',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.currency, 'text', {
+                    'label': 'currency.label.singular',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_currency',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customer.locale|language|capitalize, 'text', {
+                    'label': 'field.locale',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_locale',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.customerGroup, 'entity', {
+                    'label': 'customer_group.label.singular',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_group',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customer.state|customer_state_badge, 'text', {
+                    'label': 'field.status',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_state',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {% set customerSource = customer.hasParent() ? customer.parent : customer %}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.parent, 'entity', {
+                    'label': 'customer.field.parent',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_parent',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customerSource.companyNumber, 'text', {
+                    'label': 'customer.field.company_number',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_compnayNumber',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {% include '@EkynaCommerce/Admin/Common/Pricing/_show_vat_fields.html.twig' with {
+            'subject': customerSource, 'prefix': 'customer'
+        } %}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customerSource.paymentTerm, 'entity', {
+                    'label': 'payment_term.label.singular',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_payment_term',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customerSource.outstandingLimit, 'commerce_amount', {
+                    'label': 'sale.field.outstanding_limit',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_outstanding_limit',
+                    'subject': customerSource,
+                    'quote': false,
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customerSource.creditBalance, 'commerce_amount', {
+                    'label': 'customer.field.credit_balance',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_outstanding_limit',
+                    'subject': customerSource,
+                    'quote': false,
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customerSource.outstandingBalance, 'commerce_amount', {
+                    'label': 'customer.field.outstanding_balance',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_outstanding_limit',
+                    'subject': customerSource,
+                    'quote': false,
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customerSource.defaultPaymentMethod, 'entity', {
+                    'label': 'customer.field.default_payment_method',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_default_payment_method',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customerSource.outstandingOverflow, 'boolean', {
+                    'label': 'customer.field.outstanding_overflow',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customer_outstanding_overflow',
+                    'color': true,
+                    'true_class': 'label label-warning',
+                    'false_class': 'label label-success',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(customerSource.paymentMethods, 'entity', {
+            'label': 'customer.field.payment_methods',
+            'label_trans_domain': 'EkynaCommerce',
+            'id': 'customer_payment_methods'
+        }) }}
+        {%- endblock config_pane %}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-addresses">
+        {% block addresses_pane -%}
+        <div class="sub-header">
+            <div class="actions pull-right">
+                {{ admin_resource_btn(
+                    'ekyna_commerce.customer_address',
+                    'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\CustomerAddress\\ImportAction'
+                ) }}
+                {{ admin_resource_btn(
+                    'ekyna_commerce.customer_address',
+                    'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction'
+                ) }}
+            </div>
+            <h2>{{ 'customer_address.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
+        </div>
+        {% for address in customer.addresses %}
+            {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-body" id="customer_address_{{ loop.index0 }}">
+                        <p>{{ address|address }}</p>
+                        <p>
+                        {%- if address.invoiceDefault -%}
+                            {%- if customer.hasParent() and customer.parent.getDefaultInvoiceAddress(true) is not same as(null) -%}
+                                {{ admin_resource_btn(
+                                    address,
+                                    'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\CustomerAddress\\ToggleInvoiceDefaultAction',
+                                    {'theme': 'primary', 'size': 'xs'}
+                                ) }}
+                            {%- else -%}
+                                <span class="btn btn-xs btn-primary disabled">
+                                    {{- 'customer_address.field.invoice_default'|trans({}, 'EkynaCommerce') -}}
+                                </span>
+                            {%- endif -%}
+                        {%- else -%}
+                            {{ admin_resource_btn(
+                                address,
+                                'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\CustomerAddress\\ToggleInvoiceDefaultAction',
+                                {'theme': 'default', 'size': 'xs'}
+                            ) }}
+                        {%- endif -%}
+                        &nbsp;
+                        {%- if address.deliveryDefault -%}
+                            {%- if customer.hasParent() and customer.parent.getDefaultDeliveryAddress(true) is not same as(null) -%}
+                                {{ admin_resource_btn(
+                                    address,
+                                    'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\CustomerAddress\\ToggleDeliveryDefaultAction',
+                                    {'theme': 'primary', 'size': 'xs'}
+                                ) }}
+                            {%- else -%}
+                                <span class="btn btn-xs btn-primary disabled">
+                                    {{- 'customer_address.field.delivery_default'|trans({}, 'EkynaCommerce') -}}
+                                </span>
+                            {%- endif -%}
+                        {%- else -%}
+                            {{ admin_resource_btn(
+                                address,
+                                'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\CustomerAddress\\ToggleDeliveryDefaultAction',
+                                {'theme': 'default', 'size': 'xs'}
+                            ) }}
+                        {%- endif -%}
+                        </p>
+                    </div>
+                    <div class="panel-footer">
+                        {{ admin_resource_btn(address, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction', {'size': 'xs', 'short': true}) }}
+                        {{ admin_resource_btn(address, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction', {'size': 'xs', 'short': true}, {'style': 'float:right'}) }}
+                    </div>
+                </div>
+            </div>
+            {% if loop.index % 2 == 0 or loop.last %}</div>{% endif %}
+        {% else %}
+            <p>{{ 'customer_address.alert.no_item'|trans({}, 'EkynaCommerce') }}</p>
+        {% endfor %}
+        {%- endblock addresses_pane %}
+    </div>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_CONTACT')) -%}
+    <div class="tab-pane" id="{{ resource_name }}-contacts">
+        {% block contacts_pane -%}
+        <div class="sub-header">
+            {{ admin_resource_btn('ekyna_commerce.customer_contact', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
+                'parameters': {'customerId': customer.id}
+            }, {'class': 'pull-right'}) }}
+            <h2>{{ 'customer_contact.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
+        </div>
+        {% for contact in customer.contacts -%}
+            {% if loop.index0 % 2 == 0 %}<div class="row">{% endif -%}
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-body" id="customer_contact_{{ loop.index0 }}">
+                        {{- contact|customer_contact({'admin': true}) -}}
+                    </div>
+                    <div class="panel-footer">
+                        {{ admin_resource_btn(contact, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction', {'size': 'xs', 'short': true}) }}
+                        {{ admin_resource_btn(contact, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction', {'size': 'xs', 'short': true}, {'style': 'float:right'}) }}
+                    </div>
+                </div>
+            </div>
+            {%- if loop.index % 2 == 0 or loop.last %}</div>{% endif %}
+        {%- else -%}
+            <p>{{ 'customer_contact.alert.no_item'|trans({}, 'EkynaCommerce') }}</p>
+        {%- endfor %}
+        {%- endblock contacts_pane %}
+    </div>
+    {%- endif %}
+    {% if customer.children|length > 0 %}
+    <div class="tab-pane" id="{{ resource_name }}-children">
+        {% block children_pane -%}
+        <div class="sub-header">
+            {{ admin_resource_btn('ekyna_commerce.customer', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
+                'parameters': {
+                    'parent': customer.id,
+                }
+            }, {'class': 'pull-right'}) }}
+            <h2>{{ 'customer.header.children'|trans({}, 'EkynaCommerce')|raw }}</h2>
+        </div>
+        {{ ekyna_table_render(admin_resource_table('ekyna_commerce.customer', {
+            'parent': customer
+        })) }}
+        {%- endblock children_pane %}
+    </div>
+    {% endif %}
+    <div class="tab-pane" id="{{ resource_name }}-quotes">
+        {% block quotes_pane -%}
+        <div class="sub-header">
+            {{ admin_resource_btn('ekyna_commerce.quote', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
+                'parameters': {
+                    'customer': customer.id,
+                }
+            }, {'class': 'pull-right'}) }}
+            <h2>{{ 'customer.header.quotes'|trans({}, 'EkynaCommerce')|raw }}</h2>
+        </div>
+        {{ ekyna_table_render(admin_resource_table('ekyna_commerce.quote', {
+            'customer': customer
+        })) }}
+        {%- endblock quotes_pane %}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-orders">
+        {% block orders_pane -%}
+        <div class="sub-header">
+            {{ admin_resource_btn('ekyna_commerce.order', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
+                'parameters': {
+                    'customer': customer.id,
+                }
+            }, {'class': 'pull-right'}) }}
+            <h2>{{ 'customer.header.orders'|trans({}, 'EkynaCommerce')|raw }}</h2>
+        </div>
+        {{ ekyna_table_render(admin_resource_table('ekyna_commerce.order', {
+            'customer': customer
+        })) }}
+        {%- endblock orders_pane %}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-invoices">
+        {% block invoices_pane -%}
+        <div class="sub-header">
+            <h2>{{ 'customer.header.invoices'|trans({}, 'EkynaCommerce')|raw }}</h2>
+        </div>
+        {{ ekyna_table_render(admin_resource_table('ekyna_commerce.order_invoice', {
+            'customer': customer
+        })) }}
+        {%- endblock invoices_pane %}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-shipments">
+        {% block shipments_pane -%}
+        <div class="sub-header">
+            <h2>{{ 'customer.header.shipments'|trans({}, 'EkynaCommerce')|raw }}</h2>
+        </div>
+        {{ ekyna_table_render(admin_resource_table('ekyna_commerce.order_shipment', {
+            'customer': customer
+        })) }}
+        {%- endblock shipments_pane %}
+    </div>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
+    <div class="tab-pane" id="{{ resource_name }}-graphics">
+        {% block graphics_pane -%}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row show-row">
+                    <div class="col-md-4 show-label" title="{{ 'field.logo'|trans({}, 'EkynaUi') }}">
+                        {{- 'field.logo'|trans({}, 'EkynaUi') -}}
+                    </div>
+                    <div class="col-md-8">
+                        <div id="customer_brandLogo" class="show-widget show-widget-inline">
+                            {%- if customer.brandLogo -%}
+                                <a href="{{ path('ekyna_commerce_api_customer_logo', {'customerNumber': customer.number}) }}"
+                                   target="_blank">
+                                    {{- customer.brandLogo.guessFilename() -}}
+                                </a>
+                            {%- else -%}
+                                <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
+                            {%- endif -%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customer.brandColor, 'color', {
+                    'label': 'field.color',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customer_brandColor',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(customer.brandUrl, 'text', {
+            'label': 'field.url',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'customer_brandUrl'
+        }) }}
+        {{ show_row(customer.documentFooter, 'textarea', {
+            'label': 'sale.field.document_footer',
+            'label_trans_domain': 'EkynaCommerce',
+            'id': 'customer_documentFooter',
+            'html': true
+        }) }}
+        {{ show_row(customer.documentTypes, 'choice', {
+            'label': 'customer.field.document_types',
+            'label_trans_domain': 'EkynaCommerce',
+            'choices': document_type_choices(),
+            'multiple': true,
+            'id': 'customer_documentTypes'
+        }) }}
+        {%- endblock graphics_pane %}
+    </div>
+    {%- endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::LOYALTY')) -%}
+    <div class="tab-pane" id="{{ resource_name }}-loyalty">
+        {% block loyalty_pane -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.loyaltyPoints, 'number', {
+                    'label': t('customer.field.loyalty_points', [], 'EkynaCommerce'),
+                    'id': 'customer_loyaltyPoints',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row show-row">
+            <div class="col-md-2 show-label" title="{{ 'customer.field.loyalty_logs'|trans({}, 'EkynaCommerce') }}">
+                {{- 'customer.field.loyalty_logs'|trans({}, 'EkynaCommerce') -}}
+            </div>
+            <div class="col-md-10">
+                <div id="customer_loyaltyLogs" class="show-widget show-widget-block">
+                    {{- customer_loyalty_logs(customer) -}}
+                </div>
+            </div>
+        </div>
+        <div class="row show-row">
+            <div class="col-md-2 show-label" title="{{ 'coupon.label.plural'|trans({}, 'EkynaCommerce') }}">
+                {{- 'coupon.label.plural'|trans({}, 'EkynaCommerce') -}}
+            </div>
+            <div class="col-md-10">
+                <div id="customer_coupons" class="show-widget show-widget-block">
+                    {{- customer_coupons(customer) -}}
+                </div>
+            </div>
+        </div>
+        {# TODO Customer's coupons table (use table type) #}
+        {%- endblock loyalty_pane %}
+    </div>
+    {%- endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
+    <div class="tab-pane" id="{{ resource_name }}-newsletter">
+        {% block newsletter_pane -%}
+        {{ newsletter_customer_subscription({'customer': customer, 'public': false}) }}
+        {%- endblock newsletter_pane %}
+    </div>
+    {%- endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+    <div class="tab-pane" id="{{ resource_name }}-tickets">
+        {% block tickets_pane -%}
+        {{- support_tickets(customer, {
+            'admin': true,
+            'new': admin_resource_path('ekyna_commerce.ticket', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {'customer': customer.number})
+        }) -}}
+        {%- endblock tickets_pane %}
+    </div>
+    {%- endif %}
+{% endblock main_contents -%}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+        <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/support.css')) }}" rel="stylesheet" type="text/css"/>
+    {% endif %}
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+        <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+    {%- endif %}
+{% endblock javascripts %}

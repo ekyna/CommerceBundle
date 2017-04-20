@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CustomerGroupTranslationType
@@ -13,13 +17,10 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class CustomerGroupTranslationType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('title', TextType::class, [
-            'label' => 'ekyna_core.field.title',
+            'label' => t('field.title', [], 'EkynaUi'),
         ]);
     }
 }

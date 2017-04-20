@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
@@ -14,7 +16,10 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentAddressType
@@ -23,37 +28,21 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class ShipmentAddressType extends AbstractType
 {
-    /**
-     * @var ShipmentAddressTransformer
-     */
-    private $transformer;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
+    private ShipmentAddressTransformer $transformer;
+    private ValidatorInterface         $validator;
 
 
-    /**
-     * Constructor.
-     *
-     * @param ShipmentAddressTransformer $transformer
-     * @param ValidatorInterface         $validator
-     */
     public function __construct(ShipmentAddressTransformer $transformer, ValidatorInterface $validator)
     {
         $this->transformer = $transformer;
-        $this->validator   = $validator;
+        $this->validator = $validator;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['admin_mode']) {
             $builder->add('information', TextareaType::class, [
-                'label'    => 'ekyna_core.field.information',
+                'label'    => t('field.information', [], 'EkynaUi'),
                 'required' => false,
             ]);
         }
@@ -72,7 +61,7 @@ class ShipmentAddressType extends AbstractType
             // Validate the form in group "Default"
             $violations = $this->validator->validate($address, [new Address()]);
 
-            /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+            /** @var ConstraintViolationInterface $violation */
             foreach ($violations as $violation) {
                 $scope = $form;
                 if (null !== $path = $violation->getPropertyPath()) {
@@ -94,13 +83,8 @@ class ShipmentAddressType extends AbstractType
 
     /**
      * Finds the form child matching the violation property path.
-     *
-     * @param FormInterface $form
-     * @param string        $path
-     *
-     * @return null|FormInterface
      */
-    private function matchChild(FormInterface $form, $path)
+    private function matchChild(FormInterface $form, string $path): ?FormInterface
     {
         foreach ($form->all() as $child) {
             if ($child->getPropertyPath() === $path || $child->getName() === $path) {
@@ -116,10 +100,7 @@ class ShipmentAddressType extends AbstractType
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
@@ -127,10 +108,7 @@ class ShipmentAddressType extends AbstractType
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return AddressType::class;
     }

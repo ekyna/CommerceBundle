@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
+use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
-use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Customer\Model\CustomerStates;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
@@ -15,7 +17,7 @@ use Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PaymentCheckoutEventSubscriber
@@ -24,72 +26,31 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
+    private FormFactoryInterface $formFactory;
+    private PaymentUpdaterInterface $paymentUpdater;
+    private CurrencyConverterInterface $currencyConverter;
+    private TranslatorInterface $translator;
+    private UrlGeneratorInterface $urlGenerator;
 
-    /**
-     * @var PaymentUpdaterInterface
-     */
-    private $paymentUpdater;
-
-    /**
-     * @var CurrencyConverterInterface
-     */
-    private $currencyConverter;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
-
-
-    /**
-     * Constructor.
-     *
-     * @param FormFactoryInterface       $formFactory
-     * @param PaymentUpdaterInterface    $paymentUpdater
-     * @param CurrencyConverterInterface $currencyConverter
-     * @param TranslatorInterface        $translator
-     * @param UrlGeneratorInterface      $urlGenerator
-     * @param string                     $defaultCurrency
-     */
     public function __construct(
         FormFactoryInterface $formFactory,
         PaymentUpdaterInterface $paymentUpdater,
         CurrencyConverterInterface $currencyConverter,
         TranslatorInterface $translator,
-        UrlGeneratorInterface $urlGenerator,
-        string $defaultCurrency
+        UrlGeneratorInterface $urlGenerator
     ) {
         $this->formFactory = $formFactory;
         $this->paymentUpdater = $paymentUpdater;
         $this->currencyConverter = $currencyConverter;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
-        $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     *
-     * @param CheckoutPaymentEvent $event
-     */
-    public function onBuildPaymentForm(CheckoutPaymentEvent $event)
+    public function onBuildPaymentForm(CheckoutPaymentEvent $event): void
     {
         $payment = $event->getPayment();
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
+        /** @var PaymentMethodInterface $method */
         if (null === $method = $payment->getMethod()) {
             throw new RuntimeException("Payment's method must be set at this point.");
         }
@@ -105,10 +66,8 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
     /**
      * Builds the default payment form.
-     *
-     * @param CheckoutPaymentEvent $event
      */
-    protected function buildDefaultForm(CheckoutPaymentEvent $event)
+    protected function buildDefaultForm(CheckoutPaymentEvent $event): void
     {
         $payment = $event->getPayment();
         $sale = $event->getSale();
@@ -116,7 +75,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         // Disallow non offline methods for fraudster
         $customer = $sale->getCustomer();
         if ($customer && ($customer->getState() === CustomerStates::STATE_FRAUDSTER)) {
-            /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
+            /** @var PaymentMethodInterface $method */
             if (null === $method = $payment->getMethod()) {
                 throw new RuntimeException("Payment's method must be set at this point.");
             }
@@ -136,10 +95,8 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
     /**
      * Builds the customer balance method payment form.
-     *
-     * @param CheckoutPaymentEvent $event
      */
-    protected function buildCreditForm(CheckoutPaymentEvent $event)
+    protected function buildCreditForm(CheckoutPaymentEvent $event): void
     {
         $sale = $event->getSale();
 
@@ -173,12 +130,10 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
             }
             // Abort if deposit is not paid
             // TODO No: customer can pay the deposit with its credit balance
-            if (0 < $sale->getDepositTotal()) {
-                if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $this->defaultCurrency)) {
-                    $event->stopPropagation();
+            if (0 < $sale->getDepositTotal() && $sale->getDepositTotal() > $sale->getPaidTotal()) {
+                $event->stopPropagation();
 
-                    return;
-                }
+                return;
             }
 
             // Customer available fund
@@ -204,10 +159,8 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
     /**
      * Builds the customer outstanding balance method payment form.
-     *
-     * @param CheckoutPaymentEvent $event
      */
-    protected function buildOutstandingForm(CheckoutPaymentEvent $event)
+    protected function buildOutstandingForm(CheckoutPaymentEvent $event): void
     {
         $payment = $event->getPayment();
         // Abort if refund
@@ -242,12 +195,10 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
             return;
         }
         // Abort if deposit is not paid
-        if (0 < $sale->getDepositTotal()) {
-            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $this->defaultCurrency)) {
-                $event->stopPropagation();
+        if (0 < $sale->getDepositTotal() && $sale->getDepositTotal() > $sale->getPaidTotal()) {
+            $event->stopPropagation();
 
-                return;
-            }
+            return;
         }
 
         // If sale has a outstanding limit
@@ -281,11 +232,11 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         $options['available_amount'] = $available;
 
         if (!$options['admin_mode'] && $sale instanceof QuoteInterface && !$sale->hasVoucher()) {
-            $options['lock_message'] = $this->translator->trans('ekyna_commerce.checkout.payment.voucher_mandatory', [
+            $options['lock_message'] = $this->translator->trans('checkout.payment.voucher_mandatory', [
                 '%url%' => $this->urlGenerator->generate('ekyna_commerce_account_quote_voucher', [
                     'number' => $sale->getNumber(),
                 ]),
-            ]);
+            ], 'EkynaCommerce');
             $options['disabled'] = true;
         } else {
             $options['payment_term'] = $term;
@@ -300,20 +251,13 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
     /**
      * Returns the form name for the given payment.
-     *
-     * @param PaymentInterface $payment
-     *
-     * @return string
      */
-    protected function getFormName(PaymentInterface $payment)
+    protected function getFormName(PaymentInterface $payment): string
     {
         return 'method_' . $payment->getMethod()->getId();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             CheckoutPaymentEvent::BUILD_FORM => ['onBuildPaymentForm', -1024],

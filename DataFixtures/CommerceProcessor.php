@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\DataFixtures;
 
+use Decimal\Decimal;
+use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface;
 use Fidry\AliceDataFixtures\ProcessorInterface;
@@ -27,7 +31,7 @@ class CommerceProcessor implements ProcessorInterface
 
     private function preProcessSupplierOrderItem(SupplierOrderItemInterface $item): void
     {
-        /** @var \Ekyna\Component\Commerce\Subject\Model\SubjectInterface $subject */
+        /** @var SubjectInterface $subject */
         $subject = $item->getProduct()->getSubjectIdentity()->getSubject();
 
         if (is_a($subject, 'Ekyna\Bundle\ProductBundle\Model\ProductInterface')) {
@@ -39,14 +43,14 @@ class CommerceProcessor implements ProcessorInterface
 
         $item
             ->setReference($subject->getReference() . '-SUPP')
-            ->setNetPrice(round($subject->getNetPrice() * 0.5, 2))
-            ->setWeight($subject->getWeight())
+            ->setNetPrice($subject->getNetPrice()->div(2))
+            ->setWeight(clone $subject->getWeight())
             ->setTaxGroup($subject->getTaxGroup());
     }
 
     private function preProcessSupplierProduct(SupplierProductInterface $product): void
     {
-        /** @var \Ekyna\Component\Commerce\Subject\Model\SubjectInterface $subject */
+        /** @var SubjectInterface $subject */
         $subject = $product->getSubjectIdentity()->getSubject();
 
         if (is_a($subject, 'Ekyna\Bundle\ProductBundle\Model\ProductInterface')) {
@@ -58,19 +62,19 @@ class CommerceProcessor implements ProcessorInterface
 
         $product
             ->setReference($subject->getReference() . '-SUPP')
-            ->setNetPrice(round($subject->getNetPrice() * 0.5, 2))
-            ->setWeight($subject->getWeight())
+            ->setNetPrice($subject->getNetPrice()->div(2))
+            ->setWeight(clone $subject->getWeight())
             ->setTaxGroup($subject->getTaxGroup());
 
         switch ($rand = rand(0, 10)) {
             case $rand > 5:
                 // Available
-                $product->setAvailableStock(rand(50, 150));
+                $product->setAvailableStock(new Decimal(rand(50, 150)));
                 break;
             case $rand > 2:
                 // Pre order
                 $product
-                    ->setAvailableStock(rand(50, 150))
+                    ->setAvailableStock(new Decimal(rand(50, 150)))
                     ->setEstimatedDateOfArrival(new \DateTime(sprintf('+ %d days', rand(10, 30))));
                 break;
             default:
@@ -84,6 +88,5 @@ class CommerceProcessor implements ProcessorInterface
      */
     public function postProcess(string $id, $object): void
     {
-        return;
     }
 }

@@ -2,21 +2,24 @@
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.number, 'text', {
-            'label': 'ekyna_core.field.number',
+            'label': 'field.number',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_number',
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale.voucherNumber, 'text', {
-            'label': 'ekyna_commerce.sale.field.voucher_number',
+            'label': 'sale.field.voucher_number',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_voucherNumber',
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale|sale_state_badge, 'text', {
-            'label': 'ekyna_commerce.field.status',
+            'label': 'field.status',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_state',
             'class': 'sale-state',
             'label_col': 6
@@ -27,16 +30,16 @@
     <div class="row">
         <div class="col-md-6">
             {% if sale.customer is not null %}
-                {{ show_row(sale.customer|identity, 'entity', {
-                    'label': 'ekyna_commerce.customer.label.singular',
+                {{ show_row(sale.customer|identity, 'link', {
+                    'label': 'customer.label.singular',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'path': admin_resource_path(sale.customer),
                     'id': 'sale_customer',
-                    'route': 'ekyna_commerce_customer_admin_show',
-                    'route_parameters': {'customerId': sale.customer.id},
                     'label_col': 4
                 }) }}
             {% else %}
                 {{ show_row(null, 'text', {
-                    'label': 'ekyna_commerce.customer.label.singular',
+                    'label': t('customer.label.singular', [], 'EkynaCommerce'),
                     'id': 'sale_customer',
                     'label_col': 4
                 }) }}
@@ -45,16 +48,17 @@
         {% if attribute(sale, 'originCustomer') is defined %}
         <div class="col-md-6">
             {% if sale.originCustomer is not null %}
-                {{ show_row(sale.originCustomer|identity, 'entity', {
-                    'label': 'ekyna_commerce.sale.field.origin_customer',
+                {{ show_row(sale.originCustomer|identity, 'link', {
+                    'label': 'sale.field.origin_customer',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'path': admin_resource_path(sale.originCustomer),
                     'id': 'sale_originCustomer',
-                    'route': 'ekyna_commerce_customer_admin_show',
-                    'route_parameters': {'customerId': sale.originCustomer.id},
                     'label_col': 4
                 }) }}
             {% else %}
                 {{ show_row(null, 'text', {
-                    'label': 'ekyna_commerce.sale.field.origin_customer',
+                    'label': 'sale.field.origin_customer',
+                    'label_trans_domain': 'EkynaCommerce',
                     'id': 'sale_customer',
                     'label_col': 4
                 }) }}
@@ -64,15 +68,16 @@
     </div>
 {% else %}
     {% if sale.customer is not null %}
-        {{ show_row(sale.customer|identity, 'entity', {
-            'label': 'ekyna_commerce.customer.label.singular',
-            'id': 'sale_customer',
-            'route': 'ekyna_commerce_customer_admin_show',
-            'route_parameters': {'customerId': sale.customer.id}
+        {{ show_row(sale.customer|identity, 'link', {
+            'label': 'customer.label.singular',
+            'label_trans_domain': 'EkynaCommerce',
+            'path': admin_resource_path(sale.customer),
+            'id': 'sale_customer'
         }) }}
     {% else %}
         {{ show_row(null, 'text', {
-            'label': 'ekyna_commerce.customer.label.singular',
+            'label': 'customer.label.singular',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_customer'
         }) }}
     {% endif %}
@@ -80,14 +85,16 @@
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale|identity, 'text', {
-            'label': 'ekyna_core.field.identity',
+            'label': 'field.identity',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_identity',
             'label_col': 4
         }) }}
     </div>
     <div class="col-md-6">
         {{ show_row(sale.email, 'text', {
-            'label': 'ekyna_core.field.email',
+            'label': 'field.email',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_email',
             'label_col': 4
         }) }}
@@ -101,63 +108,56 @@
             {% set company = sale.company %}
         {% endif -%}
         {{ show_row(company, 'text', {
-            'label': 'ekyna_core.field.company',
+            'label': 'field.company',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_company',
             'label_col': 4
         }) }}
     </div>
     <div class="col-md-6">
-        {{- show_row(sale.customerGroup, 'entity', {
-            'label': 'ekyna_commerce.customer_group.label.singular',
+        {{- show_row(sale.customerGroup, 'resource', {
             'id': 'sale_customerGroup',
-            'route': 'ekyna_commerce_customer_group_admin_show',
-            'route_parameters': {'customerGroupId': sale.customerGroup.id},
+            'resource': 'ekyna_commerce.customer_group',
             'label_col': 4
         }) -}}
     </div>
 </div>
 {% include '@EkynaCommerce/Admin/Common/Pricing/_show_vat_fields.html.twig' with {'subject': sale, 'prefix': 'sale'} %}
 <hr>
-{%- if sale is sale_order -%}
-    {% set toggle_route = 'ekyna_commerce_order_admin_toggle' -%}
-    {% set toggle_params = {'orderId': sale.id} %}
-{%- elseif sale is sale_quote -%}
-    {% set toggle_route = 'ekyna_commerce_quote_admin_toggle' -%}
-    {% set toggle_params = {'quoteId': sale.id} %}
-{%- else -%}
-    {% set toggle_route = 'ekyna_commerce_cart_admin_toggle' -%}
-    {% set toggle_params = {'cartId': sale.id} %}
-{%- endif -%}
 <div class="row">
     <div class="col-md-4">
         {{- show_row(sale.autoShipping, 'boolean', {
-            'label': 'ekyna_commerce.sale.field.auto_shipping',
+            'label': 'sale.field.auto_shipping',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_autoShipping',
             'label_col': 6,
-            'toggle_path': path(toggle_route, toggle_params|merge({field: 'autoShipping'}))
+            'toggle_path': admin_resource_path(sale, 'admin_toggle', {property: 'autoShipping'})
         }) -}}
     </div>
     <div class="col-md-4">
         {{- show_row(sale.autoDiscount, 'boolean', {
-            'label': 'ekyna_commerce.sale.field.auto_discount',
+            'label': 'sale.field.auto_discount',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_autoDiscount',
             'label_col': 6,
-            'toggle_path': path(toggle_route, toggle_params|merge({field: 'autoDiscount'}))
+            'toggle_path': admin_resource_path(sale, 'admin_toggle', {property: 'autoDiscount'})
         }) -}}
     </div>
     <div class="col-md-4">
         {{- show_row(sale.autoNotify, 'boolean', {
-            'label': 'ekyna_commerce.sale.field.auto_notify',
+            'label': 'sale.field.auto_notify',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_autoNotify',
             'label_col': 6,
-            'toggle_path': path(toggle_route, toggle_params|merge({field: 'autoNotify'}))
+            'toggle_path': admin_resource_path(sale, 'admin_toggle', {property: 'autoNotify'})
         }) -}}
     </div>
 </div>
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.taxExempt, 'boolean', {
-            'label': 'ekyna_commerce.sale.field.tax_exempt',
+            'label': 'sale.field.tax_exempt',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_taxExempt',
             'label_col': 6,
             'color': true,
@@ -168,7 +168,8 @@
     {% if sample|default(false) -%}
     <div class="col-md-4">
         {{ show_row(sale.sample, 'boolean', {
-            'label': 'ekyna_commerce.field.sample',
+            'label': 'field.sample',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_sample',
             'label_col': 6,
             'color': true,
@@ -179,7 +180,8 @@
     {%- endif %}
     <div class="col-md-4">
         {{ show_row(sale.createdAt, 'datetime', {
-            'label': 'ekyna_core.field.created_at',
+            'label': 'field.created_at',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_createdAt',
             'label_col': 6
         }) }}
@@ -187,8 +189,8 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.grandTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.ati_total',
+        {{ show_row(sale.grandTotal, 'commerce_amount', {
+            'label': 'sale.field.ati_total',
             'id': 'sale_grandTotal',
             'class': 'sale-grand-total',
             'subject': sale,
@@ -197,14 +199,16 @@
     </div>
     <div class="col-md-4">
         {{ show_row(sale.currency.code|currency_name|title, 'text', {
-            'label': 'ekyna_commerce.currency.label.singular',
+            'label': 'currency.label.singular',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_currency',
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale.locale|language|capitalize, 'text', {
-            'label': 'ekyna_core.field.locale',
+            'label': 'field.locale',
+            'label_trans_domain': 'EkynaUi',
             'id': 'sale_locale',
             'label_col': 6
         }) }}
@@ -213,8 +217,8 @@
 {% if not sale.sample %}
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.paidTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.paid_total',
+        {{ show_row(sale.paidTotal, 'commerce_amount', {
+            'label': 'sale.field.paid_total',
             'id': 'sale_paidTotal',
             'class': 'sale-paid-total',
             'subject': sale,
@@ -223,7 +227,8 @@
     </div>
     <div class="col-md-4">
         {{ show_row(sale.paymentState|payment_state_badge, 'text', {
-            'label': 'ekyna_commerce.sale.field.payment_state',
+            'label': 'sale.field.payment_state',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_paymentState',
             'class': 'sale-payment-state',
             'label_col': 6
@@ -234,7 +239,8 @@
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.weightTotal, 'number', {
-            'label': 'ekyna_commerce.sale.field.weight_total',
+            'label': 'sale.field.weight_total',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_weightTotal',
             'class': 'sale-weight-total',
             'append': 'kg',
@@ -244,7 +250,8 @@
     {% if sale is shipment_subject -%}
     <div class="col-md-4">
         {{ show_row(sale.shipmentState|shipment_state_badge, 'text', {
-            'label': 'ekyna_commerce.sale.field.shipment_state',
+            'label': 'sale.field.shipment_state',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_shipmentState',
             'class': 'sale-shipment-state',
             'label_col': 6
@@ -252,12 +259,10 @@
     </div>
     {%- endif %}
     <div class="col-md-4">
-        {{ show_row(sale.shipmentMethod, 'entity', {
-            'label': 'ekyna_commerce.shipment_method.label.singular',
+        {{ show_row(sale.shipmentMethod, 'resource', {
             'id': 'sale_shipmentMethod',
+            'resource': 'ekyna_commerce.shipment_method',
             'class': 'sale-shipment-method',
-            'route': 'ekyna_commerce_shipment_method_admin_show',
-            'route_parameters_map': {'shipmentMethodId': 'id'},
             'label_col': 6
         }) }}
     </div>
@@ -265,8 +270,8 @@
 {% if sale is invoice_subject and not sale.sample %}
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.invoiceTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.invoice_total',
+        {{ show_row(sale.invoiceTotal, 'commerce_amount', {
+            'label': 'sale.field.invoice_total',
             'id': 'sale_invoiceTotal',
             'class': 'sale-invoice-total',
             'subject': sale,
@@ -275,7 +280,8 @@
     </div>
     <div class="col-md-4">
         {{ show_row(sale.invoiceState|invoice_state_badge, 'text', {
-            'label': 'ekyna_commerce.sale.field.invoice_state',
+            'label': 'sale.field.invoice_state',
+            'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_invoiceState',
             'class': 'sale-invoice-state',
             'label_col': 6

@@ -1,9 +1,10 @@
+{{ bootstrap_set_style('') }}
 {{ bootstrap_set_sizing('sm') }}
 {{ form_start(form) }}
     {{ form_widget(form) }}
     <p class="text-center">
         <button class="btn btn-primary" type="submit">
-            {{- 'ekyna_core.button.save'|trans -}}
+            {{- 'button.save'|trans({}, 'EkynaUi') -}}
         </button>
     </p>
 {{ form_end(form) }}

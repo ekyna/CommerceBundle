@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
-use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
+use Ekyna\Bundle\UiBundle\Form\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SaleItemsType
@@ -16,10 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleItemsType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
@@ -40,41 +41,32 @@ class SaleItemsType extends AbstractType
             })
             ->setDefault('add_button_text', function (Options $options) {
                 if ($options['children_mode']) {
-                    return 'ekyna_commerce.sale.form.add_child_item';
+                    return t('sale.form.add_child_item', [], 'EkynaCommerce');
                 }
 
-                return 'ekyna_commerce.sale.form.add_item';
+                return t('sale.form.add_item', [], 'EkynaCommerce');
             })
             ->setDefault('delete_button_confirm', function (Options $options) {
                 if ($options['children_mode']) {
-                    return 'ekyna_commerce.sale.form.remove_child_item';
+                    return t('sale.form.remove_child_item', [], 'EkynaCommerce');
                 }
 
-                return 'ekyna_commerce.sale.form.remove_item';
+                return t('sale.form.remove_item', [], 'EkynaCommerce');
             })
             ->setAllowedTypes('children_mode', 'bool');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['children_mode'] = $options['children_mode'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_sale_items';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return CollectionType::class;
     }

@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Payum\Core\Bridge\Symfony\Form\Type\GatewayFactoriesChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class PaymentMethodFactoryChoiceType
@@ -14,38 +18,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PaymentMethodFactoryChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    protected $dataClass;
+    protected string $dataClass;
 
 
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     */
-    public function __construct($dataClass)
+    public function __construct(string $dataClass)
     {
         $this->dataClass = $dataClass;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('factoryName', GatewayFactoriesChoiceType::class, [
-                'label'              => 'ekyna_commerce.field.factory_name',
-                'translation_domain' => null,
+                'label'                     => t('field.factory_name', [], 'EkynaCommerce'),
+                'choice_translation_domain' => 'PayumBundle',
             ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => $this->dataClass,

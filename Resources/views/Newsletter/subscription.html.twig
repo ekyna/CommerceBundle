@@ -32,13 +32,13 @@
                 <div class="col-md-9 col-md-offset-3">
                     <button type="submit" class="btn btn-primary">
                         <i class="fa fa-check"></i>
-                        {{ 'ekyna_core.button.save'|trans }}
+                        {{ 'button.save'|trans({}, 'EkynaUi') }}
                     </button>
                 </div>
             </div>
         {{ form_end(form) }}
         {% else %}
-            <p>{{ 'ekyna_commerce.newsletter.subscription.unavailable'|trans }}</p>
+            <p>{{ 'newsletter.subscription.unavailable'|trans({}, 'EkynaCommerce') }}</p>
         {% endif %}
     </div>
 {% endblock %}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Shipment\Gateway\PlatformActions;
  */
 class ShipmentPlatformActions extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
     public static function getConfig(): array
     {
-        $labelPrefix = 'ekyna_commerce.shipment.action.';
+        $labelPrefix = 'shipment.action.';
 
         return [
             PlatformActions::EXPORT       => [$labelPrefix . PlatformActions::EXPORT,       'default', null],
@@ -31,7 +30,7 @@ class ShipmentPlatformActions extends AbstractConstants
     /**
      * Returns the confirmation message for the given action.
      *
-     * @param $action
+     * @param string $action
      *
      * @return string|null
      */
@@ -42,5 +41,10 @@ class ShipmentPlatformActions extends AbstractConstants
         }
 
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

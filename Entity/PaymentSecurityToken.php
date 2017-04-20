@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Payum\Core\Model\Token;
 use Payum\Core\Security\TokenInterface;
 
@@ -12,26 +16,17 @@ use Payum\Core\Security\TokenInterface;
  */
 class PaymentSecurityToken extends Token
 {
-    /**
-     * @var \DateTime
-     */
-    protected $createdAt;
+    protected DateTimeInterface $createdAt;
 
-
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         parent::__construct();
 
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     /**
      * Returns the "created at" date.
-     *
-     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -40,12 +35,8 @@ class PaymentSecurityToken extends Token
 
     /**
      * Sets the "created at" date.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return $this|TokenInterface
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(DateTimeInterface $createdAt): TokenInterface
     {
         $this->createdAt = $createdAt;
 

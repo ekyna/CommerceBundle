@@ -1,31 +1,26 @@
 {% apply spaceless %}
 <div class="actions">
     {%- if supplierOrder is validated_supplier_order or supplierOrder is partial_supplier_order -%}
-        {{- ui_button('ekyna_commerce.supplier_delivery.button.new', {
-            'type': 'link',
-            'path': path('ekyna_commerce_supplier_delivery_admin_new', {
-                'supplierOrderId': supplierOrder.id
-            }),
-            'theme': 'primary',
-            'icon': 'plus',
+        {{ admin_resource_btn('ekyna_commerce.supplier_delivery', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
+            'label': t('supplier_delivery.button.new', {}, 'EkynaCommerce'),
             'size': 'sm',
-        }) -}}
+        }) }}
     {% endif -%}
 </div>
 {% for delivery in supplierOrder.deliveries %}
     {% set deliveryId = 'delivery_' ~ loop.index0 ~ '_' -%}
     <h5 class="sub-header">
-        {{ 'ekyna_commerce.supplier_delivery.header.show'|trans({
-            '%date%': delivery.createdAt|localizeddate('short', 'none')
-        })|raw }}
+        {{ 'supplier_delivery.header.show'|trans({
+            '%date%': delivery.createdAt|format_datetime('short', 'none')
+        }, 'EkynaCommerce')|raw }}
     </h5>
     <table class="table table-stripped table-condensed table-alt-head">
         <thead>
         <tr>
-            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-            <th>{{ 'ekyna_commerce.field.geocode'|trans }}</th>
-            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+            <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.geocode'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -34,10 +29,7 @@
             {% set itemId = deliveryId ~ 'item_' ~ loop.index0 ~ '_' %}
             <td id="{{ itemId ~ 'designation' }}">
                 {% if item.orderItem.product is not null -%}
-                <a href="{{ path('ekyna_commerce_supplier_product_admin_show', {
-                    'supplierId': item.orderItem.product.supplier.id,
-                    'supplierProductId': item.orderItem.product.id,
-                }) }}">
+                <a href="{{ admin_resource_path(item.orderItem.product) }}">
                     {{ item.orderItem.designation }}
                 </a>
                 {%- else -%}
@@ -51,19 +43,19 @@
                 {{ item.geocode }}
             </td>
             <td id="{{ itemId ~ 'quantity' }}" class="text-right">
-                {{ item.quantity|localizednumber }}{# TODO packaging format #}
+                {{ item.quantity|format_number }}{# TODO packaging format #}
             </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
     <div class="actions">
-        {{ admin_resource_btn(delivery, 'edit', {'size': 'xs'}) }}
-        {{ admin_resource_btn(delivery, 'remove', {'size': 'xs'}) }}
+        {{ admin_resource_btn(delivery, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction', {'size': 'xs'}) }}
+        {{ admin_resource_btn(delivery, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction', {'size': 'xs'}) }}
     </div>
 {% else %}
     <p>
-        <em>{{ 'ekyna_commerce.supplier_delivery.alert.no_item'|trans }}</em>
+        <em>{{ 'supplier_delivery.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
     </p>
 {% endfor %}
 {% endapply %}

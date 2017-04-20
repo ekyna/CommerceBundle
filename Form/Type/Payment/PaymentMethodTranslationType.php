@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MethodTranslationType;
-use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
+use Ekyna\Bundle\UiBundle\Form\Type\TinymceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class PaymentMethodTranslationType
@@ -14,30 +18,24 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class PaymentMethodTranslationType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('notice', TinymceType::class, [
-                'label'    => 'ekyna_commerce.payment_method.field.notice',
+                'label'    => t('payment_method.field.notice', [], 'EkynaCommerce'),
                 'theme'    => 'light',
                 'required' => false,
                 //'admin_helper' => 'CMS_PAGE_CONTENT',
             ])
             ->add('footer', TinymceType::class, [
-                'label'    => 'ekyna_commerce.payment_method.field.footer',
+                'label'    => t('payment_method.field.footer', [], 'EkynaCommerce'),
                 'theme'    => 'light',
                 'required' => false,
                 //'admin_helper' => 'CMS_PAGE_CONTENT',
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return MethodTranslationType::class;
     }

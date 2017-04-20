@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Component\Table\Column\AbstractColumnType;
@@ -8,7 +10,10 @@ use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function end;
+use function sprintf;
 
 /**
  * Class SupplierOrderTrackingType
@@ -17,65 +22,43 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class SupplierOrderTrackingType extends AbstractColumnType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
 
-    /**
-     * Constructor.
-     *
-     * @param TranslatorInterface $translator
-     */
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildColumn(ColumnBuilderInterface $builder, array $options)
+    public function buildColumn(ColumnBuilderInterface $builder, array $options): void
     {
         $builder->setSortable(false);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        if (!empty($urls = $row->getData('trackingUrls'))) {
-            if (false !== $url = end($urls)) {
-                $label = $this->translator->trans('ekyna_core.value.yes');
+        if (!empty($urls = $row->getData('trackingUrls')) && (false !== $url = end($urls))) {
+            $label = $this->translator->trans('value.yes', [], 'EkynaUi');
 
-                $view->vars['value'] = '<a href="' . $url . '" target="_blank" class="label label-success">' .
-                    $label . '&nbsp;<span class="fa fa-map-marker"></span>' .
-                '</a>';
+            $view->vars['value'] = '<a href="' . $url . '" target="_blank" class="label label-success">' .
+                $label . '&nbsp;<span class="fa fa-map-marker"></span>' .
+            '</a>';
 
-                return;
-            }
+            return;
         }
 
         $view->vars['value'] = sprintf(
             '<span class="label label-danger">%s</span>',
-            $this->translator->trans('ekyna_core.value.no')
+            $this->translator->trans('value.no', [], 'EkynaUi')
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

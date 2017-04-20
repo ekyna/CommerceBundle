@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Payment;
 
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
@@ -14,33 +16,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class NotifyController
 {
-    /**
-     * @var PaymentHelper
-     */
-    private $paymentHelper;
+    private PaymentHelper $paymentHelper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param PaymentHelper $paymentHelper
-     */
     public function __construct(PaymentHelper $paymentHelper)
     {
         $this->paymentHelper = $paymentHelper;
     }
 
-    /**
-     * Payment notify action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function notify(Request $request)
+    public function __invoke(Request $request): Response
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException("XHR is not supported.");
+            throw new NotFoundHttpException('XHR is not supported.');
         }
 
         $this->paymentHelper->notify($request);

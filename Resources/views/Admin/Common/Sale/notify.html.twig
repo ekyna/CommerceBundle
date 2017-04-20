@@ -1,0 +1,23 @@
+{% extends '@EkynaAdmin/Entity/sided.html.twig' %}
+
+{% set resource = context.resource %}
+{% set resource_name = context.config.dashedName %}
+
+{% block page_title %}
+    {{ (context.config.transPrefix ~ '.button.notify')|trans({}, context.config.transDomain)|raw }}
+{% endblock page_title %}
+
+{% block title %}
+    <h1>{{ (context.config.transPrefix ~ '.header.notify')|trans({'%name%': resource.number}, context.config.transDomain)|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction') }}
+{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form) }}
+    {% include form_template %}
+    {{ form_end(form) }}
+{% endblock main %}

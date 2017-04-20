@@ -1,0 +1,13 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ show_row(supplierCarrier.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi'
+        }) }}
+        {{ show_row(supplierCarrier.tax, 'resource', {
+            'resource': 'ekyna_commerce.tax'
+        }) }}
+    </div>
+{%- endblock main_contents %}

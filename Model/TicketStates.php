@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Support\Model\TicketStates as States;
  */
 final class TicketStates extends AbstractConstants
 {
-    /**
-     * {@inheritdoc}
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.status.';
+        $prefix = 'status.';
 
         return [                                                        // User       Admin
             States::STATE_NEW      => [$prefix . States::STATE_NEW,      'brown',   'brown'],
@@ -28,18 +27,15 @@ final class TicketStates extends AbstractConstants
         ];
     }
 
-    /**
-     * Returns the theme for the given state.
-     *
-     * @param string $state
-     * @param bool   $admin
-     *
-     * @return string
-     */
-    static public function getTheme(string $state, bool $admin = false): ?string
+    public static function getTheme(string $constant, bool $admin = false): ?string
     {
-        static::isValid($state, true);
+        TicketStates::isValid($constant, true);
 
-        return static::getConfig()[$state][$admin ? 2 : 1];
+        return TicketStates::getConfig()[$constant][$admin ? 2 : 1];
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

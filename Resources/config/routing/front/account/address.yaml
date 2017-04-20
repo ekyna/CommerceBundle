@@ -1,0 +1,63 @@
+ekyna_commerce_account_address_index:
+    path: ''
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\AddressController::index
+    methods: [GET]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Mes adresses
+            parent: ekyna_user_account_index
+            position: 60
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_address_add:
+    path:
+        en: /add
+        fr: /ajouter
+        es: /agregar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\AddressController::add
+    methods: [GET|POST]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_address_edit:
+    path:
+        en: /{addressId}/edit
+        fr: /{addressId}/modifier
+        es: /{addressId}/editar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\AddressController::edit
+    methods: [GET|POST]
+    requirements:
+        addressId: \d+
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_address_remove:
+    path:
+        en: /{addressId}/remove
+        fr: /{addressId}/supprimer
+        es: /{addressId}/borrar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\AddressController::remove
+    methods: [GET|POST]
+    requirements:
+        addressId: \d+
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_address_default_invoice:
+    path: /{addressId}/default-invoice
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\AddressController::invoiceDefault
+    methods: [GET]
+    requirements:
+        addressId: \d+
+
+ekyna_commerce_account_address_default_delivery:
+    path: /{addressId}/default-delivery
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\AddressController::deliveryDefault
+    methods: [GET]
+    requirements:
+        addressId: \d+

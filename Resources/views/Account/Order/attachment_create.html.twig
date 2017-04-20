@@ -2,7 +2,7 @@
 
 {% block account %}
 {% apply spaceless %}
-    <h3>{{ 'ekyna_commerce.account.order.attachment'|trans({'%number%': order.number})|raw }}</h3>
+    <h3>{{ 'account.order.attachment'|trans({'%number%': order.number}, 'EkynaCommerce')|raw }}</h3>
 
     <hr>
 
@@ -21,7 +21,7 @@
     {{ form_end(form) }}
 
     <br><br>
-    <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
+    <h3>{{ 'account.order.title'|trans({}, 'EkynaCommerce')|raw }}</h3>
     <hr>
     {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer

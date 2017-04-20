@@ -1,0 +1,15 @@
+ekyna_commerce_account_newsletter_index:
+    path: ''
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\NewsletterController::index
+    methods: [GET]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Newsletter
+            parent: ekyna_user_account_index
+            position: 10
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false

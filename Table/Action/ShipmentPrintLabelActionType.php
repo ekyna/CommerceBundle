@@ -1,19 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
-use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Entity\AbstractShipmentLabel;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayActions;
+use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Gateway\PersisterInterface;
-use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
+use Ekyna\Component\Resource\Exception\PdfException;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_map;
+use function is_array;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentPrintLabelActionType
@@ -22,33 +30,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentPrintLabelActionType extends AbstractActionType
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $gatewayRegistry;
+    private GatewayRegistryInterface $gatewayRegistry;
+    private PersisterInterface       $shipmentPersister;
+    private LabelRenderer            $labelRenderer;
 
-    /**
-     * @var PersisterInterface
-     */
-    private $shipmentPersister;
-
-    /**
-     * @var LabelRenderer
-     */
-    private $labelRenderer;
-
-
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface  $gatewayRegistry
-     * @param PersisterInterface $shipmentPersister
-     * @param LabelRenderer      $labelRenderer
-     */
     public function __construct(
-        RegistryInterface $gatewayRegistry,
-        PersisterInterface $shipmentPersister,
-        LabelRenderer $labelRenderer
+        GatewayRegistryInterface $gatewayRegistry,
+        PersisterInterface       $shipmentPersister,
+        LabelRenderer            $labelRenderer
     ) {
         $this->gatewayRegistry = $gatewayRegistry;
         $this->shipmentPersister = $shipmentPersister;
@@ -68,14 +57,14 @@ class ShipmentPrintLabelActionType extends AbstractActionType
         );
 
         $shipments = array_map(function (RowInterface $row) {
-            return $row->getData();
+            return $row->getData(null);
         }, $rows);
 
         $types = $options['types'];
         $labels = [];
 
         try {
-            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+            /** @var ShipmentInterface $shipment */
             foreach ($shipments as $shipment) {
                 $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 
@@ -106,18 +95,15 @@ class ShipmentPrintLabelActionType extends AbstractActionType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'label' => 'ekyna_commerce.shipment.action.shipment_labels',
-                'types' => [AbstractShipmentLabel::TYPE_SHIPMENT],
+                'label' => t('shipment.action.shipment_labels', [], 'EkynaCommerce'),
+                'types' => [ShipmentLabelInterface::TYPE_SHIPMENT],
             ])
             ->setAllowedTypes('types', 'array')
-            ->setAllowedValues('types', function($value) {
+            ->setAllowedValues('types', function ($value) {
                 if (!is_array($value) || empty($value)) {
                     return false;
                 }

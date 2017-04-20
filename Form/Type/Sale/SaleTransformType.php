@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
@@ -17,6 +19,11 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function array_unshift;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class SaleTransformType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
@@ -24,14 +31,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SaleTransformType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('comment', Type\TextareaType::class, [
-                'label'    => 'ekyna_core.field.comment',
+                'label'    => t('field.comment', [], 'EkynaUi'),
                 'required' => false,
             ])
             ->add('confirm', Type\CheckboxType::class, [
@@ -49,52 +53,52 @@ class SaleTransformType extends AbstractType
                 ->add('currency', CurrencyChoiceType::class)
                 ->add('locale', LocaleChoiceType::class)
                 ->add('autoShipping', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.auto_shipping',
+                    'label'    => t('sale.field.auto_shipping', [], 'EkynaCommerce'),
                     'required' => false,
                     'attr'     => [
                         'align_with_widget' => true,
                     ],
                 ])
                 ->add('autoDiscount', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.auto_discount',
+                    'label'    => t('sale.field.auto_discount', [], 'EkynaCommerce'),
                     'required' => false,
                     'attr'     => [
                         'align_with_widget' => true,
                     ],
                 ])
                 ->add('autoNotify', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.auto_notify',
+                    'label'    => t('sale.field.auto_notify', [], 'EkynaCommerce'),
                     'required' => false,
                     'attr'     => [
                         'align_with_widget' => true,
                     ],
                 ])
                 ->add('taxExempt', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.tax_exempt',
+                    'label'    => t('sale.field.tax_exempt', [], 'EkynaCommerce'),
                     'required' => false,
                     'attr'     => [
                         'align_with_widget' => true,
                     ],
                 ])
                 ->add('title', Type\TextType::class, [
-                    'label'    => 'ekyna_core.field.title',
+                    'label'    => t('field.title', [], 'EkynaUi'),
                     'required' => false,
                 ])
                 ->add('voucherNumber', Type\TextType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                    'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
                     'required' => false,
                 ])
                 ->add('originNumber', Type\TextType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.origin_number',
+                    'label'    => t('sale.field.origin_number', [], 'EkynaCommerce'),
                     'required' => false,
                 ])
                 ->add('description', Type\TextareaType::class, [
-                    'label'    => 'ekyna_commerce.field.description',
+                    'label'    => t('field.description', [], 'EkynaCommerce'),
                     'required' => false,
                 ]);
         }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             /** @var SaleInterface $sale */
             $sale = $event->getData();
             $form = $event->getForm();
@@ -103,7 +107,7 @@ class SaleTransformType extends AbstractType
                 $customer = $sale->getCustomer();
                 if ($sale instanceof OrderInterface) {
                     $form->add('sample', CheckboxType::class, [
-                        'label'    => 'ekyna_commerce.field.sample',
+                        'label'    => t('field.sample', [], 'EkynaCommerce'),
                         'required' => false,
                         'attr'     => [
                             'align_with_widget' => true,
@@ -121,16 +125,17 @@ class SaleTransformType extends AbstractType
                     }
 
                     $form->add('customer', Type\ChoiceType::class, [
-                        'label'        => 'ekyna_commerce.customer.label.singular',
-                        'choices'      => $choices,
-                        'choice_value' => 'id',
-                        'choice_label' => function ($customer) {
+                        'label'                     => t('customer.label.singular', [], 'EkynaCommerce'),
+                        'choices'                   => $choices,
+                        'choice_value'              => 'id',
+                        'choice_label'              => function ($customer) {
                             return (string)$customer;
                         },
-                        'attr'         => [
-                            'help_text' => 'ekyna_commerce.customer.help.hierarchy',
+                        'choice_translation_domain' => false,
+                        'attr'                      => [
+                            'help_text' => t('customer.help.hierarchy', [], 'EkynaCommerce'),
                         ],
-                        'select2'      => false,
+                        'select2'                   => false,
                     ]);
                 }
             } else {
@@ -151,16 +156,13 @@ class SaleTransformType extends AbstractType
         });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
                 'data_class' => SaleInterface::class,
                 'message'    => null,
             ])
-            ->setAllowedTypes('message', 'string');
+            ->setAllowedTypes('message', [TranslatableInterface::class, 'string']);
     }
 }

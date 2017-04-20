@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -14,7 +19,11 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+use function array_replace;
+use function is_array;
+use function sprintf;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class OrderType
@@ -23,47 +32,25 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class OrderType extends AbstractColumnType
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private ResourceHelper $helper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     */
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(ResourceHelper $helper)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->helper = $helper;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $orders = $row->getData($column->getConfig()->getPropertyPath());
 
         if ($orders instanceof OrderInterface) {
-            $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $orders->getId(),
-            ]);
+            $href = $this->helper->generateResourcePath($orders, ReadAction::class);
 
-            $view->vars['value'] = sprintf(
-                '<a href="%s">%s</a> ',
-                $href,
-                $orders->getNumber()
-            );
+            /** @noinspection HtmlUnknownTarget */
+            $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $orders->getNumber());
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-side-detail' => json_encode([
-                    'route'      => 'ekyna_commerce_order_admin_summary',
-                    'parameters' => [
-                        'orderId' => $orders->getId(),
-                    ],
-                ]),
+                'data-side-detail' => $this->helper->generateResourcePath($orders, SummaryAction::class),
             ]);
 
             return;
@@ -82,35 +69,22 @@ class OrderType extends AbstractColumnType
                 continue;
             }
 
-            $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $order->getId(),
-            ]);
+            $href = $this->helper->generateResourcePath($order, ReadAction::class);
+            $summary = $this->helper->generateResourcePath($order, SummaryAction::class);
 
-            $summary = json_encode([
-                'route'      => 'ekyna_commerce_order_admin_summary',
-                'parameters' => ['orderId' => $order->getId()],
-            ]);
-
-            $output .= sprintf(
-                '<a href="%s" data-side-detail=\'%s\'>%s</a> ',
-                $href,
-                $summary,
-                $order->getNumber()
-            );
+            /** @noinspection HtmlUnknownTarget */
+            $output .= sprintf('<a href="%s" data-side-detail="%s">%s</a>', $href, $summary, $order->getNumber());
         }
 
         $view->vars['value'] = $output;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function applySort(
         AdapterInterface $adapter,
         ColumnInterface $column,
         ActiveSort $activeSort,
         array $options
-    ) {
+    ): bool {
         if (!$adapter instanceof EntityAdapter) {
             return false;
         }
@@ -126,10 +100,7 @@ class OrderType extends AbstractColumnType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
@@ -139,7 +110,7 @@ class OrderType extends AbstractColumnType
                         return $value;
                     }
 
-                    return 'ekyna_commerce.order.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    return t('order.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
                 },
                 'property_path' => function (Options $options, $value) {
                     if ($value) {
@@ -151,18 +122,12 @@ class OrderType extends AbstractColumnType
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ColumnType::class;
     }

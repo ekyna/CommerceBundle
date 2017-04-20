@@ -1,4 +1,4 @@
-define(['jquery', 'ekyna-ui'], function($) {
+define(['jquery', 'ekyna-spinner'], function($) {
     "use strict";
 
     var $forms = $('form.checkout-payment');

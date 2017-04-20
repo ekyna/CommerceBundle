@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Component\Commerce\Customer\Balance\Balance;
@@ -9,8 +11,11 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Currencies;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
+use function ucfirst;
 
 /**
  * Class BalanceType
@@ -19,49 +24,39 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BalanceType extends AbstractType
 {
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
+    private OrderRepositoryInterface $orderRepository;
 
-    /**
-     * Constructor.
-     *
-     * @param OrderRepositoryInterface $orderRepository
-     */
     public function __construct(OrderRepositoryInterface $orderRepository)
     {
         $this->orderRepository = $orderRepository;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('from', Type\DateType::class, [
-                'label'          => 'ekyna_core.field.from_date',
+                'label'          => t('field.from_date', [], 'EkynaUi'),
                 'required'       => false,
-                'picker_options' => [
+                /*'picker_options' => [
                     'widgetPositioning' => [
                         'horizontal' => 'left',
                     ],
-                ],
+                ],*/
             ])
             ->add('to', Type\DateType::class, [
-                'label'    => 'ekyna_core.field.to_date',
+                'label'    => t('field.to_date', [], 'EkynaUi'),
                 'required' => false,
             ])
             ->add('filter', Type\ChoiceType::class, [
-                'label'    => 'ekyna_core.button.filter',
+                'label'    => t('button.filter', [], 'EkynaUi'),
                 'required' => true,
                 'select2'  => false,
                 'choices'  => [
-                    'ekyna_commerce.customer.balance.all'             => Balance::FILTER_ALL,
-                    'ekyna_commerce.customer.balance.due_invoices'    => Balance::FILTER_DUE_INVOICES,
-                    'ekyna_commerce.customer.balance.befall_invoices' => Balance::FILTER_BEFALL_INVOICES,
+                    'customer.balance.all'             => Balance::FILTER_ALL,
+                    'customer.balance.due_invoices'    => Balance::FILTER_DUE_INVOICES,
+                    'customer.balance.befall_invoices' => Balance::FILTER_BEFALL_INVOICES,
                 ],
+                'choice_translation_domain' => 'EkynaCommerce'
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -70,15 +65,14 @@ class BalanceType extends AbstractType
             $customer = $balance->getCustomer();
 
             $currencies = $this->orderRepository->getCustomerCurrencies($customer);
-            $bundle = Intl::getCurrencyBundle();
 
             $choices = [];
             foreach ($currencies as $currency) {
-                $choices[ucfirst($bundle->getCurrencyName($currency))] = $currency;
+                $choices[ucfirst(Currencies::getName($currency))] = $currency;
             }
 
             $event->getForm()->add('currency', Type\ChoiceType::class, [
-                'label'    => 'ekyna_core.field.currency',
+                'label'    => t('field.currency', [], 'EkynaUi'),
                 'required' => true,
                 'select2'  => false,
                 'choices'  => $choices,
@@ -86,10 +80,7 @@ class BalanceType extends AbstractType
         });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('data_class', Balance::class);
     }

@@ -17,15 +17,19 @@
         {{- order.payments|last|payment_state_message|raw -}}
 
         <p class="text-center">
-            {{- 'ekyna_commerce.checkout.confirmation.order_state'|trans }} {{ order|sale_state_badge -}}
+            {{- 'checkout.confirmation.order_state'|trans({}, 'EkynaCommerce') }} {{ order|sale_state_badge -}}
         </p>
 
-        {{- render_sale_view(order|sale_view({'taxes_view': false})) -}}
+        {{- render_sale_view(order|sale_view({
+            'private': false,
+            'editable': false,
+            'taxes_view': false
+        })) -}}
 
         {%- if order.customer is not null and is_granted('ROLE_USER') -%}
         <p class="text-center">
-            <a href="{{ path('ekyna_commerce_account_order_show', {'number': order.number}) }}" class="btn btn-primary">
-                {{- 'ekyna_commerce.checkout.confirmation.see_details'|trans -}}
+            <a href="{{ path('ekyna_commerce_account_order_read', {'number': order.number}) }}" class="btn btn-primary">
+                {{- 'checkout.confirmation.see_details'|trans({}, 'EkynaCommerce') -}}
             </a>
         </p>
         {%- endif %}

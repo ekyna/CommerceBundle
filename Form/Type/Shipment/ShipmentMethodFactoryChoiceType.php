@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Symfony\Component\Form\AbstractType;
@@ -13,34 +15,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentMethodFactoryChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    protected $dataClass;
+    protected string $dataClass;
 
-
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     */
-    public function __construct($dataClass)
+    public function __construct(string $dataClass)
     {
         $this->dataClass = $dataClass;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('platformName', ShipmentPlatformChoiceType::class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => $this->dataClass,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
@@ -15,6 +17,9 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_replace;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class SalePaymentCompletedAtType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
@@ -22,16 +27,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SalePaymentCompletedAtType extends AbstractColumnType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         /** @var PaymentInterface|null $payment */
         $payment = null;
 
         /** @var Collection $payments */
         $payments = $row->getData('payments'); // $column->getConfig()->getPropertyPath()
+
         /** @var PaymentInterface $p */
         foreach ($payments as $p) {
             if ($p->isRefund()) {
@@ -49,15 +52,12 @@ class SalePaymentCompletedAtType extends AbstractColumnType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function applySort(
         AdapterInterface $adapter,
         ColumnInterface $column,
         ActiveSort $activeSort,
         array $options
-    ) {
+    ): bool {
         if (!$adapter instanceof EntityAdapter) {
             return false;
         }
@@ -77,28 +77,14 @@ class SalePaymentCompletedAtType extends AbstractColumnType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setDefault('label', 'ekyna_commerce.sale.field.paid_at')
-            ->setDefault('property_path', false);
+            ->setDefault('label', t('sale.field.paid_at', [], 'EkynaCommerce'))
+            ->setDefault('property_path', null);
     }
 
-    /**
-     * @inheritDoc
-     */
-    /*public function getBlockPrefix()
-    {
-        return 'date_time';
-    }*/
-
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return DateTimeType::class;
     }

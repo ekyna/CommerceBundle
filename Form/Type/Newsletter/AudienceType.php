@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Newsletter\Entity\AudienceTranslation;
 use Ekyna\Component\Commerce\Newsletter\Gateway\GatewayInterface;
 use Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry;
@@ -13,39 +15,29 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+use function array_combine;
+use function array_filter;
+use function array_map;
+use function mb_convert_case;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class AudienceType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class AudienceType extends ResourceFormType
+class AudienceType extends AbstractResourceType
 {
-    /**
-     * @var GatewayRegistry
-     */
-    private $registry;
+    private GatewayRegistry $registry;
 
-
-    /**
-     * Constructor.
-     *
-     * @param GatewayRegistry $registry
-     * @param string          $audienceClass
-     */
-    public function __construct(GatewayRegistry $registry, string $audienceClass)
+    public function __construct(GatewayRegistry $registry)
     {
-        parent::__construct($audienceClass);
-
         $this->registry = $registry;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             /** @var AudienceInterface $data */
             $data = $event->getData();
             $form = $event->getForm();
@@ -62,9 +54,9 @@ class AudienceType extends ResourceFormType
             }
 
             $form->add('gateway', Type\ChoiceType::class, [
-                'label'    => 'ekyna_commerce.field.factory_name',
+                'label'    => t('field.factory_name', [], 'EkynaCommerce'),
                 'choices'  => array_combine(array_map(function ($name) {
-                    return mb_convert_case($name, MB_CASE_TITLE, "UTF-8");
+                    return mb_convert_case($name, MB_CASE_TITLE, 'UTF-8');
                 }, $gatewayNames), $gatewayNames),
                 'select2'  => false,
                 'disabled' => $disabled,
@@ -73,17 +65,17 @@ class AudienceType extends ResourceFormType
 
         $builder
             ->add('name', Type\TextType::class, [
-                'label' => 'ekyna_core.field.name',
+                'label' => t('field.name', [], 'EkynaUi'),
             ])
             ->add('public', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.audience.field.public',
+                'label'    => t('audience.field.public', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('default', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.default',
+                'label'    => t('field.default', [], 'EkynaUi'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,

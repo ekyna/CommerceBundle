@@ -1,17 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Event\AddToCartEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
-use Ekyna\Bundle\CoreBundle\Modal;
+use Ekyna\Bundle\UiBundle\Model\Modal;
+use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
+use Ekyna\Component\Commerce\Cart\Entity\Cart;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Cart\Model\CartItemInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
+use Ekyna\Component\Commerce\Common\View\SaleView;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 /**
  * Class CartHelper
@@ -20,92 +28,41 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CartHelper
 {
-    /**
-     * @var SaleHelper
-     */
-    protected $saleHelper;
+    protected SaleHelper               $saleHelper;
+    protected CartProviderInterface    $cartProvider;
+    protected ModalRenderer            $modalRenderer;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected string                   $cartItemClass;
+    protected bool                     $debug;
 
-    /**
-     * @var CartProviderInterface
-     */
-    protected $cartProvider;
-
-    /**
-     * @var Modal\Renderer
-     */
-    protected $modalRenderer;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var string
-     */
-    protected $cartItemClass;
-
-    /**
-     * @var bool
-     */
-    protected $debug;
-
-
-    /**
-     * Constructor.
-     *
-     * @param SaleHelper               $saleHelper
-     * @param CartProviderInterface    $cartProvider
-     * @param Modal\Renderer           $modalRenderer
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param string                   $cartItemClass
-     * @param bool                     $debug
-     */
     public function __construct(
-        SaleHelper $saleHelper,
-        CartProviderInterface $cartProvider,
-        Modal\Renderer $modalRenderer,
+        SaleHelper               $saleHelper,
+        CartProviderInterface    $cartProvider,
+        ModalRenderer            $modalRenderer,
         EventDispatcherInterface $eventDispatcher,
-        $cartItemClass,
-        $debug
+        bool                     $debug
     ) {
         $this->saleHelper = $saleHelper;
         $this->cartProvider = $cartProvider;
         $this->modalRenderer = $modalRenderer;
         $this->eventDispatcher = $eventDispatcher;
-        $this->cartItemClass = $cartItemClass;
         $this->debug = $debug;
     }
 
-    /**
-     * Returns the sale helper.
-     *
-     * @return SaleHelper
-     */
-    public function getSaleHelper()
+    public function getSaleHelper(): SaleHelper
     {
         return $this->saleHelper;
     }
 
-    /**
-     * Returns the cart provider.
-     *
-     * @return CartProviderInterface
-     */
-    public function getCartProvider()
+    public function getCartProvider(): CartProviderInterface
     {
         return $this->cartProvider;
     }
 
     /**
      * Builds the cart view.
-     *
-     * @param CartInterface $cart
-     * @param array         $options
-     *
-     * @return \Ekyna\Component\Commerce\Common\View\SaleView
      */
-    public function buildView(CartInterface $cart, array $options = [])
+    public function buildView(CartInterface $cart, array $options = []): SaleView
     {
         if (!isset($options['taxes_view'])) {
             $options['taxes_view'] = false;
@@ -116,17 +73,12 @@ class CartHelper
 
     /**
      * Initializes 'add to cart'.
-     *
-     * @param SubjectInterface $subject
-     * @param Modal\Modal|null $modal
-     *
-     * @return AddToCartEvent
      */
-    public function initializeAddToCart(SubjectInterface $subject, Modal\Modal $modal = null)
+    public function initializeAddToCart(SubjectInterface $subject, Modal $modal = null): AddToCartEvent
     {
-        $event = new AddToCartEvent($subject, $modal);
+        $event = new AddToCartEvent($subject, $modal, null);
 
-        $this->eventDispatcher->dispatch(AddToCartEvent::INITIALIZE, $event);
+        $this->eventDispatcher->dispatch($event, AddToCartEvent::INITIALIZE);
 
         if ($event->isPropagationStopped()) {
             $this->createEventResponse($event);
@@ -137,16 +89,11 @@ class CartHelper
 
     /**
      * Creates the 'add subject to cart' form.
-     *
-     * @param SubjectInterface $subject
-     * @param array            $options
-     *
-     * @return FormInterface
      */
-    public function createAddSubjectToCartForm(SubjectInterface $subject, array $options = [])
+    public function createAddSubjectToCartForm(SubjectInterface $subject, array $options = []): FormInterface
     {
-        /** @var \Ekyna\Component\Commerce\Cart\Model\CartItemInterface $item */
-        $item = new $this->cartItemClass; // TODO Use sale factory (create methods to use interface: SaleInterface, etc)
+        /** @var CartItemInterface $item */
+        $item = $this->getSaleHelper()->getSaleFactory()->createItemForSale(new Cart());
 
         $this->getSaleHelper()->getSubjectHelper()->assign($item, $subject);
 
@@ -163,7 +110,7 @@ class CartHelper
 
         if ($options['submit_button']) {
             $options['attr']['data-add-to-cart'] = $action;
-        } elseif(!isset($options['action'])) {
+        } elseif (!isset($options['action'])) {
             $options['action'] = $action;
         }
 
@@ -175,19 +122,16 @@ class CartHelper
 
     /**
      * Handles the 'add subject to cart' form submission.
-     *
-     * @param FormInterface $form
-     * @param Request       $request
-     * @param Modal\Modal   $modal
-     *
-     * @return AddToCartEvent|null
      */
-    public function handleAddSubjectToCartForm(FormInterface $form, Request $request, Modal\Modal $modal = null)
-    {
+    public function handleAddSubjectToCartForm(
+        FormInterface $form,
+        Request       $request,
+        Modal         $modal = null
+    ): ?AddToCartEvent {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var \Ekyna\Component\Commerce\Cart\Model\CartItemInterface $item */
+            /** @var CartItemInterface $item */
             $item = $form->getData();
             /** @var SubjectInterface $subject */
             $subject = $this->getSaleHelper()->getSubjectHelper()->resolve($item);
@@ -206,18 +150,18 @@ class CartHelper
 
                 $this->cartProvider->saveCart();
 
-                $this->eventDispatcher->dispatch(AddToCartEvent::SUCCESS, $event);
+                $this->eventDispatcher->dispatch($event, AddToCartEvent::SUCCESS);
 
                 if (null !== $response = $this->createEventResponse($event)) {
                     // Custom header to trigger reload of cart widget
                     $response->headers->set('X-Commerce-Success', 1);
                 }
-            } catch (\Exception $e) {
+            } catch (Throwable $exception) {
                 if ($this->debug) {
-                    throw $e;
+                    throw $exception;
                 }
 
-                $this->eventDispatcher->dispatch(AddToCartEvent::FAILURE, $event);
+                $this->eventDispatcher->dispatch($event, AddToCartEvent::FAILURE);
 
                 $this->createEventResponse($event);
             }
@@ -230,12 +174,8 @@ class CartHelper
 
     /**
      * Creates the event response.
-     *
-     * @param AddToCartEvent $event
-     *
-     * @return \Symfony\Component\HttpFoundation\Response|null
      */
-    protected function createEventResponse(AddToCartEvent $event)
+    protected function createEventResponse(AddToCartEvent $event): ?Response
     {
         if (null !== $response = $event->getResponse()) {
             return $response;

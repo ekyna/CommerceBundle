@@ -1,9 +1,0 @@
-ekyna_commerce_inventory_admin_subject_stock:
-    path: /{provider}/{identifier}/stock
-    defaults: { _controller: EkynaCommerceBundle:Admin\Inventory:stock }
-    methods: [GET]
-    requirements:
-        provider: "[a-z-]+"
-        identifier: \d+
-    options:
-        expose: true

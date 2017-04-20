@@ -16,7 +16,7 @@ define(['jquery', 'routing'], function($, Router) {
                     return false;
                 }
 
-                var url = Router.generate('ekyna_commerce_supplier_order_admin_label', {
+                var url = Router.generate('admin_ekyna_commerce_supplier_order_label', {
                     'supplierOrderId': orderId,
                     'id': [itemId],
                     'geocode': $button.closest('tr').find('input.geocode').val()

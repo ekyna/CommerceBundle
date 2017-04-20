@@ -1,19 +1,18 @@
 {% extends "email.html.twig" %}
 
 {% block subject %}
-    {{ 'ekyna_commerce.customer.notify.fraudster.subject'|trans }}
+    {{ 'customer.notify.fraudster.subject'|trans({}, 'EkynaCommerce') }}
 {% endblock subject %}
 
 {% block body %}
     <p>
-        {{ 'ekyna_commerce.customer.notify.fraudster.message'|trans({
+        {{ 'customer.notify.fraudster.message'|trans({
             '{identity}': (customer.company is not empty ? (customer.company ~ ' ') : '') ~ customer|identity
-        })|raw }}
+        }, 'EkynaCommerce')|raw }}
     </p>
     <p style="text-align: center;">
-        <a href="{{ url('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}">
-            {{ 'ekyna_commerce.customer.notify.admin_link'|trans }}
+        <a href="{{ admin_resource_path(customer, 'admin_read', {}, true) }}">
+            {{ 'customer.notify.admin_link'|trans({}, 'EkynaCommerce') }}
         </a>
     </p>
-
 {% endblock body %}

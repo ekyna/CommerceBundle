@@ -1,63 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\PaymentMethodTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MentionsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MessagesType;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Payment\Entity;
 use Payum\Core\Bridge\Symfony\Form\Type\GatewayFactoriesChoiceType;
 use Payum\Core\Registry\RegistryInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class PaymentMethodType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Payment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentMethodType extends ResourceFormType
+class PaymentMethodType extends AbstractResourceType
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $registry;
+    private RegistryInterface $registry;
 
-
-    /**
-     * Constructor.
-     *
-     * @param string            $class
-     * @param RegistryInterface $registry
-     */
-    public function __construct(string $class, RegistryInterface $registry)
+    public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($class);
-
         $this->registry = $registry;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', Type\TextType::class, [
-                'label' => 'ekyna_core.field.name',
+                'label' => t('field.name', [], 'EkynaUi'),
             ])
             ->add('factoryName', GatewayFactoriesChoiceType::class, [
-                'label'              => 'ekyna_commerce.field.factory_name',
-                'translation_domain' => null,
-                'disabled'           => true,
+                'label'                     => t('field.factory_name', [], 'EkynaCommerce'),
+                'choice_translation_domain' => 'PayumBundle',
+                'disabled'                  => true,
             ])
             ->add('media', MediaChoiceType::class, [
-                'label' => 'ekyna_core.field.image',
+                'label' => t('field.image', [], 'EkynaUi'),
                 'types' => MediaTypes::IMAGE,
             ])
             ->add('translations', TranslationsFormsType::class, [
@@ -77,28 +66,28 @@ class PaymentMethodType extends ResourceFormType
                 'translation_class' => Entity\PaymentMessageTranslation::class,
             ])
             ->add('enabled', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.enabled',
+                'label'    => t('field.enabled', [], 'EkynaUi'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('available', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.field.front_office',
+                'label'    => t('field.front_office', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('private', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.payment_method.field.private',
+                'label'    => t('payment_method.field.private', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('defaultCurrency', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.payment_method.field.use_default_currency',
+                'label'    => t('payment_method.field.use_default_currency', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,

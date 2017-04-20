@@ -10,7 +10,7 @@
 
         <field name="gatewayName" column="gateway_name" type="string" length="64" unique="true" nullable="false" />
         <field name="factoryName" column="factory_name" type="string" length="64" nullable="false" />
-        <field name="config" column="config" type="json_array" />
+        <field name="config" column="config" type="json" />
 
     </mapped-superclass>
 

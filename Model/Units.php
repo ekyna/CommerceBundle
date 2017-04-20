@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,38 +14,29 @@ use Ekyna\Component\Commerce\Common\Model\Units as Constants;
  */
 final class Units extends AbstractConstants
 {
-    /**
-     * @var array
-     */
-    static private $config;
+    private static ?array $config = null;
 
 
-    /**
-     * @inheritDoc
-     */
     public static function getConfig(): array
     {
-        if (null !== static::$config) {
-            return static::$config;
+        if (null !== Units::$config) {
+            return Units::$config;
         }
 
-        $label = 'ekyna_commerce.unit.%s.plural';
+        $label = 'unit.%s.plural';
 
-        static::$config = [];
+        Units::$config = [];
 
         foreach (Constants::getUnits() as $unit) {
-            static::$config[$unit] = [
+            Units::$config[$unit] = [
                 sprintf($label, $unit),
             ];
         }
 
-        return static::$config;
+        return Units::$config;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function getTheme(string $unit): ?string
+    public static function getTheme(string $constant): ?string
     {
         return null;
     }
@@ -89,11 +82,11 @@ final class Units extends AbstractConstants
     {
         Constants::isValid($unit, true);
 
-        if (static::hasTranslatableFormat($unit)) {
-            return sprintf('ekyna_commerce.unit.%s.format', $unit);
+        if (Units::hasTranslatableFormat($unit)) {
+            return sprintf('unit.%s.format', $unit);
         }
 
-        return "%s " . Constants::getSymbol($unit);
+        return '%s ' . Constants::getSymbol($unit);
     }
 
     /**
@@ -114,5 +107,10 @@ final class Units extends AbstractConstants
             Constants::HOUR,
             Constants::MINUTE
         ], true);
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

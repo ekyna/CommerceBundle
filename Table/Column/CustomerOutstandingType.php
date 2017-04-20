@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
@@ -11,6 +13,9 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function sprintf;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class CustomerOutstandingType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
@@ -20,29 +25,15 @@ class CustomerOutstandingType extends AbstractColumnType
 {
     use FormatterAwareTrait;
 
-    /**
-     * @var string
-     */
-    private $defaultCurrency;
+    private string $defaultCurrency;
 
-
-    /**
-     * Constructor.
-     *
-     * @param FormatterFactory $formatterFactory
-     * @param string           $defaultCurrency
-     */
     public function __construct(FormatterFactory $formatterFactory, string $defaultCurrency)
     {
         $this->formatterFactory = $formatterFactory;
         $this->defaultCurrency = $defaultCurrency;
     }
 
-
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $formatter = $this->formatterFactory->create(null, $this->defaultCurrency);
 
@@ -54,31 +45,22 @@ class CustomerOutstandingType extends AbstractColumnType
         $current = $formatter->currency($current, $this->defaultCurrency);
         $limit = $formatter->currency($limit, $this->defaultCurrency);
 
-        $view->vars['value'] = sprintf("%s&nbsp;/&nbsp;%s", $current, $limit);
+        $view->vars['value'] = sprintf('%s&nbsp;/&nbsp;%s', $current, $limit);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label' => 'ekyna_commerce.customer.field.outstanding_balance',
+            'label' => t('customer.field.outstanding_balance', [], 'EkynaCommerce'),
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

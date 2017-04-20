@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,41 +17,22 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
  */
 class ShipmentPersister implements PersisterInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private bool                   $pendingFlush = false;
 
-    /**
-     * @var bool
-     */
-    private $pendingFlush = false;
-
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function persist(ShipmentInterface $shipment)
+    public function persist(ShipmentInterface $shipment): void
     {
         $this->entityManager->persist($shipment);
 
         $this->pendingFlush = true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function flush()
+    public function flush(): void
     {
         if (!$this->pendingFlush) {
             return;

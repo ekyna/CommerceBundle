@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderAttachmentTypes as Types;
@@ -12,12 +14,9 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  */
 final class SupplierOrderAttachmentTypes extends AbstractConstants
 {
-    /**
-     * {@inheritdoc}
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.supplier_order_attachment.type.';
+        $prefix = 'supplier_order_attachment.type.';
 
         return [
             Types::TYPE_FORM      => [$prefix . Types::TYPE_FORM],
@@ -29,11 +28,13 @@ final class SupplierOrderAttachmentTypes extends AbstractConstants
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

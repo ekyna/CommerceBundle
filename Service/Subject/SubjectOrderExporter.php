@@ -1,16 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Statement;
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectOrderExport;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Ekyna\Component\Resource\Helper\File\Csv;
+use PDO;
 
 /**
  * Class SubjectOrderExporter
@@ -19,53 +25,25 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class SubjectOrderExporter
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface           $entityManager;
+    private SubjectProviderRegistryInterface $subjectProviderRegistry;
+    private ResourceHelper                   $resourceHelper;
+    private string                           $assignmentClass;
 
-    /**
-     * @var SubjectProviderRegistryInterface
-     */
-    private $subjectProviderRegistry;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var string
-     */
-    private $assignmentClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManagerInterface           $entityManager
-     * @param SubjectProviderRegistryInterface $subjectProviderRegistry
-     * @param UrlGeneratorInterface            $urlGenerator
-     * @param string                           $assignmentClass
-     */
     public function __construct(
-        EntityManagerInterface $entityManager,
+        EntityManagerInterface           $entityManager,
         SubjectProviderRegistryInterface $subjectProviderRegistry,
-        UrlGeneratorInterface $urlGenerator,
-        string $assignmentClass
+        ResourceHelper                   $resourceHelper,
+        string                           $assignmentClass
     ) {
         $this->entityManager = $entityManager;
         $this->subjectProviderRegistry = $subjectProviderRegistry;
-        $this->urlGenerator = $urlGenerator;
+        $this->resourceHelper = $resourceHelper;
         $this->assignmentClass = $assignmentClass;
     }
 
     /**
      * Exports the orders to be delivered for
-     *
-     * @param SubjectOrderExport $data
-     *
-     * @return string
      */
     public function export(SubjectOrderExport $data): string
     {
@@ -74,7 +52,7 @@ class SubjectOrderExporter
         foreach ($data->getSubjects() as $subject) {
             if ($subject instanceof SubjectIdentity) {
                 if (!$provider = $this->subjectProviderRegistry->getProviderByName($subject->getProvider())) {
-                    throw new RuntimeException("Unsupported subject");
+                    throw new RuntimeException('Unsupported subject');
                 }
 
                 $subject = $provider->reverseTransform($subject);
@@ -100,7 +78,8 @@ class SubjectOrderExporter
         }
         $headers[] = 'Admin URL';
 
-        $rows = [$headers];
+        $file = Csv::create('subject_pending_orders.csv');
+        $file->addRow($headers);
 
         foreach ($orders as $data) {
             $row = [
@@ -115,14 +94,14 @@ class SubjectOrderExporter
                 $row[] = $data[$subject->getReference()];
             }
 
-            $row[] = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
+            $row[] = $this->resourceHelper->generateResourcePath('ekyna_commerce.order', ReadAction::class, [
                 'orderId' => $data['id'],
-            ], UrlGeneratorInterface::ABSOLUTE_URL);
+            ], true);
 
-            $rows[] = $row;
+            $file->addRow($row);
         }
 
-        return $this->createFile($rows, 'subject_pending_orders');
+        return $file->close();
     }
 
     /**
@@ -152,16 +131,20 @@ class SubjectOrderExporter
         $select = $this->createQuery();
 
         foreach ($subjects as $subject) {
-            $select->execute([
+            $result = $select->executeQuery([
                 'provider'   => $subject::getProviderName(),
                 'identifier' => $subject->getIdentifier(),
             ]);
 
-            while (false !== $data = $select->fetch(\PDO::FETCH_ASSOC)) {
+            while (false !== $data = $result->fetchAssociative()) {
                 if (isset($orders[$data['id']])) {
                     $orders[$data['id']][$subject->getReference()] = $data['quantity'];
                     continue;
                 }
+
+                $url = $this->resourceHelper->generateResourcePath('ekyna_commerce.order', ReadAction::class, [
+                    'orderId' => $data['id'],
+                ], true);
 
                 $order = array_replace($model, [
                     'id'                     => $data['id'],
@@ -171,9 +154,7 @@ class SubjectOrderExporter
                     'email'                  => $data['email'],
                     'is_sample'              => $data['is_sample'] ? 'Yes' : '',
                     $subject->getReference() => $data['quantity'],
-                    'url'                    => $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                        'orderId' => $data['id'],
-                    ], UrlGeneratorInterface::ABSOLUTE_URL),
+                    'url'                    => $url,
                 ]);
 
                 $orders[$data['id']] = $order;
@@ -185,15 +166,14 @@ class SubjectOrderExporter
 
     /**
      * Creates the select orders query.
-     *
-     * @return Statement
      */
     protected function createQuery(): Statement
     {
         $connection = $this->entityManager->getConnection();
+        $platform = $connection->getDatabasePlatform();
 
-        if ($connection->getDatabasePlatform()->getName() !== 'mysql') {
-            throw new RuntimeException("Unsupported database platform");
+        if (!$platform instanceof MySQLPlatform) {
+            throw new RuntimeException('Unsupported database platform');
         }
 
         $assignmentMetadata = $this->entityManager->getClassMetadata($this->assignmentClass);
@@ -213,7 +193,7 @@ class SubjectOrderExporter
                 $itemMetadata->getAssociationMapping('order')['targetEntity']
             )->getTableName();
 
-        /** @noinspection SqlResolve */
+        /** @noinspection SqlDialectInspection */
         return $connection->prepare(
             <<<SQL
             SELECT o.id,
@@ -251,32 +231,5 @@ class SubjectOrderExporter
             ORDER BY o.created_at DESC
             SQL
         );
-    }
-
-    /**
-     * Creates the CSV file.
-     *
-     * @param array  $rows
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function createFile(array $rows, string $name): string
-    {
-        if (false === $path = tempnam(sys_get_temp_dir(), $name)) {
-            throw new RuntimeException("Failed to create temporary file.");
-        }
-
-        if (false === $handle = fopen($path, "w")) {
-            throw new RuntimeException("Failed to open '$path' for writing.");
-        }
-
-        foreach ($rows as $row) {
-            fputcsv($handle, $row, ';', '"');
-        }
-
-        fclose($handle);
-
-        return $path;
     }
 }

@@ -1,4 +1,4 @@
-<h3>{{ title|default('ekyna_commerce.account.contact.title')|trans }}</h3>
+<h3>{{ title|default(t('account.contact.title', {}, 'EkynaCommerce'))|trans }}</h3>
 
 <hr>
 
@@ -16,11 +16,11 @@
             <div class="panel-footer">
                 <a href="{{ path('ekyna_commerce_account_contact_edit', {'contactId': contact.id}) }}"
                    class="btn btn-xs btn-default">
-                    {{- 'ekyna_core.button.edit'|trans -}}
+                    {{- 'button.edit'|trans({}, 'EkynaUi') -}}
                 </a>
                 <a href="{{ path('ekyna_commerce_account_contact_remove', {'contactId': contact.id}) }}"
                    class="btn btn-xs btn-default pull-right">
-                    {{- 'ekyna_core.button.remove'|trans -}}
+                    {{- 'button.remove'|trans({}, 'EkynaUi') -}}
                 </a>
             </div>
             {%- endif -%}

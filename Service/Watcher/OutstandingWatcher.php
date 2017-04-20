@@ -3,7 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Watcher;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Payment\Model;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Watcher\OutstandingWatcher as BaseWatcher;
@@ -82,7 +83,7 @@ class OutstandingWatcher extends BaseWatcher
 
         $this->report .= sprintf(
             '<a href="%s">%s</a> payment state set to <em>outstanding</em>.<br>',
-            $this->resourceHelper->generateResourcePath($sale, 'show', [], true),
+            $this->resourceHelper->generateResourcePath($sale, ReadAction::class, [], true),
             $payment->getNumber()
         );
     }

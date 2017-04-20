@@ -4,20 +4,20 @@
 <table class="table table-stripped">
     <thead>
     <tr>
-        <th>{{ 'ekyna_core.field.number'|trans }}</th>
+        <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
         {% if show_customer -%}
-        <th>{{ 'ekyna_commerce.sale.field.origin_customer'|trans }}</th>
+        <th>{{ 'sale.field.origin_customer'|trans({}, 'EkynaCommerce') }}</th>
         {%- endif %}
-        <th>{{ 'ekyna_core.field.title'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-        <th>{{ 'ekyna_core.field.date'|trans }}</th>
+        <th>{{ 'field.title'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'field.date'|trans({}, 'EkynaUi') }}</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
     {% for quote in quotes %}
-        {% set path = path('ekyna_commerce_account_quote_show', {'number': quote.number}) %}
+        {% set path = path('ekyna_commerce_account_quote_read', {'number': quote.number}) %}
         <tr>
             <td>
                 <a href="{{ path }}">{{ quote.number }}</a>
@@ -39,18 +39,18 @@
                 {{- quote.grandTotal|currency_quote(quote) -}}
             </td>
             <td>
-                {{- quote.createdAt|localizeddate('short', 'none') -}}
+                {{- quote.createdAt|format_datetime('short', 'none') -}}
             </td>
             <td class="text-right">
                 <a href="{{ path }}" class="btn btn-xs btn-default">
-                    {{- 'ekyna_core.button.show'|trans -}}
+                    {{- 'button.show'|trans({}, 'EkynaUi') -}}
                 </a>
             </td>
         </tr>
     {% else %}
         <tr>
             <td colspan="{{ show_customer ? 6 : 5 }}">
-                <em>{{ 'ekyna_commerce.account.quote.empty_list'|trans }}</em>
+                <em>{{ 'account.quote.empty_list'|trans({}, 'EkynaCommerce') }}</em>
             </td>
         </tr>
     {% endfor %}

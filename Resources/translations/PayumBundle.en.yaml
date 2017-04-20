@@ -1,0 +1,10 @@
+form:
+    choice:
+        core: Core (Do not use)
+        offline: Offline
+        outstanding_balance: Customer outstanding
+        credit_balance: Customer account balance
+        payzen: PayZen
+        atos_sips: Atos SIPS
+        paypal_express_checkout: Paypal Express Checkout
+        paypal_rest: Paypal REST

@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -11,7 +16,11 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+use function array_replace;
+use function is_array;
+use function sprintf;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class OrderShipmentType
@@ -20,48 +29,28 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class OrderShipmentType extends AbstractColumnType
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private ResourceHelper $resourceHelper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param UrlGeneratorInterface $urlGenerator
-     */
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(ResourceHelper $resourceHelper)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->resourceHelper = $resourceHelper;
     }
 
     /**
      * @inheritDoc
      */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $shipments = $row->getData($column->getConfig()->getPropertyPath());
 
         if ($shipments instanceof OrderShipmentInterface) {
-            $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $shipments->getOrder()->getId(),
-            ]);
+            $href = $this->resourceHelper->generateResourcePath($shipments->getOrder(), ReadAction::class);
 
-            $view->vars['value'] = sprintf(
-                '<a href="%s">%s</a> ',
-                $href,
-                $shipments->getNumber()
-            );
+            /** @noinspection HtmlUnknownTarget */
+            $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $shipments->getNumber());
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-side-detail' => json_encode([
-                    'route'      => 'ekyna_commerce_order_shipment_admin_summary',
-                    'parameters' => [
-                        'orderId'        => $shipments->getOrder()->getId(),
-                        'orderShipmentId' => $shipments->getId(),
-                    ],
-                ]),
+                'data-side-detail' => $this->resourceHelper->generateResourcePath($shipments, SummaryAction::class),
             ]);
 
             return;
@@ -80,33 +69,17 @@ class OrderShipmentType extends AbstractColumnType
                 continue;
             }
 
-            $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $shipment->getOrder()->getId(),
-            ]);
+            $href = $this->resourceHelper->generateResourcePath($shipment->getOrder(), ReadAction::class);
+            $summary = $this->resourceHelper->generateResourcePath($shipment, SummaryAction::class);
 
-            $summary = json_encode([
-                'route'      => 'ekyna_commerce_order_shipment_admin_summary',
-                'parameters' => [
-                    'orderId'        => $shipment->getOrder()->getId(),
-                    'orderShipmentId' => $shipment->getId(),
-                ],
-            ]);
-
-            $output .= sprintf(
-                '<a href="%s" data-side-detail=\'%s\'>%s</a> ',
-                $href,
-                $summary,
-                $shipment->getNumber()
-            );
+            /** @noinspection HtmlUnknownTarget */
+            $output .= sprintf('<a href="%s" data-side-detail="%s">%s</a>', $href, $summary, $shipment->getNumber());
         }
 
         $view->vars['value'] = $output;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'multiple'      => false,
@@ -115,7 +88,7 @@ class OrderShipmentType extends AbstractColumnType
                     return $value;
                 }
 
-                return 'ekyna_commerce.order_shipment.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                return t('order_shipment.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
             },
             'property_path' => function (Options $options, $value) {
                 if ($value) {
@@ -127,18 +100,12 @@ class OrderShipmentType extends AbstractColumnType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ColumnType::class;
     }

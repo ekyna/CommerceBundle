@@ -1,38 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
-use Ekyna\Component\Table\Exception\InvalidArgumentException;
+use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CustomerContactType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CustomerContactType extends ResourceTableType
+class CustomerContactType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $filters = false;
         /** @var CustomerInterface $customer */
         if (null !== $customer = $options['customer']) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
-                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+                throw new UnexpectedTypeException($source, EntitySource::class);
             }
 
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($customer): void {
                 $qb
                     ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
                     ->setParameter('customer', $customer);
@@ -52,35 +55,17 @@ class CustomerContactType extends ResourceTableType
                 'position' => 10,
             ])
             ->addColumn('identity', Ctype\Column\TextType::class, [
-                'property_path' => null,
                 'position'      => 20,
             ])
             ->addColumn('title', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.title',
+                'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_customer_contact_admin_edit',
-                        'route_parameters_map' => [
-                            'customerId'        => 'customer.id',
-                            'customerContactId' => 'id',
-                        ],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_customer_contact_admin_remove',
-                        'route_parameters_map' => [
-                            'customerId'        => 'customer.id',
-                            'customerContactId' => 'id',
-                        ],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    UpdateAction::class,
+                    DeleteAction::class,
                 ],
             ]);
 
@@ -90,27 +75,24 @@ class CustomerContactType extends ResourceTableType
 
         $builder
             ->addFilter('email', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.email',
+                'label'    => t('field.email', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('firstName', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.first_name',
+                'label'    => t('field.first_name', [], 'EkynaUi'),
                 'position' => 20,
             ])
             ->addFilter('lastName', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.last_name',
+                'label'    => t('field.last_name', [], 'EkynaUi'),
                 'position' => 30,
             ])
             ->addFilter('title', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.title',
+                'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
             ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

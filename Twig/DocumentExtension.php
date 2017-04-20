@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
@@ -16,10 +18,7 @@ use Twig\TwigFunction;
  */
 class DocumentExtension extends AbstractExtension
 {
-    /**
-     * @inheritdoc
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -29,10 +28,7 @@ class DocumentExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(

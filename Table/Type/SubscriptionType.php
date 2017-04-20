@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\Column\ConstantChoiceType;
@@ -8,6 +10,8 @@ use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\AbstractTableType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class SubscriptionType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
@@ -15,10 +19,7 @@ use Ekyna\Component\Table\TableBuilderInterface;
  */
 class SubscriptionType extends AbstractTableType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->setSortable(false)
@@ -28,40 +29,15 @@ class SubscriptionType extends AbstractTableType
             ->setFilterable(false)
             ->setProfileable(false)
             ->addColumn('audience', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_commerce.audience.label.plural',
-                'route_name'           => 'ekyna_commerce_audience_admin_show',
-                'route_parameters_map' => ['audienceId' => 'audience.id'],
-                'position'             => 20,
+                'label'         => t('audience.label.plural', [], 'EkynaCommerce'),
+                'resource_path' => 'audience',
+                'position'      => 20,
             ])
             ->addColumn('status', ConstantChoiceType::class, [
-                'label'    => 'ekyna_core.field.status',
+                'label'    => t('field.status', [], 'EkynaUi'),
                 'class'    => SubscriptionStatus::class,
                 'theme'    => true,
                 'position' => 30,
-            ])
-            /*->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'icon'                 => 'pencil',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_member_admin_edit',
-                        'route_parameters_map' => [
-                            'memberId' => 'member.id',
-                        ],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'icon'                 => 'trash',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_member_admin_remove',
-                        'route_parameters_map' => [
-                            'memberId' => 'id',
-                        ],
-                        'permission'           => 'member.delete',
-                    ],
-                ],
-            ])*/;
+            ]);
     }
 }

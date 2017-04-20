@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
@@ -9,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class InformationType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Checkout
@@ -16,17 +20,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class InformationType extends AbstractType
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
+                'label'    => t('field.company', [], 'EkynaUi'),
                 'required' => false,
                 'attr'     => [
-                    'placeholder'  => 'ekyna_commerce.address.field.company',
+                    'placeholder'  => t('address.field.company', [], 'EkynaCommerce'),
                     'maxlength'    => 35,
                     'autocomplete' => 'organization',
                 ],
@@ -35,22 +36,16 @@ class InformationType extends AbstractType
                 'required' => true,
             ])
             ->add('email', Type\EmailType::class, [
-                'label'    => 'ekyna_core.field.email',
+                'label'    => t('field.email', [], 'EkynaUi'),
                 'required' => true,
-                'attr' => [
+                'attr'     => [
                     'autocomplete' => 'email',
                 ],
             ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver
-            ->setDefaults([
-                'data_class' => CartInterface::class,
-            ]);
+        $resolver->setDefault('data_class', CartInterface::class);
     }
 }

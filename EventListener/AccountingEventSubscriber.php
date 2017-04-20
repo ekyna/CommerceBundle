@@ -8,7 +8,7 @@ use Ekyna\Component\Commerce\Accounting\EventListener\AccountingListener;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AccountingEventSubscriber
@@ -39,7 +39,7 @@ class AccountingEventSubscriber extends AccountingListener implements EventSubsc
     protected function buildName(AccountingInterface $accounting)
     {
         $parts = [
-            $this->translator->trans(AccountingTypes::getLabel($accounting->getType())),
+            AccountingTypes::getLabel($accounting->getType())->trans($this->translator),
         ];
 
         if (null !== $rule = $accounting->getTaxRule()) {

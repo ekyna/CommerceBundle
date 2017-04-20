@@ -1,0 +1,152 @@
+resources:
+    ekyna_commerce:
+        quote:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuoteInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\Quote
+            repository:
+                interface: Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\QuoteRepository
+#            manager:
+#                interface: ~
+#                class: ~
+            factory: Ekyna\Bundle\CommerceBundle\Factory\QuoteFactory
+#            normalizer: ~
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\QuoteRepository
+                global: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\QuoteType
+            trans_domain: EkynaCommerce
+            actions:
+                api_crud:
+                    search: true
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/Quote'
+                    summary: '@EkynaCommerce/Admin/Common/Sale/summary.html.twig'
+                    read:
+                        expose: true
+                admin_toggle:
+                    properties: [autoDiscount,autoShipping,autoNotify]
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentGenerateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentRenderAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DuplicateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\ExportAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\NotifyAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\NotifyModelAction:
+                    expose: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\RecalculateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\RefreshAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\SetExchangeRateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\TransformAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateShipmentAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateStateAction: ~
+
+        quote_address:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuoteAddressInterface
+                class: Ekyna\Component\Commerce\Quote\Entity\QuoteAddress
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAddressType
+            parent: ekyna_commerce.quote
+            trans_prefix: address
+            trans_domain: EkynaCommerce
+
+        quote_adjustment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuoteAdjustmentInterface
+                class: Ekyna\Component\Commerce\Quote\Entity\QuoteAdjustment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAdjustmentType
+            parent: ekyna_commerce.quote
+            trans_prefix: adjustment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\UpdateAction: ~
+
+        quote_attachment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuoteAttachmentInterface
+                class: Ekyna\Component\Commerce\Quote\Entity\QuoteAttachment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAttachmentType
+            parent: ekyna_commerce.quote
+            trans_prefix: attachment
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    list: false
+                    read: false
+                    templates: '@EkynaCommerce/Admin/Common/Attachment'
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\ArchiveAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\DownloadAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Attachment\GenerateAction: ~
+            behaviors:
+                uploadable:
+                    uploader: ekyna_commerce.uploader
+
+        quote_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuoteItemInterface
+                class: Ekyna\Component\Commerce\Quote\Entity\QuoteItem
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemType
+            parent: ekyna_commerce.quote
+            trans_prefix: sale_item
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\AddAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\ConfigureAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveDownAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveUpAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\PrioritizeAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\UpdateAction: ~
+
+        quote_item_adjustment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuoteItemAdjustmentInterface
+                class: Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemAdjustmentType
+            parent: ekyna_commerce.quote_item
+            trans_prefix: adjustment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\UpdateAction: ~
+
+        quote_notification:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuoteNotificationInterface
+                class: Ekyna\Component\Commerce\Quote\Entity\QuoteNotification
+            parent: ekyna_commerce.quote
+            trans_prefix: notification
+            trans_domain: EkynaCommerce
+
+        quote_payment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface
+                class: Ekyna\Component\Commerce\Quote\Entity\QuotePayment
+            repository:
+                interface : Ekyna\Component\Commerce\Quote\Repository\QuotePaymentRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\QuotePaymentRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuotePaymentType
+            parent: ekyna_commerce.quote
+            trans_prefix: payment
+            trans_domain: EkynaCommerce
+            actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\ActionAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\UpdateAction: ~
+
+

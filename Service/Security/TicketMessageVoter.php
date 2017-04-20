@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Security;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketStates;
-use Ekyna\Component\Resource\Model\Actions;
+use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -28,8 +28,12 @@ class TicketMessageVoter extends Voter
             return false;
         }
 
+        if ($subject->isInternal()) {
+            return false;
+        }
+
         if (null !== $subject->getAdmin()) {
-            if ($attribute === Actions::VIEW) {
+            if ($attribute === Permission::READ) {
                 return true;
             }
 
@@ -39,7 +43,7 @@ class TicketMessageVoter extends Voter
         $ticket = $subject->getTicket();
 
         if ($ticket->getState() === TicketStates::STATE_CLOSED) {
-            if ($attribute !== Actions::VIEW) {
+            if ($attribute !== Permission::READ) {
                 return false;
             }
         }

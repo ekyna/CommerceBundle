@@ -1,16 +1,16 @@
-{% extends '@EkynaAdmin/Entity/Default/remove.html.twig' %}
+{% extends '@EkynaAdmin/Entity/Crud/delete.html.twig' %}
 
 {% block title %}
-    <h1>{{ (trans_prefix ~ '.header.create_user')|trans|raw }}</h1>
+    <h1>{{ (context.config.transPrefix ~ '.header.create_user')|trans({}, context.config.transDomain)|raw }}</h1>
 {% endblock title %}
 
 {% block main %}
     <div class="alert alert-info">
         <p>
-            {{ 'ekyna_commerce.customer.message.create_user'|trans({
-                '{identity}': customer|identity,
-                '{email}': customer.email
-            })|raw }}
+            {{ 'customer.message.create_user'|trans({
+                '{identity}': resource|identity,
+                '{email}': resource.email
+            }, 'EkynaCommerce')|raw }}
         </p>
     </div>
     {{ bootstrap_set_style('horizontal') }}

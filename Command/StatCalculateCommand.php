@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatFilter;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Exception\LogicException;
@@ -13,6 +17,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
  * Class StatCalculateCommand
@@ -23,23 +28,10 @@ class StatCalculateCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:stat:calculate';
 
-    /**
-     * @var StatCalculatorInterface
-     */
-    private $calculator;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    private StatCalculatorInterface $calculator;
+    private EntityManagerInterface  $manager;
 
 
-    /**
-     * Constructor.
-     *
-     * @param StatCalculatorInterface $calculator
-     * @param EntityManagerInterface  $manager
-     */
     public function __construct(StatCalculatorInterface $calculator, EntityManagerInterface $manager)
     {
         parent::__construct();
@@ -48,10 +40,7 @@ class StatCalculateCommand extends Command
         $this->manager = $manager;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Calculates the statistics')
@@ -64,10 +53,7 @@ class StatCalculateCommand extends Command
             ->addOption('skip', null, InputOption::VALUE_NONE, 'Whether to active skip mode.');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $day = $input->getOption('day');
         $month = $input->getOption('month');
@@ -76,7 +62,7 @@ class StatCalculateCommand extends Command
         if (!$day && !$month && !$year) {
             $month = true;
         } elseif (!($day xor $month xor $year)) {
-            throw new InvalidOptionException("You must use only one of the --day, --month and --year options.");
+            throw new InvalidOptionException('You must use only one of the --day, --month and --year options.');
         }
 
         if ($day) {
@@ -86,14 +72,14 @@ class StatCalculateCommand extends Command
         } elseif ($month) {
             $method = 'calculateMonthOrderStats';
         } else {
-            throw new LogicException("Failed to determine which stat method to use.");
+            throw new LogicException('Failed to determine which stat method to use.');
         }
 
         $date = $input->getArgument('date');
         try {
-            $date = new \DateTime($date);
-        } catch (\Throwable $e) {
-            throw new \Exception("Please provide a valid date");
+            $date = new DateTime($date);
+        } catch (Throwable $exception) {
+            throw new Exception('Please provide a valid date');
         }
 
         $filter = new StatFilter();
@@ -106,7 +92,7 @@ class StatCalculateCommand extends Command
 
         $this->calculator->setSkipMode($input->getOption('skip'));
 
-        $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
+        $this->manager->getConnection()->getConfiguration()->setSQLLogger();
 
         $result = $this->calculator->{$method}($date, $filter);
 
@@ -129,5 +115,7 @@ class StatCalculateCommand extends Command
         ]);
 
         $table->render();
+
+        return Command::SUCCESS;
     }
 }

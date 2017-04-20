@@ -16,7 +16,7 @@
     <span class="field">{{ trans.customer }}</span>
     <a href="javascript:void(0)"
         class="btn btn-xs btn-default customer-show"
-        data-summary='{"route": "ekyna_commerce_customer_admin_summary", "parameters": {"customerId": {{ ticket.customer.id }}}}'
+        data-summary='{"route": "admin_ekyna_commerce_customer_summary", "parameters": {"customerId": {{ ticket.customer.id }}}}'
         data-id="{{ ticket.customer.id }}">
         {% if ticket.customer.company is not empty -%}
             <em>{{ ticket.customer.company }}</em>&nbsp;{{ ticket.customer.first_name }}&nbsp;{{ ticket.customer.last_name }}
@@ -40,7 +40,7 @@
         {% for order in ticket.orders -%}
         <a href="javascript:void(0)"
            class="btn btn-xs btn-default order-show"
-           {% if config.admin %}data-summary='{"route": "ekyna_commerce_order_admin_summary", "parameters": {"orderId": {{ order.id }}}}'{% endif %}
+           {% if config.admin %}data-summary='{"route": "admin_ekyna_commerce_order_summary", "parameters": {"orderId": {{ order.id }}}}'{% endif %}
            data-id="{{ order.id }}">{{ order.number }}</a>
         {%- endfor %}
     {%- endif %}
@@ -49,7 +49,7 @@
         {% for quote in ticket.quotes -%}
         <a href="javascript:void(0)"
            class="btn btn-xs btn-default quote-show"
-           {% if config.admin %}data-summary='{"route": "ekyna_commerce_quote_admin_summary", "parameters": {"quoteId": {{ quote.id }}}}'{% endif %}
+           {% if config.admin %}data-summary='{"route": "admin_ekyna_commerce_quote_summary", "parameters": {"quoteId": {{ quote.id }}}}'{% endif %}
            data-id="{{ quote.id }}">{{ quote.number }}</a>
         {%- endfor %}
     {%- endif %}

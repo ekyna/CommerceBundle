@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\DBAL\Connection;
@@ -8,8 +10,6 @@ use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
 use Ekyna\Component\Commerce\Stock\Integrity;
 use Ekyna\Component\Commerce\Stock\Overflow\OverflowHandlerInterface;
 use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface;
-use Swift_Mailer;
-use Swift_SwiftException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,6 +17,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Throwable;
 
 /**
  * Class StockIntegrityCommand
@@ -27,58 +30,20 @@ class StockIntegrityCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:stock:integrity';
 
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var StockSubjectUpdaterInterface
-     */
-    private $subjectUpdater;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var OverflowHandlerInterface
-     */
-    private $overflowHandler;
-
-    /**
-     * @var Swift_Mailer
-     */
-    private $mailer;
-
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var Integrity\CheckerInterface[]
-     */
-    private $checkers;
+    private Connection $connection;
+    private StockSubjectUpdaterInterface $subjectUpdater;
+    private EntityManagerInterface $entityManager;
+    private OverflowHandlerInterface $overflowHandler;
+    private MailerInterface $mailer;
+    private string $email;
 
 
-    /**
-     * Constructor.
-     *
-     * @param Connection                   $connection
-     * @param StockSubjectUpdaterInterface $subjectUpdater
-     * @param EntityManagerInterface       $entityManager
-     * @param OverflowHandlerInterface     $overflowHandler
-     * @param Swift_Mailer                 $mailer
-     * @param string                       $email
-     */
     public function __construct(
         Connection $connection,
         StockSubjectUpdaterInterface $subjectUpdater,
         EntityManagerInterface $entityManager,
         OverflowHandlerInterface $overflowHandler,
-        Swift_Mailer $mailer,
+        MailerInterface $mailer,
         string $email
     ) {
         parent::__construct();
@@ -91,10 +56,7 @@ class StockIntegrityCommand extends Command
         $this->email = $email;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Checks the stock integrity.')
@@ -102,12 +64,9 @@ class StockIntegrityCommand extends Command
             ->addOption('report', 'r', InputOption::VALUE_NONE, 'Whether to send email report');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->checkers = [
+        $checkers = [
             new Integrity\UnitOrderedChecker(),
             new Integrity\UnitReceivedChecker(),
             new Integrity\UnitAdjustedChecker(),
@@ -142,7 +101,7 @@ class StockIntegrityCommand extends Command
                 false
             );
             if (!$this->getHelper('question')->ask($input, $output, $question)) {
-                return;
+                return Command::SUCCESS;
             }
         }
 
@@ -151,7 +110,7 @@ class StockIntegrityCommand extends Command
 
         $this->connection->beginTransaction();
         try {
-            foreach ($this->checkers as $checker) {
+            foreach ($checkers as $checker) {
                 // Skip final check if there are some errors
                 if ($checker instanceof Integrity\FinalChecker && $errors && !$applyFix) {
                     continue;
@@ -197,17 +156,18 @@ class StockIntegrityCommand extends Command
                 $output->writeln('');
             }
             $this->connection->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $exception) {
             $this->connection->rollBack();
 
             $unitIds = []; // Clear unit ids to prevent subject update
 
             if ($sendReport) {
-                $output->writeln("\n{$e->getMessage()}\n");
+                $output->writeln("\n{$exception->getMessage()}\n");
                 $errors = true;
             } else {
                 $this->connection->close();
-                throw $e;
+
+                throw $exception;
             }
         }
 
@@ -217,23 +177,19 @@ class StockIntegrityCommand extends Command
         $this->connection->close();
 
         if (!($sendReport && $errors)) {
-            return;
+            return Command::SUCCESS;
         }
 
-        $message =
-            \Swift_Message::newInstance(
-                'Stock integrity report',
-                $output->fetch(),
-                'text/plain'
-            )
-            ->setFrom($this->email)
-            ->setTo($this->email);
+        $message = new Email();
+        $message
+            ->subject('Stock integrity report')
+            ->text($output->fetch())
+            ->from($this->email)
+            ->to($this->email);
 
-        try {
-            $this->mailer->send($message);
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (Swift_SwiftException $e) {
-            // In case transport has bad configuration.
-        }
+        $this->mailer->send($message);
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -257,7 +213,7 @@ class StockIntegrityCommand extends Command
         foreach ($units as $unit) {
             $subject = $unit->getSubject();
 
-            $output->write((string)$subject . ' ... ');
+            $output->write($subject . ' ... ');
 
             if ($this->subjectUpdater->update($subject)) {
                 $this->entityManager->persist($subject);

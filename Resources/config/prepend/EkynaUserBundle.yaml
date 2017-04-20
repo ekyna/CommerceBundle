@@ -1,0 +1,14 @@
+ekyna_user:
+    account:
+        registration:
+            enabled: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Account\RegistrationType
+            template:
+                register: '@EkynaCommerce\Account\Registration\register.html.twig'
+        resetting: true
+        profile:
+            enabled: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Account\ProfileType
+            template:
+                index: '@EkynaCommerce\Account\Profile\index.html.twig'
+                edit: '@EkynaCommerce\Account\Profile\edit.html.twig'

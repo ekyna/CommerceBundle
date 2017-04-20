@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,26 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PaymentTermChoiceType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    protected $dataClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     */
-    public function __construct($dataClass)
-    {
-        $this->dataClass = $dataClass;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $queryBuilder = function (Options $options) {
             return function (EntityRepository $repository) use ($options) {
@@ -49,27 +32,19 @@ class PaymentTermChoiceType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'class'         => $this->dataClass,
-                'label'         => 'ekyna_commerce.payment_term.label.singular',
-                'placeholder'   => 'ekyna_core.value.none',
+                'resource'      => 'ekyna_commerce.payment_term',
                 'required'      => false,
                 'select2'       => false,
                 'query_builder' => $queryBuilder,
             ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return EntityType::class;
+        return ResourceChoiceType::class;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_payment_term_choice';
     }

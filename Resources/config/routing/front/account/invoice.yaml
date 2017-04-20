@@ -1,0 +1,39 @@
+ekyna_commerce_account_invoice_index:
+    path: ''
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\InvoiceController::index
+    methods: [GET]
+    options:
+        ekyna_i18n: ~
+        _cms:
+            name: Mes factures
+            parent: ekyna_user_account_index
+            position: 40
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_invoice_read:
+    path: /{number}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\InvoiceController::read
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [GET]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_invoice_download:
+    path:
+        en: /{number}/download.{_format}
+        fr: /{number}/telecharger.{_format}
+        es: /{number}/descargar.{_format}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\InvoiceController::download
+    defaults:
+        _format: pdf
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        _format: pdf|html|jpg
+    methods: [GET]
+    options:
+        ekyna_i18n: ~

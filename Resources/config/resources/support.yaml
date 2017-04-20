@@ -1,0 +1,73 @@
+resources:
+    ekyna_commerce:
+        ticket:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Support\Model\TicketInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\Ticket
+            repository:
+                interface: Ekyna\Component\Commerce\Support\Repository\TicketRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TicketRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Support\Factory\TicketFactoryInterface
+                class: Ekyna\Bundle\CommerceBundle\Factory\TicketFactory
+            normalizer: Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\TicketType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/Ticket/_form.html.twig'
+                    read: '@EkynaCommerce/Admin/Ticket/read.html.twig'
+                    create: { serialization: Ticket }
+                    update: { serialization: Ticket }
+                    delete: { serialization: Ticket }
+                    expose: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Ticket\OpenAction:
+                    expose: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Ticket\CloseAction:
+                    expose: true
+
+        ticket_message:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Support\Model\TicketMessageInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\TicketMessage
+            repository:
+                interface: Ekyna\Component\Commerce\Support\Repository\TicketMessageRepositoryInterface
+                class: Ekyna\Bundle\CommerceBundle\Repository\TicketMessageRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Support\Factory\TicketMessageFactoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\TicketMessageFactory
+            normalizer: Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketMessageNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketMessageType
+            parent: ekyna_commerce.ticket
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/TicketMessage/_form.html.twig'
+                    create: { serialization: Ticket }
+                    update: { serialization: Ticket }
+                    delete: { serialization: Ticket }
+                    expose: true
+
+        ticket_attachment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface
+                class: Ekyna\Component\Commerce\Support\Entity\TicketAttachment
+            normalizer: Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketAttachmentNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketAttachmentType
+            parent: ekyna_commerce.ticket_message
+            trans_prefix: attachment
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/TicketAttachment/_form.html.twig'
+                    create: { serialization: Ticket }
+                    update: { serialization: Ticket }
+                    delete: { serialization: Ticket }
+                    expose: true
+            behaviors:
+                uploadable:
+                    uploader: ekyna_commerce.uploader

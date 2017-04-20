@@ -1,37 +1,24 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    <li class="active">
-        <a href="#ticket-general" id="toggle-general" data-toggle="tab">
-            {{- 'ekyna_core.field.general'|trans -}}
-        </a>
-    </li>
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="ticket-general">
-            {{ form_row(form.subject) }}
-            {{ form_row(form.inCharge) }}
-            {{ form_row(form.customer) }}
-            {{ form_row(form.orders) }}
-            {{ form_row(form.quotes) }}
-            {{ form_row(form.internal) }}
-            {% if form.message is defined %}
-                <hr>
-                {{ form_row(form.message.content) }}
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.message.internal, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.message.notify, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="ticket-general">
+        {{ form_row(form.subject) }}
+        {{ form_row(form.inCharge) }}
+        {{ form_row(form.customer) }}
+        {{ form_row(form.orders) }}
+        {{ form_row(form.quotes) }}
+        {{ form_row(form.internal) }}
+        {% if form.message is defined %}
+            <hr>
+            {{ form_row(form.message.content) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.message.internal, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
-            {% endif %}
-        </div>
+                <div class="col-md-6">
+                    {{ form_row(form.message.notify, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+        {% endif %}
     </div>
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+{%- endblock main_contents %}

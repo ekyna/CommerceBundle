@@ -1,0 +1,66 @@
+{% extends '@EkynaAdmin/Entity/Crud/_form_flow.html.twig' %}
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{ 'field.general'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    {% if flow.getCurrentStepNumber() == 2 -%}
+    <li>
+        <a href="#{{ resource_name }}-content" id="toggle-content" data-toggle="tab">
+            {{ 'field.content'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    {% if form.pricing is defined -%}
+    <li>
+        <a href="#{{ resource_name }}-pricing" id="toggle-pricing" data-toggle="tab">
+            {{ 'field.pricing'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    {%- endif %}
+    <li>
+        <a href="#{{ resource_name }}-messages" id="toggle-messages" data-toggle="tab">
+            {{ 'message.label.plural'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    {%- endif %}
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {% if flow.getCurrentStepNumber() == 1 -%}
+            {{ form_row(form.platformName) }}
+        {% else -%}
+            {{ form_row(form.name) }}
+            {{ form_row(form.taxGroup) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.available, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.enabled, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <hr>
+            {{ form_row(form.platformName) }}
+            {% if form.config is defined -%}
+                {{ form_row(form.config) }}
+            {%- endif %}
+        {%- endif %}
+    </div>
+    {% if flow.getCurrentStepNumber() == 2 -%}
+    <div class="tab-pane" id="{{ resource_name }}-content">
+        {{ form_row(form.media) }}
+        {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
+    </div>
+    {% if form.pricing is defined -%}
+    <div class="tab-pane" id="{{ resource_name }}-pricing">
+        {{ form_row(form.pricing) }}
+    </div>
+    {%- endif %}
+    <div class="tab-pane" id="{{ resource_name }}-messages">
+        {{ form_widget(form.messages) }}
+    </div>
+    {%- endif %}
+{%- endblock main_contents -%}

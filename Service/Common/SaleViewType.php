@@ -98,26 +98,26 @@ class SaleViewType extends AbstractViewType
     public function buildSaleView(Model\SaleInterface $sale, View\SaleView $view, array $options): void
     {
         $view->setTranslations([
-            'designation'    => $this->trans('ekyna_core.field.designation'),
-            'reference'      => $this->trans('ekyna_core.field.reference'),
-            'availability'   => $this->trans('ekyna_commerce.sale.field.availability'),
-            'unit_net_price' => $this->trans('ekyna_commerce.sale.field.net_unit'),
-            'unit_ati_price' => $this->trans('ekyna_commerce.sale.field.ati_unit'),
-            'quantity'       => $this->trans('ekyna_core.field.quantity'),
+            'designation'    => $this->trans('field.designation', [], 'EkynaUi'),
+            'reference'      => $this->trans('field.reference', [], 'EkynaUi'),
+            'availability'   => $this->trans('sale.field.availability', [], 'EkynaCommerce'),
+            'unit_net_price' => $this->trans('sale.field.net_unit', [], 'EkynaCommerce'),
+            'unit_ati_price' => $this->trans('sale.field.ati_unit', [], 'EkynaCommerce'),
+            'quantity'       => $this->trans('field.quantity', [], 'EkynaUi'),
 
-            'net_gross'      => $this->trans('ekyna_commerce.sale.field.net_gross'),
-            'ati_gross'      => $this->trans('ekyna_commerce.sale.field.ati_gross'),
-            'discount'       => $this->trans('ekyna_commerce.sale.field.discount'),
+            'net_gross'      => $this->trans('sale.field.net_gross', [], 'EkynaCommerce'),
+            'ati_gross'      => $this->trans('sale.field.ati_gross', [], 'EkynaCommerce'),
+            'discount'       => $this->trans('sale.field.discount', [], 'EkynaCommerce'),
 
-            'tax_rate'       => $this->trans('ekyna_commerce.sale.field.tax_rate'),
-            'tax_name'       => $this->trans('ekyna_commerce.sale.field.tax_name'),
-            'tax_amount'     => $this->trans('ekyna_commerce.sale.field.tax_amount'),
+            'tax_rate'       => $this->trans('sale.field.tax_rate', [], 'EkynaCommerce'),
+            'tax_name'       => $this->trans('sale.field.tax_name', [], 'EkynaCommerce'),
+            'tax_amount'     => $this->trans('sale.field.tax_amount', [], 'EkynaCommerce'),
 
-            'gross_totals'   => $this->trans('ekyna_commerce.sale.field.gross_totals'),
-            'net_total'      => $this->trans('ekyna_commerce.sale.field.net_total'),
-            'tax_total'      => $this->trans('ekyna_commerce.sale.field.tax_total'),
-            'ati_total'      => $this->trans('ekyna_commerce.sale.field.ati_total'),
-            'margin'         => $this->trans('ekyna_commerce.sale.field.margin'),
+            'gross_totals'   => $this->trans('sale.field.gross_totals', [], 'EkynaCommerce'),
+            'net_total'      => $this->trans('sale.field.net_total', [], 'EkynaCommerce'),
+            'tax_total'      => $this->trans('sale.field.tax_total', [], 'EkynaCommerce'),
+            'ati_total'      => $this->trans('sale.field.ati_total', [], 'EkynaCommerce'),
+            'margin'         => $this->trans('sale.field.margin', [], 'EkynaCommerce'),
         ]);
     }
 
@@ -155,7 +155,7 @@ class SaleViewType extends AbstractViewType
             return;
         }
 
-        $designation = $this->trans('ekyna_commerce.adjustment.type.discount');
+        $designation = $this->trans('adjustment.type.discount', [], 'EkynaCommerce');
         if ($adjustment->getMode() === Model\AdjustmentModes::MODE_PERCENT) {
             $designation .= ' ' . $this->formatter->percent($adjustment->getAmount());
         }
@@ -171,7 +171,7 @@ class SaleViewType extends AbstractViewType
         $result = $this->amountCalculatorFactory->create($options['currency'])->calculateSaleShipment($sale);
 
         if (0 >= $result->getTotal()) {
-            $free = $this->trans('ekyna_commerce.checkout.shipment.free_shipping');
+            $free = $this->trans('checkout.shipment.free_shipping', [], 'EkynaCommerce');
             $view->setBase($free);
             $view->setTotal($free);
         }
@@ -180,7 +180,7 @@ class SaleViewType extends AbstractViewType
             return;
         }
 
-        $designation = $this->trans('ekyna_commerce.sale.field.shipping_cost');
+        $designation = $this->trans('sale.field.shipping_cost', [], 'EkynaCommerce');
 
         // Shipment weight
         $designation .= ' (' . $this->formatter->number($sale->getShipmentWeight() ?? $sale->getWeightTotal()) . ' kg)';

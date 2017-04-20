@@ -105,7 +105,7 @@ class CheckoutManager
                 'admin_mode' => $admin,
             ]);
 
-            $this->eventDispatcher->dispatch(CheckoutPaymentEvent::BUILD_FORM, $event);
+            $this->eventDispatcher->dispatch($event, CheckoutPaymentEvent::BUILD_FORM);
 
             if (null !== $form = $event->getForm()) {
                 if (isset($this->forms[$form->getName()])) {

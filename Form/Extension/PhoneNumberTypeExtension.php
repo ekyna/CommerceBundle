@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Extension;
 
-use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
 use Ekyna\Component\Commerce\Common\Country\CountryProviderInterface;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,10 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PhoneNumberTypeExtension extends AbstractTypeExtension
 {
-    /**
-     * @var CountryProviderInterface
-     */
-    private $countryProvider;
+    private CountryProviderInterface $countryProvider;
 
     /**
      * Constructor.
@@ -32,7 +31,7 @@ class PhoneNumberTypeExtension extends AbstractTypeExtension
     /**
      * @inheritDoc
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('default_country', $this->countryProvider->getCurrentCountry());
     }
@@ -40,8 +39,8 @@ class PhoneNumberTypeExtension extends AbstractTypeExtension
     /**
      * @inheritDoc
      */
-    public function getExtendedType()
+    public static function getExtendedTypes(): array
     {
-        return PhoneNumberType::class;
+        return [PhoneNumberType::class];
     }
 }

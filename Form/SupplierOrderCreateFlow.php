@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Craue\FormFlowBundle\Event\PostBindRequestEvent;
@@ -8,7 +10,8 @@ use Craue\FormFlowBundle\Form\FormFlow;
 use Craue\FormFlowBundle\Form\FormFlowEvents;
 use Craue\FormFlowBundle\Form\FormFlowInterface;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType;
-use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Ekyna\Component\Commerce\Supplier\Updater\SupplierOrderUpdaterInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -19,43 +22,28 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class SupplierOrderCreateFlow extends FormFlow implements EventSubscriberInterface
 {
-    /**
-     * @var ResourceOperatorInterface
-     */
-    private $operator;
+    private SupplierOrderUpdaterInterface $updater;
 
-
-    /**
-     * Constructor.
-     *
-     * @param ResourceOperatorInterface $operator
-     */
-    public function __construct(ResourceOperatorInterface $operator)
+    public function __construct(SupplierOrderUpdaterInterface $updater)
     {
-        $this->operator = $operator;
+        $this->updater = $updater;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher): void
     {
         parent::setEventDispatcher($dispatcher);
 
         $dispatcher->addSubscriber($this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function loadStepsConfig()
+    protected function loadStepsConfig(): array
     {
         return [
             [
                 'label'     => 'supplier',
                 'form_type' => SupplierOrderType::class,
                 'skip'      => function ($estimatedCurrentStepNumber, FormFlowInterface $flow) {
-                    /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
+                    /** @var SupplierOrderInterface $supplierOrder */
                     $supplierOrder = $flow->getFormData();
 
                     return $estimatedCurrentStepNumber == 1 && null !== $supplierOrder->getSupplier();
@@ -73,32 +61,34 @@ class SupplierOrderCreateFlow extends FormFlow implements EventSubscriberInterfa
 
     /**
      * Post bind request event handler.
-     *
-     * @param PostBindRequestEvent $event
      */
-    public function onPostBindRequest(PostBindRequestEvent $event)
+    public function onPostBindRequest(PostBindRequestEvent $event): void
     {
         $order = $event->getFormData();
 
-        $this->operator->initialize($order);
+        $this->update($order);
     }
 
     /**
      * Post bind saved data event handler.
-     *
-     * @param PostBindSavedDataEvent $event
      */
-    public function onPostBindSavedData(PostBindSavedDataEvent $event)
+    public function onPostBindSavedData(PostBindSavedDataEvent $event): void
     {
         $order = $event->getFormData();
 
-        $this->operator->initialize($order);
+        $this->update($order);
+    }
+
+    private function update(SupplierOrderInterface $order): void
+    {
+        $this->updater->updateCurrency($order);
+        $this->updater->updateCarrier($order);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormFlowEvents::POST_BIND_REQUEST    => 'onPostBindRequest',

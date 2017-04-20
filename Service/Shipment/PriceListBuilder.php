@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentPriceList;
@@ -13,29 +15,11 @@ use Ekyna\Component\Commerce\Shipment\Repository;
  */
 class PriceListBuilder
 {
-    /**
-     * @var Repository\ShipmentZoneRepositoryInterface
-     */
-    private $zoneRepository;
-
-    /**
-     * @var Repository\ShipmentMethodRepositoryInterface
-     */
-    private $methodRepository;
-
-    /**
-     * @var Repository\ShipmentPriceRepositoryInterface
-     */
-    private $priceRepository;
+    private Repository\ShipmentZoneRepositoryInterface $zoneRepository;
+    private Repository\ShipmentMethodRepositoryInterface $methodRepository;
+    private Repository\ShipmentPriceRepositoryInterface $priceRepository;
 
 
-    /**
-     * Constructor.
-     *
-     * @param Repository\ShipmentZoneRepositoryInterface   $zoneRepository
-     * @param Repository\ShipmentMethodRepositoryInterface $methodRepository
-     * @param Repository\ShipmentPriceRepositoryInterface  $priceRepository
-     */
     public function __construct(
         Repository\ShipmentZoneRepositoryInterface $zoneRepository,
         Repository\ShipmentMethodRepositoryInterface $methodRepository,
@@ -48,12 +32,8 @@ class PriceListBuilder
 
     /**
      * Builds the price list by zone.
-     *
-     * @param Model\ShipmentZoneInterface $zone
-     *
-     * @return string
      */
-    public function buildByZone(Model\ShipmentZoneInterface $zone)
+    public function buildByZone(Model\ShipmentZoneInterface $zone): ShipmentPriceList
     {
         $filters = $this->methodRepository->findHavingPrices($zone);
 
@@ -67,12 +47,8 @@ class PriceListBuilder
 
     /**
      * Builds the price list by method.
-     *
-     * @param Model\ShipmentMethodInterface $method
-     *
-     * @return string
      */
-    public function buildByMethod(Model\ShipmentMethodInterface $method)
+    public function buildByMethod(Model\ShipmentMethodInterface $method): ShipmentPriceList
     {
         $filters = $this->zoneRepository->findHavingPrices($method);
 

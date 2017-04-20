@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\TableBundle\Extension\Type\Column\AnchorType;
@@ -9,6 +11,10 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_replace;
+use function json_encode;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class CustomerType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
@@ -16,10 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CustomerType extends AbstractColumnType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         if (null === $customer = $row->getData('customer')) {
             return;
@@ -27,40 +30,27 @@ class CustomerType extends AbstractColumnType
 
         $view->vars['attr'] = array_replace($view->vars['attr'], [
             'data-summary' => json_encode([
-                'route'      => 'ekyna_commerce_customer_admin_summary',
+                'route'      => 'admin_ekyna_commerce_customer_summary', // TODO Get route from resource helper
                 'parameters' => ['customerId' => $customer->getId()],
             ]),
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'                => 'ekyna_commerce.customer.label.singular',
+            'label'                => t('customer.label.singular', [], 'EkynaCommerce'),
             'property_path'        => 'customer',
-            'route_name'           => 'ekyna_commerce_customer_admin_show',
-            'route_parameters_map' => [
-                'customerId' => 'customer.id',
-            ],
             'sortable' => false,
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'anchor';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return AnchorType::class;
     }

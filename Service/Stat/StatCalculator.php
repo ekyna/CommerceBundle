@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Stat;
 
-use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
-use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
@@ -18,7 +20,7 @@ use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatFilter;
 use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitStates;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use LogicException;
 
 /**
  * Class StatCalculator
@@ -27,52 +29,19 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class StatCalculator implements StatCalculatorInterface
 {
-    /**
-     * @var RegistryInterface
-     */
-    protected $registry;
+    protected ManagerRegistry         $registry;
+    protected AmountCalculatorFactory $amountCalculatorFactory;
+    protected MarginCalculatorFactory $marginCalculatorFactory;
+    protected string                  $orderClass;
+    protected string                  $defaultCurrency;
+    protected bool                    $skipMode = false;
 
-    /**
-     * @var AmountCalculatorFactory
-     */
-    protected $amountCalculatorFactory;
-
-    /**
-     * @var MarginCalculatorFactory
-     */
-    protected $marginCalculatorFactory;
-
-    /**
-     * @var string
-     */
-    protected $orderClass;
-
-    /**
-     * @var string
-     */
-    protected $defaultCurrency;
-
-    /**
-     * @var bool
-     */
-    protected $skipMode = false;
-
-
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface       $registry
-     * @param AmountCalculatorFactory $amountCalculatorFactory
-     * @param MarginCalculatorFactory $marginCalculatorFactory
-     * @param string                  $orderClass
-     * @param string                  $defaultCurrency
-     */
     public function __construct(
-        RegistryInterface $registry,
+        ManagerRegistry         $registry,
         AmountCalculatorFactory $amountCalculatorFactory,
         MarginCalculatorFactory $marginCalculatorFactory,
-        string $orderClass,
-        string $defaultCurrency
+        string                  $orderClass,
+        string                  $defaultCurrency
     ) {
         $this->registry = $registry;
         $this->amountCalculatorFactory = $amountCalculatorFactory;
@@ -81,22 +50,16 @@ class StatCalculator implements StatCalculatorInterface
         $this->defaultCurrency = $defaultCurrency;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setSkipMode(bool $skip): void
     {
         $this->skipMode = $skip;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function calculateStockStats(): array
     {
         $qb = $this
             ->registry
-            ->getEntityManagerForClass(AbstractStockUnit::class)
+            ->getManagerForClass(AbstractStockUnit::class)
             ->createQueryBuilder();
 
         $ex = $qb->expr();
@@ -114,13 +77,10 @@ class StatCalculator implements StatCalculatorInterface
             ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function calculateDayOrderStats(DateTime $date, StatFilter $filter = null): array
+    public function calculateDayOrderStats(DateTimeInterface $date, StatFilter $filter = null): array
     {
         $from = clone $date;
-        $from->setTime(0, 0, 0, 0);
+        $from->setTime(0, 0);
 
         $to = clone $date;
         $to->setTime(23, 59, 59, 999999);
@@ -128,15 +88,12 @@ class StatCalculator implements StatCalculatorInterface
         return $this->calculateOrdersStats($from, $to, $filter);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function calculateMonthOrderStats(DateTime $date, StatFilter $filter = null): array
+    public function calculateMonthOrderStats(DateTimeInterface $date, StatFilter $filter = null): array
     {
         $from = clone $date;
         $from
             ->modify('first day of this month')
-            ->setTime(0, 0, 0, 0);
+            ->setTime(0, 0);
 
         $to = clone $date;
         $to
@@ -146,15 +103,12 @@ class StatCalculator implements StatCalculatorInterface
         return $this->calculateOrdersStats($from, $to, $filter);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function calculateYearOrderStats(DateTime $date, StatFilter $filter = null): array
+    public function calculateYearOrderStats(DateTimeInterface $date, StatFilter $filter = null): array
     {
         $from = clone $date;
         $from
             ->modify('first day of january ' . $date->format('Y'))
-            ->setTime(0, 0, 0, 0);
+            ->setTime(0, 0);
 
         $to = clone $date;
         $to
@@ -166,8 +120,6 @@ class StatCalculator implements StatCalculatorInterface
 
     /**
      * Creates an empty result.
-     *
-     * @return array
      */
     public function createEmptyResult(): array
     {
@@ -184,15 +136,12 @@ class StatCalculator implements StatCalculatorInterface
 
     /**
      * Calculates the order stats.
-     *
-     * @param DateTime        $from
-     * @param DateTime        $to
-     * @param StatFilter|null $filter
-     *
-     * @return array
      */
-    protected function calculateOrdersStats(DateTime $from, DateTime $to, StatFilter $filter = null): array
-    {
+    protected function calculateOrdersStats(
+        DateTimeInterface $from,
+        DateTimeInterface $to,
+        StatFilter        $filter = null
+    ): array {
         $query = $this
             ->createStatQuery($filter)
             ->setParameter('from', $from, Types::DATETIME_MUTABLE)
@@ -242,14 +191,11 @@ class StatCalculator implements StatCalculatorInterface
     /**
      * Calculates the order stats.
      *
-     * @param int[]      $orders
-     * @param StatFilter $filter
-     *
-     * @return array
+     * @param int[] $orders
      */
     protected function calculateOrders(array $orders, StatFilter $filter): array
     {
-        $manager = $this->registry->getEntityManagerForClass($this->orderClass);
+        $manager = $this->registry->getManagerForClass($this->orderClass);
         /** @var OrderRepositoryInterface $repository */
         $repository = $manager->getRepository($this->orderClass);
 
@@ -271,8 +217,8 @@ class StatCalculator implements StatCalculatorInterface
         }
 
         foreach ($orders as $id) {
-            if (!$order = $repository->findOneById($id)) {
-                throw new \LogicException("Order #$id not found.");
+            if (!$order = $repository->find($id)) {
+                throw new LogicException("Order #$id not found.");
             }
 
             if ($this->skipMode && $this->hasSkippedItem($order->getItems()->toArray(), $filter)) {
@@ -286,7 +232,7 @@ class StatCalculator implements StatCalculatorInterface
             $result = $amountCalculator->calculateSale($order, true);
 
             // Ignore order if not skip mode and gross amount equals to zero
-            if (!$this->skipMode && 0 === Money::compare($result->getGross(), 0, $this->defaultCurrency)) {
+            if (!$this->skipMode && $result->getGross()->isZero()) {
                 $manager->clear();
                 continue;
             }
@@ -295,7 +241,7 @@ class StatCalculator implements StatCalculatorInterface
             $data['shipping'] += $amountCalculator->calculateSaleShipment($order)->getGross();
 
             if ($margin = $marginCalculator->calculateSale($order)) {
-                $data['margin'] += $amount = $margin->getAmount();
+                $data['margin'] += $margin->getAmount();
             }
 
             $data['orders'] += 1;
@@ -307,10 +253,7 @@ class StatCalculator implements StatCalculatorInterface
     }
 
     /**
-     * @param OrderItemInterface[] $items
-     * @param StatFilter           $filter
-     *
-     * @return bool
+     * @param array<OrderItemInterface> $items
      */
     protected function hasSkippedItem(array $items, StatFilter $filter): bool
     {
@@ -337,16 +280,12 @@ class StatCalculator implements StatCalculatorInterface
 
     /**
      * Returns the stat query.
-     *
-     * @param StatFilter $filter
-     *
-     * @return Query
      */
     protected function createStatQuery(StatFilter $filter = null): Query
     {
         $qb = $this
             ->registry
-            ->getEntityManagerForClass($this->orderClass)
+            ->getManagerForClass($this->orderClass)
             ->createQueryBuilder();
 
         $ex = $qb->expr();
@@ -383,16 +322,12 @@ class StatCalculator implements StatCalculatorInterface
 
     /**
      * Returns the detail query.
-     *
-     * @param StatFilter|null $filter
-     *
-     * @return Query
      */
     protected function createDetailQuery(StatFilter $filter = null): Query
     {
         $qb = $this
             ->registry
-            ->getEntityManagerForClass($this->orderClass)
+            ->getManagerForClass($this->orderClass)
             ->createQueryBuilder();
 
         $ex = $qb->expr();
@@ -421,9 +356,6 @@ class StatCalculator implements StatCalculatorInterface
 
     /**
      * Applies the filter to the query builder.
-     *
-     * @param QueryBuilder    $qb
-     * @param StatFilter|null $filter
      */
     protected function filterQueryBuilder(QueryBuilder $qb, StatFilter $filter = null): void
     {
@@ -431,18 +363,20 @@ class StatCalculator implements StatCalculatorInterface
             return;
         }
 
-        if (!empty($countries = $filter->getCountries())) {
-            $qb
-                ->join('o.invoiceAddress', 'a')
-                ->join('a.country', 'c');
-
-            if ($filter->isExcludeCountries()) {
-                $qb->andWhere($qb->expr()->notIn('c.code', ':countries'));
-            } else {
-                $qb->andWhere($qb->expr()->in('c.code', ':countries'));
-            }
-
-            $qb->setParameter('countries', $countries);
+        if (empty($countries = $filter->getCountries())) {
+            return;
         }
+
+        $qb
+            ->join('o.invoiceAddress', 'a')
+            ->join('a.country', 'c');
+
+        if ($filter->isExcludeCountries()) {
+            $qb->andWhere($qb->expr()->notIn('c.code', ':countries'));
+        } else {
+            $qb->andWhere($qb->expr()->in('c.code', ':countries'));
+        }
+
+        $qb->setParameter('countries', $countries);
     }
 }

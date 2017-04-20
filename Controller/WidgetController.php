@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller;
 
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
@@ -9,6 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class WidgetController
@@ -17,42 +20,25 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class WidgetController
 {
-    /**
-     * @var WidgetHelper
-     */
-    private $helper;
+    private WidgetHelper          $helper;
+    private WidgetRenderer        $renderer;
+    private UrlGeneratorInterface $urlGenerator;
+    private string                $homeRoute;
 
-    /**
-     * @var WidgetRenderer
-     */
-    private $renderer;
-
-    /**
-     * @var string
-     */
-    private $homeRoute;
-
-
-    /**
-     * Constructor.
-     *
-     * @param WidgetHelper   $helper
-     * @param WidgetRenderer $renderer
-     * @param string         $homeRoute
-     */
-    public function __construct(WidgetHelper $helper, WidgetRenderer $renderer, string $homeRoute)
-    {
-        $this->helper    = $helper;
-        $this->renderer  = $renderer;
+    public function __construct(
+        WidgetHelper          $helper,
+        WidgetRenderer        $renderer,
+        UrlGeneratorInterface $urlGenerator,
+        string                $homeRoute
+    ) {
+        $this->helper = $helper;
+        $this->renderer = $renderer;
+        $this->urlGenerator = $urlGenerator;
         $this->homeRoute = $homeRoute;
     }
 
     /**
      * Customer widget action.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function customerWidget(Request $request): Response
     {
@@ -61,13 +47,6 @@ class WidgetController
         return new JsonResponse($this->helper->getCustomerWidgetData());
     }
 
-    /**
-     * Customer dropdown action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function customerDropdown(Request $request): Response
     {
         $this->assertRequest($request, true);
@@ -78,13 +57,6 @@ class WidgetController
         return $response;
     }
 
-    /**
-     * Cart widget action.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
     public function cartWidget(Request $request): Response
     {
         $this->assertRequest($request, true);
@@ -92,13 +64,6 @@ class WidgetController
         return new JsonResponse($this->helper->getCartWidgetData());
     }
 
-    /**
-     * Cart dropdown action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function cartDropdown(Request $request): Response
     {
         $this->assertRequest($request, true);
@@ -109,13 +74,6 @@ class WidgetController
         return $response;
     }
 
-    /**
-     * Context widget action.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
     public function contextWidget(Request $request): Response
     {
         $this->assertRequest($request, true);
@@ -123,13 +81,6 @@ class WidgetController
         return new JsonResponse($this->helper->getContextWidgetData());
     }
 
-    /**
-     * Context dropdown action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function contextDropdown(Request $request): Response
     {
         $this->assertRequest($request, true);
@@ -140,13 +91,6 @@ class WidgetController
         return $response;
     }
 
-    /**
-     * Context change action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function contextChange(Request $request): Response
     {
         $this->assertRequest($request, false);
@@ -155,20 +99,13 @@ class WidgetController
             return $response;
         }
 
-        $url = $this->helper->getUrlGenerator()->generate($this->homeRoute, [
+        $url = $this->urlGenerator->generate($this->homeRoute, [
             '_locale' => $this->helper->getLocale(),
         ]);
 
         return new RedirectResponse($url, Response::HTTP_FOUND);
     }
 
-    /**
-     * Currency change action.
-     *
-     * @param Request $request
-     *
-     * @return RedirectResponse
-     */
     public function currencyChange(Request $request): Response
     {
         $this->assertRequest($request, false);
@@ -177,22 +114,19 @@ class WidgetController
 
         if ($referer = $request->headers->get('referer')) {
             if ($parts = parse_url($referer)) {
-                if ($request->getHttpHost() === $parts["host"]) {
+                if ($request->getHttpHost() === $parts['host']) {
                     return new RedirectResponse($referer);
                 }
             }
         }
 
-        return new RedirectResponse("/", Response::HTTP_FOUND);
+        return new RedirectResponse('/', Response::HTTP_FOUND);
     }
 
     /**
      * Request assertion.
-     *
-     * @param Request $request
-     * @param bool    $xhr
      */
-    private function assertRequest(Request $request, bool $xhr = true): void
+    private function assertRequest(Request $request, bool $xhr): void
     {
         if ($xhr xor $request->isXmlHttpRequest()) {
             throw new NotFoundHttpException();

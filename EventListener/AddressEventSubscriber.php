@@ -1,21 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Component\Commerce\Cart\Event\CartAddressEvents;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Customer\Event\CustomerAddressEvents;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Event\OrderAddressEvents;
 use Ekyna\Component\Commerce\Quote\Event\QuoteAddressEvents;
 use Ekyna\Component\Commerce\Shipment\Event\RelayPointEvents;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
+use Ekyna\Component\Resource\Exception\UnexpectedTypeException;
 use Ekyna\Component\Resource\Model\ResourceInterface;
 use Ekyna\Component\Resource\Persistence\PersistenceHelperInterface;
 use Ivory\GoogleMap\Service\Geocoder\GeocoderService;
 use Ivory\GoogleMap\Service\Geocoder\Request\GeocoderAddressRequest;
+use Ivory\GoogleMap\Service\Geocoder\Response\GeocoderResult;
 use Ivory\GoogleMap\Service\Geocoder\Response\GeocoderStatus;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Throwable;
 
 /**
  * Class AddressEventSubscriber
@@ -24,15 +28,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class AddressEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var PersistenceHelperInterface
-     */
-    protected $persistenceHelper;
-
-    /**
-     * @var GeocoderService
-     */
-    protected $geocoder;
+    protected PersistenceHelperInterface $persistenceHelper;
+    protected GeocoderService $geocoder;
 
 
     /**
@@ -84,7 +81,6 @@ class AddressEventSubscriber implements EventSubscriberInterface
         }
 
         if ($this->updateLocation($address)) {
-            /** @noinspection PhpParamsInspection */
             $this->persistenceHelper->persistAndRecompute($address, false);
         }
     }
@@ -96,7 +92,7 @@ class AddressEventSubscriber implements EventSubscriberInterface
      *
      * @return bool Whether the longitude and latitude have been updated.
      */
-    protected function updateLocation(AddressInterface $address)
+    protected function updateLocation(AddressInterface $address): bool
     {
         $data = implode(', ', [
             $address->getStreet(),
@@ -109,7 +105,7 @@ class AddressEventSubscriber implements EventSubscriberInterface
 
         try {
             $response = $this->geocoder->geocode($request);
-        } catch (\Http\Client\Exception $e) {
+        } catch (Throwable $throwable) {
             return false;
         }
 
@@ -121,12 +117,12 @@ class AddressEventSubscriber implements EventSubscriberInterface
             return false;
         }
 
-        /** @var \Ivory\GoogleMap\Service\Geocoder\Response\GeocoderResult $result */
+        /** @var GeocoderResult $result */
         $location = $result->getGeometry()->getLocation();
 
         $address
-            ->setLongitude($location->getLongitude())
-            ->setLatitude($location->getLatitude());
+            ->setLongitude((string)$location->getLongitude())
+            ->setLatitude((string)$location->getLatitude());
 
         return true;
     }
@@ -143,16 +139,13 @@ class AddressEventSubscriber implements EventSubscriberInterface
         $address = $event->getResource();
 
         if (!$address instanceof AddressInterface) {
-            throw new InvalidArgumentException("Expected instance of " . AddressInterface::class);
+            throw new UnexpectedTypeException($address, AddressInterface::class);
         }
 
         return $address;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             CustomerAddressEvents::INSERT => ['onInsert', -2048],

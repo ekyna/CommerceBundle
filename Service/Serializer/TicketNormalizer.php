@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
 use Ekyna\Bundle\CommerceBundle\Entity\TicketMessage;
@@ -7,8 +9,8 @@ use Ekyna\Bundle\CommerceBundle\Model\TicketStates;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\TicketNormalizer as BaseNormalizer;
 use Ekyna\Component\Commerce\Support\Model\TicketInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketMessageInterface;
-use Ekyna\Component\Resource\Model\Actions;
-use Symfony\Component\Translation\TranslatorInterface;
+use Ekyna\Component\Resource\Action\Permission;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class TicketNormalizer
@@ -19,42 +21,34 @@ class TicketNormalizer extends BaseNormalizer
 {
     use TicketNormalizerTrait;
 
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-
-    /**
-     * Sets the translator.
-     *
-     * @param TranslatorInterface $translator
-     */
-    public function setTranslator(TranslatorInterface $translator)
+    public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
-     * @param \Ekyna\Bundle\CommerceBundle\Model\TicketInterface $ticket
+     * @param \Ekyna\Bundle\CommerceBundle\Model\TicketInterface $object
      */
-    public function normalize($ticket, $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
-        $data = parent::normalize($ticket, $format, $context);
+        $data = parent::normalize($object, $format, $context);
 
         if ($this->contextHasGroup(['Default', 'Ticket'], $context)) {
-            $admin = isset($context['admin']) ? $context['admin'] : false;
+            $admin = $context['admin'] ?? false;
+
             $data = array_replace($data, [
-                'state_badge' => $this->buildStateBadge($ticket->getState(), $admin),
-                'message'     => $this->isGranted(Actions::CREATE, (new TicketMessage())->setTicket($ticket)),
-                'edit'        => $this->isGranted(Actions::EDIT, $ticket),
-                'remove'      => $this->isGranted(Actions::DELETE, $ticket),
+                'state_badge' => $this->buildStateBadge($object->getState(), $admin),
+                'message'     => $this->isGranted(Permission::CREATE, (new TicketMessage())->setTicket($object)),
+                'edit'        => $this->isGranted(Permission::UPDATE, $object),
+                'remove'      => $this->isGranted(Permission::DELETE, $object),
                 'in_charge'   => null,
             ]);
 
-            $inCharge = $ticket->getInCharge();
+            $inCharge = $object->getInCharge();
             if ($inCharge && $inCharge->hasShortName()) {
                 $data['in_charge'] = $inCharge->getShortName();
             }
@@ -64,12 +58,12 @@ class TicketNormalizer extends BaseNormalizer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    protected function filterMessages(TicketInterface $ticket)
+    protected function filterMessages(TicketInterface $ticket): array
     {
         return $ticket->getMessages()->filter(function (TicketMessageInterface $message) {
-            return $this->isGranted(Actions::VIEW, $message);
+            return $this->isGranted(Permission::READ, $message);
         })->toArray();
     }
 
@@ -81,12 +75,12 @@ class TicketNormalizer extends BaseNormalizer
      *
      * @return string
      */
-    private function buildStateBadge($state, bool $admin = false)
+    private function buildStateBadge(string $state, bool $admin = false): string
     {
         return sprintf(
             '<span class="label label-%s">%s</span>',
             TicketStates::getTheme($state, $admin),
-            $this->translator->trans(TicketStates::getLabel($state))
+            TicketStates::getLabel($state)->trans($this->translator)
         );
     }
 }

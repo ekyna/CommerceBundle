@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Front;
 
 use Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper;
@@ -7,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class NewsletterController
@@ -16,45 +18,23 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class NewsletterController
 {
-    /**
-     * @var SubscriptionHelper
-     */
-    private $subscriptionHelper;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var EngineInterface
-     */
-    private $engine;
+    private SubscriptionHelper    $subscriptionHelper;
+    private UrlGeneratorInterface $urlGenerator;
+    private Environment           $twig;
 
 
-    /**
-     * Constructor.
-     *
-     * @param SubscriptionHelper $subscriptionHelper
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param EngineInterface $engine
-     */
     public function __construct(
         SubscriptionHelper $subscriptionHelper,
         UrlGeneratorInterface $urlGenerator,
-        EngineInterface $engine
+        Environment $twig
     ) {
         $this->subscriptionHelper = $subscriptionHelper;
-        $this->urlGenerator       = $urlGenerator;
-        $this->engine             = $engine;
+        $this->urlGenerator = $urlGenerator;
+        $this->twig = $twig;
     }
 
     /**
      * Newsletter subscription action.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function subscription(Request $request): Response
     {
@@ -64,18 +44,16 @@ class NewsletterController
 
         $form = $this->subscriptionHelper->getSubscriptionForm();
 
-        return new Response($this->engine->render('@EkynaCommerce/Newsletter/subscription.html.twig', [
+        return new Response($this->twig->render('@EkynaCommerce/Newsletter/subscription.html.twig', [
             'form' => $form ? $form->createView() : null,
         ]));
     }
 
     /**
      * Newsletter subscribed action.
-     *
-     * @return Response
      */
     public function subscribed(): Response
     {
-        return new Response($this->engine->render('@EkynaCommerce/Newsletter/subscribed.html.twig'));
+        return new Response($this->twig->render('@EkynaCommerce/Newsletter/subscribed.html.twig'));
     }
 }

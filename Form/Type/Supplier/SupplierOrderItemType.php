@@ -1,63 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
-use Ekyna\Bundle\CoreBundle\Form\Type\HiddenEntityType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\HiddenResourceType;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SupplierOrderItemType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Supplier
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierOrderItemType extends ResourceFormType
+class SupplierOrderItemType extends AbstractResourceType
 {
-    /**
-     * @var string
-     */
-    protected $supplierProductClass;
+    protected string $supplierProductClass;
 
-
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     * @param string $supplierProductClass
-     */
-    public function __construct(string $dataClass, string $supplierProductClass)
+    public function __construct(string $supplierProductClass)
     {
-        parent::__construct($dataClass);
-
         $this->supplierProductClass = $supplierProductClass;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('designation', Symfony\TextType::class, [
-                'label'          => 'ekyna_core.field.designation',
+                'label'          => t('field.designation', [], 'EkynaUi'),
                 'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'order-item-designation',
                 ],
             ])
             ->add('reference', Symfony\TextType::class, [
-                'label'          => 'ekyna_core.field.reference',
+                'label'          => t('field.reference', [], 'EkynaUi'),
                 'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'order-item-reference',
                 ],
             ])
-            ->add('netPrice', MoneyType::class, [
-                'label'          => 'ekyna_core.field.designation',
+            ->add('netPrice', Symfony\MoneyType::class, [
+                'label'          => t('field.designation', [], 'EkynaUi'),
+                'decimal'        => true,
                 'currency'       => $options['currency'],
                 'scale'          => 5,
                 'error_bubbling' => true,
@@ -66,9 +55,10 @@ class SupplierOrderItemType extends ResourceFormType
                 ],
             ])
             ->add('weight', Symfony\NumberType::class, [
-                'label' => 'ekyna_core.field.weight',
-                'scale' => 3,
-                'attr'  => [
+                'label'   => t('field.weight', [], 'EkynaUi'),
+                'decimal' => true,
+                'scale'   => 3,
+                'attr'    => [
                     'class'       => 'order-item-weight',
                     'input_group' => ['append' => 'Kg'],
                 ],
@@ -79,14 +69,15 @@ class SupplierOrderItemType extends ResourceFormType
                 ],
             ])
             ->add('quantity', Symfony\NumberType::class, [
-                'label'          => 'ekyna_core.field.quantity',
+                'label'          => t('field.quantity', [], 'EkynaUi'),
+                'decimal'        => true,
+                'scale'          => 3, // TODO Packaging format
                 'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'order-item-quantity',
                 ],
-                // TODO 'scale' => 2, // from packaging mode
             ])
-            ->add('product', HiddenEntityType::class, [
+            ->add('product', HiddenResourceType::class, [
                 'class'          => $this->supplierProductClass,
                 'error_bubbling' => true,
                 'attr'           => [
@@ -95,10 +86,7 @@ class SupplierOrderItemType extends ResourceFormType
             ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -113,10 +101,7 @@ class SupplierOrderItemType extends ResourceFormType
             ->setAllowedTypes('currency', 'string');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_supplier_order_item';
     }

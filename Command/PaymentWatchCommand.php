@@ -1,85 +1,103 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Watcher\OutstandingWatcher;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
+use Ekyna\Component\Commerce\Order\Repository\OrderPaymentRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Ekyna\Component\Commerce\Quote\Repository\QuotePaymentRepositoryInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 /**
  * Class PaymentWatchCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentWatchCommand extends ContainerAwareCommand
+class PaymentWatchCommand extends Command
 {
-    /**
-     * @var OutstandingWatcher
-     */
-    private $watcher;
+    protected static $defaultName = 'ekyna:commerce:payment:watch';
+
+    private OutstandingWatcher              $watcher;
+    private OrderPaymentRepositoryInterface $orderPaymentRepository;
+    private QuotePaymentRepositoryInterface $quotePaymentRepository;
+    private EntityManagerInterface          $manager;
+    private SettingManagerInterface         $setting;
+    private MailerInterface                 $mailer;
 
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
-    {
-        $this
-            ->setName('ekyna:commerce:payment:watch')
-            ->setDescription('Watches the payment states (outstanding).');
+    public function __construct(
+        OutstandingWatcher              $watcher,
+        OrderPaymentRepositoryInterface $orderPaymentRepository,
+        QuotePaymentRepositoryInterface $quotePaymentRepository,
+        EntityManagerInterface          $manager,
+        SettingManagerInterface         $setting,
+        MailerInterface                 $mailer
+    ) {
+        parent::__construct();
+
+        $this->watcher = $watcher;
+        $this->orderPaymentRepository = $orderPaymentRepository;
+        $this->quotePaymentRepository = $quotePaymentRepository;
+        $this->manager = $manager;
+        $this->setting = $setting;
+        $this->mailer = $mailer;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function configure(): void
     {
-        $this->watcher = $this->getContainer()->get('ekyna_commerce.payment.outstanding_watcher');
+        $this->setDescription('Watches the payment states (outstanding).');
+    }
 
-        foreach (['order', 'quote'] as $type) {
-            $id = "ekyna_commerce.{$type}_payment.repository";
-            $repository = $this->getContainer()->get($id);
-            if (!$repository instanceof PaymentRepositoryInterface) {
-                throw new InvalidArgumentException("Expected instance of " . PaymentRepositoryInterface::class);
-            }
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $map = [
+            'order' => $this->orderPaymentRepository,
+            'quote' => $this->quotePaymentRepository,
+        ];
 
+        foreach ($map as $type => $repository) {
             $this->watch($repository, $type);
         }
+
+        return Command::SUCCESS;
     }
 
     /**
      * Watches outstanding payments and sends report.
-     *
-     * @param PaymentRepositoryInterface $repository
-     * @param string                     $type
      */
-    private function watch(PaymentRepositoryInterface $repository, $type)
+    private function watch(PaymentRepositoryInterface $repository, string $type): void
     {
         if (!$this->watcher->watch($repository)) {
             return;
         }
 
-        $this->getContainer()->get('doctrine.orm.entity_manager')->flush();
+        $this->manager->flush();
+        $this->manager->clear();
 
         if (empty($report = $this->watcher->getReport())) {
             return;
         }
 
-        $settings = $this->getContainer()->get('ekyna_setting.manager');
-        $fromName = $settings->getParameter('notification.from_name');
-        $fromEmail = $settings->getParameter('notification.from_email');
-        $toEmails = $settings->getParameter('notification.to_emails');
+        $fromName = $this->setting->getParameter('notification.from_name');
+        $fromEmail = $this->setting->getParameter('notification.from_email');
+        $toEmails = $this->setting->getParameter('notification.to_emails');
 
-        $message = new \Swift_Message();
+        $message = new Email();
         $message
-            ->setSubject(ucfirst($type) . 'payments outstanding report')
-            ->setBody($report, 'text/html')
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($toEmails);
+            ->subject(ucfirst($type) . 'payments outstanding report')
+            ->html($report)
+            ->from(new Address($fromEmail, $fromName))
+            ->to(...$toEmails);
 
-        $this->getContainer()->get('mailer')->send($message);
+        $this->mailer->send($message);
     }
 }

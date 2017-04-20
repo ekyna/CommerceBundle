@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\AdminBundle\Repository\UserRepositoryInterface;
 use Ekyna\Bundle\CommerceBundle\Repository\TicketMessageRepository;
@@ -17,35 +20,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SupportNotifyCommand extends Command
 {
-    /**
-     * @var TicketMessageRepository
-     */
-    private $messageRepository;
+    protected static $defaultName = 'ekyna:commerce:support:notify';
 
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $adminRepository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $messageManager;
-
-    /**
-     * @var Mailer
-     */
-    private $mailer;
+    private TicketMessageRepository $messageRepository;
+    private UserRepositoryInterface $adminRepository;
+    private EntityManagerInterface  $messageManager;
+    private Mailer                  $mailer;
 
 
-    /**
-     * Constructor.
-     *
-     * @param TicketMessageRepository $messageRepository
-     * @param UserRepositoryInterface $adminRepository
-     * @param EntityManagerInterface  $messageManager
-     * @param Mailer                  $mailer
-     */
     public function __construct(
         TicketMessageRepository $messageRepository,
         UserRepositoryInterface $adminRepository,
@@ -60,29 +42,20 @@ class SupportNotifyCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('ekyna:commerce:support:notify')
-            ->setDescription('Sends emails to customers and administrators about created or update ticket messages.');
+        $this->setDescription('Sends emails to customers and administrators about created or update ticket messages.');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->notifyCustomers();
         $this->notifyAdministrators();
+
+        return Command::SUCCESS;
     }
 
-    /**
-     * Notifies customers.
-     */
-    private function notifyCustomers()
+    private function notifyCustomers(): void
     {
         $ticketIds = [];
 
@@ -101,7 +74,7 @@ class SupportNotifyCommand extends Command
             }
 
             // Mark the message as notified
-            $message->setNotifiedAt(new \DateTime());
+            $message->setNotifiedAt(new DateTime());
             $this->messageManager->persist($message);
 
             $count++;
@@ -116,10 +89,7 @@ class SupportNotifyCommand extends Command
         }
     }
 
-    /**
-     * Notifies administrators.
-     */
-    private function notifyAdministrators()
+    private function notifyAdministrators(): void
     {
         $administrators = $this->adminRepository->findAll();
 
@@ -134,7 +104,7 @@ class SupportNotifyCommand extends Command
 
             foreach ($messages as $message) {
                 // Mark the message as notified
-                $message->setNotifiedAt(new \DateTime());
+                $message->setNotifiedAt(new DateTime());
                 $this->messageManager->persist($message);
             }
 

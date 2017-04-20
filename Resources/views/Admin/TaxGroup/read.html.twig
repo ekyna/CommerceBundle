@@ -1,0 +1,26 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(taxGroup.name, 'text', {
+                    'label': 'field.name',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(taxGroup.default, 'boolean', {
+                    'label': 'field.default',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(taxGroup.taxes, 'resource', {
+            'resource': 'ekyna_commerce.tax',
+            'id': 'tax_group_taxes'
+        }) }}
+    </div>
+{%- endblock main_contents %}

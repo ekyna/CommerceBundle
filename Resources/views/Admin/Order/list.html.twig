@@ -1,11 +1,6 @@
-{% extends '@EkynaAdmin/Entity/Default/list.html.twig' %}
+{% extends '@EkynaAdmin/Entity/Crud/list.html.twig' %}
 
 {% block actions %}
-    {{- ui_button('ekyna_commerce.order.header.export_to_deliver', {
-        'type': 'link',
-        'path': path('ekyna_commerce_order_admin_export_to_deliver'),
-        'icon': 'download',
-        'fa_icon': true
-    }) -}}
+    {{ admin_resource_btn('ekyna_commerce.order', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Order\\ExportToDeliverAction') }}
     {{ parent() }}
 {% endblock %}

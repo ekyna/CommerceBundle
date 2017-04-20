@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Subject;
 
 use Ekyna\Bundle\CommerceBundle\Service\Stock\ResupplyAlertHelper;
-use Ekyna\Bundle\CoreBundle\Modal;
+use Ekyna\Bundle\UiBundle\Model\Modal;
+use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Ekyna\Component\Commerce\Features;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class ResupplyAlertController
@@ -18,46 +21,18 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class ResupplyAlertController
 {
-    /**
-     * @var Modal\Renderer
-     */
-    private $modalRenderer;
-
-    /**
-     * @var CustomerProviderInterface
-     */
-    private $customerProvider;
-
-    /**
-     * @var ResupplyAlertHelper
-     */
-    private $helper;
-
-    /**
-     * @var EngineInterface
-     */
-    private $engine;
-
-    /**
-     * @var Features
-     */
-    private $features;
+    private ModalRenderer $modalRenderer;
+    private CustomerProviderInterface $customerProvider;
+    private ResupplyAlertHelper $helper;
+    private Environment $engine;
+    private Features $features;
 
 
-    /**
-     * Constructor.
-     *
-     * @param Modal\Renderer            $modalRenderer
-     * @param CustomerProviderInterface $customerProvider
-     * @param ResupplyAlertHelper       $helper
-     * @param EngineInterface           $engine
-     * @param Features                  $features
-     */
     public function __construct(
-        Modal\Renderer $modalRenderer,
+        ModalRenderer $modalRenderer,
         CustomerProviderInterface $customerProvider,
         ResupplyAlertHelper $helper,
-        EngineInterface $engine,
+        Environment $engine,
         Features $features
     ) {
         $this->modalRenderer    = $modalRenderer;
@@ -69,10 +44,6 @@ class ResupplyAlertController
 
     /**
      * Subject resupply alert subscribe action.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function subscribe(Request $request): Response
     {
@@ -87,28 +58,28 @@ class ResupplyAlertController
 
         $this->helper->initialize($request);
 
-        $modal = new Modal\Modal();
+        $modal = new Modal();
         $modal
             ->setTitle('Resupply alert')
-            ->setSize(Modal\Modal::SIZE_NORMAL);
+            ->setSize(Modal::SIZE_NORMAL);
 
         $subscribe = $this->helper->createSubscribeForm(['email' => $email]);
 
         if (null === $result = $this->helper->handleSubscriptionForm($request)) {
             // Not posted
             $modal
-                ->setType(Modal\Modal::TYPE_PRIMARY)
-                ->setContent($subscribe->createView())
-                ->addButton(Modal\Modal::BTN_SUBMIT)
-                ->addButton(Modal\Modal::BTN_CANCEL);
+                ->setType(Modal::TYPE_PRIMARY)
+                ->setForm($subscribe->createView())
+                ->addButton(Modal::BTN_SUBMIT)
+                ->addButton(Modal::BTN_CANCEL);
         } elseif ($result) {
             // Success
             $modal
-                ->setType(Modal\Modal::TYPE_SUCCESS)
+                ->setType(Modal::TYPE_SUCCESS)
                 ->setContent($this->engine->render(
                     '@EkynaCommerce/ResupplyAlert/subscribe_success.html.twig'
                 ))
-                ->addButton(Modal\Modal::BTN_CLOSE);
+                ->addButton(Modal::BTN_CLOSE);
         } else {
             $this->helper->initialize($request);
 
@@ -118,10 +89,10 @@ class ResupplyAlertController
 
             // Already subscribed
             $modal
-                ->setType(Modal\Modal::TYPE_WARNING)
-                ->setContent($unsubscribe->createView())
-                ->addButton(Modal\Modal::BTN_CONFIRM)
-                ->addButton(Modal\Modal::BTN_CANCEL);
+                ->setType(Modal::TYPE_WARNING)
+                ->setForm($unsubscribe->createView())
+                ->addButton(Modal::BTN_CONFIRM)
+                ->addButton(Modal::BTN_CANCEL);
         }
 
         return $this->modalRenderer->render($modal);
@@ -129,10 +100,6 @@ class ResupplyAlertController
 
     /**
      * Subject resupply alert unsubscribe action.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function unsubscribe(Request $request): Response
     {
@@ -147,28 +114,28 @@ class ResupplyAlertController
 
         $this->helper->initialize($request);
 
-        $modal = new Modal\Modal();
+        $modal = new Modal();
         $modal
             ->setTitle('Resupply alert')
-            ->setSize(Modal\Modal::SIZE_NORMAL);
+            ->setSize(Modal::SIZE_NORMAL);
 
         $unsubscribe = $this->helper->createUnsubscribeForm(['email' => $email]);
 
         if (null === $result = $this->helper->handleUnsubscriptionForm($request)) {
             // Not posted
             $modal
-                ->setType(Modal\Modal::TYPE_PRIMARY)
-                ->setContent($unsubscribe->createView())
-                ->addButton(Modal\Modal::BTN_CONFIRM)
-                ->addButton(Modal\Modal::BTN_CANCEL);
+                ->setType(Modal::TYPE_PRIMARY)
+                ->setForm($unsubscribe->createView())
+                ->addButton(Modal::BTN_CONFIRM)
+                ->addButton(Modal::BTN_CANCEL);
         } elseif($result) {
             // Success
             $modal
-                ->setType(Modal\Modal::TYPE_WARNING)
+                ->setType(Modal::TYPE_WARNING)
                 ->setContent($this->engine->render(
                     '@EkynaCommerce/ResupplyAlert/unsubscribe_success.html.twig'
                 ))
-                ->addButton(Modal\Modal::BTN_CLOSE);
+                ->addButton(Modal::BTN_CLOSE);
         } else {
             $this->helper->initialize($request);
 
@@ -178,10 +145,10 @@ class ResupplyAlertController
 
             // Already subscribed
             $modal
-                ->setType(Modal\Modal::TYPE_WARNING)
-                ->setContent($subscribe->createView())
-                ->addButton(Modal\Modal::BTN_SUBMIT)
-                ->addButton(Modal\Modal::BTN_CANCEL);
+                ->setType(Modal::TYPE_WARNING)
+                ->setForm($subscribe->createView())
+                ->addButton(Modal::BTN_SUBMIT)
+                ->addButton(Modal::BTN_CANCEL);
         }
 
         return $this->modalRenderer->render($modal);

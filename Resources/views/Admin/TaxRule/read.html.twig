@@ -1,0 +1,61 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% import '@EkynaCommerce/Admin/macros.html.twig' as _commerce %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(taxRule.name, 'text', {
+                    'label': 'field.name',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'tax_rule_name',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(taxRule.priority, 'number', {
+                    'label': 'field.priority',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'tax_rule_priority',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(taxRule.customer, 'boolean', {
+                    'label': 'tax_rule.field.customer',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'tax_rule_customer',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(taxRule.business, 'boolean', {
+                    'label': 'tax_rule.field.business',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'tax_rule_business',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(taxRule.sources, 'resource', {
+            'resource': 'ekyna_commerce.country',
+            'label': 'tax_rule.field.sources',
+            'label_trans_domain': 'EkynaCommerce',
+            'id': 'tax_rule_sources'
+        }) }}
+        {{ show_row(taxRule.targets, 'resource', {
+            'resource': 'ekyna_commerce.country',
+            'label': 'tax_rule.field.targets',
+            'label_trans_domain': 'EkynaCommerce',
+            'id': 'tax_rule_targets'
+        }) }}
+        {{ show_row(taxRule.taxes, 'resource', {
+            'resource': 'ekyna_commerce.tax',
+            'id': 'tax_rule_taxes'
+        }) }}
+        {{ _commerce.show_mentions(taxRule) }}
+    </div>
+{%- endblock main_contents %}

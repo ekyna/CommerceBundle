@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as Modes;
@@ -12,12 +14,9 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  */
 final class AdjustmentModes extends AbstractConstants
 {
-    /**
-     * {@inheritdoc}
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.adjustment.mode.';
+        $prefix = 'adjustment.mode.';
 
         return [
             Modes::MODE_FLAT    => [$prefix . Modes::MODE_FLAT],
@@ -25,19 +24,18 @@ final class AdjustmentModes extends AbstractConstants
         ];
     }
 
-    /**
-     * @return string
-     */
-    static public function getDefaultChoice(): ?string
+    public static function getDefaultChoice(): ?string
     {
         return Modes::MODE_PERCENT;
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentType;
@@ -13,28 +15,14 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
  */
 class OrderPaymentType extends PaymentType
 {
-    /**
-     * @var LockChecker
-     */
-    private $lockChecker;
+    private LockChecker $lockChecker;
 
 
-    /**
-     * Constructor.
-     *
-     * @param LockChecker $lockChecker
-     * @param string $dataClass
-     */
-    public function __construct(LockChecker $lockChecker, string $dataClass)
+    public function __construct(LockChecker $lockChecker)
     {
-        parent::__construct($dataClass);
-
         $this->lockChecker = $lockChecker;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function isLocked(PaymentInterface $payment): bool
     {
         return $this->lockChecker->isLocked($payment);

@@ -1,39 +1,26 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    <li class="active">
-        <a href="#tax-rule-general" id="toggle-general" data-toggle="tab">
-            {{ 'ekyna_core.field.general'|trans }}
-        </a>
-    </li>
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="tax-rule-general">
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.name, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.priority, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.name, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.customer, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+            <div class="col-md-6">
+                {{ form_row(form.priority, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            {{ form_row(form.sources) }}
-            {{ form_row(form.targets) }}
-            {{ form_row(form.taxes) }}
-            {{ form_row(form.mentions) }}
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.customer, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.sources) }}
+        {{ form_row(form.targets) }}
+        {{ form_row(form.taxes) }}
+        {{ form_row(form.mentions) }}
     </div>
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+{%- endblock main_contents %}

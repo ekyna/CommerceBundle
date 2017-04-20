@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentType;
@@ -12,10 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class OrderShipmentType extends ShipmentType
 {
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

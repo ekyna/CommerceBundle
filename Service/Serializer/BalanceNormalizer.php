@@ -1,7 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
+use DateTime;
+use DateTimeInterface;
+use Decimal\Decimal;
 use Ekyna\Component\Commerce\Common\Util\DateUtil;
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
 use Ekyna\Component\Commerce\Common\Util\Money;
@@ -9,7 +14,7 @@ use Ekyna\Component\Commerce\Customer\Balance\Balance;
 use Ekyna\Component\Commerce\Customer\Balance\Line;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class BalanceNormalizer
@@ -20,23 +25,9 @@ class BalanceNormalizer implements NormalizerInterface
 {
     use FormatterAwareTrait;
 
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
+    protected TranslatorInterface $translator;
+    protected UrlGeneratorInterface $urlGenerator;
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $urlGenerator;
-
-
-    /**
-     * Constructor.
-     *
-     * @param TranslatorInterface   $translator
-     * @param UrlGeneratorInterface $urlGenerator
-     */
     public function __construct(
         TranslatorInterface $translator,
         UrlGeneratorInterface $urlGenerator
@@ -55,24 +46,22 @@ class BalanceNormalizer implements NormalizerInterface
         $formatter = $this->getFormatter();
 
         $translations = [
-            Line::TYPE_INVOICE => $this->translator->trans('ekyna_commerce.invoice.label.singular'),
-            Line::TYPE_CREDIT  => $this->translator->trans('ekyna_commerce.credit.label.singular'),
-            Line::TYPE_PAYMENT => $this->translator->trans('ekyna_commerce.payment.label.singular'),
-            Line::TYPE_REFUND  => $this->translator->trans('ekyna_commerce.refund.label.singular'),
+            Line::TYPE_INVOICE => $this->translator->trans('invoice.label.singular', [], 'EkynaCommerce'),
+            Line::TYPE_CREDIT  => $this->translator->trans('credit.label.singular', [], 'EkynaCommerce'),
+            Line::TYPE_PAYMENT => $this->translator->trans('payment.label.singular', [], 'EkynaCommerce'),
+            Line::TYPE_REFUND  => $this->translator->trans('refund.label.singular', [], 'EkynaCommerce'),
         ];
 
-        $date = function (\DateTime $date = null) {
+        $date = function (DateTimeInterface $date = null) {
             return $date ? $date->format(DateUtil::DATE_FORMAT) : null;
         };
 
         $currency = $object->getCurrency();
-        $fCurrency = function (float $amount) use ($formatter, $currency) {
-            return 0 !== Money::compare(0, $amount, $currency)
-                ? $formatter->currency($amount, $currency)
-                : null;
+        $fCurrency = function (Decimal $amount) use ($formatter, $currency) {
+            return !$amount->equals(0) ? $formatter->currency($amount, $currency) : null;
         };
 
-        $fDate = function (\DateTime $date = null) use ($formatter) {
+        $fDate = function (DateTimeInterface $date = null) use ($formatter) {
             return $date ? $formatter->date($date) : null;
         };
 
@@ -114,7 +103,7 @@ class BalanceNormalizer implements NormalizerInterface
             $datum = [
                 'date'           => $date($object->getFrom()),
                 'number'         => null,
-                'label'          => $this->translator->trans('ekyna_commerce.customer.balance.forward'),
+                'label'          => $this->translator->trans('customer.balance.forward', [], 'EkynaCommerce'),
                 'order_number'   => null,
                 'voucher_number' => null,
                 'order_date'     => null,
@@ -158,11 +147,11 @@ class BalanceNormalizer implements NormalizerInterface
                 $datum['type'] = $line->getType();
 
                 if ($object->isPublic()) {
-                    $url = $this->urlGenerator->generate('ekyna_commerce_account_order_show', [
+                    $url = $this->urlGenerator->generate('ekyna_commerce_account_order_read', [
                         'number' => $line->getOrderNumber(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
                 } else {
-                    $url = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
+                    $url = $this->urlGenerator->generate('admin_ekyna_commerce_order_read', [
                         'orderId' => $line->getOrderId(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
                 }
@@ -192,7 +181,7 @@ class BalanceNormalizer implements NormalizerInterface
     /**
      * @inheritDoc
      */
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, string $format = null): bool
     {
         return $data instanceof Balance;
     }

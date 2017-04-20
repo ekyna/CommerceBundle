@@ -1,0 +1,60 @@
+resources:
+    ekyna_commerce:
+        audience:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Newsletter\Model\AudienceInterface
+                class: Ekyna\Component\Commerce\Newsletter\Entity\Audience
+            repository:
+                interface: Ekyna\Component\Commerce\Newsletter\Repository\AudienceRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\AudienceRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Newsletter\Factory\AudienceFactoryInterface
+                class: Ekyna\Component\Commerce\Newsletter\Factory\AudienceFactory
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\AudienceType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\AudienceType
+            trans_domain: EkynaCommerce
+            translation:
+                interface: Ekyna\Component\Commerce\Newsletter\Model\AudienceTranslationInterface
+                class: Ekyna\Component\Commerce\Newsletter\Entity\AudienceTranslation
+                fields: [title, description]
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/Audience/_form.html.twig'
+                    list: '@EkynaCommerce/Admin/Audience/list.html.twig'
+                    read: '@EkynaCommerce/Admin/Audience/read.html.twig'
+                admin_toggle:
+                    properties: [public, default]
+
+        member:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Newsletter\Model\MemberInterface
+                class: Ekyna\Component\Commerce\Newsletter\Entity\Member
+            repository:
+                interface: Ekyna\Component\Commerce\Newsletter\Repository\MemberRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\MemberRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Newsletter\Factory\MemberFactoryInterface
+                class: Ekyna\Component\Commerce\Newsletter\Factory\MemberFactory
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\MemberType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\MemberType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/Member/_form.html.twig'
+                    read: '@EkynaCommerce/Admin/Member/read.html.twig'
+
+        subscription:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Newsletter\Model\SubscriptionInterface
+                class: Ekyna\Component\Commerce\Newsletter\Entity\Subscription
+            repository:
+                interface: Ekyna\Component\Commerce\Newsletter\Repository\SubscriptionRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SubscriptionRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Newsletter\Factory\SubscriptionFactoryInterface
+                class: Ekyna\Component\Commerce\Newsletter\Factory\SubscriptionFactory
+            parent: ekyna_commerce.member
+            trans_domain: EkynaCommerce

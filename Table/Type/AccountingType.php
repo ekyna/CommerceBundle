@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class AccountingType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AccountingType extends ResourceTableType
+class AccountingType extends AbstractResourceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTable(TableBuilderInterface $builder, array $options)
+    public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $builder
             ->addDefaultSort('number')
@@ -25,54 +28,34 @@ class AccountingType extends ResourceTableType
             ->setFilterable(false)
             ->setPerPageChoices([100])
             ->addColumn('number', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.number',
-                'property_path'        => null,
-                'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_accounting_admin_show',
-                'route_parameters_map' => ['accountingId' => 'id'],
-                'position'             => 10,
+                'label'    => t('field.number', [], 'EkynaUi'),
+                'position' => 10,
             ])
             ->addColumn('name', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.name',
-                'sortable' => true,
+                'label'    => t('field.name', [], 'EkynaUi'),
                 'position' => 20,
             ])
             ->addColumn('enabled', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_core.field.enabled',
-                'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_accounting_admin_toggle',
-                'route_parameters'     => ['field' => 'enabled'],
-                'route_parameters_map' => ['accountingId' => 'id'],
-                'position'             => 30,
+                'label'    => t('field.enabled', [], 'EkynaUi'),
+                'position' => 30,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
-                'buttons' => [
-                    [
-                        'label'                => 'ekyna_core.button.edit',
-                        'class'                => 'warning',
-                        'route_name'           => 'ekyna_commerce_accounting_admin_edit',
-                        'route_parameters_map' => ['accountingId' => 'id'],
-                        'permission'           => 'edit',
-                    ],
-                    [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_accounting_admin_remove',
-                        'route_parameters_map' => ['accountingId' => 'id'],
-                        'permission'           => 'delete',
-                    ],
+                'resource' => $this->dataClass,
+                'actions'  => [
+                    UpdateAction::class,
+                    DeleteAction::class,
                 ],
             ])
             ->addFilter('number', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
+                'label'    => t('field.number', [], 'EkynaUi'),
                 'position' => 10,
             ])
             ->addFilter('name', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.name',
+                'label'    => t('field.name', [], 'EkynaUi'),
                 'position' => 20,
             ])
             ->addFilter('enabled', CType\Filter\BooleanType::class, [
-                'label'    => 'ekyna_core.field.enabled',
+                'label'    => t('field.enabled', [], 'EkynaUi'),
                 'position' => 30,
             ]);
     }

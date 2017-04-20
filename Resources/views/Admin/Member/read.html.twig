@@ -1,0 +1,23 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="member-general">
+        {{ show_row(member.email, 'text', {
+            'label': t('field.email_address', [], 'EkynaUi')
+        }) }}
+        {{ show_row(member.status, 'constant_choice', {
+            'class': 'Ekyna\\Bundle\\CommerceBundle\\Model\\SubscriptionStatus',
+            'theme': true
+        }) }}
+        <div class="row show-row">
+            <div class="col-md-2 show-label" title="{{ 'audience.label.plural'|trans({}, 'EkynaCommerce') }}">
+                {{- 'audience.label.plural'|trans({}, 'EkynaCommerce') -}}
+            </div>
+            <div class="col-md-10">
+                <div class="show-widget show-widget-block">
+                    {{ ekyna_table_render(newsletter_member_subscriptions(member)) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endblock main_contents %}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
 use Ekyna\Component\Resource\Model\AbstractTranslation;
@@ -11,59 +13,27 @@ use Ekyna\Component\Resource\Model\AbstractTranslation;
  */
 class NotifyModelTranslation extends AbstractTranslation
 {
-    /**
-     * @var string
-     */
-    private $subject;
+    private ?string $subject = null;
+    private ?string $message = null;
 
-    /**
-     * @var string
-     */
-    private $message;
-
-
-    /**
-     * Returns the subject.
-     *
-     * @return string|null
-     */
     public function getSubject(): ?string
     {
         return $this->subject;
     }
 
-    /**
-     * Sets the subject.
-     *
-     * @param string|null $subject
-     *
-     * @return NotifyModelTranslation
-     */
-    public function setSubject(string $subject = null): self
+    public function setSubject(?string $subject): self
     {
         $this->subject = $subject;
 
         return $this;
     }
 
-    /**
-     * Returns the message.
-     *
-     * @return string|null
-     */
     public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    /**
-     * Sets the message.
-     *
-     * @param string|null $message
-     *
-     * @return NotifyModelTranslation
-     */
-    public function setMessage(string $message = null): self
+    public function setMessage(?string $message): self
     {
         $this->message = $message;
 

@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
-use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
+use Ekyna\Component\Resource\Exception\PdfException;
+use Ekyna\Component\Resource\Helper\PdfGenerator;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class LabelRenderer
@@ -17,40 +21,20 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class LabelRenderer
 {
-    const SIZE_A4 = 'A4';
-    const SIZE_A5 = 'A5';
-    const SIZE_A6 = 'A6';
+    public const SIZE_A4 = 'A4';
+    public const SIZE_A5 = 'A5';
+    public const SIZE_A6 = 'A6';
 
+    private Environment             $twig;
+    private PdfGenerator            $generator;
+    private SettingManagerInterface $settings;
 
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var PdfGenerator
-     */
-    private $generator;
-
-    /**
-     * @var SettingsManagerInterface
-     */
-    private $settings;
-
-
-    /**
-     * Constructor.
-     *
-     * @param EngineInterface          $templating
-     * @param PdfGenerator             $generator
-     * @param SettingsManagerInterface $settings
-     */
     public function __construct(
-        EngineInterface $templating,
-        PdfGenerator $generator,
-        SettingsManagerInterface $settings
+        Environment             $twig,
+        PdfGenerator            $generator,
+        SettingManagerInterface $settings
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->generator = $generator;
         $this->settings = $settings;
     }
@@ -63,10 +47,16 @@ class LabelRenderer
      *
      * @return Response|string
      *
-     * @throws \Ekyna\Component\Commerce\Exception\PdfException
+     * @throws PdfException
      */
-    public function render(array $labels, $raw = false)
+    public function render(array $labels, bool $raw = false)
     {
+        foreach ($labels as $label) {
+            if (!$label instanceof ShipmentLabelInterface) {
+                throw new UnexpectedTypeException($label, ShipmentLabelInterface::class);
+            }
+        }
+
         $layout = false;
 
         $options = [
@@ -111,7 +101,7 @@ class LabelRenderer
             }
         }
 
-        $content = $this->templating->render('@EkynaCommerce/Admin/Common/Shipment/labels.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Admin/Common/Shipment/labels.html.twig', [
             'layout' => $layout,
             'labels' => $labels,
         ]);
@@ -144,9 +134,9 @@ class LabelRenderer
     /**
      * Returns the available sizes.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public static function getSizes()
+    public static function getSizes(): array
     {
         return [
             static::SIZE_A4 => static::SIZE_A4,

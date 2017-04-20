@@ -1,15 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
+use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\PriceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
-use Ekyna\Bundle\CoreBundle\Form\Type\CollectionPositionType;
+use Ekyna\Bundle\UiBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class SaleItemTypeSubscriber
@@ -18,49 +23,14 @@ use Symfony\Component\Form\FormEvents;
  */
 class SaleItemTypeSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var bool
-     */
-    private $addCollections;
+    private string $currency;
 
-    /**
-     * @var string
-     */
-    private $itemType;
-
-    /**
-     * @var string
-     */
-    private $adjustmentType;
-
-    /**
-     * @var string
-     */
-    private $currency;
-
-
-    /**
-     * Constructor.
-     *
-     * @param bool   $addCollections
-     * @param string $itemType
-     * @param string $adjustmentType
-     * @param string $currency
-     */
-    public function __construct($addCollections, $itemType, $adjustmentType, $currency)
+    public function __construct(string $currency)
     {
-        $this->addCollections = (bool)$addCollections;
-        $this->itemType = $itemType;
-        $this->adjustmentType = $adjustmentType;
         $this->currency = $currency;
     }
 
-    /**
-     * Form pre set data event handler.
-     *
-     * @param FormEvent $event
-     */
-    public function onPreSetData(FormEvent $event)
+    public function onPreSetData(FormEvent $event): void
     {
         $form = $event->getForm();
         $item = $event->getData();
@@ -74,72 +44,69 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
             $hasSubject = $item->hasSubjectIdentity();
         }
 
+        FormHelper::addQuantityType($form, $item->getUnit(), [
+            'disabled'       => $hasParent,
+            'attr'           => [
+                'placeholder' => t('field.quantity', [], 'EkynaUi'),
+                'min'         => 1,
+            ],
+            'error_bubbling' => true,
+        ]);
+
         $form
             ->add('designation', Type\TextType::class, [
-                'label' => 'ekyna_core.field.designation',
-                'disabled' => $hasSubject && !$item->isCompound(),
-                'attr'  => [
-                    'placeholder' => 'ekyna_core.field.designation',
+                'label'          => t('field.designation', [], 'EkynaUi'),
+                'disabled'       => $hasSubject && !$item->isCompound(),
+                'attr'           => [
+                    'placeholder' => t('field.designation', [], 'EkynaUi'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('reference', Type\TextType::class, [
-                'label' => 'ekyna_core.field.reference',
-                'disabled' => $hasSubject,
-                'attr'  => [
-                    'placeholder' => 'ekyna_core.field.reference',
+                'label'          => t('field.reference', [], 'EkynaUi'),
+                'disabled'       => $hasSubject,
+                'attr'           => [
+                    'placeholder' => t('field.reference', [], 'EkynaUi'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('weight', Type\NumberType::class, [
-                'label'    => 'ekyna_core.field.weight', // TODO unit weight ?
-                'scale'    => 3,
-                'disabled' => $item->isCompound(),
-                'attr'     => [
-                    'placeholder' => 'ekyna_core.field.weight',
+                'label'          => t('field.weight', [], 'EkynaUi'),// TODO unit weight ?
+                'decimal'        => true,
+                'scale'          => 3,
+                'disabled'       => $item->isCompound(),
+                'attr'           => [
+                    'placeholder' => t('field.weight', [], 'EkynaUi'),
                     'input_group' => ['append' => 'kg'],
                     'min'         => 0,
                 ],
                 'error_bubbling' => true,
             ])
             ->add('netPrice', PriceType::class, [
-                'label'    => 'ekyna_commerce.sale.field.net_unit',
-                'currency' => $this->currency,
-                'disabled' => $item->isCompound(),
-                'attr'     => [
-                    'placeholder' => 'ekyna_commerce.sale.field.net_unit',
-                    //'input_group' => ['append' => '€'],  // TODO sale currency
+                'label'          => t('sale.field.net_unit', [], 'EkynaCommerce'),
+                'currency'       => $this->currency,
+                'disabled'       => $item->isCompound(),
+                'attr'           => [
+                    'placeholder' => t('sale.field.net_unit', [], 'EkynaCommerce'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('taxGroup', TaxGroupChoiceType::class, [
-                'disabled' => $hasChildren || $hasParent || $hasSubject,
-                'attr'     => [
-                    'placeholder' => 'ekyna_commerce.field.tax_group',
-                ],
-                'error_bubbling' => true,
-            ])
-            ->add('quantity', Type\IntegerType::class, [
-                'label'    => 'ekyna_core.field.quantity',
-                'disabled' => $hasParent,
-                'attr'     => [
-                    'placeholder' => 'ekyna_core.field.quantity',
-                    'min'         => 1,
+                'disabled'       => $hasChildren || $hasParent || $hasSubject,
+                'attr'           => [
+                    'placeholder' => t('field.tax_group', [], 'EkynaCommerce'),
                 ],
                 'error_bubbling' => true,
             ])
             ->add('private', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.field.private',
+                'label'    => t('field.private', [], 'EkynaCommerce'),
                 'disabled' => $item->hasPublicChildren(),
                 'required' => false,
             ])
             ->add('position', CollectionPositionType::class, []);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    static public function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::PRE_SET_DATA => ['onPreSetData', 0],

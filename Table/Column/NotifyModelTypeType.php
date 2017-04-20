@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes;
@@ -9,7 +11,9 @@ use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class NotifyModelTypeType
@@ -18,54 +22,32 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class NotifyModelTypeType extends AbstractColumnType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
-
-    /**
-     * Constructor.
-     *
-     * @param TranslatorInterface $translator
-     */
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $view->vars['value'] = $this->translator->trans(NotificationTypes::getLabel($view->vars['value']));
+        $view->vars['value'] = NotificationTypes::getLabel($view->vars['value'])->trans($this->translator);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'                => 'ekyna_core.field.type',
-            'route_name'           => 'ekyna_commerce_notify_model_admin_show',
-            'route_parameters_map' => ['notifyModelId' => 'id'],
+            'label'    => t('field.type', [], 'EkynaUi'),
+            'resource' => 'ekyna_commerce.notify_model',
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'anchor';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return AnchorType::class;
     }

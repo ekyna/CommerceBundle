@@ -1,30 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MentionsType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Component\Commerce\Pricing\Entity;
+use Ekyna\Component\Commerce\Pricing\Model\TaxRuleInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class TaxRuleType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Pricing
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class TaxRuleType extends ResourceFormType
+class TaxRuleType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Ekyna\Component\Commerce\Pricing\Model\TaxRuleInterface $rule */
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            /** @var TaxRuleInterface $rule */
             $rule = $event->getData();
             $form = $event->getForm();
 
@@ -32,15 +35,15 @@ class TaxRuleType extends ResourceFormType
 
             $form
                 ->add('name', Type\TextType::class, [
-                    'label'    => 'ekyna_core.field.name',
+                    'label'    => t('field.name', [], 'EkynaUi'),
                     'disabled' => $disabled,
                 ])
-                ->add('priority', Type\NumberType::class, [
-                    'label'    => 'ekyna_core.field.priority',
+                ->add('priority', Type\IntegerType::class, [
+                    'label'    => t('field.priority', [], 'EkynaUi'),
                     'disabled' => $disabled,
                 ])
                 ->add('customer', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.tax_rule.field.customer',
+                    'label'    => t('tax_rule.field.customer', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $disabled,
                     'attr'     => [
@@ -48,7 +51,7 @@ class TaxRuleType extends ResourceFormType
                     ],
                 ])
                 ->add('business', Type\CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.tax_rule.field.business',
+                    'label'    => t('tax_rule.field.business', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $disabled,
                     'attr'     => [
@@ -56,18 +59,19 @@ class TaxRuleType extends ResourceFormType
                     ],
                 ])
                 ->add('sources', CountryChoiceType::class, [
-                    'label'    => 'ekyna_commerce.tax_rule.field.sources',
+                    'label'    => t('tax_rule.field.sources', [], 'EkynaCommerce'),
                     'enabled'  => false,
                     'multiple' => true,
                     'disabled' => $disabled,
                 ])
                 ->add('targets', CountryChoiceType::class, [
-                    'label'    => 'ekyna_commerce.tax_rule.field.targets',
+                    'label'    => t('tax_rule.field.targets', [], 'EkynaCommerce'),
                     'enabled'  => false,
                     'multiple' => true,
                     'disabled' => $disabled,
                 ])
-                ->add('taxes', TaxChoiceType::class, [
+                ->add('taxes', ResourceChoiceType::class, [
+                    'resource'  => 'ekyna_commerce.tax',
                     'multiple'  => true,
                     'allow_new' => true,
                     'disabled'  => $disabled,

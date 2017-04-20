@@ -1,0 +1,13 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\SupplierOrder\\CreateAction') }}
+{% endblock actions %}
+
+{% block side %}
+    {{ parent() }}
+    {% if resource.supplier is not null %}
+        {% include '@EkynaCommerce/Admin/Supplier/_side.html.twig' with {'supplier': resource.supplier } %}
+    {% endif %}
+{% endblock %}

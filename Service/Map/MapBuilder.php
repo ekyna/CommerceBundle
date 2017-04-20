@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Map;
 
 use Ekyna\Bundle\AdminBundle\Model\SiteAddress;
@@ -7,7 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\MapType;
 use Ekyna\Bundle\CommerceBundle\Model\MapConfig;
 use Ekyna\Bundle\CommerceBundle\Repository\CustomerAddressRepository;
 use Ekyna\Bundle\CommerceBundle\Repository\OrderRepository;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Layer\HeatmapLayer;
@@ -29,55 +31,20 @@ class MapBuilder
     public const MODE_DELIVERY = 'delivery';
     public const MODE_ORDER    = 'order';
 
-    /**
-     * @var CustomerAddressRepository
-     */
-    private $customerAddressRepository;
+    private CustomerAddressRepository $customerAddressRepository;
+    private OrderRepository           $orderRepository;
+    private SettingManagerInterface   $settingsManager;
+    private FormFactoryInterface      $formFactory;
+    private MapConfig                 $config;
 
-    /**
-     * @var OrderRepository
-     */
-    private $orderRepository;
+    private ?Map           $map  = null;
+    private ?FormInterface $form = null;
 
-    /**
-     * @var SettingsManagerInterface
-     */
-    private $settingsManager;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var Map
-     */
-    private $map;
-
-    /**
-     * @var FormInterface
-     */
-    private $form;
-
-    /**
-     * @var MapConfig
-     */
-    private $config;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CustomerAddressRepository $customerAddressRepository
-     * @param OrderRepository           $orderRepository
-     * @param SettingsManagerInterface  $settingsManager
-     * @param FormFactoryInterface      $formFactory
-     */
     public function __construct(
         CustomerAddressRepository $customerAddressRepository,
-        OrderRepository $orderRepository,
-        SettingsManagerInterface $settingsManager,
-        FormFactoryInterface $formFactory
+        OrderRepository           $orderRepository,
+        SettingManagerInterface   $settingsManager,
+        FormFactoryInterface      $formFactory
     ) {
         $this->customerAddressRepository = $customerAddressRepository;
         $this->orderRepository = $orderRepository;
@@ -86,11 +53,6 @@ class MapBuilder
         $this->config = new MapConfig();
     }
 
-    /**
-     * Builds the map.
-     *
-     * @return Map
-     */
     public function buildMap(): Map
     {
         if ($this->map) {
@@ -136,11 +98,6 @@ class MapBuilder
         return $this->map = $map;
     }
 
-    /**
-     * Returns the map form.
-     *
-     * @return FormInterface
-     */
     public function buildForm(): FormInterface
     {
         if ($this->form) {
@@ -152,11 +109,6 @@ class MapBuilder
         ]);
     }
 
-    /**
-     * @param Request|null $request
-     *
-     * @return array
-     */
     public function buildLocations(Request $request = null): array
     {
         if ($request) {
@@ -185,8 +137,6 @@ class MapBuilder
 
     /**
      * Returns the website address marker.
-     *
-     * @return Marker
      */
     private function getMainMarker(): Marker
     {
@@ -208,17 +158,12 @@ class MapBuilder
         return $marker;
     }
 
-    /**
-     * Returns the mode choices.
-     *
-     * @return array
-     */
     public static function getModeChoices(): array
     {
         return [
-            'ekyna_commerce.sale.field.invoice_address'  => self::MODE_INVOICE,
-            'ekyna_commerce.sale.field.delivery_address' => self::MODE_DELIVERY,
-            'ekyna_commerce.field.revenue'               => self::MODE_ORDER,
+            'sale.field.invoice_address'  => self::MODE_INVOICE,
+            'sale.field.delivery_address' => self::MODE_DELIVERY,
+            'field.revenue'               => self::MODE_ORDER,
         ];
     }
 }

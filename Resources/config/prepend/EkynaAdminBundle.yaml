@@ -1,0 +1,12 @@
+ekyna_admin:
+    show:
+        templates:
+            - '@EkynaCommerce/Show/show_div_layout.html.twig'
+    navbar:
+        buttons:
+            commerce_map:
+                route: admin_ekyna_commerce_map
+                icon: globe
+                title: button.map
+                domain: EkynaUi
+                position: 90

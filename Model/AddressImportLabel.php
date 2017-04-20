@@ -1,6 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
+
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class AddressImportLabel
@@ -9,43 +16,36 @@ namespace Ekyna\Bundle\CommerceBundle\Model;
  */
 final class AddressImportLabel
 {
-    /**
-     * @var array
-     */
-    private static $columnKeys = [
-        'company'    => 'ekyna_core.field.company',
-        'gender'     => 'ekyna_core.field.gender',
-        'firstName'  => 'ekyna_core.field.first_name',
-        'lastName'   => 'ekyna_core.field.last_name',
-        'street'     => 'ekyna_core.field.street',
-        'complement' => 'ekyna_commerce.address.field.complement',
-        'supplement' => 'ekyna_commerce.address.field.supplement',
-        'extra'      => 'ekyna_commerce.address.field.extra',
-        'postalCode' => 'ekyna_core.field.postal_code',
-        'city'       => 'ekyna_core.field.city',
-        'country'    => 'ekyna_commerce.country.label.singular',
+    private static array $columnKeys = [
+        'company'    => ['field.company', 'EkynaUi'],
+        'gender'     => ['field.gender', 'EkynaUi'],
+        'firstName'  => ['field.first_name', 'EkynaUi'],
+        'lastName'   => ['field.last_name', 'EkynaUi'],
+        'street'     => ['field.street', 'EkynaUi'],
+        'complement' => ['address.field.complement', 'EkynaCommerce'],
+        'supplement' => ['address.field.supplement', 'EkynaCommerce'],
+        'extra'      => ['address.field.extra', 'EkynaCommerce'],
+        'postalCode' => ['field.postal_code', 'EkynaUi'],
+        'city'       => ['field.city', 'EkynaUi'],
+        'country'    => ['country.label.singular', 'EkynaCommerce'],
         // TODO 'state',
-        'phone'      => 'ekyna_core.field.phone',
-        'mobile'     => 'ekyna_core.field.mobile',
-        'digicode1'  => 'ekyna_commerce.address.field.digicode1',
-        'digicode2'  => 'ekyna_commerce.address.field.digicode2',
-        'intercom'   => 'ekyna_commerce.address.field.intercom',
+        'phone'      => ['field.phone', 'EkynaUi'],
+        'mobile'     => ['field.mobile', 'EkynaUi'],
+        'digicode1'  => ['address.field.digicode1', 'EkynaCommerce'],
+        'digicode2'  => ['address.field.digicode2', 'EkynaCommerce'],
+        'intercom'   => ['address.field.intercom', 'EkynaCommerce'],
     ];
 
     /**
      * Returns the column label.
-     *
-     * @param string $key
-     *
-     * @return string
      */
-    public static function getLabel(string $key): string
+    public static function getLabel(string $key): TranslatableInterface
     {
         if (isset(self::$columnKeys[$key])) {
-            return self::$columnKeys[$key];
+            return t(self::$columnKeys[$key][0], [], self::$columnKeys[$key][1]);
         }
 
-        return null;
+        throw new InvalidArgumentException("Unknown address property '$key'.");
     }
 
     /**

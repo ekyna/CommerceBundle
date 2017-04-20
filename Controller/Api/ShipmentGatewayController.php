@@ -1,62 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Api;
 
-use Ekyna\Bundle\CoreBundle\Controller\Controller;
+use Decimal\Decimal;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
+use Ekyna\Component\Commerce\Shipment\Gateway\GatewayInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Gateway\Model\Address;
-use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Repository\RelayPointRepositoryInterface;
+use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Class ShipmentGatewayController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Api
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentGatewayController extends Controller
+class ShipmentGatewayController
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $gatewayRegistry;
+    private GatewayRegistryInterface      $gatewayRegistry;
+    private RelayPointRepositoryInterface $relayPointRepository;
+    private ResourceManagerInterface      $relayPointManager;
+    private SerializerInterface           $serializer;
 
-
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface $gatewayRegistry
-     */
-    public function __construct(RegistryInterface $gatewayRegistry)
-    {
+    public function __construct(
+        GatewayRegistryInterface      $gatewayRegistry,
+        RelayPointRepositoryInterface $relayPointRepository,
+        ResourceManagerInterface      $relayPointManager,
+        SerializerInterface           $serializer
+    ) {
         $this->gatewayRegistry = $gatewayRegistry;
+        $this->relayPointRepository = $relayPointRepository;
+        $this->relayPointManager = $relayPointManager;
+        $this->serializer = $serializer;
     }
 
-    /**
-     * List relay points action.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function listRelayPoints(Request $request): JsonResponse
+    public function listRelayPoints(Request $request): Response
     {
         $gateway = $this->getGateway($request->attributes->get('gateway'));
 
-        $weight = $request->query->get('weight', 1); // TODO default
+        $weight = new Decimal($request->query->get('weight', 1)); // TODO default
 
         $address = new Address();
         $address
             ->setStreet($request->query->get('street'))
             ->setPostalCode($request->query->get('postalCode'))
             ->setCity($request->query->get('city'));
-            // TODO ->setCountry()
+        // TODO ->setCountry()
 
         try {
             $response = $gateway->listRelayPoints($address, $weight);
-            $data = $this->get('serializer')->serialize([
-                'relay_points' => $response->getRelayPoints()
+            $data = $this->serializer->serialize([
+                'relay_points' => $response->getRelayPoints(),
             ], 'json', ['groups' => ['Default']]);
         } catch (ShipmentGatewayException $e) {
             $data = json_encode([
@@ -68,56 +71,44 @@ class ShipmentGatewayController extends Controller
         return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
     }
 
-    /**
-     * Get relay point action.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function getRelayPoint(Request $request): JsonResponse
+    public function getRelayPoint(Request $request): Response
     {
         $gateway = $this->getGateway($request->attributes->get('gateway'));
         $number = $request->query->get('number');
 
         $relayPoint = $this
-            ->get('ekyna_commerce.relay_point.repository')
+            ->relayPointRepository
             ->findOneByNumberAndPlatform($number, $gateway->getPlatform()->getName());
 
         if (null === $relayPoint) {
             $response = $gateway->getRelayPoint($number);
 
             if (null !== $relayPoint = $response->getRelayPoint()) {
-                $em = $this->get('ekyna_commerce.relay_point.manager');
-                $em->persist($relayPoint);
-                $em->flush();
+                $event = $this->relayPointManager->save($relayPoint);
+
+                if ($event->hasErrors()) {
+                    throw new RuntimeException('Failed to create relay point.');
+                }
             }
         }
 
-        $data = $this->get('serializer')->serialize([
-            'relay_point' => $relayPoint
+        $data = $this->serializer->serialize([
+            'relay_point' => $relayPoint,
         ], 'json', ['groups' => ['Default']]);
 
         // TODO caching
 
-        return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
-    /**
-     * Returns the shipment gateway for the given name.
-     *
-     * @param string $name
-     *
-     * @return \Ekyna\Component\Commerce\Shipment\Gateway\GatewayInterface
-     */
-    protected function getGateway($name)
+    protected function getGateway(string $name): GatewayInterface
     {
         try {
             return $this
-                ->get('ekyna_commerce.shipment.gateway_registry')
+                ->gatewayRegistry
                 ->getGateway($name);
         } catch (CommerceExceptionInterface $e) {
-            throw $this->createNotFoundException("Gateway '$name' not found.'");
+            throw new NotFoundHttpException("Gateway '$name' not found.'");
         }
     }
 }

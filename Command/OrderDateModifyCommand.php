@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\NumberSubjectInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,47 +28,28 @@ use Symfony\Component\Console\Question\Question;
  */
 class OrderDateModifyCommand extends Command
 {
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $repository;
+    protected static $defaultName = 'ekyna:commerce:order:modify-date';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    private OrderRepositoryInterface $repository;
+    private EntityManagerInterface   $manager;
 
-
-    /**
-     * Constructor.
-     *
-     * @param OrderRepositoryInterface $repository
-     * @param EntityManagerInterface   $manager
-     */
     public function __construct(OrderRepositoryInterface $repository, EntityManagerInterface $manager)
     {
         parent::__construct();
 
         $this->repository = $repository;
-        $this->manager    = $manager;
+        $this->manager = $manager;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            ->setName('ekyna:commerce:order:modify-date')
             ->setDescription('Modify the order dates.')
             ->addArgument('number', InputArgument::REQUIRED, 'The order number')
             ->addArgument('modifier', InputArgument::REQUIRED, 'The dates modifier');
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $helper = $this->getHelper('question');
 
@@ -99,31 +87,24 @@ class OrderDateModifyCommand extends Command
     }
 
     /**
-     * Returns whether or not the date modifier is valid.
-     *
-     * @param string $modifier
-     *
-     * @return bool
+     * Returns whether the date modifier is valid.
      */
-    private function validateDateModifier($modifier)
+    private function validateDateModifier(string $modifier): bool
     {
-        if (!is_string($modifier) || empty($modifier)) {
+        if (empty($modifier)) {
             return false;
         }
 
         try {
-            (new \DateTime())->modify($modifier);
-        } catch (\Exception $e) {
+            (new DateTime())->modify($modifier);
+        } catch (Exception $e) {
             return false;
         }
 
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Check arguments
         if (empty($number = $input->getArgument('number'))) {
@@ -148,19 +129,19 @@ class OrderDateModifyCommand extends Command
         $output->writeln('<error>This is a dangerous operation.</error>');
         $output->writeln('<comment>All dates (order, invoices, payments and shipments) will be changed.</comment>');
 
-        $helper   = $this->getHelper('question');
+        $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
             "Change order $number dates to '$modifier' ?", false
         );
         if (!$helper->ask($input, $output, $question)) {
-            return;
+            return Command::SUCCESS;
         }
 
-        /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface[] $payments */
+        /** @var PaymentInterface[] $payments */
         $payments = $order->getPayments()->toArray();
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface[] $shipments */
+        /** @var ShipmentInterface[] $shipments */
         $shipments = $order->getShipments()->toArray();
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface[] $invoices */
+        /** @var InvoiceInterface[] $invoices */
         $invoices = $order->getInvoices()->toArray();
 
         $co = $this->manager->getConnection();
@@ -198,30 +179,28 @@ class OrderDateModifyCommand extends Command
             }
 
             $co->commit();
-        } catch (\Exception $e) {
-            $co->rollback();
+        } catch (Exception $e) {
+            $co->rollBack();
             throw $e;
         }
 
         $output->writeln('<info>Done</info>');
+
+        return Command::SUCCESS;
     }
 
     /**
      * Updates the object dates by applying the given modifier.
-     *
-     * @param NumberSubjectInterface $object
-     * @param                        $modifier
-     * @param array                  $dates
      */
-    private function updateDates(NumberSubjectInterface $object, $modifier, array $dates)
+    private function updateDates(NumberSubjectInterface $object, string $modifier, array $dates): void
     {
-        $couples    = [];
+        $couples = [];
         $parameters = [];
 
         foreach ($dates as $field => $date) {
             if (null !== $date) {
-                $date               = clone $date;
-                $couples[]          = "o.$field = :$field";
+                $date = clone $date;
+                $couples[] = "o.$field = :$field";
                 $parameters[$field] = $date->modify($modifier);
             }
         }
@@ -231,9 +210,9 @@ class OrderDateModifyCommand extends Command
         }
 
         $query = $this->manager->createQuery(
-            "UPDATE " . get_class($object) . " o SET " .
-            implode(", ", $couples) . " " .
-            "WHERE o.number = :number"
+            'UPDATE ' . get_class($object) . ' o SET ' .
+            implode(', ', $couples) . ' ' .
+            'WHERE o.number = :number'
         );
         foreach ($parameters as $field => $date) {
             $query->setParameter($field, $date, Types::DATETIME_MUTABLE);
@@ -244,5 +223,4 @@ class OrderDateModifyCommand extends Command
             ->setMaxResults(1)
             ->execute();
     }
-
 }

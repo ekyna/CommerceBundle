@@ -1,74 +1,80 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
+use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as AM;
+use Ekyna\Component\Commerce\common\Model\CouponInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+
+use function array_replace;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CouponType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CouponType extends ResourceFormType
+class CouponType extends AbstractResourceType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('designation', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.designation',
+                'label'    => t('field.designation', [], 'EkynaUi'),
                 'required' => false,
             ])
-            ->add('mode', Type\ChoiceType::class, [
-                'label'             => 'ekyna_core.field.mode',
-                'choices'           => AdjustmentModes::getChoices(),
+            ->add('mode', ConstantChoiceType::class, [
+                'label'             => t('field.mode', [], 'EkynaUi'),
+                'class'             => AdjustmentModes::class,
                 'preferred_choices' => [AM::MODE_FLAT],
                 'select2'           => false,
                 'attr'              => [
-                    'placeholder' => 'ekyna_core.field.mode',
+                    'placeholder' => t('field.mode', [], 'EkynaUi'),
                 ],
             ])
             ->add('amount', Type\NumberType::class, [
-                'label' => 'ekyna_core.field.value',
-                'scale' => 2,
-                'attr'  => [
-                    'placeholder' => 'ekyna_core.field.value',
+                'label'   => t('field.value', [], 'EkynaUi'),
+                'decimal' => true,
+                'scale'   => 2,
+                'attr'    => [
+                    'placeholder' => 'field.value',
                 ],
             ])
             ->add('limit', Type\IntegerType::class, [
-                'label' => 'ekyna_commerce.coupon.field.limit',
+                'label' => t('coupon.field.limit', [], 'EkynaCommerce'),
             ])
             ->add('startAt', Type\DateType::class, [
-                'label'    => 'ekyna_core.field.from_date',
+                'label'    => t('field.from_date', [], 'EkynaUi'),
                 'required' => false,
             ])
             ->add('endAt', Type\DateType::class, [
-                'label'    => 'ekyna_core.field.to_date',
+                'label'    => t('field.to_date', [], 'EkynaUi'),
                 'required' => false,
             ])
             ->add('minGross', Type\NumberType::class, [
-                'label' => 'ekyna_commerce.coupon.field.min_gross',
-                'scale' => 5,
+                'label'   => t('coupon.field.min_gross', [], 'EkynaCommerce'),
+                'decimal' => true,
+                'scale'   => 5,
             ])
             ->add('cumulative', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.coupon.field.cumulative',
+                'label'    => t('coupon.field.cumulative', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.coupon.help.cumulative',
+                    'help_text'         => t('coupon.help.cumulative', [], 'EkynaCommerce'),
                     'align_with_widget' => true,
                 ],
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Ekyna\Component\Commerce\common\Model\CouponInterface $coupon */
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            /** @var CouponInterface $coupon */
             $coupon = $event->getData();
             $form = $event->getForm();
 
@@ -80,13 +86,13 @@ class CouponType extends ResourceFormType
             } else {
                 $options = [
                     'attr' => [
-                        'help_text' => 'ekyna_commerce.coupon.alert.immutable_code',
+                        'help_text' => t('coupon.alert.immutable_code', [], 'EkynaCommerce'),
                     ],
                 ];
             }
 
             $form->add('code', Type\TextType::class, array_replace([
-                'label' => 'ekyna_core.field.code',
+                'label' => t('field.code', [], 'EkynaUi'),
             ], $options));
         });
     }

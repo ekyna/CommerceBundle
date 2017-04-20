@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Api;
 
 use Ekyna\Component\Commerce\Pricing\Api\PricingApiInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class PricingController
@@ -15,37 +17,20 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class PricingController
 {
-    /**
-     * @var PricingApiInterface
-     */
-    private $api;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
+    private PricingApiInterface $api;
+    private Environment $twig;
 
 
-    /**
-     * Constructor.
-     *
-     * @param PricingApiInterface $api
-     * @param EngineInterface     $templating
-     */
-    public function __construct(PricingApiInterface $api, EngineInterface $templating)
+    public function __construct(PricingApiInterface $api, Environment $twig)
     {
         $this->api = $api;
-        $this->templating = $templating;
+        $this->twig = $twig;
     }
 
     /**
      * Validate VAT number action.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function validateVatNumber(Request $request)
+    public function validateVatNumber(Request $request): JsonResponse
     {
         // TODO authorisation / throttle
 
@@ -61,7 +46,7 @@ class PricingController
         if (!empty($number = $request->query->get('number'))) {
             if (null !== $result = $this->api->validateVatNumber($number)) {
                 $data['valid'] = $result->isValid();
-                $data['content'] = $this->templating->render('@EkynaCommerce/Admin/Common/vat_details.html.twig', [
+                $data['content'] = $this->twig->render('@EkynaCommerce/Admin/Common/vat_details.html.twig', [
                     'details' => $result->getDetails(),
                 ]);
             }

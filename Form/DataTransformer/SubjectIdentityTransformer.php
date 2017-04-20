@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -15,10 +17,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
  */
 class SubjectIdentityTransformer implements DataTransformerInterface
 {
-    /**
-     * @var SubjectProviderRegistryInterface
-     */
-    private $registry;
+    private SubjectProviderRegistryInterface $registry;
 
 
     /**
@@ -63,7 +62,7 @@ class SubjectIdentityTransformer implements DataTransformerInterface
         $value->clear();
 
         if (null !== $subject) {
-            $value->setSubject(null);
+            $value->setSubject();
 
             try {
                 $provider = $this->registry->getProviderBySubject($subject);

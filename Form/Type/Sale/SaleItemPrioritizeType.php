@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Symfony\Component\Form\AbstractType;
@@ -17,13 +19,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class SaleItemPrioritizeType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('quantity', NumberType::class, [
-            'scale'       => 3,
+            'decimal'     => true,
+            'scale'       => 3, // TODO Packaging format
             'constraints' => [
                 new NotBlank(),
                 new GreaterThan(0),
@@ -32,10 +32,7 @@ class SaleItemPrioritizeType extends AbstractType
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('max_quantity');
     }

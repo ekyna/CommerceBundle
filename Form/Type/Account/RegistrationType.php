@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Account;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType;
@@ -11,13 +13,13 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
-use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
+use Ekyna\Bundle\UiBundle\Form\Type\FormActionsType;
+use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Features;
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue;
-use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -29,6 +31,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class RegistrationType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Account
@@ -36,51 +40,26 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class RegistrationType extends AbstractType
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
+    private Features              $features;
 
-    /**
-     * @var Features
-     */
-    private $features;
-
-    /**
-     * @var string
-     */
-    private $customerClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param Features              $features
-     * @param string                $customerClass
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
-        Features $features,
-        string $customerClass
+        Features              $features
     ) {
         $this->tokenStorage = $tokenStorage;
-        $this->customerClass = $customerClass;
         $this->features = $features;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add($this->createCustomerForm($builder))
             ->add('applyGroup', CustomerGroupChoiceType::class, [
-                'label'         => 'ekyna_commerce.account.registration.field.apply_group',
+                'label'         => t('account.registration.field.apply_group', [], 'EkynaCommerce'),
                 'expanded'      => true,
                 'choice_label'  => 'title',
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
                     $qb = $er->createQueryBuilder('cg');
 
                     return $qb
@@ -88,7 +67,7 @@ class RegistrationType extends AbstractType
                         ->orderBy('cg.id', 'ASC');
                 },
                 'attr'          => [
-                    'help_text' => 'ekyna_commerce.account.registration.help.apply_group',
+                    'help_text' => t('account.registration.help.apply_group', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('invoiceAddress', CustomerAddressType::class, [
@@ -103,7 +82,7 @@ class RegistrationType extends AbstractType
                 'section'    => 'billing',
             ])
             ->add('comment', Type\TextareaType::class, [
-                'label'    => 'ekyna_core.field.comment',
+                'label'    => t('field.comment', [], 'EkynaUi'),
                 'required' => false,
             ])
             ->add('captcha', EWZRecaptchaType::class, [
@@ -118,7 +97,7 @@ class RegistrationType extends AbstractType
                         'type'    => Type\SubmitType::class,
                         'options' => [
                             'button_class' => 'primary',
-                            'label'        => 'ekyna_core.button.save',
+                            'label'        => t('button.save', [], 'EkynaUi'),
                             'attr'         => ['icon' => 'ok'],
                         ],
                     ],
@@ -127,7 +106,7 @@ class RegistrationType extends AbstractType
 
         if ($this->features->isEnabled(Features::NEWSLETTER)) {
             $builder->add('newsletter', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.account.registration.field.newsletter',
+                'label'    => t('account.registration.field.newsletter', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
@@ -135,58 +114,59 @@ class RegistrationType extends AbstractType
             ]);
         }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             /** @var Registration $registration */
             if (null === $registration = $event->getData()) {
-                throw new LogicException("Customer must be set at this point.");
+                throw new LogicException('Customer must be set at this point.');
             }
 
             if (null === $customer = $registration->getCustomer()) {
-                throw new LogicException("Customer must be set at this point.");
+                throw new LogicException('Customer must be set at this point.');
             }
             if (null === $user = $customer->getUser()) {
-                throw new LogicException("Customer's user must be set at this point.");
+                throw new LogicException('Customer\'s user must be set at this point.');
+            }
+
+            if ($user->getId()) {
+                return;
             }
 
             $form = $event->getForm();
-
-            if (null === $user->getId()) {
-                $form
-                    ->get('customer')
-                    ->add('email', Type\RepeatedType::class, [
-                        'type'            => Type\EmailType::class,
-                        'property_path'   => 'user.email',
-                        'required'        => true,
-                        'first_options'   => [
-                            'label' => 'ekyna_core.field.email',
-                            'attr'  => [
-                                'autocomplete' => 'email',
-                            ],
+            $form
+                ->get('customer')
+                ->add('email', Type\RepeatedType::class, [
+                    'type'            => Type\EmailType::class,
+                    'property_path'   => 'user.email',
+                    'required'        => true,
+                    'first_options'   => [
+                        'label' => t('field.email', [], 'EkynaUi'),
+                        'attr'  => [
+                            'autocomplete' => 'email',
                         ],
-                        'second_options'  => [
-                            'label' => 'ekyna_commerce.account.registration.field.email_confirm',
-                        ],
-                        'invalid_message' => 'ekyna_commerce.account.email.mismatch',
-                    ])
-                    ->add('plainPassword', Type\RepeatedType::class, [
-                        'type'            => Type\PasswordType::class,
-                        'property_path'   => 'user.plainPassword',
-                        'required'        => true,
-                        'first_options'   => [
-                            'label'        => 'ekyna_core.field.password',
-                            'always_empty' => false,
-                        ],
-                        'second_options'  => [
-                            'label'        => 'ekyna_commerce.account.registration.field.password_confirm',
-                            'always_empty' => false,
-                        ],
-                        'invalid_message' => 'fos_user.password.mismatch',
-                    ]);
-            }
+                    ],
+                    'second_options'  => [
+                        'label' => t('account.registration.field.email_confirm', [], 'EkynaCommerce'),
+                    ],
+                    'invalid_message' => t('account.email.mismatch', [], 'EkynaCommerce'),
+                ])
+                ->add('plainPassword', Type\RepeatedType::class, [
+                    'type'            => Type\PasswordType::class,
+                    'property_path'   => 'user.plainPassword',
+                    'required'        => true,
+                    'first_options'   => [
+                        'label'        => t('field.password', [], 'EkynaUi'),
+                        'always_empty' => false,
+                    ],
+                    'second_options'  => [
+                        'label'        => t('account.registration.field.password_confirm', [], 'EkynaCommerce'),
+                        'always_empty' => false,
+                    ],
+                    'invalid_message' => 'fos_user.password.mismatch',
+                ]);
         });
 
         // Fix some data before validation
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             /** @var Registration $registration */
             $registration = $event->getData();
 
@@ -221,22 +201,13 @@ class RegistrationType extends AbstractType
 
             // User
             $user = $customer->getUser();
-            // Copy user email to username
             $email = $user->getEmail();
-            $user->setUsername($email);
             // Copy user email into customer email
             $customer->setEmail($email);
         }, 2048);
     }
 
-    /**
-     * Creates the customer form.
-     *
-     * @param FormBuilderInterface $builder
-     *
-     * @return FormBuilderInterface
-     */
-    private function createCustomerForm(FormBuilderInterface $builder)
+    private function createCustomerForm(FormBuilderInterface $builder): FormBuilderInterface
     {
         $form = $builder->create('customer', null, [
             'data_class' => CustomerInterface::class,
@@ -246,7 +217,7 @@ class RegistrationType extends AbstractType
 
         $form
             ->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.account.registration.field.company',
+                'label'    => t('account.registration.field.company', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'maxlength'    => 35,
@@ -254,7 +225,7 @@ class RegistrationType extends AbstractType
                 ],
             ])
             ->add('companyNumber', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.customer.field.company_number',
+                'label'    => t('customer.field.company_number', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('vatNumber', VatNumberType::class, [
@@ -264,14 +235,14 @@ class RegistrationType extends AbstractType
                 'required' => true,
             ])
             ->add('phone', PhoneNumberType::class, [
-                'label'       => 'ekyna_core.field.phone',
+                'label'       => t('field.phone', [], 'EkynaUi'),
                 'required'    => false,
                 'number_attr' => [
                     'autocomplete' => 'tel-national',
                 ],
             ])
             ->add('mobile', PhoneNumberType::class, [
-                'label'       => 'ekyna_core.field.mobile',
+                'label'       => t('field.mobile', [], 'EkynaUi'),
                 'required'    => false,
                 'type'        => PhoneType::MOBILE,
                 'number_attr' => [
@@ -283,9 +254,8 @@ class RegistrationType extends AbstractType
 
         if ($this->features->isEnabled(Features::BIRTHDAY)) {
             $form->add('birthday', Type\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.birthday',
+                'label'    => t('field.birthday', [], 'EkynaUi'),
                 'required' => false,
-                'format'   => 'dd/MM/yyyy', // TODO localized format
                 'attr'     => [
                     'autocomplete' => 'bday',
                 ],
@@ -295,10 +265,7 @@ class RegistrationType extends AbstractType
         return $form;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['user'] = null;
         $view->vars['user_owner'] = null;
@@ -322,10 +289,7 @@ class RegistrationType extends AbstractType
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class'        => Registration::class,

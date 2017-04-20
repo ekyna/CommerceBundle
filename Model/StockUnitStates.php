@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -12,12 +14,9 @@ use Ekyna\Component\Commerce\Stock\Model\StockUnitStates as States;
  */
 final class StockUnitStates extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.status.';
+        $prefix = 'status.';
 
         return [
             States::STATE_NEW     => [$prefix . States::STATE_NEW,     'brown',   false],
@@ -25,5 +24,10 @@ final class StockUnitStates extends AbstractConstants
             States::STATE_READY   => [$prefix . States::STATE_READY,   'teal',    false],
             States::STATE_CLOSED  => [$prefix . States::STATE_CLOSED,  'default', false],
         ];
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

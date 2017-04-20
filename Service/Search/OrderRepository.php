@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Search;
 
 use Ekyna\Component\Resource\Search\Request;
@@ -26,7 +28,7 @@ class OrderRepository extends SaleRepository
         }
 
         return $result
-            ->setRoute('ekyna_commerce_order_admin_show')
+            ->setRoute('admin_ekyna_commerce_order_read') // TODO Use resource/action
             ->setParameters(['orderId' => $source['id']]);
     }
 }

@@ -1,0 +1,5 @@
+{% extends '@EkynaAdmin/Entity/Crud/delete.html.twig' %}
+
+{% block title %}
+    <h1>{{ (context.config.transPrefix ~ '.header.remove')|trans({'%name%': resource|trans({}, 'EkynaCommerce')}, context.config.transDomain)|raw }}</h1>
+{% endblock title %}

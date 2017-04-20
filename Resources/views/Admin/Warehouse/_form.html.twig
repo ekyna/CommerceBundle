@@ -1,46 +1,41 @@
-{% apply spaceless %}
-    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-        <li class="active">
-            <a href="#warehouse-general" id="toggle-general" data-toggle="tab">
-                {{ 'ekyna_core.field.general'|trans }}
-            </a>
-        </li>
-        <li>
-            <a href="#warehouse-address" id="toggle-address" data-toggle="tab">
-                {{ 'ekyna_core.field.address'|trans }}
-            </a>
-        </li>
-    </ul>
-    <div class="panel-body form-body">
-        {{ bootstrap_set_style('horizontal') }}
-        {{ bootstrap_set_col_size('md') }}
-        {{ form_errors(form, {'global_errors': true}) }}
-        <div class="tab-content">
-            <div class="tab-pane active" id="warehouse-general">
-                {{ form_row(form.name) }}
-                {{ form_row(form.countries) }}
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.office, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.default, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
-                <div class="row">
-                </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.enabled, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.priority, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
-                </div>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{ 'field.general'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-address" id="toggle-address" data-toggle="tab">
+            {{ 'field.address'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ form_row(form.name) }}
+        {{ form_row(form.countries) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.office, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="tab-pane" id="warehouse-address">
-                {{ form_row(form.address, {'label_col': 0, 'widget_col': 12}) }}
+            <div class="col-md-6">
+                {{ form_row(form.default, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        <div class="row">
+        </div>
+            <div class="col-md-6">
+                {{ form_row(form.enabled, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.priority, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-        {{ ivory_google_api() }}
-        {{ form_rest(form) }}
     </div>
-{% endapply %}
+    <div class="tab-pane" id="{{ resource_name }}-address">
+        {{ form_row(form.address, {'label_col': 0, 'widget_col': 12}) }}
+    </div>
+{%- endblock main_contents %}
+

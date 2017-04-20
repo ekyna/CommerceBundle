@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Quote;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
@@ -10,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class QuoteType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Quote
@@ -17,39 +21,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class QuoteType extends SaleType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
         $builder
             ->add('inCharge', UserChoiceType::class, [
-                'label'    => 'ekyna_commerce.customer.field.in_charge',
+                'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
                 'required' => false,
             ])
             ->add('editable', CheckboxType::class, [
-                'label'    => 'ekyna_commerce.quote.field.editable',
+                'label'    => t('quote.field.editable', [], 'EkynaCommerce'),
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])
             ->add('expiresAt', DateTimeType::class, [
-                'label'  => 'ekyna_core.field.expires_at',
-                'format' => 'dd/MM/yyyy',
+                'label'  => t('field.expires_at', [], 'EkynaUi'),
             ])
-            ->add('tags', TagChoiceType::class, [
-                'required' => false,
-                'multiple' => true,
-            ]);
+            ->add('tags', TagChoiceType::class);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 

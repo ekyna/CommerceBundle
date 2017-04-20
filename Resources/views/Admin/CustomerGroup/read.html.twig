@@ -1,0 +1,74 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+    {% block general_content -%}
+        {{ show_row(customerGroup.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'customerGroup_name'
+        }) }}
+        {{ show_row(customerGroup.translations, 'translations', {
+            'id': 'customerGroup_translations',
+            'fields': {
+                'title': {
+                    'label': 'field.title',
+                    'options': {'label_trans_domain': 'EkynaUi'}
+                }
+            }
+        }) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customerGroup.default, 'boolean', {
+                    'label': 'field.default',
+                    'label_trans_domain': 'EkynaUi',
+                    'id': 'customerGroup_default',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customerGroup.business, 'boolean', {
+                    'label': 'customer_group.field.business',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customerGroup_business',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customerGroup.registration, 'boolean', {
+                    'label': 'customer_group.field.registration',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customerGroup_registration',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customerGroup.quoteAllowed, 'boolean', {
+                    'label': 'customer_group.field.quote_allowed',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customerGroup_quoteAllowed',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customerGroup.loyalty, 'boolean', {
+                    'label': 'customer.field.loyalty_points',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'id': 'customerGroup_loyalty',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(customerGroup.vatDisplayMode, 'commerce_vat_mode', {
+                    'id': 'customerGroup_vatDisplayMode',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+    {%- endblock general_content %}
+    </div>
+{%- endblock main_contents %}

@@ -1,0 +1,102 @@
+fos_elastica:
+    indexes:
+        ekyna_commerce.customer:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_customer'
+            serializer:
+                groups: [ Search ]
+            properties:
+                number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                company_number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
+                company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                parent: { type: integer }
+                currency: { type: keyword }
+                locale: { type: keyword }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.customer%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
+        ekyna_commerce.order:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_order'
+            serializer:
+                groups: [ Search ]
+            properties:
+                number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                voucher_number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
+                company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                title: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.order%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
+        ekyna_commerce.quote:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_quote'
+            serializer:
+                groups: [ Search ]
+            properties:
+                number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                voucher_number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
+                company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                title: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.quote%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
+        ekyna_commerce.supplier:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_supplier'
+            serializer:
+                groups: [ Search ]
+            properties:
+                name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                description: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.supplier%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
+        ekyna_commerce.supplier_order:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_supplier_order'
+            serializer:
+                groups: [ Search ]
+            properties:
+                number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                supplier.id: { type: integer }
+                supplier.name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                carrier.id: { type: integer }
+                carrier.name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                description: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.supplier_order%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
+        ekyna_commerce.supplier_product:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_supplier_product'
+            serializer:
+                groups: [ Search ]
+            properties:
+                reference: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                designation: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                supplier.name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.supplier_product%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~

@@ -1,36 +1,36 @@
 {%- macro sale_header(sale) -%}
     <dl class="dl-horizontal">
-        <dt>{{ 'ekyna_commerce.field.status'|trans }}</dt>
+        <dt>{{ 'field.status'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ sale|sale_state_badge }}</dd>
 
-        <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>
-        <dd>{{ sale.createdAt|localizeddate('short', 'none') }}</dd>
+        <dt>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</dt>
+        <dd>{{ sale.createdAt|format_datetime('short', 'none') }}</dd>
 
         {% if sale is sale_quote and not sale.editable -%}
-        <dt>{{ 'ekyna_core.field.expires_at'|trans }}</dt>
-        <dd>{{ sale.expiresAt|localizeddate('short', 'none') }}</dd>
+        <dt>{{ 'field.expires_at'|trans({}, 'EkynaUi') }}</dt>
+        <dd>{{ sale.expiresAt|format_datetime('short', 'none') }}</dd>
         {%- endif %}
 
         {% if sale.voucherNumber is not empty -%}
-        <dt>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</dt>
+        <dt>{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ sale.voucherNumber }}</dd>
         {%- endif %}
 
         {% if sale.paymentTerm -%}
-        <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
+        <dt>{{ 'payment_term.label.singular'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ sale.paymentTerm.title }}</dd>
         {%- endif %}
 
         {% if sale.currency.code != commerce_default_currency -%}
-            <dt>{{ 'ekyna_commerce.field.exchange_rate'|trans }}</dt>
+            <dt>{{ 'field.exchange_rate'|trans({}, 'EkynaCommerce') }}</dt>
             <dd>{{ sale|currency_rate }}</dd>.
         {%- endif %}
 
-        <dt>{{ 'ekyna_commerce.customer.label.singular'|trans }}:
+        <dt>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}:
         <dd>{% if sale.customer %}{{ sale.customer|identity }}{% else %}{{ sale|identity }}{% endif %}</dd>
 
         {% if sale is sale_order and sale.originCustomer -%}
-        <dt>{{ 'ekyna_commerce.sale.field.origin_customer'|trans }}</dt>
+        <dt>{{ 'sale.field.origin_customer'|trans({}, 'EkynaCommerce') }}</dt>
         <dd>{{ sale.originCustomer|identity }}</dd>
         {%- endif %}
     </dl>
@@ -39,10 +39,10 @@
 
 {%- macro sale_delivery_address(sale) -%}
     {%- if sale.relayPoint is not null -%}
-        <em>({{ 'ekyna_commerce.relay_point.label.singular'|trans }})</em><br>
+        <em>({{ 'relay_point.label.singular'|trans({}, 'EkynaCommerce') }})</em><br>
         {{- sale.relayPoint|address -}}
     {%- elseif sale.sameAddress -%}
-        <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
+        <em>{{ 'sale.field.same_address'|trans({}, 'EkynaCommerce') }}</em>
     {%- else -%}
         {{- sale.deliveryAddress|address -}}
     {%- endif -%}

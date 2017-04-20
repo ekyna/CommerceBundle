@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Common\Preparer\SalePreparerInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class OrderPrepareActionType
@@ -15,23 +20,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class OrderPrepareActionType extends AbstractActionType
 {
-    /**
-     * @var SalePreparerInterface
-     */
-    private $salePreparer;
+    private SalePreparerInterface $salePreparer;
+    private EntityManagerInterface $entityManager;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-
-    /**
-     * Constructor.
-     *
-     * @param SalePreparerInterface  $salePreparer
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(SalePreparerInterface $salePreparer, EntityManagerInterface $entityManager)
     {
         $this->salePreparer = $salePreparer;
@@ -51,8 +42,8 @@ class OrderPrepareActionType extends AbstractActionType
         );
 
         foreach ($rows as $row) {
-            /** @var \Ekyna\Component\Commerce\Order\Model\OrderInterface $order */
-            $order = $row->getData();
+            /** @var OrderInterface $order */
+            $order = $row->getData(null);
 
             $shipment = $this->salePreparer->prepare($order);
 
@@ -65,11 +56,8 @@ class OrderPrepareActionType extends AbstractActionType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'ekyna_commerce.sale.action.prepare');
+        $resolver->setDefault('label', t('sale.action.prepare', [], 'EkynaCommerce'));
     }
 }

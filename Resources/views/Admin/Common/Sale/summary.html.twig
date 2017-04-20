@@ -13,29 +13,29 @@
         <td style="width:50%">
             <dl class="dl-horizontal">
                 {% if company is not empty -%}
-                <dt>{{ 'ekyna_core.field.company'|trans }}</dt>
+                <dt>{{ 'field.company'|trans({}, 'EkynaUi') }}</dt>
                 <dd>{{ company }}{% if company_number is not empty %} ({{ company_number }}){% endif %}</dd>
                 {%- else -%}
-                <dt>{{ 'ekyna_commerce.customer.label.singular'|trans }}</dt>
+                <dt>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</dt>
                 <dd>{{ first_name }} {{ last_name }}</dd>
                 {%- endif %}
-                <dt>{{ 'ekyna_core.field.email'|trans }}</dt>
+                <dt>{{ 'field.email'|trans({}, 'EkynaUi') }}</dt>
                 <dd><a href="mailto:{{ email }}">{{ email }}</a></dd>
                 {% if payment_term is not empty -%}
-                <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
+                <dt>{{ 'payment_term.label.singular'|trans({}, 'EkynaCommerce') }}</dt>
                 <dd>{{ payment_term }}</dd>
                 {%- endif %}
             </dl>
         </td>
         <td style="width:50%">
             <dl class="dl-horizontal">
-                <dt>{{ 'ekyna_commerce.customer_group.label.singular'|trans }}</dt>
+                <dt>{{ 'customer_group.label.singular'|trans({}, 'EkynaCommerce') }}</dt>
                 <dd>{{ customer_group }}</dd>
-                <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>
-                <dd>{{ created_at|localizeddate('short', 'none') }}</dd>
+                <dt>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</dt>
+                <dd>{{ created_at|format_datetime('short', 'none') }}</dd>
                 {% if outstanding_date is not empty -%}
-                <dt>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</dt>
-                <dd>{{ outstanding_date|localizeddate('short', 'none') }}</dd>
+                <dt>{{ 'sale.field.outstanding_date'|trans({}, 'EkynaCommerce') }}</dt>
+                <dd>{{ outstanding_date|format_datetime('short', 'none') }}</dd>
                 {%- endif %}
             </dl>
         </td>
@@ -43,37 +43,37 @@
     <tr>
         <td style="width:50%">
             <dl class="dl-horizontal">
-                <dt>{{ 'ekyna_core.field.status'|trans }}</dt>
+                <dt>{{ 'field.status'|trans({}, 'EkynaUi') }}</dt>
                 <dd>{{ state_badge|raw }}</dd>
-                <dt>{{ 'ekyna_core.field.total'|trans }}</dt>
-                <dd>{{ total|localizedcurrency(currency) }}</dd>
+                <dt>{{ 'field.total'|trans({}, 'EkynaUi') }}</dt>
+                <dd>{{ total|format_currency(currency) }}</dd>
             </dl>
             <dl class="dl-horizontal">
-                <dt>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</dt>
+                <dt>{{ 'sale.field.payment_state'|trans({}, 'EkynaCommerce') }}</dt>
                 <dd>{{ payment_state_badge|raw }}</dd>
-                <dt>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</dt>
-                <dd>{{ paid_total|localizedcurrency(currency) }}</dd>
-                <dt>{{ 'ekyna_commerce.sale.field.refunded_total'|trans }}</dt>
-                <dd>{{ refunded_total|localizedcurrency(currency) }}</dd>
+                <dt>{{ 'sale.field.paid_total'|trans({}, 'EkynaCommerce') }}</dt>
+                <dd>{{ paid_total|format_currency(currency) }}</dd>
+                <dt>{{ 'sale.field.refunded_total'|trans({}, 'EkynaCommerce') }}</dt>
+                <dd>{{ refunded_total|format_currency(currency) }}</dd>
 
             </dl>
         </td>
         <td style="width:50%">
             {% if invoice_state_badge is defined -%}
                 <dl class="dl-horizontal">
-                    <dt>{{ 'ekyna_commerce.sale.field.invoice_state'|trans }}</dt>
+                    <dt>{{ 'sale.field.invoice_state'|trans({}, 'EkynaCommerce') }}</dt>
                     <dd>{{ invoice_state_badge|raw }}</dd>
-                    <dt>{{ 'ekyna_commerce.sale.field.invoice_total'|trans }}</dt>
-                    <dd>{{ invoice_total|localizedcurrency(currency) }}</dd>
-                    <dt>{{ 'ekyna_commerce.sale.field.credit_total'|trans }}</dt>
-                    <dd>{{ credit_total|localizedcurrency(currency) }}</dd>
-                    <dt>{{ 'ekyna_commerce.sale.field.balance'|trans }}</dt>
-                    <dd>{{ (invoice_total - credit_total - paid_total + refunded_total)|localizedcurrency(currency) }}</dd>
+                    <dt>{{ 'sale.field.invoice_total'|trans({}, 'EkynaCommerce') }}</dt>
+                    <dd>{{ invoice_total|format_currency(currency) }}</dd>
+                    <dt>{{ 'sale.field.credit_total'|trans({}, 'EkynaCommerce') }}</dt>
+                    <dd>{{ credit_total|format_currency(currency) }}</dd>
+                    <dt>{{ 'sale.field.balance'|trans({}, 'EkynaCommerce') }}</dt>
+                    <dd>{{ (invoice_total - credit_total - paid_total + refunded_total)|format_currency(currency) }}</dd>
                 </dl>
             {%- endif %}
             {% if shipment_state_badge is defined -%}
                 <dl class="dl-horizontal">
-                    <dt>{{ 'ekyna_commerce.sale.field.shipment_state'|trans }}</dt>
+                    <dt>{{ 'sale.field.shipment_state'|trans({}, 'EkynaCommerce') }}</dt>
                     <dd>{{ shipment_state_badge|raw }}</dd>
                 </dl>
             {%- endif %}
@@ -82,60 +82,58 @@
 </tbody>
 </table>
 
-{% set shipment = shipment|default(false) %}
-{% set invoice = invoice|default(false) %}
 {% import _self as macros %}
-{% macro item_line(item, shipment, invoice, level) %}
+{% macro item_line(item, shipment_subject, invoice_subject, level) %}
     {% if not item.private %}
     <tr>
         <td style="padding-left:{{ 16 * level }}px">{{ item.designation }}</td>
         <td>{{ item.reference }}</td>
-        <td class="text-right">{{ item.total_quantity|localizednumber }}</td>
-        {% if shipment -%}
+        <td class="text-right">{{ item.total_quantity|format_number }}</td>
+        {% if shipment_subject -%}
         <td class="text-right {{ item.shipment_class }}">
-            {{ item.shipped|localizednumber }}
-            {% if 0 < item.returned %} (-{{ item.returned|localizednumber }}){% endif -%}
+            {{ item.shipped|format_number }}
+            {% if 0 < item.returned %} (-{{ item.returned|format_number }}){% endif -%}
         </td>
         <td class="text-right {{ item.availability_class }}">
-            {{ item.available|localizednumber }}
-            ({{ item.in_stock|localizednumber }})
+            {{ item.available|format_number }}
+            ({{ item.in_stock|format_number }})
         </td>
         {%- endif %}
-        {% if invoice -%}
+        {% if invoice_subject -%}
         <td class="text-right {{ item.invoice_class }}">
-            {{ item.invoiced|localizednumber }}
-            {% if 0 < item.credited %} (-{{ item.credited|localizednumber }}){% endif -%}
+            {{ item.invoiced|format_number }}
+            {% if 0 < item.credited %} (-{{ item.credited|format_number }}){% endif -%}
         </td>
         {%- endif %}
     </tr>
     {% import _self as macros %}
     {% for child in item.children -%}
-        {{ macros.item_line(child, shipment, invoice, level + 1) }}
+        {{ macros.item_line(child, shipment_subject, invoice_subject, level + 1) }}
     {%- endfor %}
     {% endif %}
 {% endmacro %}
 <table class="table table-condensed table-alt-head">
 <thead>
 <tr>
-    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-    <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-    {% if shipment %}
-        <th>{{ 'ekyna_commerce.field.shipped'|trans }}</th>
-        <th>{{ 'ekyna_commerce.field.available'|trans }}</th>
+    <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+    <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+    <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+    {% if shipment_subject %}
+        <th>{{ 'field.shipped'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'field.available'|trans({}, 'EkynaCommerce') }}</th>
     {% endif %}
-    {% if invoice %}<th>{{ 'ekyna_commerce.field.invoiced'|trans }}</th>{% endif %}
+    {% if invoice_subject %}<th>{{ 'field.invoiced'|trans({}, 'EkynaCommerce') }}</th>{% endif %}
 </tr>
 </thead>
 <tbody>
 {% for item in items -%}
-    {{ macros.item_line(item, shipment, invoice, 0) }}
+    {{ macros.item_line(item, shipment_subject, invoice_subject, 0) }}
 {%- endfor %}
 </tbody>
 </table>
 
 {% if payments is not empty -%}
-<p><strong>{{ 'ekyna_commerce.payment.label.plural'|trans }}</strong></p>
+<p><strong>{{ 'payment.label.plural'|trans({}, 'EkynaCommerce') }}</strong></p>
 <table class="table table-condensed table-alt-head">
 <tbody>
 {% for payment in payments -%}
@@ -143,10 +141,10 @@
         <td>{{ payment.number }}</td>
         <td>{{ payment.method }}</td>
         <td>{{ payment.state_badge|raw }}</td>
-        <td>{{ payment.amount|localizedcurrency(payment.currency) }}</td>
+        <td>{{ payment.amount|format_currency(payment.currency) }}</td>
         <td>
             {%- if payment.completed_at is not null -%}
-                {{ payment.completed_at|localizeddate('short', 'none') }}
+                {{ payment.completed_at|format_datetime('short', 'none') }}
             {%- endif -%}
         </td>
     </tr>
@@ -156,18 +154,18 @@
 {%- endif %}
 
 {% if refunds is not empty -%}
-<p><strong>{{ 'ekyna_commerce.refund.label.plural'|trans }}</strong></p>
+<p><strong>{{ 'refund.label.plural'|trans({}, 'EkynaCommerce') }}</strong></p>
 <table class="table table-condensed table-alt-head">
 <tbody>
 {% for refund in refunds -%}
     <tr>
         <td>{{ refund.number }}</td>
         <td>{{ refund.method }}</td>
-        <td>{{ refund.amount|localizedcurrency(refund.currency) }}</td>
+        <td>{{ refund.amount|format_currency(refund.currency) }}</td>
         <td>{{ refund.state_badge|raw }}</td>
         <td>
             {%- if refund.completed_at is not null -%}
-                {{ refund.completed_at|localizeddate('short', 'none') }}
+                {{ refund.completed_at|format_datetime('short', 'none') }}
             {%- endif -%}
         </td>
     </tr>
@@ -177,14 +175,14 @@
 {%- endif %}
 
 {% if invoices is defined and invoices is not empty -%}
-<p><strong>{{ 'ekyna_commerce.invoice.label.plural'|trans }}</strong></p>
+<p><strong>{{ 'invoice.label.plural'|trans({}, 'EkynaCommerce') }}</strong></p>
 <table class="table table-condensed table-alt-head">
 <tbody>
 {% for invoice in invoices -%}
     <tr>
         <td>{{ invoice.number }}</td>
-        <td>{{ invoice.grand_total|localizedcurrency(invoice.currency) }}</td>
-        <td>{{ invoice.created_at|localizeddate('short', 'none') }}</td>
+        <td>{{ invoice.grand_total|format_currency(invoice.currency) }}</td>
+        <td>{{ invoice.created_at|format_datetime('short', 'none') }}</td>
     </tr>
 {%- endfor %}
 </tbody>
@@ -192,14 +190,14 @@
 {%- endif %}
 
 {% if credits is defined and credits is not empty -%}
-<p><strong>{{ 'ekyna_commerce.credit.label.plural'|trans }}</strong></p>
+<p><strong>{{ 'credit.label.plural'|trans({}, 'EkynaCommerce') }}</strong></p>
 <table class="table table-condensed table-alt-head">
 <tbody>
 {% for credit in credits -%}
     <tr>
         <td>{{ credit.number }}</td>
-        <td>{{ credit.grand_total|localizedcurrency(credit.currency) }}</td>
-        <td>{{ credit.created_at|localizeddate('short', 'none') }}</td>
+        <td>{{ credit.grand_total|format_currency(credit.currency) }}</td>
+        <td>{{ credit.created_at|format_datetime('short', 'none') }}</td>
     </tr>
 {%- endfor %}
 </tbody>
@@ -207,7 +205,7 @@
 {%- endif %}
 
 {% if shipments is defined and shipments is not empty -%}
-<p><strong>{{ 'ekyna_commerce.shipment.label.plural'|trans }}</strong></p>
+<p><strong>{{ 'shipment.label.plural'|trans({}, 'EkynaCommerce') }}</strong></p>
 <table class="table table-condensed table-alt-head">
 <tbody>
 {% for shipment in shipments -%}
@@ -217,7 +215,7 @@
         <td>{{ shipment.state|shipment_state_badge }}</td>
         <td>
             {%- if shipment.shipped_at is not null -%}
-                {{ shipment.shipped_at|localizeddate('short', 'none') }}
+                {{ shipment.shipped_at|format_datetime('short', 'none') }}
             {%- endif -%}
         </td>
     </tr>
@@ -227,7 +225,7 @@
 {%- endif %}
 
 {% if returns is defined and returns is not empty -%}
-<p><strong>{{ 'ekyna_commerce.return.label.plural'|trans }}</strong></p>
+<p><strong>{{ 'return.label.plural'|trans({}, 'EkynaCommerce') }}</strong></p>
 <table class="table table-condensed table-alt-head">
 <tbody>
 {% for return in returns -%}
@@ -237,7 +235,7 @@
         <td>{{ return.state|shipment_state_badge }}</td>
         <td>
             {%- if return.shipped_at is not null -%}
-                {{ return.shipped_at|localizeddate('short', 'none') }}
+                {{ return.shipped_at|format_datetime('short', 'none') }}
             {%- endif -%}
         </td>
     </tr>
@@ -248,15 +246,15 @@
 
 <dl class="dl-horizontal">
     {% if description is not empty -%}
-    <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+    <dt>{{ 'field.description'|trans({}, 'EkynaCommerce') }}</dt>
     <dd>{{ description|nl2br|raw }}</dd>
     {%- endif %}
     {% if comment is not empty -%}
-    <dt>{{ 'ekyna_core.field.comment'|trans }}</dt>
+    <dt>{{ 'field.comment'|trans({}, 'EkynaUi') }}</dt>
     <dd>{{ comment|nl2br|raw }}</dd>
     {%- endif %}
     {% if preparation_note is not empty -%}
-    <dt>{{ 'ekyna_commerce.sale.field.preparation_note'|trans }}</dt>
+    <dt>{{ 'sale.field.preparation_note'|trans({}, 'EkynaCommerce') }}</dt>
     <dd>{{ preparation_note|nl2br|raw }}</dd>
     {%- endif %}
 </dl>

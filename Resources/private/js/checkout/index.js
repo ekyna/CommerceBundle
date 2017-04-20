@@ -1,4 +1,4 @@
-define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'], function ($, Modal, Dispatcher) {
+define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-spinner', 'jquery/form'], function ($, Modal, Dispatcher) {
     "use strict";
 
     var frameMapping = {

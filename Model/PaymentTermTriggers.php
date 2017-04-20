@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
@@ -17,7 +19,7 @@ class PaymentTermTriggers extends AbstractConstants
      */
     public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.payment_term.trigger.';
+        $prefix = 'payment_term.trigger.';
 
         return [
             Triggers::TRIGGER_SHIPPED        => [$prefix . Triggers::TRIGGER_SHIPPED],
@@ -27,11 +29,13 @@ class PaymentTermTriggers extends AbstractConstants
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }

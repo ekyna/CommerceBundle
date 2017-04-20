@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,23 +20,10 @@ class StockUnitPriceUpdateCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:stock-unit:price-update';
 
-    /**
-     * @var SupplierOrderCalculatorInterface
-     */
-    private $calculator;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    private SupplierOrderCalculatorInterface $calculator;
+    private EntityManagerInterface $manager;
 
 
-    /**
-     * Constructor.
-     *
-     * @param SupplierOrderCalculatorInterface $calculator
-     * @param EntityManagerInterface           $manager
-     */
     public function __construct(
         SupplierOrderCalculatorInterface $calculator,
         EntityManagerInterface $manager
@@ -45,10 +34,7 @@ class StockUnitPriceUpdateCommand extends Command
         $this->manager = $manager;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $qb = $this->manager->createQueryBuilder();
 
@@ -74,7 +60,7 @@ class StockUnitPriceUpdateCommand extends Command
             $changed = false;
 
             $netPrice = $this->calculator->calculateStockUnitNetPrice($item);
-            if ($netPrice !== $unit->getNetPrice()) {
+            if (!$unit->getNetPrice()->equals($netPrice)) {
                 $unit->setNetPrice($netPrice);
                 $changed = true;
                 $output->write(' <info>price</info>');
@@ -83,7 +69,7 @@ class StockUnitPriceUpdateCommand extends Command
             }
 
             $shippingPrice = $this->calculator->calculateStockUnitShippingPrice($item);
-            if ($shippingPrice !== $unit->getShippingPrice()) {
+            if (!$unit->getShippingPrice()->equals($shippingPrice)) {
                 $unit->setShippingPrice($shippingPrice);
                 $changed = true;
                 $output->writeln(' <info>shipping</info>');
@@ -103,5 +89,7 @@ class StockUnitPriceUpdateCommand extends Command
 
         $this->manager->flush();
         $this->manager->clear();
+
+        return Command::SUCCESS;
     }
 }

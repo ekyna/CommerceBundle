@@ -1,0 +1,8 @@
+admin_ekyna_commerce_customer_address_choice_list:
+    path: /choice-list
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerAddress\ChoiceListController
+    methods: [GET]
+    requirements:
+        customerId: \d+
+    options:
+        expose: true

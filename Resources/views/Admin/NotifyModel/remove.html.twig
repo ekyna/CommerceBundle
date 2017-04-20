@@ -1,7 +1,0 @@
-{% extends '@EkynaAdmin/Entity/Default/remove.html.twig' %}
-
-{% block page_title %}{{ resource|trans }} - {{ parent() }}{% endblock page_title %}
-
-{% block title -%}
-    <h1>{{ (trans_prefix ~ '.header.remove')|trans({'%name%': resource|trans})|raw }}</h1>
-{%- endblock title %}

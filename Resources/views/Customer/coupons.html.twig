@@ -2,10 +2,10 @@
 <table class="table table-alt-head">
     <thead>
     <tr>
-        <th>{{ 'ekyna_core.field.code'|trans }}</th>
-        <th>{{ 'ekyna_core.field.amount'|trans }}</th>
-        <th>{{ 'ekyna_core.field.start_date'|trans }}</th>
-        <th>{{ 'ekyna_core.field.end_date'|trans }}</th>
+        <th>{{ 'field.code'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.amount'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.start_date'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.end_date'|trans({}, 'EkynaUi') }}</th>
         <th></th>
     </tr>
     </thead>
@@ -15,18 +15,18 @@
             <td data-clipboard-copy="{{ coupon.code }}">{{ coupon.code }}</td>
             <td>
                 {%- if coupon.mode == constant('Ekyna\\Component\\Commerce\\Common\\Model\\AdjustmentModes::MODE_PERCENT') -%}
-                    -{{ (coupon.amount / 100)|localizednumber('percent') }}
+                    -{{ (coupon.amount / 100)|format_number('percent') }}
                 {%- else -%}
-                    -{{ coupon.amount|localizedcurrency(commerce_default_currency) }}
+                    -{{ coupon.amount|format_currency(commerce_default_currency) }}
                 {%- endif -%}
             </td>
-            <td>{{ coupon.startAt|localizeddate('short', 'none') }}</td>
-            <td>{{ coupon.endAt|localizeddate('short', 'none') }}</td>
-            <td>{% if not coupon.cumulative %}{{ 'ekyna_commerce.coupon.help.not_cumulative'|trans }}{% endif %}</td>
+            <td>{{ coupon.startAt|format_datetime('short', 'none') }}</td>
+            <td>{{ coupon.endAt|format_datetime('short', 'none') }}</td>
+            <td>{% if not coupon.cumulative %}{{ 'coupon.help.not_cumulative'|trans({}, 'EkynaCommerce') }}{% endif %}</td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="5">{{ 'ekyna_core.value.no_item'|trans }}</td>
+            <td colspan="5">{{ 'value.no_item'|trans({}, 'EkynaUi') }}</td>
         </tr>
     {% endfor %}
     </tbody>

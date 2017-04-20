@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
-use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
+use Ekyna\Bundle\CommerceBundle\Action\Admin\StockUnit\DeleteAdjustmentAction;
+use Ekyna\Bundle\CommerceBundle\Action\Admin\StockUnit\UpdateAdjustmentAction;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockAdjustmentNormalizer as BaseNormalizer;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
@@ -15,28 +19,13 @@ use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
  */
 class StockAdjustmentNormalizer extends BaseNormalizer
 {
-    /**
-     * @var ConstantsHelper
-     */
-    protected $constantHelper;
+    protected ConstantsHelper $constantHelper;
+    protected ResourceHelper  $resourceHelper;
 
-    /**
-     * @var ResourceHelper
-     */
-    protected $resourceHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param FormatterFactory $formatterFactory
-     * @param ConstantsHelper  $constantHelper
-     * @param ResourceHelper   $resourceHelper
-     */
     public function __construct(
         FormatterFactory $formatterFactory,
-        ConstantsHelper $constantHelper,
-        ResourceHelper $resourceHelper
+        ConstantsHelper  $constantHelper,
+        ResourceHelper   $resourceHelper
     ) {
         $this->formatterFactory = $formatterFactory;
         $this->constantHelper = $constantHelper;
@@ -44,40 +33,46 @@ class StockAdjustmentNormalizer extends BaseNormalizer
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
-     * @param StockAdjustmentInterface $adjustment
+     * @param StockAdjustmentInterface $object
      */
-    public function normalize($adjustment, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = [])
     {
-        $data = parent::normalize($adjustment, $format, $context);
+        $data = parent::normalize($object, $format, $context);
 
         if ($this->contextHasGroup('StockView', $context)) {
+            $update = $this
+                ->resourceHelper
+                ->generateResourcePath($object->getStockUnit(), UpdateAdjustmentAction::class, [
+                    'adjustmentId' => $object->getId(),
+                ]);
+
+            $delete = $this
+                ->resourceHelper
+                ->generateResourcePath($object->getStockUnit(), DeleteAdjustmentAction::class, [
+                    'adjustmentId' => $object->getId(),
+                ]);
+
             $actions = [
                 [
                     'label' => '<i class="fa fa-pencil"></i>',
-                    'href'  => $this->resourceHelper->generateResourcePath($adjustment->getStockUnit(),
-                        'adjustment_edit', [
-                            'stockAdjustmentId' => $adjustment->getId(),
-                        ]),
+                    'href'  => $update,
                     'theme' => 'warning',
                     'modal' => true,
                 ],
                 [
                     'label' => '<i class="fa fa-remove"></i>',
-                    'href'  => $this->resourceHelper->generateResourcePath($adjustment->getStockUnit(),
-                        'adjustment_remove', [
-                            'stockAdjustmentId' => $adjustment->getId(),
-                        ]),
+                    'href'  => $delete,
                     'theme' => 'danger',
                     'modal' => true,
                 ],
             ];
 
             $data = array_replace($data, [
-                'reason_label' => $this->constantHelper->renderStockAdjustmentReasonLabel($adjustment),
-                'type_label'   => $this->constantHelper->renderStockAdjustmentTypeLabel($adjustment),
-                'type_badge'   => $this->constantHelper->renderStockAdjustmentTypeBadge($adjustment),
+                'reason_label' => $this->constantHelper->renderStockAdjustmentReasonLabel($object),
+                'type_label'   => $this->constantHelper->renderStockAdjustmentTypeLabel($object),
+                'type_badge'   => $this->constantHelper->renderStockAdjustmentTypeBadge($object),
                 'actions'      => $actions,
             ]);
         }

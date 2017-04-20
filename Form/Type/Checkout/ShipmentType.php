@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
-use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use libphonenumber\PhoneNumberType as PhoneType;
 use libphonenumber\PhoneNumberUtil;
@@ -14,6 +16,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ShipmentType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Checkout
@@ -21,12 +25,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentType extends AbstractType
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             /** @var CartInterface $sale */
             $sale = $event->getData();
             $form = $event->getForm();
@@ -63,23 +64,20 @@ class ShipmentType extends AbstractType
             }
 
             $form->add('mobile', PhoneNumberType::class, [
-                'label'           => 'ekyna_core.field.mobile',
+                'label'           => t('field.mobile', [], 'EkynaUi'),
                 'property_path'   => $addressPath . '.mobile',
                 'required'        => false,
                 'default_country' => $region,
                 'type'            => PhoneType::MOBILE,
                 'attr'            => [
                     'class'     => 'address-mobile',
-                    'help_text' => 'ekyna_commerce.checkout.shipment.mobile_required',
+                    'help_text' => t('checkout.shipment.mobile_required', [], 'EkynaCommerce'),
                 ],
             ]);
         });
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('data_class', CartInterface::class);
     }

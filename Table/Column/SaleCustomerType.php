@@ -1,8 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
+use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -13,6 +19,10 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_replace;
+use function sprintf;
+use function Symfony\Component\Translation\t;
+
 /**
  * Class OrderCustomerType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
@@ -20,65 +30,54 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SaleCustomerType extends AbstractColumnType
 {
-    /**
-     * @var ConstantsHelper
-     */
-    private $helper;
+    private ConstantsHelper $constantsHelper;
+    private ResourceHelper  $resourceHelper;
 
-
-    /**
-     * Constructor.
-     *
-     * @param ConstantsHelper $helper
-     */
-    public function __construct(ConstantsHelper $helper)
+    public function __construct(ConstantsHelper $helper, ResourceHelper $resourceHelper)
     {
-        $this->helper = $helper;
+        $this->constantsHelper = $helper;
+        $this->resourceHelper = $resourceHelper;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $prefix = '';
-        if (false !== $path = $column->getConfig()->getPropertyPath()) {
+        if (!empty($path = $column->getConfig()->getPropertyPath())) {
             $prefix = $path . '.';
         }
 
-        $value = $this->helper->renderIdentity($row->getData($path));
+        $value = $this->constantsHelper->renderIdentity($row->getData($path));
 
-        if (0 < strlen($company = $row->getData($prefix . 'company'))) {
+        if (!empty($company = $row->getData($prefix . 'company'))) {
             $value = sprintf('<strong>%s</strong> %s', $company, $value);
         }
 
-        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
-        if (null !== $customer = $row->getData($prefix.'customer')) {
+        /** @var CustomerInterface $customer */
+        if (null !== $customer = $row->getData($prefix . 'customer')) {
             $view->vars = array_replace($view->vars, [
                 'block_prefix' => 'anchor',
                 'value'        => $value,
-                'route'        => 'ekyna_commerce_customer_admin_show',
-                'parameters'   => ['customerId' => $customer->getId()],
-                'attr' => [
-                    'data-summary' => json_encode([
-                        'route'      => 'ekyna_commerce_customer_admin_summary',
-                        'parameters' => ['customerId' => $customer->getId()],
-                    ]),
-                ]
+                'path'         => $this->resourceHelper->generateResourcePath($customer, ReadAction::class),
+                'attr'         => [
+                    'data-summary' => $this->resourceHelper->generateResourcePath($customer, SummaryAction::class),
+                ],
             ]);
-        } else {
-            $view->vars = array_replace($view->vars, [
-                'block_prefix' => 'text',
-                'value'        => $value,
-            ]);
+
+            return;
         }
+
+        $view->vars = array_replace($view->vars, [
+            'block_prefix' => 'text',
+            'value'        => $value,
+        ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function applySort(AdapterInterface $adapter, ColumnInterface $column, ActiveSort $activeSort, array $options)
-    {
+    public function applySort(
+        AdapterInterface $adapter,
+        ColumnInterface $column,
+        ActiveSort $activeSort,
+        array $options
+    ): bool {
         if (!$adapter instanceof EntityAdapter) {
             return false;
         }
@@ -99,26 +98,20 @@ class SaleCustomerType extends AbstractColumnType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('property_path', false);
+        $resolver->setDefaults([
+            'label'         => t('customer.label.singular', [], 'EkynaCommerce'),
+            'property_path' => false,
+        ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'text';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
+    public function getParent(): ?string
     {
         return PropertyType::class;
     }

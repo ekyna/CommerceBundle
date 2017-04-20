@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class NotificationsType
@@ -12,18 +16,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class NotificationsType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'ekyna_commerce.notification.label.plural');
+        $resolver->setDefaults([
+            'label' => t('notification.label.plural', [], 'EkynaCommerce'),
+        ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getWidgetPrefix()
+    public static function getName(): string
     {
         return 'commerce_notifications';
     }

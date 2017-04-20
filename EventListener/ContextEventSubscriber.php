@@ -81,15 +81,15 @@ class ContextEventSubscriber implements EventSubscriberInterface
         $changed = false;
 
         if ($currency = $event->getCurrency()) {
-            $changed |= $this->onCurrencyChange($currency);
+            $changed = $this->onCurrencyChange($currency) || $changed;
         }
 
         if ($country = $event->getCountry()) {
-            $changed |= $this->onCountryChange($country);
+            $changed = $this->onCountryChange($country) || $changed;
         }
 
         if ($locale = $event->getLocale()) {
-            $changed |= $this->onLocaleChange($locale);
+            $changed = $this->onLocaleChange($locale) || $changed;
         }
 
         if ($changed) {

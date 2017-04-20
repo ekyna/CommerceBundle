@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
-use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\RuntimeException;
@@ -14,6 +16,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class GatewayDataType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
@@ -21,33 +25,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class GatewayDataType extends AbstractType
 {
-    /**
-     * @var RegistryInterface
-     */
-    private $registry;
+    private GatewayRegistryInterface $registry;
 
-
-    /**
-     * Constructor.
-     *
-     * @param RegistryInterface $registry
-     */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(GatewayRegistryInterface $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
 
             $shipment = $form->getParent()->getData();
             if (!$shipment instanceof ShipmentInterface) {
-                throw new RuntimeException("Expected instance of " . ShipmentInterface::class);
+                throw new RuntimeException('Expected instance of ' . ShipmentInterface::class);
             }
 
             if (null === $method = $shipment->getMethod()) {
@@ -68,14 +60,11 @@ class GatewayDataType extends AbstractType
         });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $shipment = $form->getParent()->getData();
         if (!$shipment instanceof ShipmentInterface) {
-            throw new RuntimeException("Expected instance of " . ShipmentInterface::class);
+            throw new RuntimeException('Expected instance of ' . ShipmentInterface::class);
         }
         if (null === $sale = $shipment->getSale()) {
             throw new RuntimeException("Shipment's sale must be set at this point.");
@@ -91,21 +80,15 @@ class GatewayDataType extends AbstractType
         FormUtil::addClass($view, 'commerce-shipment-gateway-data');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'           => 'ekyna_core.field.config',
+            'label'           => t('field.config', [], 'EkynaUi'),
             'method-selector' => '.shipment-method',
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_shipment_gateway_data';
     }

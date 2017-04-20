@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
+use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\CmsBundle\Model as Cms;
 
 /**
@@ -11,44 +14,19 @@ use Ekyna\Bundle\CmsBundle\Model as Cms;
  */
 interface TaggedSaleInterface extends Cms\TagsSubjectInterface
 {
-    /**
-     * Returns whether the subject has the given item tag.
-     *
-     * @param Cms\TagInterface $tag
-     *
-     * @return bool
-     */
-    public function hasItemsTag(Cms\TagInterface $tag);
+    public function hasItemsTag(Cms\TagInterface $tag): bool;
+
+    public function addItemsTag(Cms\TagInterface $tag): TaggedSaleInterface;
+
+    public function removeItemsTag(Cms\TagInterface $tag): TaggedSaleInterface;
 
     /**
-     * Adds the given item tag.
-     *
-     * @param Cms\TagInterface $tag
-     *
-     * @return $this|TaggedSaleInterface
+     * @return Collection|Cms\TagInterface[]
      */
-    public function addItemsTag(Cms\TagInterface $tag);
+    public function getItemsTags(): Collection;
 
     /**
-     * Removes the given item tag.
-     *
-     * @param Cms\TagInterface $tag
-     *
-     * @return $this|TaggedSaleInterface
+     * @return Collection|Cms\TagInterface[]
      */
-    public function removeItemsTag(Cms\TagInterface $tag);
-
-    /**
-     * Returns whether the subject has the given item tag.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection|Cms\TagInterface[]
-     */
-    public function getItemsTags();
-
-    /**
-     * Returns all the tags.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection|Cms\TagInterface[]
-     */
-    public function getAllTags();
+    public function getAllTags(): Collection;
 }

@@ -1,0 +1,79 @@
+resources:
+    ekyna_commerce:
+        payment_method:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Payment\Model\PaymentMethodInterface
+                class: Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod
+            repository:
+                interface: Ekyna\Component\Commerce\Payment\Repository\PaymentMethodRepositoryInterface
+                class: Ekyna\Bundle\CommerceBundle\Repository\PaymentMethodRepository
+#            manager:
+#                interface: ~
+#                class: ~
+            factory: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\PaymentMethodFactory
+#            normalizer: ~
+#            search:
+#                class: ~
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\PaymentMethodType
+            trans_domain: EkynaCommerce
+            translation:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Payment\Entity\PaymentMethodTranslation
+                fields: [title, description, notice, mention, footer]
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/PaymentMethod'
+                    create: false
+                Ekyna\Bundle\CommerceBundle\Action\Admin\PaymentMethod\CreateAction:
+                    form_template: '@EkynaCommerce/Admin/PaymentMethod/_flow.html.twig'
+                admin_toggle:
+                    properties: [defaultCurrency,private,enabled,available]
+                admin_move_up: ~
+                admin_move_down: ~
+
+        payment_method_mention:
+            driver: doctrine/orm
+            entity:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Payment\Entity\PaymentMethodMention
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodMentionType
+            parent: ekyna_commerce.payment_method
+            trans_domain: EkynaCommerce
+            translation:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Payment\Entity\PaymentMethodMentionTranslation
+                fields: [content]
+            # TODO actions:
+
+        payment_message:
+            driver: doctrine/orm
+            entity:
+                # TODO interface: ~
+                class: Ekyna\Component\Commerce\Payment\Entity\PaymentMessage
+            trans_domain: EkynaCommerce
+            translation:
+                class: Ekyna\Component\Commerce\Payment\Entity\PaymentMessageTranslation
+                fields: [content]
+            # TODO actions:
+
+        payment_term:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Payment\Model\PaymentTermInterface
+                class: Ekyna\Component\Commerce\Payment\Entity\PaymentTerm
+            repository:
+                interface: Ekyna\Component\Commerce\Payment\Repository\PaymentTermRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\PaymentTermRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\PaymentTermType
+            trans_domain: EkynaCommerce
+            translation:
+                interface: Ekyna\Component\Commerce\Payment\Model\PaymentTermTranslationInterface
+                class: Ekyna\Component\Commerce\Payment\Entity\PaymentTermTranslation
+                fields: [title, description]
+            actions:
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/PaymentTerm/read.html.twig'
+                    form: '@EkynaCommerce/Admin/PaymentTerm/_form.html.twig'

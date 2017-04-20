@@ -1,0 +1,67 @@
+{% apply spaceless %}
+<div class="show-body form-body borderless">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ bootstrap_set_label_col(3) }}
+    {{ bootstrap_set_widget_col(9) }}
+    {{ form_errors(form, {'global_errors': true}) }}
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ show_row(form.vars.delivery_country, 'text', {
+                'label': t('country.label.singular', [], 'EkynaCommerce'),
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ show_row(form.vars.total_weight, 'number', {
+                'label': t('sale.field.weight_total', [], 'EkynaCommerce'),
+                'append': 'kg',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.shipmentLabel, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.shipmentWeight, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.shipmentMethod, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.shipmentAmount, null, {'label_col': 6}) }}
+                <div class="col-md-6">
+                    <div class="input-group">
+                        {{ form_widget(form.shipmentAmount) }}
+                        <span class="input-group-btn">
+                            <button class="btn btn-default sale-shipment-amount-apply" type="button">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </button>
+                            <button class="btn btn-default sale-shipment-amount-clear" type="button">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </span>
+                    </div>
+                    {{ form_errors(form.shipmentAmount) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ form_row(form.relayPoint) }}
+
+    {% if form.mobile is defined -%}
+        {{ form_row(form.mobile) }}
+    {%- endif %}
+
+    {{ form_rest(form) }}
+</div>
+{% endapply %}

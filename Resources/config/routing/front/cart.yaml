@@ -1,0 +1,81 @@
+ekyna_commerce_cart_coupon_set:
+    path: /coupon/set
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::couponSet
+    methods: POST
+    requirements:
+        itemId: \d+
+
+ekyna_commerce_cart_coupon_clear:
+    path: /coupon/clear
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::couponClear
+    methods: POST
+    requirements:
+        itemId: \d+
+
+ekyna_commerce_cart_item_configure:
+    path: /items/{itemId}/configure
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::itemConfigure
+    methods: GET|POST
+    requirements:
+        itemId: \d+
+
+ekyna_commerce_cart_item_remove:
+    path: /items/{itemId}/remove
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::itemRemove
+    methods: POST
+    requirements:
+        itemId: \d+
+
+ekyna_commerce_cart_item_adjustment_remove:
+    path: /items/{itemId}/adjustments/{adjustmentId}/remove
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::itemAdjustmentRemove
+    methods: POST
+    requirements:
+        itemId: \d+
+        adjustmentId: \d+
+
+ekyna_commerce_cart_adjustment_remove:
+    path: /adjustments/{adjustmentId}/remove
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::adjustmentRemove
+    methods: POST
+    requirements:
+        adjustmentId: \d+
+
+ekyna_commerce_cart_attachment_add:
+    path: /attachments/add
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::attachmentAdd
+    methods: GET|POST
+
+ekyna_commerce_cart_attachment_remove:
+    path: /attachments/{attachmentId}/remove
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::attachmentRemove
+    methods: POST
+    requirements:
+        adjustmentId: \d+
+
+ekyna_commerce_cart_attachment_download:
+    path: /attachments/{attachmentId}/download
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::attachmentDownload
+    methods: GET
+    requirements:
+        adjustmentId: \d+
+
+ekyna_commerce_cart_information:
+    path: /information
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::information
+    methods: GET|POST
+
+ekyna_commerce_cart_invoice_address:
+    path: /invoice-address
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::invoiceAddress
+    methods: [GET, POST]
+
+ekyna_commerce_cart_delivery_address:
+    path: /delivery-address
+    defaults: { _controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::deliveryAddress }
+    methods: GET|POST
+
+ekyna_commerce_cart_comment:
+    path: /comment
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::comment
+    methods: GET|POST

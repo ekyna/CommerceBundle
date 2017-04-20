@@ -1,0 +1,93 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{- 'field.general'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-address" id="toggle-address" data-toggle="tab">
+            {{- 'field.address'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{- show_row(warehouse.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi'
+        }) -}}
+        {{- show_row(warehouse.countries, 'resource', {
+            'resource': 'ekyna_commerce.country',
+        }) -}}
+        <div class="row">
+            <div class="col-md-6">
+                {{- show_row(warehouse.office, 'boolean', {
+                    'label': 'warehouse.field.office',
+                    'label_trans_domain': 'EkynaCommerce',
+                    'label_col': 4,
+                    'color': true
+                }) -}}
+            </div>
+            <div class="col-md-6">
+                {{- show_row(warehouse.default, 'boolean', {
+                    'label': 'field.default',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4,
+                    'color': true
+                }) -}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{- show_row(warehouse.enabled, 'boolean', {
+                    'label': 'field.enabled',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4,
+                    'color': true
+                }) -}}
+            </div>
+            <div class="col-md-6">
+                {{- show_row(warehouse.priority, 'number', {
+                    'label': 'field.priority',
+                    'label_trans_domain': 'EkynaUi',
+                    'label_col': 4
+                }) -}}
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-address">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row show-row">
+                    <div class="col-md-4 show-label">
+                        {{ 'field.address'|trans({}, 'EkynaUi') }}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="warehouse_address">
+                                {{- warehouse|address -}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                {{- show_row(warehouse, 'google_map', {
+                    'label': null,
+                    'map_width': 520,
+                    'map_height': 160,
+                    'map_zoom': 8,
+                    'map_static': false
+                }) -}}
+            </div>
+        </div>
+    </div>
+{%- endblock main_contents %}
+
+{% block javascripts -%}
+    {{ parent() }}
+    {{ ivory_google_api() }}
+{%- endblock javascripts %}

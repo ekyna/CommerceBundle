@@ -7,11 +7,11 @@
     {{ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}, {{ companyAddress.country|country(locale) }}<br>
 
     {%- if companyAddress.phone is not empty -%}
-        <span class="text-alt">{{ 'ekyna_core.field.phone'|trans }}</span>
+        <span class="text-alt">{{ 'field.phone'|trans({}, 'EkynaUi') }}</span>
         {{ companyAddress.phone }}<br>
     {%- endif -%}
     {%- if companyAddress.mobile is not empty -%}
-        <span class="text-alt">{{ 'ekyna_core.field.mobile'|trans }}</span>
+        <span class="text-alt">{{ 'field.mobile'|trans({}, 'EkynaUi') }}</span>
         {{ companyAddress.mobile }}<br>
     {%- endif -%}
 
@@ -37,11 +37,11 @@
     <em>{{ customer['email'] }}</em>
 
     {%- if customer['phone'] is not empty -%}
-        <br><span class="text-alt">{{ 'ekyna_core.field.phone'|trans }}</span> {{ customer['phone'] -}}
+        <br><span class="text-alt">{{ 'field.phone'|trans({}, 'EkynaUi') }}</span> {{ customer['phone'] -}}
     {%- endif -%}
 
     {%- if customer['mobile'] is not empty -%}
-        <br><span class="text-alt">{{ 'ekyna_core.field.mobile'|trans }}</span> {{ customer['mobile'] -}}
+        <br><span class="text-alt">{{ 'field.mobile'|trans({}, 'EkynaUi') }}</span> {{ customer['mobile'] -}}
     {%- endif -%}
 </p>
 {%- endmacro -%}
@@ -50,7 +50,7 @@
 {%- macro render_address(address) -%}
 <p>
     {%- if address['number'] is defined and address['number'] is not empty -%}
-        <em>({{ 'ekyna_commerce.relay_point.label.singular'|trans }})</em><br>
+        <em>({{ 'relay_point.label.singular'|trans({}, 'EkynaCommerce') }})</em><br>
     {%- endif -%}
 
     {%- if address['company'] is not empty -%}
@@ -73,11 +73,11 @@
     {{- address['postal_code'] }} {{ address['city'] }}, {{ address['country'] -}}
 
     {%- if address['phone'] is not empty -%}
-        <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address['phone'] -}}
+        <br><abbr title="{{ 'field.phone'|trans({}, 'EkynaUi') }}">T:</abbr> {{ address['phone'] -}}
     {%- endif -%}
 
     {%- if address['mobile'] is not empty -%}
-        <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address['mobile'] -}}
+        <br><abbr title="{{ 'field.mobile'|trans({}, 'EkynaUi') }}">M:</abbr> {{ address['mobile'] -}}
     {%- endif -%}
 </p>
 {% if address['information'] is defined and address['information'] is not empty -%}
@@ -88,7 +88,7 @@
 
 {%- macro render_voucher_number(subject) -%}
     {%- if subject.sale.voucherNumber is not empty -%}
-        <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+        <span class="text-alt">{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.voucherNumber }}</strong>.
     {%- endif -%}
@@ -97,14 +97,14 @@
 
 {%- macro render_shipment_method(subject) -%}
     {% if subject is shipment -%}
-        <span class="text-alt">{{ 'ekyna_commerce.shipment_method.label.singular'|trans|raw }}</span>
+        <span class="text-alt">{{ 'shipment_method.label.singular'|trans({}, 'EkynaCommerce')|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>
             {{- subject.method.translate(subject.sale.locale).title -}}
-            &nbsp;({{ subject|shipment_weight|localizednumber }}&nbsp;kg)
+            &nbsp;({{ subject|shipment_weight|format_number }}&nbsp;kg)
         </strong>.
     {%- elseif subject.sale.shipmentLabel or subject.sale.shipmentMethod -%}
-        <span class="text-alt">{{ 'ekyna_commerce.shipment_method.label.singular'|trans|raw }}</span>
+        <span class="text-alt">{{ 'shipment_method.label.singular'|trans({}, 'EkynaCommerce')|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>
         {%- if subject.sale.shipmentLabel -%}
@@ -113,9 +113,9 @@
             {{- subject.sale.shipmentMethod.translate(subject.locale).title -}}
         {%- endif -%}
         {%- if 0 < subject.sale.shipmentWeight -%}
-            &nbsp;({{ subject.sale.shipmentWeight|localizednumber }}&nbsp;kg)
+            &nbsp;({{ subject.sale.shipmentWeight|format_number }}&nbsp;kg)
         {%- elseif 0 < subject.sale.weightTotal -%}
-            &nbsp;({{ subject.sale.weightTotal|localizednumber }}&nbsp;kg)
+            &nbsp;({{ subject.sale.weightTotal|format_number }}&nbsp;kg)
         {%- endif -%}
         </strong>.
     {%- endif -%}
@@ -123,38 +123,38 @@
 
 
 {%- macro render_payment_term(subject) -%}
-    <span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+    <span class="text-alt">{{ 'payment_term.label.singular'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
     {{- '&nbsp;' -}}
     {%- if 0 < subject.sale.depositTotal -%}
         <strong>
-            {{- 'ekyna_commerce.document.mention.deposit'|trans({
-                '%percent%': (subject.sale.depositTotal / subject.sale.grandTotal)|localizednumber('percent'),
+            {{- 'document.mention.deposit'|trans({
+                '%percent%': (subject.sale.depositTotal / subject.sale.grandTotal)|format_number('percent'),
                 '%amount%': subject.sale.depositTotal|currency_quote
-            })|replace({' ': '&nbsp;'})|raw -}}
+            }, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw -}}
         </strong>.
     {%- endif %}
     {% if subject.sale.paymentTerm is not null -%}
         <strong>{{ subject.sale.paymentTerm.translate(subject.locale).title }}</strong>.
         {% if subject.credit is defined and not subject.credit and subject.dueDate is not null -%}
-            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+            <span class="text-alt">{{ 'document.mention.due_date'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
             {{- '&nbsp;' -}}
-            <strong>{{ subject.dueDate|localizeddate('long', 'none', subject.locale) }}</strong>.
+            <strong>{{ subject.dueDate|format_datetime('long', 'none', subject.locale) }}</strong>.
         {%- elseif subject.sale.outstandingDate is not null -%}
-            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+            <span class="text-alt">{{ 'document.mention.due_date'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
             {{- '&nbsp;' -}}
-            <strong>{{ subject.sale.outstandingDate|localizeddate('long', 'none', subject.locale) }}</strong>.
+            <strong>{{ subject.sale.outstandingDate|format_datetime('long', 'none', subject.locale) }}</strong>.
         {%- endif %}
     {%- elseif 0 < subject.sale.depositTotal -%}
-        <strong>{{ 'ekyna_commerce.document.mention.deposit_remaining'|trans }}</strong>.
+        <strong>{{ 'document.mention.deposit_remaining'|trans({}, 'EkynaCommerce') }}</strong>.
     {%- else -%}
-        <strong>{{ 'ekyna_commerce.document.mention.cash_payment'|trans }}</strong>.
+        <strong>{{ 'document.mention.cash_payment'|trans({}, 'EkynaCommerce') }}</strong>.
     {%- endif %}
 {%- endmacro -%}
 
 
 {%- macro render_exchange_rate(subject) -%}
     {%- if subject.currency != commerce_default_currency -%}
-        <span class="text-alt">{{ 'ekyna_commerce.field.exchange_rate'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+        <span class="text-alt">{{ 'field.exchange_rate'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale|currency_rate }}</strong>.
     {%- endif -%}
@@ -163,7 +163,7 @@
 
 {%- macro render_origin_customer(subject) -%}
     {%- if subject.sale.originCustomer is defined and subject.sale.originCustomer is not null -%}
-        <span class="text-alt">{{ 'ekyna_commerce.sale.field.origin_customer'|trans|raw }}</span>
+        <span class="text-alt">{{ 'sale.field.origin_customer'|trans({}, 'EkynaCommerce')|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.originCustomer|identity }}</strong>.
     {%- endif -%}
@@ -172,7 +172,7 @@
 
 {%- macro render_customer_vat_number(subject) -%}
     {%- if subject.sale.customer and subject.sale.customer.vatNumber -%}
-        <span class="text-alt">{{ 'ekyna_commerce.pricing.field.vat_number'|trans }}</span>
+        <span class="text-alt">{{ 'pricing.field.vat_number'|trans({}, 'EkynaCommerce') }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.customer.vatNumber }}</strong>.
     {%- endif -%}
@@ -185,18 +185,18 @@
     {%- if payments is not empty -%}
     <h2>
         {%- if subject.credit -%}
-            {{- 'ekyna_commerce.refund.label.plural'|trans -}}
+            {{- 'refund.label.plural'|trans({}, 'EkynaCommerce') -}}
         {%- else -%}
-            {{- 'ekyna_commerce.payment.label.plural'|trans -}}
+            {{- 'payment.label.plural'|trans({}, 'EkynaCommerce') -}}
         {%- endif -%}
     </h2>
     <table class="bloc table">
         <thead>
         <tr>
-            <th>{{ 'ekyna_core.field.number'|trans }}</th>
-            <th>{{ 'ekyna_core.field.method'|trans }}</th>
-            <th>{{ 'ekyna_core.field.completed_at'|trans }}</th>
-            <th>{{ 'ekyna_core.field.amount'|trans }}</th>
+            <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.method'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.completed_at'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.amount'|trans({}, 'EkynaUi') }}</th>
         </tr>
         </thead>
         <tbody class="stripped">
@@ -204,17 +204,17 @@
         <tr>
             <td>{{ payment.payment.getNumber() }}</td>
             <td>{{ payment.payment.getMethod().title }}</td>
-            <td>{{ payment.payment.getCompletedAt()|localizeddate('short', 'short') }}</td>
+            <td>{{ payment.payment.getCompletedAt()|format_datetime('short', 'short') }}</td>
             <td class="text-right">
-                {{- payment.amount|localizedcurrency(payment.payment.getCurrency().code) -}}
+                {{- payment.amount|format_currency(payment.payment.getCurrency().code) -}}
             </td>
         </tr>
         {%- endif %}{%- endfor %}
         </tbody>
         <tbody class="totals">
         <tr>
-            <th colspan="3" class="text-right">{{ 'ekyna_core.field.total'|trans }}</th>
-            <td class="total final text-right">{{ subject|invoice_paid_total|localizedcurrency(subject.currency) }}</td>
+            <th colspan="3" class="text-right">{{ 'field.total'|trans({}, 'EkynaUi') }}</th>
+            <td class="total final text-right">{{ subject|invoice_paid_total|format_currency(subject.currency) }}</td>
         </tr>
         </tbody>
     </table>

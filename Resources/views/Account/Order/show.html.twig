@@ -4,19 +4,19 @@
 
 {% block account %}
 {% apply spaceless %}
-    <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
+    <h3>{{ 'account.order.show'|trans({'%number%': order.number}, 'EkynaCommerce')|raw }}</h3>
     {% if order.sample %}
     <p>
-        <span class="label label-purple">{{- 'ekyna_commerce.field.sample'|trans -}}</span>
+        <span class="label label-purple">{{- 'field.sample'|trans({}, 'EkynaCommerce') -}}</span>
     </p>
     {% endif %}
     <hr>
     <div class="pull-right">
     {{- ui_dropdown({
-        'CSV': path('ekyna_commerce_account_order_export', {'number': order.number, '_format': 'csv'}),
-        'Excel': path('ekyna_commerce_account_order_export', {'number': order.number, '_format': 'xls'})
+        (path('ekyna_commerce_account_order_export', {'number': order.number, '_format': 'csv'})): 'CSV',
+        (path('ekyna_commerce_account_order_export', {'number': order.number, '_format': 'xls'})): 'Excel'
     }, {
-        'label': 'ekyna_core.button.export'|trans,
+        'label': 'button.export'|trans({}, 'EkynaUi'),
         'icon': 'download',
         'right': true
     }) -}}
@@ -27,7 +27,11 @@
         </div>
         {%- include '@EkynaCommerce/Account/Sale/addresses.html.twig' with {'sale': order} only -%}
         <div class="account-sale-view">
-            {{- render_sale_view(view) -}}
+            {{- render_sale_view(order|sale_view({
+                'private': false,
+                'editable': false,
+                'taxes_view': false
+            })) -}}
         </div>
     </div>
 
@@ -38,15 +42,15 @@
             <a href="{{ path('ekyna_commerce_account_order_payment_create', {'number': order.number}) }}"
                class="btn btn-primary">
                 <span class="glyphicon glyphicon-chevron-right"></span>
-                {{ 'ekyna_commerce.account.order.button.pay'|trans }}
-                <strong>{{ remaining|localizedcurrency(order.currency.code) }}</strong>
+                {{ 'account.order.button.pay'|trans({}, 'EkynaCommerce') }}
+                <strong>{{ remaining|format_currency(order.currency.code) }}</strong>
             </a>
         </div>
         {% else %}
         <div class="alert alert-info">
-            {{ 'ekyna_commerce.account.order.message.payment_denied'|trans({
+            {{ 'account.order.message.payment_denied'|trans({
                 '%identity%': order.customer|identity
-            })|raw }}
+            }, 'EkynaCommerce')|raw }}
         </div>
         {% endif %}
     {% endif %}
@@ -104,16 +108,16 @@
     {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
     <div class="panel panel-default" id="support-tickets">
         <div class="panel-heading">
-            {{- 'ekyna_commerce.ticket.label.plural'|trans|raw -}}
+            {{- 'ticket.label.plural'|trans({}, 'EkynaCommerce')|raw -}}
         </div>
         <div class="panel-body">
-            {{- support_tickets(order, {'new': path('ekyna_commerce_account_ticket_new', {'order': order.number})}) -}}
+            {{- support_tickets(order, {'new': path('ekyna_commerce_account_ticket_create', {'order': order.number})}) -}}
         </div>
     </div>
     {%- endif %}
 
     <br><br>
-    <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
+    <h3>{{ 'account.order.title'|trans({}, 'EkynaCommerce')|raw }}</h3>
     <hr>
     {%- include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer

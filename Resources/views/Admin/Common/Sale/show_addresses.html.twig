@@ -4,7 +4,7 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.sale.field.invoice_address'|trans }}
+                {{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}
             </div>
             <div class="col-md-8">
                 <div class="panel panel-default" id="sale_invoiceAddress">
@@ -12,7 +12,7 @@
                     {%- if sale.invoiceAddress is not null -%}
                         {{ sale.invoiceAddress|address }}
                     {%- else -%}
-                        <p><em>{{ 'ekyna_core.value.undefined'|trans }}</em></p>
+                        <p><em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em></p>
                     {%- endif -%}
                     </div>
                 </div>
@@ -27,7 +27,7 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.sale.field.delivery_address'|trans }}
+                {{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}
             </div>
             <div class="col-md-8">
             {%- if not sale.sameAddress -%}
@@ -36,13 +36,13 @@
                     {%- if sale.deliveryAddress is not null -%}
                         {{ sale.deliveryAddress|address }}
                     {%- else -%}
-                        <p><em>{{ 'ekyna_core.value.undefined'|trans }}</em></p>
+                        <p><em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em></p>
                     {%- endif -%}
                     </div>
                 </div>
             {%- else -%}
                 <div class="show-widget show-widget-inline" id="sale_deliveryAddress">
-                    <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
+                    <em>{{ 'sale.field.same_address'|trans({}, 'EkynaCommerce') }}</em>
                 </div>
             {%- endif -%}
             </div>
@@ -59,7 +59,7 @@
     <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
-                {{ 'ekyna_commerce.relay_point.label.singular'|trans }}
+                {{ 'relay_point.label.singular'|trans({}, 'EkynaCommerce') }}
             </div>
             <div class="col-md-8">
                 <div class="panel panel-default">

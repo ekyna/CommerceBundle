@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
@@ -8,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class CommentType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Checkout
@@ -15,21 +19,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CommentType extends AbstractType
 {
-    /**
-     * @inheritdoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('comment', Type\TextareaType::class, [
-            'label'    => 'ekyna_core.field.comment',
+            'label'    => t('field.comment', [], 'EkynaUi'),
             'required' => false,
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('data_class', CartInterface::class);
     }

@@ -1,9 +1,9 @@
 {% extends '@EkynaAdmin/Entity/sided.html.twig' %}
 
-{% block page_title %}{{ 'ekyna_commerce.order.header.export_to_deliver'|trans|raw }} - {{ parent() }}{% endblock page_title %}
+{% block page_title %}{{ 'order.header.export_to_deliver'|trans({}, 'EkynaCommerce')|raw }}{% endblock page_title %}
 
 {% block title %}
-    <h1>{{ 'ekyna_commerce.order.header.export_to_deliver'|trans|raw }}</h1>
+    <h1>{{ 'order.header.export_to_deliver'|trans({}, 'EkynaCommerce')|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}{% endblock actions %}

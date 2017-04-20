@@ -1,46 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
 use Ekyna\Component\Commerce\Customer\Balance\Balance;
 use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
+use Ekyna\Component\Resource\Helper\File\Csv;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Twig\Environment;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class BalanceController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class BalanceController extends AbstractController
+class BalanceController implements ControllerInterface
 {
-    /**
-     * Balance index action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function indexAction(Request $request)
+    use CustomerTrait;
+
+    private FormFactoryInterface               $formFactory;
+    private UrlGeneratorInterface              $urlGenerator;
+    private BalanceBuilder $balanceBuilder;
+    private SerializerInterface $serializer;
+    private Environment                        $twig;
+
+    public function index(Request $request): Response
     {
-        $customer = $this->getCustomerOrRedirect();
+        $customer = $this->getCustomer();
 
         $balance = new Balance($customer);
         $balance->setPublic(true);
 
         $form = $this
-            ->createForm(BalanceType::class, $balance, [
-                'action' => $this->generateUrl('ekyna_commerce_account_balance_index'),
+            ->formFactory
+            ->create(BalanceType::class, $balance, [
+                'action' => $this->urlGenerator->generate('ekyna_commerce_account_balance_index'),
                 'method' => 'POST',
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'ekyna_core.button.apply',
+                'label' => t('button.apply', [], 'EkynaUi'),
             ])
             ->add('export', SubmitType::class, [
-                'label' => 'ekyna_core.button.export',
+                'label' => t('button.export', [], 'EkynaUi'),
             ]);
 
         $form->handleRequest($request);
@@ -48,49 +59,34 @@ class BalanceController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 if ($form->get('export')->isClicked()) {
-                    $this->get(BalanceBuilder::class)->build($balance);
+                    $this->balanceBuilder->build($balance);
 
-                    $data = $this->get('serializer')->normalize($balance, 'csv');
+                    $data = $this->serializer->normalize($balance, 'csv');
 
-                    return $this->createCsvResponse($data);
+                    $csv = Csv::create('balance.csv');
+                    $csv->addRows($data);
+
+                    return $csv->download();
                 }
             } else {
                 // TODO Fix data
             }
         }
 
-        $this->get(BalanceBuilder::class)->build($balance);
+        $this->balanceBuilder->build($balance);
 
-        $data = $this->get('serializer')->normalize($balance, 'json');
+        $data = $this->serializer->normalize($balance, 'json');
 
         if ($request->isXmlHttpRequest()) {
-            return JsonResponse::create($data);
+            return JsonResponse::fromJsonString($data);
         }
 
-        return $this->render('@EkynaCommerce/Account/Balance/index.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Account/Balance/index.html.twig', [
             'customer' => $customer,
             'balance'  => $data,
             'form'     => $form->createView(),
         ]);
-    }
 
-    /**
-     * Creates the CSV file download response.
-     *
-     * @param array $data
-     *
-     * @return Response
-     */
-    private function createCsvResponse(array $data): Response
-    {
-        $path = tempnam(sys_get_temp_dir(), 'balance');
-
-        $handle = fopen($path, 'w');
-        foreach ($data['lines'] as $line) {
-            fputcsv($handle, $line, ';');
-        }
-        fclose($handle);
-
-        return $this->file($path, 'balance.csv');
+        return (new Response($content))->setPrivate();
     }
 }

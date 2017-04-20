@@ -1,136 +1,125 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    {% block tabs -%}
-    <li class="active">
-        <a href="#customer-general" id="toggle-general" data-toggle="tab">
-            {{ 'ekyna_core.field.general'|trans }}
-        </a>
-    </li>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_tabs -%}
+    {{ parent() }}
     <li>
-        <a href="#customer-config" id="toggle-config" data-toggle="tab">
-            {{ 'ekyna_core.field.config'|trans }}
+        <a href="#{{ resource_name }}-config" id="toggle-config" data-toggle="tab">
+            {{ 'field.config'|trans({}, 'EkynaUi') }}
         </a>
     </li>
     {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
     <li>
-        <a href="#customer-graphics" id="toggle-graphics" data-toggle="tab">
-            {{ 'ekyna_commerce.customer.field.graphics'|trans }}
+        <a href="#{{ resource_name }}-graphics" id="toggle-graphics" data-toggle="tab">
+            {{ 'customer.field.graphics'|trans({}, 'EkynaCommerce') }}
         </a>
     </li>
     {%- endif %}
-    {%- endblock tabs %}
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="customer-general">
-            {% block general_pane -%}
-            {{ form_row(form.email) }}
-            {{ form_row(form.company) }}
-            {{ form_row(form.identity) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+{%- endblock main_tabs %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="customer-general">
+        {% block general_pane -%}
+        {{ form_row(form.email) }}
+        {{ form_row(form.company) }}
+        {{ form_row(form.identity) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+            <div class="col-md-6">
+                {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            {%- endif %}
-            {{ form_row(form.description) }}
-            {{ form_row(form.notifications) }}
-            {{ form_row(form.tags) }}
-            {%- endblock general_pane %}
         </div>
-        <div class="tab-pane" id="customer-config">
-            {% block config_pane -%}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.user, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <hr>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.locale, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.parent, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.companyNumber, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.vatValid, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.outstandingLimit, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.defaultPaymentMethod, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.outstandingOverflow, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            {{ form_row(form.paymentMethods) }}
-            {%- endblock config_pane %}
-        </div>
-        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
-        <div class="tab-pane" id="customer-graphics">
-            {% block graphics_pane -%}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.brandLogo, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.brandColor, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            {{ form_row(form.brandUrl) }}
-            {{ form_row(form.documentFooter) }}
-            {{ form_row(form.documentTypes) }}
-            {%- endblock graphics_pane %}
         </div>
         {%- endif %}
-        {% block extra_panes %}{% endblock extra_panes %}
+        {{ form_row(form.description) }}
+        {{ form_row(form.notifications) }}
+        {{ form_row(form.tags) }}
+        {%- endblock general_pane %}
     </div>
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+    <div class="tab-pane" id="customer-config">
+        {% block config_pane -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.user, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.locale, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.parent, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.companyNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.vatValid, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.outstandingLimit, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.defaultPaymentMethod, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.outstandingOverflow, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.paymentMethods) }}
+        {%- endblock config_pane %}
+    </div>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
+    <div class="tab-pane" id="customer-graphics">
+        {% block graphics_pane -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.brandLogo, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.brandColor, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.brandUrl) }}
+        {{ form_row(form.documentFooter) }}
+        {{ form_row(form.documentTypes) }}
+        {%- endblock graphics_pane %}
+    </div>
+    {%- endif %}
+    {% block extra_panes %}{% endblock extra_panes %}
+{%- endblock main_contents -%}

@@ -1,0 +1,8 @@
+widget:
+    cart:
+        items: >-
+            {count, plural,
+                =0    {Your cart is empty}
+                one   {One product}
+                other {# products}
+            }

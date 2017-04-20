@@ -1,50 +1,34 @@
-{% apply spaceless %}
-<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
-    {% block tabs -%}
-    <li class="active">
-        <a href="#customer-group-general" id="toggle-general" data-toggle="tab">
-            {{- 'ekyna_core.field.general'|trans -}}
-        </a>
-    </li>
-    {%- endblock tabs %}
-</ul>
-<div class="panel-body form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <div class="tab-content">
-        <div class="tab-pane active" id="customer-group-general">
-            {% block general_pane -%}
-            {{ form_row(form.name) }}
-            {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.default, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+    {% block general_content -%}
+        {{ form_row(form.name) }}
+        {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.default, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.registration, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.quoteAllowed, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.loyalty, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.vatDisplayMode, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
+            <div class="col-md-6">
+                {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-        {%- endblock general_pane %}
-        {% block extra_panes %}{% endblock extra_panes %}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.registration, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.quoteAllowed, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.loyalty, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.vatDisplayMode, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+    {%- endblock general_content %}
     </div>
-    {{ form_rest(form) }}
-</div>
-{% endapply %}
+{%- endblock main_contents %}

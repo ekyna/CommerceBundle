@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketMessageType;
-use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
-use Ekyna\Bundle\CoreBundle\Modal\Modal;
-use Ekyna\Component\Resource\Model\Actions;
-use Symfony\Component\Form\FormError;
+use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\UiBundle\Model\Modal;
+use Ekyna\Component\Commerce\Support\Model\TicketMessageInterface;
+use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class TicketMessageController
@@ -17,29 +23,22 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketMessageController extends AbstractTicketController
 {
-    /**
-     * Ticket message new action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function newAction(Request $request)
+    public function create(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $ticket = $this->findTicket($request);
 
-        /** @var \Ekyna\Component\Commerce\Support\Model\TicketMessageInterface $message */
-        $message = $this->get('ekyna_commerce.ticket_message.repository')->createNew();
+        /** @var TicketMessageInterface $message */
+        $message = $this->factoryFactory->getFactory(TicketMessageInterface::class)->create();
         $message->setTicket($ticket);
 
-        $this->denyAccessUnlessGranted(Actions::CREATE, $message);
+        $this->denyAccessUnlessGranted(Permission::CREATE, $message);
 
-        $form = $this->createForm(TicketMessageType::class, $message, [
-            'action' => $this->generateUrl('ekyna_commerce_account_ticket_message_new', [
+        $form = $this->formFactory->create(TicketMessageType::class, $message, [
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_ticket_message_create', [
                 'ticketId' => $ticket->getId(),
             ]),
             'method' => 'POST',
@@ -51,7 +50,7 @@ class TicketMessageController extends AbstractTicketController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket_message.operator')->create($message);
+            $event = $this->managerFactory->getManager(TicketMessageInterface::class)->create($message);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -65,39 +64,31 @@ class TicketMessageController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.ticket_message.header.new', $form->createView())
+            ->createModal('ticket_message.header.new')
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_message.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 
-    /**
-     * Ticket message edit action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function editAction(Request $request)
+    public function update(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $message = $this->findMessage($request);
 
-        $this->denyAccessUnlessGranted(Actions::EDIT, $message);
+        $this->denyAccessUnlessGranted(Permission::UPDATE, $message);
 
-        $form = $this->createForm(TicketMessageType::class, $message, [
-            'action' => $this->generateUrl('ekyna_commerce_account_ticket_message_edit', [
+        $form = $this->formFactory->create(TicketMessageType::class, $message, [
+            'action' => $this->urlGenerator->generate('ekyna_commerce_account_ticket_message_update', [
                 'ticketId'        => $message->getTicket()->getId(),
                 'ticketMessageId' => $message->getId(),
             ]),
@@ -110,7 +101,7 @@ class TicketMessageController extends AbstractTicketController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket_message.operator')->update($message);
+            $event = $this->managerFactory->getManager(TicketMessageInterface::class)->update($message);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -124,41 +115,33 @@ class TicketMessageController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.ticket_message.header.edit', $form->createView())
+            ->createModal('ticket_message.header.edit')
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_message.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 
-    /**
-     * Ticket message remove action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function removeAction(Request $request)
+    public function delete(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
+            throw new NotFoundHttpException('Only XHR is supported.');
         }
 
         $message = $this->findMessage($request);
 
-        $this->denyAccessUnlessGranted(Actions::DELETE, $message);
+        $this->denyAccessUnlessGranted(Permission::DELETE, $message);
 
         $ticket = $message->getTicket();
 
-        $form = $this->createForm(ConfirmType::class, null, [
-            'action'  => $this->generateUrl('ekyna_commerce_account_ticket_message_remove', [
+        $form = $this->formFactory->create(ConfirmType::class, null, [
+            'action'  => $this->urlGenerator->generate('ekyna_commerce_account_ticket_message_delete', [
                 'ticketId'        => $message->getTicket()->getId(),
                 'ticketMessageId' => $message->getId(),
             ]),
@@ -166,14 +149,14 @@ class TicketMessageController extends AbstractTicketController
             'attr'    => [
                 'class' => 'form-horizontal',
             ],
-            'message' => 'ekyna_commerce.ticket_message.message.remove_confirm',
+            'message' => t('ticket_message.message.remove_confirm', [], 'EkynaCommerce'),
             'buttons' => false,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket_message.operator')->delete($message);
+            $event = $this->managerFactory->getManager(TicketMessageInterface::class)->delete($message);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -187,18 +170,17 @@ class TicketMessageController extends AbstractTicketController
                 return $response;
             }
 
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
+            FormUtil::addErrorsFromResourceEvent($form, $event);
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.ticket_message.header.remove', $form->createView(), 'confirm')
+            ->createModal('ticket_message.header.remove', 'confirm')
             ->setSize(Modal::SIZE_NORMAL)
+            ->setForm($form->createView())
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_confirm.html.twig',
             ]);
 
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->modalRenderer->render($modal)->setPrivate();
     }
 }

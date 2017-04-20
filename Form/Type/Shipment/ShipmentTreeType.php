@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
+use ArrayAccess;
 use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\ShipmentItemsDataTransformer;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Symfony\Component\Form\AbstractType;
@@ -13,6 +16,10 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Traversable;
+
+use function is_array;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class ShipmentTreeType
@@ -21,14 +28,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentTreeType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->addModelTransformer(new ShipmentItemsDataTransformer($options['shipment']))
-            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options) {
+            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options): void {
                 $form = $event->getForm();
                 $data = $form->getNormData();
 
@@ -36,8 +40,8 @@ class ShipmentTreeType extends AbstractType
                     $data = [];
                 }
 
-                if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
-                    throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
+                if (!is_array($data) && !($data instanceof Traversable && $data instanceof ArrayAccess)) {
+                    throw new UnexpectedTypeException($data, 'array or (Traversable and ArrayAccess)');
                 }
 
                 // First remove all rows
@@ -55,23 +59,17 @@ class ShipmentTreeType extends AbstractType
             });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['headers'] = true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
                 'shipment'      => null,
-                'label'         => 'ekyna_commerce.shipment.field.items',
+                'label'         => t('shipment.field.items', [], 'EkynaCommerce'),
                 'entry_type'    => ShipmentItemType::class,
                 'entry_options' => [],
             ])
@@ -83,10 +81,7 @@ class ShipmentTreeType extends AbstractType
             });
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ekyna_commerce_shipment_items';
     }

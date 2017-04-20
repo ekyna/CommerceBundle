@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,33 +21,15 @@ class OrderWatchCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:order:watch';
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var ResourceEventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
+    private OrderRepositoryInterface         $repository;
+    private ResourceEventDispatcherInterface $dispatcher;
+    private EntityManagerInterface           $manager;
 
 
-    /**
-     * Constructor.
-     *
-     * @param OrderRepositoryInterface         $repository
-     * @param ResourceEventDispatcherInterface $dispatcher
-     * @param EntityManagerInterface           $manager
-     */
     public function __construct(
-        OrderRepositoryInterface $repository,
+        OrderRepositoryInterface         $repository,
         ResourceEventDispatcherInterface $dispatcher,
-        EntityManagerInterface $manager
+        EntityManagerInterface           $manager
     ) {
         parent::__construct();
 
@@ -54,30 +38,24 @@ class OrderWatchCommand extends Command
         $this->manager = $manager;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function configure()
     {
         $this->setDescription(
-            "Dispatches a 'ORDER_COMPLETED' event for all orders completed yesterday.\n" .
-            "Do not run more than once per day."
+            "Dispatches a 'ORDER_COMPLETED' event for all orders completed yesterday. Do not run more than once per day."
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $orders = $this->repository->findCompletedYesterday();
 
         foreach ($orders as $order) {
             $event = $this->dispatcher->createResourceEvent($order);
-            /** @noinspection PhpParamsInspection */
-            $this->dispatcher->dispatch(OrderEvents::COMPLETED, $event);
+            $this->dispatcher->dispatch($event, OrderEvents::COMPLETED);
         }
 
         $this->manager->flush();
+
+        return Command::SUCCESS;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes as Types;
@@ -12,12 +14,9 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  */
 final class AdjustmentTypes extends AbstractConstants
 {
-    /**
-     * @inheritDoc
-     */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $prefix = 'ekyna_commerce.adjustment.type.';
+        $prefix = 'adjustment.type.';
 
         return [
             Types::TYPE_TAXATION    => [$prefix . Types::TYPE_TAXATION],
@@ -26,19 +25,18 @@ final class AdjustmentTypes extends AbstractConstants
         ];
     }
 
-    /**
-     * @return string
-     */
-    static public function getDefaultChoice(): ?string
+    public static function getDefaultChoice(): ?string
     {
         return Types::TYPE_DISCOUNT;
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getTheme(string $constant): ?string
     {
         return null;
+    }
+
+    public static function getTranslationDomain(): ?string
+    {
+        return 'EkynaCommerce';
     }
 }
