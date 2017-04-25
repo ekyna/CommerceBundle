@@ -36,6 +36,32 @@ class CustomerContext implements Context, KernelAwareContext
     }
 
     /**
+     * @Given /^The customer "(?P<email>[^"]+)" has an outstanding limit of "(?P<limit>[^"]+)"$/
+     *
+     * @param string    $email
+     * @param string    $limit
+     */
+    public function setOutstandingLimit($email, $limit)
+    {
+        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+        $customer = $this->getContainer()
+            ->get('ekyna_commerce.customer.repository')
+            ->findOneBy(['email' => $email]);
+
+        if (null === $customer) {
+            throw new \InvalidArgumentException("Customer with email '$email' not found.");
+        }
+
+        $customer->setOutstandingLimit($limit);
+
+        $manager = $this->getContainer()->get('ekyna_commerce.customer.manager');
+
+        $manager->persist($customer);
+        $manager->flush();
+        $manager->clear();
+    }
+
+    /**
      * @param TableNode $table
      *
      * @return array
@@ -80,6 +106,10 @@ class CustomerContext implements Context, KernelAwareContext
                 $customer->setCustomerGroup($group);
             } else {
                 $customer->setCustomerGroup($groupRepository->findDefault());
+            }
+
+            if (isset($row['osLimit'])) {
+                $customer->setOutstandingLimit($row['osLimit']);
             }
 
             $customers[] = $customer;

@@ -257,7 +257,7 @@ class Configuration implements ConfigurationInterface
                                     'remove.html'    => 'EkynaCommerceBundle:Admin/Order:remove.html',
                                     'transform.html' => 'EkynaCommerceBundle:Admin/Order:transform.html',
                                 ])->end()
-                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\Order')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Order')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderRepository')->end()

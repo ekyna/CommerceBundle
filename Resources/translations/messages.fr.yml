@@ -560,6 +560,19 @@ ekyna_commerce:
         field:
             tax_group: Groupe
 
+    return:
+        label:
+            singular: Retour
+            plural: Retours
+        header:
+            new: Créer un nouveau retour
+            edit: Modifier le retour
+            remove: Supprimer le retour
+        button:
+            new: Nouveau retour
+            edit: Modifier le retour
+            remove: Supprimer le retour
+
     shipment:
         label:
             singular: Expédition
@@ -591,10 +604,12 @@ ekyna_commerce:
             returned: Retourné
             cancelled: Annulé
         field:
+            return: Retour
             tracking_number: Numéro de suivi
 
     shipment_item:
         field:
+            shipped: Expedié
             expected: Attendu
             available: Disponible
 
@@ -772,6 +787,7 @@ ekyna_commerce:
                 Tout ou partie des stocks liés à cette commande ont été livrés à des clients,
                 cette commande et/ou ses lignes ne peuvent donc pas être supprimée(s).
         field:
+            shipping_cost: Frais transport
             payment_total: Total réglement
             payment_date: Date réglement
             estimated_date_of_arrival: Date de livraison estimée

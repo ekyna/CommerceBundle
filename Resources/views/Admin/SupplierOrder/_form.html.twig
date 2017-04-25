@@ -9,33 +9,7 @@
     {{ form_errors(form) }}
     <div class="tab-content">
         <div class="tab-pane active" id="general">
-            {{ form_row(form.supplier) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.paymentTotal, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.paymentDate, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-            </div>
-            <hr>
-            {{ form_widget(form.compose) }}
+            {% include "EkynaCommerceBundle:Admin/SupplierOrder/Form:general.html.twig" %}
         </div>
     </div>
     {{ form_rest(form) }}

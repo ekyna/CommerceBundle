@@ -22,7 +22,7 @@ Feature: Create supplier orders
         And I select "TechData" from "supplier_order[supplier]"
         And I press "form_flow_submit"
         And I select "Euro" from "supplier_order[currency]"
-        And I fill in "supplier_order[paymentTotal]" with "249.16667"
+        And I fill in "supplier_order[shippingCost]" with "30"
         And I wait for Select2 initialization on "supplier_order[compose][quickAddSelect]"
         And I select "[IPAD-AIR] iPad Air" from "supplier_order[compose][quickAddSelect]"
         And I press "supplier_order[compose][quickAddButton]"
@@ -31,7 +31,8 @@ Feature: Create supplier orders
         Then I should see the resource saved confirmation message
         # Order assertions
         And I should see "TechData" in the "#order_supplier" element
-        And I should see "249,17 €" in the "#order_paymentTotal" element
+        And I should see "30,00 €" in the "#order_shippingCost" element
+        And I should see "279,17 €" in the "#order_paymentTotal" element
         And I should see "Création" in the "#order_state" element
         And I should see "Soumettre au fournisseur"
 

@@ -13,6 +13,14 @@
             <tag name="table.type" alias="ekyna_commerce_customer"/>
         </service>
 
+        <!-- Order table type -->
+        <service id="ekyna_commerce.order.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderType"><!-- TODO use parameter defined by config builder -->
+            <argument>%ekyna_commerce.order.class%</argument>
+            <argument>%ekyna_cms.tag.class%</argument>
+            <tag name="table.type" alias="ekyna_commerce_order"/>
+        </service>
+
         <!-- Customer column type -->
         <service id="ekyna_commerce.order_customer.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">
@@ -60,6 +68,14 @@
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type" alias="ekyna_commerce_supplier_order_state"/>
+        </service>
+
+        <!-- Order tags filter type -->
+        <service id="ekyna_commerce.order.tags.filter_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\OrderTagsType">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument>%ekyna_cms.tag.class%</argument>
+            <tag name="table.filter_type" alias="ekyna_commerce_order_tags" />
         </service>
 
     </services>

@@ -45,13 +45,13 @@ ekyna_commerce:
             La quantité expédiée doit être inférieure ou égale à la quantité attendue (%max%).
         quantity_must_be_lower_than_or_equal_available: |
             La quantité expédiée doit être inférieure ou égale à la quantité disponible (%max%).
+        quantity_must_be_lower_than_or_equal_shipped: |
+            La quantité retournée doit être inférieure ou égale à la quantité expédiée (%max%).
     supplier_order:
         duplicate_subject_identity: |
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.
         order_and_delivery_items_miss_match: |
             Au moins une ligne de la commande ne correspond pas aux lignes des livraisons.
-        payment_total_is_too_low: |
-            Le total réglement doit être supérieur ou égal au total des lignes (%min%).
     supplier_order_item:
         quantity_must_be_greater_than_or_equal_delivered: |
             La quantité commandée doit être supérieure ou égale à la quantité livrée (%min%).

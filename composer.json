@@ -19,6 +19,7 @@
     "require" : {
         "php" : ">=5.5.9",
         "ekyna/media-bundle" : "0.6.x-dev",
+        "ekyna/cms-bundle" : "0.6.x-dev",
         "ekyna/commerce" : "0.6.x-dev",
         "misd/phone-number-bundle": "^1.2",
         "payum/payum-bundle": "^2.1.1",

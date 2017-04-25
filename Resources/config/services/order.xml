@@ -37,6 +37,9 @@
             <call method="setStockAssigner">
                 <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
             </call>
+            <call method="setSubjectHelper">
+                <argument type="service" id="ekyna_commerce.subject_helper"/>
+            </call>
             <tag name="resource.event_subscriber"/>
         </service>
 

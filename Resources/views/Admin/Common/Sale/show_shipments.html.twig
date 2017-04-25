@@ -3,6 +3,7 @@
         <thead>
         <tr>
             <th>{{ 'ekyna_core.field.number'|trans }}</th>
+            <th>{{ 'ekyna_commerce.shipment.field.return'|trans }}</th>
             <th>{{ 'ekyna_core.field.method'|trans }}</th>
             <th>{{ 'ekyna_core.field.status'|trans }}</th>
             <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
@@ -15,6 +16,17 @@
             {% set shipmentId = 'shipment_' ~ loop.index0 %}
             <tr data-id="{{ shipment.id }}">
                 <td id="{{ shipmentId }}_number">{{ shipment.number }}</td>
+                <td id="{{ shipmentId }}_return">
+                    {% if shipment.return %}
+                        <span class="label label-warning">
+                            {{ 'ekyna_core.value.yes'|trans }}
+                        </span>
+                    {% else %}
+                        <span class="label label-default">
+                            {{ 'ekyna_core.value.no'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
                 <td id="{{ shipmentId }}_method">{{ shipment.method }}</td>
                 <td id="{{ shipmentId }}_state">{{ shipment|shipment_state_badge }}</td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>

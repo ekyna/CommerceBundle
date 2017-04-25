@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 
 /**
  * Class OrderContext
@@ -43,15 +44,7 @@ class OrderContext implements Context, KernelAwareContext
      */
     public function orderIsPaid($number)
     {
-        /** @var \Ekyna\Component\Commerce\Order\Model\OrderInterface $order */
-        $order = $this
-            ->getContainer()
-            ->get('ekyna_commerce.order.repository')
-            ->findOneBy(['number' => $number]);
-
-        if (null === $order) {
-            throw new \InvalidArgumentException("Failed to find order with number '$number'.");
-        }
+        $order = $this->findOrderByNumber($number);
 
         $methods = $this
             ->getContainer()->get('ekyna_commerce.payment_method.repository')
@@ -76,6 +69,67 @@ class OrderContext implements Context, KernelAwareContext
         $manager->persist($payment);
         $manager->flush();
         $manager->clear();
+    }
+
+    /**
+     * @Given /^The order with number "(?P<number>[^"]+)" is shipped$/
+     *
+     * @param string $number
+     */
+    public function orderIsShipped($number)
+    {
+        $order = $this->findOrderByNumber($number);
+
+        $methods = $this
+            ->getContainer()->get('ekyna_commerce.shipment_method.repository')
+            ->findBy(['enabled' => true]);
+
+        if (empty($methods)) {
+            throw new \InvalidArgumentException("Failed to find a shipment method.");
+        }
+
+        $shipment = $this
+            ->getContainer()
+            ->get('ekyna_commerce.sale_factory')
+            ->createShipmentForSale($order);
+
+        $shipment
+            ->setMethod($methods[0])
+            ->setState(ShipmentStates::STATE_COMPLETED);
+
+        $order->addShipment($shipment);
+
+        $this
+            ->getContainer()
+            ->get('ekyna_commerce.shipment.builder')
+            ->build($shipment);
+
+        $manager = $this->getContainer()->get('ekyna_commerce.order_shipment.manager');
+        $manager->persist($shipment);
+        $manager->flush();
+        $manager->clear();
+    }
+
+    /**
+     * Finds the order by its number.
+     *
+     * @param string $number
+     *
+     * @return \Ekyna\Component\Commerce\Order\Model\OrderInterface
+     */
+    private function findOrderByNumber($number)
+    {
+        /** @var \Ekyna\Component\Commerce\Order\Model\OrderInterface $order */
+        $order = $this
+            ->getContainer()
+            ->get('ekyna_commerce.order.repository')
+            ->findOneBy(['number' => $number]);
+
+        if (null === $order) {
+            throw new \InvalidArgumentException("Failed to find order with number '$number'.");
+        }
+
+        return $order;
     }
 
     /**
@@ -166,10 +220,5 @@ class OrderContext implements Context, KernelAwareContext
         }
 
         return $orders;
-    }
-
-    public function setDeliveryAddress()
-    {
-        // TODO
     }
 }

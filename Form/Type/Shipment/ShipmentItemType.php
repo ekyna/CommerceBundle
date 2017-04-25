@@ -43,18 +43,27 @@ class ShipmentItemType extends ResourceFormType
 
         $saleItem = $item->getSaleItem();
 
-        $expected = ShipmentUtil::calculateExpectedQuantity($item);
-        $available = ShipmentUtil::calculateAvailableQuantity($item);
-
-        if ($available < $expected) {
-            FormUtil::addClass($view, 'danger');
-        }
-
         $view->vars['designation'] = $saleItem->getDesignation();
         $view->vars['reference'] = $saleItem->getReference();
 
-        $view->vars['expected_quantity'] = $expected;
-        $view->vars['available_quantity'] = $available;
+        if ($item->getShipment()->isReturn()) {
+            $view->vars['return_mode'] = true;
+
+            $returnable = ShipmentUtil::calculateReturnableQuantity($item);
+            $view->vars['returnable_quantity'] = $returnable;
+        } else {
+            $view->vars['return_mode'] = false;
+
+            $expected = ShipmentUtil::calculateShippableQuantity($item);
+            $available = ShipmentUtil::calculateAvailableQuantity($item);
+
+            $view->vars['expected_quantity'] = $expected;
+            $view->vars['available_quantity'] = $available;
+
+            if ($available < $expected) {
+                FormUtil::addClass($view, 'danger');
+            }
+        }
     }
 
     /**
@@ -64,7 +73,7 @@ class ShipmentItemType extends ResourceFormType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefault('error_bubbling', false);
+        ///$resolver->setDefault('error_bubbling', true);
     }
 
     /**

@@ -28,11 +28,22 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="supplier-order-general">
-                {{ show_row(supplierOrder.supplier, 'entity', 'ekyna_commerce.supplier.label.singular', {
-                    'id': 'order_supplier',
-                    'route': 'ekyna_commerce_supplier_admin_show',
-                    'route_params_map': {'supplierId': 'id'},
-                }) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplierOrder.supplier, 'entity', 'ekyna_commerce.supplier.label.singular', {
+                            'id': 'order_supplier',
+                            'route': 'ekyna_commerce_supplier_admin_show',
+                            'route_params_map': {'supplierId': 'id'},
+                            'label_nb_col': 4, 'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(supplierOrder.state|supplier_order_state_badge, 'text', 'ekyna_commerce.supplier_order.field.state', {
+                            'id': 'order_state',
+                            'label_nb_col': 4, 'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(supplierOrder.number, 'text', 'ekyna_core.field.number', {
@@ -51,8 +62,22 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(supplierOrder.state|supplier_order_state_badge, 'text', 'ekyna_commerce.supplier_order.field.state', {
-                            'id': 'order_state',
+                        {{ show_row(supplierOrder.estimatedDateOfArrival, 'date', 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival', {
+                            'id': 'order_estimatedDateOfArrival',
+                            'label_nb_col': 4, 'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(supplierOrder.shippingCost, 'number', 'ekyna_commerce.supplier_order.field.shipping_cost', {
+                            'id': 'order_shippingCost',
+                            'label_nb_col': 4, 'widget_nb_col': 8, 'append': ' €'
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplierOrder.paymentDate, 'date', 'ekyna_commerce.supplier_order.field.payment_date', {
+                            'id': 'order_paymentDate',
                             'label_nb_col': 4, 'widget_nb_col': 8
                         }) }}
                     </div>
@@ -63,25 +88,11 @@
                         }) }}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ show_row(supplierOrder.estimatedDateOfArrival, 'date', 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival', {
-                            'id': 'order_estimatedDateOfArrival',
-                            'label_nb_col': 4, 'widget_nb_col': 8
-                        }) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ show_row(supplierOrder.paymentDate, 'date', 'ekyna_commerce.supplier_order.field.payment_date', {
-                            'id': 'order_paymentDate',
-                            'label_nb_col': 4, 'widget_nb_col': 8
-                        }) }}
-                    </div>
-                </div>
                 <hr>
-                {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:supplier_order_items.html.twig" %}
+                {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:items.html.twig" %}
             </div>
             <div class="tab-pane" id="supplier-order-deliveries">
-                {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:supplier_order_deliveries.html.twig" %}
+                {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:deliveries.html.twig" %}
             </div>
         </div>
     </div>

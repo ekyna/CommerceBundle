@@ -66,6 +66,10 @@ class OrderType extends ResourceTableType
                 'label'    => 'ekyna_commerce.sale.field.shipment_state',
                 'position' => 90,
             ])
+            ->addColumn('tags', 'ekyna_cms_tags', [
+                'property_path' => 'allTags',
+                'position'      => 100,
+            ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
@@ -122,6 +126,10 @@ class OrderType extends ResourceTableType
                 'label'    => 'ekyna_commerce.sale.field.shipment_state',
                 'choices'  => Model\ShipmentStates::getChoices(),
                 'position' => 90,
+            ])
+            ->addFilter('tags', 'ekyna_commerce_order_tags', [
+                'label'    => 'ekyna_cms.tag.label.plural',
+                'position' => 100,
             ]);
 
         if (null === $options['customer']) {

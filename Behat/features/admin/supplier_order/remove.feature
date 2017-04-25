@@ -10,8 +10,8 @@ Feature: Remove supplier orders
             | name     | currency | email                | gender | lastName | firstName |
             | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
         And The following supplier orders:
-            | number | supplier | currency | paymentTotal |
-            | SO-001 | TechData | EUR      | 249.16667    |
+            | number | supplier | currency |
+            | SO-001 | TechData | EUR      |
 
     Scenario: Remove the supplier order
         When I go to "ekyna_commerce_supplier_order_admin_remove" route with "supplierOrderId:1"

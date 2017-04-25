@@ -59,6 +59,9 @@ class SupplierOrderType extends ResourceFormType
                 return;
             }
 
+            /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
+            $currency = null !== $supplierOrder ? $supplierOrder->getCurrency() : null;
+
             // Step 2: Supplier is selected
             $form
                 ->add('supplier', ResourceType::class, [
@@ -83,27 +86,23 @@ class SupplierOrderType extends ResourceFormType
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                 ])
+                ->add('shippingCost', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
+                    'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
+                ])
                 ->add('paymentDate', Symfony\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
+                ])
+                ->add('paymentTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.payment_total',
+                    'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
+                    'disabled' => true,
+                ])
+                ->add('compose', SupplierOrderComposeType::class, [
+                    'supplier' => $supplier,
                 ]);
-
-            /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
-            $currency = null !== $supplierOrder ? $supplierOrder->getCurrency() : null;
-
-            //$adminMode = $options['admin_mode'];
-            //$locked = (null !== $supplierOrder) && ($supplierOrder->getState() !== States::STATE_NEW);
-
-            $form->add('paymentTotal', MoneyType::class, [
-                'label'    => 'ekyna_core.field.amount',
-                'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
-                //'disabled' => $locked || !$adminMode,
-            ]);
-
-            $form->add('compose', SupplierOrderComposeType::class, [
-                'supplier' => $supplier,
-            ]);
         });
     }
 

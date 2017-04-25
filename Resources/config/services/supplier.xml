@@ -13,6 +13,10 @@
         <service id="ekyna_commerce.supplier_order.state_resolver"
                  class="Ekyna\Component\Commerce\Supplier\Resolver\SupplierOrderStateResolver"/>
 
+        <!-- Supplier order calculator -->
+        <service id="ekyna_commerce.supplier_order.calculator"
+                 class="Ekyna\Component\Commerce\Supplier\Calculator\Calculator"/>
+
         <!-- Supplier order number generator -->
         <service id="ekyna_commerce.supplier_order.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
@@ -40,6 +44,7 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber"
                  parent="ekyna_commerce.supplier_order.abstract_listener">
             <argument type="service" id="ekyna_commerce.supplier_order.number_generator"/>
+            <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
             <argument type="service" id="ekyna_commerce.supplier_order.state_resolver"/>
             <tag name="resource.event_subscriber"/>
         </service>

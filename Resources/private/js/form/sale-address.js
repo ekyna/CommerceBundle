@@ -95,11 +95,9 @@ define(['jquery', 'routing'], function($, router) {
                 }
             });
 
-            if (1 == $sameCheckbox.length) {
+            if (1 === $sameCheckbox.length) {
                 var $wrapper = $this.find('.sale-address-wrap'),
                     toggleAddress = function () {
-                        console.log('toggle address: ' + $sameCheckbox.prop('checked'));
-
                         if ($sameCheckbox.prop('checked')) {
                             $wrapper.slideUp(function() {
                                 if ($choiceSelect.length) {

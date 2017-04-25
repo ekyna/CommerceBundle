@@ -16,8 +16,8 @@ Feature: Edit supplier orders
             | supplier | designation | reference | price     | weight | available | ordered | eda  | acme_product |
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |      | IPAD-AIR     |
         And The following supplier orders:
-            | number | supplier | currency | paymentTotal |
-            | SO-001 | TechData | EUR      | 2491.70      |
+            | number | supplier | currency | shippingCost |
+            | SO-001 | TechData | EUR      | 30           |
         And The following supplier order items:
             | order  | reference | quantity |
             | SO-001 | IPAD-AIR  | 10       |
@@ -29,7 +29,8 @@ Feature: Edit supplier orders
         Then I should see the resource saved confirmation message
         And I should see "Création" in the "#order_state" element
         And I should see "TechData" in the "#order_supplier" element
-        And I should see "2 491,70 €" in the "#order_paymentTotal" element
+        And I should see "30,00 €" in the "#order_shippingCost" element
+        And I should see "2 521,70 €" in the "#order_paymentTotal" element
         And I should see "01/01/2020" in the "#order_estimatedDateOfArrival" element
         And I should see "Soumettre au fournisseur"
         And I show the "deliveries" tab

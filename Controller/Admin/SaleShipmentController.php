@@ -52,12 +52,19 @@ class SaleShipmentController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
         $shipment = $this->createNew($context);
+        if ($request->query->get('return', 0)) {
+            $shipment->setReturn(true);
+        }
+
         $sale = $shipment->getSale();
 
         $context->addResource($resourceName, $shipment);
 
         $form = $this->createNewResourceForm($context, !$isXhr, [
-            'attr' => [
+            'action' => $this->generateResourcePath($shipment, 'new', [
+                'return' => $shipment->isReturn() ? 1 : 0,
+            ]),
+            'attr'   => [
                 'class' => 'form-horizontal',
             ],
         ]);
@@ -83,8 +90,10 @@ class SaleShipmentController extends AbstractSaleController
             return $this->redirect($this->generateResourcePath($sale));
         }
 
+        $labelName = $shipment->isReturn() ? 'return' : 'shipment';
+
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.shipment.header.new');
+            $modal = $this->createModal('new', 'ekyna_commerce.' . $labelName . '.header.new');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -94,7 +103,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_new', $resourceName),
-            'ekyna_commerce.shipment.button.new'
+            'ekyna_commerce.' . $labelName . '.button.new'
         );
 
         return $this->render(
@@ -150,8 +159,10 @@ class SaleShipmentController extends AbstractSaleController
             return $this->redirect($this->generateResourcePath($sale));
         }
 
+        $labelName = $shipment->isReturn() ? 'return' : 'shipment';
+
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.shipment.header.edit');
+            $modal = $this->createModal('new', 'ekyna_commerce.' . $labelName . '.header.edit');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -161,7 +172,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_configure', $resourceName),
-            'ekyna_commerce.shipment.button.edit'
+            'ekyna_commerce.' . $labelName . '.button.edit'
         );
 
         return $this->render(
@@ -181,9 +192,9 @@ class SaleShipmentController extends AbstractSaleController
 
         $resourceName = $this->config->getResourceName();
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-        $resource = $context->getResource($resourceName);
+        $shipment = $context->getResource($resourceName);
 
-        $this->isGranted('DELETE', $resource);
+        $this->isGranted('DELETE', $shipment);
 
         $isXhr = $request->isXmlHttpRequest();
         $form = $this->createRemoveResourceForm($context, null, !$isXhr);
@@ -192,7 +203,7 @@ class SaleShipmentController extends AbstractSaleController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->delete($resource);
+            $event = $this->getOperator()->delete($shipment);
             if (!$isXhr) {
                 $event->toFlashes($this->getFlashBag());
             }
@@ -215,8 +226,10 @@ class SaleShipmentController extends AbstractSaleController
             }
         }
 
+        $labelName = $shipment->isReturn() ? 'return' : 'shipment';
+
         if ($isXhr) {
-            $modal = $this->createModal('remove');
+            $modal = $this->createModal('remove', 'ekyna_commerce.' . $labelName . '.header.remove');
             $vars = $context->getTemplateVars();
             unset($vars['form_template']);
             $modal
@@ -229,7 +242,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_remove', $resourceName),
-            'ekyna_commerce.shipment.button.remove'
+            'ekyna_commerce.' . $labelName . '.button.remove'
         );
 
         return $this->render(

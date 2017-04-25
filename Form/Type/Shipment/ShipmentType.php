@@ -9,6 +9,8 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 /**
  * Class ShipmentType
@@ -89,21 +91,17 @@ class ShipmentType extends ResourceFormType
             if (null === $shipment->getId()) {
                 $this->shipmentBuilder->build($shipment);
             }
-
-            $event->setData($shipment); // TODO ?
         });
+    }
 
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-            $shipment = $event->getData();
+    /**
+     * @inheritdoc
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+        $shipment = $form->getData();
 
-            foreach ($shipment->getItems() as $item) {
-                if (0 == $item->getQuantity()) {
-                    $shipment->removeItem($item);
-                }
-            }
-
-            $event->setData($shipment); // TODO ?
-        });
+        $view->vars['return_mode'] = $shipment->isReturn();
     }
 }

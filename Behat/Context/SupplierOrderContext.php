@@ -150,7 +150,7 @@ class SupplierOrderContext implements Context, KernelAwareContext
                 ->setSupplier($supplier)
                 ->setCurrency($currency)
                 ->setNumber($row['number'])
-                ->setPaymentTotal($row['paymentTotal']);
+                ->setShippingCost(isset($row['shippingCost']) ? $row['shippingCost'] : 0);
 
             if (isset($row['estimatedDateOfArrival'])) {
                 $supplierOrder->setEstimatedDateOfArrival(new \DateTime($row['estimatedDateOfArrival']));
