@@ -4,7 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
+use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -101,8 +103,8 @@ class SaleController extends AbstractSaleController
         }
 
         $view = $this->getSaleHelper()->buildView($sale, [
-            'private'      => false,
-            'editable'     => false,
+            'private'  => false,
+            'editable' => false,
         ]);
 
         $content = $this->renderView('EkynaCommerceBundle:Document:invoice.html.twig', [
@@ -326,7 +328,7 @@ class SaleController extends AbstractSaleController
     public function transformAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException('Transformation through XHR.');
+            throw new NotFoundHttpException('Not yet supported.');
         }
 
         $context = $this->loadContext($request);
@@ -453,5 +455,101 @@ class SaleController extends AbstractSaleController
                 ],
             ])
             ->getForm();
+    }
+
+    /**
+     * Notify action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function notifyAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet supported.');
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        $notification = $this
+            ->get('ekyna_commerce.notification.builder')
+            ->createNotificationFromSale($sale);
+
+        $form = $this->createNotifyForm($sale, $notification);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+        }
+
+        $this->appendBreadcrumb(
+            sprintf('%s_transform', $resourceName),
+            'ekyna_core.button.notify'
+        );
+
+        return $this->render(
+            $this->config->getTemplate('notify.html'),
+            $context->getTemplateVars([
+                'form' => $form->createView(),
+            ])
+        );
+    }
+
+    /**
+     * Creates the notify form.
+     *
+     * @param SaleInterface $sale
+     * @param Notification  $notification
+     * @param bool          $footer
+     *
+     * @return \Symfony\Component\Form\Form
+     */
+    protected function createNotifyForm(SaleInterface $sale, Notification $notification, $footer = true)
+    {
+        $action = $this->generateResourcePath($sale, 'notify');
+
+        $form = $this->createForm(NotificationType::class, $notification, [
+            'sale'              => $sale,
+            'action'            => $action,
+            'attr'              => ['class' => 'form-horizontal'],
+            'method'            => 'POST',
+            'admin_mode'        => true,
+            '_redirect_enabled' => true,
+        ]);
+
+        if ($footer) {
+            $form->add('actions', FormActionsType::class, [
+                'buttons' => [
+                    'send'   => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'button_class' => 'primary',
+                            'label'        => 'ekyna_core.button.send',
+                            'attr'         => ['icon' => 'envelope'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\ButtonType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $this->generateResourcePath($sale),
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+        }
+
+        return $form;
     }
 }

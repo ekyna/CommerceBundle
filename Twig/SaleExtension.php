@@ -11,6 +11,7 @@ use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\SaleView;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -63,6 +64,19 @@ class SaleExtension extends \Twig_Extension
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getTests()
+    {
+        return [
+            new \Twig_SimpleTest(
+                'sale_stockable_state',
+                [$this, 'isSaleStockableSale']
+            )
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function getFilters()
@@ -105,6 +119,22 @@ class SaleExtension extends \Twig_Extension
                 ['is_safe' => ['html']]
             ),
         ];
+    }
+
+    /**
+     * Returns whether the sale is in a stockable state.
+     *
+     * @param SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleStockableSale(SaleInterface $sale)
+    {
+        if ($sale instanceof OrderInterface) {
+            return OrderStates::isStockableState($sale);
+        }
+
+        return false;
     }
 
     /**

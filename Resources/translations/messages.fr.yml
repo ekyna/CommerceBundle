@@ -227,6 +227,20 @@ ekyna_commerce:
             mrs: Madame
             miss: Mademoiselle
 
+    notification:
+        field:
+            recipients: Destinataires
+            copies: Copies
+            attachments: Pièces jointes
+            subject: Sujet
+            payment_message: Message paiement
+            shipment_message: Message livraison
+            custom_message: Message personnalisé
+            include_view: Détail
+        include_view:
+            none: Non
+            after: Après le message
+            before: Avant le message
     message:
         label:
             singular: Message
@@ -246,6 +260,7 @@ ekyna_commerce:
             edit: Modifier la commande <small>%number%</small>
             remove: Supprimer la commande <small>%number%</small>
             transform: Transformer la commande <small>%number%</small>
+            notify: Notifier la commande <small>%number%</small>
         button:
             list: Liste des commandes
             show: Détail de la commande
@@ -253,6 +268,7 @@ ekyna_commerce:
             edit: Modifier la commande
             remove: Supprimer la commande
             transform: Transformer la commande
+            notify: Notifier la commande
         field:
             invoice: Facture
             invoice_pdf: Facture PDF
@@ -428,6 +444,7 @@ ekyna_commerce:
             edit: Modifier le devis <small>%number%</small>
             remove: Supprimer le devis <small>%number%</small>
             transform: Transformer le devis <small>%number%</small>
+            notify: Notifier le devis <small>%number%</small>
         button:
             list: Liste des devis
             show: Détail du devis
@@ -435,6 +452,7 @@ ekyna_commerce:
             edit: Modifier le devis
             remove: Supprimer le devis
             transform: Transform le devis
+            notify: Notifier le devis
         alert:
             no_item: Aucun devis configuré
         state:
@@ -498,6 +516,7 @@ ekyna_commerce:
         button:
             refresh: Râfraichir
             recalculate: Recalculer
+            notify: Notifier
             item:
                 add: Ajouter un article
                 new: Ajouter une ligne
@@ -588,6 +607,9 @@ ekyna_commerce:
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
             cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
+            sale_is_not_stackable: |
+                Le statut de la vente n'étant pas accepté, les statuts
+                disponibles pour l'expédition ont été restreints.
         alert:
             no_item: Aucune expédition configuré
         state:

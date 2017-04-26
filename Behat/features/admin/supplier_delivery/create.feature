@@ -18,8 +18,8 @@ Feature: Create supplier deliveries
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |     | IPAD-AIR     |
             | TechData | Galaxy Tab  | GALA-TAB  | 207.5     | 0.7    | 20        | 0       |     | GALA-TAB     |
         And The following supplier orders:
-            | number | supplier | currency | paymentTotal | estimatedDateOfArrival |
-            | SO-001 | TechData | EUR      | 1328.33334   | 2020-01-01             |
+            | number | supplier | currency | shippingCost | estimatedDateOfArrival |
+            | SO-001 | TechData | EUR      | 20.55        | 2020-01-01             |
         And The following supplier order items:
             | order  | reference | quantity |
             | SO-001 | IPAD-AIR  | 2        |
@@ -37,7 +37,8 @@ Feature: Create supplier deliveries
 
         # Order assertions
         And I should see "TechData" in the "#order_supplier" element
-        And I should see "1 328,33" in the "#order_paymentTotal" element
+        And I should see "20,55" in the "#order_shippingCost" element
+        And I should see "1 348,89" in the "#order_paymentTotal" element
         And I should see "Partiellement réceptionnée" in the "#order_state" element
         And I should see "01/01/2020" in the "#order_estimatedDateOfArrival" element
 
@@ -88,7 +89,8 @@ Feature: Create supplier deliveries
         # Order assertions
         # TODO And I should not see "Soumettre au fournisseur"
         And I should see "TechData" in the "#order_supplier" element
-        And I should see "1 328,33" in the "#order_paymentTotal" element
+        And I should see "20,55" in the "#order_shippingCost" element
+        And I should see "1 348,89" in the "#order_paymentTotal" element
         And I should see "Complétée" in the "#order_state" element
         And I should see "01/01/2020" in the "#order_estimatedDateOfArrival" element
 

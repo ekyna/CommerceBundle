@@ -3,7 +3,7 @@
     {{ bootstrap_set_col_size('md') }}
 
     {{ form_errors(form) }}
-
+    {{ form_row(form.title) }}
     <div class="upload-widget">
         {{ form_row(form.file) }}
         {% if form.key is defined %}

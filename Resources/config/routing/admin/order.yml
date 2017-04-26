@@ -81,6 +81,13 @@ ekyna_commerce_order_admin_transform:
         orderId: \d+
         target: "[a-z]+"
 
+ekyna_commerce_order_admin_notify:
+    path: /{orderId}/notify
+    defaults: { _controller: "ekyna_commerce.order.controller:notifyAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
 ekyna_commerce_order_attachment_admin:
     resource: order_attachment.yml
     prefix: /{orderId}/attachments

@@ -1,0 +1,5 @@
+{% extends "EkynaAdminBundle:Entity/Default:remove.html.twig" %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.order.header.notify'|trans({'%number%': order.number})|raw }}</h1>
+{% endblock title %}

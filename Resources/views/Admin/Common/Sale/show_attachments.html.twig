@@ -3,6 +3,8 @@
         <thead>
         <tr>
             <th>{{ 'ekyna_core.field.file'|trans }}</th>
+            <th>{{ 'ekyna_core.field.title'|trans }}</th>
+            <th>{{ 'ekyna_core.field.date'|trans }}</th>
             <th>{{ 'ekyna_commerce.attachment.field.internal'|trans }}</th>
             <th></th>
         </tr>
@@ -12,6 +14,8 @@
             {% set attachmentId = 'attachment_' ~ loop.index0 %}
             <tr data-id="{{ attachment.id }}">
                 <td id="{{ attachmentId }}_filename">{{ attachment }}</td>
+                <td id="{{ attachmentId }}_title">{{ attachment.title }}</td>
+                <td id="{{ attachmentId }}_updatedAt">{{ attachment.updatedAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ attachmentId }}_internal">
                     {% if attachment.internal %}
                         <span class="label label-success">

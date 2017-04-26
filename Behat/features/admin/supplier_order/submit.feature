@@ -25,7 +25,7 @@ Feature: Edit supplier orders
     Scenario: Submit the supplier order
         When I go to "ekyna_commerce_supplier_order_admin_submit" route with "supplierOrderId:1"
         And I fill in "supplier_order_submit[order][estimatedDateOfArrival]" with "01/01/2020"
-        # TODO Message
+        # TODO message field
         And I check "supplier_order_submit[confirm]"
         And I press "supplier_order_submit_actions_send"
         Then I should see the resource saved confirmation message

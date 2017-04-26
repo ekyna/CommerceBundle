@@ -54,14 +54,6 @@ Feature: Create order shipments
             | O-0001 | 4        | IPAD-AIR     |
             | O-0001 | 2        | GALA-TAB     |
 
-    @javascript
-    Scenario: Create a shipment while order is not accepted
-        When I go to "ekyna_commerce_order_shipment_admin_new" route with "{orderId:1}"
-        And I fill in "order_shipment[items][0][quantity]" with "4"
-        And I fill in "order_shipment[items][1][quantity]" with "2"
-        And I press "order_shipment[actions][save]"
-        Then I should see "La quantité expédiée doit être inférieure ou égale à la quantité disponible (0)"
-
     @javascript @stock
     Scenario: Create a shipment
         Given The supplier order with number "SO-001" is delivered
@@ -103,7 +95,17 @@ Feature: Create order shipments
         And I should see "2" in the "#product_stockUnit_0_reservedQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
-    @javascript @stock
+#    Can't test this as 'shipped' state is available in state select field.
+#    @javascript
+#    Scenario: Create a shipped shipment while order is not accepted
+#        When I go to "ekyna_commerce_order_shipment_admin_new" route with "{orderId:1}"
+#        And I select "Expédié" from "order_shipment[state]"
+#        And I fill in "order_shipment[items][0][quantity]" with "4"
+#        And I fill in "order_shipment[items][1][quantity]" with "2"
+#        And I press "order_shipment[actions][save]"
+#        Then I should see "Le statut de la vente ne permet pas de sélectionner ce statut d'expédition"
+
+    @javascript @stock @current
     Scenario: Create a shipment with state 'shipped'
         Given The supplier order with number "SO-001" is delivered
         And The order with number "O-0001" is paid

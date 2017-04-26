@@ -92,6 +92,13 @@
             <tag name="form.type" />
         </service>
 
+        <!-- Notification form type -->
+        <service id="ekyna_commerce.notification.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType">
+            <argument type="service" id="ekyna_commerce.notification.builder"/>
+            <tag name="form.type"/>
+        </service>
+
         <!-- Order form types -->
         <service id="ekyna_commerce.order_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAddressType">

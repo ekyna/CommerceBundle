@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CoreBundle\Form\Type\UploadType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -19,11 +20,16 @@ class AttachmentType extends ResourceFormType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('internal', CheckboxType::class, [
-            'label'    => 'ekyna_commerce.attachment.field.internal',
-            'required' => false,
-            'attr'     => ['align_with_widget' => true],
-        ]);
+        $builder
+            ->add('title', TextType::class, [
+                'label'    => 'ekyna_core.field.title',
+                'required' => false,
+            ])
+            ->add('internal', CheckboxType::class, [
+                'label'    => 'ekyna_commerce.attachment.field.internal',
+                'required' => false,
+                'attr'     => ['align_with_widget' => true],
+            ]);
     }
 
     /**

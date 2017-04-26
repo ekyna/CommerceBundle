@@ -51,13 +51,15 @@ final class ShipmentStates extends AbstractConstants
     /**
      * Returns the choices for the shipment form type.
      *
+     * @param array $restrict
+     *
      * @return array
      */
-    static function getFormChoices()
+    static function getFormChoices(array $restrict = [])
     {
-        return static::getChoices([
+        return static::getChoices(array_merge([
             States::STATE_NONE,
             States::STATE_PARTIAL
-        ]);
+        ], $restrict));
     }
 }

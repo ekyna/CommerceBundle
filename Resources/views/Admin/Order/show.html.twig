@@ -19,6 +19,12 @@
             'type': 'link',
             'path': admin_resource_path(order, 'invoice')
         }, {'target': '_blank'}) }}
+        {# TODO permission ? #}
+        {{ ui_button('ekyna_core.button.notify', {
+            'theme': 'default',
+            'type': 'link',
+            'path': admin_resource_path(order, 'notify')
+        }) }}
         {{ sale_transform_btn(order) }}
         {{ admin_resource_btn(order, 'edit') }}
         {{ admin_resource_btn(order, 'remove') }}
