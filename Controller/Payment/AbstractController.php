@@ -65,22 +65,22 @@ abstract class AbstractController
     }
 
     /**
-     * Prepare payment action.
+     * Cancel payment action.
      *
      * @param Request $request
      *
      * @return Response
      */
-    public function prepareAction(Request $request)
+    public function cancelAction(Request $request)
     {
         $payment = $this->findPaymentByRequest($request);
 
-        if ($payment->getState() !== PaymentStates::STATE_NEW) {
-            throw new NotFoundHttpException('This payment has already been captured.');
-        }
+        /*if (!PaymentStates::isPaidState($payment->getState())) {
+            throw new NotFoundHttpException("This payment can't be cancelled.");
+        }*/
 
         $event = $this->dispatcher->dispatch(
-            PaymentEvents::PREPARE,
+            PaymentEvents::CANCEL,
             new PaymentEvent($payment)
         );
         if ($event->hasResponse()) {
@@ -90,7 +90,47 @@ abstract class AbstractController
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
         $method = $payment->getMethod();
 
-        $options = $this->getCaptureOptions();
+        $options = $this->getDoneOptions();
+
+        /** @var \Payum\Core\Security\TokenInterface $cancelToken */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $cancelToken = $this->getTokenFactory()->createCancelToken(
+            $method->getGatewayName(),
+            $payment,
+            isset($options['route']) ? $options['route'] : null,
+            isset($options['parameters']) ? $options['parameters'] : []
+        );
+
+        return $this->redirect($cancelToken->getTargetUrl());
+    }
+
+    /**
+     * Capture payment action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function captureAction(Request $request)
+    {
+        $payment = $this->findPaymentByRequest($request);
+
+        if ($payment->getState() !== PaymentStates::STATE_NEW) {
+            throw new NotFoundHttpException('This payment has already been captured.');
+        }
+
+        $event = $this->dispatcher->dispatch(
+            PaymentEvents::CAPTURE,
+            new PaymentEvent($payment)
+        );
+        if ($event->hasResponse()) {
+            return $event->getResponse();
+        }
+
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
+        $method = $payment->getMethod();
+
+        $options = $this->getDoneOptions();
 
         $captureToken = $this->getTokenFactory()->createCaptureToken(
             $method->getGatewayName(),
@@ -173,7 +213,7 @@ abstract class AbstractController
      *
      * @return array
      */
-    abstract protected function getCaptureOptions();
+    abstract protected function getDoneOptions();
 
     /**
      * Returns the after done url.

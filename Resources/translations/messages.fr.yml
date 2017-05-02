@@ -110,7 +110,16 @@ ekyna_commerce:
             delivery: Livraison
             comment: Commentaire
             place_order: Commander
-
+        payment:
+            grand_total: |
+                Montant de votre panier : <strong>%amount%</strong>
+            remaining_amount: |
+                Reste à régler : <strong>%amount%</strong>
+            available_fund: |
+                Fonds disponibles : <strong>%amount%</strong>
+            insuffisant_fund: |
+                Vous avez utilisé la totalité de cotre encours client.<br> Rendez-vous
+                dans votre espace client pour régler les factures échues ou non réglées.
     country:
         label:
             singular: Pays
@@ -172,7 +181,8 @@ ekyna_commerce:
             parent: Comptabilité
             children: Commerciaux
             outstanding_limit: Limite d'encours
-            outstanding_balance: Encours utilisé
+            outstanding_balance: Solde d'encours
+            credit_balance: Solde avoirs
         alert:
             no_item: Aucun client configuré
 
@@ -280,7 +290,6 @@ ekyna_commerce:
             new: Création
             pending: En attente
             refused: Refusée
-            outstanding: Impayé
             accepted: Acceptée
             completed: Complétée
             refunded: Remboursée
@@ -363,6 +372,9 @@ ekyna_commerce:
             refunded:
                 label: Remboursé
                 message: Votre paiement est remboursé.
+            outstanding:
+                label: Impayé
+                message: La date limite d'utilisation de votre encours est passée.
             suspended:
                 label: Suspendu
                 message: Votre paiement est supendu.
@@ -404,7 +416,7 @@ ekyna_commerce:
             new: Nouveau mode
             edit: Modifier le mode
             remove: Supprimer le mode
-            choose: Je choisi de régler par %gateway_name%
+            choose: Régler par %gateway_name%
         field:
             factory_name: Passerelle
             available: Partie publique
@@ -563,7 +575,7 @@ ekyna_commerce:
             tax_total: Total TVA
             adjustment_total: Total remises
             paid_total: Total réglé
-            outstanding_amount: Encours utilisé
+            outstanding_limit: Limite d'encours
             outstanding_date: Dale limite
             voucher_number: N° bon d'achat
             origin_number: N° d'origine

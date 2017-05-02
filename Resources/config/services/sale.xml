@@ -5,7 +5,7 @@
 
     <services>
 
-        <!-- TODO rename with dots : sale_factory => sale.factory -->
+        <!-- TODO rename with dots ? (sale_factory => sale.factory) -->
 
         <!-- Sale factory -->
         <service id="ekyna_commerce.sale_factory"
@@ -30,7 +30,7 @@
             <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
             <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
             <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
-            <argument type="service" id="ekyna_commerce.customer.updater"/>
+            <argument type="service" id="ekyna_commerce.payment.outstanding_releaser"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 

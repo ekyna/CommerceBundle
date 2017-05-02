@@ -50,11 +50,10 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
      * Transforms a cart to an order.
      *
      * @param CartInterface $cart
-     * @param bool          $remove Whether or not to remove the cart.
      *
      * @return OrderInterface
      */
-    public function transformCartToOrder(CartInterface $cart, $remove = false)
+    public function transformCartToOrder(CartInterface $cart)
     {
         $order = $this->orderRepository->createNew();
 
@@ -65,9 +64,6 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
         $this->disableListeners();
 
         $this->manager->persist($order);
-        if ($remove) {
-            $this->manager->remove($cart);
-        }
         $this->manager->flush();
 
         $this->enableListeners();

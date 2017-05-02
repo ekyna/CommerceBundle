@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
+use Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +24,11 @@ class CheckoutController extends AbstractController
     protected $stepValidator;
 
     /**
+     * @var PaymentManager
+     */
+    protected $paymentCheckout;
+
+    /**
      * @var OrderRepositoryInterface
      */
     protected $orderRepository;
@@ -33,14 +38,17 @@ class CheckoutController extends AbstractController
      * Constructor.
      *
      * @param SaleStepValidatorInterface $stepValidator
-     * @param OrderRepositoryInterface $orderRepository
+     * @param OrderRepositoryInterface   $orderRepository
+     * @param PaymentManager             $paymentCheckout
      */
     public function __construct(
         SaleStepValidatorInterface $stepValidator,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        PaymentManager $paymentCheckout
     ) {
         $this->stepValidator = $stepValidator;
         $this->orderRepository = $orderRepository;
+        $this->paymentCheckout = $paymentCheckout;
     }
 
     /**
@@ -65,8 +73,8 @@ class CheckoutController extends AbstractController
             $saleHelper = $this->getSaleHelper();
 
             $saleForm = $saleHelper->createQuantitiesForm($cart, [
-                'method' => 'post',
-                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
+                'method'            => 'post',
+                'action'            => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
                 'validation_groups' => ['checkout'], // TODO
             ]);
 
@@ -173,31 +181,20 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
         }
 
-        $payment = $this
-            ->getSaleFactory()
-            ->createPaymentForSale($cart);
+        $this->paymentCheckout->initialize($cart);
 
-        $form = $this
-            ->getFormFactory()
-            ->create(CartPaymentType::class, $payment, [
-                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_payment'),
-                'method' => 'POST',
-            ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        if (null !== $payment = $this->paymentCheckout->handleRequest($request)) {
             $cart->addPayment($payment);
             $this->saveCart();
 
-            return $this->redirect($this->generateUrl('ekyna_commerce_payment_cart_prepare', [
+            return $this->redirect($this->generateUrl('ekyna_commerce_payment_cart_capture', [
                 'key' => $payment->getKey(),
             ]));
         }
 
         return $this->render('EkynaCommerceBundle:Cart/Checkout:payment.html.twig', [
-            'cart' => $cart,
-            'form' => $form->createView(),
+            'cart'  => $cart,
+            'forms' => $this->paymentCheckout->getFormsViews(),
         ]);
     }
 
@@ -219,7 +216,7 @@ class CheckoutController extends AbstractController
         $orderCustomer = $order->getCustomer();
         $currentCustomer = $this->getCustomer();
 
-        if ($orderCustomer && $currentCustomer && $orderCustomer != $currentCustomer) {
+        if ($orderCustomer && $currentCustomer && $orderCustomer !== $currentCustomer) {
             throw new AccessDeniedHttpException();
         }
 

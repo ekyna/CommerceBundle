@@ -120,6 +120,7 @@
                  parent="ekyna_commerce.controller.cart.abstract">
             <argument type="service" id="ekyna_commerce.sale_step_validator"/>
             <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.checkout.payment_manager"/>
         </service>
 
     </services>

@@ -55,13 +55,14 @@ class PaymentType extends ResourceFormType
             /** @var \Ekyna\Component\Commerce\Payment\Entity\AbstractPayment $payment */
             $payment = $event->getData();
 
+            $adminMode = $options['admin_mode'];
             /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
             $currency = null !== $payment ? $payment->getCurrency() : null;
             /** @var \Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod $method */
             $method = null !== $payment ? $payment->getMethod() : null;
 
-            $adminMode = $options['admin_mode'];
-            $lockedAmount = (null !== $payment) && ($payment->getState() !== States::STATE_NEW);
+            $lockedMethod = (null !== $method) && ($method->getFactoryName() !== 'offline');
+            $lockedAmount = $lockedMethod || (null !== $payment && $payment->getState() !== States::STATE_NEW);
 
             $form->add('amount', MoneyType::class, [
                 'label'    => 'ekyna_core.field.amount',
@@ -70,7 +71,6 @@ class PaymentType extends ResourceFormType
             ]);
 
             if ($adminMode) {
-                $lockedMethod = (null !== $method) && ($method->getFactoryName() !== 'offline');
                 $lockedCurrency = null !== $currency;
 
                 $form

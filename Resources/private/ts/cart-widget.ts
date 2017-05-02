@@ -63,7 +63,7 @@ class CartWidget {
 
         //this.toggleClickHandler = _.bind(this.onToggleClick, this);
         this.contentShowHandler = _.bind(this.onContentShow, this);
-        this.modalLinkClickHandler = _.bind(this.onModalLinkClick, this);
+        //this.modalLinkClickHandler = _.bind(this.onModalLinkClick, this);
 
         Dispatcher.on('ekyna_commerce.sale_view_response', () => {
             this.$content.empty();
@@ -82,7 +82,7 @@ class CartWidget {
         //this.$toggle.on('click', this.toggleClickHandler);
         this.$widget.on('show.bs.dropdown', this.contentShowHandler);
 
-        $(document).on('click', '[data-cart-modal]', this.modalLinkClickHandler);
+        //$(document).on('click', '[data-cart-modal]', this.modalLinkClickHandler);
 
         return this;
     }
@@ -97,17 +97,17 @@ class CartWidget {
         //this.$toggle.off('click', this.toggleClickHandler);
         this.$widget.off('show.bs.dropdown', this.contentShowHandler);
 
-        $(document).off('click', '[data-cart-modal]', this.modalLinkClickHandler);
+        //$(document).off('click', '[data-cart-modal]', this.modalLinkClickHandler);
 
         return this;
     }
 
     /*onToggleClick(e:JQueryEventObject):void {
-     e.preventDefault();
+        e.preventDefault();
 
-     this.$toggle.dropdown('toggle');
+        this.$toggle.dropdown('toggle');
 
-     return false;
+        return false;
      }*/
 
     onContentShow():void {
@@ -116,7 +116,7 @@ class CartWidget {
         }
     }
 
-    onModalLinkClick(clickEvent:JQueryEventObject):boolean {
+    /*onModalLinkClick(clickEvent:JQueryEventObject):boolean {
         clickEvent.preventDefault();
 
         let modal:Ekyna.Modal = new Modal();
@@ -141,7 +141,7 @@ class CartWidget {
         });
 
         return false;
-    }
+    }*/
 
     loadContent():void {
         this.$content.loadingSpinner('on');

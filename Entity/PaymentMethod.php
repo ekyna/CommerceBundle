@@ -4,6 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Entity;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\MediaBundle\Model\MediaSubjectTrait;
+use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
+use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Payment\Entity\PaymentMethod as BaseMethod;
 
 /**
@@ -109,5 +111,21 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     public function isManual()
     {
         return $this->getFactoryName() === 'offline';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isCredit()
+    {
+        return $this->getFactoryName() === Credit::FACTORY_NAME;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isOutstanding()
+    {
+        return $this->getFactoryName() === Outstanding::FACTORY_NAME;
     }
 }

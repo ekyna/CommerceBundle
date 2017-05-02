@@ -88,20 +88,36 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     }
 
     /**
-     * Initializes the cart regarding to the session data.
+     * Initializes the cart regarding to the session data or the current customer.
      */
     protected function initialize()
     {
         if (!$this->initialized) {
             $this->initialized = true;
 
+            // By session id
             if (0 < $id = intval($this->session->get($this->key, 0))) {
                 if (null !== $cart = $this->cartRepository->findOneById($id)) {
                     $this->setCart($cart);
-                } else {
-                    $this->clearCart();
+
+                    return;
                 }
             }
+
+            // By customer
+            if ($this->customerProvider->hasCustomer()) {
+                /** @var \Ekyna\Component\Commerce\Cart\Model\CartInterface $cart */
+                $cart = $this->cartRepository->findLatestByCustomer(
+                    $this->customerProvider->getCustomer()
+                );
+                if (null !== $cart) {
+                    $this->setCart($cart);
+
+                    return;
+                }
+            }
+
+            $this->clearCart();
         }
     }
 }

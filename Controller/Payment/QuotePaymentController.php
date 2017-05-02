@@ -49,7 +49,7 @@ final class QuotePaymentController extends AbstractController
     /**
      * @inheritDoc
      */
-    protected function getCaptureOptions()
+    protected function getDoneOptions()
     {
         return [
             'route' => 'ekyna_commerce_payment_quote_done',
@@ -59,7 +59,7 @@ final class QuotePaymentController extends AbstractController
     /**
      * @inheritDoc
      */
-    protected function redirectAfterDoneUrl(Request $request, PaymentInterface $payment)
+    protected function afterDone(Request $request, PaymentInterface $payment)
     {
         return $this->generateUrl('ekyna_commerce_quote_checkout_confirmation');
     }

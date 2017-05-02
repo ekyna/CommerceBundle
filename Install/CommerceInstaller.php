@@ -6,6 +6,8 @@ use Ekyna\Bundle\InstallBundle\Install\AbstractInstaller;
 use Ekyna\Bundle\InstallBundle\Install\OrderedInstallerInterface;
 use Ekyna\Bundle\MediaBundle\Model\FolderInterface;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
+use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
+use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Install\Installer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -125,16 +127,16 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $imageDir = realpath(__DIR__ . '/../Resources/install/payment-method');
 
         $methods = [
-            'Chèque'   => [
-                'factory'     => 'offline',
-                'image'       => 'cheque.png',
-                'description' => '<p>Veuillez adresser votre chèque à l\'ordre de ...</p>',
+            'Solde de compte client' => [
+                'factory'     => Credit::FACTORY_NAME,
+                'image'       => 'virement.png',
+                'description' => '<p>Utilisez votre solde de compte client ...</p>',
                 'enabled'     => true,
             ],
-            'Virement' => [
-                'factory'     => 'offline',
+            'Encours client' => [
+                'factory'     => Outstanding::FACTORY_NAME,
                 'image'       => 'virement.png',
-                'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
+                'description' => '<p>Utilisez votre encours client ...</p>',
                 'enabled'     => true,
             ],
             /*'Paypal'   => [
@@ -161,6 +163,21 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             }
         }
 
+        $methods = array_merge($methods, [
+            'Virement' => [
+                'factory'     => 'offline',
+                'image'       => 'virement.png',
+                'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
+                'enabled'     => true,
+            ],
+            'Chèque'   => [
+                'factory'     => 'offline',
+                'image'       => 'cheque.png',
+                'description' => '<p>Veuillez adresser votre chèque à l\'ordre de ...</p>',
+                'enabled'     => true,
+            ],
+        ]);
+
         $position = 0;
         foreach ($methods as $name => $options) {
             $output->write(sprintf(
@@ -180,7 +197,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             if (!file_exists($source)) {
                 throw new \Exception(sprintf('File "%s" does not exists.', $source));
             }
-            $target = sys_get_temp_dir() . '/' . $options['image'];
+            $target = sys_get_temp_dir() . '/' . uniqid() . '.' . pathinfo($options['image'], PATHINFO_EXTENSION);
             if (!copy($source, $target)) {
                 throw new \Exception(sprintf('Failed to copy "%s" into "%s".', $source, $target));
             }
@@ -276,14 +293,14 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             /** @var \Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod $method */
             $method = $methodRepository->createNew();
             $method
+                ->setTaxGroup($defaultTaxGroup)
                 ->setMedia($image)
                 ->setName($name)
-                ->setTaxGroup($defaultTaxGroup)
-                ->setTitle($name)
-                ->setDescription($options['description'])
                 ->setEnabled($options['enabled'])
                 ->setAvailable(true)
-                ->setPosition($position);
+                ->setPosition($position)
+                ->setTitle($name)
+                ->setDescription($options['description']);
 
             $em->persist($method);
 

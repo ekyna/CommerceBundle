@@ -24,7 +24,7 @@ class NotifyPaymentAction extends AbstractPaymentStateAwareAction
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
-        /** @var $payment PaymentInterface */
+        /** @var PaymentInterface $payment */
         $payment = $request->getModel();
 
         $this->gateway->execute(new Sync($payment));

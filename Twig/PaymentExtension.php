@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Common\Model\MessageInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Payment\Util\PaymentUtil;
 
 /**
  * Class PaymentExtension
@@ -55,6 +56,19 @@ class PaymentExtension extends \Twig_Extension
                 'payment_method_config',
                 [$this, 'renderMethodConfig'],
                 ['is_safe' => ['html']]
+            ),
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTests()
+    {
+        return [
+            new \Twig_SimpleTest(
+                'payment_user_cancellable',
+                [PaymentUtil::class, 'isUserCancellable']
             ),
         ];
     }

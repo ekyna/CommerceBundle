@@ -1,7 +1,14 @@
-ekyna_commerce_payment_cart_prepare:
-    path: /prepare/{key}
+ekyna_commerce_payment_cart_capture:
+    path: /capture/{key}
     defaults:
-        _controller: ekyna_commerce.payment.cart_controller:prepareAction
+        _controller: ekyna_commerce.payment.cart_controller:captureAction
+    requirements:
+        key: "[a-zA-Z0-9]+"
+
+ekyna_commerce_payment_cart_cancel:
+    path: /cancel/{key}
+    defaults:
+        _controller: ekyna_commerce.payment.cart_controller:cancelAction
     requirements:
         key: "[a-zA-Z0-9]+"
 

@@ -61,8 +61,8 @@
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.outstandingAmount|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_amount', {
-            'id': 'sale_outstandingAmount',
+        {{ show_row(sale.outstandingLimit|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_limit', {
+            'id': 'sale_outstandingLimit',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}

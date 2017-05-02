@@ -65,8 +65,8 @@ class CustomerType extends ResourceTableType
                 'route_parameters_map' => ['customerGroupId' => 'customerGroup.id'],
                 'position'             => 50,
             ])
-            ->addColumn('outstandingLimit', 'number', [
-                'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+            ->addColumn('balanceFloor', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.balance_floor',
                 'sortable' => false,
                 'position' => 60,
             ])
@@ -117,8 +117,8 @@ class CustomerType extends ResourceTableType
                 'property' => 'name',
                 'position' => 50,
             ])
-            ->addFilter('outstandingLimit', 'number', [
-                'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+            ->addFilter('balanceFloor', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.balance_floor',
                 'position' => 60,
             ])
             ->addFilter('createdAt', 'datetime', [

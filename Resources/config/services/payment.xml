@@ -13,6 +13,12 @@
             <argument>10</argument>
         </service>
 
+        <!-- Payment outstanding releaser -->
+        <service id="ekyna_commerce.payment.outstanding_releaser"
+                 class="Ekyna\Component\Commerce\Payment\Releaser\OutstandingReleaser">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+        </service>
+
         <!-- Payment abstract listener -->
         <service id="ekyna_commerce.payment.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
@@ -24,6 +30,24 @@
             <call method="setKeyGenerator">
                 <argument type="service" id="ekyna_commerce.common.key_generator"/>
             </call>
+            <call method="setCustomerUpdater">
+                <argument type="service" id="ekyna_commerce.customer.updater"/>
+            </call>
+        </service>
+
+        <!-- Payment checkout builder -->
+        <service id="ekyna_commerce.checkout.payment_manager"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager">
+            <argument type="service" id="ekyna_commerce.payment_method.repository"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <!-- Payment checkout event subscriber -->
+        <service id="ekyna_commerce.checkout.payment_event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CheckoutPaymentEventSubscriber">
+            <argument type="service" id="form.factory"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
         <!-- Payment controllers -->
@@ -42,6 +66,9 @@
             </call>
             <call method="setSaleTransformer">
                 <argument type="service" id="ekyna_commerce.sale_transformer"/>
+            </call>
+            <call method="setCartProvider">
+                <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             </call>
         </service>
         <service id="ekyna_commerce.payment.quote_controller"
@@ -66,52 +93,68 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Payum Customer Credit Balance gateway -->
+        <!--<service id="ekyna_commerce.payum.gateway_factory.credit_balance"
+                 class="Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\CreditGatewayFactory">
+            <tag name="payum.gateway_factory_builder" factory="credit_balance"/>
+        </service>-->
+
+        <!-- Payum Customer Outstanding Balance gateway -->
+        <!--<service id="ekyna_commerce.payum.gateway_factory.outstanding_balance"
+                 class="Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\OutstandingGatewayFactory">
+            <tag name="payum.gateway_factory_builder" factory="outstanding_balance"/>
+        </service>-->
+
         <!-- Payum Sips actions -->
         <service id="ekyna_commerce.payum.action.sips.convert_payment"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Sips\ConvertPaymentAction">
-            <tag name="payum.action" factory="atos_sips" prepend="true" />
+            <tag name="payum.action" factory="atos_sips" prepend="true"/>
         </service>
 
         <!-- Payum Payzen actions -->
         <service id="ekyna_commerce.payum.action.payzen.convert_payment"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Payzen\ConvertPaymentAction">
-            <tag name="payum.action" factory="payzen" prepend="true" />
+            <tag name="payum.action" factory="payzen" prepend="true"/>
         </service>
 
         <!-- Payum Offline actions -->
-        <service id="ekyna_commerce.payum.action.offline.capture"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Offline\CaptureAction">
-            <tag name="payum.action" factory="offline" gateway="offline" prepend="true" />
-        </service>
         <service id="ekyna_commerce.payum.action.offline.sync"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Offline\SyncAction">
-            <tag name="payum.action" factory="offline" gateway="offline" prepend="true" />
+            <tag name="payum.action" factory="offline" gateway="offline" prepend="true"/>
+        </service>
+        <service id="ekyna_commerce.payum.action.offline.cancel"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Offline\CancelAction">
+            <tag name="payum.action" factory="offline" gateway="offline" prepend="true"/>
+        </service>
+        <service id="ekyna_commerce.payum.action.offline.capture"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Offline\CaptureAction">
+            <tag name="payum.action" factory="offline" gateway="offline" prepend="true"/>
         </service>
 
         <!-- Payum actions -->
         <service id="ekyna_commerce.payum.action.capture_payment"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\CapturePaymentAction">
-            <tag name="payum.action" all="true" prepend="true" />
+            <tag name="payum.action" all="true" prepend="true"/>
         </service>
         <!-- TODO
         Register theses actions through PayumBuilder method calls,
         instead of defining services (if there is no dependency)
         -->
-        <service id="ekyna_commerce.payum.action.abstract_action" abstract="true" /><!-- TODO Remove if no DI -->
-        <service id="ekyna_commerce.payum.action.done_payment"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\DonePaymentAction"
+        <service id="ekyna_commerce.payum.action.abstract_action" abstract="true"/>
+        <service id="ekyna_commerce.payum.action.sync_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\SyncPaymentAction"
                  parent="ekyna_commerce.payum.action.abstract_action">
-            <tag name="payum.action" all="true" prepend="true" />
+            <tag name="payum.action" all="true" prepend="true"/>
         </service>
         <service id="ekyna_commerce.payum.action.notify_payment"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\NotifyPaymentAction"
                  parent="ekyna_commerce.payum.action.abstract_action">
-            <tag name="payum.action" all="true" prepend="true" />
+            <tag name="payum.action" all="true" prepend="true"/>
         </service>
-        <service id="ekyna_commerce.payum.action.sync_payment"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\SyncPaymentAction"
+        <service id="ekyna_commerce.payum.action.done_payment"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\DonePaymentAction"
                  parent="ekyna_commerce.payum.action.abstract_action">
-            <tag name="payum.action" all="true" prepend="true" />
+            <tag name="payum.action" all="true" prepend="true"/>
         </service>
 
     </services>

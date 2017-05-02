@@ -17,9 +17,8 @@ interface SaleTransformerInterface extends BaseInterface
      * Transforms a cart to an order.
      *
      * @param CartInterface $cart
-     * @param bool          $remove Whether or not to remove the cart.
      *
      * @return OrderInterface
      */
-    public function transformCartToOrder(CartInterface $cart, $remove = false);
+    public function transformCartToOrder(CartInterface $cart);
 }

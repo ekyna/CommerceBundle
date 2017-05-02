@@ -40,6 +40,12 @@ class OrderEventSubscriber extends BaseSubscriber
      */
     public function onContentChange(ResourceEventInterface $event)
     {
+        parent::onContentChange($event);
+
+        if ($event->isPropagationStopped()) {
+            return;
+        }
+
         /** @var OrderInterface $sale */
         $sale = $this->getSaleFromEvent($event);
 
@@ -53,8 +59,6 @@ class OrderEventSubscriber extends BaseSubscriber
         if ($changed) {
             $this->persistenceHelper->persistAndRecompute($sale, false);
         }
-
-        parent::onContentChange($event);
     }
 
     /**

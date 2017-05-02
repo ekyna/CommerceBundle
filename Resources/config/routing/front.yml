@@ -1,14 +1,5 @@
-payum_capture:
-    resource: "@PayumBundle/Resources/config/routing/capture.xml"
-    options: { i18n: false }
-
-payum_authorize:
-    resource: "@PayumBundle/Resources/config/routing/authorize.xml"
-    options: { i18n: false }
-
-payum_notify:
-    resource: "@PayumBundle/Resources/config/routing/notify.xml"
-    options: { i18n: false }
+ekyna_commerce_payum:
+    resource: "front/payum.yml"
 
 ekyna_commerce_payment:
     resource: "front/payment.yml"

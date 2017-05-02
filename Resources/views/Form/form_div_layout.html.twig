@@ -151,6 +151,66 @@
 {% endblock ekyna_commerce_adjustment_widget %}
 
 
+{% block ekyna_commerce_checkout_payment_widget %}
+{% spaceless %}
+    <div class="row">
+        <div class="col-sm-3 hidden-xs">
+            {{ block('ekyna_commerce_checkout_payment_image') }}
+        </div>
+        <div class="col-sm-9 commerce-payment-method">
+            <p>{{ payment.method.title }}</p>
+            {{ payment.method.description|raw }}
+
+            {{ form_row(form.submit) }}
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_checkout_payment_widget %}
+
+
+{% block ekyna_commerce_checkout_balance_payment_widget %}
+{% spaceless %}
+    <div class="row">
+        <div class="col-sm-3 hidden-xs">
+            {{ block('ekyna_commerce_checkout_payment_image') }}
+        </div>
+        <div class="col-sm-9 commerce-payment-method">
+            <p>{{ payment.method.title }}</p>
+            {{ payment.method.description|raw }}
+
+            {% if 0 >= available_amount %}
+                <div class="alert alert-danger">
+                    {{ 'ekyna_commerce.checkout.payment.insuffisant_fund'|trans|raw }}
+                </div>
+            {% else %}
+                <p>
+                    {{ 'ekyna_commerce.checkout.payment.available_fund'|trans({
+                        '%amount%': available_amount|localizedcurrency(currency_code)
+                    })|raw }}
+                </p>
+                {{ form_row(form.amount) }}
+            {% endif %}
+
+            {{ form_row(form.submit) }}
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_checkout_balance_payment_widget %}
+
+
+{% block ekyna_commerce_checkout_payment_image %}
+{% spaceless %}
+    {% if payment.method.media is not same as (null) %}
+        <img src="{{ payment.method.media.path|imagine_filter('commerce_method') }}"
+             alt="{{ payment.method.media.title }}" class="img-responsive">
+    {% else %}
+        <img src="{{ asset(default_image_path) }}" alt="{{ default_image_alt|trans }}"
+             class="img-responsive">
+    {% endif %}
+{% endspaceless %}
+{% endblock ekyna_commerce_checkout_payment_image %}
+
+
 {% block ekyna_commerce_identity_widget %}
 {% spaceless %}
     <div class="input-group commerce-identity">
@@ -196,7 +256,7 @@
 {% endblock ekyna_commerce_messages_widget %}
 
 
-{% block ekyna_commerce_payment_method_choice_widget %}
+{#{% block ekyna_commerce_payment_method_choice_widget %}
 {% spaceless %}
     {% with %}
     {% set button_message = 'ekyna_commerce.payment_method.button.choose' %}
@@ -206,7 +266,7 @@
     {{ block('ekyna_commerce_method_choice_widget') }}
     {% endwith %}
 {% endspaceless %}
-{% endblock ekyna_commerce_payment_method_choice_widget %}
+{% endblock ekyna_commerce_payment_method_choice_widget %}#}
 
 
 {% block ekyna_commerce_shipment_method_choice_widget %}

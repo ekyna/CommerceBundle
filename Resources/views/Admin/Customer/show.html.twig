@@ -112,31 +112,43 @@
                 }) }}
                 <hr>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         {{ show_row(customer.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
                             'id': 'customer_payment_term',
                             'route': 'ekyna_commerce_payment_term_admin_show',
                             'route_params_map': {'paymentTermId': 'id'},
-                            'label_nb_col': 6,
-                            'widget_nb_col': 6
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
                         }) }}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         {{ show_row(customer.outstandingLimit, 'number', 'ekyna_commerce.customer.field.outstanding_limit', {
                             'id': 'customer_outstanding_limit',
                             'precision': 2,
-                            'label_nb_col': 6,
-                            'widget_nb_col': 6,
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
                             'append': ' €'
                         }) }}
                         {# TODO € => default currency ? #}
                     </div>
-                    <div class="col-md-4">
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customer.creditBalance, 'number', 'ekyna_commerce.customer.field.credit_balance', {
+                            'id': 'customer_credit_balance',
+                            'precision': 2,
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
+                            'append': ' €'
+                        }) }}
+                        {# TODO € => default currency ? #}
+                    </div>
+                    <div class="col-md-6">
                         {{ show_row(customer.outstandingBalance, 'number', 'ekyna_commerce.customer.field.outstanding_balance', {
                             'id': 'customer_outstanding_balance',
                             'precision': 2,
-                            'label_nb_col': 6,
-                            'widget_nb_col': 6,
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8,
                             'append': ' €'
                         }) }}
                         {# TODO € => default currency ? #}
