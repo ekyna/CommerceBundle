@@ -30,14 +30,14 @@
 
         <!-- Cart view vars builder -->
         <service id="ekyna_commerce.cart.view_type"
-                 class="%ekyna_commerce.cart.view_type.class%"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewType"
                  parent="ekyna_commerce.abstract_view_type">
             <tag name="ekyna_commerce.view_type"/>
         </service>
 
         <!-- Order view vars builder -->
         <service id="ekyna_commerce.order.view_type"
-                 class="%ekyna_commerce.order.view_type.class%"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewType"
                  parent="ekyna_commerce.abstract_view_type">
             <call method="setStockRenderer">
                 <argument type="service" id="ekyna_commerce.stock.stock_renderer"/>
@@ -47,7 +47,7 @@
 
         <!-- Quote view vars builder -->
         <service id="ekyna_commerce.quote.view_type"
-                 class="%ekyna_commerce.quote.view_type.class%"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewType"
                  parent="ekyna_commerce.abstract_view_type">
             <tag name="ekyna_commerce.view_type"/>
         </service>

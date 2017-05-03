@@ -7,7 +7,6 @@
         <parameter key="ekyna_commerce.order_address.class">Ekyna\Component\Commerce\Order\Entity\OrderAddress</parameter>
         <parameter key="ekyna_commerce.order_item_adjustment.class">Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment</parameter>
         <parameter key="ekyna_commerce.order_shipment_item.class">Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem</parameter>
-        <parameter key="ekyna_commerce.order.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Order\OrderViewType</parameter>
     </parameters>
 
     <services>

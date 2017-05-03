@@ -7,7 +7,6 @@
     <parameters>
         <parameter key="ekyna_commerce.quote_address.class">Ekyna\Component\Commerce\Quote\Entity\QuoteAddress</parameter>
         <parameter key="ekyna_commerce.quote_item_adjustment.class">Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.quote.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewType</parameter>
     </parameters>
 
     <services>

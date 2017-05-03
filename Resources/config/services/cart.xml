@@ -7,7 +7,6 @@
     <parameters>
         <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
         <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
-        <parameter key="ekyna_commerce.cart.view_type.class">Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewType</parameter>
     </parameters>
 
     <services>
