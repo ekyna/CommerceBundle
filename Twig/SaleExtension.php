@@ -131,7 +131,7 @@ class SaleExtension extends \Twig_Extension
     public function isSaleStockableSale(SaleInterface $sale)
     {
         if ($sale instanceof OrderInterface) {
-            return OrderStates::isStockableState($sale);
+            return OrderStates::isStockableState($sale->getState());
         }
 
         return false;

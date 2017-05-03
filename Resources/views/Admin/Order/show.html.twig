@@ -48,6 +48,11 @@
             </a>
         </li>
         <li>
+            <a href="#order-credits" id="toggle-credits" data-toggle="tab">
+                {{ 'ekyna_commerce.credit.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
             <a href="#order-shipments" id="toggle-shipments" data-toggle="tab">
                 {{ 'ekyna_commerce.shipment.label.plural'|trans }}
             </a>
@@ -101,6 +106,16 @@
                     {{ 'ekyna_commerce.payment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': order} %}
+            </div>
+            <div class="tab-pane" id="order-credits">
+                <h4 class="sub-header">
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_credit', 'new', {'orderId': order.id}) }}"
+                       class="btn btn-success btn-xs pull-right">
+                        {{ 'ekyna_commerce.credit.button.new'|trans }}
+                    </a>
+                    {{ 'ekyna_commerce.credit.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_credits.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-shipments">
                 <h4 class="sub-header">

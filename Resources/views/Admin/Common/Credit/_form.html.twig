@@ -1,0 +1,11 @@
+<div class="form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.number) }}
+    {{ form_row(form.items) }}
+    {{ form_row(form.description) }}
+
+    {{ form_rest(form) }}
+</div>

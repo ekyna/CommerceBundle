@@ -5,6 +5,7 @@
 
     <imports>
         <import resource="services/cart.xml"/>
+        <import resource="services/credit.xml"/>
         <import resource="services/customer.xml"/>
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>

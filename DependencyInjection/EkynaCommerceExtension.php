@@ -45,15 +45,21 @@ class EkynaCommerceExtension extends AbstractExtension
                 Order\Model\OrderInterface::class => '%ekyna_commerce.order_address.class%',
                 Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_address.class%',
             ],
-            'item'            => [
-                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_item.class%',
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_item.class%',
-                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_item.class%',
-            ],
             'adjustment'      => [
                 Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_adjustment.class%',
                 Order\Model\OrderInterface::class => '%ekyna_commerce.order_adjustment.class%',
                 Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_adjustment.class%',
+            ],
+            'credit'          => [
+                Order\Model\OrderInterface::class => '%ekyna_commerce.order_credit.class%',
+            ],
+            'credit_item'     => [
+                Order\Model\OrderCreditInterface::class => '%ekyna_commerce.order_credit_item.class%',
+            ],
+            'item'            => [
+                Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_item.class%',
+                Order\Model\OrderInterface::class => '%ekyna_commerce.order_item.class%',
+                Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_item.class%',
             ],
             'item_adjustment' => [
                 Cart\Model\CartItemInterface::class   => '%ekyna_commerce.cart_item_adjustment.class%',
@@ -68,7 +74,7 @@ class EkynaCommerceExtension extends AbstractExtension
             'shipment'        => [
                 Order\Model\OrderInterface::class => '%ekyna_commerce.order_shipment.class%',
             ],
-            'shipment_item'        => [
+            'shipment_item'   => [
                 Order\Model\OrderShipmentInterface::class => '%ekyna_commerce.order_shipment_item.class%',
             ],
         ]);

@@ -8,11 +8,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class SaleShipmentController
+ * Class SaleCreditController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Admin
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleShipmentController extends AbstractSaleController
+class SaleCreditController extends AbstractSaleController
 {
     /**
      * @inheritdoc
@@ -50,20 +50,18 @@ class SaleShipmentController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-        $shipment = $this->createNew($context);
-        if ($request->query->get('return', 0)) {
-            $shipment->setReturn(true);
+        /** @var \Ekyna\Component\Commerce\Credit\Model\CreditInterface $credit */
+        $credit = $this->createNew($context);
+        if (0 < $shipmentId = $request->query->get('shipmentId', 0)) {
+            // TODO find and assign shipment
         }
 
-        $sale = $shipment->getSale();
+        $sale = $credit->getSale();
 
-        $context->addResource($resourceName, $shipment);
+        $context->addResource($resourceName, $credit);
 
         $form = $this->createNewResourceForm($context, !$isXhr, [
-            'action' => $this->generateResourcePath($shipment, 'new', [
-                'return' => $shipment->isReturn() ? 1 : 0,
-            ]),
+            'action' => $this->generateResourcePath($credit, 'new'),
             'attr'   => [
                 'class' => 'form-horizontal',
             ],
@@ -73,7 +71,7 @@ class SaleShipmentController extends AbstractSaleController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->create($shipment);
+            $event = $this->getOperator()->create($credit);
 
             if ($event->hasErrors()) {
                 foreach ($event->getErrors() as $error) {
@@ -90,10 +88,8 @@ class SaleShipmentController extends AbstractSaleController
             return $this->redirect($this->generateResourcePath($sale));
         }
 
-        $labelName = $shipment->isReturn() ? 'return' : 'shipment';
-
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.' . $labelName . '.header.new');
+            $modal = $this->createModal('new', 'ekyna_commerce.credit.header.new');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -103,7 +99,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_new', $resourceName),
-            'ekyna_commerce.' . $labelName . '.button.new'
+            'ekyna_commerce.credit.button.new'
         );
 
         return $this->render(
@@ -122,10 +118,10 @@ class SaleShipmentController extends AbstractSaleController
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-        $shipment = $context->getResource($resourceName);
+        /** @var \Ekyna\Component\Commerce\Credit\Model\CreditInterface $credit */
+        $credit = $context->getResource($resourceName);
 
-        $this->isGranted('EDIT', $shipment);
+        $this->isGranted('EDIT', $credit);
 
         $isXhr = $request->isXmlHttpRequest();
 
@@ -142,7 +138,7 @@ class SaleShipmentController extends AbstractSaleController
             $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
             // TODO use ResourceManager
-            $event = $this->getOperator()->update($shipment);
+            $event = $this->getOperator()->update($credit);
 
             if ($event->hasErrors()) {
                 foreach ($event->getErrors() as $error) {
@@ -159,10 +155,8 @@ class SaleShipmentController extends AbstractSaleController
             return $this->redirect($this->generateResourcePath($sale));
         }
 
-        $labelName = $shipment->isReturn() ? 'return' : 'shipment';
-
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.' . $labelName . '.header.edit');
+            $modal = $this->createModal('new', 'ekyna_commerce.credit.header.edit');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -172,7 +166,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_edit', $resourceName),
-            'ekyna_commerce.' . $labelName . '.button.edit'
+            'ekyna_commerce.credit.button.edit'
         );
 
         return $this->render(
@@ -191,10 +185,10 @@ class SaleShipmentController extends AbstractSaleController
         $context = $this->loadContext($request);
 
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-        $shipment = $context->getResource($resourceName);
+        /** @var \Ekyna\Component\Commerce\Credit\Model\CreditInterface $credit */
+        $credit = $context->getResource($resourceName);
 
-        $this->isGranted('DELETE', $shipment);
+        $this->isGranted('DELETE', $credit);
 
         $isXhr = $request->isXmlHttpRequest();
         $form = $this->createRemoveResourceForm($context, null, !$isXhr);
@@ -203,7 +197,7 @@ class SaleShipmentController extends AbstractSaleController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->delete($shipment);
+            $event = $this->getOperator()->delete($credit);
             if (!$isXhr) {
                 $event->toFlashes($this->getFlashBag());
             }
@@ -226,10 +220,8 @@ class SaleShipmentController extends AbstractSaleController
             }
         }
 
-        $labelName = $shipment->isReturn() ? 'return' : 'shipment';
-
         if ($isXhr) {
-            $modal = $this->createModal('remove', 'ekyna_commerce.' . $labelName . '.header.remove');
+            $modal = $this->createModal('remove', 'ekyna_commerce.credit.header.remove');
             $vars = $context->getTemplateVars();
             unset($vars['form_template']);
             $modal
@@ -242,7 +234,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_remove', $resourceName),
-            'ekyna_commerce.' . $labelName . '.button.remove'
+            'ekyna_commerce.credit.button.remove'
         );
 
         return $this->render(

@@ -92,6 +92,20 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Order credit event listener -->
+        <service id="ekyna_commerce.order_credit.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderCreditEventSubscriber"
+                 parent="ekyna_commerce.credit.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Order credit item event listener -->
+        <service id="ekyna_commerce.order_credit_item.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderCreditItemEventSubscriber"
+                 parent="ekyna_commerce.credit_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
     </services>
 
 </container>

@@ -139,6 +139,28 @@ ekyna_commerce:
         alert:
             no_item: Aucun pays configuré
 
+    credit:
+        label:
+            singular: Avoir
+            plural: Avoirs
+        header:
+            new: Créer un nouvel avoir
+            edit: Modifier l'avoir
+            remove: Supprimer l'avoir
+        button:
+            new: Nouvel avoir
+            edit: Modifier l'avoir
+            remove: Supprimer l'avoir
+        message:
+            remove_confirm: Souhaitez-vous réellement supprimer cet avoir ?
+            cant_be_deleted: Cet avoir est valide et ne peut être supprimé.
+        alert:
+            no_item: Aucun avoir configuré
+
+    credit_item:
+        field:
+            available: Disponible
+
     currency:
         label:
             singular: Devise
@@ -310,6 +332,11 @@ ekyna_commerce:
         label:
             singular: Pièce jointe
             plural: Pièce jointes
+
+    order_credit:
+        label:
+            singular: Avoir de commande
+            plural: Avoirs de commande
 
     order_item:
         label:

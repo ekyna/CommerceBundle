@@ -375,6 +375,28 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order_shipment')->end()
                             ->end()
                         ->end()
+                        ->arrayNode('order_credit')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Credit:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Credit:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Credit:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Credit:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderCredit')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleCreditController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderCreditType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('order_credit_item')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderCreditItem')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order_credit')->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('payment_message')
                             ->addDefaultsIfNotSet()
                             ->children()

@@ -12,7 +12,7 @@
 {% endblock actions %}
 
 {% block side %}
-    {% if not shipment.sale is sale_stockable_state %}
+    {% if shipment.sale is not sale_stockable_state %}
     <div class="alert alert-warning">
         {{ 'ekyna_commerce.shipment.message.sale_is_not_stackable'|trans|raw }}
     </div>

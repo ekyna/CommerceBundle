@@ -139,14 +139,16 @@ class OrderViewType extends AbstractViewType
             }
 
             // Edit action
-            $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
-                'orderId'     => $item->getSale()->getId(),
-                'orderItemId' => $item->getId(),
-            ]);
-            $actions[] = new View\Action($editPath, 'fa fa-pencil', [
-                'title'           => 'ekyna_commerce.sale.button.item.edit',
-                'data-sale-modal' => null,
-            ]);
+            if (!$item->hasIdentity()) {
+                $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
+                    'orderId'     => $item->getSale()->getId(),
+                    'orderItemId' => $item->getId(),
+                ]);
+                $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+                    'title'           => 'ekyna_commerce.sale.button.item.edit',
+                    'data-sale-modal' => null,
+                ]);
+            }
 
             // Remove action
             $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [

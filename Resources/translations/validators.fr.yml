@@ -16,6 +16,15 @@ ekyna_commerce:
     payment:
         method:
             not_null: Veuillez choisir un mode de paiement.
+    credit:
+        hierarchy_integrity: |
+            Erreur d'intégrité entre les différents éléments.
+    credit_item:
+        shipment_is_not_return: L'éxpédition liée n'est pas un retour.
+        sale_item_and_shipment_item_miss_match: Les lignes de commande et de retour ne correspondent pas.
+        quantity_is_greater_than_returned: La quantité ne peut pas exceder la quantité retournée (max %max%).
+        sale_and_credit_miss_match: La commande et le retour ne correspondent pas.
+        quantity_is_greater_than_creditable: La quantité ne peut pas exceder la quantité vendue non expédiée (max %max%).
     sale:
         no_customer:
             customer_group_is_required: Le groupe de client est requis si aucun client n'est sélectionné.
@@ -30,7 +39,8 @@ ekyna_commerce:
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
     sale_item:
         tax_group_must_not_be_null: Le groupe de taxe doit être défini.
-        shipment_integrity: Le quantité doit être supérieure ou égale à la quantité expédiée.
+        quantity_is_lower_than_shipped: Le quantité doit être supérieure ou égale à la quantité expédiée (max %max%).
+        quantity_is_lower_than_credited: Le quantité doit être supérieure ou égale à la quantité des avoirs (max %max%).
     subject:
         identity_subject_must_be_selected: Veuillez sélectionner un sujet.
     stock_unit:
