@@ -375,26 +375,26 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order_shipment')->end()
                             ->end()
                         ->end()
-                        ->arrayNode('order_credit')
+                        ->arrayNode('order_invoice')
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Credit:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Credit:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Credit:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Credit:remove.html',
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Invoice:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Invoice:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Invoice:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Invoice:remove.html',
                                 ])->end()
-                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderCredit')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleCreditController')->end()
-                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderCreditType')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderInvoice')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleInvoiceController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
                             ->end()
                         ->end()
-                        ->arrayNode('order_credit_item')
+                        ->arrayNode('order_invoice_line')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderCreditItem')->end()
-                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order_credit')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderInvoiceLine')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.order_invoice')->end()
                             ->end()
                         ->end()
                         ->arrayNode('payment_message')

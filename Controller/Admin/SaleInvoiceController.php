@@ -3,16 +3,19 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class SaleCreditController
+ * Class SaleInvoiceController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Admin
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleCreditController extends AbstractSaleController
+class SaleInvoiceController extends AbstractSaleController
 {
     /**
      * @inheritdoc
@@ -50,18 +53,28 @@ class SaleCreditController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        /** @var \Ekyna\Component\Commerce\Credit\Model\CreditInterface $credit */
-        $credit = $this->createNew($context);
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $this->createNew($context);
+
+        $type = $request->attributes->get('type');
+        if (!InvoiceTypes::isValidType($type)) {
+            throw $this->createNotFoundException("Unexpected type");
+        }
+
+        $invoice->setType($type);
+
         if (0 < $shipmentId = $request->query->get('shipmentId', 0)) {
             // TODO find and assign shipment
         }
 
-        $sale = $credit->getSale();
+        $sale = $invoice->getSale();
 
-        $context->addResource($resourceName, $credit);
+        $context->addResource($resourceName, $invoice);
 
         $form = $this->createNewResourceForm($context, !$isXhr, [
-            'action' => $this->generateResourcePath($credit, 'new'),
+            'action' => $this->generateResourcePath($invoice, 'new', [
+                'type' => $invoice->getType(),
+            ]),
             'attr'   => [
                 'class' => 'form-horizontal',
             ],
@@ -71,7 +84,7 @@ class SaleCreditController extends AbstractSaleController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->create($credit);
+            $event = $this->getOperator()->create($invoice);
 
             if ($event->hasErrors()) {
                 foreach ($event->getErrors() as $error) {
@@ -89,7 +102,7 @@ class SaleCreditController extends AbstractSaleController
         }
 
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.credit.header.new');
+            $modal = $this->createModal('new', 'ekyna_commerce.' . $invoice->getType() . '.header.new');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -99,7 +112,7 @@ class SaleCreditController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_new', $resourceName),
-            'ekyna_commerce.credit.button.new'
+            'ekyna_commerce.' . $invoice->getType() . '.button.new'
         );
 
         return $this->render(
@@ -118,10 +131,10 @@ class SaleCreditController extends AbstractSaleController
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Credit\Model\CreditInterface $credit */
-        $credit = $context->getResource($resourceName);
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $context->getResource($resourceName);
 
-        $this->isGranted('EDIT', $credit);
+        $this->isGranted('EDIT', $invoice);
 
         $isXhr = $request->isXmlHttpRequest();
 
@@ -138,7 +151,7 @@ class SaleCreditController extends AbstractSaleController
             $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
             // TODO use ResourceManager
-            $event = $this->getOperator()->update($credit);
+            $event = $this->getOperator()->update($invoice);
 
             if ($event->hasErrors()) {
                 foreach ($event->getErrors() as $error) {
@@ -156,7 +169,7 @@ class SaleCreditController extends AbstractSaleController
         }
 
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.credit.header.edit');
+            $modal = $this->createModal('new', 'ekyna_commerce.' . $invoice->getType() . '.header.edit');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -166,7 +179,7 @@ class SaleCreditController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_edit', $resourceName),
-            'ekyna_commerce.credit.button.edit'
+            'ekyna_commerce.' . $invoice->getType() . '.button.edit'
         );
 
         return $this->render(
@@ -185,10 +198,10 @@ class SaleCreditController extends AbstractSaleController
         $context = $this->loadContext($request);
 
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Credit\Model\CreditInterface $credit */
-        $credit = $context->getResource($resourceName);
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $context->getResource($resourceName);
 
-        $this->isGranted('DELETE', $credit);
+        $this->isGranted('DELETE', $invoice);
 
         $isXhr = $request->isXmlHttpRequest();
         $form = $this->createRemoveResourceForm($context, null, !$isXhr);
@@ -197,7 +210,7 @@ class SaleCreditController extends AbstractSaleController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->delete($credit);
+            $event = $this->getOperator()->delete($invoice);
             if (!$isXhr) {
                 $event->toFlashes($this->getFlashBag());
             }
@@ -221,7 +234,7 @@ class SaleCreditController extends AbstractSaleController
         }
 
         if ($isXhr) {
-            $modal = $this->createModal('remove', 'ekyna_commerce.credit.header.remove');
+            $modal = $this->createModal('remove', 'ekyna_commerce.' . $invoice->getType() . '.header.remove');
             $vars = $context->getTemplateVars();
             unset($vars['form_template']);
             $modal
@@ -234,7 +247,7 @@ class SaleCreditController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_remove', $resourceName),
-            'ekyna_commerce.credit.button.remove'
+            'ekyna_commerce.' . $invoice->getType() . '.button.remove'
         );
 
         return $this->render(
@@ -243,5 +256,49 @@ class SaleCreditController extends AbstractSaleController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    public function renderAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $context->getResource();
+
+        $this->isGranted('VIEW', $invoice);
+
+        // TODO move in a renderer (that return a response)
+
+        $response = new Response();
+        if (!$this->getParameter('kernel.debug')) {
+            $response->setLastModified($invoice->getUpdatedAt());
+            if ($response->isNotModified($request)) {
+                return $response;
+            }
+        }
+
+        $content = $this->renderView('EkynaCommerceBundle:Invoice:render.html.twig', [
+            'invoice' => $invoice,
+        ]);
+
+        $format = $request->attributes->get('_format', 'html');
+        if ('html' === $format) {
+            $response->setContent($content);
+        } elseif ('pdf' === $format) {
+            $response->setContent($this->get('knp_snappy.pdf')->getOutputFromHtml($content));
+            $response->headers->add(['Content-Type' => 'application/pdf']);
+        } else {
+            throw new NotFoundHttpException('Unsupported format.');
+        }
+
+        if ($request->query->get('_download', false)) {
+            $filename = sprintf('%s.%s', $invoice->getNumber(), $format);
+            $contentDisposition = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename
+            );
+            $response->headers->set('Content-Disposition', $contentDisposition);
+        }
+
+        return $response;
     }
 }

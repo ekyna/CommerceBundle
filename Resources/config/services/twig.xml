@@ -34,6 +34,14 @@
             <tag name="twig.extension"/>
         </service>
 
+        <!-- Invoice extension -->
+        <service id="ekyna_commerce.twig.invoice_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\InvoiceExtension"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="twig.extension"/>
+        </service>
+
         <!-- Payment extension -->
         <service id="ekyna_commerce.twig.payment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension"

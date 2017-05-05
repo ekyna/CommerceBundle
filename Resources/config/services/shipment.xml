@@ -7,7 +7,7 @@
 
         <!-- Shipment number generator -->
         <service id="ekyna_commerce.shipment.number_generator"
-                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+                 class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
             <argument>%kernel.data_dir%/shipment_number</argument>
             <argument>ym</argument>
             <argument>10</argument>

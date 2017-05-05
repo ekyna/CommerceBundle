@@ -11,7 +11,7 @@
 
         <!-- Customer number generator -->
         <service id="ekyna_commerce.customer.number_generator"
-                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+                 class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
             <argument>%kernel.data_dir%/customer_number</argument>
             <argument>\C\Uym</argument>
             <argument>10</argument>

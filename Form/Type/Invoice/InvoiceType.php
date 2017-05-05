@@ -1,32 +1,32 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type\Credit;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
-use Ekyna\Component\Commerce\Credit\Builder\CreditBuilderInterface;
+use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 /**
- * Class CreditType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type\Credit
+ * Class InvoiceType
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Invoice
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CreditType extends ResourceFormType
+class InvoiceType extends ResourceFormType
 {
     /**
      * @var string
      */
-    private $itemClass;
+    private $lineClass;
 
     /**
-     * @var CreditBuilderInterface
+     * @var InvoiceBuilderInterface
      */
-    private $creditBuilder;
+    private $invoiceBuilder;
 
 
     /**
@@ -39,17 +39,17 @@ class CreditType extends ResourceFormType
     {
         parent::__construct($dataClass);
 
-        $this->itemClass = $itemClass;
+        $this->lineClass = $itemClass;
     }
 
     /**
-     * Sets the credit builder.
+     * Sets the invoice builder.
      *
-     * @param CreditBuilderInterface $creditBuilder
+     * @param InvoiceBuilderInterface $invoiceBuilder
      */
-    public function setCreditBuilder(CreditBuilderInterface $creditBuilder)
+    public function setInvoiceBuilder(InvoiceBuilderInterface $invoiceBuilder)
     {
-        $this->creditBuilder = $creditBuilder;
+        $this->invoiceBuilder = $invoiceBuilder;
     }
 
     /**
@@ -67,26 +67,26 @@ class CreditType extends ResourceFormType
                 'label'    => 'ekyna_core.field.description',
                 'required' => false,
             ])
-            ->add('items', CreditItemsType::class, [
-                'label'         => 'Items', // TODO
+            ->add('lines', InvoiceLinesType::class, [
+                'label'         => 'ekyna_commerce.invoice.field.lines',
                 'entry_options' => [
-                    'data_class' => $this->itemClass,
+                    'data_class' => $this->lineClass,
                 ],
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Ekyna\Component\Commerce\Credit\Model\CreditInterface $credit */
-            $credit = $event->getData();
+            /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+            $invoice = $event->getData();
 
-            if (null === $sale = $credit->getSale()) {
-                throw new RuntimeException("The credit must be associated with a sale at this point.");
+            if (null === $sale = $invoice->getSale()) {
+                throw new RuntimeException("The invoice must be associated with a sale at this point.");
             }
             if (!$sale instanceof OrderInterface) {
                 throw new RuntimeException("Not yet supported.");
             }
 
-            if (0 === $credit->getItems()->count()) {
-                $this->creditBuilder->build($credit);
+            if (0 === $invoice->getLines()->count()) {
+                $this->invoiceBuilder->build($invoice);
             }
         });
     }

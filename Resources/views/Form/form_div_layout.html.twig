@@ -536,7 +536,7 @@
 {% endblock ekyna_commerce_shipment_item_widget %}
 
 
-{% block ekyna_commerce_credit_items_widget %}
+{% block ekyna_commerce_invoice_lines_widget %}
 {% spaceless %}
     <table class="table table-striped table-condensed">
         <thead>
@@ -544,7 +544,7 @@
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                 <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
-                <th>{{ 'ekyna_commerce.credit_item.field.available'|trans }}</th>
+                <th>{{ 'ekyna_commerce.invoice_line.field.max_quantity'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -559,10 +559,10 @@
     {{ form_errors(form) }}
     {{ form_rest(form) }}
 {% endspaceless %}
-{% endblock ekyna_commerce_credit_items_widget %}
+{% endblock ekyna_commerce_invoice_lines_widget %}
 
 
-{% block ekyna_commerce_credit_item_widget %}
+{% block ekyna_commerce_invoice_line_widget %}
 {% spaceless %}
     {% if errors|length > 0 %}
         {% set attr = attr|merge({'class': ('has-error ' ~ (attr.class|default('')))|trim }) %}
@@ -570,8 +570,8 @@
     <tr {{ block('widget_container_attributes') }}>
         <td>{{ designation }}</td>
         <td>{{ reference }}</td>
-        <td>{{ form_widget(form.quantity, {'data-max': available_quantity}) }}</td>
-        <td>{{ available_quantity }}</td>{# TODO packaging format #}
+        <td>{{ form_widget(form.quantity, {'data-max': max_quantity}) }}</td>
+        <td>{{ max_quantity }}</td>{# TODO packaging format #}
     </tr>
     {% if errors|length > 0 %}
         <tr>
@@ -582,7 +582,7 @@
     {% endif %}
     {{ form_rest(form) }}
 {% endspaceless %}
-{% endblock ekyna_commerce_credit_item_widget %}
+{% endblock ekyna_commerce_invoice_line_widget %}
 
 
 {% block ekyna_commerce_shipment_pricing_widget %}

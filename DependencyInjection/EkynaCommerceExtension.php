@@ -50,11 +50,11 @@ class EkynaCommerceExtension extends AbstractExtension
                 Order\Model\OrderInterface::class => '%ekyna_commerce.order_adjustment.class%',
                 Quote\Model\QuoteInterface::class => '%ekyna_commerce.quote_adjustment.class%',
             ],
-            'credit'          => [
-                Order\Model\OrderInterface::class => '%ekyna_commerce.order_credit.class%',
+            'invoice'         => [
+                Order\Model\OrderInterface::class => '%ekyna_commerce.order_invoice.class%',
             ],
-            'credit_item'     => [
-                Order\Model\OrderCreditInterface::class => '%ekyna_commerce.order_credit_item.class%',
+            'invoice_line'    => [
+                Order\Model\OrderInvoiceInterface::class => '%ekyna_commerce.order_invoice_line.class%',
             ],
             'item'            => [
                 Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_item.class%',

@@ -17,7 +17,7 @@
 
         <!-- Order number generator -->
         <service id="ekyna_commerce.order.number_generator"
-                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+                 class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
             <argument>%kernel.data_dir%/order_number</argument>
             <argument>\Oym</argument>
             <argument>10</argument>
@@ -91,17 +91,17 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
-        <!-- Order credit event listener -->
-        <service id="ekyna_commerce.order_credit.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderCreditEventSubscriber"
-                 parent="ekyna_commerce.credit.abstract_listener">
+        <!-- Order invoice event listener -->
+        <service id="ekyna_commerce.order_invoice.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceEventSubscriber"
+                 parent="ekyna_commerce.invoice.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
-        <!-- Order credit item event listener -->
-        <service id="ekyna_commerce.order_credit_item.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderCreditItemEventSubscriber"
-                 parent="ekyna_commerce.credit_item.abstract_listener">
+        <!-- Order invoice item event listener -->
+        <service id="ekyna_commerce.order_invoice_line.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceLineEventSubscriber"
+                 parent="ekyna_commerce.invoice_line.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 

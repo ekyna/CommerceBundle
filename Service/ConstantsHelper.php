@@ -7,6 +7,7 @@ use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
@@ -158,6 +159,47 @@ class ConstantsHelper extends AbstractConstantsHelper
         } else {
             throw new InvalidArgumentException("Unexpected sale.");
         }
+    }
+
+    /**
+     * Renders the invoice type label.
+     *
+     * @param InvoiceInterface|string $typeOrInvoice
+     *
+     * @return string
+     */
+    public function renderInvoiceTypeLabel($typeOrInvoice)
+    {
+        if ($typeOrInvoice instanceof InvoiceInterface) {
+            $typeOrInvoice = $typeOrInvoice->getType();
+        }
+
+        if (Model\InvoiceTypes::isValid($typeOrInvoice)) {
+            return $this->renderLabel(Model\InvoiceTypes::getLabel($typeOrInvoice));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the invoice type badge.
+     *
+     * @param InvoiceInterface|string $typeOrInvoice
+     *
+     * @return string
+     */
+    public function renderInvoiceTypeBadge($typeOrInvoice)
+    {
+        if ($typeOrInvoice instanceof InvoiceInterface) {
+            $typeOrInvoice = $typeOrInvoice->getType();
+        }
+
+        $theme = 'default';
+        if (Model\InvoiceTypes::isValid($typeOrInvoice)) {
+            $theme = Model\InvoiceTypes::getTheme($typeOrInvoice);
+        }
+
+        return $this->renderBadge($this->renderInvoiceTypeLabel($typeOrInvoice), $theme);
     }
 
     /**

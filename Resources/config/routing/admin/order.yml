@@ -24,7 +24,7 @@ ekyna_commerce_order_admin_invoice:
     path: /{orderId}/invoice.{_format}
     defaults:
         _controller: "ekyna_commerce.order.controller:invoiceAction"
-        _format: "html"
+        _format: html
     methods: [GET]
     requirements:
         _format: html|pdf
@@ -92,9 +92,9 @@ ekyna_commerce_order_attachment_admin:
     resource: order_attachment.yml
     prefix: /{orderId}/attachments
 
-ekyna_commerce_order_credit_admin:
-    resource: order_credit.yml
-    prefix: /{orderId}/credits
+ekyna_commerce_order_invoice_admin:
+    resource: order_invoice.yml
+    prefix: /{orderId}/invoices
 
 ekyna_commerce_order_item_admin:
     resource: order_item.yml

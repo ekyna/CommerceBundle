@@ -1,0 +1,247 @@
+{% import "EkynaCommerceBundle:Invoice:macros.html.twig" as macro -%}
+
+{% spaceless %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {{- ('ekyna_commerce.' ~ invoice.type ~ '.label.singular')|trans }}
+        {{ invoice.number -}}
+    </title>
+
+    {% block stylesheets %}
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/invoice.css')) }}" rel="stylesheet" type="text/css" />
+    {% endblock stylesheets %}
+</head>
+<body>
+    <div class="sale-invoice">
+
+        {# TODO translations #}
+
+        {% set currency = invoice.currency %}
+
+        {# --- HEADER --- #}
+        {% block header -%}
+        <table class="bloc header">
+            <tr>
+                <td class="logo">
+                {%- block logo -%}
+                    {# TODO <a href="{{ absolute_url('/') }}">
+                        <img alt="{{ get_setting('general.site_name') }}"
+                             src="{{ asset(order_document_logo, null, true) }}" />
+                    </a>#}
+                {%- endblock logo -%}
+                </td>
+                <td class="address">
+                {%- block company -%}
+                     {{ macro.render_company() }}
+                {%- endblock company -%}
+                </td>
+            </tr>
+        </table>
+        {%- endblock header %}
+
+        {# --- TITLE --- #}
+        {% block title -%}
+        <div class="bloc title">
+            <h1>
+                {{- ('ekyna_commerce.' ~ invoice.type ~ '.label.singular')|trans }}
+                {{ invoice.number -}}
+            </h1>
+            <p>Le {{ invoice.createdAt|localizeddate('long', 'none') }}.</p>
+        </div>
+        {%- endblock title %}
+
+        {# --- ADDRESSES --- #}
+        {% block addresses -%}
+        <table class="bloc table addresses">
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.customer'|trans }}</th>
+                <th class="blank">&nbsp;</th>
+                <th>{{ 'ekyna_commerce.sale.field.invoice_address'|trans }}</th>
+                <th class="blank">&nbsp;</th>
+                <th>{{ 'ekyna_commerce.sale.field.delivery_address'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="customer">
+                    {%- block customer -%}
+                        {{ macro.render_customer(invoice.customer) }}
+                    {%- endblock customer -%}
+                </td>
+                <td>&nbsp;</td>
+                <td class="address">
+                {%- block invoice_address -%}
+                    {{ macro.render_address(invoice.invoiceAddress) }}
+                {%- endblock invoice_address -%}
+                </td>
+                <td>&nbsp;</td>
+                <td class="address">
+                {%- block delivery_address -%}
+                {% if invoice.deliveryAddress is not empty %}
+                    {{ macro.render_address(invoice.deliveryAddress) }}
+                {% else %}
+                    {{ macro.render_address(invoice.invoiceAddress) }}
+                {% endif %}
+                {%- endblock delivery_address -%}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        {%- endblock addresses %}
+
+        {# --- ITEMS --- #}
+        {#{{ render_sale_view(view, 'EkynaCommerceBundle:Common:sale_view.html.twig') }}#}
+        {% block lines %}
+        <table class="bloc table">
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
+                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            </tr>
+            </thead>
+
+            {# GOODS #}
+            <tbody class="stripped">
+            {% for line in invoice.linesByType('good') %}
+                <tr>
+                    <td>{{ line.designation }}</td>
+                    <td>{{ line.reference }}</td>
+                    <td class="text-right">{{ line.netPrice|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ line.quantity|localizednumber }}</td>
+                    <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ line.taxesTotal|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ line.total|localizedcurrency(currency) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+            {% set discounts = invoice.linesByType('discount') %}
+            {% set shipments = invoice.linesByType('shipment') %}
+
+            {# DISCOUNTS #}
+            {% if discounts is not empty %}
+            {% block spacer %}
+            <tbody class="spacer">
+                <tr>
+                    <td colspan="7">&nbsp;</td>
+                </tr>
+            </tbody>
+            {% endblock spacer %}
+
+            <tbody>
+            {% for line in discounts %}
+                <tr>
+                    <td colspan="4">{{ line.designation }}</td>
+                    <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ line.taxesTotal|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ line.total|localizedcurrency(currency) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            {% endif %}
+
+            {# SUB TOTAL #}
+            {#{% if discounts is not empty and shipments is not empty %}
+            <tbody>
+                <tr>
+                    <td colspan="4" class="text-right">Sous-total</td>
+                    <td colspan="3" class="text-right">{{ invoice.goodsBase|localizedcurrency(currency) }}</td>
+                </tr>
+            </tbody>
+            {% endif %}#}
+
+            {# SHIPMENT #}
+            {% if shipments is not empty %}
+            {{ block('spacer') }}
+            <tbody>
+            {% for line in shipments %}
+                <tr>
+                    <td colspan="4">{{ line.designation }}</td>
+                    <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ line.taxesTotal|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ line.total|localizedcurrency(currency) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            {% endif %}
+
+            {{ block('spacer') }}
+            <tbody>
+            <tr>
+                <td colspan="4">&nbsp;</td>
+                <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            </tr>
+            <tr>
+                <td colspan="4">&nbsp;</td>
+                <td class="text-right">{{ (invoice.goodsBase + invoice.shipmentBase)|localizedcurrency(currency) }}</td>
+                <td class="text-right">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
+                <td class="text-right">
+                    <strong>{{ invoice.grandTotal|localizedcurrency(currency) }}</strong>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        {% endblock lines %}
+
+        {# Taxes details #}
+        {% for taxName, taxTotal in invoice.taxesDetails %}
+        <table class="taxes">
+            <tr>
+                <th>{{ taxName }}</th>
+                <td class="text-right">{{ taxTotal|localizedcurrency(currency) }}</td>
+            </tr>
+        </table>
+        {% endfor %}
+
+
+        {# --- MISC --- #}
+        {% block misc %}
+            {#
+            <table class="order-doc-bloc order-doc-inf">
+                <tbody>
+                    <tr>
+                        <td>{{ sale.paiementMethod.title }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+            <table class="order-doc-bloc order-doc-inf">
+                <tbody>
+                    <tr>
+                        <td>{{ sale.comment|raw }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            #}
+        {% endblock misc %}
+
+        {# --- FOOTER --- #}
+        {% block footer %}
+            <div class="bloc footer">
+                {# TODO {{ get_setting('sale.document_footer')|raw }} #}
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in aliquam dolor, at faucibus libero. Morbi
+                    id interdum leo. Etiam facilisis gravida purus ac eleifend. Aenean laoreet risus id urna venenatis fringilla.
+                    Donec condimentum cursus ornare.
+                </p>
+            </div>
+        {% endblock footer %}
+
+    </div>
+</body>
+</html>
+{% endspaceless %}

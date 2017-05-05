@@ -7,7 +7,6 @@
             <th>{{ 'ekyna_core.field.method'|trans }}</th>
             <th>{{ 'ekyna_core.field.status'|trans }}</th>
             <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
-            <th>{{ 'ekyna_core.field.description'|trans }}</th>
             <th></th>
         </tr>
         </thead>
@@ -30,7 +29,6 @@
                 <td id="{{ shipmentId }}_method">{{ shipment.method }}</td>
                 <td id="{{ shipmentId }}_state">{{ shipment|shipment_state_badge }}</td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
-                <td id="{{ shipmentId }}_description">{{ shipment.description }}</td>
                 <td class="actions">
                     <a href="javascript:void(0)"
                        id="{{ shipmentId }}_toggle_details"
@@ -74,6 +72,9 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if shipment.description is not empty  %}
+                        <p>{{ shipment.description|nl2br }}</p>
+                    {% endif %}
                 </td>
                 <td>&nbsp;</td>
             </tr>

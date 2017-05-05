@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Invoice number generator -->
+        <service id="ekyna_commerce.invoice.invoice_number_generator"
+                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+            <argument>%kernel.data_dir%/invoice_number</argument>
+            <argument>I</argument>
+            <argument>10</argument>
+        </service>
+
+        <!-- Credit number generator -->
+        <service id="ekyna_commerce.invoice.credit_number_generator"
+                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+            <argument>%kernel.data_dir%/credit_number</argument>
+            <argument>C</argument>
+            <argument>10</argument>
+        </service>
+
+        <!-- Invoice abstract listener -->
+        <service id="ekyna_commerce.invoice.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setInvoiceNumberGenerator">
+                <argument type="service" id="ekyna_commerce.invoice.invoice_number_generator"/>
+            </call>
+            <call method="setCreditNumberGenerator">
+                <argument type="service" id="ekyna_commerce.invoice.credit_number_generator"/>
+            </call>
+            <call method="setUpdater">
+                <argument type="service" id="ekyna_commerce.invoice.updater"/>
+            </call>
+        </service>
+
+        <!-- Invoice line abstract listener -->
+        <service id="ekyna_commerce.invoice_line.abstract_listener" abstract="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setStockUnitAssigner">
+                <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
+            </call>
+        </service>
+
+        <!-- Invoice updater -->
+        <service id="ekyna_commerce.invoice.updater"
+                 class="Ekyna\Component\Commerce\Invoice\Updater\InvoiceUpdater">
+            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
+            <argument type="service" id="libphonenumber.phone_number_util"/>
+        </service>
+
+        <!-- Shipment builder -->
+        <service id="ekyna_commerce.invoice.builder"
+                 class="Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder">
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+        </service>
+
+    </services>
+</container>

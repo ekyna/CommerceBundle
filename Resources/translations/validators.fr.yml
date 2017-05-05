@@ -16,10 +16,10 @@ ekyna_commerce:
     payment:
         method:
             not_null: Veuillez choisir un mode de paiement.
-    credit:
+    invoice:
         hierarchy_integrity: |
             Erreur d'intégrité entre les différents éléments.
-    credit_item:
+    invoice_line:
         shipment_is_not_return: L'éxpédition liée n'est pas un retour.
         sale_item_and_shipment_item_miss_match: Les lignes de commande et de retour ne correspondent pas.
         quantity_is_greater_than_returned: La quantité ne peut pas exceder la quantité retournée (max %max%).

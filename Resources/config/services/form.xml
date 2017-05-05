@@ -110,18 +110,18 @@
             <argument>%ekyna_commerce.order_adjustment.class%</argument>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.order_credit.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderCreditType">
-            <argument>%ekyna_commerce.order_credit.class%</argument>
-            <argument>%ekyna_commerce.order_credit_item.class%</argument>
-            <call method="setCreditBuilder">
-                <argument type="service" id="ekyna_commerce.credit.builder"/>
+        <service id="ekyna_commerce.order_invoice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType">
+            <argument>%ekyna_commerce.order_invoice.class%</argument>
+            <argument>%ekyna_commerce.order_invoice_line.class%</argument>
+            <call method="setInvoiceBuilder">
+                <argument type="service" id="ekyna_commerce.invoice.builder"/>
             </call>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.order_credit_item.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Credit\CreditItemType">
-            <argument>%ekyna_commerce.order_credit_item.class%</argument>
+        <service id="ekyna_commerce.order_invoice_line.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Invoice\InvoiceLineType">
+            <argument>%ekyna_commerce.order_invoice_line.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order_item_adjustment.form_type"

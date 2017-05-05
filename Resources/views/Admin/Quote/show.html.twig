@@ -61,7 +61,8 @@
             </div>
             <div class="tab-pane" id="quote-payments">
                 <h4 class="sub-header">
-                    <a href="{{ admin_resource_path('ekyna_commerce.quote_payment', 'new', {'quoteId': quote.id}) }}" class="btn btn-success btn-xs pull-right">
+                    <a href="{{ admin_resource_path('ekyna_commerce.quote_payment', 'new', {'quoteId': quote.id}) }}"
+                       class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.payment.button.new'|trans }}
                     </a>
                     {{ 'ekyna_commerce.payment.label.plural'|trans }}
@@ -70,7 +71,8 @@
             </div>
             <div class="tab-pane" id="quote-attachments">
                 <h4 class="sub-header">
-                    <a href="{{ admin_resource_path('ekyna_commerce.quote_attachment', 'new', {'quoteId': quote.id}) }}" class="btn btn-success btn-xs pull-right">
+                    <a href="{{ admin_resource_path('ekyna_commerce.quote_attachment', 'new', {'quoteId': quote.id}) }}"
+                       class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.attachment.button.new'|trans }}
                     </a>
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}

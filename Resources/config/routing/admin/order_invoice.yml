@@ -1,0 +1,34 @@
+ekyna_commerce_order_invoice_admin_new:
+    path: /new/{type}
+    defaults: { _controller: "ekyna_commerce.order_invoice.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        type: "[a-z]+"
+
+ekyna_commerce_order_invoice_admin_edit:
+    path: /{orderInvoiceId}/edit
+    defaults: { _controller: "ekyna_commerce.order_invoice.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderInvoiceId: \d+
+
+ekyna_commerce_order_invoice_admin_remove:
+    path: /{orderInvoiceId}/remove
+    defaults: { _controller: "ekyna_commerce.order_invoice.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderInvoiceId: \d+
+
+ekyna_commerce_order_invoice_admin_render:
+    path: /{orderInvoiceId}/render.{_format}
+    defaults:
+        _controller: "ekyna_commerce.order_invoice.controller:renderAction"
+        _format: html
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderInvoiceId: \d+
+        _format: html|pdf

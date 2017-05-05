@@ -43,13 +43,13 @@
             </a>
         </li>
         <li>
-            <a href="#order-payments" id="toggle-payments" data-toggle="tab">
-                {{ 'ekyna_commerce.payment.label.plural'|trans }}
+            <a href="#order-invoices" id="toggle-invoices" data-toggle="tab">
+                {{ 'ekyna_commerce.invoice.label.plural'|trans }}
             </a>
         </li>
         <li>
-            <a href="#order-credits" id="toggle-credits" data-toggle="tab">
-                {{ 'ekyna_commerce.credit.label.plural'|trans }}
+            <a href="#order-payments" id="toggle-payments" data-toggle="tab">
+                {{ 'ekyna_commerce.payment.label.plural'|trans }}
             </a>
         </li>
         <li>
@@ -97,35 +97,38 @@
             <div class="tab-pane" id="order-details">
                 {{ render_sale_view(sale_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
             </div>
+            <div class="tab-pane" id="order-invoices">
+                <h4 class="sub-header">
+                    {% for type in ['credit', 'invoice'] %}
+                        <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': type}) }}"
+                           class="btn btn-primary btn-xs pull-right"
+                           style="margin-left:16px">
+                            {{ ('ekyna_commerce.' ~ type ~ '.button.new')|trans }}
+                        </a>
+                    {% endfor %}
+                    {{ 'ekyna_commerce.invoice.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order} %}
+            </div>
             <div class="tab-pane" id="order-payments">
                 <h4 class="sub-header">
                     <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {'orderId': order.id}) }}"
-                       class="btn btn-success btn-xs pull-right">
+                       class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.payment.button.new'|trans }}
                     </a>
                     {{ 'ekyna_commerce.payment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': order} %}
             </div>
-            <div class="tab-pane" id="order-credits">
-                <h4 class="sub-header">
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_credit', 'new', {'orderId': order.id}) }}"
-                       class="btn btn-success btn-xs pull-right">
-                        {{ 'ekyna_commerce.credit.button.new'|trans }}
-                    </a>
-                    {{ 'ekyna_commerce.credit.label.plural'|trans }}
-                </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_credits.html.twig" with {'sale': order} %}
-            </div>
             <div class="tab-pane" id="order-shipments">
                 <h4 class="sub-header">
                     <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id, 'return': 1}) }}"
-                       class="btn btn-warning btn-xs pull-right"
+                       class="btn btn-primary btn-xs pull-right"
                         style="margin-left:16px">
                         {{ 'ekyna_commerce.return.button.new'|trans }}
                     </a>
                     <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id}) }}"
-                       class="btn btn-success btn-xs pull-right">
+                       class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.shipment.button.new'|trans }}
                     </a>
                     {{ 'ekyna_commerce.shipment.label.plural'|trans }}
@@ -135,7 +138,7 @@
             <div class="tab-pane" id="order-attachments">
                 <h4 class="sub-header">
                     <a href="{{ admin_resource_path('ekyna_commerce.order_attachment', 'new', {'orderId': order.id}) }}"
-                       class="btn btn-success btn-xs pull-right">
+                       class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.attachment.button.new'|trans }}
                     </a>
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}

@@ -151,15 +151,40 @@ ekyna_commerce:
             new: Nouvel avoir
             edit: Modifier l'avoir
             remove: Supprimer l'avoir
-        message:
-            remove_confirm: Souhaitez-vous réellement supprimer cet avoir ?
-            cant_be_deleted: Cet avoir est valide et ne peut être supprimé.
-        alert:
-            no_item: Aucun avoir configuré
 
-    credit_item:
+    invoice:
+        label:
+            singular: Facture
+            plural: Factures
+        header:
+            new: Créer un nouvelle facture
+            edit: Modifier la facture
+            remove: Supprimer la facture
+        button:
+            new: Nouvelle facture
+            edit: Modifier la facture
+            remove: Supprimer la facture
+        type:
+            invoice:
+                label: Facture
+            credit:
+                label: Avoir
         field:
-            available: Disponible
+            lines: Lignes
+            goods_base: Marchandises HT
+            shipment_base: Frais de port HT
+            taxes_total: Taxes
+            grand_total: Total TTC
+        message:
+            remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
+            cant_be_deleted: Cet facture ne peut être supprimée.
+        alert:
+            no_item: Aucune facture configuré
+
+    invoice_line:
+        field:
+            max_quantity: Quantité max
+            net_price: Prix unit. HT
 
     currency:
         label:
@@ -333,10 +358,10 @@ ekyna_commerce:
             singular: Pièce jointe
             plural: Pièce jointes
 
-    order_credit:
+    order_invoice:
         label:
-            singular: Avoir de commande
-            plural: Avoirs de commande
+            singular: Facture
+            plural: Factures
 
     order_item:
         label:
