@@ -30,11 +30,14 @@
             <tr>
                 <td class="logo">
                 {%- block logo -%}
-                    {# TODO <a href="{{ absolute_url('/') }}">
+                    <a href="{{ absolute_url('/') }}">
                         <img alt="{{ get_setting('general.site_name') }}"
-                             src="{{ asset(order_document_logo, null, true) }}" />
-                    </a>#}
+                             src="{{ absolute_url(asset(logo_path)) }}" />
+                    </a>
                 {%- endblock logo -%}
+                </td>
+                <td class="blank">
+                    &nbsp;
                 </td>
                 <td class="address">
                 {%- block company -%}
@@ -97,9 +100,8 @@
         {%- endblock addresses %}
 
         {# --- ITEMS --- #}
-        {#{{ render_sale_view(view, 'EkynaCommerceBundle:Common:sale_view.html.twig') }}#}
         {% block lines %}
-        <table class="bloc table">
+        <table class="bloc table details">
             <thead>
             <tr>
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
@@ -177,8 +179,9 @@
             </tbody>
             {% endif %}
 
+            {# TOTALS #}
             {{ block('spacer') }}
-            <tbody>
+            <tbody class="totals">
             <tr>
                 <td colspan="4">&nbsp;</td>
                 <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
@@ -189,23 +192,31 @@
                 <td colspan="4">&nbsp;</td>
                 <td class="text-right">{{ (invoice.goodsBase + invoice.shipmentBase)|localizedcurrency(currency) }}</td>
                 <td class="text-right">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
-                <td class="text-right">
-                    <strong>{{ invoice.grandTotal|localizedcurrency(currency) }}</strong>
-                </td>
+                <td class="text-right">{{ invoice.grandTotal|localizedcurrency(currency) }}</td>
             </tr>
             </tbody>
         </table>
         {% endblock lines %}
 
         {# Taxes details #}
-        {% for taxName, taxTotal in invoice.taxesDetails %}
-        <table class="taxes">
-            <tr>
-                <th>{{ taxName }}</th>
-                <td class="text-right">{{ taxTotal|localizedcurrency(currency) }}</td>
-            </tr>
+        {% if invoice.taxesDetails is not empty %}
+        <table class="table taxes">
+            <thead>
+                <tr>
+                    <th>Taxe</th>
+                    <th>Montant total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for taxName, taxTotal in invoice.taxesDetails %}
+                <tr>
+                    <th>{{ taxName }}</th>
+                    <td class="text-right">{{ taxTotal|localizedcurrency(currency) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-        {% endfor %}
+        {% endif %}
 
 
         {# --- MISC --- #}
@@ -218,7 +229,7 @@
                     </tr>
                 </tbody>
             </table>
-            <hr />
+
             <table class="order-doc-bloc order-doc-inf">
                 <tbody>
                     <tr>
@@ -242,6 +253,19 @@
         {% endblock footer %}
 
     </div>
+
+
+    {# TERMS #}
+    {#<hr>
+
+    <div class="sale-invoice">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla posuere lectus quis lobortis consequat. Vivamus vehicula mauris sed ligula semper, et rutrum dolor porta. Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras iaculis odio felis, nec viverra urna tristique vitae. Vivamus consectetur gravida porta. Integer sollicitudin libero nulla, in porta nulla euismod in. Donec gravida consequat nibh consequat aliquam. Morbi tincidunt velit sed tellus efficitur, at consectetur eros aliquam. Ut tortor velit, maximus sit amet leo id, aliquam fringilla urna. Nullam maximus erat vel velit rutrum, venenatis dapibus nisl commodo. Quisque est risus, imperdiet ac neque sit amet, condimentum dapibus libero. Proin id gravida ipsum. Nunc blandit lacus nec magna bibendum, nec scelerisque purus placerat. Phasellus sed metus venenatis, mattis turpis ut, faucibus libero. Integer id dictum dolor.</p>
+        <p>Nulla laoreet ligula ac nulla commodo, in bibendum nulla pharetra. Aliquam viverra justo risus, sed luctus urna tempor et. Mauris semper fermentum dolor nec varius. Etiam eget viverra ipsum, id bibendum enim. Donec mollis nunc dui, nec tempor velit hendrerit in. Donec nec felis sed felis viverra eleifend in nec lacus. Vivamus et vulputate quam, in molestie sapien. Mauris luctus est odio, at tincidunt ex vulputate sed. Curabitur luctus urna lectus, nec consequat urna feugiat a. Mauris mauris tellus, aliquet id finibus a, elementum ac tellus. Suspendisse non dictum sapien.</p>
+        <p>Pellentesque elementum nulla at arcu facilisis, ut pretium eros ultrices. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla et est non magna pellentesque vehicula ac ullamcorper libero. Nullam iaculis vel metus id condimentum. Sed nec aliquam justo. Nunc rutrum ante eget nisl accumsan mattis. Vivamus tincidunt feugiat eros quis tincidunt. Aliquam in sem lacinia, finibus elit vel, elementum tellus. Sed porta ligula ac leo malesuada, at malesuada ex laoreet. Suspendisse quam metus, suscipit sed condimentum vitae, sollicitudin id lorem. Praesent ac nulla dapibus, iaculis arcu a, ornare turpis.</p>
+        <p>Nulla facilisi. Nam enim quam, viverra ac neque quis, interdum blandit massa. Curabitur eleifend sed felis vitae semper. Integer eleifend est a pellentesque auctor. Suspendisse dictum lorem eget quam convallis, non ultrices justo ultricies. Donec eu lobortis enim. Vestibulum diam urna, porta a faucibus nec, tempus a ex. Duis cursus quam orci, at semper nisl blandit ut. Nullam ut leo non felis mollis dictum. Etiam eget metus dolor.</p>
+        <p>Sed eget auctor ipsum. Nam nec massa tempus turpis fermentum gravida. Proin iaculis eu elit non ultrices. Pellentesque eros orci, scelerisque tristique sem a, finibus lacinia purus. Quisque porta leo quis lectus consectetur, vel iaculis nisl mattis. Donec nec lacinia sem. Fusce dictum leo sed finibus molestie. Etiam bibendum, mi non sollicitudin posuere, nulla dui bibendum urna, sed vestibulum purus neque at leo. Cras convallis lacus massa, nec fringilla nulla congue non. Nam massa nunc, pretium sit amet fringilla a, eleifend non neque. Morbi venenatis fringilla libero, vitae venenatis elit cursus eu. Praesent id nibh ac elit dignissim elementum sit amet in ipsum. Sed facilisis imperdiet nulla. Praesent fringilla pulvinar elit sit amet fermentum. Aliquam lacinia, nisi fringilla malesuada sagittis, orci nibh imperdiet mi, maximus elementum massa dui eget risus. Proin eu metus velit.</p>
+    </div>#}
+
 </body>
 </html>
 {% endspaceless %}

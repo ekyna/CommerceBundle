@@ -278,6 +278,7 @@ class SaleInvoiceController extends AbstractSaleController
         }
 
         $content = $this->renderView('EkynaCommerceBundle:Invoice:render.html.twig', [
+            'logo_path' => $this->getParameter('ekyna_commerce.company_logo'),
             'invoice' => $invoice,
         ]);
 
