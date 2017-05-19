@@ -28,11 +28,11 @@ class SupplierOrderContext implements Context, KernelAwareContext
     }
 
     /**
-     * @Given /^The supplier order with number "(?P<number>[^"]+)" is delivered$/
+     * @Given /^The supplier order with number "(?P<number>[^"]+)" is received$/
      *
      * @param string $number
      */
-    public function orderIsDelivered($number)
+    public function orderIsReceived($number)
     {
         $this->deliverOrder($this->findOrderByNumber($number));
     }

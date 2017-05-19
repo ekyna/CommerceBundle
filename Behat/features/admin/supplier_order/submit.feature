@@ -57,5 +57,5 @@ Feature: Edit supplier orders
         # Stock units assertions
         Then I should see "En attente" in the "#product_stockUnit_0_state" element
         Then I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
-        Then I should see "0" in the "#product_stockUnit_0_deliveredQuantity" element
+        Then I should see "0" in the "#product_stockUnit_0_receivedQuantity" element
         Then I should see "01/01/2020" in the "#product_stockUnit_0_estimatedDateOfArrival" element

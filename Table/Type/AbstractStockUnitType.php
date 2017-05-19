@@ -31,8 +31,8 @@ abstract class AbstractStockUnitType extends ResourceTableType
                 'label'    => 'ekyna_commerce.stock_unit.field.ordered_quantity',
                 'position' => 30,
             ])
-            ->addColumn('deliveredQuantity', 'number', [
-                'label'    => 'ekyna_commerce.stock_unit.field.delivered_quantity',
+            ->addColumn('receivedQuantity', 'number', [
+                'label'    => 'ekyna_commerce.stock_unit.field.received_quantity',
                 'position' => 40,
             ])
             ->addColumn('shippedQuantity', 'number', [

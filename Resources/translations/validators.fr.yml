@@ -44,12 +44,12 @@ ekyna_commerce:
     subject:
         identity_subject_must_be_selected: Veuillez sélectionner un sujet.
     stock_unit:
-        delivered_must_be_lower_than_ordered: |
-            La quantité livrée doit être inférieure ou égale à la quantité commandée.
-        shipped_must_be_lower_than_delivered: |
-            La quantité expédiée doit être inférieure ou égale à la quantité livrée.
-        shipped_must_be_lower_than_delivered: |
-            La quantité expédiée doit être inférieure ou égale à la quantité réservée.
+        received_must_be_lower_than_ordered: |
+            La quantité réceptionnée doit être inférieure ou égale à la quantité commandée.
+        shipped_must_be_lower_than_received: |
+            La quantité expédiée doit être inférieure ou égale à la quantité réceptionnée.
+        shipped_must_be_lower_than_sold: |
+            La quantité expédiée doit être inférieure ou égale à la quantité vendue.
     shipment:
         shipped_state_denied: |
             Le statut de la vente ne permet pas de sélectionner ce statut d'expédition.
@@ -66,11 +66,11 @@ ekyna_commerce:
         order_and_delivery_items_miss_match: |
             Au moins une ligne de la commande ne correspond pas aux lignes des livraisons.
     supplier_order_item:
-        quantity_must_be_greater_than_or_equal_delivered: |
-            La quantité commandée doit être supérieure ou égale à la quantité livrée (%min%).
+        quantity_must_be_greater_than_or_equal_received: |
+            La quantité commandée doit être supérieure ou égale à la quantité réceptionnée (%min%).
     supplier_delivery_item:
         quantity_must_be_lower_than_or_equal_ordered: |
-            La quantité livrée doit être inférieure ou égale à la quantité commandée (%max%).
+            La quantité réceptionnée doit être inférieure ou égale à la quantité commandée (%max%).
         order_item_miss_match:
             Cette ligne ne correspond à aucune ligne de la commande fournisseur.
     supplier_delivery_item:

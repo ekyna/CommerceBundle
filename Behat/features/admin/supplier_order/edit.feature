@@ -37,7 +37,7 @@ Feature: Edit supplier orders
         And I should not see "Nouvelle livraison"
         And I should see "Aucune livraison fournisseur configuré"
 
-    Scenario: Setting ordered quantity as lower than the delivered quantity
+    Scenario: Setting ordered quantity as lower than the received quantity
         Given The supplier order with number "SO-001" is submitted
         And The following supplier deliveries:
             | order |
@@ -48,9 +48,9 @@ Feature: Edit supplier orders
         When I go to "ekyna_commerce_supplier_order_admin_edit" route with "supplierOrderId:1"
         And I fill in "supplier_order[compose][items][0][quantity]" with "9"
         And I press "supplier_order_actions_save"
-        Then I should see "La quantité commandée doit être supérieure ou égale à la quantité livrée"
+        Then I should see "La quantité commandée doit être supérieure ou égale à la quantité réceptionnée"
 
-    Scenario: Removing a delivered item
+    Scenario: Removing a received item
         Given The supplier order with number "SO-001" is submitted
         And The following supplier deliveries:
             | order |

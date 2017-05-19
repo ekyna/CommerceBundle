@@ -769,8 +769,8 @@ ekyna_commerce:
             geocode: Geocode
             estimated_date_of_arrival: Date de livraison estimée
             ordered_quantity: Qte commandée
-            delivered_quantity: Qte reçue
-            reserved_quantity: Qte vendue
+            received_quantity: Qte reçue
+            sold_quantity: Qte vendue
             shipped_quantity: Qte expediée
             net_price: Prix d'achat HT
             supplier_order: Cde. Four.

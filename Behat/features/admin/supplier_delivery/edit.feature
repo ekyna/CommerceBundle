@@ -62,7 +62,7 @@ Feature: Create supplier deliveries
         Then I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
         Then I should see "En attente" in the "#product_stockUnit_0_state" element
         Then I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
-        Then I should see "0" in the "#product_stockUnit_0_deliveredQuantity" element
+        Then I should see "0" in the "#product_stockUnit_0_receivedQuantity" element
 
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "En stock" in the "#product_stockState" element
@@ -71,4 +71,4 @@ Feature: Create supplier deliveries
         Then I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
         Then I should see "Prête" in the "#product_stockUnit_0_state" element
         Then I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
-        Then I should see "3" in the "#product_stockUnit_0_deliveredQuantity" element
+        Then I should see "3" in the "#product_stockUnit_0_receivedQuantity" element

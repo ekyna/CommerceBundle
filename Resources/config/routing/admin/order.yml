@@ -20,15 +20,15 @@ ekyna_commerce_order_admin_show:
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_admin_invoice:
-    path: /{orderId}/invoice.{_format}
-    defaults:
-        _controller: "ekyna_commerce.order.controller:invoiceAction"
-        _format: html
-    methods: [GET]
-    requirements:
-        _format: html|pdf
-        orderId: \d+
+#ekyna_commerce_order_admin_invoice:
+#    path: /{orderId}/invoice.{_format}
+#    defaults:
+#        _controller: "ekyna_commerce.order.controller:invoiceAction"
+#        _format: html
+#    methods: [GET]
+#    requirements:
+#        _format: html|pdf
+#        orderId: \d+
 
 ekyna_commerce_order_admin_edit:
     path: /{orderId}/edit

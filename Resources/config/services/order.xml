@@ -79,14 +79,14 @@
 
         <!-- Order shipment event listener -->
         <service id="ekyna_commerce.order_shipment.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderShipmentEventSubscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderShipmentEventSubscriber"
                  parent="ekyna_commerce.shipment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Order shipment item event listener -->
         <service id="ekyna_commerce.order_shipment_item.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderShipmentItemEventSubscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderShipmentItemEventSubscriber"
                  parent="ekyna_commerce.shipment_item.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>

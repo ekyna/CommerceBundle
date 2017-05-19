@@ -85,53 +85,53 @@ class SaleController extends AbstractSaleController
         return null;
     }
 
-    public function invoiceAction(Request $request)
-    {
-        $context = $this->loadContext($request);
-
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource();
-
-        $this->isGranted('VIEW', $sale);
-
-        $response = new Response();
-        if (!$this->getParameter('kernel.debug')) {
-            $response->setLastModified($sale->getUpdatedAt());
-            if ($response->isNotModified($request)) {
-                return $response;
-            }
-        }
-
-        $view = $this->getSaleHelper()->buildView($sale, [
-            'private'  => false,
-            'editable' => false,
-        ]);
-
-        $content = $this->renderView('EkynaCommerceBundle:Document:invoice.html.twig', [
-            'sale' => $sale,
-            'view' => $view,
-        ]);
-
-        $format = $request->attributes->get('_format', 'html');
-        if ('html' === $format) {
-            $response->setContent($content);
-        } elseif ('pdf' === $format) {
-            $response->setContent($this->get('knp_snappy.pdf')->getOutputFromHtml($content));
-            $response->headers->add(['Content-Type' => 'application/pdf']);
-        } else {
-            throw new NotFoundHttpException('Unsupported format.');
-        }
-
-        if ($request->query->get('_download', false)) {
-            $filename = sprintf('order-%s.%s', $sale->getNumber(), $format);
-            $contentDisposition = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename
-            );
-            $response->headers->set('Content-Disposition', $contentDisposition);
-        }
-
-        return $response;
-    }
+//    public function invoiceAction(Request $request)
+//    {
+//        $context = $this->loadContext($request);
+//
+//        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+//        $sale = $context->getResource();
+//
+//        $this->isGranted('VIEW', $sale);
+//
+//        $response = new Response();
+//        if (!$this->getParameter('kernel.debug')) {
+//            $response->setLastModified($sale->getUpdatedAt());
+//            if ($response->isNotModified($request)) {
+//                return $response;
+//            }
+//        }
+//
+//        $view = $this->getSaleHelper()->buildView($sale, [
+//            'private'  => false,
+//            'editable' => false,
+//        ]);
+//
+//        $content = $this->renderView('EkynaCommerceBundle:Document:invoice.html.twig', [
+//            'sale' => $sale,
+//            'view' => $view,
+//        ]);
+//
+//        $format = $request->attributes->get('_format', 'html');
+//        if ('html' === $format) {
+//            $response->setContent($content);
+//        } elseif ('pdf' === $format) {
+//            $response->setContent($this->get('knp_snappy.pdf')->getOutputFromHtml($content));
+//            $response->headers->add(['Content-Type' => 'application/pdf']);
+//        } else {
+//            throw new NotFoundHttpException('Unsupported format.');
+//        }
+//
+//        if ($request->query->get('_download', false)) {
+//            $filename = sprintf('order-%s.%s', $sale->getNumber(), $format);
+//            $contentDisposition = $response->headers->makeDisposition(
+//                ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename
+//            );
+//            $response->headers->set('Content-Disposition', $contentDisposition);
+//        }
+//
+//        return $response;
+//    }
 
     /**
      * Edit the sale shipment data.

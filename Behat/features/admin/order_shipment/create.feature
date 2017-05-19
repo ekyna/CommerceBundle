@@ -56,7 +56,7 @@ Feature: Create order shipments
 
     @javascript @stock
     Scenario: Create a shipment
-        Given The supplier order with number "SO-001" is delivered
+        Given The supplier order with number "SO-001" is received
         And The order with number "O-0001" is paid
 
         When I go to "ekyna_commerce_order_shipment_admin_new" route with "{orderId:1}"
@@ -81,8 +81,8 @@ Feature: Create order shipments
         And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "6" in the "#product_stockUnit_0_orderedQuantity" element
-        And I should see "6" in the "#product_stockUnit_0_deliveredQuantity" element
-        And I should see "4" in the "#product_stockUnit_0_reservedQuantity" element
+        And I should see "6" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "4" in the "#product_stockUnit_0_soldQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
         # Product #2 assertions
@@ -91,8 +91,8 @@ Feature: Create order shipments
         And I should see "En rupture" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
-        And I should see "2" in the "#product_stockUnit_0_deliveredQuantity" element
-        And I should see "2" in the "#product_stockUnit_0_reservedQuantity" element
+        And I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "2" in the "#product_stockUnit_0_soldQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
 #    Can't test this as 'shipped' state is available in state select field.
@@ -107,7 +107,7 @@ Feature: Create order shipments
 
     @javascript @stock @current
     Scenario: Create a shipment with state 'shipped'
-        Given The supplier order with number "SO-001" is delivered
+        Given The supplier order with number "SO-001" is received
         And The order with number "O-0001" is paid
 
         When I go to "ekyna_commerce_order_shipment_admin_new" route with "{orderId:1}"
@@ -133,8 +133,8 @@ Feature: Create order shipments
         And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "6" in the "#product_stockUnit_0_orderedQuantity" element
-        And I should see "6" in the "#product_stockUnit_0_deliveredQuantity" element
-        And I should see "4" in the "#product_stockUnit_0_reservedQuantity" element
+        And I should see "6" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "4" in the "#product_stockUnit_0_soldQuantity" element
         And I should see "4" in the "#product_stockUnit_0_shippedQuantity" element
 
         # Product #2 assertions
@@ -144,7 +144,7 @@ Feature: Create order shipments
 
     @javascript @stock @current
     Scenario: Create a return shipment with state 'shipped'
-        Given The supplier order with number "SO-001" is delivered
+        Given The supplier order with number "SO-001" is received
         And The order with number "O-0001" is paid
         And The order with number "O-0001" is shipped
 
@@ -171,8 +171,8 @@ Feature: Create order shipments
         And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "6" in the "#product_stockUnit_0_orderedQuantity" element
-        And I should see "6" in the "#product_stockUnit_0_deliveredQuantity" element
-        And I should see "4" in the "#product_stockUnit_0_reservedQuantity" element
+        And I should see "6" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "4" in the "#product_stockUnit_0_soldQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
         # Product #2 assertions
@@ -181,8 +181,8 @@ Feature: Create order shipments
         And I should see "En rupture" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
-        And I should see "2" in the "#product_stockUnit_0_deliveredQuantity" element
-        And I should see "2" in the "#product_stockUnit_0_reservedQuantity" element
+        And I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "2" in the "#product_stockUnit_0_soldQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
 # TODO

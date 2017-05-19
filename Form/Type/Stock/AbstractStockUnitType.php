@@ -52,8 +52,8 @@ abstract class AbstractStockUnitType extends ResourceFormType
                     'label'    => 'ekyna_commerce.stock_unit.field.ordered_quantity',
                     'disabled' => $disabled,
                 ])
-                ->add('deliveredQuantity', SF\NumberType::class, [
-                    'label'    => 'ekyna_commerce.stock_unit.field.delivered_quantity',
+                ->add('receivedQuantity', SF\NumberType::class, [
+                    'label'    => 'ekyna_commerce.stock_unit.field.received_quantity',
                     'disabled' => $disabled,
                 ]);
         });

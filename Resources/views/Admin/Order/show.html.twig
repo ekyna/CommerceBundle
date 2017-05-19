@@ -14,11 +14,11 @@
         {{ order.allTags|cms_tags({'text': false}) }}
     </div>
     <div class="actions">
-        {{ ui_button('Facture', {
+        {#{{ ui_button('Facture', {
             'theme': 'default',
             'type': 'link',
             'path': admin_resource_path(order, 'invoice')
-        }, {'target': '_blank'}) }}
+        }, {'target': '_blank'}) }}#}
         {# TODO permission ? #}
         {{ ui_button('ekyna_core.button.notify', {
             'theme': 'default',
