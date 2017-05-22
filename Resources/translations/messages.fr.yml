@@ -227,6 +227,9 @@ ekyna_commerce:
         field:
             parent: Comptabilité
             children: Commerciaux
+            vat_number: Numéro de TVA
+            vat_details: Détails N°TVA
+            vat_valid: N°TVA valide
             outstanding_limit: Limite d'encours
             outstanding_balance: Solde d'encours
             credit_balance: Solde avoirs

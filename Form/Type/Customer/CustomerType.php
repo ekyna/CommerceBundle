@@ -88,6 +88,17 @@ class CustomerType extends ResourceFormType
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
             ])
+            ->add('vatNumber', VatNumberType::class, [
+                'label'    => 'ekyna_commerce.customer.field.vat_number',
+                'required' => false,
+            ])
+            ->add('vatValid', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.customer.field.vat_valid',
+                'required' => false,
+                'attr' => [
+                    'align_with_widget' => true,
+                ]
+            ])
             ->add('paymentTerm', PaymentTermChoiceType::class)
             ->add('outstandingLimit', Type\NumberType::class, [
                 'label' => 'ekyna_commerce.customer.field.outstanding_limit',

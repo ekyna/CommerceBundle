@@ -35,6 +35,7 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.customer.number_generator"/>
+            <argument type="service" id="ekyna_commerce.customer.validator.vat_number"/>
             <tag name="resource.event_subscriber"/>
         </service>
 
@@ -44,17 +45,10 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <!-- Form types -->
-        <service id="ekyna_commerce.account.registration.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Account\RegistrationType">
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <argument>%ekyna_commerce.customer_address.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.account.information.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Account\InformationType">
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <tag name="form.type"/>
+        <!-- VAT number validator -->
+        <service id="ekyna_commerce.customer.validator.vat_number"
+                 class="Ekyna\Component\Commerce\Customer\Validator\VatNumberValidator">
+            <argument type="collection"/> <!-- Replaced by the bundle DI extension -->
         </service>
 
     </services>

@@ -65,15 +65,25 @@ class CustomerType extends ResourceTableType
                 'route_parameters_map' => ['customerGroupId' => 'customerGroup.id'],
                 'position'             => 50,
             ])
-            ->addColumn('balanceFloor', 'number', [
-                'label'    => 'ekyna_commerce.customer.field.balance_floor',
+            ->addColumn('creditBalance', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.credit_balance',
                 'sortable' => false,
                 'position' => 60,
+            ])
+            ->addColumn('outstandingBalance', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
+                'sortable' => false,
+                'position' => 70,
+            ])
+            ->addColumn('outstandingLimit', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                'sortable' => false,
+                'position' => 80,
             ])
             ->addColumn('createdAt', 'datetime', [
                 'label'       => 'ekyna_core.field.created_at',
                 'sortable'    => true,
-                'position'    => 70,
+                'position'    => 90,
                 'time_format' => 'none',
             ])
             ->addColumn('actions', 'admin_actions', [
@@ -117,13 +127,21 @@ class CustomerType extends ResourceTableType
                 'property' => 'name',
                 'position' => 50,
             ])
-            ->addFilter('balanceFloor', 'number', [
-                'label'    => 'ekyna_commerce.customer.field.balance_floor',
+            ->addFilter('creditBalance', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.credit_balance',
                 'position' => 60,
+            ])
+            ->addFilter('outstandingBalance', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
+                'position' => 70,
+            ])
+            ->addFilter('outstandingLimit', 'number', [
+                'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                'position' => 80,
             ])
             ->addFilter('createdAt', 'datetime', [
                 'label'    => 'ekyna_core.field.created_at',
-                'position' => 70,
+                'position' => 90,
             ]);
 
         if (null === $options['parent']) {

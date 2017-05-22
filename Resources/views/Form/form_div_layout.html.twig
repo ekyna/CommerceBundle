@@ -968,3 +968,21 @@
 {% endspaceless %}
 {% endblock ekyna_commerce_recipient_widget %}
 
+
+{% block ekyna_commerce_vat_number_widget %}
+{% spaceless %}
+    {% if form.vars.config is defined %}
+    <div class="input-group commerce-vat-number" data-config='{{ form.vars.config|json_encode }}'>
+        {{ block('form_widget') }}
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button">
+                <span class="fa fa-check"></span>
+            </button>
+        </span>
+    </div>
+    {% else %}
+        {{ block('form_widget') }}
+    {% endif %}
+{% endspaceless %}
+{% endblock ekyna_commerce_vat_number_widget %}
+

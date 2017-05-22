@@ -80,6 +80,19 @@
             <tag name="form.type"/>
         </service>
 
+        <!-- Account form types -->
+        <service id="ekyna_commerce.account.registration.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Account\RegistrationType">
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <argument>%ekyna_commerce.customer_address.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.account.information.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Account\InformationType">
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
         <!-- Identity form type -->
         <service id="ekyna_commerce.gender.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\GenderType">
@@ -382,6 +395,15 @@
             <argument>%ekyna_commerce.tax.class%</argument>
             <tag name="form.type"/>
         </service>-->
+
+        <!-- Vat number form type -->
+        <service id="ekyna_commerce.vat_number.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\VatNumberType">
+            <argument type="service" id="router"/>
+            <argument type="service" id="templating"/>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-vat-number" path="ekyna-commerce/form/vat-number" />
+        </service>
 
     </services>
 

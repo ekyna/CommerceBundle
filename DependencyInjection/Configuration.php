@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('ekyna_commerce');
 
         $this->addDefaultSection($rootNode);
+        $this->addVatValidationSection($rootNode);
         $this->addPoolsSection($rootNode);
 
         return $treeBuilder;
@@ -34,7 +35,6 @@ class Configuration implements ConfigurationInterface
      */
     private function addDefaultSection(ArrayNodeDefinition $node)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
         $node
             ->children()
                 ->arrayNode('default')
@@ -57,6 +57,67 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * Adds `vat validation` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addVatValidationSection(ArrayNodeDefinition $node)
+    {
+        $apiDefaults = ['enabled' => false, 'access_key' => null];
+        $wsDefaults  = ['enabled' => false];
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $node
+            ->children()
+                ->arrayNode('vat_validator')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('vat_layer')
+                            ->info('To use https://vatlayer.com API')
+                            ->addDefaultsIfNotSet()
+                            ->treatFalseLike($apiDefaults)
+                            ->treatNullLike($apiDefaults)
+                            ->children()
+                                ->booleanNode('enabled')
+                                    ->defaultFalse()
+                                ->end()
+                                ->scalarNode('access_key')
+                                    ->defaultNull()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('vat_api')
+                            ->info('To use https://vatapi.com API')
+                            ->addDefaultsIfNotSet()
+                            ->treatFalseLike($apiDefaults)
+                            ->treatNullLike($apiDefaults)
+                            ->children()
+                                ->booleanNode('enabled')
+                                    ->defaultFalse()
+                                ->end()
+                                ->scalarNode('access_key')
+                                    ->defaultNull()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('europa')
+                            ->info('To use https://europa.eu VIES web service')
+                            ->addDefaultsIfNotSet()
+                            ->treatFalseLike($wsDefaults)
+                            ->treatNullLike($wsDefaults)
+                            ->treatTrueLike(array('enabled' => true))
+                            ->children()
+                                ->booleanNode('enabled')
+                                    ->defaultFalse()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
      * Adds `pools` section.
      *
      * @param ArrayNodeDefinition $node
@@ -65,7 +126,6 @@ class Configuration implements ConfigurationInterface
      */
     private function addPoolsSection(ArrayNodeDefinition $node)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
         $node
             ->children()
                 ->arrayNode('pools')
