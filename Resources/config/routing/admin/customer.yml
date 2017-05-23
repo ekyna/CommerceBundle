@@ -48,11 +48,6 @@ ekyna_commerce_customer_admin_find:
     options:
         expose: true
 
-ekyna_commerce_customer_admin_validate_vat:
-    path: /validate-vat
-    defaults: { _controller: "ekyna_commerce.customer.controller:validateVatNumberAction" }
-    methods: [GET]
-
 ekyna_commerce_customer_address_admin:
     resource: customer_address.yml
     prefix: /{customerId}/addresses

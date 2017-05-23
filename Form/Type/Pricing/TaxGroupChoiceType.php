@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Symfony\Component\Form\AbstractType;
@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TaxGroupChoiceType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Pricing
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 class TaxGroupChoiceType extends AbstractType

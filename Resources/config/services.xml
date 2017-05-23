@@ -11,6 +11,7 @@
         <import resource="services/helper.xml"/>
         <import resource="services/order.xml"/>
         <import resource="services/payment.xml"/>
+        <import resource="services/pricing.xml"/>
         <import resource="services/quote.xml"/>
         <import resource="services/sale.xml"/>
         <import resource="services/serializer.xml"/>
@@ -27,6 +28,7 @@
 
     <services>
 
+        <!-- Notification builder -->
         <service id="ekyna_commerce.notification.builder"
                  class="Ekyna\Bundle\CommerceBundle\Service\Notification\NotificationBuilder">
             <argument type="service" id="ekyna_setting.manager"/>
@@ -73,14 +75,6 @@
         <!-- Subject providers registry-->
         <service id="ekyna_commerce.subject.provider_registry"
                  class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
-
-        <!-- Tax resolver -->
-        <service id="ekyna_commerce.tax.resolver"
-                 class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
-            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
-            <argument type="service" id="ekyna_commerce.country.repository"/>
-            <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
-        </service>
 
     </services>
 

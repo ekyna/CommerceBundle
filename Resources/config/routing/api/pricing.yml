@@ -1,0 +1,4 @@
+ekyna_commerce_api_pricing_validate_vat:
+    path: /validate-vat
+    defaults: { _controller: "ekyna_commerce.controller.api.pricing:validateVatNumberAction" }
+    methods: [GET]

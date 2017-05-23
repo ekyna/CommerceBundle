@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -89,11 +90,11 @@ class CustomerType extends ResourceFormType
                 'format'         => PhoneNumberFormat::NATIONAL,
             ])
             ->add('vatNumber', VatNumberType::class, [
-                'label'    => 'ekyna_commerce.customer.field.vat_number',
+                'label'    => 'ekyna_commerce.pricing.field.vat_number',
                 'required' => false,
             ])
             ->add('vatValid', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.customer.field.vat_valid',
+                'label'    => 'ekyna_commerce.pricing.field.vat_valid',
                 'required' => false,
                 'attr' => [
                     'align_with_widget' => true,

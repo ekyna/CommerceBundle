@@ -1,0 +1,3 @@
+ekyna_commerce_api_pricing:
+    resource: "api/pricing.yml"
+    prefix: /pricing

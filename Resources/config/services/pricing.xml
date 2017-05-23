@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Tax resolver -->
+        <!-- TODO rename to 'ekyna_commerce.pricing.tax_resolver' -->
+        <service id="ekyna_commerce.tax.resolver"
+                 class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
+            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
+            <argument type="service" id="ekyna_commerce.country.repository"/>
+            <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
+        </service>
+
+        <!-- Pricing API -->
+        <service id="ekyna_commerce.pricing.api"
+                 class="Ekyna\Component\Commerce\Pricing\Api\PricingApi">
+            <argument type="collection"/> <!-- Api providers, replaced by the PricingApiPass -->
+        </service>
+
+        <!-- Pricing API controller -->
+        <service id="ekyna_commerce.controller.api.pricing"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Api\PricingController">
+            <argument type="service" id="ekyna_commerce.pricing.api" />
+            <argument type="service" id="templating" />
+        </service>
+
+    </services>
+
+</container>

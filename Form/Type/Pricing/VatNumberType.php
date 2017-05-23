@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -12,7 +12,7 @@ use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Class VatNumberType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type\Customer
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Pricing
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 class VatNumberType extends AbstractType
@@ -47,7 +47,7 @@ class VatNumberType extends AbstractType
     {
         if ($options['admin_mode'] || $form->getParent()->getConfig()->getOption('admin_mode')) {
             $config = [
-                'path'       => $this->urlGenerator->generate('ekyna_commerce_customer_admin_validate_vat'),
+                'path'       => $this->urlGenerator->generate('ekyna_commerce_api_pricing_validate_vat'),
                 'checkbox'   => $options['valid_checkbox'],
                 'lastNumber' => null,
                 'lastResult' => null,
@@ -60,7 +60,7 @@ class VatNumberType extends AbstractType
                 if ($customer->isVatValid()) {
                     $result = ['valid' => true];
                     if (!empty($details = $customer->getVatDetails())) {
-                        $result['content'] = $this->templating->render('EkynaCommerceBundle:Admin/Customer:vat_details.html.twig', [
+                        $result['content'] = $this->templating->render('EkynaCommerceBundle:Admin/Common:vat_details.html.twig', [
                             'details' => $details,
                         ]);
                     }

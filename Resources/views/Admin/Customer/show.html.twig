@@ -120,12 +120,12 @@
                         }) }}#}
                         <div class="row show-row">
                             <div class="col-md-4 show-label">
-                                {{ 'ekyna_commerce.customer.field.vat_number'|trans }}
+                                {{ 'ekyna_commerce.pricing.field.vat_number'|trans }}
                             </div>
                             <div class="col-md-8">
                                 <div class="show-widget show-widget-inline" id="customer_vat_number">
                                     {{ customer.vatNumber }}
-                                    {% if customer.vatDetails is not empty %}
+                                    {% if customer.vatDetails is not empty -%}
                                     <div class="btn-group dropup pull-right">
                                         <button type="button" class="btn btn-xs btn-default dropdown-toggle"
                                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -133,11 +133,11 @@
                                         </button>
                                         <ul class="dropdown-menu" style="min-width: 300px;">
                                             <li>
-                                                {% include "EkynaCommerceBundle:Admin/Customer:vat_details.html.twig" with {'details': customer.vatDetails} %}
+                                                {% include "EkynaCommerceBundle:Admin/Common:vat_details.html.twig" with {'details': customer.vatDetails} %}
                                             </li>
                                         </ul>
                                     </div>
-                                    {% endif %}
+                                    {% endif -%}
                                 </div>
                             </div>
                         </div>
@@ -150,19 +150,19 @@
                         }) }}#}
                         <div class="row show-row">
                             <div class="col-md-4 show-label">
-                                {{ 'ekyna_commerce.customer.field.vat_valid'|trans }}
+                                {{ 'ekyna_commerce.pricing.field.vat_valid'|trans }}
                             </div>
                             <div class="col-md-8">
                                 <div class="show-widget show-widget-inline" id="customer_vat_valid">
-                                    {% if customer.vatValid %}
-                                        <span class="label label-success">
-                                             {{ 'ekyna_core.value.yes'|trans }}
-                                         </span>
-                                    {% else %}
-                                        <span class="label label-{{ customer.vatNumber is empty ? 'default' : 'danger' }}">
-                                             {{ 'ekyna_core.value.no'|trans }}
-                                         </span>
-                                    {% endif %}
+                                    {% if customer.vatValid -%}
+                                    <span class="label label-success">
+                                         {{ 'ekyna_core.value.yes'|trans }}
+                                    </span>
+                                    {%- else -%}
+                                    <span class="label label-{{ customer.vatNumber is empty ? 'default' : 'danger' }}">
+                                         {{ 'ekyna_core.value.no'|trans }}
+                                    </span>
+                                    {%- endif %}
                                 </div>
                             </div>
                         </div>

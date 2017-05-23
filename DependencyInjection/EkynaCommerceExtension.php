@@ -8,8 +8,8 @@ use Ekyna\Component\Commerce\Cart;
 use Ekyna\Component\Commerce\Customer;
 use Ekyna\Component\Commerce\Order;
 use Ekyna\Component\Commerce\Quote;
+use Ekyna\Component\Commerce\Pricing\Api;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class EkynaCommerceExtension
@@ -29,7 +29,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.default.countries', $config['default']['countries']);
         $container->setParameter('ekyna_commerce.default.currencies', $config['default']['currencies']);
 
-        $this->configureVatValidator($config['vat_validator'], $container);
+        $this->configurePricing($config['pricing'], $container);
         $this->configureSaleFactory($container);
     }
 
@@ -39,52 +39,35 @@ class EkynaCommerceExtension extends AbstractExtension
      * @param array            $config
      * @param ContainerBuilder $container
      */
-    private function configureVatValidator(array $config, ContainerBuilder $container)
+    private function configurePricing(array $config, ContainerBuilder $container)
     {
-        $references = [];
+        $configs = $config['provider'];
 
-        // Build Vat Layer provider if enabled
-        if ($config['vat_layer']['enabled'] && !empty($config['vat_layer']['access_key'])) {
+        // Register Europa Api provider service if enabled
+        if ($configs['europa']['enabled']) {
             $container
-                ->register(
-                    Customer\Validator\Provider\VatLayer::SERVICE_ID,
-                    Customer\Validator\Provider\VatLayer::class
-                )
-                ->addArgument($config['vat_layer']['access_key'])
+                ->register(Api\Provider\Europa::SERVICE_ID, Api\Provider\Europa::class)
+                ->addTag(Api\PricingApi::PROVIDER_TAG)
                 ->addArgument('%kernel.debug%');
-
-            $references[] = new Reference(Customer\Validator\Provider\VatLayer::SERVICE_ID);
         }
 
-        // Build Vat Api provider if enabled
-        if ($config['vat_api']['enabled'] && !empty($config['vat_api']['access_key'])) {
+        // register VatLayer Api provider service if enabled and access key is set
+        if ($configs['vat_layer']['enabled'] && !empty($configs['vat_layer']['access_key'])) {
             $container
-                ->register(
-                    Customer\Validator\Provider\VatApi::SERVICE_ID,
-                    Customer\Validator\Provider\VatApi::class
-                )
-                ->addArgument($config['vat_api']['access_key'])
+                ->register(Api\Provider\VatLayer::SERVICE_ID, Api\Provider\VatLayer::class)
+                ->addTag(Api\PricingApi::PROVIDER_TAG)
+                ->addArgument($configs['vat_layer']['access_key'])
                 ->addArgument('%kernel.debug%');
-
-            $references[] = new Reference(Customer\Validator\Provider\VatApi::SERVICE_ID);
         }
 
-        // Build Europa provider if enabled
-        if ($config['europa']['enabled']) {
+        // Build VatApi Api provider service if enabled and access key is set
+        if ($configs['vat_api']['enabled'] && !empty($configs['vat_api']['access_key'])) {
             $container
-                ->register(
-                    Customer\Validator\Provider\Europa::SERVICE_ID,
-                    Customer\Validator\Provider\Europa::class
-                )
+                ->register(Api\Provider\VatApi::SERVICE_ID, Api\Provider\VatApi::class)
+                ->addTag(Api\PricingApi::PROVIDER_TAG)
+                ->addArgument($configs['vat_api']['access_key'])
                 ->addArgument('%kernel.debug%');
-
-            $references[] = new Reference(Customer\Validator\Provider\Europa::SERVICE_ID);
         }
-
-        // Add providers to the validator service
-        $container
-            ->getDefinition('ekyna_commerce.customer.validator.vat_number')
-            ->replaceArgument(0, $references);
     }
 
     /**

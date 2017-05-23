@@ -6,7 +6,7 @@ use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MessagesType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MethodTranslationType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
 use Ekyna\Component\Commerce\Shipment\Entity;

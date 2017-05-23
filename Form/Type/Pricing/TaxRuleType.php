@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Class TaxRuleType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Pricing
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 class TaxRuleType extends ResourceFormType

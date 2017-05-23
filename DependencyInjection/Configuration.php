@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('ekyna_commerce');
 
         $this->addDefaultSection($rootNode);
-        $this->addVatValidationSection($rootNode);
+        $this->addPricingSection($rootNode);
         $this->addPoolsSection($rootNode);
 
         return $treeBuilder;
@@ -57,11 +57,11 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Adds `vat validation` section.
+     * Adds `pricing` section.
      *
      * @param ArrayNodeDefinition $node
      */
-    private function addVatValidationSection(ArrayNodeDefinition $node)
+    private function addPricingSection(ArrayNodeDefinition $node)
     {
         $apiDefaults = ['enabled' => false, 'access_key' => null];
         $wsDefaults  = ['enabled' => false];
@@ -69,46 +69,51 @@ class Configuration implements ConfigurationInterface
         /** @noinspection PhpUndefinedMethodInspection */
         $node
             ->children()
-                ->arrayNode('vat_validator')
+                ->arrayNode('pricing')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->arrayNode('vat_layer')
-                            ->info('To use https://vatlayer.com API')
+                        ->arrayNode('provider')
                             ->addDefaultsIfNotSet()
-                            ->treatFalseLike($apiDefaults)
-                            ->treatNullLike($apiDefaults)
                             ->children()
-                                ->booleanNode('enabled')
-                                    ->defaultFalse()
+                                ->arrayNode('europa')
+                                    ->info('To use https://europa.eu VIES web service')
+                                    ->addDefaultsIfNotSet()
+                                    ->treatFalseLike($wsDefaults)
+                                    ->treatNullLike($wsDefaults)
+                                    ->treatTrueLike(array('enabled' => true))
+                                    ->children()
+                                        ->booleanNode('enabled')
+                                            ->defaultFalse()
+                                        ->end()
+                                    ->end()
                                 ->end()
-                                ->scalarNode('access_key')
-                                    ->defaultNull()
+                                ->arrayNode('vat_layer')
+                                    ->info('To use https://vatlayer.com API')
+                                    ->addDefaultsIfNotSet()
+                                    ->treatFalseLike($apiDefaults)
+                                    ->treatNullLike($apiDefaults)
+                                    ->children()
+                                        ->booleanNode('enabled')
+                                            ->defaultFalse()
+                                        ->end()
+                                        ->scalarNode('access_key')
+                                            ->defaultNull()
+                                        ->end()
+                                    ->end()
                                 ->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('vat_api')
-                            ->info('To use https://vatapi.com API')
-                            ->addDefaultsIfNotSet()
-                            ->treatFalseLike($apiDefaults)
-                            ->treatNullLike($apiDefaults)
-                            ->children()
-                                ->booleanNode('enabled')
-                                    ->defaultFalse()
-                                ->end()
-                                ->scalarNode('access_key')
-                                    ->defaultNull()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('europa')
-                            ->info('To use https://europa.eu VIES web service')
-                            ->addDefaultsIfNotSet()
-                            ->treatFalseLike($wsDefaults)
-                            ->treatNullLike($wsDefaults)
-                            ->treatTrueLike(array('enabled' => true))
-                            ->children()
-                                ->booleanNode('enabled')
-                                    ->defaultFalse()
+                                ->arrayNode('vat_api')
+                                    ->info('To use https://vatapi.com API')
+                                    ->addDefaultsIfNotSet()
+                                    ->treatFalseLike($apiDefaults)
+                                    ->treatNullLike($apiDefaults)
+                                    ->children()
+                                        ->booleanNode('enabled')
+                                            ->defaultFalse()
+                                        ->end()
+                                        ->scalarNode('access_key')
+                                            ->defaultNull()
+                                        ->end()
+                                    ->end()
                                 ->end()
                             ->end()
                         ->end()
@@ -786,7 +791,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->end()
-                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\TaxType')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\TaxType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->end()
@@ -803,7 +808,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxGroupController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxGroupRepository')->end()
-                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupType')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\TaxGroupType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->end()
@@ -820,7 +825,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxRuleController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxRuleRepository')->end()
-                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\TaxRuleType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->end()

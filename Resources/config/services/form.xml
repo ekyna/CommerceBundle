@@ -360,20 +360,20 @@
             <tag name="form.js" selector=".commerce-sale-shipment" path="ekyna-commerce/form/sale-shipment" />
         </service>
 
-        <!-- Tax form types -->
+        <!-- Pricing form types -->
         <service id="ekyna_commerce.tax_group.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupType">
             <argument>%ekyna_commerce.tax_group.class%</argument>
             <argument>%ekyna_commerce.tax_rule.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.tax_group_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxGroupChoiceType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType">
             <argument>%ekyna_commerce.tax_group.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.tax_rule.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleType">
             <argument>%ekyna_commerce.tax_rule.class%</argument>
             <argument>%ekyna_commerce.tax.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
@@ -385,7 +385,7 @@
             <tag name="form.type"/>
         </service>-->
         <service id="ekyna_commerce.tax.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxType">
             <argument>%ekyna_commerce.tax.class%</argument>
             <argument>%ekyna_commerce.country.class%</argument>
             <tag name="form.type"/>
@@ -398,7 +398,7 @@
 
         <!-- Vat number form type -->
         <service id="ekyna_commerce.vat_number.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\VatNumberType">
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType">
             <argument type="service" id="router"/>
             <argument type="service" id="templating"/>
             <tag name="form.type"/>

@@ -4,8 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class CustomerController
@@ -14,38 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CustomerController extends ResourceController
 {
-    /**
-     * Validate VAT number action.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function validateVatNumberAction(Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            throw $this->$this->createNotFoundException();
-        }
-
-        $data = [
-            'valid'   => false,
-            'content' => null,
-        ];
-
-        if (!empty($number = $request->query->get('number'))) {
-            $validator = $this->get('ekyna_commerce.customer.validator.vat_number');
-
-            if (null !== $result = $validator->validate($number)) {
-                $data['valid'] = $result->isValid();
-                $data['content'] = $this->renderView('EkynaCommerceBundle:Admin/Customer:vat_details.html.twig', [
-                    'details' => $result->getDetails(),
-                ]);
-            }
-        }
-
-        return JsonResponse::create($data);
-    }
-
     /**
      * @inheritDoc
      */
