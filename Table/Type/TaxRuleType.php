@@ -30,6 +30,14 @@ class TaxRuleType extends ResourceTableType
                 'label'    => 'ekyna_core.field.priority',
                 'position' => 20,
             ])
+            ->addColumn('customer', 'boolean', [
+                'label'    => 'ekyna_commerce.tax_rule.field.customer',
+                'position' => 30,
+            ])
+            ->addColumn('business', 'boolean', [
+                'label'    => 'ekyna_commerce.tax_rule.field.business',
+                'position' => 40,
+            ])
             ->addColumn('actions', 'admin_actions', [
                 'buttons' => [
                     [
@@ -59,6 +67,14 @@ class TaxRuleType extends ResourceTableType
             ->addFilter('priority', 'number', [
                 'label'    => 'ekyna_core.field.priority',
                 'position' => 20,
+            ])
+            ->addFilter('customer', 'boolean', [
+                'label'    => 'ekyna_commerce.tax_rule.field.customer',
+                'position' => 30,
+            ])
+            ->addFilter('business', 'boolean', [
+                'label'    => 'ekyna_commerce.tax_rule.field.business',
+                'position' => 40,
             ]);
     }
 

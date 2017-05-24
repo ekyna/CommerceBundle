@@ -34,24 +34,6 @@
 {% endif %}
 <div class="row">
     <div class="col-md-6">
-        {{ show_row(sale.company, 'text', 'ekyna_core.field.company', {
-            'id': 'sale_company',
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
-    </div>
-    <div class="col-md-6">
-        {{ show_row(sale.customerGroup, 'entity', 'ekyna_commerce.customer_group.label.singular', {
-            'id': 'sale_customerGroup',
-            'route': 'ekyna_commerce_customer_group_admin_show',
-            'route_params': {'customerGroupId': sale.customerGroup.id},
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
         <div class="row show-row">
             <div class="col-md-4 show-label">
                 {{ 'ekyna_core.field.identity'|trans }}
@@ -71,6 +53,25 @@
         }) }}
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.company, 'text', 'ekyna_core.field.company', {
+            'id': 'sale_company',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.customerGroup, 'entity', 'ekyna_commerce.customer_group.label.singular', {
+            'id': 'sale_customerGroup',
+            'route': 'ekyna_commerce_customer_group_admin_show',
+            'route_params': {'customerGroupId': sale.customerGroup.id},
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+{% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': sale, 'prefix': 'sale'} %}
 <hr>
 <div class="row">
     <div class="col-md-6">

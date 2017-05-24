@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -14,32 +14,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class TaxType extends ResourceFormType
 {
-    /**
-     * @var string
-     */
-    private $countryClass;
-
-    /**
-     * @var string
-     */
-    private $stateClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $taxClass
-     * @param string $countryClass
-     * @param string $stateClass
-     */
-    public function __construct($taxClass, $countryClass, $stateClass = null)
-    {
-        parent::__construct($taxClass);
-
-        $this->countryClass = $countryClass;
-        $this->stateClass = $stateClass;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -55,17 +29,12 @@ class TaxType extends ResourceFormType
                     'input_group' => ['append' => '%'],
                 ],
             ])
-            ->add('country', ResourceType::class, [
-                'label' => 'ekyna_commerce.country.label.singular',
-                'class' => $this->countryClass,
+            ->add('country', CountryChoiceType::class, [
+                'enabled' => false,
             ])
             /*TODO->add('state', ResourceType::class, [
                 'label' => 'ekyna_commerce.state.label.singular',
                 'class' => $this->stateClass,
-            ])*/
-            ->add('postalCodeMatch', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.tax.field.postal_code_match',
-                'required' => false,
-            ]);
+            ])*/;
     }
 }

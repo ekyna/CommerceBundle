@@ -48,6 +48,9 @@ define(['jquery', 'bootstrap'], function($) {
 
                 lastNumber = $input.val();
                 lastResult = null;
+                if (0 === lastNumber.length) {
+                    return;
+                }
 
                 try {
                     $button.popover('destroy');
@@ -56,13 +59,9 @@ define(['jquery', 'bootstrap'], function($) {
                 }
                 $icon.removeClass('fa-check').addClass('fa-spinner fa-pulse');
 
-                if (0 === lastNumber.length) {
-                    return;
-                }
-
                 xhr = $.ajax({
                     url: config.path,
-                    data: {'number': $input.val()},
+                    data: {'number': lastNumber},
                     method: 'GET',
                     dataType: 'json'
                 });

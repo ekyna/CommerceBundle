@@ -30,6 +30,8 @@
                 </div>
             </div>
             {{ form_row(form.customer) }}
+            {{ form_row(form.identity) }}
+            {{ form_row(form.email) }}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
@@ -38,8 +40,14 @@
                     {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {{ form_row(form.identity) }}
-            {{ form_row(form.email) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.vatValid, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-md-6">

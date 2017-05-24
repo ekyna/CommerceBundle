@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="row show-row">
+            <div class="col-md-4 show-label">
+                {{ 'ekyna_commerce.pricing.field.vat_number'|trans }}
+            </div>
+            <div class="col-md-8">
+                <div class="show-widget show-widget-inline" id="{{ prefix|default('subject') }}_vat_number">
+                    {% if subject.vatNumber is not empty -%}
+                        {{ subject.vatNumber }}
+                        {% if subject.vatDetails is not empty -%}
+                            <div class="btn-group dropup pull-right">
+                                <button type="button" class="btn btn-xs btn-default dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Details <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" style="min-width: 300px;">
+                                    <li>
+                                        {% include "EkynaCommerceBundle:Admin/Common:vat_details.html.twig" with {'details': subject.vatDetails} %}
+                                    </li>
+                                </ul>
+                            </div>
+                        {%- endif %}
+                    {%- else -%}
+                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    {%- endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row show-row">
+            <div class="col-md-4 show-label">
+                {{ 'ekyna_commerce.pricing.field.vat_valid'|trans }}
+            </div>
+            <div class="col-md-8">
+                <div class="show-widget show-widget-inline" id="{{ prefix|default('subject') }}_vat_valid">
+                    {% if subject.vatValid -%}
+                    <span class="label label-success">
+                         {{ 'ekyna_core.value.yes'|trans }}
+                    </span>
+                    {%- else -%}
+                    <span class="label label-{{ subject.vatNumber is empty ? 'default' : 'danger' }}">
+                         {{ 'ekyna_core.value.no'|trans }}
+                    </span>
+                    {%- endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

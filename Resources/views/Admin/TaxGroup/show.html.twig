@@ -28,9 +28,10 @@
                         }) }}
                     </div>
                 </div>
-                {{ show_row(taxGroup.taxRules, 'entity', 'ekyna_commerce.tax_rule.label.plural', {
-                    'route': 'ekyna_commerce_tax_rule_admin_show',
-                    'route_params_map': {'taxRuleId': 'id'}
+                {{ show_row(taxGroup.taxes, 'entity', 'ekyna_commerce.tax.label.plural', {
+                    'id': 'tax_group_taxes',
+                    'route': 'ekyna_commerce_tax_admin_show',
+                    'route_params_map': {'taxId': 'id'}
                 }) }}
             </div>
         </div>

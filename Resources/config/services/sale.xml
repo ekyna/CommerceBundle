@@ -46,7 +46,7 @@
                  class="Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-            <argument type="service" id="ekyna_commerce.tax.resolver"/>
+            <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
@@ -70,6 +70,9 @@
             </call>
             <call method="setKeyGenerator">
                 <argument type="service" id="ekyna_commerce.common.key_generator"/>
+            </call>
+            <call method="setPricingUpdater">
+                <argument type="service" id="ekyna_commerce.pricing.updater"/>
             </call>
             <call method="setSaleUpdater">
                 <argument type="service" id="ekyna_commerce.sale_updater"/>

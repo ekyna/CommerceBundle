@@ -8,26 +8,26 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TaxGroupChoiceType
+ * Class TaxChoiceType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Pricing
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class TaxGroupChoiceType extends AbstractType
+class TaxChoiceType extends AbstractType
 {
     /**
      * @var string
      */
-    private $taxGroupClass;
+    private $taxClass;
 
 
     /**
      * Constructor.
      *
-     * @param string $taxGroupClass
+     * @param string $taxClass
      */
-    public function __construct($taxGroupClass)
+    public function __construct($taxClass)
     {
-        $this->taxGroupClass = $taxGroupClass;
+        $this->taxClass = $taxClass;
     }
 
     /**
@@ -42,15 +42,15 @@ class TaxGroupChoiceType extends AbstractType
                         return $value;
                     }
 
-                    return 'ekyna_commerce.tax_group.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    return 'ekyna_commerce.tax.label.' . ($options['multiple'] ? 'plural' : 'singular');
                 },
-                'class' => $this->taxGroupClass,
+                'class' => $this->taxClass,
             ])
             ->setNormalizer('attr', function(Options $options, $value) {
                 $value = (array) $value;
 
                 if (!isset($value['placeholder'])) {
-                    $value['placeholder'] = 'ekyna_commerce.tax_group.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    $value['placeholder'] = 'ekyna_commerce.tax.label.' . ($options['multiple'] ? 'plural' : 'singular');
                 }
 
                 return $value;

@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -35,15 +36,45 @@ class CountryChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'label'         => 'ekyna_commerce.country.label.singular',
-            'class'         => $this->countryClass,
-            'query_builder' => function (EntityRepository $er) {
-                $qb = $er->createQueryBuilder('o');
+        $queryBuilderDefault = function (Options $options, $value) {
+            if (is_callable($value)) {
+                return $value;
+            }
 
-                return $qb->andWhere($qb->expr()->eq('o.enabled', true));
-            },
-        ]);
+            if ($options['enabled']) {
+                return function (EntityRepository $er) {
+                    $qb = $er->createQueryBuilder('o');
+
+                    return $qb->andWhere($qb->expr()->eq('o.enabled', true));
+                };
+            }
+
+            return null;
+        };
+
+        $resolver
+            ->setDefaults([
+                'label' => function(Options $options, $value) {
+                    if (false === $value || !empty($value)) {
+                        return $value;
+                    }
+
+                    return 'ekyna_commerce.country.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                },
+                'class'         => $this->countryClass,
+                'enabled'       => true,
+                'query_builder' => $queryBuilderDefault,
+            ])
+            ->setAllowedTypes('enabled', 'bool')
+            ->setNormalizer('attr', function(Options $options, $value) {
+                $value = (array) $value;
+
+                if (!isset($value['placeholder'])) {
+                    $value['placeholder'] = 'ekyna_commerce.country.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                }
+
+                return $value;
+            });
     }
 
     /**

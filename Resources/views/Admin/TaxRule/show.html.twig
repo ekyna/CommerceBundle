@@ -30,21 +30,46 @@
                         }) }}
                     </div>
                 </div>
-                {{ show_row(taxRule.taxGroups, 'entity', 'ekyna_commerce.tax_group.label.plural', {
-                    'id': 'tax_rule_taxGroups',
-                    'route': 'ekyna_commerce_tax_group_admin_show',
-                    'route_params_map': {'taxGroupId': 'id'}
-                }) }}
-                {{ show_row(taxRule.customerGroups, 'entity', 'ekyna_commerce.customer_group.label.plural', {
-                    'id': 'tax_rule_customerGroups',
-                    'route': 'ekyna_commerce_customer_group_admin_show',
-                    'route_params_map': {'customerGroupId': 'id'}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(taxRule.customer, 'checkbox', 'ekyna_commerce.tax_rule.field.customer', {
+                            'id': 'tax_rule_customer',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(taxRule.business, 'checkbox', 'ekyna_commerce.tax_rule.field.business', {
+                            'id': 'tax_rule_business',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
+                {{ show_row(taxRule.countries, 'entity', 'ekyna_commerce.country.label.plural', {
+                    'id': 'tax_rule_countries',
+                    'route': 'ekyna_commerce_country_admin_show',
+                    'route_params_map': {'countryId': 'id'}
                 }) }}
                 {{ show_row(taxRule.taxes, 'entity', 'ekyna_commerce.tax.label.plural', {
                     'id': 'tax_rule_taxes',
                     'route': 'ekyna_commerce_tax_admin_show',
                     'route_params_map': {'taxId': 'id'}
                 }) }}
+                <div class="row show-row">
+                    <div class="col-md-2 show-label">
+                        {{ 'ekyna_commerce.tax_rule.field.notices'|trans }}
+                    </div>
+                    <div class="col-md-10">
+                        <div class="show-widget show-widget-block" id="tax_rule_notices">
+                            {% for notice in taxRule.notices %}
+                                {{ notice }}{% if not loop.last %}<br>{% endif %}
+                            {% else %}
+                                {{ 'ekyna_core.value.undefined'|trans }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

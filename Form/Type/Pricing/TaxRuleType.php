@@ -3,7 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
+use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -14,32 +15,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class TaxRuleType extends ResourceFormType
 {
-    /**
-     * @var string
-     */
-    private $taxClass;
-
-    /**
-     * @var string
-     */
-    private $customerGroupClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $taxRuleClass
-     * @param string $taxClass
-     * @param string $customerGroupClass
-     */
-    public function __construct($taxRuleClass, $taxClass, $customerGroupClass)
-    {
-        parent::__construct($taxRuleClass);
-
-        $this->taxClass = $taxClass;
-        $this->customerGroupClass = $customerGroupClass;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -52,22 +27,32 @@ class TaxRuleType extends ResourceFormType
             ->add('priority', Type\NumberType::class, [
                 'label' => 'ekyna_core.field.priority',
             ])
-            ->add('taxGroups', TaxGroupChoiceType::class, [
-                'label'     => 'ekyna_commerce.tax_group.label.plural',
+            ->add('customer', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.tax_rule.field.customer',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
+            ->add('business', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.tax_rule.field.business',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
+            ->add('countries', CountryChoiceType::class, [
+                'multiple' => true,
+            ])
+            ->add('taxes', TaxChoiceType::class, [
                 'multiple'  => true,
                 'allow_new' => true,
             ])
-            ->add('taxes', ResourceType::class, [
-                'label'     => 'ekyna_commerce.tax.label.plural',
-                'class'     => $this->taxClass,
-                'multiple'  => true,
-                'allow_new' => true,
-            ])
-            ->add('customerGroups', ResourceType::class, [
-                'label'     => 'ekyna_commerce.customer_group.label.plural',
-                'class'     => $this->customerGroupClass,
-                'multiple'  => true,
-                'allow_new' => true,
+            ->add('notices', CollectionType::class, [
+                'label'        => 'ekyna_commerce.tax_rule.field.notices',
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'allow_sort'   => true,
             ]);
     }
 }

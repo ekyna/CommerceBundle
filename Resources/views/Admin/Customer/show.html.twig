@@ -75,6 +75,7 @@
                         </div>
                     </div>
                 </div>
+                {% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': customer, 'prefix': 'customer'} %}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customer.phone, 'tel', 'ekyna_core.field.phone', {
@@ -111,63 +112,6 @@
                     'route_params_map': {'userId': 'id'}
                 }) }}
                 <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        {#{{ show_row(customer.vatNumber, 'text', 'ekyna_commerce.customer.field.vat_number', {
-                            'id': 'customer_vat_number',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}#}
-                        <div class="row show-row">
-                            <div class="col-md-4 show-label">
-                                {{ 'ekyna_commerce.pricing.field.vat_number'|trans }}
-                            </div>
-                            <div class="col-md-8">
-                                <div class="show-widget show-widget-inline" id="customer_vat_number">
-                                    {{ customer.vatNumber }}
-                                    {% if customer.vatDetails is not empty -%}
-                                    <div class="btn-group dropup pull-right">
-                                        <button type="button" class="btn btn-xs btn-default dropdown-toggle"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Details <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" style="min-width: 300px;">
-                                            <li>
-                                                {% include "EkynaCommerceBundle:Admin/Common:vat_details.html.twig" with {'details': customer.vatDetails} %}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    {% endif -%}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        {#{{ show_row(customer.vatValid, 'checkbox', 'ekyna_commerce.customer.field.vat_valid', {
-                            'id': 'customer_vat_valid',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8,
-                        }) }}#}
-                        <div class="row show-row">
-                            <div class="col-md-4 show-label">
-                                {{ 'ekyna_commerce.pricing.field.vat_valid'|trans }}
-                            </div>
-                            <div class="col-md-8">
-                                <div class="show-widget show-widget-inline" id="customer_vat_valid">
-                                    {% if customer.vatValid -%}
-                                    <span class="label label-success">
-                                         {{ 'ekyna_core.value.yes'|trans }}
-                                    </span>
-                                    {%- else -%}
-                                    <span class="label label-{{ customer.vatNumber is empty ? 'default' : 'danger' }}">
-                                         {{ 'ekyna_core.value.no'|trans }}
-                                    </span>
-                                    {%- endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customer.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {

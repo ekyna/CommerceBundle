@@ -17,9 +17,17 @@
                     {{ form_row(form.priority, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {{ form_row(form.taxGroups) }}
-            {{ form_row(form.customerGroups) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.customer, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            {{ form_row(form.countries) }}
             {{ form_row(form.taxes) }}
+            {{ form_row(form.notices) }}
         </div>
     </div>
     {{ form_rest(form) }}

@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -14,25 +13,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class TaxGroupType extends ResourceFormType
 {
-    /**
-     * @var string
-     */
-    private $taxRuleClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $taxGroupClass
-     * @param string $taxRuleClass
-     */
-    public function __construct($taxGroupClass, $taxRuleClass)
-    {
-        parent::__construct($taxGroupClass);
-
-        $this->taxRuleClass = $taxRuleClass;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -49,11 +29,9 @@ class TaxGroupType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
-            ->add('taxRules', ResourceType::class, [
-                'label'    => 'ekyna_commerce.tax_rule.label.plural',
-                'class'    => $this->taxRuleClass,
-                'multiple' => true,
-                'required' => false,
+            ->add('taxes', TaxChoiceType::class, [
+                'multiple'  => true,
+                'allow_new' => true,
             ]);
     }
 }

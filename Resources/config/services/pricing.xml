@@ -6,12 +6,16 @@
     <services>
 
         <!-- Tax resolver -->
-        <!-- TODO rename to 'ekyna_commerce.pricing.tax_resolver' -->
-        <service id="ekyna_commerce.tax.resolver"
+        <service id="ekyna_commerce.pricing.tax_resolver"
                  class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
-            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument type="service" id="ekyna_commerce.country.repository"/>
             <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
+        </service>
+
+        <!-- Pricing updater -->
+        <service id="ekyna_commerce.pricing.updater"
+                 class="Ekyna\Component\Commerce\Pricing\Updater\PricingUpdater">
+            <argument type="service" id="ekyna_commerce.pricing.api"/>
         </service>
 
         <!-- Pricing API -->

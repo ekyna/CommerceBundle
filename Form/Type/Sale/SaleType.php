@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -68,6 +69,17 @@ class SaleType extends ResourceFormType
                 'inherit_data'   => true,
                 'delivery'       => true,
                 'customer_field' => 'customer',
+            ])
+            ->add('vatNumber', VatNumberType::class, [
+                'label'    => 'ekyna_commerce.pricing.field.vat_number',
+                'required' => false,
+            ])
+            ->add('vatValid', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.pricing.field.vat_valid',
+                'required' => false,
+                'attr' => [
+                    'align_with_widget' => true,
+                ]
             ])
             ->add('preferredShipmentMethod', ShipmentMethodChoiceType::class)
             ->add('paymentTerm', PaymentTermChoiceType::class, [

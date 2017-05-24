@@ -995,5 +995,9 @@ ekyna_commerce:
             new: Nouvelle règle
             edit: Modifier la règle
             remove: Supprimer la règle
+        field:
+            customer: Particulier
+            business: Entreprise
+            notices: Mentions (facture)
         alert:
             no_item: Aucune règle de taxes configuré

@@ -361,10 +361,9 @@
         </service>
 
         <!-- Pricing form types -->
-        <service id="ekyna_commerce.tax_group.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupType">
-            <argument>%ekyna_commerce.tax_group.class%</argument>
-            <argument>%ekyna_commerce.tax_rule.class%</argument>
+        <service id="ekyna_commerce.tax_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxChoiceType">
+            <argument>%ekyna_commerce.tax.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.tax_group_choice.form_type"
@@ -372,29 +371,6 @@
             <argument>%ekyna_commerce.tax_group.class%</argument>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.tax_rule.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleType">
-            <argument>%ekyna_commerce.tax_rule.class%</argument>
-            <argument>%ekyna_commerce.tax.class%</argument>
-            <argument>%ekyna_commerce.customer_group.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <!-- TODO <service id="ekyna_commerce.tax_rule_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxRuleChoiceType">
-            <argument>%ekyna_commerce.tax_rule.class%</argument>
-            <tag name="form.type"/>
-        </service>-->
-        <service id="ekyna_commerce.tax.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxType">
-            <argument>%ekyna_commerce.tax.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <!-- TODO <service id="ekyna_commerce.tax_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\TaxChoiceType">
-            <argument>%ekyna_commerce.tax.class%</argument>
-            <tag name="form.type"/>
-        </service>-->
 
         <!-- Vat number form type -->
         <service id="ekyna_commerce.vat_number.form_type"

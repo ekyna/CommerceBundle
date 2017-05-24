@@ -44,7 +44,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      */
     public function install(Command $command, InputInterface $input, OutputInterface $output)
     {
-        $installer = new Installer($this->container->get('doctrine.orm.default_entity_manager'), $output);
+        $installer = new Installer($this->container->get('doctrine.orm.entity_manager'), $output);
 
         $output->writeln('<info>[Commerce] Installing countries:</info>');
         $countries = $this->container->getParameter('ekyna_commerce.default.countries');
@@ -56,8 +56,16 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $installer->installCurrencies($currencies);
         $output->writeln('');
 
-        $output->writeln('<info>[Commerce] Installing default tax group:</info>');
-        $installer->installTaxGroups();
+        $output->writeln('<info>[Commerce] Installing taxes:</info>');
+        $installer->installTaxes($countries);
+        $output->writeln('');
+
+        $output->writeln('<info>[Commerce] Installing tax group:</info>');
+        $installer->installTaxGroups($countries);
+        $output->writeln('');
+
+        $output->writeln('<info>[Commerce] Installing tax rules:</info>');
+        $installer->installTaxRules($countries);
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing default customer group:</info>');
@@ -309,6 +317,14 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             $position++;
         }
         $em->flush();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return 'ekyna_commerce';
     }
 
     /**
