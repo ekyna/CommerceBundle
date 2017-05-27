@@ -5,9 +5,14 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model;
+use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
+use Ekyna\Component\Table\Exception\InvalidArgumentException;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
+use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -22,42 +27,59 @@ class QuoteType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        if (null !== $customer = $options['customer']) {
+            $source = $builder->getSource();
+            if (!$source instanceof EntitySource) {
+                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+            }
+
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
+                $qb
+                    ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
+                    ->setParameter('customer', $customer);
+            });
+
+            $builder->setFilterable(false);
+        } else {
+            $builder
+                ->setExportable(true)
+                ->setConfigurable(true)
+                ->setProfileable(true);
+        }
+
         $builder
-            ->addColumn('number', 'anchor', [
+            ->addDefaultSort('createdAt', ColumnSort::DESC)
+            ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.number',
-                'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_quote_admin_show',
                 'route_parameters_map' => [
                     'quoteId' => 'id',
                 ],
                 'position'             => 10,
             ])
-            ->addColumn('voucherNumber', 'text', [
+            ->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'sortable' => true,
                 'position' => 30,
             ])
-            ->addColumn('grandTotal', 'price', [
+            ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.grand_total',
-                'sortable'      => true,
                 'currency_path' => 'currency.code',
                 'position'      => 40,
             ])
-            ->addColumn('paidTotal', 'price', [
+            ->addColumn('paidTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.paid_total',
-                'sortable'      => true,
                 'currency_path' => 'currency.code',
                 'position'      => 50,
             ])
-            ->addColumn('state', 'ekyna_commerce_sale_state', [
+            ->addColumn('state', Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
                 'position' => 60,
             ])
-            ->addColumn('paymentState', 'ekyna_commerce_payment_state', [
+            ->addColumn('paymentState', Column\PaymentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'position' => 70,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -79,28 +101,28 @@ class QuoteType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('number', 'text', [
+            ->addFilter('number', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
-            ->addFilter('voucherNumber', 'text', [
+            ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'position' => 30,
             ])
-            ->addFilter('granTotal', 'number', [
+            ->addFilter('granTotal', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.grand_total',
                 'position' => 40,
             ])
-            ->addFilter('paidTotal', 'number', [
+            ->addFilter('paidTotal', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.paid_total',
                 'position' => 50,
             ])
-            ->addFilter('state', 'choice', [
+            ->addFilter('state', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
                 'choices'  => Model\OrderStates::getChoices(),
                 'position' => 60,
             ])
-            ->addFilter('paymentState', 'choice', [
+            ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'choices'  => Model\PaymentStates::getChoices(),
                 'position' => 70,
@@ -108,23 +130,23 @@ class QuoteType extends ResourceTableType
 
         if (null === $options['customer']) {
             $builder
-                ->addColumn('customer', 'ekyna_commerce_sale_customer', [
+                ->addColumn('customer', Column\SaleCustomerType::class, [
                     'label'    => 'ekyna_commerce.customer.label.singular',
                     'position' => 20,
                 ])
-                ->addFilter('email', 'text', [
+                ->addFilter('email', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.email',
                     'position' => 20,
                 ])
-                ->addFilter('company', 'text', [
+                ->addFilter('company', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.company',
                     'position' => 21,
                 ])
-                ->addFilter('firstName', 'text', [
+                ->addFilter('firstName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.first_name',
                     'position' => 22,
                 ])
-                ->addFilter('lastName', 'text', [
+                ->addFilter('lastName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.last_name',
                     'position' => 23,
                 ]);
@@ -140,26 +162,6 @@ class QuoteType extends ResourceTableType
 
         $resolver
             ->setDefault('customer', null)
-            ->setDefault('default_sorts', ['createdAt DESC'])
-            ->setDefault('customize_qb', function (Options $options) {
-                if (null !== $customer = $options['customer']) {
-                    return function (QueryBuilder $qb, $alias) use ($customer) {
-                        $qb
-                            ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
-                            ->setParameter('customer', $customer);
-                    };
-                }
-
-                return null;
-            })
             ->setAllowedTypes('customer', ['null', CustomerInterface::class]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_quote';
     }
 }

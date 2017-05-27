@@ -111,12 +111,4 @@ class CartType extends ResourceTableType
             ]);
         }
     }*/
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_cart';
-    }
 }

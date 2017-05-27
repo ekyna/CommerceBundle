@@ -24,6 +24,7 @@ class CustomerAddressController extends ResourceController
     {
         $this->isGranted('VIEW');
 
+        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
         $customer = $this
             ->get('ekyna_commerce.customer.repository')
             ->find($request->attributes->get('customerId'));

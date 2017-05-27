@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
-use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\FormInterface;
@@ -14,14 +13,6 @@ use Symfony\Component\Form\FormInterface;
  */
 abstract class AbstractSaleController extends ResourceController
 {
-    /**
-     * @inheritdoc
-     */
-    protected function fetchChildrenResources(array &$data, Context $context)
-    {
-        return;
-    }
-
     /**
      * Builds the recalculate form.
      *

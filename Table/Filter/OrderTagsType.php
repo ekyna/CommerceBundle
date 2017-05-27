@@ -3,9 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
-use Ekyna\Component\Table\Extension\Core\Type\Filter\EntitiesType;
-use Ekyna\Component\Table\Util\FilterOperator;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Util\FilterUtil;
+use Ekyna\Component\Table\Context\ActiveFilter;
+use Ekyna\Component\Table\Exception\InvalidArgumentException;
+use Ekyna\Component\Table\Filter\AbstractFilterType;
+use Ekyna\Component\Table\Filter\FilterInterface;
+use Ekyna\Component\Table\Source\AdapterInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -13,8 +18,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Table\Filter
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderTagsType extends EntitiesType
+class OrderTagsType extends AbstractFilterType
 {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
     /**
      * @var string
      */
@@ -26,9 +36,34 @@ class OrderTagsType extends EntitiesType
      */
     public function __construct(EntityManagerInterface $em, $tagClass)
     {
-        parent::__construct($em);
-
+        $this->em = $em;
         $this->tagClass = $tagClass;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function applyFilter(AdapterInterface $adapter, FilterInterface $filter, ActiveFilter $activeFilter, array $options)
+    {
+        if (!$adapter instanceof EntityAdapter) {
+            throw new InvalidArgumentException("Expected instance of " . EntityAdapter::class);
+        }
+
+        $parameter = FilterUtil::buildParameterName('tags');
+        $operator = $activeFilter->getOperator();
+        $value = FilterUtil::buildParameterValue($operator, $activeFilter->getValue());
+
+        $qb = $adapter->getQueryBuilder();
+        $orExpr = $qb->expr()->orX();
+
+        foreach (['tags', 'itemsTags'] as $path) {
+            $property = $adapter->getQueryBuilderPath($path);
+            $orExpr->add(FilterUtil::buildExpression($property, $operator, $parameter));
+        }
+
+        $qb->andWhere($orExpr)->setParameter($parameter, $value);
+
+        return true;
     }
 
     /**
@@ -36,46 +71,18 @@ class OrderTagsType extends EntitiesType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
-
         $resolver->setDefaults([
-            'label'    => 'ekyna_cms.tag.label.plural',
-            'class'    => $this->tagClass,
-            'property' => 'name',
+            'label'        => 'ekyna_cms.tag.label.plural',
+            'class'        => $this->tagClass,
+            'entity_label' => 'name',
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function applyFilter(QueryBuilder $qb, array $data, array $options)
-    {
-        self::$filterCount++;
-        $alias = $qb->getRootAliases()[0];
-        $qb
-            ->andWhere($qb->expr()->orX(
-                FilterOperator::buildExpression(
-                    $alias . '.tags',
-                    $data['operator'],
-                    ':filter_' . self::$filterCount
-                ),
-                FilterOperator::buildExpression(
-                    $alias . '.itemsTags',
-                    $data['operator'],
-                    ':filter_' . self::$filterCount
-                )
-            ))
-            ->setParameter(
-                'filter_' . self::$filterCount,
-                FilterOperator::buildParameter($data['operator'], $data['value'])
-            );
     }
 
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getParent()
     {
-        return 'ekyna_commerce_order_tags';
+        return EntityType::class;
     }
 }

@@ -21,6 +21,6 @@ Feature: Edit supplier products
         And I press "supplier_product_actions_save"
         Then I should see the resource saved confirmation message
         And I should see "TechData"
-        And I show the "supplier-catalog" tab
+        #And I show the "supplier-catalog" tab
         And I should see "Samsung Galaxy Tab B"
         And I should see "S-GTAB-B"

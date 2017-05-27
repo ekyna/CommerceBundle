@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Table\Type;
 
 /**
  * Class CustomerController
@@ -38,52 +39,44 @@ class CustomerController extends ResourceController
     /**
      * @inheritDoc
      */
-    protected function buildShowData(
-        /** @noinspection PhpUnusedParameterInspection */
-        array &$data,
-        /** @noinspection PhpUnusedParameterInspection */
-        Context $context
-    ) {
+    protected function buildShowData(array &$data, Context $context)
+    {
         $request = $context->getRequest();
         $customer = $context->getResource();
 
-        // Children
-        $children = $this
-            ->getTableFactory()
-            ->createBuilder('ekyna_commerce_customer', [
-                'name'       => 'ekyna_commerce_customer_children',
-                'sortable'   => false,
-                'filterable' => false,
-                'parent'     => $customer,
-            ])
-            ->getTable($request);
+        $tables = [
+            'children' => [
+                'type' => Type\CustomerType::class,
+                'options' => [
+                    'parent' => $customer,
+                ]
+            ],
+            'quotes' => [
+                'type' => Type\QuoteType::class,
+                'options' => [
+                    'customer' => $customer,
+                ]
+            ],
+            'orders' => [
+                'type' => Type\OrderType::class,
+                'options' => [
+                    'customer' => $customer,
+                ]
+            ],
+        ];
 
-        $data['children'] = $children->createView();
+        foreach ($tables as $name => $config) {
+            $table = $this
+                ->getTableFactory()
+                ->createTable($name, $config['type'], $config['options']);
 
-        // Quotes
-        $quotes = $this
-            ->getTableFactory()
-            ->createBuilder('ekyna_commerce_quote', [
-                'name'       => 'ekyna_commerce_customer_quote',
-                'sortable'   => false,
-                'filterable' => false,
-                'customer'   => $customer,
-            ])
-            ->getTable();
+            if (null !== $response = $table->handleRequest($request)) {
+                return $response;
+            }
 
-        $data['quotes'] = $quotes->createView();
+            $data[$name] = $table->createView();
+        }
 
-        // Orders
-        $orders = $this
-            ->getTableFactory()
-            ->createBuilder('ekyna_commerce_order', [
-                'name'       => 'ekyna_commerce_customer_order',
-                'sortable'   => false,
-                'filterable' => false,
-                'customer'   => $customer,
-            ])
-            ->getTable();
-
-        $data['orders'] = $orders->createView();
+        return null;
     }
 }

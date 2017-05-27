@@ -3,6 +3,10 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Common\Entity\Country;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,30 +22,29 @@ class TaxType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('name', 'anchor', [
+            ->addColumn('name', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.name',
-                'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_tax_admin_show',
                 'route_parameters_map' => [
                     'taxId' => 'id',
                 ],
                 'position'             => 10,
             ])
-            ->addColumn('rate', 'number', [
+            ->addColumn('rate', CType\Column\NumberType::class, [
                 'label'    => 'ekyna_core.field.rate',
-                'sortable' => true,
                 'position' => 20,
+                'append'   => '%',
             ])
-            ->addColumn('country', 'anchor', [
+            ->addColumn('country', DType\Column\EntityType::class, [
                 'label'                => 'ekyna_core.field.country',
-                'sortable'             => true,
+                'entity_label'         => 'name',
                 'route_name'           => 'ekyna_commerce_country_admin_show',
                 'route_parameters_map' => [
-                    'countryId' => 'country.id',
+                    'countryId' => 'id',
                 ],
                 'position'             => 30,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -63,27 +66,19 @@ class TaxType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('name', 'text', [
+            ->addFilter('name', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.name',
                 'position' => 10,
             ])
-            ->addFilter('rate', 'number', [
+            ->addFilter('rate', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_core.field.rate',
                 'position' => 20,
             ])
-            /* TODO ->addFilter('country', 'entity', [
-                'label'    => 'ekyna_core.field.country',
-                'class'    => $this->countryClass,
-                'property' => 'name',
-                'position' => 30,
-            ])*/;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_tax';
+            ->addFilter('country', DType\Filter\EntityType::class, [
+                'label'        => 'ekyna_core.field.country',
+                'class'        => Country::class,
+                'entity_label' => 'name',
+                'position'     => 30,
+            ]);
     }
 }

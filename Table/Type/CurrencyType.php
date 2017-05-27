@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,7 +20,7 @@ class CurrencyType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('name', 'anchor', [
+            ->addColumn('name', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.name',
                 'property_path'        => null,
                 'sortable'             => true,
@@ -26,12 +28,12 @@ class CurrencyType extends ResourceTableType
                 'route_parameters_map' => ['currencyId' => 'id'],
                 'position'             => 10,
             ])
-            ->addColumn('code', 'text', [
+            ->addColumn('code', CType\Column\TextType::class, [
                 'label'    => 'ekyna_core.field.code',
                 'sortable' => true,
                 'position' => 20,
             ])
-            ->addColumn('enabled', 'boolean', [
+            ->addColumn('enabled', CType\Column\BooleanType::class, [
                 'label'                => 'ekyna_core.field.enabled',
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_currency_admin_toggle',
@@ -39,7 +41,7 @@ class CurrencyType extends ResourceTableType
                 'route_parameters_map' => ['currencyId' => 'id'],
                 'position'             => 30,
             ])
-            ->addColumn('default', 'boolean', [
+            ->addColumn('default', CType\Column\BooleanType::class, [
                 'label'                 => 'ekyna_core.field.default',
                 'sortable'              => true,
                 'route_name'            => 'ekyna_commerce_currency_admin_toggle',
@@ -50,7 +52,7 @@ class CurrencyType extends ResourceTableType
                 'disable_property_path' => 'default',
                 'position'              => 40,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -68,30 +70,21 @@ class CurrencyType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('id', 'number')
-            ->addFilter('name', 'text', [
+            ->addFilter('name', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.name',
                 'position' => 10,
             ])
-            ->addFilter('code', 'text', [
+            ->addFilter('code', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.code',
                 'position' => 20,
             ])
-            ->addFilter('enabled', 'boolean', [
+            ->addFilter('enabled', CType\Filter\BooleanType::class, [
                 'label'    => 'ekyna_core.field.enabled',
                 'position' => 30,
             ])
-            ->addFilter('default', 'boolean', [
+            ->addFilter('default', CType\Filter\BooleanType::class, [
                 'label'    => 'ekyna_core.field.default',
                 'position' => 40,
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_currency';
     }
 }

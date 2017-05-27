@@ -19,7 +19,6 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints;
 
@@ -65,12 +64,8 @@ class SaleController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    protected function buildShowData(
-        /** @noinspection PhpUnusedParameterInspection */
-        array &$data,
-        /** @noinspection PhpUnusedParameterInspection */
-        Context $context
-    ) {
+    protected function buildShowData(array &$data, Context $context)
+    {
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource();
 

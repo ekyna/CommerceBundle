@@ -10,7 +10,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType">
             <argument>%ekyna_commerce.customer.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
-            <tag name="table.type" alias="ekyna_commerce_customer"/>
+            <tag name="table.type"/>
         </service>
 
         <!-- Order table type -->
@@ -18,64 +18,72 @@
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderType"><!-- TODO use parameter defined by config builder -->
             <argument>%ekyna_commerce.order.class%</argument>
             <argument>%ekyna_cms.tag.class%</argument>
-            <tag name="table.type" alias="ekyna_commerce_order"/>
+            <tag name="table.type"/>
         </service>
 
         <!-- Customer column type -->
         <service id="ekyna_commerce.order_customer.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_sale_customer"/>
+            <tag name="table.column_type"/>
         </service>
 
         <!-- Order state column type -->
         <service id="ekyna_commerce.order_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_sale_state"/>
+            <tag name="table.column_type"/>
         </service>
 
         <!-- Payment state column type -->
         <service id="ekyna_commerce.payment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_payment_state"/>
+            <tag name="table.column_type"/>
         </service>
 
         <!-- Shipment state column type -->
         <service id="ekyna_commerce.shipment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_shipment_state"/>
+            <tag name="table.column_type"/>
         </service>
 
         <!-- Stock subject state column type -->
         <service id="ekyna_commerce.stock_subject_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\StockSubjectStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_stock_subject_state"/>
+            <tag name="table.column_type"/>
         </service>
 
         <!-- Stock subject mode column type -->
         <service id="ekyna_commerce.stock_subject_mode.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\StockSubjectModeType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_stock_subject_mode"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Supplier order table type -->
+        <service id="ekyna_commerce.supplier_order.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\SupplierOrderType"><!-- TODO use parameter defined by config builder -->
+            <argument>%ekyna_commerce.supplier_order.class%</argument>
+            <argument>%ekyna_commerce.supplier.class%</argument>
+            <tag name="table.type"/>
         </service>
 
         <!-- Supplier order state column type -->
         <service id="ekyna_commerce.supplier_order_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <tag name="table.column_type" alias="ekyna_commerce_supplier_order_state"/>
+            <tag name="table.column_type"/>
         </service>
 
         <!-- Order tags filter type -->
         <service id="ekyna_commerce.order.tags.filter_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Filter\OrderTagsType">
-            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument>%ekyna_cms.tag.class%</argument>
-            <tag name="table.filter_type" alias="ekyna_commerce_order_tags" />
+            <tag name="table.filter_type"/>
         </service>
 
     </services>

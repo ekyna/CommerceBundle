@@ -4,6 +4,10 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
+use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -14,12 +18,31 @@ use Ekyna\Component\Table\TableBuilderInterface;
 class SupplierOrderType extends ResourceTableType
 {
     /**
+     * @var string
+     */
+    private $supplierClass;
+
+
+    /**
+     * Constructor.
+     *
+     * @param string $supplierOrderClass
+     * @param string $supplierClass
+     */
+    public function __construct($supplierOrderClass, $supplierClass)
+    {
+        parent::__construct($supplierOrderClass);
+
+        $this->supplierClass = $supplierClass;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('number', 'anchor', [
+            ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.number',
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_supplier_order_admin_show',
@@ -28,11 +51,20 @@ class SupplierOrderType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
-            ->addColumn('state', 'ekyna_commerce_supplier_order_state', [
-                'label'    => 'ekyna_commerce.supplier_order.field.state',
-                'position' => 20,
+            ->addColumn('supplier', DType\Column\EntityType::class, [
+                'label'                => 'ekyna_commerce.supplier.label.singular',
+                'entity_label'         => 'name',
+                'route_name'           => 'ekyna_commerce_supplier_admin_show',
+                'route_parameters_map' => [
+                    'supplierId' => 'id',
+                ],
+                'position'             => 20,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('state', SupplierOrderStateType::class, [
+                'label'    => 'ekyna_commerce.supplier_order.field.state',
+                'position' => 30,
+            ])
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -54,22 +86,20 @@ class SupplierOrderType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('number', 'text', [
+            ->addFilter('number', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
-            ->addFilter('state', 'choice', [
+            ->addFilter('supplier', DType\Filter\EntityType::class, [
+                'label'        => 'ekyna_commerce.supplier.label.singular',
+                'class'        => $this->supplierClass,
+                'entity_label' => 'name',
+                'position'     => 10,
+            ])
+            ->addFilter('state', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.state',
                 'choices'  => SupplierOrderStates::getChoices(),
                 'position' => 20,
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_supplier_order';
     }
 }

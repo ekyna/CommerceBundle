@@ -4,10 +4,17 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
+use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Bundle\CommerceBundle\Table\Filter\OrderTagsType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
+use Ekyna\Component\Table\Exception\InvalidArgumentException;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
+use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -22,55 +29,71 @@ class OrderType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        if (null !== $customer = $options['customer']) {
+            $source = $builder->getSource();
+            if (!$source instanceof EntitySource) {
+                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+            }
+
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
+                $qb
+                    ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
+                    ->setParameter('customer', $customer);
+            });
+
+            $builder->setFilterable(false);
+        } else {
+            $builder
+                ->setExportable(true)
+                ->setConfigurable(true)
+                ->setProfileable(true);
+        }
+
         $builder
-            ->addColumn('number', 'anchor', [
+            ->addDefaultSort('createdAt', ColumnSort::DESC)
+            ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.number',
-                'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_order_admin_show',
                 'route_parameters_map' => [
                     'orderId' => 'id',
                 ],
                 'position'             => 10,
             ])
-            ->addColumn('voucherNumber', 'text', [
+            ->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'sortable' => true,
                 'position' => 30,
             ])
-            ->addColumn('originNumber', 'text', [
+            ->addColumn('originNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.origin_number',
-                'sortable' => true,
                 'position' => 40,
             ])
-            ->addColumn('grandTotal', 'price', [
+            ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.grand_total',
-                'sortable'      => true,
                 'currency_path' => 'currency.code',
                 'position'      => 50,
             ])
-            ->addColumn('paidTotal', 'price', [
+            ->addColumn('paidTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.paid_total',
-                'sortable'      => true,
                 'currency_path' => 'currency.code',
                 'position'      => 60,
             ])
-            ->addColumn('state', 'ekyna_commerce_sale_state', [
+            ->addColumn('state', Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
                 'position' => 70,
             ])
-            ->addColumn('paymentState', 'ekyna_commerce_payment_state', [
+            ->addColumn('paymentState', Column\PaymentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'position' => 80,
             ])
-            ->addColumn('shipmentState', 'ekyna_commerce_shipment_state', [
+            ->addColumn('shipmentState', Column\ShipmentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.shipment_state',
                 'position' => 90,
             ])
-            ->addColumn('tags', 'ekyna_cms_tags', [
+            ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
                 'position'      => 100,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -92,65 +115,65 @@ class OrderType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('number', 'text', [
+            ->addFilter('number', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
-            ->addFilter('voucherNumber', 'text', [
+            ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'position' => 30,
             ])
-            ->addFilter('originNumber', 'text', [
+            ->addFilter('originNumber', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.origin_number',
                 'position' => 40,
             ])
-            ->addFilter('granTotal', 'number', [
+            ->addFilter('granTotal', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.grand_total',
                 'position' => 50,
             ])
-            ->addFilter('paidTotal', 'number', [
+            ->addFilter('paidTotal', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.paid_total',
                 'position' => 60,
             ])
-            ->addFilter('state', 'choice', [
+            ->addFilter('state', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
                 'choices'  => Model\OrderStates::getChoices(),
                 'position' => 70,
             ])
-            ->addFilter('paymentState', 'choice', [
+            ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'choices'  => Model\PaymentStates::getChoices(),
                 'position' => 80,
             ])
-            ->addFilter('shipmentState', 'choice', [
+            ->addFilter('shipmentState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.shipment_state',
                 'choices'  => Model\ShipmentStates::getChoices(),
                 'position' => 90,
             ])
-            ->addFilter('tags', 'ekyna_commerce_order_tags', [
+            ->addFilter('tags', OrderTagsType::class, [
                 'label'    => 'ekyna_cms.tag.label.plural',
                 'position' => 100,
             ]);
 
         if (null === $options['customer']) {
             $builder
-                ->addColumn('customer', 'ekyna_commerce_sale_customer', [
+                ->addColumn('customer', Column\SaleCustomerType::class, [
                     'label'    => 'ekyna_commerce.customer.label.singular',
                     'position' => 20,
                 ])
-                ->addFilter('email', 'text', [
+                ->addFilter('email', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.email',
                     'position' => 20,
                 ])
-                ->addFilter('company', 'text', [
+                ->addFilter('company', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.company',
                     'position' => 21,
                 ])
-                ->addFilter('firstName', 'text', [
+                ->addFilter('firstName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.first_name',
                     'position' => 22,
                 ])
-                ->addFilter('lastName', 'text', [
+                ->addFilter('lastName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.last_name',
                     'position' => 23,
                 ]);
@@ -166,26 +189,6 @@ class OrderType extends ResourceTableType
 
         $resolver
             ->setDefault('customer', null)
-            ->setDefault('default_sorts', ['createdAt DESC'])
-            ->setDefault('customize_qb', function (Options $options) {
-                if (null !== $customer = $options['customer']) {
-                    return function (QueryBuilder $qb, $alias) use ($customer) {
-                        $qb
-                            ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
-                            ->setParameter('customer', $customer);
-                    };
-                }
-
-                return null;
-            })
             ->setAllowedTypes('customer', ['null', CustomerInterface::class]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_order';
     }
 }

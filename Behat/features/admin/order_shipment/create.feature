@@ -6,12 +6,6 @@ Feature: Create order shipments
 
     Background:
         Given I am logged in as an administrator
-        And The following taxes:
-            | name    | rate | country |
-            | TVA 20% | 20   | fr      |
-        And The following tax rules:
-            | name       | taxes   |
-            | TVA France | TVA 20% |
         And The following shipment zones:
             | name         | countries |
             | France métro | FR        |

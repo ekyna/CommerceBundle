@@ -81,12 +81,4 @@ class SupplierDeliveryType extends ResourceTableType
                 'position' => 30,
             ])*/;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_supplier_delivery';
-    }
 }

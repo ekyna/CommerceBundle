@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,7 +20,7 @@ class TaxGroupType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('name', 'anchor', [
+            ->addColumn('name', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.name',
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_tax_group_admin_show',
@@ -27,12 +29,12 @@ class TaxGroupType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
-            ->addColumn('default', 'boolean', [
+            ->addColumn('default', CType\Column\BooleanType::class, [
                 'label'    => 'ekyna_core.field.default',
                 'sortable' => true,
                 'position' => 20,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -54,21 +56,13 @@ class TaxGroupType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('name', 'text', [
+            ->addFilter('name', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.name',
                 'position' => 10,
             ])
-            ->addFilter('default', 'boolean', [
+            ->addFilter('default', CType\Filter\BooleanType::class, [
                 'label'    => 'ekyna_core.field.default',
                 'position' => 20,
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_tax_group';
     }
 }

@@ -3,9 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
-use Ekyna\Component\Table\Table;
-use Ekyna\Component\Table\View\Cell;
+use Ekyna\Component\Table\Column\AbstractColumnType;
+use Ekyna\Component\Table\Column\ColumnInterface;
+use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
+use Ekyna\Component\Table\Source\RowInterface;
+use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -13,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class StockSubjectStateType extends TextType
+class StockSubjectStateType extends AbstractColumnType
 {
     /**
      * @var \Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper
@@ -32,16 +34,11 @@ class StockSubjectStateType extends TextType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function buildViewCell(Cell $cell, Table $table, array $options)
+    public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        parent::buildViewCell($cell, $table, $options);
-
-        $cell->setVars([
-            'type'  => 'text',
-            'value' => $this->constantHelper->renderStockSubjectStateBadge($table->getCurrentRowData()),
-        ]);
+        $view->vars['value'] = $this->constantHelper->renderStockSubjectStateBadge($view->vars['value']);
     }
 
     /**
@@ -49,16 +46,22 @@ class StockSubjectStateType extends TextType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
-
         $resolver->setDefault('label', 'ekyna_commerce.stock_subject.field.state');
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getName()
+    public function getBlockPrefix()
     {
-        return 'ekyna_commerce_stock_subject_state';
+        return 'text';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getParent()
+    {
+        return PropertyType::class;
     }
 }

@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,7 +20,7 @@ class PaymentTermType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('name', 'anchor', [
+            ->addColumn('name', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.name',
                 'route_name'           => 'ekyna_commerce_payment_term_admin_show',
                 'route_parameters_map' => [
@@ -26,16 +28,16 @@ class PaymentTermType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
-            ->addColumn('days', 'number', [
+            ->addColumn('days', CType\Column\NumberType::class, [
                 'label'     => 'ekyna_commerce.payment_term.field.days',
                 'precision' => 0,
                 'position'  => 20,
             ])
-            ->addColumn('endOfMonth', 'boolean', [
+            ->addColumn('endOfMonth', CType\Column\BooleanType::class, [
                 'label'    => 'ekyna_commerce.payment_term.field.end_of_month',
                 'position' => 30,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -53,13 +55,5 @@ class PaymentTermType extends ResourceTableType
                     ],
                 ],
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_payment_term';
     }
 }

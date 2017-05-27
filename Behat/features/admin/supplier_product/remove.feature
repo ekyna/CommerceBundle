@@ -20,7 +20,7 @@ Feature: Remove supplier products
         And I press "form[actions][remove]"
         Then I should see the resource removed confirmation message
         And I should see "TechData"
-        And I show the "supplier-catalog" tab
+        #And I show the "supplier-catalog" tab
         And I should not see "Samsung Galaxy Tab A"
 
     # TODO Scenario: Remove a supplier product used by a supplier order (should be prevented)

@@ -9,12 +9,6 @@ Feature: Create order items
         And The following acme products:
             | designation | reference | price | weight |
             | iPad Air    | IPAD-AIR  | 290   | 0.8    |
-        And The following taxes:
-            | name    | rate | country |
-            | TVA 20% | 20   | fr      |
-        And The following tax rules:
-            | name       | taxes   |
-            | TVA France | TVA 20% |
         And The following shipment zones:
             | name         | countries |
             | France métro | FR        |
@@ -71,6 +65,6 @@ Feature: Create order items
 
 
         #And I should see "TVA France - marchandises et services" in the "#tax_rule_name" element
-        #And I should see "Default tax group" in the "#tax_rule_taxGroups" element
+        #And I should see "Taux normal" in the "#tax_rule_taxGroups" element
         #And I should see "Default customer group" in the "#tax_rule_customerGroups" element
         #And I should see "TVA 20%" in the "#tax_rule_taxes" element

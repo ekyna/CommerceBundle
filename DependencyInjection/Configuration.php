@@ -276,7 +276,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerAddressRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType')->end()
-                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerAddressType')->end()
+                                ->scalarNode('table')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.customer')->end()
                                 ->scalarNode('event')->end()
                             ->end()
@@ -609,7 +609,7 @@ class Configuration implements ConfigurationInterface
                                     'show.html'  => 'EkynaCommerceBundle:Admin/Supplier:show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\Supplier')->end()
-                                ->scalarNode('controller')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SupplierController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierType')->end()
@@ -788,7 +788,7 @@ class Configuration implements ConfigurationInterface
                                     'show.html'  => 'EkynaCommerceBundle:Admin/Tax:show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\Tax')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxController')->end()
+                                ->scalarNode('controller')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxType')->end()
@@ -805,7 +805,7 @@ class Configuration implements ConfigurationInterface
                                     'show.html'  => 'EkynaCommerceBundle:Admin/TaxGroup:show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\TaxGroup')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxGroupController')->end()
+                                ->scalarNode('controller')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxGroupRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupType')->end()
@@ -822,7 +822,7 @@ class Configuration implements ConfigurationInterface
                                     'show.html'  => 'EkynaCommerceBundle:Admin/TaxRule:show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\TaxRule')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxRuleController')->end()
+                                ->scalarNode('controller')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxRuleRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleType')->end()

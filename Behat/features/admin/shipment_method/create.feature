@@ -16,7 +16,7 @@ Feature: Create shipment methods
 
         And I wait for Select2 initialization on "shipment_method[taxGroup]"
         And I fill in "shipment_method[name]" with "GLS"
-        And I select "Default tax group" from "shipment_method[taxGroup]"
+        And I select "Taux normal" from "shipment_method[taxGroup]"
         And I check "shipment_method[available]"
         And I check "shipment_method[enabled]"
         And I select "France métropolitaine" from "shipment_method[pricing][filter]"
@@ -38,7 +38,7 @@ Feature: Create shipment methods
         Then I should see the resource saved confirmation message
         # Order assertions
         And I should see "GLS" in the "#shipment_method_name" element
-        And I should see "Default tax group" in the "#shipment_method_taxGroup" element
+        And I should see "Taux normal" in the "#shipment_method_taxGroup" element
         And I should see "Oui" in the "#shipment_method_available" element
         And I should see "Oui" in the "#shipment_method_enabled" element
         And I select "France métropolitaine" from "shipment-price-filter"

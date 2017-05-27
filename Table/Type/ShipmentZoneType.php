@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,7 +19,7 @@ class ShipmentZoneType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('name', 'anchor', [
+            ->addColumn('name', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.name',
                 'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_shipment_zone_admin_show',
@@ -27,7 +28,7 @@ class ShipmentZoneType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -45,13 +46,5 @@ class ShipmentZoneType extends ResourceTableType
                     ],
                 ],
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_shipment_zone';
     }
 }

@@ -4,9 +4,12 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -40,53 +43,73 @@ class CustomerType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        if (null !== $parent = $options['parent']) {
+            $source = $builder->getSource();
+            if ($source instanceof EntitySource) {
+                $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($parent) {
+                    $qb
+                        ->andWhere($qb->expr()->eq($alias . '.parent', ':parent'))
+                        ->setParameter('parent', $parent);
+                });
+            }
+
+            $builder->setFilterable(false);
+        } else {
+            $builder
+                ->setExportable(true)
+                ->setConfigurable(true)
+                ->setProfileable(true)
+                ->addColumn('company', CType\Column\TextType::class, [
+                    'label'    => 'ekyna_core.field.company',
+                    'position' => 30,
+                ])
+                ->addFilter('company', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.company',
+                    'position' => 30,
+                ]);
+        }
+
         $builder
-            ->addColumn('number', 'anchor', [
+            ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.number',
                 'route_name'           => 'ekyna_commerce_customer_admin_show',
                 'route_parameters_map' => ['customerId' => 'id'],
                 'position'             => 10,
             ])
-            ->addColumn('name', 'text', [
+            ->addColumn('name', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.name',
-                'property_path' => null,
+                'property_path' => false,
                 'position'      => 20,
             ])
-            ->addColumn('email', 'text', [
+            ->addColumn('email', CType\Column\TextType::class, [
                 'label'    => 'ekyna_core.field.email',
-                'sortable' => true,
                 'position' => 40,
             ])
-            ->addColumn('customerGroup', 'anchor', [
+            ->addColumn('customerGroup', DType\Column\EntityType::class, [
                 'label'                => 'ekyna_commerce.customer_group.label.singular',
-                'property_path'        => 'customerGroup.name',
-                'sortable'             => false,
+                'entity_label'         => 'name',
                 'route_name'           => 'ekyna_commerce_customer_group_admin_show',
-                'route_parameters_map' => ['customerGroupId' => 'customerGroup.id'],
+                'route_parameters_map' => ['customerGroupId' => 'id'],
                 'position'             => 50,
             ])
-            ->addColumn('creditBalance', 'number', [
+            ->addColumn('creditBalance', CType\Column\NumberType::class, [
                 'label'    => 'ekyna_commerce.customer.field.credit_balance',
-                'sortable' => false,
                 'position' => 60,
             ])
-            ->addColumn('outstandingBalance', 'number', [
+            ->addColumn('outstandingBalance', CType\Column\NumberType::class, [
                 'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
-                'sortable' => false,
                 'position' => 70,
             ])
-            ->addColumn('outstandingLimit', 'number', [
+            ->addColumn('outstandingLimit', CType\Column\NumberType::class, [
                 'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
-                'sortable' => false,
                 'position' => 80,
             ])
-            ->addColumn('createdAt', 'datetime', [
+            ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',
-                'sortable'    => true,
                 'position'    => 90,
                 'time_format' => 'none',
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -104,58 +127,44 @@ class CustomerType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('id', 'number')
-            ->addFilter('number', 'text', [
+            ->addFilter('number', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
-            ->addFilter('firstName', 'text', [
+            ->addFilter('firstName', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.first_name',
                 'position' => 20,
             ])
-            ->addFilter('lastName', 'text', [
+            ->addFilter('lastName', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.last_name',
                 'position' => 25,
             ])
-            ->addFilter('email', 'text', [
+            ->addFilter('email', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.email',
                 'position' => 40,
             ])
-            ->addFilter('customerGroup', 'entity', [
-                'label'    => 'ekyna_core.field.group',
-                'class'    => $this->customerGroupClass,
-                'property' => 'name',
-                'position' => 50,
+            ->addFilter('customerGroup', DType\Filter\EntityType::class, [
+                'label'        => 'ekyna_core.field.group',
+                'class'        => $this->customerGroupClass,
+                'entity_label' => 'name',
+                'position'     => 50,
             ])
-            ->addFilter('creditBalance', 'number', [
+            ->addFilter('creditBalance', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.customer.field.credit_balance',
                 'position' => 60,
             ])
-            ->addFilter('outstandingBalance', 'number', [
+            ->addFilter('outstandingBalance', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
                 'position' => 70,
             ])
-            ->addFilter('outstandingLimit', 'number', [
+            ->addFilter('outstandingLimit', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
                 'position' => 80,
             ])
-            ->addFilter('createdAt', 'datetime', [
+            ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.created_at',
                 'position' => 90,
             ]);
-
-        if (null === $options['parent']) {
-            $builder
-                ->addColumn('company', 'text', [
-                    'label'    => 'ekyna_core.field.company',
-                    'sortable' => true,
-                    'position' => 30,
-                ])
-                ->addFilter('company', 'text', [
-                    'label'    => 'ekyna_core.field.company',
-                    'position' => 30,
-                ]);
-        }
     }
 
     /**
@@ -167,25 +176,6 @@ class CustomerType extends ResourceTableType
 
         $resolver
             ->setDefault('parent', null)
-            ->setDefault('customize_qb', function (Options $options) {
-                if (null !== $parent = $options['parent']) {
-                    return function (QueryBuilder $qb, $alias) use ($parent) {
-                        $qb
-                            ->andWhere($qb->expr()->eq($alias . '.parent', ':parent'))
-                            ->setParameter('parent', $parent);
-                    };
-                }
-
-                return null;
-            })
             ->setAllowedTypes('parent', ['null', CustomerInterface::class]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_customer';
     }
 }

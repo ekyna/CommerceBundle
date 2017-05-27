@@ -3,6 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -18,17 +21,14 @@ class CustomerGroupType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('name', 'anchor', [
+            ->addColumn('name', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.name',
-                'property_path'        => null,
-                'sortable'             => true,
                 'route_name'           => 'ekyna_commerce_customer_group_admin_show',
                 'route_parameters_map' => ['customerGroupId' => 'id'],
                 'position'             => 10,
             ])
-            ->addColumn('default', 'boolean', [
+            ->addColumn('default', CType\Column\BooleanType::class, [
                 'label'                 => 'ekyna_core.field.default',
-                'sortable'              => true,
                 'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
                 'route_parameters'      => ['field' => 'default'],
                 'route_parameters_map'  => ['customerGroupId' => 'id'],
@@ -37,7 +37,7 @@ class CustomerGroupType extends ResourceTableType
                 'disable_property_path' => 'default',
                 'position'              => 20,
             ])
-            ->addColumn('actions', 'admin_actions', [
+            ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -55,8 +55,7 @@ class CustomerGroupType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('id', 'number')
-            ->addFilter('name', 'text', [
+            ->addFilter('name', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.name',
                 'position' => 10,
             ]);
