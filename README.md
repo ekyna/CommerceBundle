@@ -1,7 +1,7 @@
 CommerceBundle
 ==============
 
-Commerce management.
+Commerce component integration.
 
 ## Instation
 TODO

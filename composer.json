@@ -1,36 +1,35 @@
 {
-    "name" : "ekyna/commerce-bundle",
-    "description" : "Commerce management",
-    "type" : "symfony-bundle",
-    "authors" : [{
-            "name" : "Etienne Dauvergne",
-            "homepage" : "http://ekyna.com"
+    "name": "ekyna/commerce-bundle",
+    "description": "Commerce management",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Etienne Dauvergne",
+            "homepage": "http://ekyna.com"
         }
     ],
-    "keywords" : [
-        "symfony2",
+    "keywords": [
+        "symfony",
         "commerce",
         "bundle"
     ],
-    "homepage" : "https://github.com/ekyna/CommerceBundle",
-    "license" : [
-        "MIT"
-    ],
-    "require" : {
-        "php" : ">=5.5.9",
-        "ekyna/media-bundle" : "0.6.x-dev",
-        "ekyna/cms-bundle" : "0.6.x-dev",
-        "ekyna/commerce" : "0.6.x-dev",
+    "homepage": "https://github.com/ekyna/CommerceBundle",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0",
+        "ekyna/cms-bundle": "0.7.x-dev",
+        "ekyna/commerce": "0.7.x-dev",
         "misd/phone-number-bundle": "^1.2",
         "payum/payum-bundle": "^2.1.1",
         "payum/offline": "^1.3",
         "php-http/guzzle6-adapter": "^1.1",
         "behat/transliterator": "~1.1"
     },
-    "autoload" : {
-        "psr-4" : {
-            "Ekyna\\Bundle\\CommerceBundle\\" : "",
-            "Acme\\ProductBundle\\": "src/Ekyna/Bundle/CommerceBundle/Behat/app/Acme/ProductBundle"
+    "autoload": {
+        "psr-4": {
+            "Ekyna\\Bundle\\CommerceBundle\\Behat\\Context\\": "Behat/Context/",
+            "Ekyna\\Bundle\\CommerceBundle\\": "",
+            "Acme\\ProductBundle\\": "Behat/app/Acme/ProductBundle/"
         }
     }
 }
