@@ -1,0 +1,19 @@
+ekyna_commerce_account_registration:
+    resource: "account/registration.yml"
+    prefix:   /registration
+
+ekyna_commerce_account_information:
+    resource: "account/information.yml"
+    prefix:   /information
+
+ekyna_commerce_account_address:
+    resource: "account/address.yml"
+    prefix:   /addresses
+
+ekyna_commerce_account_quote:
+    resource: "account/quote.yml"
+    prefix:   /quotes
+
+ekyna_commerce_account_order:
+    resource: "account/order.yml"
+    prefix:   /orders

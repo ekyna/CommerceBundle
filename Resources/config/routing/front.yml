@@ -13,22 +13,6 @@ ekyna_commerce_cart_checkout:
     resource: "front/cart-checkout.yml"
     prefix:   /my-cart
 
-ekyna_commerce_account_registration:
-    resource: "front/account/registration.yml"
-    prefix:   /my-account/registration
-
-ekyna_commerce_account_information:
-    resource: "front/account/information.yml"
-    prefix:   /my-account/information
-
-ekyna_commerce_account_address:
-    resource: "front/account/address.yml"
-    prefix:   /my-account/addresses
-
-ekyna_commerce_account_quote:
-    resource: "front/account/quote.yml"
-    prefix:   /my-account/quotes
-
-ekyna_commerce_account_order:
-    resource: "front/account/order.yml"
-    prefix:   /my-account/orders
+ekyna_commerce_account:
+    resource: "front/account.yml"
+    prefix:   /my-account
