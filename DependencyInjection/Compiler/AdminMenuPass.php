@@ -48,18 +48,41 @@ class AdminMenuPass implements CompilerPassInterface
 
         // Customers
         $pool->addMethodCall('createEntry', ['sales', [
-            'name'     => 'customer_groups',
-            'route'    => 'ekyna_commerce_customer_group_admin_home',
-            'label'    => 'ekyna_commerce.customer_group.label.plural',
-            'resource' => 'ekyna_commerce_customer_group',
-            'position' => 10,
-        ]]);
-        $pool->addMethodCall('createEntry', ['sales', [
             'name'     => 'customers',
             'route'    => 'ekyna_commerce_customer_admin_home',
             'label'    => 'ekyna_commerce.customer.label.plural',
             'resource' => 'ekyna_commerce_customer',
+            'position' => 10,
+        ]]);
+        $pool->addMethodCall('createEntry', ['sales', [
+            'name'     => 'customer_groups',
+            'route'    => 'ekyna_commerce_customer_group_admin_home',
+            'label'    => 'ekyna_commerce.customer_group.label.plural',
+            'resource' => 'ekyna_commerce_customer_group',
             'position' => 11,
+        ]]);
+
+        // Lists
+        $pool->addMethodCall('createEntry', ['sales', [
+            'name'     => 'order_invoices',
+            'route'    => 'ekyna_commerce_admin_order_list_invoice',
+            'label'    => 'ekyna_commerce.order_invoice.label.plural',
+            'resource' => 'ekyna_commerce_order_invoice',
+            'position' => 20,
+        ]]);
+        $pool->addMethodCall('createEntry', ['sales', [
+            'name'     => 'order_payments',
+            'route'    => 'ekyna_commerce_admin_order_list_payment',
+            'label'    => 'ekyna_commerce.payment.label.plural',
+            'resource' => 'ekyna_commerce_order_payment',
+            'position' => 21,
+        ]]);
+        $pool->addMethodCall('createEntry', ['sales', [
+            'name'     => 'order_shipments',
+            'route'    => 'ekyna_commerce_admin_order_list_shipment',
+            'label'    => 'ekyna_commerce.shipment.label.plural',
+            'resource' => 'ekyna_commerce_order_shipment',
+            'position' => 22,
         ]]);
 
         // ------------------------------------------------------------

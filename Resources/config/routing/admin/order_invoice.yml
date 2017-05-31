@@ -22,6 +22,15 @@ ekyna_commerce_order_invoice_admin_remove:
         orderId: \d+
         orderInvoiceId: \d+
 
+ekyna_commerce_order_invoice_admin_recalculate:
+    path: /{orderInvoiceId}/recalculate
+    defaults:
+        _controller: "ekyna_commerce.order_invoice.controller:recalculateAction"
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderInvoiceId: \d+
+
 ekyna_commerce_order_invoice_admin_render:
     path: /{orderInvoiceId}/render.{_format}
     defaults:

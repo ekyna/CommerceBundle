@@ -21,9 +21,32 @@
             <tag name="table.type"/>
         </service>
 
+        <!-- Order payment table type -->
+        <service id="ekyna_commerce.order_payment.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderPaymentType"><!-- TODO use parameter defined by config builder -->
+            <argument>%ekyna_commerce.order_payment.class%</argument>
+            <argument>%ekyna_commerce.payment_method.class%</argument>
+            <tag name="table.type"/>
+        </service>
+
+        <!-- Order shipment table type -->
+        <service id="ekyna_commerce.order_shipment.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderShipmentType"><!-- TODO use parameter defined by config builder -->
+            <argument>%ekyna_commerce.order_shipment.class%</argument>
+            <argument>%ekyna_commerce.shipment_method.class%</argument>
+            <tag name="table.type"/>
+        </service>
+
         <!-- Customer column type -->
         <service id="ekyna_commerce.order_customer.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Invoice type column type -->
+        <service id="ekyna_commerce.invoice_type.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\InvoiceTypeType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <tag name="table.column_type"/>
         </service>

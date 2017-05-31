@@ -43,6 +43,7 @@ class InvoiceLineType extends ResourceFormType
         $line = $form->getData();
 
         $view->vars['designation'] = $line->getDesignation();
+        $view->vars['description'] = $line->getDescription();
         $view->vars['reference'] = $line->getReference();
 
         if ($line->getType() === InvoiceLineTypes::TYPE_GOOD) {

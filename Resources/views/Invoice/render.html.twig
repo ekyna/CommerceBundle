@@ -118,7 +118,12 @@
             <tbody class="stripped">
             {% for line in invoice.linesByType('good') %}
                 <tr>
-                    <td>{{ line.designation }}</td>
+                    <td>
+                        {{- line.designation -}}
+                        {%- if line.description is not empty -%}
+                            <br><p class="description">{{ line.description|nl2br }}</p>
+                        {%- endif -%}
+                    </td>
                     <td>{{ line.reference }}</td>
                     <td class="text-right">{{ line.netPrice|localizedcurrency(currency) }}</td>
                     <td class="text-right">{{ line.quantity|localizednumber }}</td>

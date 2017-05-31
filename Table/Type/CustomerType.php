@@ -43,6 +43,7 @@ class CustomerType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        $filters = false;
         if (null !== $parent = $options['parent']) {
             $source = $builder->getSource();
             if ($source instanceof EntitySource) {
@@ -55,6 +56,7 @@ class CustomerType extends ResourceTableType
 
             $builder->setFilterable(false);
         } else {
+            $filters = true;
             $builder
                 ->setExportable(true)
                 ->setConfigurable(true)
@@ -126,45 +128,49 @@ class CustomerType extends ResourceTableType
                         'permission'           => 'delete',
                     ],
                 ],
-            ])
-            ->addFilter('number', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'position' => 10,
-            ])
-            ->addFilter('firstName', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.first_name',
-                'position' => 20,
-            ])
-            ->addFilter('lastName', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.last_name',
-                'position' => 25,
-            ])
-            ->addFilter('email', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.email',
-                'position' => 40,
-            ])
-            ->addFilter('customerGroup', DType\Filter\EntityType::class, [
-                'label'        => 'ekyna_core.field.group',
-                'class'        => $this->customerGroupClass,
-                'entity_label' => 'name',
-                'position'     => 50,
-            ])
-            ->addFilter('creditBalance', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.customer.field.credit_balance',
-                'position' => 60,
-            ])
-            ->addFilter('outstandingBalance', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
-                'position' => 70,
-            ])
-            ->addFilter('outstandingLimit', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
-                'position' => 80,
-            ])
-            ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.created_at',
-                'position' => 90,
             ]);
+
+        if ($filters) {
+            $builder
+                ->addFilter('number', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.number',
+                    'position' => 10,
+                ])
+                ->addFilter('firstName', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.first_name',
+                    'position' => 20,
+                ])
+                ->addFilter('lastName', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.last_name',
+                    'position' => 25,
+                ])
+                ->addFilter('email', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.email',
+                    'position' => 40,
+                ])
+                ->addFilter('customerGroup', DType\Filter\EntityType::class, [
+                    'label'        => 'ekyna_core.field.group',
+                    'class'        => $this->customerGroupClass,
+                    'entity_label' => 'name',
+                    'position'     => 50,
+                ])
+                ->addFilter('creditBalance', CType\Filter\NumberType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.credit_balance',
+                    'position' => 60,
+                ])
+                ->addFilter('outstandingBalance', CType\Filter\NumberType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
+                    'position' => 70,
+                ])
+                ->addFilter('outstandingLimit', CType\Filter\NumberType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                    'position' => 80,
+                ])
+                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                    'label'    => 'ekyna_core.field.created_at',
+                    'position' => 90,
+                ]);
+        }
     }
 
     /**

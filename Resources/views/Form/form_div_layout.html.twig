@@ -568,7 +568,12 @@
         {% set attr = attr|merge({'class': ('has-error ' ~ (attr.class|default('')))|trim }) %}
     {% endif %}
     <tr {{ block('widget_container_attributes') }}>
-        <td>{{ designation }}</td>
+        <td>
+            {{- designation -}}
+            {%- if description is not empty -%}
+                <br><p style="font-size:11px;padding-left:12px;">{{ description|nl2br }}</p>
+            {%- endif -%}
+        </td>
         <td>{{ reference }}</td>
         <td>{{ form_widget(form.quantity, {'data-max': max_quantity}) }}</td>
         <td>{{ max_quantity }}</td>{# TODO packaging format #}

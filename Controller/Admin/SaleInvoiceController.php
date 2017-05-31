@@ -258,6 +258,45 @@ class SaleInvoiceController extends AbstractSaleController
         );
     }
 
+    /**
+     * Recalculate action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function recalculateAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $context->getResource();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+
+        $this->isGranted('EDIT', $invoice);
+
+        $isXhr = $request->isXmlHttpRequest();
+
+        // TODO use ResourceManager
+        $event = $this->getOperator()->update($invoice);
+
+        if ($isXhr) {
+            return $this->buildXhrSaleViewResponse($sale);
+        } else {
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        return $this->redirect($this->generateResourcePath($sale));
+    }
+
+    /**
+     * Render action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function renderAction(Request $request)
     {
         $context = $this->loadContext($request);

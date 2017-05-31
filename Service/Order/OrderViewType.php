@@ -139,7 +139,7 @@ class OrderViewType extends AbstractViewType
             }
 
             // Edit action
-            if (!$item->hasIdentity()) {
+            if (!$item->hasSubjectIdentity()) {
                 $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
                     'orderId'     => $item->getSale()->getId(),
                     'orderItemId' => $item->getId(),

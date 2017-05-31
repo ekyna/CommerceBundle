@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemFormEvent;
-use Ekyna\Bundle\ProductBundle\Service\Commerce\ItemBuilder;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
@@ -66,9 +65,7 @@ class SaleItemSubjectConfigureType extends AbstractType
                 // Build the item
                 $this->eventDispatcher->dispatch(
                     SaleItemEvents::BUILD,
-                    new SaleItemEvent($event->getData(), [
-                        ItemBuilder::REMOVE_MISS_MATCH => true,
-                    ])
+                    new SaleItemEvent($event->getData())
                 );
             }, 1024);
     }

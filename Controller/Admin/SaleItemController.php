@@ -306,7 +306,7 @@ class SaleItemController extends AbstractSaleController
         if ($item->isImmutable()) {
             throw new NotFoundHttpException('Item is immutable.');
         }
-        if ($item->hasIdentity()) {
+        if ($item->hasSubjectIdentity()) {
             throw new NotFoundHttpException('Item has identity.');
         }
 

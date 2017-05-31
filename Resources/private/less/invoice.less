@@ -1,8 +1,13 @@
+@text-color: #333333;
+@head-color: #999999;
+@border-color: #dddddd;
+@background-alt-color: #e6e6e6;
+
 .sale-invoice {
     font-family: Herlvetica, Arial, sans-serif;
     font-size: 12px;
     line-height: 21px;
-    color: #333333;
+    color: @text-color;
     max-width: 1200px;
     margin: auto;
 
@@ -10,7 +15,7 @@
 
     h1 {
         font-variant: small-caps;
-        color: #999999;
+        color: @head-color;
         font-size: 1.6em;
     }
 
@@ -59,13 +64,13 @@
     }
 
     .title {
-        border-top: 1px dotted #ddd;
+        border-top: 1px dotted @border-color;
     }
 
     .footer {
         margin-top: 20px;
         padding-top: 20px;
-        border-top: 1px dotted #ddd;
+        border-top: 1px dotted @border-color;
     }
 
     .table {
@@ -74,13 +79,13 @@
         thead {
             th {
                 text-transform: uppercase;
-                color: #999999;
+                color: @head-color;
                 padding: 0 8px;
                 position: relative;
                 text-align: left;
                 font-size: 12px;
                 line-height: 21px !important;
-                border-bottom: 1px solid #dddddd;
+                border-bottom: 1px solid @border-color;
 
                 &:before {
                     position: absolute;
@@ -89,7 +94,7 @@
                     left: 0;
                     height: 7px;
                     width: 1px;
-                    border-left: 1px solid #dddddd;
+                    border-left: 1px solid @border-color;
                     content: "";
                 }
 
@@ -100,7 +105,7 @@
                     right: 0;
                     height: 7px;
                     width: 1px;
-                    border-right: 1px solid #dddddd;
+                    border-right: 1px solid @border-color;
                     content: "";
                 }
 
@@ -126,7 +131,7 @@
 
             &.stripped {
                 > tr:nth-child(even) > td {
-                    background: #e6e6e6;
+                    background: @background-alt-color;
                 }
             }
 
@@ -140,7 +145,7 @@
             &.totals {
                 th {
                     text-transform: uppercase;
-                    color: #999999;
+                    color: @head-color;
                     font-size: 12px;
                 }
 
@@ -150,7 +155,7 @@
 
                         &:last-child {
                             font-weight: bold;
-                            background-color: #e6e6e6;
+                            background-color: @background-alt-color;
                         }
                     }
                 }
@@ -160,8 +165,15 @@
         &.details {
             tr:last-child {
                 td {
-                    border-bottom: 1px solid #dddddd;
+                    border-bottom: @border-color;
                 }
+            }
+
+            p.description {
+                margin: 0;
+                padding: 0 0 0 12px;
+                font-size: 11px;
+                color: lighten(@text-color, 20%);
             }
         }
 

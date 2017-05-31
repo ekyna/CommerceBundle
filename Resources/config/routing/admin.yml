@@ -57,3 +57,18 @@ ekyna_commerce_tax_group_admin:
 ekyna_commerce_tax_rule_admin:
     resource: "admin/tax_rule.yml"
     prefix:   /tax-rules
+
+ekyna_commerce_admin_order_list_payment:
+    path: /order-payments
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:payment }
+    methods: [GET]
+
+ekyna_commerce_admin_order_list_shipment:
+    path: /order-shipments
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipment }
+    methods: [GET]
+
+ekyna_commerce_admin_order_list_invoice:
+    path: /order-invoices
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:invoice }
+    methods: [GET]

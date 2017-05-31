@@ -93,7 +93,7 @@ class QuoteViewType extends AbstractViewType
             }
 
             // Edit action
-            if (!$item->hasIdentity()) {
+            if (!$item->hasSubjectIdentity()) {
                 $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
                     'quoteId'     => $item->getSale()->getId(),
                     'quoteItemId' => $item->getId(),

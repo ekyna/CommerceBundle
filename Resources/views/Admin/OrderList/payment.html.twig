@@ -1,0 +1,11 @@
+{% extends "EkynaAdminBundle:Entity:layout.html.twig" %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.order_payment.label.plural'|trans|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block main %}
+    {{ ekyna_table_render(payments) }}
+{% endblock main %}

@@ -36,6 +36,12 @@
                        target="_blank">
                         <span class="fa fa-download"></span>
                     </a>
+                    <a href="{{ admin_resource_path(invoice, 'recalculate') }}"
+                       id="{{ invoiceId }}_recalculate"
+                       class="btn btn-warning btn-xs"
+                       onclick="return confirm('Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).');">
+                        <span class="fa fa-refresh"></span>
+                    </a>
                     <a href="{{ admin_resource_path(invoice, 'edit') }}"
                        id="{{ invoiceId }}_edit"
                        class="btn btn-warning btn-xs">
@@ -64,7 +70,12 @@
                             {% for line in invoice.lines %}
                             {% set lineId = invoiceId ~ '_line_' ~ loop.index0 %}
                             <tr>
-                                <td id="{{ lineId ~ '_designation' }}">{{ line.designation }}</td>
+                                <td id="{{ lineId ~ '_designation' }}">
+                                    {{- line.designation -}}
+                                    {%- if line.description is not empty -%}
+                                        <br><p style="font-size:11px;padding-left:12px;">{{ line.description|nl2br }}</p>
+                                    {%- endif -%}
+                                </td>
                                 <td id="{{ lineId ~ '_reference' }}">{{ line.reference }}</td>
                                 {#<td id="{{ lineId ~ '_netPrice' }}">{{ line.netUnit|localizedcurrency(invoice.currency.code) }}</td>#}
                                 <td id="{{ lineId ~ '_quantity' }}">{{ line.quantity|localizednumber }}</td>
