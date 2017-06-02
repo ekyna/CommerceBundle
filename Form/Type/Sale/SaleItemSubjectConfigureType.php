@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemFormEvent;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
@@ -11,6 +12,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -68,6 +71,14 @@ class SaleItemSubjectConfigureType extends AbstractType
                     new SaleItemEvent($event->getData())
                 );
             }, 1024);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'sale-item-subject-configure');
     }
 
     /**
