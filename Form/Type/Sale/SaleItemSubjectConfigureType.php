@@ -7,6 +7,7 @@ use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,9 +48,7 @@ class SaleItemSubjectConfigureType extends AbstractType
         $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
                 if (null === $item = $event->getData()) {
-                    // TODO throw exception ?
-
-                    return;
+                    throw new LogicException('Sale item must be bound to the form at this point.');
                 }
 
                 // Initialize the item
