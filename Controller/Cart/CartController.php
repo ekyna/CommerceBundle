@@ -6,7 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\CommentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\InformationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Ekyna\Bundle\CoreBundle\Modal;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,7 +90,7 @@ class CartController extends AbstractController
 
         $form = $this
             ->getFormFactory()
-            ->create(SaleItemSubjectConfigureType::class, $item, [
+            ->create(SaleItemConfigureType::class, $item, [
                 'method' => 'post',
                 'action' => $this->generateUrl('ekyna_commerce_cart_configure_item', [
                     'itemId' => $item->getId(),
@@ -111,9 +111,6 @@ class CartController extends AbstractController
 
         // TODO title trans
         $modal = $this->createModal('Configurer l\'article', $form->createView());
-        $modal->setVars([
-            'form_template' => 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig',
-        ]);
 
         return $this->modalRenderer->render($modal);
     }

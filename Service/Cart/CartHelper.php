@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
@@ -120,7 +120,7 @@ class CartHelper
         return $this
             ->saleHelper
             ->getFormFactory()
-            ->create(SaleItemSubjectConfigureType::class, $item, $options);
+            ->create(SaleItemConfigureType::class, $item, $options);
     }
 
     /**

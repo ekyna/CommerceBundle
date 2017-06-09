@@ -51,7 +51,7 @@ class CustomerSearchType extends AbstractType
                 return $output;
             },
             'format_function' =>
-                "if(!data.id)return 'Rechercher';" .
+                "if(!data.id)return 'Search';" .
                 "var output=data.first_name+' '+data.last_name+' &lt;<em>'+data.email+'</em>&gt;';" .
                 "if(data.company)output='[<strong>'+data.company+'</strong>] '+output;" .
                 "return $('<span>'+output+'</span>');",

@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectConfigureType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -235,7 +235,7 @@ class SaleItemController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        $form = $this->createForm(SaleItemSubjectConfigureType::class, $item, [
+        $form = $this->createForm(SaleItemConfigureType::class, $item, [
             'method' => 'post',
             'action' => $this->generateResourcePath($item, 'configure'),
             'attr'   => [
@@ -271,11 +271,7 @@ class SaleItemController extends AbstractSaleController
 
         if ($isXhr) {
             $modal = $this->createModal('new', 'ekyna_commerce.sale.header.item.configure');
-            $modal
-                ->setContent($form->createView())
-                ->setVars([
-                    'form_template' => 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig',
-                ]);
+            $modal->setContent($form->createView());
 
             return $this->get('ekyna_core.modal')->render($modal);
         }

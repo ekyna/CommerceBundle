@@ -18,11 +18,11 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class SaleItemSubjectConfigureType
+ * Class SaleItemConfigureType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleItemSubjectConfigureType extends AbstractType
+class SaleItemConfigureType extends AbstractType
 {
     /**
      * @var EventDispatcherInterface
@@ -75,9 +75,17 @@ class SaleItemSubjectConfigureType extends AbstractType
     /**
      * @inheritDoc
      */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['attr']['id'] = $view->vars['id'];
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        FormUtil::addClass($view, 'sale-item-subject-configure');
+        FormUtil::addClass($view, 'sale-item-configure');
     }
 
     /**

@@ -14,7 +14,7 @@
 {% block main %}
     {{ form_start(form) }}
     <div class="form-body">
-        {% include 'EkynaCommerceBundle:Form:sale_item_subject_form.html.twig' %}
+        {{ form_widget(form) }}
     </div>
     {{ form_end(form) }}
 {% endblock main %}

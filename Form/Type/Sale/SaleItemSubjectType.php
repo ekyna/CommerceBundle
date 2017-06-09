@@ -9,22 +9,21 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class SaleItemSubjectChoiceType
+ * Class SaleItemSubjectType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Sale
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class SaleItemSubjectChoiceType extends AbstractType
+class SaleItemSubjectType extends AbstractType
 {
     /**
      * @inheritdoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('subjectIdentity', SubjectChoiceType::class, [
-                'lock_mode' => true,
-                'required'  => $options['required'],
-            ]);
+        $builder->add('subjectIdentity', SubjectChoiceType::class, [
+            'lock_mode' => true,
+            'required'  => $options['required'],
+        ]);
     }
 
     /**
@@ -32,10 +31,9 @@ class SaleItemSubjectChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'data_class' => SaleItemInterface::class,
-                'required'   => false,
-            ]);
+        $resolver->setDefaults([
+            'data_class' => SaleItemInterface::class,
+            'required'   => false,
+        ]);
     }
 }
