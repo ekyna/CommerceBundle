@@ -3,6 +3,8 @@
 
 {% block ekyna_commerce_address_widget %}
 {% spaceless %}
+    {{ bootstrap_backup_form_settings() }}
+    {{ bootstrap_set_sizing('sm') }}
     {% if form.customer is defined %}
         {{ form_row(form.customer) }}
     {% endif %}
@@ -10,7 +12,7 @@
         {{ form_row(form.company) }}
     {% endif %}
     {{ form_row(form.identity) }}
-    {{ form_row(form.street) }}
+    {{ form_row(form.street, {'sizing': 'sm'}) }}
     {{ form_row(form.supplement) }}
     <div class="row">
         <div class="col-md-6">
@@ -44,6 +46,7 @@
     {% endif %}
     {{ form_errors(form) }}
     {#{{ form_rest(form) }}#}
+    {{ bootstrap_restore_form_settings() }}
 {% endspaceless %}
 {% endblock ekyna_commerce_address_widget %}
 
@@ -127,6 +130,8 @@
 
 {% block ekyna_commerce_adjustment_widget %}
 {% spaceless %}
+    {{ bootstrap_backup_form_settings() }}
+    {{ bootstrap_set_sizing('sm') }}
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
     <tr {{ block('widget_container_attributes') }}>
@@ -147,6 +152,7 @@
     </tr>
     {% endif %}
     {{ form_rest(form) }}
+    {{ bootstrap_restore_form_settings() }}
 {% endspaceless %}
 {% endblock ekyna_commerce_adjustment_widget %}
 
@@ -436,6 +442,8 @@
 
 {% block ekyna_commerce_sale_item_widget %}
 {% spaceless %}
+    {{ bootstrap_backup_form_settings() }}
+    {{ bootstrap_set_sizing('sm') }}
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child commerce-sale-item ' ~ class)|trim }) %}
     <tbody {{ block('widget_container_attributes') }}>
@@ -472,6 +480,7 @@
     </tr>
     {#{{ form_rest(form) }}#}
     </tbody>
+    {{ bootstrap_restore_form_settings() }}
 {% endspaceless %}
 {% endblock ekyna_commerce_sale_item_widget %}
 
@@ -674,9 +683,9 @@
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
     <tr {{ block('widget_container_attributes') }}>
-        <td>{{ form_widget(form.weight) }}</td>
+        <td>{{ form_widget(form.weight, {'sizing': 'sm'}) }}</td>
         <td>
-            {{- form_widget(form.netPrice) -}}
+            {{- form_widget(form.netPrice, {'sizing': 'sm'}) -}}
             {% if form.method is defined %}
                 {{ form_widget(form.method) }}
             {% else %}
@@ -842,6 +851,8 @@
 
 {% block ekyna_commerce_supplier_order_item_widget %}
 {% spaceless %}
+    {{ bootstrap_backup_form_settings() }}
+    {{ bootstrap_set_sizing('sm') }}
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
     {% if errors|length > 0 %}
@@ -869,6 +880,7 @@
         {% endif %}
         {#{{ form_rest(form) }}#}
     </tbody>
+    {{ bootstrap_restore_form_settings() }}
 {% endspaceless %}
 {% endblock ekyna_commerce_supplier_order_item_widget %}
 
@@ -964,8 +976,8 @@
     {% set class = attr.class|default('') %}
     {% set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) %}
     <tr{{ block('widget_container_attributes') }}>
-        <td>{{ form_widget(form.email) }}</td>
-        <td>{{ form_widget(form.name) }}</td>
+        <td>{{ form_widget(form.email, {'sizing': 'sm'}) }}</td>
+        <td>{{ form_widget(form.name, {'sizing': 'sm'}) }}</td>
         <td class="ekyna-collection-controls">
             <div class="btn-group-vertical">__controls__</div>
         </td>

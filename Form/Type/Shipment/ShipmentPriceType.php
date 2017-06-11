@@ -51,7 +51,6 @@ class ShipmentPriceType extends ResourceFormType
         $builder
             ->add('weight', NumberType::class, [
                 'label'  => 'ekyna_core.field.weight',
-                'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.weight',
                     'input_group' => ['append' => 'kg'],
@@ -61,7 +60,6 @@ class ShipmentPriceType extends ResourceFormType
             ->add('netPrice', NumberType::class, [
                 'label'  => 'ekyna_core.field.price',
                 'scale'  => 5,
-                'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.price',
                     'input_group' => ['append' => '€'],  // TODO by currency

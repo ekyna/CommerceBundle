@@ -48,7 +48,6 @@ class SupplierOrderItemType extends ResourceFormType
                 'attr'  => [
                     'class' => 'order-item-designation',
                 ],
-                'sizing' => 'sm',
                 'error_bubbling' => true,
             ])
             ->add('reference', Symfony\TextType::class, [
@@ -56,7 +55,6 @@ class SupplierOrderItemType extends ResourceFormType
                 'attr'  => [
                     'class' => 'order-item-reference',
                 ],
-                'sizing' => 'sm',
                 'error_bubbling' => true,
             ])
             ->add('netPrice', Symfony\NumberType::class, [
@@ -64,7 +62,6 @@ class SupplierOrderItemType extends ResourceFormType
                 'attr'  => [
                     'class' => 'order-item-net-price',
                 ],
-                'sizing' => 'sm',
                 // TODO 'scale' => 2, // currency option from supplier order
                 'error_bubbling' => true,
             ])
@@ -73,7 +70,6 @@ class SupplierOrderItemType extends ResourceFormType
                 'attr'  => [
                     'class' => 'order-item-quantity',
                 ],
-                'sizing' => 'sm',
                 // TODO 'scale' => 2, // from packaging mode
                 'error_bubbling' => true,
             ])

@@ -54,13 +54,6 @@ class AdminMenuPass implements CompilerPassInterface
             'resource' => 'ekyna_commerce_customer',
             'position' => 10,
         ]]);
-        $pool->addMethodCall('createEntry', ['sales', [
-            'name'     => 'customer_groups',
-            'route'    => 'ekyna_commerce_customer_group_admin_home',
-            'label'    => 'ekyna_commerce.customer_group.label.plural',
-            'resource' => 'ekyna_commerce_customer_group',
-            'position' => 11,
-        ]]);
 
         // Lists
         $pool->addMethodCall('createEntry', ['sales', [
@@ -121,8 +114,16 @@ class AdminMenuPass implements CompilerPassInterface
             'position' => 100,
         ]]);
 
-        // Payment / Shipment methods
+        // Customer groups
+        $pool->addMethodCall('createEntry', ['setting', [
+            'name'     => 'customer_groups',
+            'route'    => 'ekyna_commerce_customer_group_admin_home',
+            'label'    => 'ekyna_commerce.customer_group.label.plural',
+            'resource' => 'ekyna_commerce_customer_group',
+            'position' => 40,
+        ]]);
 
+        // Payment / Shipment methods
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'payment_term',
             'route'    => 'ekyna_commerce_payment_term_admin_home',

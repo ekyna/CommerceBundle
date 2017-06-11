@@ -26,7 +26,6 @@ class AdjustmentType extends ResourceFormType
         $builder
             ->add('designation', Type\TextType::class, [
                 'label'  => 'ekyna_core.field.designation',
-                'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.designation',
                 ],
@@ -35,7 +34,6 @@ class AdjustmentType extends ResourceFormType
                 'label'             => 'ekyna_core.field.type',
                 'choices'           => AdjustmentTypes::getChoices($options['types'], AdjustmentTypes::FILTER_RESTRICT),
                 'preferred_choices' => [AT::TYPE_DISCOUNT],
-                'sizing'            => 'sm',
                 'select2'           => false,
                 'attr'              => [
                     'placeholder' => 'ekyna_core.field.type',
@@ -45,7 +43,6 @@ class AdjustmentType extends ResourceFormType
                 'label'             => 'ekyna_core.field.mode',
                 'choices'           => AdjustmentModes::getChoices($options['modes'], AdjustmentTypes::FILTER_RESTRICT),
                 'preferred_choices' => [AM::MODE_PERCENT],
-                'sizing'            => 'sm',
                 'select2'           => false,
                 'attr'              => [
                     'placeholder' => 'ekyna_core.field.mode',
@@ -54,7 +51,6 @@ class AdjustmentType extends ResourceFormType
             ->add('amount', Type\NumberType::class, [
                 'label'  => 'ekyna_core.field.value',
                 'scale'  => 2,
-                'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.value',
                 ],

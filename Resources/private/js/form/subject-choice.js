@@ -11,9 +11,6 @@ define(['jquery', 'routing', 'select2'], function($, router) {
         }, config);
 
         this.each(function() {
-
-            console.log('subjectChoiceWidget');
-
             var $this = $(this),
                 select2initialized = false,
                 $provider = $this.find('.provider'),
@@ -25,9 +22,6 @@ define(['jquery', 'routing', 'select2'], function($, router) {
             }
 
             var providerChangeHandler = function() {
-
-                console.log('providerChangeHandler');
-
                 $subject.prop('disabled', true).off('change');
                 $identifier.val(null);
 
@@ -42,7 +36,7 @@ define(['jquery', 'routing', 'select2'], function($, router) {
                 }
 
                 $option = $provider.find('option[value="' + $provider.val() + '"]');
-                if (1 != $option.size()) {
+                if (1 !== $option.size()) {
                     return;
                 }
 

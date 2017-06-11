@@ -47,7 +47,6 @@ class AddressType extends AbstractType
             ->add('street', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.street',
                 'required' => $options['required'],
-                'sizing'   => 'sm',
                 'attr'     => [
                     'class' => 'address-street',
                 ],
@@ -55,7 +54,6 @@ class AddressType extends AbstractType
             ->add('supplement', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.supplement',
                 'required' => false,
-                'sizing'   => 'sm',
                 'attr'     => [
                     'class' => 'address-supplement',
                 ],
@@ -63,7 +61,6 @@ class AddressType extends AbstractType
             ->add('city', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.city',
                 'required' => $options['required'],
-                'sizing'   => 'sm',
                 'attr'     => [
                     'class' => 'address-city',
                 ],
@@ -71,13 +68,11 @@ class AddressType extends AbstractType
             ->add('postalCode', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.postal_code',
                 'required' => $options['required'],
-                'sizing'   => 'sm',
                 'attr'     => [
                     'class' => 'address-postal-code',
                 ],
             ])
             ->add('country', CountryChoiceType::class, [
-                'sizing'   => 'sm',
                 'required' => $options['required'],
                 'attr'     => [
                     'class' => 'address-country',

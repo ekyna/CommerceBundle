@@ -24,7 +24,6 @@ class RecipientType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'label'  => false,
-                'sizing' => 'sm',
                 'attr' => [
                     'placeholder' => 'ekyna_core.field.email',
                 ]
@@ -32,7 +31,6 @@ class RecipientType extends AbstractType
             ->add('name', TextType::class, [
                 'label'    => false,
                 'required' => false,
-                'sizing'   => 'sm',
                 'attr' => [
                     'placeholder' => 'ekyna_core.field.name',
                 ]

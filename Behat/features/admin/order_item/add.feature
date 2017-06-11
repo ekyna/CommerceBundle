@@ -32,12 +32,12 @@ Feature: Create order items
         And I show the "details" tab
         And I click "order_item_add"
         And I wait for the modal to appear
-        And I wait for the form "sale_item_subject_choice" to appear
-        And I select "Acme Product" from "sale_item_subject_choice[subjectIdentity][provider]"
-        And I search "iPad" in "sale_item_subject_choice[subjectIdentity][subject]" and select the first result
+        And I wait for the form "sale_item_subject" to appear
+        And I select "Acme Product" from "sale_item_subject[subjectIdentity][provider]"
+        And I search "iPad" in "sale_item_subject[subjectIdentity][subject]" and select the first result
         And I press "form_flow_submit"
-        And I wait for the form "sale_item_subject_configure" to appear
-        And I fill in "sale_item_subject_configure[quantity]" with "2"
+        And I wait for the form "sale_item_configure" to appear
+        And I fill in "sale_item_configure[quantity]" with "2"
         And I press "form_flow_submit"
         And I wait for the modal to disappear
 

@@ -10,12 +10,5 @@
 {% endblock actions %}
 
 {% block main %}
-    {{ form_start(form) }}
-    <div class="form-body">
-        {{ form_widget(form) }}
-        {{ form_rest(form) }}
-
-        {% include 'EkynaAdminBundle:Form:form_flow_buttons.html.twig' %}
-    </div>
-    {{ form_end(form) }}
+    {% include "EkynaCommerceBundle:Admin/Common/Item:_flow.html.twig" %}
 {% endblock main %}

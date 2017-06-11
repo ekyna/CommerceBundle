@@ -93,21 +93,18 @@ class SaleItemType extends ResourceFormType
         return [
             ['designation', Type\TextType::class, [
                 'label'  => 'ekyna_core.field.designation',
-                'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.designation',
                 ],
             ]],
             ['reference', Type\TextType::class, [
                 'label'  => 'ekyna_core.field.reference',
-                'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.reference',
                 ],
             ]],
             ['weight', Type\IntegerType::class, [
                 'label'    => 'ekyna_core.field.weight',
-                'sizing'   => 'sm',
                 'required' => false,
                 'attr'     => [
                     'placeholder' => 'ekyna_core.field.weight',
@@ -118,7 +115,6 @@ class SaleItemType extends ResourceFormType
             ['netPrice', Type\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.net_unit',
                 'scale'    => 5,
-                'sizing'   => 'sm',
                 'required' => false,
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
@@ -127,7 +123,6 @@ class SaleItemType extends ResourceFormType
             ]],
             ['taxGroup', TaxGroupChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale_item.field.tax_group',
-                'sizing'   => 'sm',
                 'required' => false,
                 'select2'  => false,
                 'attr'     => [
@@ -136,7 +131,6 @@ class SaleItemType extends ResourceFormType
             ]],
             ['quantity', Type\IntegerType::class, [
                 'label'  => 'ekyna_core.field.quantity',
-                'sizing' => 'sm',
                 'attr'   => [
                     'placeholder' => 'ekyna_core.field.quantity',
                     'min'         => 1,
