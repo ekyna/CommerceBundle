@@ -226,6 +226,7 @@ ekyna_commerce:
             remove: Supprimer le client
         field:
             parent: Comptabilité
+            in_charge: Responsable
             children: Commerciaux
             outstanding_limit: Limite d'encours
             outstanding_balance: Solde d'encours

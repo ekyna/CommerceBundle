@@ -18,6 +18,11 @@ class Customer extends BaseCustomer implements CustomerInterface
      */
     private $user;
 
+    /**
+     * @var UserInterface
+     */
+    private $inCharge;
+
 
     /**
      * @inheritdoc
@@ -33,6 +38,25 @@ class Customer extends BaseCustomer implements CustomerInterface
     public function setUser(UserInterface $user = null)
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function getInCharge()
+    {
+        return $this->inCharge;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setInCharge(UserInterface $user = null)
+    {
+        $this->inCharge = $user;
 
         return $this;
     }

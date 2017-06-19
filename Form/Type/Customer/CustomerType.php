@@ -2,11 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
+use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
+use Ekyna\Bundle\UserBundle\Model\GroupRepositoryInterface;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -29,6 +31,11 @@ class CustomerType extends ResourceFormType
      */
     private $userClass;
 
+    /**
+     * @var GroupRepositoryInterface
+     */
+    private $userGroupRepository;
+
 
     /**
      * Constructor.
@@ -43,6 +50,16 @@ class CustomerType extends ResourceFormType
 
         $this->customerGroupClass = $customerGroupClass;
         $this->userClass = $userClass;
+    }
+
+    /**
+     * Sets the user group repository.
+     *
+     * @param GroupRepositoryInterface $repository
+     */
+    public function setUserGroupRepository(GroupRepositoryInterface $repository)
+    {
+        $this->userGroupRepository = $repository;
     }
 
     /**
@@ -68,6 +85,20 @@ class CustomerType extends ResourceFormType
                 'allow_new' => true,
                 'class'     => $this->userClass,
                 'required'  => false,
+            ])
+            ->add('inCharge', ResourceType::class, [
+                'label'         => 'ekyna_commerce.customer.field.in_charge',
+                'allow_new'     => false,
+                'class'         => $this->userClass,
+                'required'      => false,
+                'query_builder' => function (EntityRepository $repository) {
+                    $qb = $repository->createQueryBuilder('u');
+
+                    return $qb
+                        ->andWhere($qb->expr()->in('u.group', ':groups'))
+                        ->setParameter('groups', $this->userGroupRepository->findByRole('ROLE_ADMIN'))
+                        ->orderBy('u.username', 'ASC');
+                },
             ])
             ->add('email', Type\EmailType::class, [
                 'label' => 'ekyna_core.field.email',
@@ -96,9 +127,9 @@ class CustomerType extends ResourceFormType
             ->add('vatValid', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.pricing.field.vat_valid',
                 'required' => false,
-                'attr' => [
+                'attr'     => [
                     'align_with_widget' => true,
-                ]
+                ],
             ])
             ->add('paymentTerm', PaymentTermChoiceType::class)
             ->add('outstandingLimit', Type\NumberType::class, [

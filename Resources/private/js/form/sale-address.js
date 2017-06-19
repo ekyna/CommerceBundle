@@ -37,7 +37,7 @@ define(['jquery', 'routing'], function($, router) {
                     }
                 };
 
-            if ($customerChoice.length) {
+            if (1 === $customerChoice.size()) {
                 $customerChoice.on('change', function() {
                     $choiceSelect
                         .empty()

@@ -27,4 +27,20 @@ interface CustomerInterface extends BaseInterface
      * @return $this|CustomerInterface
      */
     public function setUser(UserInterface $user = null);
+
+    /**
+     * Returns the 'in charge' user.
+     *
+     * @return UserInterface
+     */
+    public function getInCharge();
+
+    /**
+     * Sets the 'in charge' user.
+     *
+     * @param UserInterface $user
+     *
+     * @return $this|CustomerInterface
+     */
+    public function setInCharge(UserInterface $user = null);
 }

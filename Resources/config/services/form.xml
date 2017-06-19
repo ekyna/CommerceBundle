@@ -61,6 +61,9 @@
             <argument>%ekyna_commerce.customer.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
             <argument>%ekyna_user.user.class%</argument>
+            <call method="setUserGroupRepository">
+                <argument type="service" id="ekyna_user.group.repository"/>
+            </call>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.customer_address.form_type"

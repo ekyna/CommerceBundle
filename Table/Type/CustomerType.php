@@ -2,9 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Bundle\UserBundle\Model\GroupRepositoryInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
@@ -24,18 +26,40 @@ class CustomerType extends ResourceTableType
      */
     private $customerGroupClass;
 
+    /**
+     * @var string
+     */
+    private $userClass;
+
+    /**
+     * @var GroupRepositoryInterface
+     */
+    private $userGroupRepository;
+
 
     /**
      * Constructor.
      *
      * @param string $customerClass
      * @param string $customerGroupClass
+     * @param string $userClass
      */
-    public function __construct($customerClass, $customerGroupClass)
+    public function __construct($customerClass, $customerGroupClass, $userClass)
     {
         parent::__construct($customerClass);
 
         $this->customerGroupClass = $customerGroupClass;
+        $this->userClass = $userClass;
+    }
+
+    /**
+     * Sets the user group repository.
+     *
+     * @param GroupRepositoryInterface $repository
+     */
+    public function setUserGroupRepository(GroupRepositoryInterface $repository)
+    {
+        $this->userGroupRepository = $repository;
     }
 
     /**
@@ -106,9 +130,16 @@ class CustomerType extends ResourceTableType
                 'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
                 'position' => 80,
             ])
+            ->addColumn('inCharge', DType\Column\EntityType::class, [
+                'label'                => 'ekyna_commerce.customer.field.in_charge',
+                'entity_label'         => 'username',
+                'route_name'           => 'ekyna_user_user_admin_show',
+                'route_parameters_map' => ['userId' => 'id'],
+                'position'             => 90,
+            ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',
-                'position'    => 90,
+                'position'    => 100,
                 'time_format' => 'none',
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
@@ -166,9 +197,23 @@ class CustomerType extends ResourceTableType
                     'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
                     'position' => 80,
                 ])
+                ->addFilter('inCharge', DType\Filter\EntityType::class, [
+                    'label'         => 'ekyna_commerce.customer.field.in_charge',
+                    'class'         => $this->userClass,
+                    'entity_label'  => 'username',
+                    'position'      => 90,
+                    'query_builder' => function (EntityRepository $repository) {
+                        $qb = $repository->createQueryBuilder('u');
+
+                        return $qb
+                            ->andWhere($qb->expr()->eq('u.group', ':groups'))
+                            ->setParameter('groups', $this->userGroupRepository->findByRole('ROLE_ADMIN'))
+                            ->orderBy('u.username', 'ASC');
+                    },
+                ])
                 ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                     'label'    => 'ekyna_core.field.created_at',
-                    'position' => 90,
+                    'position' => 100,
                 ]);
         }
     }

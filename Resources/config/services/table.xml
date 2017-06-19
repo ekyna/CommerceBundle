@@ -10,6 +10,10 @@
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType">
             <argument>%ekyna_commerce.customer.class%</argument>
             <argument>%ekyna_commerce.customer_group.class%</argument>
+            <argument>%ekyna_user.user.class%</argument>
+            <call method="setUserGroupRepository">
+                <argument type="service" id="ekyna_user.group.repository"/>
+            </call>
             <tag name="table.type"/>
         </service>
 

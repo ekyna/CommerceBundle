@@ -22,6 +22,7 @@ class OrderType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder->add('tags', TagChoiceType::class, [
+            'required' => false,
             'multiple' => true,
         ]);
     }
