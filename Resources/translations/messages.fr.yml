@@ -32,6 +32,9 @@ ekyna_commerce:
             empty_list: Aucun document enregistré
         registration:
             title: Ouverture de compte
+            field:
+                email_confirm: Confirmation email
+                password_confirm: Conf. mot de passe
 
     adjustment:
         label:

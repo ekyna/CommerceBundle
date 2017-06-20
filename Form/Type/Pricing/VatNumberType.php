@@ -79,7 +79,11 @@ class VatNumberType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefault('valid_checkbox', '#customer_vatValid')
+            ->setDefaults([
+                'label'          => 'ekyna_commerce.pricing.field.vat_number',
+                'required'       => false,
+                'valid_checkbox' => '#customer_vatValid',
+            ])
             ->setAllowedTypes('valid_checkbox', ['string', 'null']);
     }
 

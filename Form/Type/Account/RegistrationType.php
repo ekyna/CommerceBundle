@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Account;
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
@@ -45,12 +46,12 @@ class RegistrationType extends AbstractType
         $builder
             ->add('email', Type\RepeatedType::class, [
                 'type'            => Type\EmailType::class,
-                'property_path' => 'user.email',
+                'property_path'   => 'user.email',
                 'first_options'   => [
                     'label' => 'ekyna_core.field.email',
                 ],
                 'second_options'  => [
-                    'label' => 'ekyna_core.field.verify',
+                    'label' => 'ekyna_commerce.account.registration.field.email_confirm',
                 ],
                 'invalid_message' => 'ekyna_commerce.account.email.mismatch',
             ])
@@ -58,10 +59,12 @@ class RegistrationType extends AbstractType
                 'type'            => Type\PasswordType::class,
                 'property_path'   => 'user.plainPassword',
                 'first_options'   => [
-                    'label' => 'ekyna_core.field.password',
+                    'label'        => 'ekyna_core.field.password',
+                    'always_empty' => false,
                 ],
                 'second_options'  => [
-                    'label' => 'ekyna_core.field.verify',
+                    'label'        => 'ekyna_commerce.account.registration.field.password_confirm',
+                    'always_empty' => false,
                 ],
                 'invalid_message' => 'fos_user.password.mismatch',
             ])
@@ -69,7 +72,13 @@ class RegistrationType extends AbstractType
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
             ])
+            ->add('vatNumber', VatNumberType::class)
             ->add('identity', IdentityType::class)
+            ->add('birthday', Type\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.birthday',
+                'required' => false,
+                'format'   => 'dd/MM/yyyy', // TODO localized format
+            ])
             ->add('phone', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.phone',
                 'required'       => false,
@@ -96,28 +105,21 @@ class RegistrationType extends AbstractType
                             'attr'         => ['icon' => 'ok'],
                         ],
                     ],
-                    /*'cancel' => [
-                        'type'    => Type\ButtonType::class,
-                        'options' => [
-                            'label'        => 'ekyna_core.button.cancel',
-                            'button_class' => 'default',
-                            'as_link'      => true,
-                            'attr'         => [
-                                'class' => 'form-cancel-btn',
-                                'icon'  => 'remove',
-                                'href'  => $cancelPath,
-                            ],
-                        ],
-                    ],*/
                 ],
             ]);
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
             $customer = $event->getData();
+            $user = $customer->getUser();
+
+            // Copy user email to username
+            $email = $user->getEmail();
+            $user->setUsername($email);
 
             // Copy user email into customer email
-            $customer->setEmail($customer->getUser()->getEmail());
+            $customer->setEmail($email);
+
         }, 2048);
     }
 

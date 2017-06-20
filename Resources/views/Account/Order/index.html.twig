@@ -1,6 +1,7 @@
 {% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
 
 {% block account %}
+{% spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
     <table class="table table-stripped">
@@ -50,4 +51,5 @@
         {% endfor %}
         </tbody>
     </table>
+{% endspaceless %}
 {% endblock account %}

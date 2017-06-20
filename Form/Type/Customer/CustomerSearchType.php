@@ -36,13 +36,11 @@ class CustomerSearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label'           => 'ekyna_commerce.customer.label.singular',
-            'class'           => $this->customerClass,
-            'required'        => false,
-            'search_route'    => 'ekyna_commerce_customer_admin_search',
-            'find_route'      => 'ekyna_commerce_customer_admin_find',
-            //'allow_clear'     => false,
-            'choice_label'    => function (CustomerInterface $data) {
+            'label'        => 'ekyna_commerce.customer.label.singular',
+            'class'        => $this->customerClass,
+            'route'        => 'ekyna_commerce_customer_admin_search',
+            'required'     => false,
+            'choice_label' => function (CustomerInterface $data) {
                 $output = $data->getFirstName() . ' ' . $data->getLastName() . ' &lt;' . $data->getEmail() . '&gt;';
                 if (0 < strlen($data->getCompany())) {
                     $output = '[' . $data->getCompany() . '] ' . $output;
@@ -50,7 +48,7 @@ class CustomerSearchType extends AbstractType
 
                 return $output;
             },
-            'format_function' =>
+            'format'       =>
                 "if(!data.id)return 'Search';" .
                 "var output=data.first_name+' '+data.last_name+' &lt;<em>'+data.email+'</em>&gt;';" .
                 "if(data.company)output='[<strong>'+data.company+'</strong>] '+output;" .

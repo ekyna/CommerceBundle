@@ -24,14 +24,15 @@
             <hr>
             {{ form_row(form.customerGroup) }}
             {{ form_row(form.parent) }}
-            <div class="row">
+            {{ form_row(form.inCharge) }}
+            {#<div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.user, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
-            </div>
+            </div>#}
             <hr>
             <div class="row">
                 <div class="col-md-6">

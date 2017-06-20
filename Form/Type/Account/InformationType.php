@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Account;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
@@ -48,7 +49,13 @@ class InformationType extends AbstractType
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
             ])
+            ->add('vatNumber', VatNumberType::class)
             ->add('identity', IdentityType::class)
+            ->add('birthday', Type\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.birthday',
+                'required' => false,
+                'format'   => 'dd/MM/yyyy', // TODO localized format
+            ])
             ->add('phone', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.phone',
                 'required'       => false,
@@ -71,19 +78,6 @@ class InformationType extends AbstractType
                             'attr'         => ['icon' => 'ok'],
                         ],
                     ],
-                    /*'cancel' => [
-                        'type'    => Type\ButtonType::class,
-                        'options' => [
-                            'label'        => 'ekyna_core.button.cancel',
-                            'button_class' => 'default',
-                            'as_link'      => true,
-                            'attr'         => [
-                                'class' => 'form-cancel-btn',
-                                'icon'  => 'remove',
-                                'href'  => $cancelPath,
-                            ],
-                        ],
-                    ],*/
                 ],
             ]);
     }

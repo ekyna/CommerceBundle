@@ -1,6 +1,7 @@
 {% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
 
 {% block account %}
+{% spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
     <hr>
 
@@ -19,6 +20,7 @@
             {{ 'ekyna_core.button.back_to_list'|trans }}
         </a>
     </p>
+{% endspaceless %}
 {% endblock %}
 
 {% block stylesheets %}

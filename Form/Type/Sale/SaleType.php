@@ -70,10 +70,7 @@ class SaleType extends ResourceFormType
                 'delivery'       => true,
                 'customer_field' => 'customer',
             ])
-            ->add('vatNumber', VatNumberType::class, [
-                'label'    => 'ekyna_commerce.pricing.field.vat_number',
-                'required' => false,
-            ])
+            ->add('vatNumber', VatNumberType::class)
             ->add('vatValid', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.pricing.field.vat_valid',
                 'required' => false,

@@ -3,50 +3,67 @@
 
 {% block ekyna_commerce_address_widget %}
 {% spaceless %}
-    {{ bootstrap_backup_form_settings() }}
-    {{ bootstrap_set_sizing('sm') }}
-    {% if form.customer is defined %}
-        {{ form_row(form.customer) }}
-    {% endif %}
-    {% if form.company is defined %}
-        {{ form_row(form.company) }}
-    {% endif %}
-    {{ form_row(form.identity) }}
-    {{ form_row(form.street, {'sizing': 'sm'}) }}
-    {{ form_row(form.supplement) }}
+    {{- bootstrap_backup_form_settings() -}}
+    {{- bootstrap_set_sizing('sm') -}}
+
+    {{- form_errors(form) -}}
+
+    {%- if form.customer is defined -%}
+        {{- form_row(form.customer) -}}
+    {%- endif -%}
+
+    {%- if form.company is defined -%}
+        {{- form_row(form.company) -}}
+    {%- endif -%}
+
+    {{- form_row(form.identity) -}}
+    {{- form_row(form.street, {'sizing': 'sm'}) -}}
+    {{- form_row(form.supplement) -}}
     <div class="row">
         <div class="col-md-6">
-            {{ form_row(form.postalCode, {'label_col': 4, 'widget_col': 8}) }}
+            {{- form_row(form.postalCode, {'label_col': 4, 'widget_col': 8}) -}}
         </div>
         <div class="col-md-6">
-            {{ form_row(form.city, {'label_col': 4, 'widget_col': 8}) }}
+            {{- form_row(form.city, {'label_col': 4, 'widget_col': 8}) -}}
         </div>
     </div>
-    {% if form.country is defined %}
+    {%- if form.country is defined -%}
     <div class="row">
         <div class="col-md-6">
-            {{ form_row(form.country, {'label_col': 4, 'widget_col': 8}) }}
+            {{- form_row(form.country, {'label_col': 4, 'widget_col': 8}) -}}
         </div>
         <div class="col-md-6">
-        {% if form.state is defined %}
-            {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
-        {% endif %}
+        {%- if form.state is defined -%}
+            {{- form_row(form.state, {'label_col': 4, 'widget_col': 8}) -}}
+        {%- endif -%}
         </div>
     </div>
-    {% endif %}
-    {% if form.phone is defined %}
+    {%- endif -%}
+    {%- if form.phone is defined -%}
     <div class="row">
         <div class="col-md-6">
-            {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
+            {{- form_row(form.phone, {'label_col': 4, 'widget_col': 8}) -}}
         </div>
         <div class="col-md-6">
-            {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
+            {{- form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) -}}
         </div>
     </div>
-    {% endif %}
-    {{ form_errors(form) }}
-    {#{{ form_rest(form) }}#}
-    {{ bootstrap_restore_form_settings() }}
+    {%- endif -%}
+
+    {%- if form.invoiceDefault is defined and form.deliveryDefault is defined -%}
+    <div class="row">
+        <div class="col-md-6">
+            {{- form_row(form.invoiceDefault, {'label_col': 4, 'widget_col': 8}) -}}
+        </div>
+        <div class="col-md-6">
+            {{- form_row(form.deliveryDefault, {'label_col': 4, 'widget_col': 8}) -}}
+        </div>
+    </div>
+    {%- endif -%}
+
+    {{- bootstrap_restore_form_settings() -}}
+
+    {{- form_rest(form) -}}
 {% endspaceless %}
 {% endblock ekyna_commerce_address_widget %}
 

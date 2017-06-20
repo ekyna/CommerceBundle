@@ -1,6 +1,7 @@
 {% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
 
 {% block account %}
+{% spaceless %}
     <h3>{{ 'ekyna_commerce.account.information.title'|trans }}</h3>
 
     <hr>
@@ -12,8 +13,18 @@
         <dt>{{ 'ekyna_core.field.company'|trans }}</dt>
         <dd>{{ customer.company }}</dd>
 
+        {% if customer.vatNumber is not same as(null) %}
+            <dt>{{ 'ekyna_commerce.pricing.field.vat_number'|trans }}</dt>
+            <dd>{{ customer.vatNumber }}</dd>
+        {% endif %}
+
         <dt>{{ 'ekyna_core.field.identity'|trans }}</dt>
         <dd>{{ customer|identity }}</dd>
+
+        {% if customer.birthday is not same as(null) %}
+        <dt>{{ 'ekyna_core.field.birthday'|trans }}</dt>
+        <dd>{{ customer.birthday|localizeddate('short', 'none') }}</dd>
+        {% endif %}
 
         {% if customer.phone is not same as(null) %}
         <dt>{{ 'ekyna_core.field.phone'|trans }}</dt>
@@ -35,4 +46,5 @@
             {{ 'ekyna_core.button.edit'|trans }}
         </a>
     </p>
+{% endspaceless %}
 {% endblock account %}

@@ -106,11 +106,27 @@
                     'route': 'ekyna_commerce_customer_admin_show',
                     'route_params_map': {'customerId': 'id'}
                 }) }}
-                {{ show_row(customer.user, 'entity', 'ekyna_user.user.label.singular', {
-                    'id': 'customer_user',
-                    'route': 'ekyna_user_user_admin_show',
-                    'route_params_map': {'userId': 'id'}
-                }) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customer.user, 'entity', 'ekyna_user.user.label.singular', {
+                            'id': 'customer_user',
+                            'route': 'ekyna_user_user_admin_show',
+                            'route_params_map': {'userId': 'id'},
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(customer.inCharge, 'entity', 'ekyna_commerce.customer.field.in_charge', {
+                            'id': 'customer_user',
+                            'route': 'ekyna_user_user_admin_show',
+                            'route_params_map': {'userId': 'id'},
+                            'field': 'username',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
                 <hr>
                 <div class="row">
                     <div class="col-md-6">

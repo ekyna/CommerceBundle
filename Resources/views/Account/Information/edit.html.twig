@@ -1,6 +1,7 @@
 {% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
 
 {% block account %}
+{% spaceless %}
     <h3>{{ 'ekyna_commerce.account.information.edit.title'|trans }}</h3>
 
     <hr>
@@ -15,8 +16,20 @@
         {{ form_errors(form) }}
 
         {{ form_row(form.email) }}
-        {{ form_row(form.company) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
         {{ form_row(form.identity) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
@@ -30,4 +43,5 @@
     </div>
     {{ form_end(form) }}
 
+{% endspaceless %}
 {% endblock account %}
