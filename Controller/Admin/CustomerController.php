@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Ekyna\Bundle\CommerceBundle\Table\Type;
 
 /**
  * Class CustomerController
@@ -46,19 +45,19 @@ class CustomerController extends ResourceController
 
         $tables = [
             'children' => [
-                'type' => Type\CustomerType::class,
+                'type' => $this->config->getTableType(),
                 'options' => [
                     'parent' => $customer,
                 ]
             ],
             'quotes' => [
-                'type' => Type\QuoteType::class,
+                'type' => $this->get('ekyna_commerce.quote.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
                 ]
             ],
             'orders' => [
-                'type' => Type\OrderType::class,
+                'type' => $this->get('ekyna_commerce.order.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
                 ]
