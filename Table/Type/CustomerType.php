@@ -85,10 +85,10 @@ class CustomerType extends ResourceTableType
                 ->setExportable(true)
                 ->setConfigurable(true)
                 ->setProfileable(true)
-                ->addColumn('company', CType\Column\TextType::class, [
+                /*->addColumn('company', CType\Column\TextType::class, [
                     'label'    => 'ekyna_core.field.company',
                     'position' => 30,
-                ])
+                ])*/
                 ->addFilter('company', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.company',
                     'position' => 30,

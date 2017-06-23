@@ -13,12 +13,21 @@
             <tag name="serializer.denormalizer"/>
         </service>
 
+        <!-- Customer normalizer -->
+        <service id="ekyna_commerce.customer_customer.normalizer"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\CustomerNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer">
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
         <!-- Supplier product -->
-        <!--<service id="ekyna_commerce.serializer.normalizer.supplier_product"
+        <service id="ekyna_commerce.serializer.normalizer.supplier_product"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierProductNormalizer"
                  public="false">
             <tag name="serializer.normalizer" />
-        </service>-->
+            <tag name="serializer.denormalizer"/>
+        </service>
 
     </services>
 

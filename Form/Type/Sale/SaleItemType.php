@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AdjustmentsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
+use Ekyna\Bundle\CoreBundle\Form\Type\CollectionPositionType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -136,11 +137,7 @@ class SaleItemType extends ResourceFormType
                     'min'         => 1,
                 ],
             ]],
-            ['position', Type\HiddenType::class, [
-                'attr' => [
-                    'data-collection-role' => 'position',
-                ],
-            ]],
+            ['position', CollectionPositionType::class, []],
         ];
     }
 }

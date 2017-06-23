@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentTypes;
+use Ekyna\Bundle\CoreBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as AM;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes as AT;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -55,11 +56,7 @@ class AdjustmentType extends ResourceFormType
                     'placeholder' => 'ekyna_core.field.value',
                 ],
             ])
-            ->add('position', Type\HiddenType::class, [
-                'attr' => [
-                    'data-collection-role' => 'position',
-                ],
-            ]);
+            ->add('position', CollectionPositionType::class);
     }
 
     /**

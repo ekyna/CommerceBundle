@@ -466,8 +466,8 @@ class ConstantsHelper extends AbstractConstantsHelper
         return sprintf(
             '%s %s %s',
             $this->translator->trans($this->getGenderLabel($identity->getGender(), $long)),
-            $identity->getFirstName(),
-            $identity->getLastName()
+            $identity->getLastName(),
+            $identity->getFirstName()
         );
     }
 

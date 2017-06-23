@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\CoreBundle\Form\Type\EntitySearchType;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -36,23 +35,10 @@ class CustomerSearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label'        => 'ekyna_commerce.customer.label.singular',
-            'class'        => $this->customerClass,
-            'route'        => 'ekyna_commerce_customer_admin_search',
-            'required'     => false,
-            'choice_label' => function (CustomerInterface $data) {
-                $output = $data->getFirstName() . ' ' . $data->getLastName() . ' &lt;' . $data->getEmail() . '&gt;';
-                if (0 < strlen($data->getCompany())) {
-                    $output = '[' . $data->getCompany() . '] ' . $output;
-                }
-
-                return $output;
-            },
-            'format'       =>
-                "if(!data.id)return 'Search';" .
-                "var output=data.first_name+' '+data.last_name+' &lt;<em>'+data.email+'</em>&gt;';" .
-                "if(data.company)output='[<strong>'+data.company+'</strong>] '+output;" .
-                "return $('<span>'+output+'</span>');",
+            'label'    => 'ekyna_commerce.customer.label.singular',
+            'class'    => $this->customerClass,
+            'route'    => 'ekyna_commerce_customer_admin_search',
+            'required' => false,
         ]);
     }
 
