@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Customer;
 
 use Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository;
 use Ekyna\Component\Commerce\Customer\Provider\AbstractCustomerProvider;
+use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -14,14 +15,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class SecurityCustomerProvider extends AbstractCustomerProvider
 {
     /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
      * @var CustomerRepository
      */
-    private $customerRepository;
+    protected $customerRepository;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
 
     /**
      * @var bool
@@ -32,12 +33,19 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     /**
      * Constructor.
      *
-     * @param TokenStorageInterface $tokenStorage
+     * @param CustomerGroupRepositoryInterface $customerGroupRepository
+     * @param CustomerRepository               $customerRepository
+     * @param TokenStorageInterface            $tokenStorage
      */
-    public function __construct(TokenStorageInterface $tokenStorage, CustomerRepository $customerRepository)
-    {
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(
+        CustomerGroupRepositoryInterface $customerGroupRepository,
+        CustomerRepository $customerRepository,
+        TokenStorageInterface $tokenStorage
+    ) {
+        parent::__construct($customerGroupRepository);
+
         $this->customerRepository = $customerRepository;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**

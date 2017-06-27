@@ -1,4 +1,4 @@
-@base-cell-padding: 8px;
+@base-cell-padding: 6px;
 @text-color: #526273;
 @spinner-size: 120px;
 
@@ -24,6 +24,8 @@
 
         th, td {
             white-space: nowrap;
+            padding: @base-cell-padding;
+            line-height: 20px;
         }
 
         .sale-detail-number {
@@ -88,13 +90,14 @@
 
                 .sale-detail-designation {
                     padding: 0;
-                    line-height: 36px;
+                    line-height: 20px + (2*@base-cell-padding);
 
                     i {
                         display: inline-block;
                         width: 24px;
-                        height: 36px;
+                        height: 20px + (2*@base-cell-padding);
                         float: left;
+                        background-position: center center;
 
                         &.continue {
                             background-image: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIulI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq6bW7ZwJc+f7dW4o++jn+kBD8JUAQA7');
@@ -126,7 +129,7 @@
                 }
             }
 
-            .sale-detail-node.level-0 td {
+            .sale-detail-node > td {
                 color: lighten(@text-color, 20%);
             }
 

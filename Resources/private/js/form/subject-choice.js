@@ -59,10 +59,10 @@ define(['jquery', 'routing', 'select2'], function($, router) {
                     .select2({
                         placeholder: 'Rechercher ...',
                         allowClear: true,
-                        selectOnClose: true, // For tests
+                        //selectOnClose: true, // For tests
                         minimumInputLength: 3,
-                        templateResult: formatter,
-                        templateSelection: formatter,
+                        //templateResult: formatter,
+                        //templateSelection: formatter,
                         dropdownParent: $parent,
                         ajax: {
                             delay: 300,

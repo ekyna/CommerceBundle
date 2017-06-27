@@ -26,8 +26,9 @@
         <!-- Customer security -->
         <service id="ekyna_commerce.customer.security_provider"
                  class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
-            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument type="service" id="ekyna_commerce.customer.repository"/>
+            <argument type="service" id="security.token_storage"/>
         </service>
 
         <!-- Customer event listener -->
