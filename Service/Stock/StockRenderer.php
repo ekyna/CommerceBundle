@@ -64,6 +64,7 @@ class StockRenderer
         if (isset($options['class'])) {
             $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
         }
+
         return $this->templating->render($template, [
             'stockUnits' => $stockUnits,
             'prefix'     => $id,

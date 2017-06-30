@@ -1,6 +1,6 @@
 {% spaceless %}
 <div class="table-responsive">
-    <table class="table table-striped table-hover">
+    <table class="{{ classes }}">
         <thead>
         <tr>
             <th>
@@ -31,8 +31,8 @@
         </tr>
         </thead>
         <tbody>
-        {% for stockUnit in stockUnits -%}
-        {% set stockUnitId = prefix ~ '_' ~ loop.index0 %}
+        {%- for stockUnit in stockUnits -%}
+        {%- set stockUnitId = prefix ~ '_' ~ loop.index0 -%}
         <tr>
             <td id="{{ stockUnitId ~ '_state' }}">
                 {{- stockUnit|stock_unit_state_badge -}}
@@ -63,31 +63,28 @@
                 {{- stockUnit.netPrice|localizedcurrency('EUR') -}} {# TODO currency #}
             </td>
             <td class="actions">
-                {% if stockUnit.supplierOrderItem is not same as(null) %}
-                    <a href="{{ admin_resource_path(stockUnit.supplierOrderItem.order) }}"
-                       class="btn btn-xs btn-default">
-                        {{ 'ekyna_commerce.stock_unit.field.supplier_order'|trans }}
-                        {{ stockUnit.supplierOrderItem.order.number }}
+                {%- if stockUnit.supplierOrderItem is not same as(null) -%}
+                    <a href="{{ admin_resource_path(stockUnit.supplierOrderItem.order) }}" class="btn btn-xs btn-default">
+                        {{- 'ekyna_commerce.stock_unit.field.supplier_order'|trans }}
+                        {{ stockUnit.supplierOrderItem.order.number -}}
                     </a>
-                {% else %}
-                    <a href="{{ admin_resource_path(stockUnit, 'edit') }}"
-                       class="btn btn-xs btn-warning">
+                {%- else -%}
+                    <a href="{{ admin_resource_path(stockUnit, 'edit') }}" class="btn btn-xs btn-warning">
                         {{- 'ekyna_core.button.edit'|trans -}}
                     </a>
-                    <a href="{{ admin_resource_path(stockUnit, 'remove') }}"
-                       class="btn btn-xs btn-danger">
+                    <a href="{{ admin_resource_path(stockUnit, 'remove') }}" class="btn btn-xs btn-danger">
                         {{- 'ekyna_core.button.remove'|trans -}}
                     </a>
-                {% endif %}
+                {%- endif -%}
             </td>
         </tr>
-        {% else %}
+        {%- else -%}
         <tr>
             <td colspan="9" class="text-center">
                 <em>{{ 'ekyna_commerce.stock_unit.alert.empty_list'|trans }}</em>
             </td>
         </tr>
-        {%- endfor %}
+        {%- endfor -%}
         </tbody>
     </table>
 </div>
