@@ -21,7 +21,7 @@ Feature: Create customers
         Then I should see the resource saved confirmation message
         And I should see "contact@dupont.com" in the "#customer_email" element
         And I should see "Dupont et fils" in the "#customer_company" element
-        And I should see "Mr Jean Dupont" in the "#customer_identity" element
+        And I should see "Mr Dupont Jean" in the "#customer_identity" element
         And I should see "+33 2 98 76 54 32" in the "#customer_phone" element
         And I should see "+33 6 12 34 56 78" in the "#customer_mobile" element
 

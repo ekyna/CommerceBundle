@@ -8,7 +8,6 @@ use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
-use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 
 /**
  * Class OrderItemContext

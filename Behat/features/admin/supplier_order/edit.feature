@@ -16,8 +16,8 @@ Feature: Edit supplier orders
             | supplier | designation | reference | price     | weight | available | ordered | eda  | acme_product |
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |      | IPAD-AIR     |
         And The following supplier orders:
-            | number | supplier | currency | shippingCost |
-            | SO-001 | TechData | EUR      | 30           |
+            | number | supplier | currency | shippingCost | eda |
+            | SO-001 | TechData | EUR      | 30           | 2020-01-01 |
         And The following supplier order items:
             | order  | reference | quantity |
             | SO-001 | IPAD-AIR  | 10       |

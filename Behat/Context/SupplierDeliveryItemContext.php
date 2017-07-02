@@ -6,7 +6,6 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 
 /**
  * Class SupplierDeliveryItemContext

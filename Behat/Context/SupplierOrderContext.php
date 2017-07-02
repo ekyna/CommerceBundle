@@ -137,9 +137,11 @@ class SupplierOrderContext implements Context, KernelAwareContext
 
         $supplierOrders = [];
         foreach ($table as $row) {
+            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierInterface $supplier */
             if (null === $supplier = $supplierRepository->findOneBy(['name' => $row['supplier']])) {
                 throw new \InvalidArgumentException("Failed to find the supplier named '{$row['supplier']}'.");
             }
+            /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
             if (null === $currency = $currencyRepository->findOneBy(['code' => $row['currency']])) {
                 throw new \InvalidArgumentException("Failed to find the currency for code '{$row['currency']}'.");
             }
@@ -152,8 +154,8 @@ class SupplierOrderContext implements Context, KernelAwareContext
                 ->setNumber($row['number'])
                 ->setShippingCost(isset($row['shippingCost']) ? $row['shippingCost'] : 0);
 
-            if (isset($row['estimatedDateOfArrival'])) {
-                $supplierOrder->setEstimatedDateOfArrival(new \DateTime($row['estimatedDateOfArrival']));
+            if (isset($row['eda'])) {
+                $supplierOrder->setEstimatedDateOfArrival(new \DateTime($row['eda']));
             }
 
             $supplierOrders[] = $supplierOrder;

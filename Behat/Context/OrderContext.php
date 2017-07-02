@@ -179,6 +179,7 @@ class OrderContext implements Context, KernelAwareContext
                     ->setFirstName($row['firstName']);
 
                 if (isset($row['customerGroup'])) {
+                    /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface $customerGroup */
                     if (null === $customerGroup = $customerGroupRepository->findOneBy(['name' => $row['name']])) {
                         throw new \InvalidArgumentException("Failed to find the customer with email '{$row['customer']}'.");
                     }

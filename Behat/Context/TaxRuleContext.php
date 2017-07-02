@@ -43,8 +43,7 @@ class TaxRuleContext implements Context, KernelAwareContext
     private function castTaxRulesTable(TableNode $table)
     {
         $taxRuleRepository = $this->getContainer()->get('ekyna_commerce.tax_rule.repository');
-        $taxGroupRepository = $this->getContainer()->get('ekyna_commerce.tax_group.repository');
-        $customerGroupRepository = $this->getContainer()->get('ekyna_commerce.customer_group.repository');
+        $countryRepository = $this->getContainer()->get('ekyna_commerce.country.repository');
         $taxRepository = $this->getContainer()->get('ekyna_commerce.tax.repository');
 
         $taxRules = [];
@@ -52,32 +51,21 @@ class TaxRuleContext implements Context, KernelAwareContext
             /** @var \Ekyna\Component\Commerce\Pricing\Model\TaxRuleInterface $taxRule */
             $taxRule = $taxRuleRepository->createNew();
 
-            // Tax groups
-            if (isset($row['taxGroups'])) {
-                foreach (explode(',', $row['taxGroups']) as $name) {
-                    if (null === $taxGroup = $taxGroupRepository->findOneBy(['name' => $name])) {
-                        throw new \InvalidArgumentException("Failed to find the tax group with name '{$name}'.");
+            // Countries
+            if (isset($row['countries'])) {
+                foreach (explode(',', $row['countries']) as $code) {
+                    if (null === $country = $countryRepository->findOneByCode($code)) {
+                        throw new \InvalidArgumentException("Failed to find the country with code '{$code}'.");
                     }
-                    $taxRule->addTaxGroup($taxGroup);
+                    $taxRule->addCountry($country);
                 }
             } else {
-                $taxRule->addTaxGroup($taxGroupRepository->findDefault());
-            }
-
-            // Customer groups
-            if (isset($row['customerGroups'])) {
-                foreach (explode(',', $row['customerGroups']) as $name) {
-                    if (null === $customerGroup = $customerGroupRepository->findOneBy(['name' => $name])) {
-                        throw new \InvalidArgumentException("Failed to find the customer group with name '{$name}'.");
-                    }
-                    $taxRule->addCustomerGroup($customerGroup);
-                }
-            } else {
-                $taxRule->addCustomerGroup($customerGroupRepository->findDefault());
+                $taxRule->addCountry($countryRepository->findDefault());
             }
 
             // Taxes
             foreach (explode(',', $row['taxes']) as $name) {
+                /** @var \Ekyna\Component\Commerce\Pricing\Model\TaxInterface $tax */
                 if (null === $tax = $taxRepository->findOneBy(['name' => $name])) {
                     throw new \InvalidArgumentException("Failed to find the tax with name '{$name}'.");
                 }
@@ -88,6 +76,12 @@ class TaxRuleContext implements Context, KernelAwareContext
 
             if (isset($row['priority'])) {
                 $taxRule->setPriority($row['priority']);
+            }
+            if (isset($row['customer'])) {
+                $taxRule->setCustomer($row['customer']);
+            }
+            if (isset($row['business'])) {
+                $taxRule->setPriority($row['business']);
             }
 
             $taxRules[] = $taxRule;

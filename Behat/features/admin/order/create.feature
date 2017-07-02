@@ -41,7 +41,7 @@ Feature: Create orders
         And I should see "Indéfini" in the "#sale_customer" element
         And I should see "Dupont et fils" in the "#sale_company" element
         And I should see "Default customer group" in the "#sale_customerGroup" element
-        And I should see "Mr Jean Dupont" in the "#sale_identity" element
+        And I should see "Mr Dupont Jean" in the "#sale_identity" element
         And I should see "contact@dupont.com" in the "#sale_email" element
 
         And I should see "0,00 €" in the "#sale_grandTotal" element
@@ -51,7 +51,7 @@ Feature: Create orders
         And I should see "0 kg" in the "#order_weightTotal" element
         And I should see "Aucun" in the "#order_shipmentState" element
 
-        And I should see "Mr Jean Dupont" in the "#sale_invoiceAddress" element
+        And I should see "Mr Dupont Jean" in the "#sale_invoiceAddress" element
         And I should see "10 rue de la soif" in the "#sale_invoiceAddress" element
         And I should see "35000 Rennes" in the "#sale_invoiceAddress" element
         And I should see "France" in the "#sale_invoiceAddress" element
@@ -73,10 +73,10 @@ Feature: Create orders
 
         Then I should see the resource saved confirmation message
         # Order assertions
-        And I should see "Mr Jean Dupont" in the "#sale_customer" element
+        And I should see "Mr Dupont Jean" in the "#sale_customer" element
         And I should see "Dupont et fils" in the "#sale_company" element
         And I should see "Default customer group" in the "#sale_customerGroup" element
-        And I should see "Mr Jean Dupont" in the "#sale_identity" element
+        And I should see "Mr Dupont Jean" in the "#sale_identity" element
         And I should see "contact@dupont.com" in the "#sale_email" element
 
         And I should see "0,00 €" in the "#sale_grandTotal" element
@@ -86,12 +86,10 @@ Feature: Create orders
         And I should see "0 kg" in the "#order_weightTotal" element
         And I should see "Aucun" in the "#order_shipmentState" element
 
-        And I should see "Mr Jean Dupont" in the "#sale_invoiceAddress" element
+        And I should see "Mr Dupont Jean" in the "#sale_invoiceAddress" element
         And I should see "10 rue de la soif" in the "#sale_invoiceAddress" element
         And I should see "35000 Rennes" in the "#sale_invoiceAddress" element
         And I should see "France" in the "#sale_invoiceAddress" element
-#        And I should see "+33 2 98 76 54 32" in the "#sale_invoiceAddress" element
-#        And I should see "+33 6 12 34 56 78" in the "#sale_invoiceAddress" element
 
         And I should see "Même adresse" in the "#sale_deliveryAddress" element
 

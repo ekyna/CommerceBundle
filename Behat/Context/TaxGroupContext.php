@@ -43,23 +43,20 @@ class TaxGroupContext implements Context, KernelAwareContext
     private function castTaxGroupsTable(TableNode $table)
     {
         $taxGroupRepository = $this->getContainer()->get('ekyna_commerce.tax_group.repository');
-        $taxRuleRepository = $this->getContainer()->get('ekyna_commerce.tax_rule.repository');
+        $taxRepository = $this->getContainer()->get('ekyna_commerce.tax.repository');
 
         $taxGroups = [];
         foreach ($table as $row) {
             /** @var \Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface $taxGroup */
             $taxGroup = $taxGroupRepository->createNew();
 
-            // Tax rules
-            if (isset($row['taxRules'])) {
-                foreach (explode(',', $row['taxRules']) as $name) {
-                    if (null === $taxRule = $taxRuleRepository->findOneBy(['name' => $name])) {
-                        throw new \InvalidArgumentException("Failed to find the tax rule with name '{$name}'.");
-                    }
-                    $taxGroup->addTaxRule($taxRule);
+            // Taxes
+            foreach (explode(',', $row['taxes']) as $name) {
+                /** @var \Ekyna\Component\Commerce\Pricing\Model\TaxInterface $tax */
+                if (null === $tax = $taxRepository->findOneBy(['name' => $name])) {
+                    throw new \InvalidArgumentException("Failed to find the tax with name '{$name}'.");
                 }
-            } else {
-                $taxGroup->addTaxRule($taxRuleRepository->findDefault());
+                $taxGroup->addTax($tax);
             }
 
             $taxGroup->setName($row['name']);

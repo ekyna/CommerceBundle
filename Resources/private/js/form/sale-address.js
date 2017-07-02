@@ -42,7 +42,7 @@ define(['jquery', 'routing'], function($, router) {
                     $choiceSelect
                         .empty()
                         .append(
-                            $('<option value></option>')
+                            $('<option value>Choose</option>')
                         )
                         .prop('disabled', true);
 
@@ -59,7 +59,7 @@ define(['jquery', 'routing'], function($, router) {
                                         $choiceSelect.append(
                                             $('<option />')
                                                 .attr('value', data.choices[i].id)
-                                                .text(data.choices[i].choice_label)
+                                                .text(data.choices[i].text)
                                                 .data('address', data.choices[i])
                                         );
                                     }

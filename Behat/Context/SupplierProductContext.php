@@ -50,6 +50,7 @@ class SupplierProductContext implements Context, KernelAwareContext
 
         $supplierProducts = [];
         foreach ($table as $row) {
+            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierInterface $supplier */
             if (null === $supplier = $supplierRepository->findOneBy(['name' => $row['supplier']])) {
                 throw new \InvalidArgumentException("Failed to find the supplier named '{$row['supplier']}'.");
             }

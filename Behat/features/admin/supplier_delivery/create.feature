@@ -18,8 +18,8 @@ Feature: Create supplier deliveries
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |     | IPAD-AIR     |
             | TechData | Galaxy Tab  | GALA-TAB  | 207.5     | 0.7    | 20        | 0       |     | GALA-TAB     |
         And The following supplier orders:
-            | number | supplier | currency | shippingCost | estimatedDateOfArrival |
-            | SO-001 | TechData | EUR      | 20.55        | 2020-01-01             |
+            | number | supplier | currency | shippingCost | eda |
+            | SO-001 | TechData | EUR      | 20.55        | 2020-01-01 |
         And The following supplier order items:
             | order  | reference | quantity |
             | SO-001 | IPAD-AIR  | 2        |

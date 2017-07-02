@@ -33,7 +33,7 @@ Feature: Create customer addresses
         # Address assertion
         And I show the "addresses" tab
         And I should see "Dupont et fils" in the "#customer_address_0" element
-        And I should see "Mr Jean Dupont" in the "#customer_address_0" element
+        And I should see "Mr Dupont Jean" in the "#customer_address_0" element
         And I should see "10 rue de la paix" in the "#customer_address_0" element
         And I should see "12345 Paris" in the "#customer_address_0" element
         And I should see "France" in the "#customer_address_0" element
