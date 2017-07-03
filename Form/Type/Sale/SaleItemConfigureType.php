@@ -46,7 +46,7 @@ class SaleItemConfigureType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 if (null === $item = $event->getData()) {
                     throw new LogicException('Sale item must be bound to the form at this point.');
                 }
@@ -63,7 +63,7 @@ class SaleItemConfigureType extends AbstractType
                     new SaleItemFormEvent($item, $event->getForm())
                 );
             }, 1024)
-            ->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                 // Build the item
                 $this->eventDispatcher->dispatch(
                     SaleItemEvents::BUILD,
@@ -78,6 +78,12 @@ class SaleItemConfigureType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['attr']['id'] = $view->vars['id'];
+
+        // Build the form view
+        $this->eventDispatcher->dispatch(
+            SaleItemFormEvent::BUILD_VIEW,
+            new SaleItemFormEvent($form->getData(), $form, $view)
+        );
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Event;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 /**
  * Class SaleItemFormEvent
@@ -14,11 +15,17 @@ use Symfony\Component\Form\FormInterface;
 class SaleItemFormEvent extends SaleItemEvent
 {
     const BUILD_FORM = 'ekyna_commerce.sale_item.build_form';
+    const BUILD_VIEW = 'ekyna_commerce.sale_item.build_view';
 
     /**
      * @var FormInterface
      */
     private $form;
+
+    /**
+     * @var FormView
+     */
+    private $view;
 
 
     /**
@@ -26,12 +33,14 @@ class SaleItemFormEvent extends SaleItemEvent
      *
      * @param SaleItemInterface $item
      * @param FormInterface     $form
+     * @param FormView          $view
      */
-    public function __construct(SaleItemInterface $item, FormInterface $form)
+    public function __construct(SaleItemInterface $item, FormInterface $form, FormView $view = null)
     {
         parent::__construct($item);
 
         $this->form = $form;
+        $this->view = $view;
     }
 
     /**
@@ -42,5 +51,15 @@ class SaleItemFormEvent extends SaleItemEvent
     public function getForm()
     {
         return $this->form;
+    }
+
+    /**
+     * Returns the view.
+     *
+     * @return FormView
+     */
+    public function getView()
+    {
+        return $this->view;
     }
 }
