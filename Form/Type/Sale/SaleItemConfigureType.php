@@ -78,6 +78,7 @@ class SaleItemConfigureType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['attr']['id'] = $view->vars['id'];
+        $view->vars['extended'] = $options['extended'];
 
         // Build the form view
         $this->eventDispatcher->dispatch(
@@ -99,8 +100,11 @@ class SaleItemConfigureType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => SaleItemInterface::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => SaleItemInterface::class,
+                'extended'   => true,
+            ])
+            ->setAllowedTypes('extended', 'bool');
     }
 }
