@@ -24,15 +24,22 @@ class InformationType extends AbstractType
      */
     private $customerClass;
 
+    /**
+     * @var array
+     */
+    private $config;
+
 
     /**
      * Constructor.
      *
      * @param string $customerClass
+     * @param array  $config
      */
-    public function __construct($customerClass)
+    public function __construct($customerClass, array $config)
     {
         $this->customerClass = $customerClass;
+        $this->config = $config;
     }
 
     /**
@@ -51,11 +58,6 @@ class InformationType extends AbstractType
             ])
             ->add('vatNumber', VatNumberType::class)
             ->add('identity', IdentityType::class)
-            ->add('birthday', Type\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.birthday',
-                'required' => false,
-                'format'   => 'dd/MM/yyyy', // TODO localized format
-            ])
             ->add('phone', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.phone',
                 'required'       => false,
@@ -80,6 +82,14 @@ class InformationType extends AbstractType
                     ],
                 ],
             ]);
+
+        if ($this->config['birthday']) {
+            $builder->add('birthday', Type\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.birthday',
+                'required' => false,
+                'format'   => 'dd/MM/yyyy', // TODO localized format
+            ]);
+        }
     }
 
     /**

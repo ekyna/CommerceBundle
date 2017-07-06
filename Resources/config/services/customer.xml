@@ -23,7 +23,7 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
-        <!-- Customer security -->
+        <!-- Customer security provider -->
         <service id="ekyna_commerce.customer.security_provider"
                  class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
@@ -40,9 +40,18 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
-        <!-- Account menu -->
+        <!-- Account menu event subscriber -->
         <service id="ekyna_commerce.account.menu_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\AccountMenuSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Account dashboard event subscriber -->
+        <service id="ekyna_commerce.account.dashboard_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\AccountDashboardSubscriber">
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.quote.repository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

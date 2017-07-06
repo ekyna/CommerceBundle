@@ -50,7 +50,7 @@
                     {% endif %}
                 </td>
             </tr>
-            <tr style="display:none;" id="{{ shipmentId ~ '_details' }}">
+            <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
                 <td>&nbsp;</td>
                 <td colspan="4">
                     <table class="table table-alt table-striped table-condensed">
@@ -80,7 +80,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="6" style="text-align: center">
+                <td colspan="6" class="text-center">
                     <em>{{ 'ekyna_commerce.shipment.alert.no_item'|trans }}</em>
                 </td>
             </tr>

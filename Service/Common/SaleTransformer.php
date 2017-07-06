@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Listener\UploadableListener;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformer as BaseTransformer;
@@ -27,6 +28,16 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
      */
     private $orderRepository;
 
+    /**
+     * @var CartProviderInterface
+     */
+    private $cartProvider;
+
+    /**
+     * @var UploadableListener
+     */
+    private $uploadableListener;
+
 
     /**
      * Constructor.
@@ -34,16 +45,22 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
      * @param SaleFactoryInterface     $saleFactory
      * @param EntityManagerInterface   $manager
      * @param OrderRepositoryInterface $orderRepository
+     * @param CartProviderInterface    $cartProvider
+     * @param UploadableListener       $uploadableListener
      */
     public function __construct(
         SaleFactoryInterface $saleFactory,
         EntityManagerInterface $manager,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        CartProviderInterface $cartProvider,
+        UploadableListener $uploadableListener
     ) {
         parent::__construct($saleFactory);
 
         $this->manager = $manager;
         $this->orderRepository = $orderRepository;
+        $this->cartProvider = $cartProvider;
+        $this->uploadableListener = $uploadableListener;
     }
 
     /**
@@ -57,51 +74,25 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
     {
         $order = $this->orderRepository->createNew();
 
+        $doProviderClear = $this->cartProvider->hasCart() && $this->cartProvider->getCart() === $cart;
+
         $this->copySale($cart, $order);
 
         // TODO dispatch OrderEvents::PRE_CREATE / CartEvents::PRE_REMOVE ?
 
-        $this->disableListeners();
+        $this->uploadableListener->setEnabled(false);
 
         $this->manager->persist($order);
-        $this->manager->flush();
+        if ($doProviderClear) {
+            $this->cartProvider->clearCart(); // It calls EntityManager::flush()
+        } else {
+            $this->manager->flush();
+        }
 
-        $this->enableListeners();
+        $this->uploadableListener->setEnabled(true);
 
         // TODO dispatch OrderEvents::POST_CREATE / CartEvents::POST_REMOVE ?
 
         return $order;
-    }
-
-    /**
-     * Disables some problematic listeners :-°
-     */
-    protected function disableListeners()
-    {
-        $eventManager = $this->manager->getEventManager();
-
-        foreach ($eventManager->getListeners() as $eventName => $listeners) {
-            foreach ($listeners as $listener) {
-                if ($listener instanceof UploadableListener) {
-                    $listener->setEnabled(false);
-                }
-            }
-        }
-    }
-
-    /**
-     * Enables some problematic listeners :-°
-     */
-    protected function enableListeners()
-    {
-        $eventManager = $this->manager->getEventManager();
-
-        foreach ($eventManager->getListeners() as $eventName => $listeners) {
-            foreach ($listeners as $listener) {
-                if ($listener instanceof UploadableListener) {
-                    $listener->setEnabled(true);
-                }
-            }
-        }
     }
 }

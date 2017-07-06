@@ -40,31 +40,30 @@ class CustomerAddressType extends ResourceFormType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        parent::buildForm($builder, $options);
-
-        $builder
-            ->add('invoiceDefault', CheckboxType::class, [
-                'label' => 'ekyna_commerce.customer_address.field.invoice_default',
-                'required' => false,
-                'attr' => [
-                    'align_with_widget' => true,
-                ]
-            ])
-            ->add('deliveryDefault', CheckboxType::class, [
-                'label' => 'ekyna_commerce.customer_address.field.delivery_default',
-                'required' => false,
-                'attr' => [
-                    'align_with_widget' => true,
-                ]
-            ]);
+        if ($options['defaults']) {
+            $builder
+                ->add('invoiceDefault', CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.customer_address.field.invoice_default',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ]
+                ])
+                ->add('deliveryDefault', CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.customer_address.field.delivery_default',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ]
+                ]);
+        }
 
         if ($options['customer_form']) {
-            $builder
-                ->add('customer', ResourceType::class, [
-                    'label'     => 'ekyna_commerce.customer.label.singular',
-                    'class'     => $this->customerClass,
-                    'allow_new' => true,
-                ]);
+            $builder->add('customer', ResourceType::class, [
+                'label'     => 'ekyna_commerce.customer.label.singular',
+                'class'     => $this->customerClass,
+                'allow_new' => true,
+            ]);
         }
     }
 
@@ -77,7 +76,9 @@ class CustomerAddressType extends ResourceFormType
 
         $resolver
             ->setDefault('customer_form', false)
-            ->setAllowedTypes('customer_form', 'bool');
+            ->setDefault('defaults', false)
+            ->setAllowedTypes('customer_form', 'bool')
+            ->setAllowedTypes('defaults', 'bool');
     }
 
     /**

@@ -1,0 +1,51 @@
+<table class="table table-stripped">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.number'|trans }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.state'|trans }}</th>
+        <th>{{ 'ekyna_core.field.date'|trans }}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for quote in quotes %}
+        {% set path = path('ekyna_commerce_account_quote_show', {'number': quote.number}) %}
+        <tr>
+            <td>
+                <a href="{{ path }}">
+                    {{ quote.number }}
+                </a>
+            </td>
+            <td>
+                {% if quote.voucherNumber is not empty %}
+                    {{ quote.voucherNumber }}
+                {% else %}
+                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                {% endif %}
+            </td>
+            <td>
+                {{ quote.grandTotal|localizedcurrency(quote.currency.code) }}
+            </td>
+            <td>
+                {{ quote|sale_state_badge }}
+            </td>
+            <td>
+                {{ quote.createdAt|localizeddate('short', 'none') }}
+            </td>
+            <td>
+                <a href="{{ path }}" class="btn btn-xs btn-primary">
+                    {{ 'ekyna_core.button.show'|trans }}
+                </a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="6">
+                <em>{{ 'ekyna_commerce.account.quote.empty_list'|trans }}</em>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

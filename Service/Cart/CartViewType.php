@@ -28,7 +28,7 @@ class CartViewType extends AbstractViewType
 
         // Configure action
         if ($item->isConfigurable()) {
-            $configurePath = $this->generateUrl('ekyna_commerce_cart_configure_item', [
+            $configurePath = $this->generateUrl('ekyna_commerce_cart_item_configure', [
                 'itemId' => $item->getId(),
             ]);
             $actions[] = new View\Action($configurePath, 'fa fa-cog', [
@@ -38,7 +38,7 @@ class CartViewType extends AbstractViewType
         }
 
         // Remove action
-        $removePath = $this->generateUrl('ekyna_commerce_cart_remove_item', [
+        $removePath = $this->generateUrl('ekyna_commerce_cart_item_remove', [
             'itemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
@@ -61,15 +61,13 @@ class CartViewType extends AbstractViewType
 
         $actions = [];
 
-        // TODO Do we really want to let customer edit or remove this adjustment ?
-
         $adjustable = $adjustment->getAdjustable();
         if ($adjustable instanceof Cart\CartAdjustmentInterface) {
-            $removePath = $this->generateUrl('ekyna_commerce_cart_remove_adjustment', [
+            $removePath = $this->generateUrl('ekyna_commerce_cart_adjustment_remove', [
                 'adjustmentId' => $adjustment->getId(),
             ]);
         } elseif ($adjustable instanceof Cart\CartItemAdjustmentInterface) {
-            $removePath = $this->generateUrl('ekyna_commerce_cart_remove_item_adjustment', [
+            $removePath = $this->generateUrl('ekyna_commerce_cart_item_adjustment_remove', [
                 'itemId'       => $adjustable->getId(),
                 'adjustmentId' => $adjustment->getId(),
             ]);

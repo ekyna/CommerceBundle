@@ -27,15 +27,22 @@ class RegistrationType extends AbstractType
      */
     private $customerClass;
 
+    /**
+     * @var array
+     */
+    private $config;
+
 
     /**
      * Constructor.
      *
      * @param string $customerClass
+     * @param array  $config
      */
-    public function __construct($customerClass)
+    public function __construct($customerClass, array $config)
     {
         $this->customerClass = $customerClass;
+        $this->config = $config;
     }
 
     /**
@@ -74,11 +81,6 @@ class RegistrationType extends AbstractType
             ])
             ->add('vatNumber', VatNumberType::class)
             ->add('identity', IdentityType::class)
-            ->add('birthday', Type\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.birthday',
-                'required' => false,
-                'format'   => 'dd/MM/yyyy', // TODO localized format
-            ])
             ->add('phone', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.phone',
                 'required'       => false,
@@ -94,6 +96,10 @@ class RegistrationType extends AbstractType
             ->add('invoice', CustomerAddressType::class, [
                 'label'         => false,
                 'property_path' => 'addresses[0]',
+                'identity'      => false,
+                'company'       => false,
+                'phones'        => false,
+                'defaults'      => false,
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
@@ -107,6 +113,14 @@ class RegistrationType extends AbstractType
                     ],
                 ],
             ]);
+
+        if ($this->config['birthday']) {
+            $builder->add('birthday', Type\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.birthday',
+                'required' => false,
+                'format'   => 'dd/MM/yyyy', // TODO localized format
+            ]);
+        }
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
@@ -128,11 +142,10 @@ class RegistrationType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'data_class'        => $this->customerClass,
-                'csrf_token_id'     => 'registration',
-                'validation_groups' => ['Registration'],
-            ]);
+        $resolver->setDefaults([
+            'data_class'        => $this->customerClass,
+            'csrf_token_id'     => 'registration',
+            'validation_groups' => ['Registration'],
+        ]);
     }
 }

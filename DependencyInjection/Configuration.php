@@ -51,6 +51,12 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(['USD'])
                             ->prototype('scalar')->end()
                         ->end()
+                        ->arrayNode('customer')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->booleanNode('birthday')->defaultTrue()->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end();

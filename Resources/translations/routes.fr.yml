@@ -1,5 +1,4 @@
 ekyna_commerce_cart_checkout_index: /mon-panier
-ekyna_commerce_cart_checkout_information: /mon-panier/informations
 ekyna_commerce_cart_checkout_shipment: /mon-panier/livraison
 ekyna_commerce_cart_checkout_payment: /mon-panier/paiement
 ekyna_commerce_cart_checkout_confirmation: /mon-panier/confirmation/{orderKey}

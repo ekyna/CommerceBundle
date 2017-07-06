@@ -88,6 +88,10 @@ class CartHelper
      */
     public function buildView(CartInterface $cart, array $options = [])
     {
+        if (!isset($options['taxes_view'])) {
+            $options['taxes_view'] = false;
+        }
+
         return $this->saleHelper->buildView($cart, $options);
     }
 

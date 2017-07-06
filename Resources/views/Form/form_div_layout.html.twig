@@ -16,7 +16,10 @@
         {{- form_row(form.company) -}}
     {%- endif -%}
 
-    {{- form_row(form.identity) -}}
+    {%- if form.identity is defined -%}
+        {{- form_row(form.identity) -}}
+    {%- endif -%}
+
     {{- form_row(form.street, {'sizing': 'sm'}) -}}
     {{- form_row(form.supplement) -}}
     <div class="row">
@@ -191,6 +194,17 @@
 {% endblock ekyna_commerce_checkout_payment_widget %}
 
 
+{% block ekyna_commerce_checkout_attachment_widget %}
+{% spaceless %}
+    {{ bootstrap_set_sizing('sm') }}
+    {{ form_errors(form) }}
+    {{ form_row(form.file) }}
+    {{ form_row(form.title) }}
+    {{ form_rest(form) }}
+{% endspaceless %}
+{% endblock ekyna_commerce_checkout_attachment_widget %}
+
+
 {% block ekyna_commerce_checkout_balance_payment_widget %}
 {% spaceless %}
     <div class="row">
@@ -351,7 +365,7 @@
         {% endif %}
         <div class="sale-address-wrap">
             {% if form.choice is defined %}
-                {{ form_row(form.choice) }}
+                {{ form_row(form.choice, {'sizing': 'sm'}) }}
             {% endif %}
             <div class="sale-address">
                 {{ form_row(form.address) }}

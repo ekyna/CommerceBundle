@@ -1,0 +1,61 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {{ 'ekyna_commerce.account.shipment.title'|trans|raw }} - {{ sale.shipmentState|shipment_state_badge }}
+    </div>
+    <table class="table table-striped table-hover">
+        <tbody>
+        {% for shipment in sale.shipments %}
+            {% set shipmentId = 'shipment_' ~ loop.index0 %}
+            <tr>
+                <td>{{ shipment.number }}</td>
+                <td>
+                    {% if shipment.return %}
+                        <span class="label label-warning">
+                                {{ 'ekyna_core.value.yes'|trans }}
+                            </span>
+                    {% else %}
+                        <span class="label label-default">
+                                {{ 'ekyna_core.value.no'|trans }}
+                            </span>
+                    {% endif %}
+                </td>
+                <td>{{ shipment.method }}</td>
+                <td>{{ shipment|shipment_state_badge }}</td>
+                <td>{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
+                <td class="actions">
+                    <a href="javascript:void(0)"
+                       id="{{ shipmentId }}_toggle_details"
+                       class="btn btn-default btn-xs"
+                       data-toggle-details="{{ shipmentId ~ '_details' }}">
+                        <span class="fa fa-info-circle"></span>
+                    </a>
+                </td>
+            </tr>
+            <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
+                <td>&nbsp;</td>
+                <td colspan="4">
+                    <table class="table table-alt table-striped table-condensed">
+                        <tbody>
+                        {% for item in shipment.items %}
+                            {% set itemId = shipmentId ~ '_item_' ~ loop.index0 %}
+                            <tr>
+                                <td>{{ item.saleItem|subject_admin_link }}</td>
+                                <td>{{ item.saleItem.reference }}</td>
+                                <td>{{ item.quantity|localizednumber }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">
+                    <em>{{ 'ekyna_commerce.account.shipment.empty_list'|trans }}</em>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

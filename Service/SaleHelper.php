@@ -188,11 +188,30 @@ class SaleHelper
      *
      * @return Model\AdjustmentInterface|null
      */
-    public function findSaleAdjustmentById(Model\SaleInterface $sale, $adjustmentId)
+    public function findAdjustmentById(Model\SaleInterface $sale, $adjustmentId)
     {
         foreach ($sale->getAdjustments() as $adjustment) {
             if ($adjustmentId == $adjustment->getId()) {
                 return $adjustment;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds the sale attachment by its id.
+     *
+     * @param Model\SaleInterface $sale
+     * @param int                 $attachmentId
+     *
+     * @return Model\SaleAttachmentInterface|null
+     */
+    public function findAttachmentById(Model\SaleInterface $sale, $attachmentId)
+    {
+        foreach ($sale->getAttachments() as $attachment) {
+            if ($attachmentId == $attachment->getId()) {
+                return $attachment;
             }
         }
 
@@ -207,11 +226,11 @@ class SaleHelper
      *
      * @return Model\AdjustmentInterface|null
      */
-    public function findSaleItemAdjustmentById($saleOrItem, $adjustmentId)
+    public function findItemAdjustmentById($saleOrItem, $adjustmentId)
     {
         if ($saleOrItem instanceof Model\SaleInterface) {
             foreach ($saleOrItem->getItems() as $item) {
-                if (null !== $result = $this->findSaleItemAdjustmentById($item, $adjustmentId)) {
+                if (null !== $result = $this->findItemAdjustmentById($item, $adjustmentId)) {
                     return $result;
                 }
             }
@@ -222,7 +241,7 @@ class SaleHelper
                 }
             }
             foreach ($saleOrItem->getChildren() as $item) {
-                if (null !== $result = $this->findSaleItemAdjustmentById($item, $adjustmentId)) {
+                if (null !== $result = $this->findItemAdjustmentById($item, $adjustmentId)) {
                     return $result;
                 }
             }
@@ -240,7 +259,6 @@ class SaleHelper
      * @param int                                         $itemId
      *
      * @return bool
-     * @todo remove as no longer used
      */
     public function removeItemById($saleOrItem, $itemId)
     {
@@ -278,13 +296,33 @@ class SaleHelper
      * @param int                 $adjustmentId
      *
      * @return bool
-     * @todo remove as no longer used
      */
-    public function removeSaleAdjustmentById(Model\SaleInterface $sale, $adjustmentId)
+    public function removeAdjustmentById(Model\SaleInterface $sale, $adjustmentId)
     {
-        if (null !== $adjustment = $this->findSaleAdjustmentById($sale, $adjustmentId)) {
+        if (null !== $adjustment = $this->findAdjustmentById($sale, $adjustmentId)) {
             if (!$adjustment->isImmutable()) {
                 $sale->removeAdjustment($adjustment);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes the sale attachment by its id.
+     *
+     * @param Model\SaleInterface $sale
+     * @param int                 $attachmentId
+     *
+     * @return bool
+     */
+    public function removeAttachmentById(Model\SaleInterface $sale, $attachmentId)
+    {
+        if (null !== $attachment = $this->findAttachmentById($sale, $attachmentId)) {
+            if (!$attachment->isInternal()) {
+                $sale->removeAttachment($attachment);
 
                 return true;
             }

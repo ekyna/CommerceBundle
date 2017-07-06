@@ -67,9 +67,6 @@
             <call method="setSaleTransformer">
                 <argument type="service" id="ekyna_commerce.sale_transformer"/>
             </call>
-            <call method="setCartProvider">
-                <argument type="service" id="ekyna_commerce.cart.session_provider"/>
-            </call>
         </service>
         <service id="ekyna_commerce.payment.quote_controller"
                  class="Ekyna\Bundle\CommerceBundle\Controller\Payment\QuotePaymentController"

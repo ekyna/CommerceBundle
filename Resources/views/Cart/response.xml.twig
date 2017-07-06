@@ -2,34 +2,15 @@
 {% spaceless %}
 <?xml version="1.0" encoding="utf-8"?>
 <response>
-{% if cart is not same as(null) %}
-
-    <view><![CDATA[
-        {{ render_sale_view(view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
-    ]]></view>
-
-    <information><![CDATA[
-        {{ macros.cart_information(cart) }}
-    ]]></information>
-
-    <invoice-address><![CDATA[
-        {{ macros.cart_invoice_address(cart) }}
-    ]]></invoice-address>
-
-    <delivery-address><![CDATA[
-        {{ macros.cart_delivery_address(cart) }}
-    ]]></delivery-address>
-
-    <comment><![CDATA[
-        {{ macros.cart_comment(cart) }}
-    ]]></comment>
-
-{% else %}
-
-    <view><![CDATA[
-        <p>Votre panier est vide.</p>
-    ]]></view>
-
-{% endif %}
+{%- if cart is not same as(null) -%}
+    <view><![CDATA[{{ render_sale_view(view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}]]></view>
+    <information><![CDATA[{{ macros.cart_information(cart) }}]]></information>
+    <invoice-address><![CDATA[{{ macros.cart_invoice_address(cart) }}]]></invoice-address>
+    <delivery-address><![CDATA[{{ macros.cart_delivery_address(cart) }}]]></delivery-address>
+    <comment><![CDATA[{{ macros.cart_comment(cart) }}]]></comment>
+    <attachments><![CDATA[{{ macros.cart_attachments(cart) }}]]></attachments>
+{%- else -%}
+    <view><![CDATA[<p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>]]></view>
+{%- endif -%}
 </response>
 {% endspaceless %}

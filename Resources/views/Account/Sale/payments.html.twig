@@ -1,0 +1,25 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {{ 'ekyna_commerce.account.payment.title'|trans|raw }} - {{ sale.paymentState|payment_state_badge }}
+    </div>
+    <table class="table table-striped table-hover">
+        <tbody>
+        {% for payment in sale.payments %}
+            <tr>
+                <td>{{ payment.number }}</td>
+                <td>{{ payment.method }}</td>
+                <td>{{ payment.amount|localizedcurrency(payment.currency.code) }}</td>
+                <td>{{ payment.currency }}</td>
+                <td>{{ payment|payment_state_badge }}</td>
+                <td>{{ payment.createdAt|localizeddate('short', 'none') }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">
+                    <em>{{ 'ekyna_commerce.account.payment.empty_list'|trans }}</em>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

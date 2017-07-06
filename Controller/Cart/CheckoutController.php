@@ -73,9 +73,8 @@ class CheckoutController extends AbstractController
             $saleHelper = $this->getSaleHelper();
 
             $saleForm = $saleHelper->createQuantitiesForm($cart, [
-                'method'            => 'post',
-                'action'            => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
-                'validation_groups' => ['checkout'], // TODO
+                'method' => 'post',
+                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
             ]);
 
             $saleForm->handleRequest($request);
@@ -97,29 +96,6 @@ class CheckoutController extends AbstractController
         }
 
         return $this->render('EkynaCommerceBundle:Cart/Checkout:index.html.twig', $parameters);
-    }
-
-    /**
-     * Information action.
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function informationAction()
-    {
-        throw new AccessDeniedHttpException('Deprecated');
-
-        /*$customer = $this->getCustomer();
-
-        if (null === $customer) {
-            // TODO Set form login redirection
-            $request->getSession()->set('_ekyna.login_success.target_path', 'ekyna_commerce_cart_checkout_information');
-
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
-
-        return $this->render('EkynaCommerceBundle:Cart/Checkout:information.html.twig', [
-            'customer' => $customer,
-        ]);*/
     }
 
     /**

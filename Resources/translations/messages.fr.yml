@@ -30,6 +30,12 @@ ekyna_commerce:
         attachment:
             title: Documents
             empty_list: Aucun document enregistré
+        payment:
+            title: Paiements
+            empty_list: Aucun paiment enregistré
+        shipment:
+            title: Expéditions
+            empty_list: Aucune expédition enregistré
         registration:
             title: Ouverture de compte
             field:
@@ -108,11 +114,17 @@ ekyna_commerce:
 
     checkout:
         index:
+            empty: Votre panier est vide
             information: Informations
             invoice: Facturation
             delivery: Livraison
             comment: Commentaire
+            attachments: Pièces jointes
             place_order: Commander
+        button:
+            attachment_remove: Supprimer cette pièce jointe
+        confirm:
+            attachment_remove: Êtes-vous sûr de vouloir supprimer cette pièce jointe ?
         payment:
             grand_total: |
                 Montant de votre panier : <strong>%amount%</strong>

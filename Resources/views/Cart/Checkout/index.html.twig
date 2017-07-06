@@ -85,7 +85,7 @@
                     </div>
                 </div>
 
-                {# Delivery#}
+                {# Delivery #}
                 <div class="col-md-4">
                     <h3>
                         <a href="{{ path('ekyna_commerce_cart_delivery_address') }}"
@@ -105,8 +105,8 @@
 
         <div class="container">
             <div class="row">
-                {# Delivery#}
-                <div class="col-md-12">
+                {# Comment #}
+                <div class="col-md-6">
                     <h3>
                         <a href="{{ path('ekyna_commerce_cart_comment') }}"
                            class="btn btn-default btn-sm pull-right" data-cart-modal>
@@ -117,6 +117,21 @@
                     <div class="panel panel-default">
                         <div class="panel-body cart-checkout-comment">
                             {{ macros.cart_comment(cart) }}
+                        </div>
+                    </div>
+                </div>
+                {# Attachments #}
+                <div class="col-md-6">
+                    <h3>
+                        <a href="{{ path('ekyna_commerce_cart_attachment_add') }}"
+                           class="btn btn-default btn-sm pull-right" data-cart-modal>
+                            {{- 'ekyna_core.button.add'|trans -}}
+                        </a>
+                        {{ 'ekyna_commerce.checkout.index.attachments'|trans }}
+                    </h3>
+                    <div class="panel panel-default">
+                        <div class="panel-body cart-checkout-attachments">
+                            {{ macros.cart_attachments(cart) }}
                         </div>
                     </div>
                 </div>
@@ -145,7 +160,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <p>Votre panier est vide.</p>
+                    <p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>
                 </div>
             </div>
         </div>
@@ -159,6 +174,7 @@
 {% block stylesheets -%}
     {{ parent() }}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/ekynacommerce/css/checkout.css') }}" type="text/css" rel="stylesheet"/>
 {%- endblock stylesheets %}
 
 

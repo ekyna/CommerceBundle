@@ -77,7 +77,8 @@ class AddressType extends AbstractType
                 'attr'     => [
                     'class' => 'address-country',
                 ],
-            ])/*->add('state', Type\TextType::class, [
+            ])
+            /*->add('state', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
                 'sizing' => 'sm',

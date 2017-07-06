@@ -1,14 +1,16 @@
 define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, Modal, Dispatcher) {
     "use strict";
 
+    var mapping = {
+        'information': '.cart-checkout-information',
+        'invoice-address': '.cart-checkout-invoice-address',
+        'delivery-address': '.cart-checkout-delivery-address',
+        'comment': '.cart-checkout-comment',
+        'attachments': '.cart-checkout-attachments'
+    };
+
     var parseResponse = function(response) {
-        var $xml = $(response),
-            mapping = {
-                'information': '.cart-checkout-information',
-                'invoice-address': '.cart-checkout-invoice-address',
-                'delivery-address': '.cart-checkout-delivery-address',
-                'comment': '.cart-checkout-comment'
-            };
+        var $xml = $(response);
 
         // Information, invoice address and delivery address
         for (var key in mapping) {
@@ -81,6 +83,26 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
                     modal.close();
                 }
             }
+        });
+
+        return false;
+    });
+
+    $(document).on('click', '.cart-checkout [data-cart-xhr]', function(e) {
+        e.preventDefault();
+
+        var $this = $(this), confirmation = $this.data('confirm');
+        if (confirmation && confirmation.length && !confirm(confirmation)) {
+            return false;
+        }
+
+        var xhr = $.ajax({
+            url: $(this).attr('href'),
+            method: 'post',
+            dataType: 'xml'
+        });
+        xhr.done(function(response) {
+            parseResponse(response);
         });
 
         return false;

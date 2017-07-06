@@ -3,13 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\CommentType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\InformationType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout as CheckoutType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale as SaleType;
 use Ekyna\Bundle\CoreBundle\Modal;
+use League\Flysystem\Filesystem;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -25,13 +26,21 @@ class CartController extends AbstractController
     private $modalRenderer;
 
     /**
+     * @var Filesystem
+     */
+    private $fileSystem;
+
+
+    /**
      * Constructor.
      *
      * @param Modal\Renderer $modalRenderer
+     * @param Filesystem     $fileSystem
      */
-    public function __construct(Modal\Renderer $modalRenderer)
+    public function __construct(Modal\Renderer $modalRenderer, Filesystem $fileSystem)
     {
         $this->modalRenderer = $modalRenderer;
+        $this->fileSystem = $fileSystem;
     }
 
     /**
@@ -57,14 +66,18 @@ class CartController extends AbstractController
     }
 
     /**
-     * (Re)configures the item.
+     * Cart item (Re)configure action.
      *
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function configureItemAction(Request $request)
+    public function itemConfigureAction(Request $request)
     {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented');
+        }
+
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
         }
@@ -86,13 +99,11 @@ class CartController extends AbstractController
             throw new NotFoundHttpException('Item is immutable.');
         }
 
-        // TODO if not XHR, redirect to product detail page with itemID for configuration
-
         $form = $this
             ->getFormFactory()
-            ->create(SaleItemConfigureType::class, $item, [
+            ->create(SaleType\SaleItemConfigureType::class, $item, [
                 'method' => 'post',
-                'action' => $this->generateUrl('ekyna_commerce_cart_configure_item', [
+                'action' => $this->generateUrl('ekyna_commerce_cart_item_configure', [
                     'itemId' => $item->getId(),
                 ]),
                 'attr'   => [
@@ -116,13 +127,13 @@ class CartController extends AbstractController
     }
 
     /**
-     * Removes the item.
+     * Cart item remove action.
      *
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function removeItemAction(Request $request)
+    public function itemRemoveAction(Request $request)
     {
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
@@ -151,14 +162,137 @@ class CartController extends AbstractController
         return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
     }
 
-    public function removeItemAdjustmentAction(Request $request)
+    public function itemAdjustmentRemoveAction()
     {
         throw new \Exception('Not yet implemented.'); // TODO
     }
 
-    public function removeAdjustmentAction(Request $request)
+    public function adjustmentRemoveAction()
     {
         throw new \Exception('Not yet implemented.'); // TODO
+    }
+
+    /**
+     * Attachment add action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function attachmentAddAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented');
+        }
+
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+        $saleHelper = $this->getSaleHelper();
+
+        $attachment = $saleHelper->getSaleFactory()->createAttachmentForSale($cart);
+        $cart->addAttachment($attachment);
+
+        $form = $this
+            ->getFormFactory()
+            ->create(CheckoutType\AttachmentType::class, $attachment, [
+                'method' => 'post',
+                'action' => $this->generateUrl('ekyna_commerce_cart_attachment_add'),
+                'attr'   => [
+                    'class' => 'form-horizontal',
+                ],
+            ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // TODO use operator to create attachment (cart will be automatically saved)
+            $this->getCartHelper()->getCartProvider()->saveCart();
+
+            return $this->buildXhrCartViewResponse();
+        }
+
+        // TODO title trans
+        $modal = $this->createModal('Ajouter une pièce jointe', $form->createView());
+
+        return $this->modalRenderer->render($modal);
+    }
+
+    /**
+     * Cart attachment remove action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function attachmentRemoveAction(Request $request)
+    {
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+        $attachmentId = intval($request->attributes->get('attachmentId'));
+        if (0 < $attachmentId) {
+            // TODO use operator to delete attachment (cart will be automatically saved)
+            if ($this->getSaleHelper()->removeAttachmentById($cart, $attachmentId)) {
+                if ($cart->hasItems()) {
+                    $this->getCartHelper()->getCartProvider()->saveCart();
+                } else {
+                    $this->getCartHelper()->getCartProvider()->clearCart();
+                }
+            } else {
+                // TODO Warn about internal attachment ?
+            }
+        } else {
+            throw new NotFoundHttpException('Unexpected attachment identifier.');
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->buildXhrCartViewResponse();
+        }
+
+        return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+    }
+
+
+    /**
+     * Sale attachment download action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function attachmentDownloadAction(Request $request)
+    {
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+        $attachment = null;
+        $attachmentId = intval($request->attributes->get('attachmentId'));
+        if (0 < $attachmentId) {
+            $attachment = $this->getSaleHelper()->findAttachmentById($cart, $attachmentId);
+        }
+        if (null === $attachment) {
+            throw new NotFoundHttpException('Attachment not found.');
+        }
+
+        if (!$this->fileSystem->has($attachment->getPath())) {
+            throw new NotFoundHttpException('File not found');
+        }
+        $file = $this->fileSystem->get($attachment->getPath());
+
+        $response = new Response($file->read());
+        $response->setPrivate();
+
+        $response->headers->set('Content-Type', $file->getMimetype());
+        $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $attachment->guessFilename()
+        );
+
+        return $response;
     }
 
     /**
@@ -172,7 +306,7 @@ class CartController extends AbstractController
     {
         return $this->handleForm(
             $request,
-            InformationType::class,
+            CheckoutType\InformationType::class,
             'Modifier vos informations',
             'ekyna_commerce_cart_information',
             [
@@ -192,8 +326,8 @@ class CartController extends AbstractController
     {
         return $this->handleForm(
             $request,
-            SaleAddressType::class,
-            'Modifier l\'adresse de facturation',
+            SaleType\SaleAddressType::class,
+            'Modifier l\'adresse de facturation', // TODO title trans
             'ekyna_commerce_cart_invoice_address',
             [
                 'address_type'      => CartAddressType::class,
@@ -213,8 +347,8 @@ class CartController extends AbstractController
     {
         return $this->handleForm(
             $request,
-            SaleAddressType::class,
-            'Modifier l\'adresse de livraison',
+            SaleType\SaleAddressType::class,
+            'Modifier l\'adresse de livraison', // TODO title trans
             'ekyna_commerce_cart_delivery_address',
             [
                 'address_type'      => CartAddressType::class,
@@ -235,8 +369,8 @@ class CartController extends AbstractController
     {
         return $this->handleForm(
             $request,
-            CommentType::class,
-            'Modifier votre commentaire',
+            CheckoutType\CommentType::class,
+            'Modifier votre commentaire', // TODO title trans
             'ekyna_commerce_cart_comment',
             [
                 'validation_groups' => ['checkout'], // TODO
@@ -283,7 +417,6 @@ class CartController extends AbstractController
             return $this->buildXhrCartViewResponse();
         }
 
-        // TODO title trans
         $modal = $this->createModal($title, $form->createView());
 
         return $this->modalRenderer->render($modal);

@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
+use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
@@ -69,7 +70,7 @@ class CustomerType extends ResourceFormType
                 'roles'     => ['ROLE_USER'],
                 'add_route' => 'ekyna_user_user_admin_new',
             ])*/
-            ->add('inCharge', UserSearchType::class, [
+            ->add('inCharge', UserChoiceType::class, [
                 'label'    => 'ekyna_commerce.customer.field.in_charge',
                 'required' => false,
                 'roles'    => ['ROLE_ADMIN'],

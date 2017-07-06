@@ -3,27 +3,31 @@
 {% block account %}
 {% spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
+    <p>
+        Du {{ order.createdAt|localizeddate('short', 'none') }}, {{ order|sale_state_badge }}
+    </p>
     <hr>
 
-    {{ render_sale_view(view) }}
+    {{- render_sale_view(view) -}}
 
-    <hr>
-
-    {% include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
+    {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
         'sale': order,
         'detailRoute': 'ekyna_commerce_account_order_attachment_download'
-    } %}
+    } -%}
 
-    <hr>
+    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': order} -%}
+
+    {%- include "EkynaCommerceBundle:Account/Sale:shipments.html.twig" with {'sale': order} -%}
+
     <p class="text-center">
         <a href="{{ path('ekyna_commerce_account_order_index') }}" class="btn btn-sm btn-default">
-            {{ 'ekyna_core.button.back_to_list'|trans }}
+            {{- 'ekyna_core.button.back_to_list'|trans -}}
         </a>
     </p>
 {% endspaceless %}
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
+    {{- parent() -}}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
 {% endblock %}

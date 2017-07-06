@@ -1,29 +1,33 @@
-<h4>{{ 'ekyna_commerce.account.attachment.title'|trans|raw }}</h4>
-<table class="table table-stripped">
-    <tbody>
-    {% for attachment in sale.customerAttachments %}
-        {% set path = path(detailRoute, {
-            'number': sale.number,
-            'id': attachment.id
-        }) %}
-        <tr>
-            <td>
-                <a href="{{ path }}">
-                    {{ attachment }}
-                </a>
-            </td>
-            <td>
-                <a href="{{ path }}" class="btn btn-xs btn-primary">
-                    {{ 'ekyna_core.button.download'|trans }}
-                </a>
-            </td>
-        </tr>
-    {% else %}
-        <tr>
-            <td colspan="2" class="text-center">
-                {{ 'ekyna_commerce.account.attachment.empty_list'|trans }}
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {{ 'ekyna_commerce.account.attachment.title'|trans|raw }}
+    </div>
+    <table class="table table-stripped">
+        <tbody>
+        {% for attachment in sale.customerAttachments %}
+            {% set path = path(detailRoute, {
+                'number': sale.number,
+                'id': attachment.id
+            }) %}
+            <tr>
+                <td>
+                    <a href="{{ path }}" target="_blank">
+                        {{ attachment }}
+                    </a>
+                </td>
+                <td class="text-right">
+                    <a href="{{ path }}" target="_blank" class="btn btn-xs btn-primary">
+                        {{ 'ekyna_core.button.download'|trans }}
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2" class="text-center">
+                    {{ 'ekyna_commerce.account.attachment.empty_list'|trans }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,50 +1,86 @@
 {% macro cart_information(cart) %}
 {% spaceless %}
-    {% if cart is same as(null) or cart.email is same as(null) %}
+    {%- if cart is same as(null) or cart.email is same as(null) -%}
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-    {% else %}
+    {%- else -%}
         {% if cart.company is not same as(null) %}
             <strong>{{ cart.company }}</strong><br>
         {% endif %}
-        {{ cart|identity }}<br>
+        {{- cart|identity }}<br>
         <em>{{ cart.email }}</em>
-    {% endif %}
+    {%- endif -%}
 {% endspaceless %}
 {% endmacro cart_information %}
 
 
 {% macro cart_invoice_address(cart) %}
 {% spaceless %}
-    {% if cart is same as(null) or cart.invoiceAddress is same as(null) %}
+    {%- if cart is same as(null) or cart.invoiceAddress is same as(null) -%}
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-    {% else %}
+    {%- else -%}
         {{ cart.invoiceAddress|commerce_address }}
-    {% endif %}
+    {%- endif -%}
 {% endspaceless %}
 {% endmacro cart_invoice_address %}
 
 
 {% macro cart_delivery_address(cart) %}
 {% spaceless %}
-    {% if cart is same as(null) %}
+    {%- if cart is same as(null) -%}
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-    {% elseif cart.sameAddress %}
+    {%- elseif cart.sameAddress -%}
         <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
-    {% elseif cart.deliveryAddress is same as(null) %}
+    {%- elseif cart.deliveryAddress is same as(null) -%}
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-    {% else %}
-        {{ cart.deliveryAddress|commerce_address }}
-    {% endif %}
+    {%- else -%}
+        {{- cart.deliveryAddress|commerce_address -}}
+    {%- endif -%}
 {% endspaceless %}
 {% endmacro cart_delivery_address %}
 
 
 {% macro cart_comment(cart) %}
 {% spaceless %}
-    {% if cart is same as(null) or cart.comment is same as(null) %}
+    {%- if cart is same as(null) or cart.comment is same as(null) -%}
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-    {% else %}
+    {%- else -%}
         {{ cart.comment|nl2br }}<br>
-    {% endif %}
+    {%- endif -%}
 {% endspaceless %}
 {% endmacro cart_comment %}
+
+
+{% macro cart_attachments(cart) %}
+{% spaceless %}
+    {%- if cart is same as(null) or cart.attachments is empty -%}
+        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+    {%- else -%}
+    <table class="table table-hover table-stripped table-condensed">
+    <tbody>
+        {%- for attachment in cart.attachments -%}
+        <tr>
+            <td>
+                <a href="{{ path('ekyna_commerce_cart_attachment_download', {'attachmentId': attachment.id}) }}"
+                   target="_blank">
+                    {%- if attachment.title is not empty -%}
+                        {{- attachment.title -}}
+                    {%- else -%}
+                        {{- attachment -}}
+                    {%- endif -%}
+                </a>
+            </td>
+            <td>
+                <a href="{{ path('ekyna_commerce_cart_attachment_remove', {'attachmentId': attachment.id}) }}"
+                   title="{{ 'ekyna_commerce.checkout.button.attachment_remove'|trans }}"
+                   data-confirm="{{ 'ekyna_commerce.checkout.confirm.attachment_remove'|trans }}"
+                   data-cart-xhr>
+                    <i class="fa fa-remove text-danger"></i>
+                </a>
+            </td>
+        </tr>
+        {%- endfor -%}
+    </tbody>
+    </table>
+    {%- endif -%}
+{% endspaceless %}
+{% endmacro cart_attachments %}

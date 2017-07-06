@@ -3,12 +3,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-
-    <parameters>
-        <parameter key="ekyna_commerce.cart_address.class">Ekyna\Component\Commerce\Cart\Entity\CartAddress</parameter>
-        <parameter key="ekyna_commerce.cart_item_adjustment.class">Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment</parameter>
-    </parameters>
-
     <services>
 
         <!-- Cart abstract provider -->
@@ -110,7 +104,8 @@
         <service id="ekyna_commerce.controller.cart"
                  class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController"
                  parent="ekyna_commerce.controller.cart.abstract">
-            <argument type="service" id="ekyna_core.modal" />
+            <argument type="service" id="ekyna_core.modal"/>
+            <argument type="service" id="local_commerce_filesystem"/>
         </service>
 
         <!-- Checkout cart controller -->

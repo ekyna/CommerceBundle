@@ -5,7 +5,6 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Payment;
 use Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartPaymentInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
-use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Cart\Repository\CartPaymentRepositoryInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
@@ -29,11 +28,6 @@ final class CartPaymentController extends AbstractController
      */
     private $saleTransformer;
 
-    /**
-     * @var CartProviderInterface
-     */
-    private $cartProvider;
-
 
     /**
      * Sets the repository.
@@ -53,16 +47,6 @@ final class CartPaymentController extends AbstractController
     public function setSaleTransformer(SaleTransformerInterface $transformer)
     {
         $this->saleTransformer = $transformer;
-    }
-
-    /**
-     * Sets the cart provider.
-     *
-     * @param CartProviderInterface $cartProvider
-     */
-    public function setCartProvider($cartProvider)
-    {
-        $this->cartProvider = $cartProvider;
     }
 
     /**
@@ -102,15 +86,9 @@ final class CartPaymentController extends AbstractController
 
         $cart = $payment->getCart();
 
-        $doProviderClear = $this->cartProvider->hasCart() && $this->cartProvider->getCart() === $cart;
-
         // If cart is completed, transforms and redirect to order confirmation
         if (in_array($cart->getState(), [CartStates::STATE_ACCEPTED])) {
             $order = $this->saleTransformer->transformCartToOrder($cart);
-
-            if ($doProviderClear) {
-                $this->cartProvider->clearCart();
-            }
 
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [
                 'orderKey' => $order->getKey(),

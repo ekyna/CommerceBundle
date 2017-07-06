@@ -63,12 +63,21 @@ class RegistrationController extends BaseController
             'action' => $this->generateUrl('fos_user_registration_register'),
             'method' => 'POST',
         ]);
-        $form->setData($user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
+                // Copy files from customer to default address
+                $address = $customer->getAddresses()->first();
+                $address
+                    ->setGender($customer->getGender())
+                    ->setFirstName($customer->getFirstName())
+                    ->setLastName($customer->getLastName())
+                    ->setCompany($customer->getCompany())
+                    ->setPhone($customer->getPhone())
+                    ->setMobile($customer->getMobile());
+
                 $event = new FormEvent($form, $request);
                 $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
 

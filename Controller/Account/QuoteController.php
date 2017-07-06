@@ -43,7 +43,9 @@ class QuoteController extends AbstractController
     {
         $quote = $this->findQuoteByNumber($request->attributes->get('number'));
 
-        $quoteView = $this->get('ekyna_commerce.common.view_builder')->buildSaleView($quote);
+        $quoteView = $this->get('ekyna_commerce.common.view_builder')->buildSaleView($quote, [
+            'taxes_view' => false,
+        ]);
 
         return $this->render('EkynaCommerceBundle:Account/Quote:show.html.twig', [
             'quote' => $quote,

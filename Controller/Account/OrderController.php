@@ -43,7 +43,9 @@ class OrderController extends AbstractController
     {
         $order = $this->findOrderByNumber($request->attributes->get('number'));
 
-        $orderView = $this->get('ekyna_commerce.common.view_builder')->buildSaleView($order);
+        $orderView = $this->get('ekyna_commerce.common.view_builder')->buildSaleView($order, [
+            'taxes_view' => false,
+        ]);
 
         return $this->render('EkynaCommerceBundle:Account/Order:show.html.twig', [
             'order' => $order,
