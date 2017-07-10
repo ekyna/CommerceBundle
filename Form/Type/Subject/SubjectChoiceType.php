@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Subject;
 
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Resource\Configuration\ConfigurationRegistry;
 use Symfony\Component\Form\AbstractType;
@@ -78,8 +79,6 @@ class SubjectChoiceType extends AbstractType
 
                 $subjectChoices[(string)$subject] = $subject;
                 $subjectRequired = true;
-
-                //$event->setData($identity);
             }
 
             $disabled = $options['lock_mode'] && $identity->hasIdentity();
@@ -88,7 +87,7 @@ class SubjectChoiceType extends AbstractType
                 ->add('provider', ChoiceType::class, [
                     'label'          => false,
                     'choices'        => $this->getProviderChoices(),
-                    'choice_attr'    => $this->getProviderChoiceAttrClosure(),
+                    'choice_attr'    => $this->getProviderChoiceAttrClosure($options['context']),
                     'select2'        => false,
                     'disabled'       => $disabled,
                     'required'       => $options['required'],
@@ -140,27 +139,27 @@ class SubjectChoiceType extends AbstractType
     /**
      * Returns the provider choice attr closure.
      *
+     * @param string $context
+     *
      * @return \Closure
      */
-    private function getProviderChoiceAttrClosure()
+    private function getProviderChoiceAttrClosure($context)
     {
-        return function ($val) {
-            $config = [];
+        return function ($val) use ($context) {
+            $routing = $this->registry
+                ->getProviderByName($val)
+                ->getSearchRouteAndParameters($context);
 
-            $mapping = [
-                'product'      => 'ekyna',
-                'acme_product' => 'acme',
+            $routing = array_replace([
+                'route'      => null,
+                'parameters' => [],
+            ], $routing);
+
+            return [
+                'data-config' => json_encode([
+                    'search' => $this->urlGenerator->generate($routing['route'], $routing['parameters']),
+                ])
             ];
-
-            if (isset($mapping[$val])) {
-                // TODO Use event dispatcher to get this config.
-                $config = [
-                    'search' => $this->urlGenerator->generate($mapping[$val] . '_product_product_admin_search'),
-                    'find'   => $this->urlGenerator->generate($mapping[$val] . '_product_product_admin_find'),
-                ];
-            }
-
-            return ['data-config' => json_encode($config)];
         };
     }
 
@@ -175,8 +174,14 @@ class SubjectChoiceType extends AbstractType
                 'lock_mode'      => false,
                 'data_class'     => SubjectIdentity::class,
                 'error_bubbling' => false,
+                'context'        => SubjectProviderInterface::CONTEXT_SALE,
             ])
-            ->setAllowedTypes('lock_mode', 'bool');
+            ->setAllowedTypes('lock_mode', 'bool')
+            ->setAllowedTypes('context', 'string')
+            ->setAllowedValues('context', [
+                SubjectProviderInterface::CONTEXT_SALE,
+                SubjectProviderInterface::CONTEXT_SUPPLIER,
+            ]);
     }
 
     /**

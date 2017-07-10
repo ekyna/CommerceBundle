@@ -131,6 +131,17 @@ class ProductProvider implements SubjectProviderInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getSearchRouteAndParameters($context)
+    {
+        return [
+            'route'      => 'acme_product_product_admin_search',
+            'parameters' => [],
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function getName()

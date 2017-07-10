@@ -4,12 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
-use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
-use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 /**
  * Class SupplierProductType
@@ -33,17 +30,17 @@ class SupplierProductType extends ResourceFormType
             ->add('netPrice', Symfony\NumberType::class, [
                 'label' => 'ekyna_core.field.price',
                 'scale' => 2,
-                'attr' => [
+                'attr'  => [
                     'input_group' => ['append' => '€'], // TODO currency
-                ]
+                ],
             ])
             ->add('weight', Symfony\NumberType::class, [
                 'label'    => 'ekyna_core.field.weight',
                 'scale'    => 2,
                 'required' => false,
-                'attr' => [
+                'attr'     => [
                     'input_group' => ['append' => 'Kg'],
-                ]
+                ],
             ])
             ->add('availableStock', Symfony\NumberType::class, [
                 'label'    => 'ekyna_commerce.supplier_product.field.available_stock',
@@ -63,6 +60,7 @@ class SupplierProductType extends ResourceFormType
                 'label'     => 'ekyna_commerce.supplier_product.field.subject',
                 'lock_mode' => true,
                 'required'  => false,
+                'context'   => SubjectProviderInterface::CONTEXT_SUPPLIER,
             ]);
     }
 }

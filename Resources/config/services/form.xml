@@ -286,6 +286,12 @@
             <argument>%ekyna_commerce.supplier_address.class%</argument>
             <tag name="form.type"/>
         </service>
+        <!-- Supplier choice form type -->
+        <service id="ekyna_product.supplier_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierChoiceType">
+            <argument>%ekyna_commerce.supplier.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <!-- Supplier delivery item type -->
         <service id="ekyna_commerce.supplier_delivery.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierDeliveryType">
