@@ -76,7 +76,7 @@ class CustomerAddressType extends ResourceFormType
 
         $resolver
             ->setDefault('customer_form', false)
-            ->setDefault('defaults', false)
+            ->setDefault('defaults', true)
             ->setAllowedTypes('customer_form', 'bool')
             ->setAllowedTypes('defaults', 'bool');
     }
