@@ -36,6 +36,16 @@
 {% endmacro show_virtual_stock %}
 
 
+{% macro show_stock_floor(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.stockFloor, 'number', 'ekyna_commerce.stock_subject.field.floor', {
+        'id': 'subject_stockFloor',
+        'precision': 0
+    }|merge(options)) }}
+{% endspaceless %}
+{% endmacro show_stock_floor %}
+
+
 {% macro show_eta(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.estimatedDateOfArrival, 'datetime', 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival', {
@@ -50,18 +60,25 @@
 {% spaceless %}
     {% set prefix = prefix|default('subject') %}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             {{ _self.show_stock_mode(subject, {
                 'id': prefix ~'_stockMode',
-                'label_nb_col': 4,
-                'widget_nb_col': 8
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             {{ _self.show_stock_state(subject, {
                 'id': prefix ~'_stockState',
-                'label_nb_col': 4,
-                'widget_nb_col': 8
+                'label_nb_col': 6,
+                'widget_nb_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ _self.show_eta(subject, {
+                'id': prefix ~'_estimatedDateOfArrival',
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
     </div>
@@ -81,8 +98,8 @@
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_eta(subject, {
-                'id': prefix ~'_estimatedDateOfArrival',
+            {{ _self.show_stock_floor(subject, {
+                'id': prefix ~'_stockFloor',
                 'label_nb_col': 6,
                 'widget_nb_col': 6
             }) }}

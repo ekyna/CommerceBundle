@@ -37,7 +37,6 @@ class SupplierProductType extends ResourceFormType
             ->add('weight', Symfony\NumberType::class, [
                 'label'    => 'ekyna_core.field.weight',
                 'scale'    => 2,
-                'required' => false,
                 'attr'     => [
                     'input_group' => ['append' => 'Kg'],
                 ],
@@ -45,12 +44,10 @@ class SupplierProductType extends ResourceFormType
             ->add('availableStock', Symfony\NumberType::class, [
                 'label'    => 'ekyna_commerce.supplier_product.field.available_stock',
                 'scale'    => 3,
-                'required' => false,
             ])
             ->add('orderedStock', Symfony\NumberType::class, [
                 'label'    => 'ekyna_commerce.supplier_product.field.ordered_stock',
                 'scale'    => 3,
-                'required' => false,
             ])
             ->add('estimatedDateOfArrival', Symfony\DateTimeType::class, [
                 'label'    => 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',

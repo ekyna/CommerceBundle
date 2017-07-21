@@ -2,10 +2,18 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
+use Ekyna\Component\Resource\Model\ResourceInterface;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
+use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class SupplierProductType
@@ -15,21 +23,136 @@ use Ekyna\Component\Table\TableBuilderInterface;
 class SupplierProductType extends ResourceTableType
 {
     /**
+     * @var string
+     */
+    private $supplierClass;
+
+    /**
+     * @var SubjectProviderRegistryInterface
+     */
+    private $providerRegistry;
+
+    /**
+     * Constructor.
+     *
+     * @param string $class
+     * @param string $supplierClass
+     */
+    public function __construct($class, $supplierClass)
+    {
+        parent::__construct($class);
+
+        $this->supplierClass = $supplierClass;
+    }
+
+    /**
+     * Sets the providerRegistry.
+     *
+     * @param SubjectProviderRegistryInterface $providerRegistry
+     */
+    public function setProviderRegistry($providerRegistry)
+    {
+        $this->providerRegistry = $providerRegistry;
+    }
+
+    /**
+     * Builds the table for the given subject.
+     *
+     * @param TableBuilderInterface $builder
+     * @param ResourceInterface     $subject
+     */
+    private function buildForSubject(TableBuilderInterface $builder, ResourceInterface $subject)
+    {
+        if (null === $provider = $this->providerRegistry->getProviderBySubject($subject)) {
+            throw new \InvalidArgumentException("Invalid subject.");
+        }
+
+        $source = $builder->getSource();
+        if ($source instanceof EntitySource) {
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($provider, $subject) {
+                $qb
+                    ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.provider', ':provider'))
+                    ->setParameter('provider', $provider->getName())
+                    ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.identifier', ':identifier'))
+                    ->setParameter('identifier', $subject->getId());
+            });
+
+            $builder->setPerPageChoices(['100']);
+        }
+    }
+
+    /**
+     * Builds the table for the given supplier.
+     *
+     * @param TableBuilderInterface $builder
+     * @param SupplierInterface     $supplier
+     */
+    private function buildForSupplier(TableBuilderInterface $builder, SupplierInterface $supplier)
+    {
+        $source = $builder->getSource();
+        if ($source instanceof EntitySource) {
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($supplier) {
+                $qb
+                    ->andWhere($qb->expr()->eq($alias . '.supplier', ':supplier'))
+                    ->setParameter('supplier', $supplier);
+            });
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        $subject = $options['subject'];
+        $supplier = $options['supplier'];
+
+        if ($subject && $supplier) {
+            throw new InvalidArgumentException("Please provider 'subject' or 'supplier' option, but not both.");
+        }
+
+        if (null !== $subject) {
+            $this->buildForSubject($builder, $subject);
+        } else {
+            $builder
+                ->addColumn('designation', BType\Column\AnchorType::class, [
+                    'label'                => 'ekyna_core.field.designation',
+                    'sortable'             => true,
+                    'route_name'           => 'ekyna_commerce_supplier_product_admin_show',
+                    'route_parameters_map' => [
+                        'supplierId'        => 'supplier.id',
+                        'supplierProductId' => 'id',
+                    ],
+                    'position'             => 10,
+                ])
+                ->addFilter('designation', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.designation',
+                    'position' => 10,
+                ]);
+        }
+
+        if (null !== $supplier) {
+            $this->buildForSupplier($builder, $supplier);
+        } else {
+            $builder
+                ->addColumn('supplier', BType\Column\AnchorType::class, [
+                    'label'                => 'ekyna_commerce.supplier.label.singular',
+                    'sortable'             => true,
+                    'route_name'           => 'ekyna_commerce_supplier_product_admin_show',
+                    'route_parameters_map' => [
+                        'supplierId'        => 'supplier.id',
+                        'supplierProductId' => 'id',
+                    ],
+                    'position'             => 0,
+                ])
+                ->addFilter('supplier', EntityType::class, [
+                    'label' => 'ekyna_commerce.supplier.label.singular',
+                    'class' => $this->supplierClass,
+                    'position'             => 0,
+                ]);
+        }
+
         $builder
-            ->addColumn('designation', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.designation',
-                'sortable'             => true,
-                'route_name'           => 'ekyna_commerce_supplier_product_admin_show',
-                'route_parameters_map' => [
-                    'supplierId'        => 'supplier.id',
-                    'supplierProductId' => 'id',
-                ],
-                'position'             => 10,
-            ])
             ->addColumn('reference', CType\Column\TextType::class, [
                 'label'    => 'ekyna_core.field.reference',
                 'sortable' => true,
@@ -90,10 +213,6 @@ class SupplierProductType extends ResourceTableType
                     ],
                 ],
             ])
-            ->addFilter('designation', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.designation',
-                'position' => 10,
-            ])
             ->addFilter('reference', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.reference',
                 'position' => 20,
@@ -118,5 +237,19 @@ class SupplierProductType extends ResourceTableType
                 'label'    => 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',
                 'position' => 70,
             ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setDefault('subject', null)
+            ->setDefault('supplier', null)
+            ->setAllowedTypes('subject', ['null', ResourceInterface::class])
+            ->setAllowedTypes('supplier', ['null', SupplierInterface::class]);
     }
 }

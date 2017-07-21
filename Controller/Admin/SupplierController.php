@@ -5,7 +5,6 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 
 /**
  * Class SupplierController
@@ -21,19 +20,12 @@ class SupplierController extends ResourceController
     {
         $supplier = $context->getResource();
 
-        $source = new EntitySource($this->getParameter('ekyna_commerce.supplier_product.class'));
-        $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($supplier) {
-            $qb
-                ->andWhere($qb->expr()->eq($alias . '.supplier', ':supplier'))
-                ->setParameter('supplier', $supplier);
-        });
-
         $type = $this->get('ekyna_commerce.supplier_product.configuration')->getTableType();
 
         $table = $this
             ->getTableFactory()
             ->createTable('products', $type, [
-                'source' => $source,
+                'supplier' => $supplier,
             ]);
 
         if (null !== $response = $table->handleRequest($context->getRequest())) {

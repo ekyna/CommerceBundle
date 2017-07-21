@@ -805,6 +805,7 @@ ekyna_commerce:
         field:
             mode: Mode stock
             state: État stock
+            floor: Stock de rupture
             in_stock: Stock réel
             virtual_stock: Stock prévisionnel
             estimated_date_of_arrival: Date de réappro.
