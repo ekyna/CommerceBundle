@@ -11,6 +11,11 @@ ekyna_commerce:
         mobile_is_mandatory: Veuillez saisir le numéro de téléphone mobile.
     gender:
         invalid: Ce titre n'est pas un titre valide.
+    identity:
+        required: Veuillez saisir l'identité.
+        gender_is_mandatory: Veuillez choisir la civilité.
+        first_name_is_mandatory: Veuillez saisir le prénom.
+        last_name_is_mandatory: Veuillez saisir le nom.
     message:
         already_exists: Un message existe déjà pour cette méthode et ce statut.
     payment:

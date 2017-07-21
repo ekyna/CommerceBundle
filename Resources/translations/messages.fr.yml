@@ -836,6 +836,8 @@ ekyna_commerce:
             new: Nouveau fournisseur
             edit: Modifier le fournisseur
             remove: Supprimer le fournisseur
+        field:
+            customer_code: Code client
         tab:
             catalog: Catalogue
         alert:

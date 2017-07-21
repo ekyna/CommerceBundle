@@ -28,6 +28,14 @@ class SupplierType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
+            ->addColumn('email', CType\Column\TextType::class, [
+                'label'    => 'ekyna_core.field.email',
+                'position' => 20,
+            ])
+            ->addColumn('customerCode', CType\Column\TextType::class, [
+                'label'    => 'ekyna_commerce.supplier.field.customer_code',
+                'position' => 30,
+            ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
@@ -49,6 +57,14 @@ class SupplierType extends ResourceTableType
             ->addFilter('name', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.name',
                 'position' => 10,
+            ])
+            ->addFilter('email', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.email',
+                'position' => 10,
+            ])
+            ->addFilter('customerCode', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_commerce.supplier.field.customer_code',
+                'position' => 30,
             ]);
     }
 }
