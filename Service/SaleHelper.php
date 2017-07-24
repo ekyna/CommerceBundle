@@ -73,7 +73,6 @@ class SaleHelper
      * Returns the view builder.
      *
      * @return ViewBuilder
-     * @deprecated
      */
     public function getViewBuilder()
     {
@@ -84,7 +83,6 @@ class SaleHelper
      * Returns the sale factory.
      *
      * @return SaleFactoryInterface
-     * @deprecated
      */
     public function getSaleFactory()
     {
@@ -95,7 +93,6 @@ class SaleHelper
      * Returns the form factory.
      *
      * @return FormFactoryInterface
-     * @deprecated
      */
     public function getFormFactory()
     {

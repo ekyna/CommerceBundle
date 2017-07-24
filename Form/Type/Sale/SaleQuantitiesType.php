@@ -39,7 +39,7 @@ class SaleQuantitiesType extends AbstractType
                             'label'         => false,
                             'property_path' => $path . '[' . $item->getId() . '].quantity',
                             'attr'          => [
-                                'min'   => 1,
+                                'min' => 1,
                             ],
                             'constraints'   => [
                                 new Constraints\NotBlank(),
@@ -65,7 +65,8 @@ class SaleQuantitiesType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => SaleInterface::class,
+                'data_class'        => SaleInterface::class,
+                'validation_groups' => ['Calculation'],
             ]);
     }
 }

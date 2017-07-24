@@ -9,7 +9,6 @@ use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Class CheckoutController
@@ -18,11 +17,6 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 class CheckoutController extends AbstractController
 {
-    /**
-     * @var SaleStepValidatorInterface
-     */
-    protected $stepValidator;
-
     /**
      * @var PaymentManager
      */
@@ -37,16 +31,13 @@ class CheckoutController extends AbstractController
     /**
      * Constructor.
      *
-     * @param SaleStepValidatorInterface $stepValidator
      * @param OrderRepositoryInterface   $orderRepository
      * @param PaymentManager             $paymentCheckout
      */
     public function __construct(
-        SaleStepValidatorInterface $stepValidator,
         OrderRepositoryInterface $orderRepository,
         PaymentManager $paymentCheckout
     ) {
-        $this->stepValidator = $stepValidator;
         $this->orderRepository = $orderRepository;
         $this->paymentCheckout = $paymentCheckout;
     }
@@ -62,11 +53,6 @@ class CheckoutController extends AbstractController
     {
         $parameters = [];
 
-        // Customer
-        if (null !== $customer = $this->getCustomer()) {
-            $parameters['customer'] = $customer;
-        }
-
         // Cart
         $parameters['cart'] = $cart = $this->getCart();
         if (null !== $cart) {
@@ -74,7 +60,7 @@ class CheckoutController extends AbstractController
 
             $saleForm = $saleHelper->createQuantitiesForm($cart, [
                 'method' => 'post',
-                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
+                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index')
             ]);
 
             $saleForm->handleRequest($request);
@@ -90,6 +76,8 @@ class CheckoutController extends AbstractController
 
             $parameters['view'] = $view;
         }
+
+        $parameters['controls'] = $this->buildCartControls($cart);
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
@@ -199,29 +187,5 @@ class CheckoutController extends AbstractController
         return $this->render('EkynaCommerceBundle:Cart/Checkout:confirmation.html.twig', [
             'order' => $order,
         ]);
-    }
-
-    /**
-     * Transforms the constraint violation list to session flashes.
-     *
-     * @param ConstraintViolationListInterface $list
-     * @param Request                          $request
-     */
-    protected function violationToFlashes(ConstraintViolationListInterface $list, Request $request)
-    {
-        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-        $session = $request->getSession();
-        $flashes = $session->getFlashBag();
-
-        $messages = [];
-
-        /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
-        foreach ($list as $violation) {
-            $messages[] = $violation->getMessage();
-        }
-
-        if (!empty($messages)) {
-            $flashes->add('danger', implode('<br>', $messages));
-        }
     }
 }

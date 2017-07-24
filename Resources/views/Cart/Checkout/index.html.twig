@@ -17,131 +17,124 @@
     {% if cart is not same as(null) %}
 
         {# Cart view #}
-        <div class="container cart-view">
+        <div class="container cart-checkout-view">
             {{ render_sale_view(view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
         </div>
 
         {# Login #}
-        {% if customer is not defined %}
-            <div style="padding: 20px 0; background-color: #e6e6e6" class="cart-sign-in-or-register">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-8">
-                            {# TODO {{ cms_block('cart_checkout_login', {'content': (''|trans)}) }}#}
-                            <p>
-                                Connectez-vous à votre compte client pour voir vos tarifs
-                                préférentiels et accéder à votre carnet d'addresses.
-                            </p>
+        <div class="cart-checkout-customer"{% if controls.customer == 1 %} style="display:none"{% endif %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p>{{ 'ekyna_commerce.checkout.index.sign_in_or_register'|trans }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ path('fos_user_security_login', {'target_path': 'ekyna_commerce_cart_checkout_index'}) }}"
+                               class="btn btn-primary" data-user-modal>
+                                {{ 'ekyna_commerce.checkout.index.sign_in'|trans }}
+                            </a>
+                            <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">
+                                {{ 'ekyna_commerce.checkout.index.register'|trans }}
+                            </a>
                         </div>
-                        <div class="col-md-4">
-                            <div class="btn-group btn-group-sm">
-                                <a href="{{ path('fos_user_security_login', {'target_path': 'ekyna_commerce_cart_checkout_index'}) }}"
-                                   class="btn btn-primary" data-user-modal>
-                                    Connexion
-                                </a>
-                                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">
-                                    Ouverture de compte
-                                </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Forms #}
+        <div class="cart-checkout-forms"{% if controls.empty == 1 %} style="display:none"{% endif %}">
+            <div class="container">
+                <div class="row">
+                    {# Information #}
+                    <div class="col-md-4">
+                        <h3>
+                            <a href="{{ path('ekyna_commerce_cart_information') }}"
+                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
+                                {{- 'ekyna_core.button.edit'|trans -}}
+                            </a>
+                            {{ 'ekyna_commerce.checkout.index.information'|trans }}<span>*</span>
+                        </h3>
+                        <div class="panel panel-default">
+                            <div class="panel-body cart-checkout-information">
+                                {{ macros.cart_information(cart) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Invoice #}
+                    <div class="col-md-4">
+                        <h3>
+                            <a href="{{ path('ekyna_commerce_cart_invoice_address') }}"
+                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
+                                {{- 'ekyna_core.button.edit'|trans -}}
+                            </a>
+                            {{ 'ekyna_commerce.checkout.index.invoice'|trans }}<span>*</span>
+                        </h3>
+                        <div class="panel panel-default">
+                            <div class="panel-body cart-checkout-invoice-address">
+                                {{ macros.cart_invoice_address(cart) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Delivery #}
+                    <div class="col-md-4">
+                        <h3>
+                            <a href="{{ path('ekyna_commerce_cart_delivery_address') }}"
+                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
+                                {{- 'ekyna_core.button.edit'|trans -}}
+                            </a>
+                            {{ 'ekyna_commerce.checkout.index.delivery'|trans }}
+                        </h3>
+                        <div class="panel panel-default">
+                            <div class="panel-body cart-checkout-delivery-address">
+                                {{ macros.cart_delivery_address(cart) }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        {% else %}
-            <hr>
-        {% endif %}
 
-        <div class="container">
-            <div class="row">
-                {# Information #}
-                <div class="col-md-4">
-                    <h3>
-                        <a href="{{ path('ekyna_commerce_cart_information') }}"
-                           class="btn btn-default btn-sm pull-right" data-cart-modal>
-                            {{- 'ekyna_core.button.edit'|trans -}}
-                        </a>
-                        {{ 'ekyna_commerce.checkout.index.information'|trans }}
-                    </h3>
-                    <div class="panel panel-default">
-                        <div class="panel-body cart-checkout-information">
-                            {{ macros.cart_information(cart) }}
+            <div class="container">
+                <div class="row">
+                    {# Comment #}
+                    <div class="col-md-6">
+                        <h3>
+                            <a href="{{ path('ekyna_commerce_cart_comment') }}"
+                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
+                                {{- 'ekyna_core.button.edit'|trans -}}
+                            </a>
+                            {{ 'ekyna_commerce.checkout.index.comment'|trans }}
+                        </h3>
+                        <div class="panel panel-default">
+                            <div class="panel-body cart-checkout-comment">
+                                {{ macros.cart_comment(cart) }}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {# Invoice #}
-                <div class="col-md-4">
-                    <h3>
-                        <a href="{{ path('ekyna_commerce_cart_invoice_address') }}"
-                           class="btn btn-default btn-sm pull-right" data-cart-modal>
-                            {{- 'ekyna_core.button.edit'|trans -}}
-                        </a>
-                        {{ 'ekyna_commerce.checkout.index.invoice'|trans }}
-                    </h3>
-                    <div class="panel panel-default">
-                        <div class="panel-body cart-checkout-invoice-address">
-                            {{ macros.cart_invoice_address(cart) }}
-                        </div>
-                    </div>
-                </div>
-
-                {# Delivery #}
-                <div class="col-md-4">
-                    <h3>
-                        <a href="{{ path('ekyna_commerce_cart_delivery_address') }}"
-                           class="btn btn-default btn-sm pull-right" data-cart-modal>
-                            {{- 'ekyna_core.button.edit'|trans -}}
-                        </a>
-                        {{ 'ekyna_commerce.checkout.index.delivery'|trans }}
-                    </h3>
-                    <div class="panel panel-default">
-                        <div class="panel-body cart-checkout-delivery-address">
-                            {{ macros.cart_delivery_address(cart) }}
+                    {# Attachments #}
+                    <div class="col-md-6">
+                        <h3>
+                            <a href="{{ path('ekyna_commerce_cart_attachment_add') }}"
+                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
+                                {{- 'ekyna_core.button.add'|trans -}}
+                            </a>
+                            {{ 'ekyna_commerce.checkout.index.attachments'|trans }}
+                        </h3>
+                        <div class="panel panel-default">
+                            <div class="panel-body cart-checkout-attachments">
+                                {{ macros.cart_attachments(cart) }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="container">
-            <div class="row">
-                {# Comment #}
-                <div class="col-md-6">
-                    <h3>
-                        <a href="{{ path('ekyna_commerce_cart_comment') }}"
-                           class="btn btn-default btn-sm pull-right" data-cart-modal>
-                            {{- 'ekyna_core.button.edit'|trans -}}
-                        </a>
-                        {{ 'ekyna_commerce.checkout.index.comment'|trans }}
-                    </h3>
-                    <div class="panel panel-default">
-                        <div class="panel-body cart-checkout-comment">
-                            {{ macros.cart_comment(cart) }}
-                        </div>
-                    </div>
-                </div>
-                {# Attachments #}
-                <div class="col-md-6">
-                    <h3>
-                        <a href="{{ path('ekyna_commerce_cart_attachment_add') }}"
-                           class="btn btn-default btn-sm pull-right" data-cart-modal>
-                            {{- 'ekyna_core.button.add'|trans -}}
-                        </a>
-                        {{ 'ekyna_commerce.checkout.index.attachments'|trans }}
-                    </h3>
-                    <div class="panel panel-default">
-                        <div class="panel-body cart-checkout-attachments">
-                            {{ macros.cart_attachments(cart) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <hr>
-
-        {# Next step #}
-        <div class="container">
+        {# Submit #}
+        <div class="container cart-checkout-submit"{% if controls.valid == 0 %} style="display:none"{% endif %}>
             <div class="row">
                 <div class="col-sm-12">
                     <p class="text-center">

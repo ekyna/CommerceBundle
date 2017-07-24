@@ -26,7 +26,28 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         // Sale view
         var $view = $xml.find('view');
         if (1 === $view.size()) {
+            if (1 === parseInt($view.attr('empty'))) {
+                $forms.slideUp();
+                $customer.slideUp();
+                $submit.slideUp();
+            } else {
+                $forms.show().slideDown();
+
+                if (1 === parseInt($view.attr('customer'))) {
+                    $customer.slideUp();
+                } else {
+                    $customer.show().slideDown();
+                }
+
+                if (1 === parseInt($view.attr('valid'))) {
+                    $submit.show().slideDown();
+                } else {
+                    $submit.slideUp();
+                }
+            }
+
             $('.sale-view').replaceWith($($view.text()));
+
             return true;
         }
 
@@ -34,7 +55,9 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
     };
 
     var $checkout = $('.cart-checkout'),
-        $signInOrRegister = $('.cart-sign-in-or-register'),
+        $customer = $checkout.find('.cart-checkout-customer'),
+        $forms = $checkout.find('.cart-checkout-forms'),
+        $submit = $checkout.find('.cart-checkout-submit'),
         refreshXHR;
 
     function refreshCheckout() {
@@ -64,7 +87,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
     Dispatcher.on('ekyna_user.user_status', function(e) {
         if (e.authenticated) {
             refreshCheckout();
-            $signInOrRegister.slideUp();
+            $customer.slideUp();
         }
     });
 

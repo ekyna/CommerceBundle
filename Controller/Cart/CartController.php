@@ -120,8 +120,7 @@ class CartController extends AbstractController
             return $this->buildXhrCartViewResponse();
         }
 
-        // TODO title trans
-        $modal = $this->createModal('Configurer l\'article', $form->createView());
+        $modal = $this->createModal('ekyna_commerce.sale.button.item.configure', $form->createView());
 
         return $this->modalRenderer->render($modal);
     }
@@ -213,8 +212,7 @@ class CartController extends AbstractController
             return $this->buildXhrCartViewResponse();
         }
 
-        // TODO title trans
-        $modal = $this->createModal('Ajouter une pièce jointe', $form->createView());
+        $modal = $this->createModal('ekyna_commerce.checkout.button.attachment_add', $form->createView());
 
         return $this->modalRenderer->render($modal);
     }
@@ -307,10 +305,10 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             CheckoutType\InformationType::class,
-            'Modifier vos informations',
+            'ekyna_commerce.checkout.button.edit_information',
             'ekyna_commerce_cart_information',
             [
-                'validation_groups' => ['checkout'], // TODO
+                'validation_groups' => ['Identity'],
             ]
         );
     }
@@ -327,11 +325,11 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             SaleType\SaleAddressType::class,
-            'Modifier l\'adresse de facturation', // TODO title trans
+            'ekyna_commerce.checkout.button.edit_invoice',
             'ekyna_commerce_cart_invoice_address',
             [
                 'address_type'      => CartAddressType::class,
-                'validation_groups' => ['checkout'], // TODO
+                'validation_groups' => ['Address'],
             ]
         );
     }
@@ -348,12 +346,12 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             SaleType\SaleAddressType::class,
-            'Modifier l\'adresse de livraison', // TODO title trans
+            'ekyna_commerce.checkout.button.edit_delivery',
             'ekyna_commerce_cart_delivery_address',
             [
                 'address_type'      => CartAddressType::class,
+                'validation_groups' => ['Address'],
                 'delivery'          => true,
-                'validation_groups' => ['checkout'], // TODO
             ]
         );
     }
@@ -370,10 +368,10 @@ class CartController extends AbstractController
         return $this->handleForm(
             $request,
             CheckoutType\CommentType::class,
-            'Modifier votre commentaire', // TODO title trans
+            'ekyna_commerce.checkout.button.edit_comment',
             'ekyna_commerce_cart_comment',
             [
-                'validation_groups' => ['checkout'], // TODO
+                'validation_groups' => ['Comment'],
             ]
         );
     }
@@ -461,8 +459,12 @@ class CartController extends AbstractController
      */
     protected function buildXhrCartViewResponse()
     {
-        $view = null;
-        if (null !== $cart = $this->getCart()) {
+        $parameters = [];
+
+        // Cart
+        $parameters['cart'] = $cart = $this->getCart();
+
+        if (null !== $cart) {
             $saleHelper = $this->getSaleHelper();
 
             $form = $saleHelper->createQuantitiesForm($cart, [
@@ -472,12 +474,13 @@ class CartController extends AbstractController
 
             $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
             $view->vars['form'] = $form->createView();
+
+            $parameters['view'] = $view;
         }
 
-        $response = $this->render('EkynaCommerceBundle:Cart:response.xml.twig', [
-            'cart' => $cart,
-            'view' => $view,
-        ]);
+        $parameters['controls'] = $this->buildCartControls($cart);
+
+        $response = $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
 
         $response->headers->set('Content-type', 'application/xml');
 

@@ -12,7 +12,7 @@ ekyna_commerce:
     gender:
         invalid: Ce titre n'est pas un titre valide.
     identity:
-        required: Veuillez saisir l'identité.
+        mandatory: Veuillez saisir l'identité.
         gender_is_mandatory: Veuillez choisir la civilité.
         first_name_is_mandatory: Veuillez saisir le prénom.
         last_name_is_mandatory: Veuillez saisir le nom.

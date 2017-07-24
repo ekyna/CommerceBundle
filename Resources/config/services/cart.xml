@@ -98,6 +98,9 @@
             <call method="setCustomerProvider">
                 <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             </call>
+            <call method="setStepValidator">
+                <argument type="service" id="ekyna_commerce.sale_step_validator"/>
+            </call>
         </service>
 
         <!-- Cart controller -->
@@ -112,7 +115,6 @@
         <service id="ekyna_commerce.controller.cart_checkout"
                  class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController"
                  parent="ekyna_commerce.controller.cart.abstract">
-            <argument type="service" id="ekyna_commerce.sale_step_validator"/>
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.checkout.payment_manager"/>
         </service>

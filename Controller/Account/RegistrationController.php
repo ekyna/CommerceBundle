@@ -68,7 +68,7 @@ class RegistrationController extends BaseController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                // Copy files from customer to default address
+                // Copy fields from customer to default address
                 $address = $customer->getAddresses()->first();
                 $address
                     ->setGender($customer->getGender())

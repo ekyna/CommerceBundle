@@ -40,6 +40,9 @@ class InformationType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('data_class', CartInterface::class);
+        $resolver
+            ->setDefaults([
+                'data_class' => CartInterface::class,
+            ]);
     }
 }

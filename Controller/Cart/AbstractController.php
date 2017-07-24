@@ -3,13 +3,17 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
+use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Class AbstractController
@@ -42,6 +46,11 @@ class AbstractController
      * @var CustomerProviderInterface
      */
     private $customerProvider;
+
+    /**
+     * @var SaleStepValidatorInterface
+     */
+    protected $stepValidator;
 
 
     /**
@@ -92,6 +101,16 @@ class AbstractController
     public function setCustomerProvider(CustomerProviderInterface $customerProvider)
     {
         $this->customerProvider = $customerProvider;
+    }
+
+    /**
+     * Sets the step validator.
+     *
+     * @param SaleStepValidatorInterface $stepValidator
+     */
+    public function setStepValidator(SaleStepValidatorInterface $stepValidator)
+    {
+        $this->stepValidator = $stepValidator;
     }
 
     /**
@@ -155,6 +174,55 @@ class AbstractController
     }
 
     /**
+     * Builds the cart controls.
+     *
+     * @param SaleInterface|null $cart
+     *
+     * @return array
+     */
+    protected function buildCartControls(SaleInterface $cart = null)
+    {
+        $controls = [
+            'empty'    => 1,
+            'valid'    => 0,
+            'customer' => null !== $this->getCustomer() ? 1 : 0,
+        ];
+
+        if ($cart && 0 < $cart->getItems()->count()) {
+            $controls['empty'] = 0;
+
+            $valid = $this->stepValidator->validate($cart, SaleStepValidatorInterface::CHECKOUT_STEP);
+            $controls['valid'] = $valid ? 1 : 0;
+        }
+
+        return $controls;
+    }
+
+    /**
+     * Transforms the constraint violation list to session flashes.
+     *
+     * @param ConstraintViolationListInterface $list
+     * @param Request                          $request
+     */
+    protected function violationToFlashes(ConstraintViolationListInterface $list, Request $request)
+    {
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session = $request->getSession();
+        $flashes = $session->getFlashBag();
+
+        $messages = [];
+
+        /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+        foreach ($list as $violation) {
+            $messages[] = $violation->getMessage();
+        }
+
+        if (!empty($messages)) {
+            $flashes->add('danger', implode('<br>', $messages));
+        }
+    }
+
+    /**
      * Returns the cart.
      *
      * @return CartInterface|null
@@ -196,7 +264,6 @@ class AbstractController
      * Returns the sale helper.
      *
      * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
-     * @deprecated
      */
     protected function getSaleHelper()
     {
@@ -207,7 +274,6 @@ class AbstractController
      * Returns the sale factory.
      *
      * @return \Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface
-     * @deprecated
      */
     protected function getSaleFactory()
     {
@@ -218,7 +284,6 @@ class AbstractController
      * Returns the form factory.
      *
      * @return \Symfony\Component\Form\FormFactoryInterface
-     * @deprecated
      */
     protected function getFormFactory()
     {
