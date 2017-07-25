@@ -13,8 +13,19 @@
         </tr>
         </thead>
         <tbody>
-        {% for invoice in sale.invoices %}
-            {% set invoiceId = 'invoice_' ~ loop.index0 %}
+        {% if 0 < sale.invoices|length %}
+            {% set goodsTotal = 0 %}
+            {% set shipmentTotal = 0 %}
+            {% set taxesTotal = 0 %}
+            {% set total = 0 %}
+
+            {% for invoice in sale.invoices if invoice.type == type %}
+                {% set goodsTotal = goodsTotal + invoice.goodsBase %}
+                {% set shipmentTotal = shipmentTotal + invoice.shipmentBase %}
+                {% set taxesTotal = taxesTotal + invoice.taxesTotal %}
+                {% set total = total + invoice.grandTotal %}
+
+                {% set invoiceId = type ~ '_' ~ loop.index0 %}
             <tr data-id="{{ invoice.id }}">
                 <td id="{{ invoiceId }}_number">{{ invoice.number }}</td>
                 <td id="{{ invoiceId }}_type">{{ invoice|invoice_type_badge }}</td>
@@ -89,13 +100,24 @@
                 </td>
                 <td>&nbsp;</td>
             </tr>
+            {% endfor %}
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>{{ goodsTotal|localizedcurrency('EUR') }}</td>
+                <td>{{ shipmentTotal|localizedcurrency('EUR') }}</td>
+                <td>{{ taxesTotal|localizedcurrency('EUR') }}</td>
+                <td>{{ total|localizedcurrency('EUR') }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
         {% else %}
             <tr>
                 <td colspan="8" class="text-center">
                     <em>{{ 'ekyna_commerce.invoice.alert.no_item'|trans }}</em>
                 </td>
             </tr>
-        {% endfor %}
+        {% endif %}
         </tbody>
     </table>
 </div>

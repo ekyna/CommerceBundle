@@ -7,8 +7,6 @@
     <th>{{ 'ekyna_commerce.sale.field.tax_rate'|trans }}</th>
     <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
     <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-    {#<th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-    <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>#}
 {% endspaceless %}
 {% endblock lines_headers %}
 
@@ -44,12 +42,6 @@
     <td class="text-right" id="{{ line.id }}_base">
         {{- line.base|localizedcurrency('EUR') -}}
     </td>
-    {#<td class="text-right" id="{{ line.id }}_tax">
-        {{- line.taxAmount|localizedcurrency('EUR') -}}
-    </td>
-    <td class="text-right" id="{{ line.id }}_total">
-        {{- line.total|localizedcurrency('EUR') -}}
-    </td>#}
 {% endspaceless %}
 {% endblock line_leaf %}
 
@@ -147,12 +139,6 @@
             <td class="text-right sale-detail-gross" id="gross_base">
                 {{- view.gross.base|localizedcurrency('EUR') -}}
             </td>
-            {#<td class="text-right sale-detail-gross" id="gross_tax">
-                {{- view.gross.tax|localizedcurrency('EUR') -}}
-            </td>
-            <td class="text-right sale-detail-gross" id="gross_total">
-                {{- view.gross.total|localizedcurrency('EUR') -}}
-            </td>#}
         </tr>
     </tbody>
 {% endspaceless %}
@@ -172,12 +158,6 @@
     <td class="text-right" id="{{ line.id }}_base">
         {{- line.base|localizedcurrency('EUR') -}}
     </td>
-    {#<td class="text-right" id="{{ line.id }}_tax">
-        {{- line.taxAmount|localizedcurrency('EUR') -}}
-    </td>
-    <td class="text-right" id="{{ line.id }}_total">
-        {{- line.total|localizedcurrency('EUR') -}}
-    </td>#}
 {% endspaceless %}
 {% endblock discount %}
 
@@ -210,12 +190,6 @@
         <td class="text-right" id="{{ line.id }}_base">
             {{- line.base|localizedcurrency('EUR') -}}
         </td>
-        {#<td class="text-right" id="{{ line.id }}_tax">
-            {{- line.taxAmount|localizedcurrency('EUR') -}}
-        </td>
-        <td class="text-right" id="{{ line.id }}_total">
-            {{- line.total|localizedcurrency('EUR') -}}
-        </td>#}
     </tr>
     </tbody>
 {% endspaceless %}

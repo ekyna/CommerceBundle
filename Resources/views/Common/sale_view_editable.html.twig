@@ -116,12 +116,6 @@
         <th class="text-right sale-detail-gross" id="gross_base">
             {{- view.gross.base|localizedcurrency('EUR') -}}
         </th>
-        {#<th class="text-right sale-detail-gross" id="gross_tax">
-            {{- view.gross.tax|localizedcurrency('EUR') -}}
-        </th>
-        <th class="text-right sale-detail-gross" id="gross_total">
-            {{- view.gross.total|localizedcurrency('EUR') -}}
-        </th>#}
         <th>&nbsp;</th>
     </tr>
     </tbody>
@@ -143,19 +137,6 @@
 {% endblock discount %}
 
 
-{#{% block discounts %}
-{% spaceless %}
-    <tbody>
-    {% for discount in view.discounts %}
-        <tr>
-            {{ block('discount') }}
-        </tr>
-    {% endfor %}
-    </tbody>
-{% endspaceless %}
-{% endblock discounts %}#}
-
-
 {% block shipment %}
 {% spaceless %}
     {% set line = view.shipment %}
@@ -167,8 +148,6 @@
         {{ block('line_tax_rates') }}
         <td class="text-right">&nbsp;</td>
         <td class="text-right" id="{{ line.id }}_base">{{ line.base|localizedcurrency('EUR') }}</td>
-        {#<td class="text-right" id="{{ line.id }}_tax">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
-        <td class="text-right" id="{{ line.id }}_total">{{ line.total|localizedcurrency('EUR') }}</td>#}
         <td class="sale-detail-actions">
         {% if line.vars.actions is defined %}
             {% for action in line.vars.actions %}

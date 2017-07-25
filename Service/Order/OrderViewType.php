@@ -101,28 +101,26 @@ class OrderViewType extends AbstractViewType
         $actions = [];
 
         // Information
-        if (!$item->hasChildren()) {
-            if (!$item instanceof Order\OrderItemInterface) {
-                throw new \Exception("Unexpected sale item type.");
-            }
+        if (!$item instanceof Order\OrderItemInterface) {
+            throw new \Exception("Unexpected sale item type.");
+        }
 
-            $stockUnits = [];
-            foreach ($item->getStockAssignments() as $assignment) {
-                $stockUnits[] = $assignment->getStockUnit();
-            }
+        $stockUnits = [];
+        foreach ($item->getStockAssignments() as $assignment) {
+            $stockUnits[] = $assignment->getStockUnit();
+        }
 
-            if (!empty($stockUnits)) {
-                $view->vars['information'] = $this->stockRenderer->renderStockUnitList($stockUnits, [
-                    'template' => 'EkynaCommerceBundle:Common:sale_stock_unit_list.html.twig',
-                    'prefix'   => $view->getId() . '_su',
-                    'class'    => 'table-alt',
-                ]);
+        if (!empty($stockUnits)) {
+            $view->vars['information'] = $this->stockRenderer->renderStockUnitList($stockUnits, [
+                'template' => 'EkynaCommerceBundle:Common:sale_stock_unit_list.html.twig',
+                'prefix'   => $view->getId() . '_su',
+                'class'    => 'table-alt',
+            ]);
 
-                $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
-                    'title'               => 'ekyna_commerce.sale.button.item.information',
-                    'data-toggle-details' => $view->getId() . '_information',
-                ]);
-            }
+            $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
+                'title'               => 'ekyna_commerce.sale.button.item.information',
+                'data-toggle-details' => $view->getId() . '_information',
+            ]);
         }
 
         if (!$item->isImmutable() && !$item->getParent()) {

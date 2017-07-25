@@ -44,7 +44,7 @@
         </li>
         <li>
             <a href="#order-invoices" id="toggle-invoices" data-toggle="tab">
-                {{ 'ekyna_commerce.invoice.label.plural'|trans }}
+                {{ 'ekyna_commerce.invoice.tab'|trans }}
             </a>
         </li>
         <li>
@@ -99,16 +99,26 @@
             </div>
             <div class="tab-pane" id="order-invoices">
                 <h4 class="sub-header">
-                    {% for type in ['credit', 'invoice'] %}
-                        <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': type}) }}"
-                           class="btn btn-primary btn-xs pull-right"
-                           style="margin-left:16px">
-                            {{ ('ekyna_commerce.' ~ type ~ '.button.new')|trans }}
-                        </a>
-                    {% endfor %}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': 'invoice'}) }}"
+                       class="btn btn-primary btn-xs pull-right"
+                       style="margin-left:16px">
+                        {{ ('ekyna_commerce.invoice.button.new')|trans }}
+                    </a>
                     {{ 'ekyna_commerce.invoice.label.plural'|trans }}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order, 'type': 'invoice'} %}
+                <hr>
+                <h4 class="sub-header">
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': 'credit'}) }}"
+                       class="btn btn-primary btn-xs pull-right"
+                       style="margin-left:16px">
+                        {{ ('ekyna_commerce.credit.button.new')|trans }}
+                    </a>
+                    {{ 'ekyna_commerce.credit.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order, 'type': 'credit'} %}
+                <hr>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-payments">
                 <h4 class="sub-header">

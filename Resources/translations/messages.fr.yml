@@ -178,6 +178,7 @@ ekyna_commerce:
             remove: Supprimer l'avoir
 
     invoice:
+        tab: Factures et avoirs
         label:
             singular: Facture
             plural: Factures
@@ -651,6 +652,7 @@ ekyna_commerce:
             delivery_address: Adresse de livraison
             same_address: Même adresse
             net_unit: PU HT
+            discount_total: Total Remise
             net_total: Total HT
             shipment_total: Port HT
             tax_name: Taxe

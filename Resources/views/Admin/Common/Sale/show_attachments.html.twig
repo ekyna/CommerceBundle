@@ -12,8 +12,11 @@
         <tbody>
         {% for attachment in sale.attachments %}
             {% set attachmentId = 'attachment_' ~ loop.index0 %}
+            {% set attachmentPath = admin_resource_path(attachment, 'download') %}
             <tr data-id="{{ attachment.id }}">
-                <td id="{{ attachmentId }}_filename">{{ attachment }}</td>
+                <td id="{{ attachmentId }}_filename">
+                    <a href="{{ attachmentPath }}">{{ attachment }}</a>
+                </td>
                 <td id="{{ attachmentId }}_title">{{ attachment.title }}</td>
                 <td id="{{ attachmentId }}_updatedAt">{{ attachment.updatedAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ attachmentId }}_internal">
@@ -28,7 +31,7 @@
                     {% endif %}
                 </td>
                 <td class="actions">
-                    <a href="{{ admin_resource_path(attachment, 'download') }}" class="btn btn-primary btn-xs" target="_blank">
+                    <a href="{{ attachmentPath }}" class="btn btn-primary btn-xs" target="_blank">
                         {{ 'ekyna_core.button.download'|trans }}
                     </a>
                     <a href="{{ admin_resource_path(attachment, 'edit') }}" class="btn btn-warning btn-xs">

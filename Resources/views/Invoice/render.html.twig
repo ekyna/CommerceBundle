@@ -109,6 +109,7 @@
                 <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
                 <th>{{ 'ekyna_commerce.sale.field.tax_rate'|trans }}</th>
                 <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.discount_total'|trans }}</th>
                 <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
             </tr>
             </thead>
@@ -126,28 +127,34 @@
                     <td>{{ line.reference }}</td>
                     <td class="text-right">{{ line.netPrice|localizedcurrency(currency) }}</td>
                     <td class="text-right">
-                        {%- for tax in line.taxesDetails -%}
-                            {{- tax.rate|localizednumber }}%
+                        {%- for rate in line.taxRates -%}
+                            {{- rate|localizednumber }}%
                             {%- if not loop.last %}, {% endif -%}
                         {%- else -%}
                             &nbsp;
                         {%- endfor -%}
                     </td>
                     <td class="text-right">{{ line.quantity|localizednumber }}</td>
-                    <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
+                    <td class="text-right">
+                        {%- if line.discountTotal -%}
+                            {{- line.discountTotal|localizedcurrency(currency) -}}
+                        {%- else -%}
+                            &nbsp;
+                        {%- endif -%}
+                    </td>
+                    <td class="text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
 
-            {% set discounts = invoice.linesByType('discount') %}
-            {% set shipments = invoice.linesByType('shipment') %}
 
             {# DISCOUNTS #}
+            {% set discounts = invoice.linesByType('discount') %}
             {% if discounts is not empty %}
             {% block spacer %}
             <tbody class="spacer">
                 <tr>
-                    <td colspan="6">&nbsp;</td>
+                    <td colspan="7">&nbsp;</td>
                 </tr>
             </tbody>
             {% endblock spacer %}
@@ -155,31 +162,22 @@
             <tbody>
             {% for line in discounts %}
                 <tr>
-                    <td colspan="5">{{ line.designation }}</td>
-                    <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
+                    <td colspan="6">{{ line.designation }}</td>
+                    <td class="text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
             {% endif %}
 
-            {# SUB TOTAL #}
-            {#{% if discounts is not empty and shipments is not empty %}
-            <tbody>
-                <tr>
-                    <td colspan="4" class="text-right">Sous-total</td>
-                    <td colspan="3" class="text-right">{{ invoice.goodsBase|localizedcurrency(currency) }}</td>
-                </tr>
-            </tbody>
-            {% endif %}#}
-
             {# SHIPMENT #}
+            {% set shipments = invoice.linesByType('shipment') %}
             {% if shipments is not empty %}
             {{ block('spacer') }}
             <tbody>
             {% for line in shipments %}
                 <tr>
-                    <td colspan="5">{{ line.designation }}</td>
-                    <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
+                    <td colspan="6">{{ line.designation }}</td>
+                    <td class="text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -189,7 +187,7 @@
             {{ block('spacer') }}
             <tbody class="totals">
             <tr>
-                <td colspan="4" rowspan="3">&nbsp;</td>
+                <td colspan="5" rowspan="3">&nbsp;</td>
                 <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
                 <td class="text-right">{{ (invoice.goodsBase + invoice.shipmentBase)|localizedcurrency(currency) }}</td>
             </tr>
@@ -215,10 +213,10 @@
                 </tr>
             </thead>
             <tbody>
-                {%- for taxName, taxTotal in invoice.taxesDetails -%}
+                {%- for details in invoice.taxesDetails -%}
                 <tr>
-                    <th>{{ taxName }}</th>
-                    <td class="text-right">{{ taxTotal|localizedcurrency(currency) }}</td>
+                    <th>{{ details.name }}</th>
+                    <td class="text-right">{{ details.amount|localizedcurrency(currency) }}</td>
                 </tr>
                 {%- endfor -%}
             </tbody>

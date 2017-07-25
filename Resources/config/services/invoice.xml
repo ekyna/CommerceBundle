@@ -35,6 +35,9 @@
             <call method="setUpdater">
                 <argument type="service" id="ekyna_commerce.invoice.updater"/>
             </call>
+            <call method="setCalculator">
+                <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            </call>
         </service>
 
         <!-- Invoice line abstract listener -->
@@ -47,9 +50,12 @@
         <!-- Invoice updater -->
         <service id="ekyna_commerce.invoice.updater"
                  class="Ekyna\Component\Commerce\Invoice\Updater\InvoiceUpdater">
-            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
             <argument type="service" id="libphonenumber.phone_number_util"/>
         </service>
+
+        <!-- Invoice updater -->
+        <service id="ekyna_commerce.invoice.calculator"
+                 class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculator"/>
 
         <!-- Shipment builder -->
         <service id="ekyna_commerce.invoice.builder"
