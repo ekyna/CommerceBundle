@@ -28,6 +28,12 @@
 
     <services>
 
+        <!-- Settings Schema -->
+        <service id="ekyna_commerce.settings"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Settings\CommerceSettingsSchema">
+            <tag name="ekyna_setting.schema" namespace="commerce" position="5" />
+        </service>
+
         <!-- Notification builder -->
         <service id="ekyna_commerce.notification.builder"
                  class="Ekyna\Bundle\CommerceBundle\Service\Notification\NotificationBuilder">

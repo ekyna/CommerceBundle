@@ -675,6 +675,9 @@ ekyna_commerce:
         field:
             tax_group: Groupe
 
+    setting:
+        invoice_footer: Pied de page facture
+
     return:
         label:
             singular: Retour

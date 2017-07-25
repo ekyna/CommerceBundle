@@ -107,10 +107,9 @@
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                 <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.tax_rate'|trans }}</th>
                 <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
                 <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-                <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-                <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
             </tr>
             </thead>
 
@@ -126,10 +125,16 @@
                     </td>
                     <td>{{ line.reference }}</td>
                     <td class="text-right">{{ line.netPrice|localizedcurrency(currency) }}</td>
+                    <td class="text-right">
+                        {%- for tax in line.taxesDetails -%}
+                            {{- tax.rate|localizednumber }}%
+                            {%- if not loop.last %}, {% endif -%}
+                        {%- else -%}
+                            &nbsp;
+                        {%- endfor -%}
+                    </td>
                     <td class="text-right">{{ line.quantity|localizednumber }}</td>
                     <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
-                    <td class="text-right">{{ line.taxesTotal|localizedcurrency(currency) }}</td>
-                    <td class="text-right">{{ line.total|localizedcurrency(currency) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -142,7 +147,7 @@
             {% block spacer %}
             <tbody class="spacer">
                 <tr>
-                    <td colspan="7">&nbsp;</td>
+                    <td colspan="6">&nbsp;</td>
                 </tr>
             </tbody>
             {% endblock spacer %}
@@ -150,10 +155,8 @@
             <tbody>
             {% for line in discounts %}
                 <tr>
-                    <td colspan="4">{{ line.designation }}</td>
+                    <td colspan="5">{{ line.designation }}</td>
                     <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
-                    <td class="text-right">{{ line.taxesTotal|localizedcurrency(currency) }}</td>
-                    <td class="text-right">{{ line.total|localizedcurrency(currency) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -175,10 +178,8 @@
             <tbody>
             {% for line in shipments %}
                 <tr>
-                    <td colspan="4">{{ line.designation }}</td>
+                    <td colspan="5">{{ line.designation }}</td>
                     <td class="text-right">{{ line.baseTotal|localizedcurrency(currency) }}</td>
-                    <td class="text-right">{{ line.taxesTotal|localizedcurrency(currency) }}</td>
-                    <td class="text-right">{{ line.total|localizedcurrency(currency) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -188,15 +189,16 @@
             {{ block('spacer') }}
             <tbody class="totals">
             <tr>
-                <td colspan="4">&nbsp;</td>
+                <td colspan="4" rowspan="3">&nbsp;</td>
                 <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-                <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-                <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+                <td class="text-right">{{ (invoice.goodsBase + invoice.shipmentBase)|localizedcurrency(currency) }}</td>
             </tr>
             <tr>
-                <td colspan="4">&nbsp;</td>
-                <td class="text-right">{{ (invoice.goodsBase + invoice.shipmentBase)|localizedcurrency(currency) }}</td>
+                <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
                 <td class="text-right">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
                 <td class="text-right">{{ invoice.grandTotal|localizedcurrency(currency) }}</td>
             </tr>
             </tbody>
@@ -213,12 +215,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for taxName, taxTotal in invoice.taxesDetails %}
+                {%- for taxName, taxTotal in invoice.taxesDetails -%}
                 <tr>
                     <th>{{ taxName }}</th>
                     <td class="text-right">{{ taxTotal|localizedcurrency(currency) }}</td>
                 </tr>
-                {% endfor %}
+                {%- endfor -%}
             </tbody>
         </table>
         {% endif %}
@@ -247,14 +249,9 @@
 
         {# --- FOOTER --- #}
         {% block footer %}
-            <div class="bloc footer">
-                {# TODO {{ get_setting('sale.document_footer')|raw }} #}
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in aliquam dolor, at faucibus libero. Morbi
-                    id interdum leo. Etiam facilisis gravida purus ac eleifend. Aenean laoreet risus id urna venenatis fringilla.
-                    Donec condimentum cursus ornare.
-                </p>
-            </div>
+        <div class="bloc footer">
+            {{- get_setting('commerce.invoice_footer')|raw -}}
+        </div>
         {% endblock footer %}
 
     </div>

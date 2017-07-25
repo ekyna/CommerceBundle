@@ -278,6 +278,8 @@ class SaleInvoiceController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
+        $this->get('ekyna_commerce.invoice.updater')->updatePricing($invoice);
+
         // TODO use ResourceManager
         $event = $this->getOperator()->update($invoice);
 

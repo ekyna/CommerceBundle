@@ -116,12 +116,12 @@
         <th class="text-right sale-detail-gross" id="gross_base">
             {{- view.gross.base|localizedcurrency('EUR') -}}
         </th>
-        <th class="text-right sale-detail-gross" id="gross_tax">
+        {#<th class="text-right sale-detail-gross" id="gross_tax">
             {{- view.gross.tax|localizedcurrency('EUR') -}}
         </th>
         <th class="text-right sale-detail-gross" id="gross_total">
             {{- view.gross.total|localizedcurrency('EUR') -}}
-        </th>
+        </th>#}
         <th>&nbsp;</th>
     </tr>
     </tbody>
@@ -167,8 +167,8 @@
         {{ block('line_tax_rates') }}
         <td class="text-right">&nbsp;</td>
         <td class="text-right" id="{{ line.id }}_base">{{ line.base|localizedcurrency('EUR') }}</td>
-        <td class="text-right" id="{{ line.id }}_tax">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
-        <td class="text-right" id="{{ line.id }}_total">{{ line.total|localizedcurrency('EUR') }}</td>
+        {#<td class="text-right" id="{{ line.id }}_tax">{{ line.taxAmount|localizedcurrency('EUR') }}</td>
+        <td class="text-right" id="{{ line.id }}_total">{{ line.total|localizedcurrency('EUR') }}</td>#}
         <td class="sale-detail-actions">
         {% if line.vars.actions is defined %}
             {% for action in line.vars.actions %}
@@ -186,21 +186,23 @@
 {% spaceless %}
     <tbody>
     <tr>
-        <th colspan="6" rowspan="2" class="sale-detail-buttons">
+        <th colspan="5" rowspan="3" class="sale-detail-buttons">
             {{ form_widget(view.vars.form.submit) }}
         </th>
         <th>{{ 'ekyna_commerce.sale.field.net_total'|trans|upper }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans|upper }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans|upper }}</th>
-        <th rowspan="2">&nbsp;</th>
-    </tr>
-    <tr id="sale_final">
         <td class="text-right sale-detail-total" id="final_base">
             {{- view.final.base|localizedcurrency('EUR') -}}
         </td>
+        <th rowspan="3">&nbsp;</th>
+    </tr>
+    <tr>
+        <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans|upper }}</th>
         <td class="text-right sale-detail-total" id="final_tax">
             {{- view.final.tax|localizedcurrency('EUR') -}}
         </td>
+    </tr>
+    <tr>
+        <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans|upper }}</th>
         <td class="text-right sale-detail-total" id="final_total">
             {{- view.final.total|localizedcurrency('EUR') -}}
         </td>
