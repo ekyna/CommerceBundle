@@ -89,28 +89,4 @@
     </table>
 </div>
 <hr>
-<div class="row">
-    <div class="col-md-4">
-        {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
-            'precision': 3,
-            'append': 'kg',
-            'label_nb_col': 6,
-            'widget_nb_col': 6
-        }) }}
-    </div>
-    <div class="col-md-4">
-        {{ show_row(order.preferredShipmentMethod, 'entity', 'ekyna_commerce.shipment_method.label.singular', {
-            'id': 'shipment_method',
-            'route': 'ekyna_commerce_shipment_method_admin_show',
-            'route_params_map': {'shipmentMethodId': 'id'},
-            'label_nb_col': 6,
-            'widget_nb_col': 6
-        }) }}
-    </div>
-    <div class="col-md-4">
-        {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
-            'label_nb_col': 6,
-            'widget_nb_col': 6
-        }) }}
-    </div>
-</div>
+{% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:shipment_fields.html.twig" %}

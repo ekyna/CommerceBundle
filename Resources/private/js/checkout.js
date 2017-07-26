@@ -9,22 +9,15 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         'attachments': '.cart-checkout-attachments'
     };
 
-    var parseResponse = function(response) {
-        var $xml = $(response);
+    var $checkout = $('.cart-checkout'),
+        $customer = $checkout.find('.cart-checkout-customer'),
+        $forms = $checkout.find('.cart-checkout-forms'),
+        $submit = $checkout.find('.cart-checkout-submit'),
+        refreshXHR;
 
-        // Information, invoice address and delivery address
-        for (var key in mapping) {
-            if (mapping.hasOwnProperty(key)) {
-                var $node = $xml.find(key);
-
-                if (1 === $node.size()) {
-                    $(mapping[key]).html($node.text());
-                }
-            }
-        }
-
+    var updateElementsDisplay = function(response) {
         // Sale view
-        var $view = $xml.find('view');
+        var $view = $(response).find('view');
         if (1 === $view.size()) {
             if (1 === parseInt($view.attr('empty'))) {
                 $forms.slideUp();
@@ -45,7 +38,28 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
                     $submit.slideUp();
                 }
             }
+        }
+    };
 
+    var parseResponse = function(response) {
+        var $xml = $(response);
+
+        // Information, invoice address and delivery address
+        for (var key in mapping) {
+            if (mapping.hasOwnProperty(key)) {
+                var $node = $xml.find(key);
+
+                if (1 === $node.size()) {
+                    $(mapping[key]).html($node.text());
+                }
+            }
+        }
+
+        updateElementsDisplay(response);
+
+        // Sale view
+        var $view = $xml.find('view');
+        if (1 === $view.size()) {
             $('.sale-view').replaceWith($($view.text()));
 
             return true;
@@ -53,12 +67,6 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
 
         return false;
     };
-
-    var $checkout = $('.cart-checkout'),
-        $customer = $checkout.find('.cart-checkout-customer'),
-        $forms = $checkout.find('.cart-checkout-forms'),
-        $submit = $checkout.find('.cart-checkout-submit'),
-        refreshXHR;
 
     function refreshCheckout() {
         if (refreshXHR) {
@@ -83,6 +91,10 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
             console.log('Failed to update cart checkout content.');
         });
     }
+
+    Dispatcher.on('ekyna_commerce.sale_view_response', function(response) {
+        updateElementsDisplay(response);
+    });
 
     Dispatcher.on('ekyna_user.user_status', function(e) {
         if (e.authenticated) {

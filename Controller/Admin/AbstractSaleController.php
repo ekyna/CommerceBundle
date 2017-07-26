@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -49,8 +50,8 @@ abstract class AbstractSaleController extends ResourceController
         }
 
         $view = $this->getSaleHelper()->buildView($sale, [
-            'private'      => true,
-            'editable'     => true,
+            'private'  => true,
+            'editable' => true,
         ]);
         $view->vars['form'] = $form->createView();
 
@@ -72,8 +73,10 @@ abstract class AbstractSaleController extends ResourceController
         // TODO get the proper operator through resource registry
         $this->getOperator()->refresh($sale);
 
-        $response = $this->render('EkynaCommerceBundle:Common:response.xml.twig', [
-            'sale_view' => $this->buildSaleView($sale, $form),
+        $response = $this->render('EkynaCommerceBundle:Common:sale_response.xml.twig', [
+            'sale'          => $sale,
+            'sale_view'     => $this->buildSaleView($sale, $form),
+            'with_shipment' => $sale instanceof ShipmentSubjectInterface,
         ]);
 
         $response->headers->set('Content-type', 'application/xml');

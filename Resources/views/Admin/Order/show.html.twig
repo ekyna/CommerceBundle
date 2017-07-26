@@ -10,7 +10,7 @@
 {% block main %}
 <div class="main-header">
     <div class="infos">
-        {{ order|sale_state_badge }}
+        <span id="sale_state">{{ order|sale_state_badge }}</span>
         {{ order.allTags|cms_tags({'text': false}) }}
     </div>
     <div class="actions">
@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
-                            'id': 'order_weightTotal',
+                            'id': 'sale_weightTotal',
                             'precision': 3,
                             'append': 'kg',
                             'label_nb_col': 4,
@@ -84,7 +84,7 @@
                     </div>
                     <div class="col-md-6">
                         {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
-                            'id': 'order_shipmentState',
+                            'id': 'sale_shipmentState',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
                         }) }}
@@ -171,4 +171,5 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
+    <script type="text/javascript">require(['ekyna-commerce/sale-admin']);</script>
 {% endblock javascripts %}

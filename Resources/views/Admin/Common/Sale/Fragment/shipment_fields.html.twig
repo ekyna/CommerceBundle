@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="col-md-4">
+        {{ show_row(sale.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
+            'id': 'sale_weightTotal',
+            'precision': 3,
+            'append': 'kg',
+            'label_nb_col': 6,
+            'widget_nb_col': 6
+        }) }}
+    </div>
+    <div class="col-md-4">
+        {{ show_row(sale.preferredShipmentMethod, 'entity', 'ekyna_commerce.shipment_method.label.singular', {
+            'id': 'sale_shipmentMethod',
+            'route': 'ekyna_commerce_shipment_method_admin_show',
+            'route_params_map': {'shipmentMethodId': 'id'},
+            'label_nb_col': 6,
+            'widget_nb_col': 6
+        }) }}
+    </div>
+    <div class="col-md-4">
+        {{ show_row(sale.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
+            'id': 'sale_shipmentState',
+            'label_nb_col': 6,
+            'widget_nb_col': 6
+        }) }}
+    </div>
+</div>

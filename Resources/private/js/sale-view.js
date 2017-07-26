@@ -8,7 +8,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         if (1 === $view.size()) {
             $saleView.replaceWith($($view.text()));
 
-            Dispatcher.trigger('ekyna_commerce.sale_view_response');
+            Dispatcher.trigger('ekyna_commerce.sale_view_response', response);
 
             return true;
         }
