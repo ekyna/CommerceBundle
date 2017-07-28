@@ -2,15 +2,17 @@
 
 namespace Acme\ProductBundle\Entity;
 
+use Acme\ProductBundle\Service\Commerce\ProductProvider;
 use Ekyna\Component\Commerce\Pricing\Model as Pricing;
 use Ekyna\Component\Commerce\Stock\Model as Stock;
+use Ekyna\Component\Commerce\Subject\Model as Subject;
 
 /**
  * Class Product
  * @package Acme\ProductBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class Product implements Pricing\TaxableInterface, Stock\StockSubjectInterface
+class Product implements Pricing\TaxableInterface, Stock\StockSubjectInterface, Subject\SubjectInterface
 {
     use Pricing\TaxableTrait,
         Stock\StockSubjectTrait;
@@ -171,5 +173,13 @@ class Product implements Pricing\TaxableInterface, Stock\StockSubjectInterface
     public static function getStockUnitClass()
     {
         return StockUnit::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static public function getProviderName()
+    {
+        return ProductProvider::NAME;
     }
 }
