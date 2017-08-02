@@ -40,4 +40,4 @@ ekyna_commerce_order_invoice_admin_render:
     requirements:
         orderId: \d+
         orderInvoiceId: \d+
-        _format: html|pdf
+        _format: html|pdf|jpg

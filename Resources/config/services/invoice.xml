@@ -57,7 +57,7 @@
         <service id="ekyna_commerce.invoice.calculator"
                  class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculator"/>
 
-        <!-- Shipment builder -->
+        <!-- Invoice builder -->
         <service id="ekyna_commerce.invoice.builder"
                  class="Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>

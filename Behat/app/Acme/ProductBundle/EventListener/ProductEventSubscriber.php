@@ -26,7 +26,7 @@ class ProductEventSubscriber implements EventSubscriberInterface
     /**
      * @var StockSubjectUpdaterInterface
      */
-    private $stockUpdater;
+    protected $stockUpdater;
 
 
     /**
@@ -70,7 +70,7 @@ class ProductEventSubscriber implements EventSubscriberInterface
 
         $changed = false;
 
-        $properties = ['inStock', 'orderedStock', 'shippedStock', 'estimatedDateOfArrival'];
+        $properties = ['inStock', 'availableStock', 'virtualStock', 'estimatedDateOfArrival'];
         if ($this->persistenceHelper->isChanged($product, $properties)) {
             $changed = $this->stockUpdater->updateStockState($product);
         }
@@ -81,16 +81,6 @@ class ProductEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Delete event handler.
-     *
-     * @param ResourceEventInterface $event
-     */
-    /*public function onDelete(ResourceEventInterface $event)
-    {
-
-    }*/
-
-    /**
      * Stock unit change event handler.
      *
      * @param SubjectStockUnitEvent $event
@@ -99,11 +89,7 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
         $product = $this->getProductFromEvent($event);
 
-        if (null !== $stockUnit = $event->getStockUnit()) {
-            $changed = $this->stockUpdater->updateFromStockUnitChange($product, $stockUnit);
-        } else {
-            $changed = $this->stockUpdater->update($product);
-        }
+        $changed = $this->stockUpdater->update($product);
 
         if ($changed) {
             $this->persistenceHelper->persistAndRecompute($product, true);
@@ -119,11 +105,7 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
         $product = $this->getProductFromEvent($event);
 
-        if (null !== $stockUnit = $event->getStockUnit()) {
-            $changed = $this->stockUpdater->updateFromStockUnitRemoval($product, $stockUnit);
-        } else {
-            $changed = $this->stockUpdater->update($product);
-        }
+        $changed = $this->stockUpdater->update($product);
 
         if ($changed) {
             $this->persistenceHelper->persistAndRecompute($product, true);
@@ -154,11 +136,10 @@ class ProductEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ProductEvents::INSERT             => ['onInsert', 0],
-            ProductEvents::UPDATE             => ['onUpdate', 0],
-            //ProductEvents::DELETE             => ['onDelete', 0],
-            ProductEvents::STOCK_UNIT_CHANGE  => ['onStockUnitChange', 0],
-            ProductEvents::STOCK_UNIT_REMOVAL => ['onStockUnitRemoval', 0],
+            ProductEvents::INSERT            => ['onInsert', 0],
+            ProductEvents::UPDATE            => ['onUpdate', 0],
+            ProductEvents::STOCK_UNIT_CHANGE => ['onStockUnitChange', 0],
+            ProductEvents::STOCK_UNIT_REMOVE => ['onStockUnitRemoval', 0],
         ];
     }
 }

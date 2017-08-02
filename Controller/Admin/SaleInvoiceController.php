@@ -6,8 +6,6 @@ use Ekyna\Bundle\CoreBundle\Modal\Modal;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -63,9 +61,9 @@ class SaleInvoiceController extends AbstractSaleController
 
         $invoice->setType($type);
 
-        if (0 < $shipmentId = $request->query->get('shipmentId', 0)) {
+        /*if (0 < $shipmentId = $request->query->get('shipmentId', 0)) {
             // TODO find and assign shipment
-        }
+        }*/
 
         $sale = $invoice->getSale();
 
@@ -263,7 +261,7 @@ class SaleInvoiceController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function recalculateAction(Request $request)
     {
@@ -297,7 +295,7 @@ class SaleInvoiceController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function renderAction(Request $request)
     {
@@ -308,39 +306,10 @@ class SaleInvoiceController extends AbstractSaleController
 
         $this->isGranted('VIEW', $invoice);
 
-        // TODO move in a renderer (that return a response)
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createInvoiceRenderer($invoice);
 
-        $response = new Response();
-        if (!$this->getParameter('kernel.debug')) {
-            $response->setLastModified($invoice->getUpdatedAt());
-            if ($response->isNotModified($request)) {
-                return $response;
-            }
-        }
-
-        $content = $this->renderView('EkynaCommerceBundle:Invoice:render.html.twig', [
-            'logo_path' => $this->getParameter('ekyna_commerce.company_logo'),
-            'invoice' => $invoice,
-        ]);
-
-        $format = $request->attributes->get('_format', 'html');
-        if ('html' === $format) {
-            $response->setContent($content);
-        } elseif ('pdf' === $format) {
-            $response->setContent($this->get('knp_snappy.pdf')->getOutputFromHtml($content));
-            $response->headers->add(['Content-Type' => 'application/pdf']);
-        } else {
-            throw new NotFoundHttpException('Unsupported format.');
-        }
-
-        if ($request->query->get('_download', false)) {
-            $filename = sprintf('%s.%s', $invoice->getNumber(), $format);
-            $contentDisposition = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename
-            );
-            $response->headers->set('Content-Disposition', $contentDisposition);
-        }
-
-        return $response;
+        return $renderer->respond($request);
     }
 }

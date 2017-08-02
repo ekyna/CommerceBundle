@@ -41,6 +41,16 @@ ekyna_commerce_supplier_order_admin_submit:
     requirements:
         supplierOrderId: \d+
 
+ekyna_commerce_supplier_order_admin_render:
+    path: /{supplierOrderId}/render.{_format}
+    defaults:
+        _controller: "ekyna_commerce.supplier_order.controller:renderAction"
+        _format: html
+    methods: [GET]
+    requirements:
+        supplierOrderId: \d+
+        _format: html|pdf|jpg
+
 ekyna_commerce_supplier_delivery_admin:
     resource: supplier_delivery.yml
     prefix: /{supplierOrderId}/deliveries

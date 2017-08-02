@@ -1,6 +1,7 @@
 {% macro render_company() %}
 {% spaceless %}
     <p>
+    <strong>{{ get_setting('general.site_name') }}</strong><br>
     {% set companyAddress = get_setting('general.site_address') %}
     {{ companyAddress.street }}<br>
     {% if companyAddress.supplement|length > 0 %}{{ companyAddress.supplement }}<br>{% endif %}
@@ -33,11 +34,11 @@
     <em>{{ customer['email'] }}</em>
 
     {% if customer['phone'] is not empty %}
-        <br>Tél : {{ customer['phone'] }}
+        <br>Téléphone : {{ customer['phone'] }}
     {% endif %}
 
     {% if customer['mobile'] is not empty %}
-        <br>Port : {{ customer['mobile'] }}
+        <br>Mobile : {{ customer['mobile'] }}
     {% endif %}
     </p>
 {% endspaceless %}
@@ -55,9 +56,9 @@
     {% endif %}
 
     {{ address['street'] }}<br>
-    {# TODO {% if address['supplement'] is not empty %}
+    {% if address['supplement'] is not empty %}
         {{ address['supplement'] }}<br>
-    {% endif %}#}
+    {% endif %}
 
     {{ address['postal_code'] }} {{ address['city'] }}, {{ address['country'] }}
 

@@ -60,6 +60,15 @@
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
         </service>
 
+        <!-- Stock renderer -->
+        <service id="ekyna_commerce.stock.stock_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="templating"/>
+            <argument>%ekyna_commerce.stock_unit.list_template%</argument>
+        </service>
+
     </services>
 
 </container>

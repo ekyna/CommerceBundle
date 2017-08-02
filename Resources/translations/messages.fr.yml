@@ -822,6 +822,7 @@ ekyna_commerce:
             state: État stock
             floor: Stock de rupture
             in_stock: Stock réel
+            available_stock: Stock disponible
             virtual_stock: Stock prévisionnel
             estimated_date_of_arrival: Date de réappro.
         mode:
@@ -905,6 +906,7 @@ ekyna_commerce:
             remove: Supprimer la commande
             add_item: Ajouter une ligne
             submit: Soumettre au fournisseur
+            render: Bon de commande
         message:
             confirm_item_removal: Confirmer la suppression de cette ligne ?
             cant_be_deleted: Cette commande fournisseur a été réceptionnée et ne peut être supprimée.
@@ -912,6 +914,14 @@ ekyna_commerce:
             relative_stock_unit_is_shipped: >
                 Tout ou partie des stocks liés à cette commande ont été livrés à des clients,
                 cette commande et/ou ses lignes ne peuvent donc pas être supprimée(s).
+            submit:
+                success: Le bon de commande a bien été envoyé au fournisseur.
+                failure: Erreur lors de l'envoi du bon  de commande au fournisseur.
+                default: >
+                    <p>Bonjour,</p>
+                    <p>Veuillez trouver en pièce jointe le bon de commande %number%.</p>
+                    <p>Cordialement, </p>
+
         field:
             shipping_cost: Frais transport
             payment_total: Total réglement

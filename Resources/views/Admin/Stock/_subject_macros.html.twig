@@ -26,6 +26,16 @@
 {% endmacro show_in_stock %}
 
 
+{% macro show_available_stock(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.availableStock, 'number', 'ekyna_commerce.stock_subject.field.available_stock', {
+        'id': 'subject_availableStock',
+        'precision': 0
+    }|merge(options)) }}
+{% endspaceless %}
+{% endmacro show_available_stock %}
+
+
 {% macro show_virtual_stock(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.virtualStock, 'number', 'ekyna_commerce.stock_subject.field.virtual_stock', {
@@ -83,25 +93,32 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             {{ _self.show_in_stock(subject, {
                 'id': prefix ~'_inStock',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_nb_col': 8,
+                'widget_nb_col': 4
             }) }}
         </div>
-        <div class="col-md-4">
-            {{ _self.show_virtual_stock(subject, {
-                'id': prefix ~'_virtualStock',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
-            }) }}
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             {{ _self.show_stock_floor(subject, {
                 'id': prefix ~'_stockFloor',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_nb_col': 8,
+                'widget_nb_col': 4
+            }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _self.show_available_stock(subject, {
+                'id': prefix ~'_availableStock',
+                'label_nb_col': 8,
+                'widget_nb_col': 4
+            }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _self.show_virtual_stock(subject, {
+                'id': prefix ~'_virtualStock',
+                'label_nb_col': 8,
+                'widget_nb_col': 4
             }) }}
         </div>
     </div>

@@ -10,13 +10,15 @@
 
     <services>
 
-        <!-- Stock renderer -->
-        <service id="ekyna_commerce.stock.stock_renderer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer"
+        <!-- Document renderer factory -->
+        <service id="ekyna_commerce.renderer_factory"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="templating"/>
-            <argument>%ekyna_commerce.stock_unit.list_template%</argument>
+            <argument type="service" id="knp_snappy.pdf"/>
+            <argument type="service" id="knp_snappy.image"/>
+            <argument>%ekyna_commerce.company_logo%</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Address extension -->

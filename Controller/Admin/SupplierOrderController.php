@@ -5,6 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -104,14 +106,23 @@ class SupplierOrderController extends ResourceController
             return $this->redirect($this->generateResourcePath($resource));
         }
 
-        $data = [
-            'order'   => $resource,
-            'emails'  => [$resource->getSupplier()->getEmail()],
-            'message' => null,
-            'confirm' => false,
-        ];
+        $submit = new SupplierOrderSubmit();
+        $submit
+            ->setOrder($resource)
+            ->setEmails([$resource->getSupplier()->getEmail()])
+            ->setMessage(
+                $this->getTranslator()->trans(
+                    'ekyna_commerce.supplier_order.message.submit.default', [
+                        '%number%' => $resource->getNumber(),
+                    ]
+                )
+            );
 
-        $form = $this->createForm(SupplierOrderSubmitType::class, $data);
+        $form = $this->createForm(SupplierOrderSubmitType::class, $submit, [
+            'attr' => [
+                'class' => 'form-horizontal',
+            ]
+        ]);
 
         $cancelPath = $this->generateUrl(
             $this->config->getRoute('show'),
@@ -156,7 +167,11 @@ class SupplierOrderController extends ResourceController
             $event->toFlashes($this->getFlashBag());
 
             if (!$event->hasErrors()) {
-                // TODO Send message
+                if ($this->sendSubmitMessage($submit)) {
+                    $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
+                } else {
+                    $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
+                }
 
                 return $this->redirect($this->generateUrl(
                     $this->config->getRoute('show'),
@@ -176,5 +191,64 @@ class SupplierOrderController extends ResourceController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    /**
+     * Sends the supplier order submit message.
+     *
+     * @param SupplierOrderSubmit $submit
+     *
+     * @return bool
+     */
+    private function sendSubmitMessage(SupplierOrderSubmit $submit)
+    {
+        $order = $submit->getOrder();
+
+        $settings = $this->container->get('ekyna_setting.manager');
+        $fromEmail = $settings->getParameter('notification.from_email');
+        $fromName = $settings->getParameter('notification.from_name');
+
+        /** @var \Swift_Mime_Message $message */
+        $message = new \Swift_Message();
+        $message
+            ->setSubject('Bon de commande ' . $order->getNumber())
+            ->setFrom($fromEmail, $fromName)
+            ->setTo($submit->getEmails())
+            ->setBody($submit->getMessage(), 'text/html');
+
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createSupplierOrderRenderer($order);
+
+        $message->attach(\Swift_Attachment::newInstance(
+            $renderer->render(RendererInterface::FORMAT_PDF),
+            $order->getNumber(),
+            'application/pdf'
+        ));
+
+        return 0 < $this->get('mailer')->send($message);
+    }
+
+    /**
+     * Render action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function renderAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var SupplierOrderInterface $supplierOrder */
+        $supplierOrder = $context->getResource();
+
+        $this->isGranted('VIEW', $supplierOrder);
+
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createSupplierOrderRenderer($supplierOrder);
+
+        return $renderer->respond($request);
     }
 }

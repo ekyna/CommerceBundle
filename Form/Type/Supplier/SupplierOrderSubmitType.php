@@ -3,12 +3,13 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Symfony\Component\Form;
 use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -80,17 +81,13 @@ class SupplierOrderSubmitType extends Form\AbstractType
             );
 
         $builder->addEventListener(Form\FormEvents::PRE_SET_DATA, function (Form\FormEvent $event) use ($options) {
+            /** @var SupplierOrderSubmit $data */
             $data = $event->getData();
             $form = $event->getForm();
 
-            if (!isset($data['order'])) {
-                throw new InvalidArgumentException("Key 'order' must be defined in form data.");
-            }
-            $order = $data['order'];
-            if (!$order instanceof SupplierOrderInterface) {
-                throw new InvalidArgumentException(
-                    "Expected form data 'order' key as instance of " . SupplierOrderInterface::class
-                );
+            $order = $data->getOrder();
+            if (null === $order) {
+                throw new InvalidArgumentException("Supplier order must be set");
             }
 
             $currency = $order->getCurrency();
@@ -107,5 +104,13 @@ class SupplierOrderSubmitType extends Form\AbstractType
                     'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
                 ]);
         });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('data_class', SupplierOrderSubmit::class);
     }
 }

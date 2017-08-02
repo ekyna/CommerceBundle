@@ -9,6 +9,11 @@
             'type': 'link'
         }) -}}
     {% endif -%}
+    {{- ui_button('ekyna_commerce.supplier_order.button.render', {
+        'path': path('ekyna_commerce_supplier_order_admin_render', {'supplierOrderId': supplierOrder.id}),
+        'type': 'link',
+        'icon': 'download'
+    }) -}}
     {{- admin_resource_btn(supplierOrder, 'edit') -}}
     {{- admin_resource_btn(supplierOrder, 'remove') -}}
 </div>

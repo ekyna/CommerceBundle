@@ -42,9 +42,9 @@ class StockUnitEventSubscriber extends AbstractStockUnitListener implements Even
     /**
      * @inheritdoc
      */
-    protected function getSubjectStockUnitRemovalEventName()
+    protected function getSubjectStockUnitRemoveEventName()
     {
-        return ProductEvents::STOCK_UNIT_REMOVAL;
+        return ProductEvents::STOCK_UNIT_REMOVE;
     }
 
     /**
