@@ -2,6 +2,7 @@
 
 namespace Acme\ProductBundle\DependencyInjection;
 
+use Acme\Product\Bridge\DoctrineBridge;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -30,12 +31,22 @@ class AcmeProductExtension extends Extension implements PrependExtensionInterfac
      */
     public function prepend(ContainerBuilder $container)
     {
+        // Doctrine ORM
+        $container->prependExtensionConfig('doctrine', [
+            'orm' => [
+                'mappings' => [
+                    'AcmeProduct' => DoctrineBridge::getORMMappingConfiguration(),
+                ],
+            ],
+        ]);
+
+        // Ekyna Resource
         $container->prependExtensionConfig('ekyna_resource', [
             'resources' => [
                 'acme_product' => [
                     'product'    => [
-                        'entity'     => 'Acme\ProductBundle\Entity\Product',
-                        'repository' => 'Acme\ProductBundle\Repository\ProductRepository',
+                        'entity'     => 'Acme\Product\Entity\Product',
+                        'repository' => 'Acme\Product\Repository\ProductRepository',
                         'form'       => 'Acme\ProductBundle\Form\Type\ProductType',
                         'table'      => 'Acme\ProductBundle\Table\Type\ProductType',
                         'event' => [
@@ -46,8 +57,8 @@ class AcmeProductExtension extends Extension implements PrependExtensionInterfac
                         ],
                     ],
                     'stock_unit' => [
-                        'entity'     => 'Acme\ProductBundle\Entity\StockUnit',
-                        'repository' => 'Acme\ProductBundle\Repository\StockUnitRepository',
+                        'entity'     => 'Acme\Product\Entity\StockUnit',
+                        'repository' => 'Acme\Product\Repository\StockUnitRepository',
                         'form'       => 'Acme\ProductBundle\Form\Type\StockUnitType',
                         'event' => [
                             'priority' => 1280
@@ -59,6 +70,7 @@ class AcmeProductExtension extends Extension implements PrependExtensionInterfac
             ],
         ]);
 
+        // FOS Elastica
         $elasticConfig = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/config/prepend/FOSElasticaBundle.yml'));
         $container->prependExtensionConfig('fos_elastica', $elasticConfig['fos_elastica']);
     }

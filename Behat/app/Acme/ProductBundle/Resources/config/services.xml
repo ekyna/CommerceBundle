@@ -9,7 +9,7 @@
 
         <!-- Product subject provider -->
         <service id="acme_product.product.subject_provider"
-                 class="Acme\ProductBundle\Service\Commerce\ProductProvider">
+                 class="Acme\Product\Provider\ProductProvider">
             <argument type="service" id="acme_product.product.repository"/>
             <tag name="ekyna_commerce.subject_provider"/>
         </service>
@@ -21,13 +21,6 @@
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>
-
-        <!-- Table -->
-        <!--<service id="acme_product.product.table_type"
-                 class="Acme\ProductBundle\Table\Type\ProductType">
-            <argument>Acme\Product\Bundle\Entity\Product</argument>
-            <tag name="table.type" alias="acme_product_product"/>
-        </service>-->
 
         <!-- Product event listener -->
         <service id="acme_product.product.event_subscriber"

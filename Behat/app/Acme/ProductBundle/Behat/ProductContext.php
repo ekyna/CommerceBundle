@@ -48,7 +48,7 @@ class ProductContext implements Context, KernelAwareContext
 
         $products = [];
         foreach ($table->getHash() as $hash) {
-            /** @var \Acme\ProductBundle\Entity\Product $product */
+            /** @var \Acme\Product\Entity\Product $product */
             $product = $productRepository->createNew();
             $product
                 ->setDesignation($hash['designation'])

@@ -2,11 +2,9 @@
 
 namespace Acme\ProductBundle\EventListener;
 
-use Acme\ProductBundle\Entity\Product;
+use Acme\Product\EventListener\SaleItemEventSubscriber as BaseSubscriber;
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemFormEvent;
-use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
-use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
@@ -15,47 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
  * @package Acme\ProductBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleItemEventSubscriber implements EventSubscriberInterface
+class SaleItemEventSubscriber extends BaseSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
-
-
-    /**
-     * Constructor.
-     *
-     * @param SubjectHelperInterface $subjectHelper
-     */
-    public function __construct(SubjectHelperInterface $subjectHelper)
-    {
-        $this->subjectHelper = $subjectHelper;
-    }
-
-    /**
-     * Sale item build event handler.
-     *
-     * @param SaleItemEvent $event
-     */
-    public function onSaleItemBuild(SaleItemEvent $event)
-    {
-        if (null === $product = $this->getProductFromEvent($event)) {
-            return;
-        }
-
-        $item = $event->getItem();
-
-        $this->subjectHelper->assign($item, $product);
-
-        $item
-            ->setDesignation($product->getDesignation())
-            ->setReference($product->getReference())
-            ->setNetPrice($product->getNetPrice())
-            ->setWeight($product->getWeight())
-            ->setTaxGroup($product->getTaxGroup());
-    }
-
     /**
      * Sale item build form event handler.
      *
@@ -76,25 +35,6 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
                 'min' => 1,
             ],
         ]);
-    }
-
-    /**
-     * Returns the product from the given event.
-     *
-     * @param SaleItemEvent $event
-     *
-     * @return null|Product
-     */
-    private function getProductFromEvent(SaleItemEvent $event)
-    {
-        $item = $event->getItem();
-
-        $product = $this->subjectHelper->resolve($item, false);
-        if ($product instanceof Product) {
-            return $product;
-        }
-
-        return null;
     }
 
     /**

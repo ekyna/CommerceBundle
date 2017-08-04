@@ -2,51 +2,18 @@
 
 namespace Acme\ProductBundle\EventListener;
 
-use Acme\ProductBundle\Entity\StockUnit;
-use Acme\ProductBundle\Event\ProductEvents;
-use Acme\ProductBundle\Event\StockUnitEvents;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Stock\EventListener\AbstractStockUnitListener;
-use Ekyna\Component\Resource\Event\ResourceEventInterface;
+use Acme\Product\EventListener\StockUnitEventSubscriber as BaseSubscriber;
+use Acme\Product\Event\StockUnitEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 
 /**
  * Class StockUnitEventSubscriber
  * @package Acme\ProductBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class StockUnitEventSubscriber extends AbstractStockUnitListener implements EventSubscriberInterface
+class StockUnitEventSubscriber extends BaseSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @inheritdoc
-     */
-    protected function getStockUnitFromEvent(ResourceEventInterface $event)
-    {
-        $stockUnit = $event->getResource();
-
-        if (!$stockUnit instanceof StockUnit) {
-            throw new InvalidArgumentException("Expected instance of StockUnit.");
-        }
-
-        return $stockUnit;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getSubjectStockUnitChangeEventName()
-    {
-        return ProductEvents::STOCK_UNIT_CHANGE;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getSubjectStockUnitRemoveEventName()
-    {
-        return ProductEvents::STOCK_UNIT_REMOVE;
-    }
-
     /**
      * @inheritdoc
      */

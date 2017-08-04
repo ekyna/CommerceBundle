@@ -11,7 +11,7 @@ fos_elastica:
                             mapping: {type: string, search_analyzer: search, index_analyzer: index}
                     persistence:
                         driver: orm
-                        model: Acme\ProductBundle\Entity\Product
+                        model: Acme\Product\Entity\Product
                         provider:
                             batch_size: 25
                         listener: ~

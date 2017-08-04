@@ -2,7 +2,7 @@
 
 namespace Acme\ProductBundle\Serializer;
 
-use Acme\ProductBundle\Entity\Product;
+use Acme\Product\Entity\Product;
 use Ekyna\Component\Resource\Serializer\AbstractResourceNormalizer;
 
 /**
