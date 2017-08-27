@@ -31,9 +31,12 @@
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
-            <call method="setStockUnitResolver">
-                <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <call method="setStockUnitLinker">
+                <argument type="service" id="ekyna_commerce.stock_unit.linker"/>
             </call>
+            <!--<call method="setStockUnitResolver">
+                <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            </call>-->
             <call method="setStockUnitUpdater">
                 <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
             </call>

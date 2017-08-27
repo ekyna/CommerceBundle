@@ -53,6 +53,15 @@
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 
+        <!-- Stock unit linker -->
+        <service id="ekyna_commerce.stock_unit.linker"
+                 class="Ekyna\Component\Commerce\Stock\Linker\StockUnitLinker">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+        </service>
+
         <!-- Stock subject updater -->
         <service id="ekyna_commerce.stock_subject_updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater">

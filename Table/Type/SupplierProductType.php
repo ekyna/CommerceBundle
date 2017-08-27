@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 use Ekyna\Component\Resource\Model\ResourceInterface;
@@ -59,9 +60,9 @@ class SupplierProductType extends ResourceTableType
      * Builds the table for the given subject.
      *
      * @param TableBuilderInterface $builder
-     * @param ResourceInterface     $subject
+     * @param SubjectInterface      $subject
      */
-    private function buildForSubject(TableBuilderInterface $builder, ResourceInterface $subject)
+    private function buildForSubject(TableBuilderInterface $builder, SubjectInterface $subject)
     {
         if (null === $provider = $this->providerRegistry->getProviderBySubject($subject)) {
             throw new \InvalidArgumentException("Invalid subject.");
