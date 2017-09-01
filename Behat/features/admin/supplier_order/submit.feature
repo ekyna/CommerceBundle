@@ -1,5 +1,5 @@
 @commerce @stock @supplier-order
-Feature: Edit supplier orders
+Feature: Submit supplier orders
     In order to manage products supply
     As an administrator
     I need to be able to submit supplier orders

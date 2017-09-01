@@ -18,10 +18,18 @@
             </call>
         </service>
 
+        <!-- Stock unit cache -->
+        <service id="ekyna_commerce.stock_unit.cache"
+                 class="Ekyna\Component\Commerce\Stock\Cache\StockUnitCache">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Stock unit resolver -->
         <service id="ekyna_commerce.stock_unit.resolver"
                  class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
         </service>
 
@@ -33,6 +41,7 @@
         <service id="ekyna_commerce.stock_unit.updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockUnitUpdater">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
         </service>
 
         <!-- Stock assignment updater -->

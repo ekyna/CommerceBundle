@@ -1,4 +1,4 @@
-@commerce @stock @supplier-order
+@commerce @supplier-order
 Feature: Edit supplier orders
     In order to manage products supply
     As an administrator

@@ -72,7 +72,7 @@ Feature: Create supplier deliveries
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "En stock" in the "#product_stockState" element
         Then I should see "2" in the "#product_inStock" element
-        Then I should see "2" in the "#product_virtualStock" element
+        Then I should see "4" in the "#product_virtualStock" element
         Then I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
         Then I should see "Prête" in the "#product_stockUnit_0_state" element
         Then I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
@@ -116,7 +116,7 @@ Feature: Create supplier deliveries
         When I go to "acme_product_product_admin_show" route with "productId:1"
         Then I should see "En stock" in the "#product_stockState" element
         Then I should see "2" in the "#product_inStock" element
-        Then I should see "0" in the "#product_virtualStock" element
+        Then I should see "2" in the "#product_virtualStock" element
         Then I should see "Indéfini" in the "#product_estimatedDateOfArrival" element
         Then I should see "Prête" in the "#product_stockUnit_0_state" element
         Then I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
@@ -125,7 +125,7 @@ Feature: Create supplier deliveries
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "En stock" in the "#product_stockState" element
         Then I should see "4" in the "#product_inStock" element
-        Then I should see "0" in the "#product_virtualStock" element
+        Then I should see "4" in the "#product_virtualStock" element
         Then I should see "Indéfini" in the "#product_estimatedDateOfArrival" element
         Then I should see "Prête" in the "#product_stockUnit_0_state" element
         Then I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
