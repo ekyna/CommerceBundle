@@ -65,11 +65,11 @@ class CustomerType extends ResourceFormType
                 'allow_new' => true,
                 'required'  => false,
             ])
-            /*->add('user', UserSearchType::class, [
+            ->add('user', UserSearchType::class, [
                 'required'  => false,
-                'roles'     => ['ROLE_USER'],
+                'roles'     => ['ROLE_USER', 'ROLE_ADMIN'],
                 'add_route' => 'ekyna_user_user_admin_new',
-            ])*/
+            ])
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => 'ekyna_commerce.customer.field.in_charge',
                 'required' => false,
