@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Table\Filter\OrderTagsType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -29,8 +30,40 @@ class OrderType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        // TODO state(s) filter options
+
         $filters = false;
-        if (null !== $customer = $options['customer']) {
+        if (null !== $subject = $options['subject']) {
+            $source = $builder->getSource();
+            if (!$source instanceof EntitySource) {
+                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+            }
+
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($subject) {
+                $qb
+                    ->join($alias . '.items', 'i')
+                    ->leftJoin('i.children', 'c')
+                    ->leftJoin('c.children', 'sc')
+                    ->andWhere($qb->expr()->orX(
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('i.subjectIdentity.provider', ':provider'),
+                            $qb->expr()->eq('i.subjectIdentity.identifier', ':identifier')
+                        ),
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('c.subjectIdentity.provider', ':provider'),
+                            $qb->expr()->eq('c.subjectIdentity.identifier', ':identifier')
+                        ),
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('sc.subjectIdentity.provider', ':provider'),
+                            $qb->expr()->eq('sc.subjectIdentity.identifier', ':identifier')
+                        )
+                    ))
+                    ->setParameter('provider', $subject::getProviderName())
+                    ->setParameter('identifier', $subject->getId());
+            });
+
+            $builder->setFilterable(false);
+        } elseif (null !== $customer = $options['customer']) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
                 throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
@@ -199,6 +232,10 @@ class OrderType extends ResourceTableType
 
         $resolver
             ->setDefault('customer', null)
-            ->setAllowedTypes('customer', ['null', CustomerInterface::class]);
+            ->setDefault('subject', null)
+            ->setDefault('states', [])
+            ->setAllowedTypes('subject', ['null', SubjectInterface::class])
+            ->setAllowedTypes('customer', ['null', CustomerInterface::class])
+            ->setAllowedTypes('states', 'array');
     }
 }
