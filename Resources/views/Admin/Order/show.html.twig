@@ -3,7 +3,9 @@
 
 {% import "EkynaCmsBundle:Admin:show_macros.html.twig" as _cms %}
 
+
 {% block title %}
+    {{ admin_resource_pin(resource) }}
     <h1>{{ 'ekyna_commerce.order.header.show'|trans({'%number%': order.number})|raw }}</h1>
 {% endblock title %}
 
