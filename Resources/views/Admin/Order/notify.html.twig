@@ -3,3 +3,14 @@
 {% block title %}
     <h1>{{ 'ekyna_commerce.order.header.notify'|trans({'%number%': order.number})|raw }}</h1>
 {% endblock title %}
+
+
+{% block main %}
+    {{ form_start(form) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ form_widget(form) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}
