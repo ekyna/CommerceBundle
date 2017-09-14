@@ -121,6 +121,7 @@ class CartController extends AbstractController
         }
 
         $modal = $this->createModal('ekyna_commerce.sale.button.item.configure', $form->createView());
+        $modal->setCondensed(true);
 
         return $this->modalRenderer->render($modal);
     }

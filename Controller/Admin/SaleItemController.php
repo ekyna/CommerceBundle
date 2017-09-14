@@ -112,6 +112,7 @@ class SaleItemController extends AbstractSaleController
         if ($isXhr) {
             $modal = $this->createModal('new', 'ekyna_commerce.sale.header.item.add');
             $modal
+                ->setCondensed(true)
                 ->setButtons([])
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars([
@@ -271,7 +272,9 @@ class SaleItemController extends AbstractSaleController
 
         if ($isXhr) {
             $modal = $this->createModal('new', 'ekyna_commerce.sale.header.item.configure');
-            $modal->setContent($form->createView());
+            $modal
+                ->setContent($form->createView())
+                ->setCondensed(true);
 
             return $this->get('ekyna_core.modal')->render($modal);
         }
