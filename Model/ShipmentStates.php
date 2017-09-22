@@ -57,6 +57,12 @@ final class ShipmentStates extends AbstractConstants
      */
     static function getFormChoices(array $restrict = [])
     {
+        foreach ([States::STATE_COMPLETED, States::STATE_SHIPPED, States::STATE_RETURNED] as $state) {
+            if (!in_array($state, $restrict)) {
+                $restrict[] = $state;
+            }
+        }
+
         return static::getChoices(array_merge([
             States::STATE_NONE,
             States::STATE_PARTIAL

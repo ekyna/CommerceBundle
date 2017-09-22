@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -251,5 +252,27 @@ class SaleShipmentController extends AbstractSaleController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function processAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+        $shipment = $context->getResource($resourceName);
+
+        $this->isGranted('EDIT', $shipment);
+
+        $isXhr = $request->isXmlHttpRequest();
+
+        $psr7Factory = new DiactorosMessageFactory();
+        $psrRequest = $psr7Factory->createRequest($request);
+
+        $result = $this->get('ekyna_commerce.shipment.processor')->process($shipment);
+
     }
 }

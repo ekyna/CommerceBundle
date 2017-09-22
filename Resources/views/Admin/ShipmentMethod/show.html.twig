@@ -18,6 +18,11 @@
                 </a>
             </li>
             <li>
+                <a href="#shipment-method-pricing" id="toggle-pricing" data-toggle="tab">
+                    {{ 'ekyna_core.field.pricing'|trans }}
+                </a>
+            </li>
+            <li>
                 <a href="#shipment-method-messages" id="toggle-messages" data-toggle="tab">
                     {{ 'ekyna_commerce.message.label.plural'|trans }}
                 </a>
@@ -48,8 +53,8 @@
                             }) }}
                         </div>
                     </div>
-
-                    {{ display_shipment_prices(shipmentMethod) }}
+                    {# TODO factoryName #}
+                    {# TODO gatewayConfig #}
                 </div>
                 <div class="tab-pane" id="shipment-method-content">
                     {{ show_row(shipmentMethod.media, 'media', 'ekyna_core.field.image', {
@@ -63,7 +68,11 @@
                         }
                     }) }}
                 </div>
+                <div class="tab-pane" id="shipment-method-pricing">
+                    {{ display_shipment_prices(shipmentMethod) }}
+                </div>
                 <div class="tab-pane" id="shipment-method-messages">
+
                     <ul class="nav nav-tabs">
                         {% for message in shipmentMethod.messages %}
                             <li{% if loop.first %} class="active"{% endif %}>

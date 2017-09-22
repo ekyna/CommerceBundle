@@ -70,7 +70,7 @@ class ShipmentMethodChoiceType extends AbstractType
         }
 
         $sorting = ['position' => 'ASC'];
-        $criteria = $availableOnly ? ['available' => true, 'enabled' => true] : [];
+        $criteria = $availableOnly ? ['available' => true, 'enabled' => true] : ['enabled' => true];
         $this->availableMethods = (array)$this->methodRepository->findBy($criteria, $sorting);
 
         return $this->availableMethods;
@@ -142,13 +142,14 @@ class ShipmentMethodChoiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $choices = function (Options $options) {
-            return $this->buildChoices($options['sale'], !$options['admin_mode']);
+            return $this->buildChoices($options['sale'], $options['available']);
         };
 
         $resolver
             ->setDefaults([
                 'label'        => 'ekyna_commerce.shipment_method.label.singular',
                 'sale'         => null,
+                'available'    => true,
                 'choices'      => $choices,
                 'choice_attr'  => [$this, 'buildChoiceAttr'],
                 'choice_label' => [$this, 'buildChoiceLabel'],

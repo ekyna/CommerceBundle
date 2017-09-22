@@ -68,7 +68,9 @@ class ShipmentType extends ResourceFormType
                 'required' => false,
                 'disabled' => true,
             ])
-            ->add('method', ShipmentMethodChoiceType::class)
+            ->add('method', ShipmentMethodChoiceType::class, [
+                'available' => !$options['admin_mode'],
+            ])
             ->add('trackingNumber', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.tracking_number',
                 'required' => false,

@@ -564,6 +564,7 @@ class Configuration implements ConfigurationInterface
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html' => 'EkynaCommerceBundle:Admin/ShipmentMethod:_form.html',
                                     'show.html'  => 'EkynaCommerceBundle:Admin/ShipmentMethod:show.html',
+                                    'new.html'   => 'EkynaCommerceBundle:Admin/ShipmentMethod:new.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\ShipmentMethodController')->end()

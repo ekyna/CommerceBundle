@@ -20,3 +20,11 @@ ekyna_commerce_order_shipment_admin_remove:
     requirements:
         orderId: \d+
         orderShipmentId: \d+
+
+ekyna_commerce_order_shipment_admin_process:
+    path: /{orderShipmentId}/process
+    defaults: { _controller: "ekyna_commerce.order_shipment.controller:processAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderShipmentId: \d+

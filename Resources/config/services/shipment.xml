@@ -5,6 +5,17 @@
 
     <services>
 
+        <!-- Shipment gateway registry -->
+        <service id="ekyna_commerce.shipment.gateway_registry"
+                 class="Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistry"
+                 public="false"/>
+
+        <!-- Shipment number generator -->
+        <service id="ekyna_commerce.shipment.processor"
+                 class="Ekyna\Component\Commerce\Shipment\Processor\Processor">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+        </service>
+
         <!-- Shipment number generator -->
         <service id="ekyna_commerce.shipment.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
@@ -55,6 +66,12 @@
                  class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolver">
             <argument type="service" id="ekyna_commerce.shipment_method.repository"/>
             <argument type="service" id="ekyna_commerce.shipment_price.repository"/>
+        </service>
+
+        <!-- Shipment Noop gateway factory -->
+        <service id="ekyna_commerce.shipment.noop_gateway_factory"
+                 class="Ekyna\Component\Commerce\Shipment\Gateway\Noop\NoopFactory">
+            <tag name="ekyna_commerce.shipment_gateway_factory"/>
         </service>
 
     </services>

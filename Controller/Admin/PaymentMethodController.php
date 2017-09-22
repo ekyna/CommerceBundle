@@ -22,7 +22,9 @@ class PaymentMethodController extends Controller\ResourceController
     public function newAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException('Payment method creation through XMLHttpRequest is not yet implemented.');
+            throw $this->createNotFoundException(
+                'Payment method creation through XMLHttpRequest is not yet implemented.'
+            );
         }
 
         $this->isGranted('CREATE');

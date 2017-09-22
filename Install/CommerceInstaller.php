@@ -145,7 +145,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 'description' => '<p>Utilisez votre solde de compte client ...</p>',
                 'enabled'     => true,
             ],
-            'Encours client' => [
+            'Encours client'         => [
                 'factory'     => Outstanding::FACTORY_NAME,
                 'image'       => 'virement.png',
                 'description' => '<p>Utilisez votre encours client ...</p>',
@@ -266,6 +266,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
         $methods = [
             'Retrait en magasin' => [
+                'factory'     => 'noop',
                 'image'       => 'in-store.png',
                 'description' => '<p>Vous pourrez retirer votre colis à notre magasin ...</p>',
                 'enabled'     => true,
