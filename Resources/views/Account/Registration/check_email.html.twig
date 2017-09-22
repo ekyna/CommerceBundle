@@ -1,0 +1,11 @@
+{% extends 'EkynaUserBundle::layout.html.twig' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <h3>{{ 'ekyna_user.account.registration.email_check'|trans }}</h3>
+        <hr>
+        <p>{{ 'registration.check_email'|trans({'%email%': user.email}, 'FOSUserBundle') }}</p>
+    </div>
+</div>
+{% endblock content %}

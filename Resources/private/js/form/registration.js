@@ -1,6 +1,19 @@
 define(['jquery', 'validator'], function($, Validator) {
     "use strict";
 
+    function toggleRequired($field, required) {
+        $field.prop('required', required);
+
+        var $label = $('label[for="' + $field.attr('id') + '"]');
+        if (1 === $label.size()) {
+            if (required) {
+                $label.addClass('required');
+            } else {
+                $label.removeClass('required');
+            }
+        }
+    }
+
     /**
      * Registration widget
      */
@@ -8,10 +21,14 @@ define(['jquery', 'validator'], function($, Validator) {
 
         var config = {
             password_min_length: 6,
-            email_first: '#registration_email_first',
-            email_second: '#registration_email_second',
-            password_first: '#registration_plainPassword_first',
-            password_second: '#registration_plainPassword_second'
+            email_first: '#registration_customer_email_first',
+            email_second: '#registration_customer_email_second',
+            password_first: '#registration_customer_plainPassword_first',
+            password_second: '#registration_customer_plainPassword_second',
+            company: '#registration_customer_company',
+            vat_number: '#registration_customer_vatNumber',
+            apply_group: '#registration_applyGroup',
+            invoice_contact: '#registration_invoiceContact'
         };
 
         this.each(function() {
@@ -23,7 +40,13 @@ define(['jquery', 'validator'], function($, Validator) {
                 $passwordFirst = $this.find(config.password_first),
                 $passwordFirstGroup = $passwordFirst.closest('.form-group'),
                 $passwordSecond = $this.find(config.password_second),
-                $passwordSecondGroup = $passwordSecond.closest('.form-group');
+                $passwordSecondGroup = $passwordSecond.closest('.form-group'),
+                $company = $this.find(config.company),
+                $vatNumber = $this.find(config.vat_number),
+                $applyGroup = $this.find(config.apply_group),
+                $invoiceContact = $this.find(config.invoice_contact);
+
+            /* -------------------------------- User -------------------------------- */
 
             function emailStates() {
                 $emailFirstGroup.removeClass('has-success has-error');
@@ -67,9 +90,37 @@ define(['jquery', 'validator'], function($, Validator) {
                 $passwordFirstGroup.addClass('has-error');
             }
 
-            $this.on('change keyup', config.email_first + ', ' + config.email_second, emailStates);
-            $this.on('change keyup', config.password_first + ', ' + config.password_second, passwordStates);
+            if (1 === $emailFirst.size()) {
+                $this.on('change keyup', config.email_first + ', ' + config.email_second, emailStates);
+            }
+            if (1 === $passwordFirst.size()) {
+                $this.on('change keyup', config.password_first + ', ' + config.password_second, passwordStates);
+            }
 
+            /* -------------------------------- Business -------------------------------- */
+
+            function updateBusinessFields() {
+                var $groupOption = $applyGroup.find('option[value="' + $applyGroup.val() + '"]');
+                if (1 === $groupOption.size()) {
+                    if (1 === parseInt($groupOption.data('business'))) {
+                        toggleRequired($vatNumber, true);
+                        toggleRequired($company, true);
+                        $invoiceContact.slideDown();
+                    } else {
+                        toggleRequired($vatNumber, false);
+                        toggleRequired($company, false);
+                        $invoiceContact.slideUp(function() {
+                            $invoiceContact.find('select,input').each(function() {
+                                $(this).val(null);
+                            });
+                        });
+                    }
+                }
+            }
+
+            $this.on('change', config.apply_group, updateBusinessFields);
+
+            updateBusinessFields();
         });
         return this;
     };
@@ -80,3 +131,4 @@ define(['jquery', 'validator'], function($, Validator) {
         }
     };
 });
+

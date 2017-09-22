@@ -21,7 +21,7 @@ class AddressController extends AbstractController
      */
     public function indexAction()
     {
-        $customer = $this->getCustomer();
+        $customer = $this->getCustomerOrRedirect();
 
         $addresses = $this
             ->get('ekyna_commerce.customer_address.repository')
@@ -41,12 +41,14 @@ class AddressController extends AbstractController
      */
     public function addAction(Request $request)
     {
+        $customer = $this->getCustomerOrRedirect();
+
         /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface $address */
         $address = $this
             ->get('ekyna_commerce.customer_address.repository')
             ->createNew();
 
-        $address->setCustomer($this->getCustomer());
+        $address->setCustomer($customer);
 
         $form = $this->createForm(CustomerAddressType::class, $address, [
             'method' => 'POST',
@@ -75,8 +77,13 @@ class AddressController extends AbstractController
             }
         }
 
+        $addresses = $this
+            ->get('ekyna_commerce.customer_address.repository')
+            ->findByCustomer($customer);
+
         return $this->render('EkynaCommerceBundle:Account/Address:add.html.twig', [
-            'form' => $form->createView(),
+            'form'      => $form->createView(),
+            'addresses' => $addresses,
         ]);
     }
 
@@ -89,6 +96,8 @@ class AddressController extends AbstractController
      */
     public function editAction(Request $request)
     {
+        $customer = $this->getCustomerOrRedirect();
+
         if (null === $address = $this->findAddressByRequest($request)) {
             return $this->redirectToRoute('ekyna_commerce_account_address_index');
         }
@@ -123,8 +132,13 @@ class AddressController extends AbstractController
             }
         }
 
+        $addresses = $this
+            ->get('ekyna_commerce.customer_address.repository')
+            ->findByCustomer($customer);
+
         return $this->render('EkynaCommerceBundle:Account/Address:edit.html.twig', [
             'form' => $form->createView(),
+            'addresses' => $addresses,
         ]);
     }
 
@@ -137,6 +151,8 @@ class AddressController extends AbstractController
      */
     public function removeAction(Request $request)
     {
+        $customer = $this->getCustomerOrRedirect();
+
         if (null === $address = $this->findAddressByRequest($request)) {
             return $this->redirectToRoute('ekyna_commerce_account_address_index');
         }
@@ -169,9 +185,14 @@ class AddressController extends AbstractController
             }
         }
 
+        $addresses = $this
+            ->get('ekyna_commerce.customer_address.repository')
+            ->findByCustomer($customer);
+
         return $this->render('EkynaCommerceBundle:Account/Address:remove.html.twig', [
             'address' => $address,
             'form'    => $form->createView(),
+            'addresses' => $addresses,
         ]);
     }
 
@@ -184,6 +205,8 @@ class AddressController extends AbstractController
      */
     protected function findAddressByRequest(Request $request)
     {
+        $customer = $this->getCustomerOrRedirect();
+
         $id = intval($request->attributes->get('addressId'));
 
         if (0 < $id) {
@@ -191,7 +214,7 @@ class AddressController extends AbstractController
                 ->get('ekyna_commerce.customer_address.repository')
                 ->findOneBy([
                     'id'       => $id,
-                    'customer' => $this->getCustomer(),
+                    'customer' => $customer,
                 ]);
         }
 

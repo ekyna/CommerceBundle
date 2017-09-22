@@ -167,8 +167,8 @@ class SupplierProductType extends ResourceTableType
             ])
             ->addColumn('weight', CType\Column\NumberType::class, [
                 'label'     => 'ekyna_core.field.weight',
-                'precision' => 0,
-                'append'    => 'g',
+                'precision' => 3,
+                'append'    => 'kg',
                 'sortable'  => true,
                 'position'  => 40,
             ])

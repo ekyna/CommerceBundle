@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class OrderController extends AbstractController
      */
     public function indexAction()
     {
-        $customer = $this->getCustomer();
+        $customer = $this->getCustomerOrRedirect();
 
         $orders = $this
             ->get('ekyna_commerce.order.repository')
@@ -41,15 +42,22 @@ class OrderController extends AbstractController
      */
     public function showAction(Request $request)
     {
-        $order = $this->findOrderByNumber($request->attributes->get('number'));
+        $customer = $this->getCustomerOrRedirect();
+
+        $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
 
         $orderView = $this->get('ekyna_commerce.common.view_builder')->buildSaleView($order, [
             'taxes_view' => false,
         ]);
 
+        $orders = $this
+            ->get('ekyna_commerce.order.repository')
+            ->findByCustomer($customer);
+
         return $this->render('EkynaCommerceBundle:Account/Order:show.html.twig', [
-            'order' => $order,
-            'view'  => $orderView,
+            'order'  => $order,
+            'view'   => $orderView,
+            'orders' => $orders,
         ]);
     }
 
@@ -62,7 +70,9 @@ class OrderController extends AbstractController
      */
     public function attachmentDownloadAction(Request $request)
     {
-        $order = $this->findOrderByNumber($request->attributes->get('number'));
+        $customer = $this->getCustomerOrRedirect();
+
+        $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
 
         $attachment = $this->findAttachmentByOrderAndId($order, $request->attributes->get('id'));
 
@@ -85,16 +95,15 @@ class OrderController extends AbstractController
     }
 
     /**
-     * Finds the order by its number.
+     * Finds the order by customer and number.
      *
-     * @param string $number
+     * @param CustomerInterface $customer
+     * @param string            $number
      *
      * @return OrderInterface
      */
-    protected function findOrderByNumber($number)
+    protected function findOrderByCustomerAndNumber(CustomerInterface $customer, $number)
     {
-        $customer = $this->getCustomer();
-
         $order = $this
             ->get('ekyna_commerce.order.repository')
             ->findOneByCustomerAndNumber($customer, $number);

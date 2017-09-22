@@ -1,0 +1,24 @@
+{% extends "email.html.twig" %}
+
+{% block subject %}
+    {{ 'ekyna_commerce.account.registration.notify.subject'|trans }}
+{% endblock subject %}
+
+{% block body %}
+    <p>
+        {% if customer.company is not empty %}
+        <strong>{{ customer.company }}</strong><br>
+        {% endif %}
+        {{ customer|identity }}<br>
+        <a href="mailto:{{ customer.email }}">{{ customer.email }}</a>
+    </p>
+    <p>
+        {{ customer.description|nl2br }}
+    </p>
+    <p style="text-align: center;">
+        <a href="{{ url('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}">
+            {{ 'ekyna_commerce.account.registration.notify.admin_link'|trans }}
+        </a>
+    </p>
+
+{% endblock body %}

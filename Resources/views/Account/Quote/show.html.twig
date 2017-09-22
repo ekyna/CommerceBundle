@@ -17,11 +17,10 @@
 
     {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': quote} -%}
 
-    <p class="text-center">
-        <a href="{{ path('ekyna_commerce_account_quote_index') }}" class="btn btn-sm btn-default">
-            {{ 'ekyna_core.button.back_to_list'|trans }}
-        </a>
-    </p>
+    <br><br>
+    <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
+    <hr>
+    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" %}
 {% endspaceless %}
 {% endblock %}
 

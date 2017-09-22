@@ -23,6 +23,20 @@ class CustomerGroupType extends ResourceFormType
                 'label'    => 'ekyna_core.field.name',
                 'required' => false,
             ])
+            ->add('business', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.customer_group.field.business',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
+            ->add('registration', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.customer_group.field.registration',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('default', Type\CheckboxType::class, [
                 'label'    => 'ekyna_core.field.default',
                 'required' => false,

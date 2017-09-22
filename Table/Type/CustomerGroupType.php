@@ -27,6 +27,26 @@ class CustomerGroupType extends ResourceTableType
                 'route_parameters_map' => ['customerGroupId' => 'id'],
                 'position'             => 10,
             ])
+            ->addColumn('business', CType\Column\BooleanType::class, [
+                'label'                 => 'ekyna_commerce.customer_group.field.business',
+                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
+                'route_parameters'      => ['field' => 'business'],
+                'route_parameters_map'  => ['customerGroupId' => 'id'],
+                'true_class'            => 'label-primary',
+                'false_class'           => 'label-default',
+                'disable_property_path' => 'business',
+                'position'              => 30,
+            ])
+            ->addColumn('registration', CType\Column\BooleanType::class, [
+                'label'                 => 'ekyna_commerce.customer_group.field.registration',
+                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
+                'route_parameters'      => ['field' => 'registration'],
+                'route_parameters_map'  => ['customerGroupId' => 'id'],
+                'true_class'            => 'label-primary',
+                'false_class'           => 'label-default',
+                //'disable_property_path' => 'default',
+                'position'              => 30,
+            ])
             ->addColumn('default', CType\Column\BooleanType::class, [
                 'label'                 => 'ekyna_core.field.default',
                 'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',

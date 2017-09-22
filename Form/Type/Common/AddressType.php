@@ -77,6 +77,7 @@ class AddressType extends AbstractType
                 'attr'     => [
                     'class' => 'address-country',
                 ],
+                'select2' => $options['select2']
             ])
             /*->add('state', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
@@ -118,25 +119,27 @@ class AddressType extends AbstractType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults([
-            'company'           => true,
-            'identity'          => true,
-            'country'           => true,
-            'phones'            => true,
-            'company_required'  => false,
-            'identity_required' => true,
-            'phone_required'    => false,
-            'mobile_required'   => false,
-        ]);
-
-        $resolver->setAllowedTypes('company', 'bool');
-        $resolver->setAllowedTypes('identity', 'bool');
-        $resolver->setAllowedTypes('country', 'bool');
-        $resolver->setAllowedTypes('phones', 'bool');
-        $resolver->setAllowedTypes('company_required', 'bool');
-        $resolver->setAllowedTypes('identity_required', 'bool');
-        $resolver->setAllowedTypes('phone_required', 'bool');
-        $resolver->setAllowedTypes('mobile_required', 'bool');
+        $resolver
+            ->setDefaults([
+                'company'           => true,
+                'identity'          => true,
+                'country'           => true,
+                'phones'            => true,
+                'company_required'  => false,
+                'identity_required' => true,
+                'phone_required'    => false,
+                'mobile_required'   => false,
+                'select2'           => true,
+            ])
+            ->setAllowedTypes('company', 'bool')
+            ->setAllowedTypes('identity', 'bool')
+            ->setAllowedTypes('country', 'bool')
+            ->setAllowedTypes('phones', 'bool')
+            ->setAllowedTypes('company_required', 'bool')
+            ->setAllowedTypes('identity_required', 'bool')
+            ->setAllowedTypes('phone_required', 'bool')
+            ->setAllowedTypes('mobile_required', 'bool')
+            ->setAllowedTypes('select2', 'bool');
     }
 
     /**

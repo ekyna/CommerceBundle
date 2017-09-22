@@ -18,21 +18,24 @@ class SecurityListener implements EventSubscriberInterface
     /**
      * @var CartProviderInterface
      */
-    private $cartProvider;
+    protected $cartProvider;
 
     /**
      * @var CustomerProviderInterface
      */
-    private $customerProvider;
+    protected $customerProvider;
+
 
     /**
      * Constructor.
      *
-     * @param CartProviderInterface     $cartProvider
-     * @param CustomerProviderInterface $customerProvider
+     * @param CartProviderInterface         $cartProvider
+     * @param CustomerProviderInterface     $customerProvider
      */
-    public function __construct(CartProviderInterface $cartProvider, CustomerProviderInterface $customerProvider)
-    {
+    public function __construct(
+        CartProviderInterface $cartProvider,
+        CustomerProviderInterface $customerProvider
+    ) {
         $this->cartProvider = $cartProvider;
         $this->customerProvider = $customerProvider;
     }

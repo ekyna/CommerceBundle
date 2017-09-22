@@ -166,7 +166,7 @@ class SaleAddressType extends AbstractType
 
         // Check if customer is set.
         if ($customer) {
-            $addresses = $this->customerAddressRepository->findByCustomer($customer);
+            $addresses = $this->customerAddressRepository->findByCustomerAndParents($customer);
             if (!empty($addresses)) {
                 $choices = [];
                 foreach ($addresses as $address) {

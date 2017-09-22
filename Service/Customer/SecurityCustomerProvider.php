@@ -3,9 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Customer;
 
 use Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository;
+use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Customer\Provider\AbstractCustomerProvider;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class SecurityCustomerProvider
@@ -20,9 +20,9 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     protected $customerRepository;
 
     /**
-     * @var TokenStorageInterface
+     * @var UserProviderInterface
      */
-    protected $tokenStorage;
+    protected $userProvider;
 
     /**
      * @var bool
@@ -35,17 +35,17 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
      *
      * @param CustomerGroupRepositoryInterface $customerGroupRepository
      * @param CustomerRepository               $customerRepository
-     * @param TokenStorageInterface            $tokenStorage
+     * @param UserProviderInterface            $userProvider
      */
     public function __construct(
         CustomerGroupRepositoryInterface $customerGroupRepository,
         CustomerRepository $customerRepository,
-        TokenStorageInterface $tokenStorage
+        UserProviderInterface $userProvider
     ) {
         parent::__construct($customerGroupRepository);
 
         $this->customerRepository = $customerRepository;
-        $this->tokenStorage = $tokenStorage;
+        $this->userProvider = $userProvider;
     }
 
     /**
@@ -83,18 +83,16 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
      */
     private function initialize()
     {
-        if (!$this->initialized) {
-            if (null === $token = $this->tokenStorage->getToken()) {
-                return;
-            }
-
-            if (!is_object($user = $token->getUser())) {
-                return;
-            }
-
-            $this->customer = $this->customerRepository->findOneByUser($user);
-
-            $this->initialized = true;
+        if ($this->initialized) {
+            return;
         }
+
+        $this->initialized = true;
+
+        if (null === $user = $this->userProvider->getUser()) {
+            return;
+        }
+
+        $this->customer = $this->customerRepository->findOneByUser($user);
     }
 }

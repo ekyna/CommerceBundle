@@ -36,5 +36,43 @@
         </property>
     </class>
 
+    <!-- Registration -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Model\Registration">
+        <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\Registration"/>
+        <property name="customer">
+            <constraint name="Valid"/>
+        </property>
+        <property name="invoiceAddress">
+            <constraint name="Valid"/>
+        </property>
+        <property name="invoiceContact">
+            <constraint name="Valid"/>
+        </property>
+        <property name="applyGroup">
+            <constraint name="NotNull"/>
+        </property>
+    </class>
+
+    <!-- Contact -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Model\Contact">
+        <constraint name="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\Identity">
+            <option name="required">false</option>
+            <option name="groups">
+                <value>Default</value>
+                <value>Registration</value>
+            </option>
+        </constraint>
+        <property name="email">
+            <constraint name="Email">
+                <option name="groups">
+                    <value>Default</value>
+                    <value>Registration</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+
 
 </constraint-mapping>

@@ -3,9 +3,13 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
+use Ekyna\Bundle\CoreBundle\Exception\RedirectException;
+use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class AbstractController
@@ -15,29 +19,39 @@ use Symfony\Component\Form\FormInterface;
 class AbstractController extends Controller
 {
     /**
-     * @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface
-     */
-    private $customer;
-
-
-    /**
-     * Returns the current (logged in) customer.
+     * Returns the current (logged in) customer or redirect.
      *
-     * @return \Ekyna\Component\Commerce\Customer\Model\CustomerInterface|null
+     * @return CustomerInterface|null
+     *
+     * @throws RedirectException
      */
-    protected function getCustomer()
+    protected function getCustomerOrRedirect()
     {
-        if (null !== $this->customer) {
-            return $this->customer;
+        if (null === $this->getUser()) {
+            throw new RedirectException($this->generateUrl('fos_user_security_login', [
+                'target_path' => 'ekyna_user_account_index'
+            ], UrlGeneratorInterface::ABSOLUTE_URL));
         }
 
         $provider = $this->get('ekyna_commerce.customer.security_provider');
 
         if (!$provider->hasCustomer()) {
-            throw $this->createAccessDeniedException('Customer not found.');
+            throw new RedirectException($this->generateUrl('fos_user_registration_register', [
+                'target_path' => 'ekyna_user_account_index'
+            ], UrlGeneratorInterface::ABSOLUTE_URL));
         }
 
-        return $this->customer = $provider->getCustomer();
+        return $provider->getCustomer();
+    }
+
+    /**
+     * Returns the current user.
+     *
+     * @return UserInterface|null
+     */
+    protected function getUser()
+    {
+        return $this->get('ekyna_user.user_provider')->getUser();
     }
 
     /**

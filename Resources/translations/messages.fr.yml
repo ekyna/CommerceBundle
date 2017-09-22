@@ -12,7 +12,7 @@ ekyna_commerce:
                 success: L'adresse a bien été modifiée.
             remove:
                 title: Supprimer l'adresse
-                confirm: Êtes-vous sûr de vouloir supprimer cette address ?
+                confirm: Êtes-vous sûr de vouloir supprimer cette adresse ?
                 success: L'adresse a bien été supprimée.
         information:
             title: Mes informations
@@ -38,9 +38,22 @@ ekyna_commerce:
             empty_list: Aucune expédition enregistré
         registration:
             title: Ouverture de compte
+            credentials: Identifiants
+            information: Informations
+            invoice_contact: Contact facturation <small><em>(Si différent)</em></small>
+            invoice_address: Adresse facturation
             field:
                 email_confirm: Confirmation email
                 password_confirm: Conf. mot de passe
+                apply_group: Vous êtes
+                invoice_name: Contact facturation
+                invoice_email: Email facturation
+                invoice_phone: Téléphone facturation
+            notify:
+                subject: Création de compte client
+                admin_link: Voir la fiche client dans l'administration
+
+
 
     adjustment:
         label:
@@ -89,8 +102,8 @@ ekyna_commerce:
 
     cart_address:
         label:
-            singular: Addresse panier
-            plural: Addresses panier
+            singular: Adresse panier
+            plural: Adresses panier
 
     cart_attachment:
         label:
@@ -123,9 +136,13 @@ ekyna_commerce:
             place_order: Commander
             sign_in: Connexion
             register: Ouverture de compte
+        message:
+            register: |
+                Créez votre compte client pour voir vos tarifs
+                préférentiels et accéder à votre carnet d'adresses.
             sign_in_or_register: |
                 Connectez-vous à votre compte client pour voir vos tarifs
-                préférentiels et accéder à votre carnet d'addresses.
+                préférentiels et accéder à votre carnet d'adresses.
         button:
             attachment_add: Ajouter une pièce jointe
             attachment_remove: Supprimer cette pièce jointe
@@ -298,6 +315,9 @@ ekyna_commerce:
             new: Nouveau groupe de clients
             edit: Modifier le groupe de clients
             remove: Supprimer le groupe de clients
+        field:
+            business: Entreprise
+            registration: Disponible à l'inscription
         alert:
             no_item: Aucun groupe de clients configuré
 

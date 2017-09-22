@@ -6,8 +6,8 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Model\Recipient;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
-use Ekyna\Bundle\UserBundle\Entity\GroupRepository;
-use Ekyna\Bundle\UserBundle\Entity\UserRepository;
+use Ekyna\Bundle\UserBundle\Repository\GroupRepository;
+use Ekyna\Bundle\UserBundle\Repository\UserRepository;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -64,7 +64,7 @@ class NotificationBuilder
         $notification = new Notification();
 
         if ($customer = $sale->getCustomer()) {
-            $notification->addRecipient($this->createRecipient($customer, 'Client'));
+            $notification->addRecipient($this->createRecipient($customer, 'Client')); // TODO constant / translation
         } else {
             $notification->addRecipient($this->createRecipient($sale, 'Client'));
         }
@@ -88,7 +88,7 @@ class NotificationBuilder
         $recipients = [];
 
         if ($customer = $sale->getCustomer()) {
-            $recipients[] = $this->createRecipient($customer, 'Client');
+            $recipients[] = $this->createRecipient($customer, 'Client'); // TODO constant / translation
             if ($parent = $customer->getParent()) {
                 $recipients[] = $this->createRecipient($parent, 'Facturation');
             }
@@ -116,7 +116,7 @@ class NotificationBuilder
 
         if ($customer = $sale->getCustomer()) {
             if ($parent = $customer->getParent()) {
-                $copies[] = $this->createRecipient($parent, 'Facturation');
+                $copies[] = $this->createRecipient($parent, 'Facturation'); // TODO constant / translation
             }
         }
 

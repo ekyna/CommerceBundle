@@ -47,14 +47,14 @@ class CustomerAddressType extends ResourceFormType
                     'required' => false,
                     'attr'     => [
                         'align_with_widget' => true,
-                    ]
+                    ],
                 ])
                 ->add('deliveryDefault', CheckboxType::class, [
                     'label'    => 'ekyna_commerce.customer_address.field.delivery_default',
                     'required' => false,
                     'attr'     => [
                         'align_with_widget' => true,
-                    ]
+                    ],
                 ]);
         }
 
@@ -63,6 +63,7 @@ class CustomerAddressType extends ResourceFormType
                 'label'     => 'ekyna_commerce.customer.label.singular',
                 'class'     => $this->customerClass,
                 'allow_new' => true,
+                'select2'   => $options['select2'],
             ]);
         }
     }

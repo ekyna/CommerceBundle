@@ -9,6 +9,9 @@ ekyna_commerce:
         company_is_mandatory: Veuillez saisir le nom de l'entreprise.
         phone_is_mandatory: Veuillez saisir le numéro de téléphone.
         mobile_is_mandatory: Veuillez saisir le numéro de téléphone mobile.
+    customer:
+        vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
+        phone_or_mobile_is_mandatory: Veuillez saisir un numéro de téléphone ou de mobile.
     gender:
         invalid: Ce titre n'est pas un titre valide.
     identity:

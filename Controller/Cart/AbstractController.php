@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
+use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -41,6 +42,11 @@ class AbstractController
      * @var CartHelper
      */
     private $cartHelper;
+
+    /**
+     * @var UserProviderInterface
+     */
+    private $userProvider;
 
     /**
      * @var CustomerProviderInterface
@@ -91,6 +97,16 @@ class AbstractController
     public function setCartHelper(CartHelper $cartHelper)
     {
         $this->cartHelper = $cartHelper;
+    }
+
+    /**
+     * Sets the user provider.
+     *
+     * @param UserProviderInterface $userProvider
+     */
+    public function setUserProvider(UserProviderInterface $userProvider)
+    {
+        $this->userProvider = $userProvider;
     }
 
     /**
@@ -185,6 +201,7 @@ class AbstractController
         $controls = [
             'empty'    => 1,
             'valid'    => 0,
+            'user'     => null !== $this->getUser() ? 1 : 0,
             'customer' => null !== $this->getCustomer() ? 1 : 0,
         ];
 
@@ -248,6 +265,16 @@ class AbstractController
     protected function getCustomer()
     {
         return $this->customerProvider->getCustomer();
+    }
+
+    /**
+     * Returns the current (logged in) user.
+     *
+     * @return \Ekyna\Bundle\UserBundle\Model\UserInterface|null
+     */
+    protected function getUser()
+    {
+        return $this->userProvider->getUser();
     }
 
     /**

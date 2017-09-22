@@ -50,6 +50,17 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
+
+        <!-- OAuth authentication handlers -->
+        <service id="ekyna_commerce.security.oauth_authentication_success_handler"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Security\OAuthAuthenticationSuccessHandler"
+                 parent="security.authentication.success_handler"
+                 public="false">
+            <call method="setCustomerProvider">
+                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            </call>
+        </service>
+
         <!-- Security logout handler -->
         <service id="ekyna_commerce.security.logout_handler"
                  class="Ekyna\Bundle\CommerceBundle\Service\Security\LogoutHandler">
@@ -76,6 +87,15 @@
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Listener\LoadMetadataListener"
                  public="false">
             <tag name="doctrine.event_subscriber" connection="default" priority="99"/>
+        </service>
+
+        <!-- Mailer -->
+        <service id="ekyna_commerce.mailer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer">
+            <argument type="service" id="mailer" />
+            <argument type="service" id="templating"/>
+            <argument type="service" id="translator"/>
+            <argument type="service" id="ekyna_setting.manager"/>
         </service>
 
         <!-- Subject providers registry-->

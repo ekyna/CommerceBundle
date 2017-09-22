@@ -19,11 +19,11 @@
 
     {%- include "EkynaCommerceBundle:Account/Sale:shipments.html.twig" with {'sale': order} -%}
 
-    <p class="text-center">
-        <a href="{{ path('ekyna_commerce_account_order_index') }}" class="btn btn-sm btn-default">
-            {{- 'ekyna_core.button.back_to_list'|trans -}}
-        </a>
-    </p>
+    <br><br>
+    <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
+    <hr>
+    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" %}
+
 {% endspaceless %}
 {% endblock %}
 

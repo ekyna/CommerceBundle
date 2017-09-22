@@ -83,6 +83,7 @@
         <!-- Account form types -->
         <service id="ekyna_commerce.account.registration.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Account\RegistrationType">
+            <argument type="service" id="security.token_storage"/>
             <argument>%ekyna_commerce.customer.class%</argument>
             <argument>%ekyna_commerce.default.customer%</argument>
             <tag name="form.type"/>

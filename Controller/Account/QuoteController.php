@@ -21,7 +21,7 @@ class QuoteController extends AbstractController
      */
     public function indexAction()
     {
-        $customer = $this->getCustomer();
+        $customer = $this->getCustomerOrRedirect();
 
         $quotes = $this
             ->get('ekyna_commerce.quote.repository')
@@ -93,7 +93,7 @@ class QuoteController extends AbstractController
      */
     protected function findQuoteByNumber($number)
     {
-        $customer = $this->getCustomer();
+        $customer = $this->getCustomerOrRedirect();
 
         $quote = $this
             ->get('ekyna_commerce.quote.repository')

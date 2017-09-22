@@ -20,8 +20,10 @@ class InformationController extends AbstractController
      */
     public function indexAction()
     {
+        $customer = $this->getCustomerOrRedirect();
+
         return $this->render('EkynaCommerceBundle:Account/Information:index.html.twig', [
-            'customer' => $this->getCustomer(),
+            'customer' => $customer,
         ]);
     }
 
@@ -34,7 +36,7 @@ class InformationController extends AbstractController
      */
     public function editAction(Request $request)
     {
-        $customer = $this->getCustomer();
+        $customer = $this->getCustomerOrRedirect();
 
         $form = $this->createForm(InformationType::class, $customer, [
             'action' => $this->generateUrl('ekyna_commerce_account_information_edit'),

@@ -1,0 +1,20 @@
+{% extends 'EkynaUserBundle::layout.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h3>{{ 'ekyna_user.account.registration.confirmed.title'|trans|raw }}</h3>
+            <hr>
+            <p>{{ 'ekyna_user.account.registration.confirmed.message'|trans|raw }}</p>
+            <p>
+                {% if targetUrl %}
+                    <a href="{{ targetUrl }}">{{ 'registration.back'|trans({}, 'FOSUserBundle') }}</a>
+                {% else %}
+                    <a href="{{ path('ekyna_user_account_index') }}">
+                        {{ 'registration.back'|trans({}, 'FOSUserBundle') }}
+                    </a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock content %}

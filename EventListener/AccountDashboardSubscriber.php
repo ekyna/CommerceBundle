@@ -66,7 +66,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
             if (!empty($orders = $this->getOrders($customer))) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.order.title',
-                    'EkynaCommerceBundle:Account/Order:list.html.twig'
+                    'EkynaCommerceBundle:Account/Order:_list.html.twig'
                 );
                 $widget
                     ->setParameters(['orders' => $orders])
@@ -79,7 +79,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
             if (!empty($quotes = $this->getQuotes($customer))) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.quote.title',
-                    'EkynaCommerceBundle:Account/Quote:list.html.twig'
+                    'EkynaCommerceBundle:Account/Quote:_list.html.twig'
                 );
                 $widget
                     ->setParameters(['quotes' => $quotes])

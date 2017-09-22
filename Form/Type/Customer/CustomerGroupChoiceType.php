@@ -41,6 +41,15 @@ class CustomerGroupChoiceType extends AbstractType
             'preferred_choices' => function (CustomerGroupInterface $customerGroup) {
                 return $customerGroup->isDefault();
             },
+            'choice_attr' => function($value) {
+                if ($value instanceof CustomerGroupInterface) {
+                    return [
+                        'data-business' => $value->isBusiness() ? '1' : '0',
+                    ];
+                }
+
+                return [];
+            }
         ]);
     }
 

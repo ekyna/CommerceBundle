@@ -28,7 +28,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument type="service" id="ekyna_commerce.customer.repository"/>
-            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="ekyna_user.user_provider"/>
         </service>
 
         <!-- Customer event listener -->
@@ -52,6 +52,18 @@
             <argument type="service" id="ekyna_commerce.customer.repository"/>
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.quote.repository"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Account event subscriber -->
+        <service id="ekyna_commerce.registration_event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\RegistrationEventSubscriber">
+            <argument type="service" id="ekyna_commerce.mailer"/>
+            <argument type="service" id="fos_user.mailer"/>
+            <argument type="service" id="fos_user.util.token_generator"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="translator"/>
+            <argument type="service" id="session"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

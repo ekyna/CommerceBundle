@@ -26,12 +26,17 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8">
-                        <p>{{ 'ekyna_commerce.checkout.index.sign_in_or_register'|trans }}</p>
+                        <p class="user-case"{% if controls.user == 0 %} style="display:none"{% endif %}>
+                            {{- 'ekyna_commerce.checkout.message.register'|trans -}}
+                        </p>
+                        <p class="no-user-case"{% if controls.user == 1 %} style="display:none"{% endif %}>
+                            {{ 'ekyna_commerce.checkout.message.sign_in_or_register'|trans }}
+                        </p>
                     </div>
                     <div class="col-md-4">
                         <div class="btn-group btn-group-sm">
                             <a href="{{ path('fos_user_security_login', {'target_path': 'ekyna_commerce_cart_checkout_index'}) }}"
-                               class="btn btn-primary" data-user-modal>
+                               class="btn btn-primary no-user-case"{% if controls.user == 1 %} style="display:none"{% endif %} data-user-modal>
                                 {{ 'ekyna_commerce.checkout.index.sign_in'|trans }}
                             </a>
                             <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">

@@ -30,6 +30,14 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
                     $customer.slideUp();
                 } else {
                     $customer.show().slideDown();
+
+                    if (1 === parseInt($view.attr('user'))) {
+                        $customer.find('.no-user-case').hide();
+                        $customer.find('.user-case').show();
+                    } else {
+                        $customer.find('.no-user-case').show();
+                        $customer.find('.user-case').hide();
+                    }
                 }
 
                 if (1 === parseInt($view.attr('valid'))) {
@@ -97,10 +105,9 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
     });
 
     Dispatcher.on('ekyna_user.user_status', function(e) {
-        if (e.authenticated) {
+        //if (e.authenticated) {
             refreshCheckout();
-            $customer.slideUp();
-        }
+        //}
     });
 
     $(document).on('click', '.cart-checkout [data-cart-modal]', function(e) {
@@ -142,5 +149,35 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
 
         return false;
     });
+
+
+    // Refreshes the checkout on visibility change.
+
+    var hidden, visibilityChange;
+    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+        hidden = "hidden";
+        visibilityChange = "visibilitychange";
+    } else if (typeof document.msHidden !== "undefined") {
+        hidden = "msHidden";
+        visibilityChange = "msvisibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        hidden = "webkitHidden";
+        visibilityChange = "webkitvisibilitychange";
+    }
+
+    function handleVisibilityChange() {
+        if (document[hidden]) {
+
+        } else {
+            refreshCheckout();
+        }
+    }
+
+    if (typeof document.addEventListener === "undefined" || typeof document[hidden] === "undefined") {
+        //console.log("This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
+    } else {
+        // Handle page visibility change
+        document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    }
 
 });
