@@ -427,13 +427,13 @@ ekyna_commerce:
 
     order_shipment:
         label:
-            singular: Livraison de commande
-            plural: Livraisons de commande
+            singular: Expédition de commande
+            plural: Expéditions de commande
 
     order_shipment_item:
         label:
-            singular: Ligne de livraison de commande
-            plural: Lignes de livraisons de commande
+            singular: Ligne d'expédition de commande
+            plural: Lignes d'expédition de commande
 
     payment:
         label:
@@ -746,9 +746,20 @@ ekyna_commerce:
             completed: Complété
             returned: Retourné
             cancelled: Annulé
+        action:
+            cancel: Annuler
+            capture: Capturer
+            export: Exporter vers logiciel
+            import: Importer les numéros de suivi
+            print_label: Imprimer étiquette
+            ship: Expédier
         field:
             return: Retour
+            items: Éléments
             tracking_number: Numéro de suivi
+            sender_address: Addresse expéditeur
+            receiver_address: Addresse destinataire
+        platforms: Plateformes
 
     shipment_item:
         field:

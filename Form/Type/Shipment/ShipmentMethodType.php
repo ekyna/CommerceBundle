@@ -11,7 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
 use Ekyna\Component\Commerce\Shipment\Entity;
-use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -23,7 +23,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 class ShipmentMethodType extends ResourceFormType
 {
     /**
-     * @var GatewayRegistryInterface
+     * @var RegistryInterface
      */
     private $registry;
 
@@ -31,10 +31,10 @@ class ShipmentMethodType extends ResourceFormType
     /**
      * Constructor.
      *
-     * @param string                   $class
-     * @param GatewayRegistryInterface $registry
+     * @param string            $class
+     * @param RegistryInterface $registry
      */
-    public function __construct($class, GatewayRegistryInterface $registry)
+    public function __construct($class, RegistryInterface $registry)
     {
         parent::__construct($class);
 

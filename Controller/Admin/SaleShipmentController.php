@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -66,7 +65,7 @@ class SaleShipmentController extends AbstractSaleController
                 'return' => $shipment->isReturn() ? 1 : 0,
             ]),
             'attr'   => [
-                'class' => 'form-horizontal',
+                'class' => 'form-horizontal form-with-tabs',
             ],
         ]);
 
@@ -76,19 +75,19 @@ class SaleShipmentController extends AbstractSaleController
             // TODO use ResourceManager
             $event = $this->getOperator()->create($shipment);
 
-            if ($event->hasErrors()) {
-                foreach ($event->getErrors() as $error) {
-                    $form->addError(new FormError($error->getMessage()));
+            if (!$event->hasErrors()) {
+                if ($isXhr) {
+                    return $this->buildXhrSaleViewResponse($sale);
+                } else {
+                    $event->toFlashes($this->getFlashBag());
                 }
+
+                return $this->redirect($this->generateResourcePath($sale));
             }
 
-            if ($isXhr) {
-                return $this->buildXhrSaleViewResponse($sale);
-            } else {
-                $event->toFlashes($this->getFlashBag());
+            foreach ($event->getErrors() as $error) {
+                $form->addError(new FormError($error->getMessage()));
             }
-
-            return $this->redirect($this->generateResourcePath($sale));
         }
 
         $labelName = $shipment->isReturn() ? 'return' : 'shipment';
@@ -132,7 +131,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $form = $this->createEditResourceForm($context, !$isXhr, [
             'attr' => [
-                'class' => 'form-horizontal',
+                'class' => 'form-horizontal form-with-tabs',
             ],
         ]);
 
@@ -145,19 +144,18 @@ class SaleShipmentController extends AbstractSaleController
             // TODO use ResourceManager
             $event = $this->getOperator()->update($shipment);
 
-            if ($event->hasErrors()) {
-                foreach ($event->getErrors() as $error) {
-                    $form->addError(new FormError($error->getMessage()));
+            if (!$event->hasErrors()) {
+                if ($isXhr) {
+                    return $this->buildXhrSaleViewResponse($sale);
+                } else {
+                    $event->toFlashes($this->getFlashBag());
                 }
-            }
 
-            if ($isXhr) {
-                return $this->buildXhrSaleViewResponse($sale);
-            } else {
-                $event->toFlashes($this->getFlashBag());
+                return $this->redirect($this->generateResourcePath($sale));
             }
-
-            return $this->redirect($this->generateResourcePath($sale));
+            foreach ($event->getErrors() as $error) {
+                $form->addError(new FormError($error->getMessage()));
+            }
         }
 
         $labelName = $shipment->isReturn() ? 'return' : 'shipment';
@@ -220,10 +218,10 @@ class SaleShipmentController extends AbstractSaleController
                 }
 
                 return $this->redirect($this->generateResourcePath($sale));
-            } else {
-                foreach ($event->getErrors() as $error) {
-                    $form->addError(new FormError($error->getMessage()));
-                }
+            }
+
+            foreach ($event->getErrors() as $error) {
+                $form->addError(new FormError($error->getMessage()));
             }
         }
 
@@ -257,8 +255,12 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function processAction(Request $request)
+    public function gatewayAction(Request $request)
     {
+        if ($request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException("XmlHttpRequest is not supported.");
+        }
+
         $context = $this->loadContext($request);
 
         $resourceName = $this->config->getResourceName();
@@ -267,12 +269,23 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->isGranted('EDIT', $shipment);
 
-        $isXhr = $request->isXmlHttpRequest();
+        $helper = $this->get('ekyna_commerce.shipment_helper');
 
-        $psr7Factory = new DiactorosMessageFactory();
-        $psrRequest = $psr7Factory->createRequest($request);
+        $response = $helper->executeGatewayAction(
+            $shipment->getGatewayName(),
+            $request->attributes->get('action'),
+            $shipment,
+            $request
+        );
 
-        $result = $this->get('ekyna_commerce.shipment.processor')->process($shipment);
+        if (null !== $response) {
+            return $response;
+        }
 
+        if ($request->server->has('HTTP_REFERER') && !empty($referer = $request->server->get('HTTP_REFERER'))) {
+            return $this->redirect($referer);
+        }
+
+        return $this->redirect($this->generateResourcePath($shipment));
     }
 }

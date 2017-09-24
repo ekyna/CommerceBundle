@@ -84,4 +84,21 @@ class OrderListController extends Controller
             'shipments' => $table->createView(),
         ]);
     }
+
+    /**
+     * Platform action action.
+     *
+     * @param Request $request
+     */
+    public function platformActionAction(Request $request)
+    {
+        $name   = $request->attributes->get('name');
+        $action = $request->attributes->get('action');
+
+        $platform = $this
+            ->get('ekyna_commerce.shipment.gateway_registry')
+            ->getPlatform($name);
+
+
+    }
 }

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType;
+use Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentActionsType;
 use Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
@@ -72,6 +73,9 @@ class OrderShipmentType extends AbstractOrderListType
                 'label'       => 'ekyna_core.field.created_at',
                 'time_format' => 'none',
                 'position'    => 60,
+            ])
+            ->addColumn('actions', ShipmentActionsType::class, [
+                'position' => 999,
             ]);
 
         if ($filters) {

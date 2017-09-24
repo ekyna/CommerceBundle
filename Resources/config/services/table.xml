@@ -76,6 +76,13 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Shipment state column type -->
+        <service id="ekyna_commerce.shipment_actions.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentActionsType">
+            <argument type="service" id="ekyna_commerce.shipment_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Stock subject state column type -->
         <service id="ekyna_commerce.stock_subject_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\StockSubjectStateType">

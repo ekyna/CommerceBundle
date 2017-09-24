@@ -80,10 +80,18 @@ class ShipmentType extends ResourceFormType
                 'required' => false,
             ])
             ->add('items', ShipmentItemsType::class, [
-                'label'         => 'Items', // TODO
+                'label'         => 'ekyna_commerce.shipment.field.items',
                 'entry_options' => [
                     'data_class' => $this->itemClass,
                 ],
+            ])
+            ->add('receiverAddress', ShipmentAddressType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.receiver_address',
+                'required' => false,
+            ])
+            ->add('senderAddress', ShipmentAddressType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.sender_address',
+                'required' => false,
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

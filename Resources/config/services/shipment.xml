@@ -5,15 +5,10 @@
 
     <services>
 
-        <!-- Shipment gateway registry -->
-        <service id="ekyna_commerce.shipment.gateway_registry"
-                 class="Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistry"
-                 public="false"/>
-
-        <!-- Shipment number generator -->
-        <service id="ekyna_commerce.shipment.processor"
-                 class="Ekyna\Component\Commerce\Shipment\Processor\Processor">
-            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+        <!-- Shipment address transformer -->
+        <service id="ekyna_commerce.shipment_address.transformer"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Transformer\ShipmentAddressTransformer">
+            <argument type="service" id="ekyna_commerce.country.repository"/>
         </service>
 
         <!-- Shipment number generator -->
@@ -47,6 +42,13 @@
             </call>
         </service>
 
+        <!-- Shipment method event listener -->
+        <service id="ekyna_commerce.shipment_method.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ShipmentMethodEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Shipment builder -->
         <service id="ekyna_commerce.shipment.builder"
                  class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
@@ -68,10 +70,24 @@
             <argument type="service" id="ekyna_commerce.shipment_price.repository"/>
         </service>
 
-        <!-- Shipment Noop gateway factory -->
-        <service id="ekyna_commerce.shipment.noop_gateway_factory"
-                 class="Ekyna\Component\Commerce\Shipment\Gateway\Noop\NoopFactory">
-            <tag name="ekyna_commerce.shipment_gateway_factory"/>
+        <!-- Shipment gateway registry -->
+        <service id="ekyna_commerce.shipment.gateway_registry"
+                 class="Ekyna\Component\Commerce\Shipment\Gateway\Registry"
+                 lazy="true"/>
+
+        <!-- Shipment method gateway provider -->
+        <service id="ekyna_commerce.shipment.method_gateway_provider"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Provider\ShipmentGatewayProvider"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.shipment_method.repository"/>
+            <tag name="ekyna_commerce.shipment.gateway_provider"/>
+        </service>
+
+        <!-- Shipment Noop Platform -->
+        <service id="ekyna_commerce.shipment.noop_platform"
+                 class="Ekyna\Component\Commerce\Shipment\Gateway\Noop\NoopPlatform"
+                 public="false">
+            <tag name="ekyna_commerce.shipment.gateway_platform"/>
         </service>
 
     </services>

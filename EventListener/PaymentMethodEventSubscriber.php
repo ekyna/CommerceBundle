@@ -47,7 +47,7 @@ class PaymentMethodEventSubscriber implements EventSubscriberInterface
         if (0 == strlen($method->getGatewayName())) {
             $method->setGatewayName(sprintf(
                 '%s-%s',
-                Transliterator::transliterate($method->getName()),
+                Transliterator::transliterate($method->getFactoryName()),
                 uniqid()
             ));
 

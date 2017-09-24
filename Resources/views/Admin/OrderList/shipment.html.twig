@@ -1,12 +1,37 @@
 {% extends "EkynaAdminBundle:Entity:layout.html.twig" %}
 
-{% block page_title %}{{ 'ekyna_commerce.order_shipment.label.plural'|trans|raw }} - {{ parent() }}{% endblock page_title %}
+{% block page_title %}
+    {{ 'ekyna_commerce.order_shipment.label.plural'|trans|raw }} - {{ parent() }}
+{% endblock page_title %}
 
 {% block title %}
     <h1>{{ 'ekyna_commerce.order_shipment.label.plural'|trans|raw }}</h1>
 {% endblock title %}
 
-{% block actions %}{% endblock actions %}
+{% block actions %}
+    {%- set platforms = shipment_platforms_actions() -%}
+    {%- if platforms is not empty -%}
+    <div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ 'ekyna_commerce.shipment.platforms'|trans|raw }} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+        {%- for name, actions in platforms -%}
+            {%- for action in actions -%}
+            <li>
+                <a href="{{ path('ekyna_commerce_admin_order_list_shipment_platform_action', {
+                    'name': name, 'action': action
+                }) }}">
+                    <strong>{{ name|capitalize }}</strong> - {{ action|shipment_action_label|trans|raw }}
+                </a>
+            </li>
+            {%- endfor -%}
+        {%- endfor -%}
+        </ul>
+    </div>
+    {%- endif -%}
+{% endblock actions %}
 
 {% block main %}
     {{ ekyna_table_render(shipments) }}

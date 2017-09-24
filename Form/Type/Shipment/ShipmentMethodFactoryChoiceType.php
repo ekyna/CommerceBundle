@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;

@@ -240,6 +240,13 @@
                  parent="craue.form.flow">
         </service>
 
+        <!-- Shipment address form type -->
+        <service id="ekyna_commerce.shipment_address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentAddressType">
+            <argument type="service" id="ekyna_commerce.shipment_address.transformer"/>
+            <tag name="form.type"/>
+        </service>
+
         <!-- Shipment method choice form type -->
         <service id="ekyna_commerce.shipment_method.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodType">

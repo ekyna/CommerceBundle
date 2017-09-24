@@ -68,6 +68,11 @@ ekyna_commerce_admin_order_list_shipment:
     defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipment }
     methods: [GET]
 
+ekyna_commerce_admin_order_list_shipment_platform_action:
+    path: /order-shipments/platform/{name}/{action}
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:platformAction }
+    methods: [GET|POST]
+
 ekyna_commerce_admin_order_list_invoice:
     path: /order-invoices
     defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:invoice }

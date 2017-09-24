@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfigurationType;
-use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
 use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormEvents;
 class ShipmentMethodTypeSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var GatewayRegistryInterface
+     * @var RegistryInterface
      */
     private $registry;
 
@@ -26,9 +26,9 @@ class ShipmentMethodTypeSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param GatewayRegistryInterface $registry
+     * @param RegistryInterface $registry
      */
-    public function __construct(GatewayRegistryInterface $registry)
+    public function __construct(RegistryInterface $registry)
     {
         $this->registry = $registry;
     }
@@ -43,9 +43,9 @@ class ShipmentMethodTypeSubscriber implements EventSubscriberInterface
         /** @var ShipmentMethodInterface $method */
         $method = $event->getData();
 
-        $factory = $this->registry->getFactory($method->getFactoryName());
+        $platform = $this->registry->getPlatform($method->getPlatformName());
 
-        $definition = $factory->getConfigDefinition();
+        $definition = $platform->getConfigDefinition();
         if ($definition instanceof ArrayNode && empty($definition->getChildren())) {
             return;
         }

@@ -5,9 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
-use Twig_Environment;
 
 /**
  * Class ShipmentExtension
@@ -27,6 +27,11 @@ class ShipmentExtension extends \Twig_Extension
     private $priceListBuilder;
 
     /**
+     * @var ShipmentHelper
+     */
+    private $shipmentHelper;
+
+    /**
      * @var \Twig_Template
      */
     private $template;
@@ -37,22 +42,25 @@ class ShipmentExtension extends \Twig_Extension
      *
      * @param ConstantsHelper  $constantHelper
      * @param PriceListBuilder $priceListBuilder
+     * @param ShipmentHelper   $shipmentHelper
      * @param string           $template
      */
     public function __construct(
         ConstantsHelper $constantHelper,
         PriceListBuilder $priceListBuilder,
+        ShipmentHelper   $shipmentHelper,
         $template = 'EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig'
     ) {
         $this->constantHelper = $constantHelper;
         $this->priceListBuilder = $priceListBuilder;
+        $this->shipmentHelper = $shipmentHelper;
         $this->template = $template;
     }
 
     /**
      * @inheritdoc
      */
-    public function initRuntime(Twig_Environment $environment)
+    public function initRuntime(\Twig_Environment $environment)
     {
         $this->template = $environment->loadTemplate($this->template);
     }
@@ -73,6 +81,11 @@ class ShipmentExtension extends \Twig_Extension
                 [$this->constantHelper, 'renderShipmentStateBadge'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFilter(
+                'shipment_action_label',
+                [$this->shipmentHelper, 'getActionLabel'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
@@ -86,6 +99,14 @@ class ShipmentExtension extends \Twig_Extension
                 'display_shipment_prices',
                 [$this, 'renderShipmentPrices'],
                 ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFunction(
+                'shipment_platforms_actions',
+                [$this->shipmentHelper, 'getPlatformsActionsNames']
+            ),
+            new \Twig_SimpleFunction(
+                'shipment_gateway_actions',
+                [$this->shipmentHelper, 'getGatewayActionsNames']
             ),
         ];
     }
@@ -113,6 +134,7 @@ class ShipmentExtension extends \Twig_Extension
             'list' => $list,
         ]);
     }
+
 
     /**
      * @inheritdoc

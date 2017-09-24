@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ShipmentFactoryChoiceType extends AbstractType
 {
     /**
-     * @var GatewayRegistryInterface
+     * @var RegistryInterface
      */
     protected $registry;
 
@@ -24,9 +24,9 @@ class ShipmentFactoryChoiceType extends AbstractType
     /**
      * Constructor.
      *
-     * @param GatewayRegistryInterface $registry
+     * @param RegistryInterface $registry
      */
-    public function __construct(GatewayRegistryInterface $registry)
+    public function __construct(RegistryInterface $registry)
     {
         $this->registry = $registry;
     }
