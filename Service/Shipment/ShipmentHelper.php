@@ -52,6 +52,29 @@ class ShipmentHelper
     }
 
     /**
+     * Executes the platform action.
+     *
+     * @param string                  $platformName
+     * @param string                  $actionName
+     * @param array|ShipmentInterface $shipments
+     * @param Request|null            $sfRequest
+     *
+     * @return \Symfony\Component\HttpFoundation\Response|null
+     */
+    public function executePlatformAction($platformName, $actionName, $shipments, Request $sfRequest = null)
+    {
+        $platform = $this->gatewayRegistry->getPlatform($platformName);
+
+        $action = $this->createAction($actionName, $shipments, $sfRequest);
+
+        if (null !== $psrResponse = $platform->execute($action)) {
+            return (new HttpFoundationFactory())->createResponse($psrResponse);
+        }
+
+        return null;
+    }
+
+    /**
      * Executes the gateway action.
      *
      * @param string                  $gatewayName
@@ -93,7 +116,7 @@ class ShipmentHelper
 
         $psrRequest = (new DiactorosFactory())->createRequest($sfRequest);
 
-        $shipments = is_array($shipments) ?: [$shipments];
+        $shipments = is_array($shipments) ? $shipments : [$shipments];
 
         return new $class($psrRequest, $shipments);
     }
@@ -114,14 +137,18 @@ class ShipmentHelper
         foreach ($platformNames as $name) {
             $platform = $this->gatewayRegistry->getPlatform($name);
 
-            $actions[$name] = [];
+            $classes = [];
 
             foreach ($platform->getActions() as $class) {
-                if ($scope && $scope !== $this->getActionScope($class)) {
+                if ($scope && !in_array($scope, $this->getActionScopes($class))) {
                     continue;
                 }
 
-                $actions[$name][] = $class;
+                $classes[] = $class;
+            }
+
+            if (!empty($classes)) {
+                $actions[$name] = $classes;
             }
         }
 
@@ -158,12 +185,10 @@ class ShipmentHelper
     {
         $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 
-        $classes = $gateway->getActions($shipment);
-
         $actions = [];
 
-        foreach ($classes as $class) {
-            if ($scope && $scope !== $this->getActionScope($class)) {
+        foreach ($gateway->getActions($shipment) as $class) {
+            if ($scope && !in_array($scope, $this->getActionScopes($class))) {
                 continue;
             }
 
@@ -228,15 +253,15 @@ class ShipmentHelper
     }
 
     /**
-     * Returns the action scope.
+     * Returns the action scopes.
      *
      * @param string $class
      *
-     * @return string
+     * @return array
      */
-    private function getActionScope($class)
+    private function getActionScopes($class)
     {
-        return call_user_func([$class, 'getScope']);
+        return call_user_func([$class, 'getScopes']);
     }
 
     /**
@@ -249,5 +274,23 @@ class ShipmentHelper
     private function getActionName($class)
     {
         return call_user_func([$class, 'getName']);
+    }
+
+    /**
+     * Returns the action icon.
+     *
+     * @param string $name
+     *
+     * @return string|string
+     */
+    public function getActionIcon($name)
+    {
+        switch ($name) {
+            case Action\PrintLabel::NAME : return 'barcode';
+            case Action\Cancel::NAME : return 'remove';
+            case Action\Ship::NAME : return 'road';
+        }
+
+        return null;
     }
 }

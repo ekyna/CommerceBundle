@@ -35,7 +35,7 @@
             {{ form_errors(form) }}
             <div class="tab-pane active" id="shipment-method-general">
                 {% if flow.getCurrentStepNumber() == 1 %}
-                    {{ form_row(form.factoryName) }}
+                    {{ form_row(form.platformName) }}
                 {% else %}
                     {{ form_row(form.name) }}
                     {{ form_row(form.taxGroup) }}
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <hr>
-                    {{ form_row(form.factoryName) }}
+                    {{ form_row(form.platformName) }}
                     {% if form.config is defined %}
                         {{ form_row(form.config) }}
                     {% endif %}

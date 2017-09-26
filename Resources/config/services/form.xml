@@ -244,6 +244,7 @@
         <service id="ekyna_commerce.shipment_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentAddressType">
             <argument type="service" id="ekyna_commerce.shipment_address.transformer"/>
+            <argument type="service" id="validator"/>
             <tag name="form.type"/>
         </service>
 
@@ -285,8 +286,8 @@
             <tag name="form.type"/>
         </service>
         <!-- Shipment factory choice type -->
-        <service id="ekyna_commerce.shipment_factory_choice.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentFactoryChoiceType">
+        <service id="ekyna_commerce.shipment_platform_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPlatformChoiceType">
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <tag name="form.type"/>
         </service>

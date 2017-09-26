@@ -9,7 +9,7 @@
 {% endblock title %}
 
 {% block actions %}
-    {%- set platforms = shipment_platforms_actions() -%}
+    {%- set platforms = shipment_global_actions() -%}
     {%- if platforms is not empty -%}
     <div class="btn-group">
         <button type="button" class="btn btn-default btn-sm dropdown-toggle"

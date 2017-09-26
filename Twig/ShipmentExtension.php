@@ -7,6 +7,9 @@ use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Shipment\Gateway\Action\ActionInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\GatewayInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
 
 /**
@@ -101,14 +104,66 @@ class ShipmentExtension extends \Twig_Extension
                 ['is_safe' => ['html']]
             ),
             new \Twig_SimpleFunction(
-                'shipment_platforms_actions',
-                [$this->shipmentHelper, 'getPlatformsActionsNames']
+                'shipment_global_actions',
+                [$this, 'getGlobalActionsNames']
             ),
             new \Twig_SimpleFunction(
                 'shipment_gateway_actions',
                 [$this->shipmentHelper, 'getGatewayActionsNames']
             ),
+            new \Twig_SimpleFunction(
+                'shipment_gateway_buttons',
+                [$this, 'getGatewayButtons']
+            ),
         ];
+    }
+
+    /**
+     * Returns the global actions names.
+     *
+     * @return array
+     */
+    public function getGlobalActionsNames()
+    {
+        return $this->shipmentHelper->getPlatformsActionsNames(ActionInterface::SCOPE_GLOBAL);
+    }
+
+    /**
+     * Returns the shipment gateway action buttons.
+     *
+     * @param ShipmentInterface $shipment
+     * @param string            $scope
+     *
+     * @return array
+     */
+    public function getGatewayButtons(ShipmentInterface $shipment, $scope = ActionInterface::SCOPE_GATEWAY)
+    {
+        $names = $this->shipmentHelper->getGatewayActionsNames($shipment, $scope);
+
+        if (empty($names)) {
+            return [];
+        }
+
+        $buttons = [];
+
+        foreach ($names as $name) {
+            // TODO $gateway->supports(new $class($shipment)) ?
+            // TODO Check permission (EDIT)
+
+            $buttons[] = [
+                'label'      => $this->shipmentHelper->getActionLabel($name),
+                'icon'       => $this->shipmentHelper->getActionIcon($name),
+                'class'      => 'primary',
+                'route'      => 'ekyna_commerce_order_shipment_admin_gateway_action',
+                'parameters' => [
+                    'orderId'         => $shipment->getSale()->getId(),
+                    'orderShipmentId' => $shipment->getId(),
+                    'action'          => $name,
+                ],
+            ];
+        }
+
+        return $buttons;
     }
 
     /**
@@ -134,7 +189,6 @@ class ShipmentExtension extends \Twig_Extension
             'list' => $list,
         ]);
     }
-
 
     /**
      * @inheritdoc

@@ -785,7 +785,7 @@ ekyna_commerce:
             remove: Supprimer le mode
             choose: Je choisi une livraison par %gateway_name%
         field:
-            factory_name: Passerelle
+            platform_name: Plateforme
             available: Partie publique
         alert:
             empty_list: Aucun mode de livraison configuré

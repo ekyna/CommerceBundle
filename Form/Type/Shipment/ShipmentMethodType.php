@@ -50,7 +50,7 @@ class ShipmentMethodType extends ResourceFormType
             ->add('name', Type\TextType::class, [
                 'label' => 'ekyna_core.field.name',
             ])
-            ->add('factoryName', ShipmentFactoryChoiceType::class, [
+            ->add('platformName', ShipmentPlatformChoiceType::class, [
                 'disabled' => true,
             ])
             ->add('taxGroup', TaxGroupChoiceType::class, [

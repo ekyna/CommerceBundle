@@ -93,23 +93,24 @@ class SaleItemType extends ResourceFormType
     {
         return [
             ['designation', Type\TextType::class, [
-                'label'  => 'ekyna_core.field.designation',
-                'attr'   => [
+                'label' => 'ekyna_core.field.designation',
+                'attr'  => [
                     'placeholder' => 'ekyna_core.field.designation',
                 ],
             ]],
             ['reference', Type\TextType::class, [
-                'label'  => 'ekyna_core.field.reference',
-                'attr'   => [
+                'label' => 'ekyna_core.field.reference',
+                'attr'  => [
                     'placeholder' => 'ekyna_core.field.reference',
                 ],
             ]],
-            ['weight', Type\IntegerType::class, [
-                'label'    => 'ekyna_core.field.weight',
+            ['weight', Type\NumberType::class, [
+                'label'    => 'ekyna_core.field.weight', // TODO unit weight ?
+                'scale'    => 3,
                 'required' => false,
                 'attr'     => [
                     'placeholder' => 'ekyna_core.field.weight',
-                    'input_group' => ['append' => 'g'],
+                    'input_group' => ['append' => 'kg'],
                     'min'         => 0,
                 ],
             ]],
@@ -131,8 +132,8 @@ class SaleItemType extends ResourceFormType
                 ],
             ]],
             ['quantity', Type\IntegerType::class, [
-                'label'  => 'ekyna_core.field.quantity',
-                'attr'   => [
+                'label' => 'ekyna_core.field.quantity',
+                'attr'  => [
                     'placeholder' => 'ekyna_core.field.quantity',
                     'min'         => 1,
                 ],

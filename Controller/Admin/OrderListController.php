@@ -89,16 +89,28 @@ class OrderListController extends Controller
      * Platform action action.
      *
      * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function platformActionAction(Request $request)
     {
-        $name   = $request->attributes->get('name');
-        $action = $request->attributes->get('action');
+        $platformName   = $request->attributes->get('name');
+        $actionName = $request->attributes->get('action');
 
-        $platform = $this
+        $shipments = []; // TODO
+
+        $response = $this
             ->get('ekyna_commerce.shipment.gateway_registry')
-            ->getPlatform($name);
+            ->executePlatformAction($platformName, $actionName, $shipments);
 
+        if (null !== $response) {
+            return $response;
+        }
 
+        if ($request->server->has('HTTP_REFERER') && !empty($referer = $request->server->get('HTTP_REFERER'))) {
+            return $this->redirect($referer);
+        }
+
+        return $this->redirectToRoute('ekyna_commerce_admin_order_list_shipment');
     }
 }

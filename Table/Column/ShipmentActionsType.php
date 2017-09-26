@@ -54,9 +54,9 @@ class ShipmentActionsType extends AbstractColumnType
         foreach ($names as $name) {
             $buttons[] = [
                 'label'      => $this->shipmentHelper->getActionLabel($name),
-                'icon'       => $this->getIconForAction($name),
+                'icon'       => $this->shipmentHelper->getActionIcon($name),
                 'class'      => 'primary',
-                'route'      => 'ekyna_commerce_order_shipment_admin_gateway',
+                'route'      => 'ekyna_commerce_order_shipment_admin_gateway_action',
                 'parameters' => [
                     'orderId'         => $shipment->getSale()->getId(),
                     'orderShipmentId' => $shipment->getId(),
@@ -68,17 +68,6 @@ class ShipmentActionsType extends AbstractColumnType
         }
 
         $view->vars['buttons'] = $buttons;
-    }
-
-    private function getIconForAction($name)
-    {
-        switch ($name) {
-            case Action\PrintLabel::NAME : return 'barcode';
-            case Action\Cancel::NAME : return 'remove';
-            case Action\Ship::NAME : return 'road';
-        }
-
-        return null;
     }
 
     /**

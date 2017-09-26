@@ -36,6 +36,8 @@
         <!-- Order shipment table type -->
         <service id="ekyna_commerce.order_shipment.table_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderShipmentType"><!-- TODO use parameter defined by config builder -->
+            <argument type="service" id="ekyna_commerce.shipment_helper"/>
+            <argument type="service" id="translator"/>
             <argument>%ekyna_commerce.order_shipment.class%</argument>
             <argument>%ekyna_commerce.shipment_method.class%</argument>
             <tag name="table.type"/>
@@ -76,11 +78,18 @@
             <tag name="table.column_type"/>
         </service>
 
-        <!-- Shipment state column type -->
+        <!-- Shipment actions column type -->
         <service id="ekyna_commerce.shipment_actions.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentActionsType">
             <argument type="service" id="ekyna_commerce.shipment_helper"/>
             <tag name="table.column_type"/>
+        </service>
+
+        <!-- Shipment platform action action type -->
+        <service id="ekyna_commerce.shipment_platform_action.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentPlatformActionType">
+            <argument type="service" id="ekyna_commerce.shipment_helper"/>
+            <tag name="table.action_type"/>
         </service>
 
         <!-- Stock subject state column type -->

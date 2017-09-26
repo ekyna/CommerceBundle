@@ -9,11 +9,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ShipmentMethodFactoryChoiceType
+ * Class ShipmentPlatformChoiceType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentFactoryChoiceType extends AbstractType
+class ShipmentPlatformChoiceType extends AbstractType
 {
     /**
      * @var RegistryInterface
@@ -36,14 +36,14 @@ class ShipmentFactoryChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $names = $this->registry->getFactoryNames();
+        $names = $this->registry->getPlatformNames();
 
         $choices = array_combine(array_map(function ($name) {
             return ucfirst($name);
         }, $names), $names);
 
         $resolver->setDefaults([
-            'label'   => 'ekyna_commerce.shipment_method.field.factory_name',
+            'label'   => 'ekyna_commerce.shipment_method.field.platform_name',
             'choices' => $choices,
         ]);
     }

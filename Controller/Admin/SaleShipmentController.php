@@ -255,7 +255,7 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function gatewayAction(Request $request)
+    public function gatewayActionAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             throw $this->createNotFoundException("XmlHttpRequest is not supported.");

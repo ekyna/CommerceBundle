@@ -6,6 +6,7 @@
             <th>{{ 'ekyna_commerce.shipment.field.return'|trans }}</th>
             <th>{{ 'ekyna_core.field.method'|trans }}</th>
             <th>{{ 'ekyna_core.field.status'|trans }}</th>
+            <th>{{ 'ekyna_core.field.weight'|trans }}</th>
             <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
             <th></th>
         </tr>
@@ -28,8 +29,20 @@
                 </td>
                 <td id="{{ shipmentId }}_method">{{ shipment.method }}</td>
                 <td id="{{ shipmentId }}_state">{{ shipment|shipment_state_badge }}</td>
+                <td id="{{ shipmentId }}_weight">{{ shipment.weight|localizednumber }} Kg</td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td class="actions">
+                    {%- for button in shipment_gateway_buttons(shipment) -%}
+                    <a href="{{ path(button.route, button.parameters) }}"
+                       class="btn btn-primary btn-xs"
+                       title="{{ button.label|trans }}">
+                        {% if button.icon -%}
+                            <span class="glyphicon glyphicon-{{ button.icon }}"></span>
+                        {%- else -%}
+                            {{ button.label|trans }}
+                        {%- endif -%}
+                    </a>
+                    {%- endfor %}
                     <a href="javascript:void(0)"
                        id="{{ shipmentId }}_toggle_details"
                        class="btn btn-default btn-xs"

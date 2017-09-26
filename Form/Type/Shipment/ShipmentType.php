@@ -71,6 +71,16 @@ class ShipmentType extends ResourceFormType
             ->add('method', ShipmentMethodChoiceType::class, [
                 'available' => !$options['admin_mode'],
             ])
+            ->add('weight', Type\NumberType::class, [
+                'label'    => 'ekyna_core.field.weight',
+                'scale'    => 3,
+                'required' => false,
+                'attr'     => [
+                    'placeholder' => 'ekyna_core.field.weight',
+                    'input_group' => ['append' => 'kg'],
+                    'min'         => 0,
+                ],
+            ])
             ->add('trackingNumber', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.tracking_number',
                 'required' => false,

@@ -19,6 +19,10 @@
             <argument>10</argument>
         </service>
 
+        <!-- Shipment weight calculator -->
+        <service id="ekyna_commerce.shipment.weight_calculator"
+                 class="Ekyna\Component\Commerce\Shipment\Calculator\WeightCalculator"/>
+
         <!-- Shipment abstract listener -->
         <service id="ekyna_commerce.shipment.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
@@ -26,6 +30,9 @@
             </call>
             <call method="setNumberGenerator">
                 <argument type="service" id="ekyna_commerce.shipment.number_generator"/>
+            </call>
+            <call method="setWeightCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
             </call>
             <call method="setStockUnitAssigner">
                 <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
@@ -70,10 +77,22 @@
             <argument type="service" id="ekyna_commerce.shipment_price.repository"/>
         </service>
 
+        <!-- Shipment address resolver -->
+        <service id="ekyna_commerce.shipment_address.resolver"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentAddressResolver">
+            <argument type="service" id="ekyna_commerce.shipment_address.transformer"/>
+            <argument type="service" id="ekyna_setting.manager"/>
+            <argument type="service" id="ekyna_commerce.country.repository"/>
+        </service>
+
         <!-- Shipment gateway registry -->
         <service id="ekyna_commerce.shipment.gateway_registry"
                  class="Ekyna\Component\Commerce\Shipment\Gateway\Registry"
-                 lazy="true"/>
+                 lazy="true">
+            <call method="setAddressResolver">
+                <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
+            </call>
+        </service>
 
         <!-- Shipment method gateway provider -->
         <service id="ekyna_commerce.shipment.method_gateway_provider"

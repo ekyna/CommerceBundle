@@ -59,6 +59,7 @@ class EkynaCommerceBundle extends AbstractBundle
             Commerce\Shipment\Model\ShipmentMethodInterface::class   => 'ekyna_commerce.shipment_method.class',
 
             Commerce\Supplier\Model\SupplierInterface::class         => 'ekyna_commerce.supplier.class',
+            Commerce\Supplier\Model\SupplierAddressInterface::class  => 'ekyna_commerce.supplier_address.class',
             Commerce\Supplier\Model\SupplierDeliveryInterface::class => 'ekyna_commerce.supplier_delivery.class',
             Commerce\Supplier\Model\SupplierOrderInterface::class    => 'ekyna_commerce.supplier_order.class',
             Commerce\Supplier\Model\SupplierProductInterface::class  => 'ekyna_commerce.supplier_product.class',
