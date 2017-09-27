@@ -6,8 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
-use Ekyna\Bundle\CommerceBundle\Table\Column;
-use Ekyna\Bundle\CommerceBundle\Table\Filter\OrderTagsType;
+use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
@@ -30,8 +29,6 @@ class OrderType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
-        // TODO state(s) filter options
-
         $filters = false;
         if (null !== $subject = $options['subject']) {
             $source = $builder->getSource();
@@ -112,21 +109,24 @@ class OrderType extends ResourceTableType
                 'currency_path' => 'currency.code',
                 'position'      => 60,
             ])
-            ->addColumn('state', Column\SaleStateType::class, [
+            ->addColumn('state', Type\Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
                 'position' => 70,
             ])
-            ->addColumn('paymentState', Column\PaymentStateType::class, [
+            ->addColumn('paymentState', Type\Column\PaymentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'position' => 80,
             ])
-            ->addColumn('shipmentState', Column\ShipmentStateType::class, [
+            ->addColumn('shipmentState', Type\Column\ShipmentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.shipment_state',
                 'position' => 90,
             ])
+            ->addColumn('inCharge', Type\Column\InChargeType::class, [
+                'position' => 100,
+            ])
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
-                'position'      => 100,
+                'position'      => 110,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -188,15 +188,18 @@ class OrderType extends ResourceTableType
                     'choices'  => Model\ShipmentStates::getChoices(),
                     'position' => 90,
                 ])
-                ->addFilter('tags', OrderTagsType::class, [
-                    'label'    => 'ekyna_cms.tag.label.plural',
+                ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 100,
+                ])
+                ->addFilter('tags', Type\Filter\OrderTagsType::class, [
+                    'label'    => 'ekyna_cms.tag.label.plural',
+                    'position' => 110,
                 ]);
         }
 
         if (null === $options['customer']) {
             $builder
-                ->addColumn('customer', Column\SaleCustomerType::class, [
+                ->addColumn('customer', Type\Column\SaleCustomerType::class, [
                     'label'    => 'ekyna_commerce.customer.label.singular',
                     'position' => 20,
                 ]);

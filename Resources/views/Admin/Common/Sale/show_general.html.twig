@@ -21,6 +21,7 @@
         }) }}
     </div>
 </div>
+{% block customer %}
 {% if sale.customer is not same as (null) %}
     {{ show_row(sale.customer|identity, 'entity', 'ekyna_commerce.customer.label.singular', {
         'id': 'sale_customer',
@@ -32,6 +33,7 @@
         'id': 'sale_customer'
     }) }}
 {% endif %}
+{% endblock customer %}
 <div class="row">
     <div class="col-md-6">
         <div class="row show-row">

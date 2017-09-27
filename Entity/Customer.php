@@ -16,12 +16,12 @@ class Customer extends BaseCustomer implements CustomerInterface
     /**
      * @var UserInterface
      */
-    private $user;
+    protected $user;
 
     /**
      * @var UserInterface
      */
-    private $inCharge;
+    protected $inCharge;
 
 
     /**

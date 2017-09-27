@@ -38,6 +38,67 @@ class OrderEventSubscriber extends BaseSubscriber
     /**
      * @inheritDoc
      */
+    public function onInsert(ResourceEventInterface $event)
+    {
+        parent::onInsert($event);
+
+        /** @var OrderInterface $order */
+        $order = $this->getSaleFromEvent($event);
+
+        $changed = $this->updateInCharge($order);
+
+        if ($changed) {
+            $this->persistenceHelper->persistAndRecompute($order);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onUpdate(ResourceEventInterface $event)
+    {
+        parent::onUpdate($event);
+
+        /** @var OrderInterface $order */
+        $order = $this->getSaleFromEvent($event);
+
+        $changed = $this->updateInCharge($order);
+
+        if ($changed) {
+            $this->persistenceHelper->persistAndRecompute($order);
+        }
+    }
+
+    /**
+     * Updates the order in charge field.
+     *
+     * @param OrderInterface $order
+     *
+     * @return bool
+     */
+    private function updateInCharge(OrderInterface $order)
+    {
+        if (null !== $order->getInCharge()) {
+            return false;
+        }
+
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        if (null === $customer = $order->getCustomer()) {
+            return false;
+        }
+
+        if (null === $inCharge = $customer->getInCharge()) {
+            return false;
+        }
+
+        $order->setInCharge($inCharge);
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function onContentChange(ResourceEventInterface $event)
     {
         parent::onContentChange($event);

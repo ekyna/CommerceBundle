@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
 use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
+use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,10 +22,16 @@ class OrderType extends SaleType
     {
         parent::buildForm($builder, $options);
 
-        $builder->add('tags', TagChoiceType::class, [
-            'required' => false,
-            'multiple' => true,
-        ]);
+        $builder
+            ->add('inCharge', UserChoiceType::class, [
+                'label'    => 'ekyna_commerce.customer.field.in_charge',
+                'required' => false,
+                'roles'    => ['ROLE_ADMIN'],
+            ])
+            ->add('tags', TagChoiceType::class, [
+                'required' => false,
+                'multiple' => true,
+            ]);
     }
 
     /**

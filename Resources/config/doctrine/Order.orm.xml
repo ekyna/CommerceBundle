@@ -8,6 +8,10 @@
     <mapped-superclass name="Ekyna\Bundle\CommerceBundle\Entity\Order"
             table="commerce_order">
 
+        <many-to-one target-entity="Ekyna\Bundle\UserBundle\Model\UserInterface" field="inCharge">
+            <join-column name="in_charge_id" referenced-column-name="id" on-delete="RESTRICT" nullable="true"/>
+        </many-to-one>
+
         <many-to-many target-entity="Ekyna\Bundle\CmsBundle\Model\TagInterface" field="itemsTags">
             <join-table name="commerce_order_items_tags">
                 <join-columns>

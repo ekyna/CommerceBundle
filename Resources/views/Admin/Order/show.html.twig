@@ -73,7 +73,7 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="order-general">
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Order/Show:general.html.twig" with {'sale': order} %}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ekyna\Bundle\CmsBundle\Model\TagInterface;
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectTrait;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
 
 /**
@@ -16,6 +17,11 @@ use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
 class Order extends BaseOrder implements OrderInterface
 {
     use TagsSubjectTrait;
+
+    /**
+     * @var UserInterface
+     */
+    protected $inCharge;
 
     /**
      * @var ArrayCollection|TagInterface[]
@@ -35,7 +41,25 @@ class Order extends BaseOrder implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     */
+    public function getInCharge()
+    {
+        return $this->inCharge;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setInCharge(UserInterface $user = null)
+    {
+        $this->inCharge = $user;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function hasItemsTag(TagInterface $tag)
     {
@@ -43,7 +67,7 @@ class Order extends BaseOrder implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function addItemsTag(TagInterface $tag)
     {
@@ -55,7 +79,7 @@ class Order extends BaseOrder implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function removeItemsTag(TagInterface $tag)
     {
@@ -67,7 +91,7 @@ class Order extends BaseOrder implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getItemsTags()
     {
@@ -75,7 +99,7 @@ class Order extends BaseOrder implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getAllTags()
     {
