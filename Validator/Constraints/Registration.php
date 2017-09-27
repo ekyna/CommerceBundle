@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class Registration extends Constraint
 {
+    public $company_is_mandatory = 'ekyna_commerce.customer.company_is_mandatory';
     public $vat_number_is_mandatory = 'ekyna_commerce.customer.vat_number_is_mandatory';
     public $phone_or_mobile_is_mandatory = 'ekyna_commerce.customer.phone_or_mobile_is_mandatory';
 
