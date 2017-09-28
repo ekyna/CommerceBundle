@@ -85,6 +85,9 @@ ekyna_commerce:
     supplier_delivery_item:
         duplicate_order_item: |
             Chaque ligne de la livraison doit correspondre à une ligne de commande fournisseur unique.
+    supplier_product:
+        duplicate_by_subject: |
+            Une référence éxiste déjà pour cette liaison.
     tax_rule:
         at_least_customer_or_business: |
             Veuillez cocher au moins 'Particulier' ou 'Entreprise'.

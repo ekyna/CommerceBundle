@@ -12,6 +12,14 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Supplier product validator -->
+        <service id="ekyna_commerce.supplier_product.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SupplierProductValidator">
+            <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
     </services>
 
 </container>
