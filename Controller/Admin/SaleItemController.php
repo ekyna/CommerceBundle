@@ -160,6 +160,8 @@ class SaleItemController extends AbstractSaleController
 
         $context->addResource($resourceName, $item);
 
+        $this->getOperator()->initialize($item);
+
         $form = $this->createNewResourceForm($context, !$isXhr, [
             'attr' => [
                 'class' => 'form-horizontal',

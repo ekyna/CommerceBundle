@@ -37,6 +37,8 @@ class SupplierOrderController extends ResourceController
         $resourceName = $this->config->getResourceName();
         $context->addResource($resourceName, $resource);
 
+        $this->getOperator()->initialize($resource);
+
         $flow = $this->get('ekyna_commerce.supplier_order.create_form_flow');
         $flow->setGenericFormOptions([
             'action'            => $this->generateResourcePath($resource, 'new'),

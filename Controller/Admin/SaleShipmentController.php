@@ -60,6 +60,8 @@ class SaleShipmentController extends AbstractSaleController
 
         $context->addResource($resourceName, $shipment);
 
+        $this->getOperator()->initialize($shipment);
+
         $form = $this->createNewResourceForm($context, !$isXhr, [
             'action' => $this->generateResourcePath($shipment, 'new', [
                 'return' => $shipment->isReturn() ? 1 : 0,

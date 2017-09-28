@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class PaymentMethodController
@@ -35,6 +34,7 @@ class PaymentMethodController extends Controller\ResourceController
         $resourceName = $this->config->getResourceName();
         $context->addResource($resourceName, $resource);
 
+        $this->getOperator()->initialize($resource);
 
         $flow = $this->get('ekyna_commerce.payment_method_create.form_flow');
         $flow->setGenericFormOptions([

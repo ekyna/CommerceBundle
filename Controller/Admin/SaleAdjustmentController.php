@@ -59,6 +59,8 @@ class SaleAdjustmentController extends AbstractSaleController
 
         $context->addResource($resourceName, $adjustment);
 
+        $this->getOperator()->initialize($adjustment);
+
         $form = $this->createNewResourceForm($context, !$isXhr, [
             'attr' => [
                 'class' => 'form-horizontal',

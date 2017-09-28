@@ -984,20 +984,20 @@ ekyna_commerce:
 
     supplier_product:
         label:
-            singular: Produit fournisseur
-            plural: Produits fournisseur
+            singular: Référence fournisseur
+            plural: Références fournisseur
         header:
-            list: Produits fournisseur <small>Liste des produits</small>
-            show: Détail du produit<small>%name%</small>
-            new: Créer un nouveau produit
-            edit: Modifier le produit <small>%name%</small>
-            remove: Supprimer le produit <small>%name%</small>
+            list: Références fournisseur <small>Liste des références</small>
+            show: Détail de la référence<small>%name%</small>
+            new: Créer une nouvelle référence
+            edit: Modifier la référence <small>%name%</small>
+            remove: Supprimer la référence <small>%name%</small>
         button:
-            list: Liste des produits
-            show: Détail du produit
-            new: Nouveau produit
-            edit: Modifier le produit
-            remove: Supprimer le produit
+            list: Liste des références
+            show: Détail de la référence
+            new: Nouvelle référence
+            edit: Modifier la référence
+            remove: Supprimer la référence
         field:
             net_price: Prix d'achat HT
             available_stock: Stock disponible
@@ -1008,7 +1008,7 @@ ekyna_commerce:
             eda: E.D.A.
             subject: Liaison
         alert:
-            no_item: Aucune commande fournisseur configuré
+            no_item: Aucune référence fournisseur configuré
 
     state:
         label:

@@ -69,6 +69,8 @@ class SaleInvoiceController extends AbstractSaleController
 
         $context->addResource($resourceName, $invoice);
 
+        $this->getOperator()->initialize($invoice);
+
         $form = $this->createNewResourceForm($context, !$isXhr, [
             'action' => $this->generateResourcePath($invoice, 'new', [
                 'type' => $invoice->getType(),

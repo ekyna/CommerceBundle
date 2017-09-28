@@ -60,6 +60,8 @@ class SalePaymentController extends AbstractSaleController
 
         $context->addResource($resourceName, $payment);
 
+        $this->getOperator()->initialize($payment);
+
         $form = $this->createNewResourceForm($context, !$isXhr, [
             'attr' => [
                 'class' => 'form-horizontal',

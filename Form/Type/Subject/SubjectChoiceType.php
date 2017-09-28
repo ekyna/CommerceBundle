@@ -108,7 +108,7 @@ class SubjectChoiceType extends AbstractType
                     'label'          => false,
                     'choices'        => $subjectChoices,
                     'required'       => $subjectRequired,
-                    'disabled'       => true,
+                    'disabled'       => $disabled,
                     'select2'        => false,
                     'attr'           => [
                         'class' => 'subject',
