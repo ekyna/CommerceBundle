@@ -55,7 +55,7 @@ class PriceListBuilder
      */
     public function buildByZone(Model\ShipmentZoneInterface $zone)
     {
-        $filters = $this->methodRepository->findAll();
+        $filters = $this->methodRepository->findHavingPrices($zone);
 
         $prices = $this->priceRepository->findBy(
             ['zone' => $zone],
@@ -74,7 +74,7 @@ class PriceListBuilder
      */
     public function buildByMethod(Model\ShipmentMethodInterface $method)
     {
-        $filters = $this->zoneRepository->findAll();
+        $filters = $this->zoneRepository->findHavingPrices($method);
 
         $prices = $this->priceRepository->findBy(
             ['method' => $method],

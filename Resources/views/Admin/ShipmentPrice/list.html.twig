@@ -9,12 +9,18 @@
             </label>
         </div>
         <div class="col-md-10">
+            {% if list.filters is not empty %}
             <select class="form-control shipment-price-filter"
                     id="shipment-price-filter" data-filter-by="{{ list.filterBy }}">
             {%- for filter in list.filters -%}
                 <option value="{{ filter.id }}">{{ filter }}</option>
             {%- endfor -%}
             </select>
+            {% else %}
+           <span class="form-control">
+               {{- ('ekyna_commerce.shipment_' ~ list.filterBy ~ '.alert.empty_list')|trans -}}
+           </span>
+            {% endif %}
         </div>
     </div>
 
