@@ -10,8 +10,8 @@
             <call method="setCartRepository">
                 <argument type="service" id="ekyna_commerce.cart.repository"/>
             </call>
-            <call method="setCartManager">
-                <argument type="service" id="ekyna_commerce.cart.manager"/>
+            <call method="setCartOperator">
+                <argument type="service" id="ekyna_commerce.cart.operator"/>
             </call>
             <call method="setSaleFactory">
                 <argument type="service" id="ekyna_commerce.sale_factory"/>

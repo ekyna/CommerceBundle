@@ -8,8 +8,10 @@ use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Listener\UploadableListener;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformer as BaseTransformer;
+use Ekyna\Component\Commerce\Order\Event\OrderEvents;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Resource\Dispatcher\ResourceEventDispatcherInterface;
 
 /**
  * Class SaleTransformer
@@ -22,6 +24,11 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
      * @var EntityManagerInterface
      */
     private $manager;
+
+    /**
+     * @var ResourceEventDispatcherInterface
+     */
+    private $dispatcher;
 
     /**
      * @var OrderRepositoryInterface
@@ -42,15 +49,17 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
     /**
      * Constructor.
      *
-     * @param SaleFactoryInterface     $saleFactory
-     * @param EntityManagerInterface   $manager
-     * @param OrderRepositoryInterface $orderRepository
-     * @param CartProviderInterface    $cartProvider
-     * @param UploadableListener       $uploadableListener
+     * @param SaleFactoryInterface             $saleFactory
+     * @param EntityManagerInterface           $manager
+     * @param ResourceEventDispatcherInterface $dispatcher
+     * @param OrderRepositoryInterface         $orderRepository
+     * @param CartProviderInterface            $cartProvider
+     * @param UploadableListener               $uploadableListener
      */
     public function __construct(
         SaleFactoryInterface $saleFactory,
         EntityManagerInterface $manager,
+        ResourceEventDispatcherInterface $dispatcher,
         OrderRepositoryInterface $orderRepository,
         CartProviderInterface $cartProvider,
         UploadableListener $uploadableListener
@@ -58,6 +67,7 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
         parent::__construct($saleFactory);
 
         $this->manager = $manager;
+        $this->dispatcher = $dispatcher;
         $this->orderRepository = $orderRepository;
         $this->cartProvider = $cartProvider;
         $this->uploadableListener = $uploadableListener;
@@ -78,9 +88,15 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
 
         $this->copySale($cart, $order);
 
-        // TODO dispatch OrderEvents::PRE_CREATE / CartEvents::PRE_REMOVE ?
-
         $this->uploadableListener->setEnabled(false);
+
+        // Order PRE CREATE event
+        $orderEvent = $this->dispatcher->createResourceEvent($order);
+        $this->dispatcher->dispatch(OrderEvents::PRE_CREATE, $orderEvent);
+
+        // TODO (?) Cart PRE DELETE event
+        //$cartEvent = $this->dispatcher->createResourceEvent($cart);
+        //$this->dispatcher->dispatch(OrderEvents::PRE_DELETE, $cartEvent);
 
         $this->manager->persist($order);
         if ($doProviderClear) {

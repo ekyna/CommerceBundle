@@ -266,7 +266,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
         $methods = [
             'Retrait en magasin' => [
-                'factory'     => 'noop',
+                'platform'    => 'noop',
                 'image'       => 'in-store.png',
                 'description' => '<p>Vous pourrez retirer votre colis à notre magasin ...</p>',
                 'enabled'     => true,
@@ -307,6 +307,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             $method = $methodRepository->createNew();
             $method
                 ->setTaxGroup($defaultTaxGroup)
+                ->setPlatformName($options['platform'])
                 ->setMedia($image)
                 ->setName($name)
                 ->setEnabled($options['enabled'])

@@ -48,8 +48,8 @@ Feature: Create orders
         And I should see "Création" in the "#sale_state" element
         And I should see "0,00 €" in the "#sale_paidTotal" element
         And I should see "Création" in the "#sale_paymentState" element
-        And I should see "0 kg" in the "#order_weightTotal" element
-        And I should see "Aucun" in the "#order_shipmentState" element
+        And I should see "0,000 kg" in the "#sale_weightTotal" element
+        And I should see "Aucun" in the "#sale_shipmentState" element
 
         And I should see "Mr Dupont Jean" in the "#sale_invoiceAddress" element
         And I should see "10 rue de la soif" in the "#sale_invoiceAddress" element
@@ -83,8 +83,8 @@ Feature: Create orders
         And I should see "Création" in the "#sale_state" element
         And I should see "0,00 €" in the "#sale_paidTotal" element
         And I should see "Création" in the "#sale_paymentState" element
-        And I should see "0 kg" in the "#order_weightTotal" element
-        And I should see "Aucun" in the "#order_shipmentState" element
+        And I should see "0,000 kg" in the "#sale_weightTotal" element
+        And I should see "Aucun" in the "#sale_shipmentState" element
 
         And I should see "Mr Dupont Jean" in the "#sale_invoiceAddress" element
         And I should see "10 rue de la soif" in the "#sale_invoiceAddress" element
