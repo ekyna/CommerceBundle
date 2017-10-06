@@ -46,33 +46,34 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
     {
         $installer = new Installer(
             $this->container->get('doctrine.orm.entity_manager'),
-            $this->container->getParameter('ekyna_commerce.customer_group.class'),
+            $this->container->get('ekyna_commerce.customer_group.repository'),
             $output
         );
 
+        $country = $this->container->getParameter('ekyna_commerce.default.country');
+        $currency = $this->container->getParameter('ekyna_commerce.default.currency');
+
         $output->writeln('<info>[Commerce] Installing countries:</info>');
-        $countries = $this->container->getParameter('ekyna_commerce.default.countries');
-        $installer->installCountries($countries);
+        $installer->installCountries($country);
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing currencies:</info>');
-        $currencies = $this->container->getParameter('ekyna_commerce.default.currencies');
-        $installer->installCurrencies($currencies);
+        $installer->installCurrencies($currency);
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing taxes:</info>');
-        $installer->installTaxes($countries);
+        $installer->installTaxes($country);
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing tax group:</info>');
-        $installer->installTaxGroups($countries);
+        $installer->installTaxGroups($country);
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing tax rules:</info>');
-        $installer->installTaxRules($countries);
+        $installer->installTaxRules($country);
         $output->writeln('');
 
-        $output->writeln('<info>[Commerce] Installing default customer group:</info>');
+        $output->writeln('<info>[Commerce] Installing default customer groups:</info>');
         $installer->installCustomerGroups();
         $output->writeln('');
 

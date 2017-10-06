@@ -66,12 +66,6 @@ class InvoiceType extends ResourceFormType
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.description',
                 'required' => false,
-            ])
-            ->add('lines', InvoiceLinesType::class, [
-                'label'         => 'ekyna_commerce.invoice.field.lines',
-                'entry_options' => [
-                    'data_class' => $this->lineClass,
-                ],
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -88,6 +82,14 @@ class InvoiceType extends ResourceFormType
             if (0 === $invoice->getLines()->count()) {
                 $this->invoiceBuilder->build($invoice);
             }
+
+            $event->getForm()->add('lines', InvoiceLinesType::class, [
+                'label'         => 'ekyna_commerce.invoice.field.lines',
+                'entry_options' => [
+                    'type'       => $invoice->getType(),
+                    'data_class' => $this->lineClass,
+                ],
+            ]);
         });
     }
 }

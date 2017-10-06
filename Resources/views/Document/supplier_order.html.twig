@@ -9,7 +9,6 @@
 
 
 {% set currency = supplier_order.currency.code %}
-{# TODO translations #}
 
 
 {# --- TITLE --- #}
@@ -50,9 +49,9 @@
         <tr>
             <th>{{ 'ekyna_core.field.designation'|trans }}</th>
             <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-            <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
-            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-            <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
+            <th class="text-right">{{ 'ekyna_core.field.quantity'|trans }}</th>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
         </tr>
         </thead>
 
@@ -85,7 +84,7 @@
             {% endblock spacer %}
             <tbody>
                 <tr>
-                    <td colspan="4">Frais de transport</td>
+                    <td colspan="4">{{ 'ekyna_commerce.supplier_order.field.shipping_cost'|trans }}</td>
                     <td class="text-right">{{ supplier_order.shippingCost|localizedcurrency(currency) }}</td>
                 </tr>
             </tbody>
@@ -96,7 +95,7 @@
         <tbody class="totals">
         <tr>
             <td colspan="3" rowspan="3">&nbsp;</td>
-            <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
             <td class="total final text-right">{{ (total + supplier_order.shippingCost)|localizedcurrency(currency) }}</td>
         </tr>
         </tbody>
@@ -107,7 +106,7 @@
 
 {# --- FOOTER --- #}
 {% block doc_footer %}
-    {{- get_setting('commerce.invoice_footer')|raw -}}
+    {#{{- get_setting('commerce.invoice_footer')|raw -}}#}
 {% endblock doc_footer %}
 
 

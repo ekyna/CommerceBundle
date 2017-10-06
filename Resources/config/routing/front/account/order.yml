@@ -8,6 +8,8 @@ ekyna_commerce_account_order_index:
             name: Mes commandes
             parent: ekyna_user_account_index
             position: 30
+            locked: true
+            advanced: false
             seo:
                 follow: false
                 index: false
@@ -17,29 +19,15 @@ ekyna_commerce_account_order_show:
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:show
     methods: [GET]
-    options:
-        _cms:
-            name: Détail de la commande
-            parent: ekyna_commerce_account_order_index
-            seo:
-                follow: false
-                index: false
+
+ekyna_commerce_account_order_payment:
+    path: /{number}/payment
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:payment
+    methods: [GET, POST]
 
 ekyna_commerce_account_order_attachment_download:
     path: /{number}/documents/{id}
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:attachmentDownload
     methods: [GET]
-
-#ekyna_commerce_account_order_edit:
-#    path: /edit
-#    defaults:
-#        _controller: EkynaCommerceBundle:Account/Order:edit
-#    methods: [GET|POST]
-#    options:
-#        _cms:
-#            name: Modifiez vos commandes
-#            parent: ekyna_commerce_account_order_index
-#            seo:
-#                follow: false
-#                index: false

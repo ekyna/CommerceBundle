@@ -26,8 +26,8 @@ class EkynaCommerceExtension extends AbstractExtension
         $config = $this->configure($configs, 'ekyna_commerce', new Configuration(), $container);
 
         $container->setParameter('ekyna_commerce.company_logo', $config['default']['company_logo']);
-        $container->setParameter('ekyna_commerce.default.countries', $config['default']['countries']);
-        $container->setParameter('ekyna_commerce.default.currencies', $config['default']['currencies']);
+        $container->setParameter('ekyna_commerce.default.country', $config['default']['country']);
+        $container->setParameter('ekyna_commerce.default.currency', $config['default']['currency']);
         $container->setParameter('ekyna_commerce.default.customer', $config['default']['customer']);
 
         $this->configurePricing($config['pricing'], $container);

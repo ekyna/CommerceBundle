@@ -4,8 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Shipment\Calculator\QuantityCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
-use Ekyna\Component\Commerce\Shipment\Util\ShipmentUtil;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -18,6 +18,22 @@ use Symfony\Component\Form\FormView;
  */
 class ShipmentItemType extends ResourceFormType
 {
+    /**
+     * @var QuantityCalculatorInterface
+     */
+    private $quantityCalculator;
+
+
+    /**
+     * Sets the quantity calculator.
+     *
+     * @param QuantityCalculatorInterface $quantityCalculator
+     */
+    public function setQuantityCalculator(QuantityCalculatorInterface $quantityCalculator)
+    {
+        $this->quantityCalculator = $quantityCalculator;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -48,13 +64,13 @@ class ShipmentItemType extends ResourceFormType
         if ($item->getShipment()->isReturn()) {
             $view->vars['return_mode'] = true;
 
-            $returnable = ShipmentUtil::calculateReturnableQuantity($item);
+            $returnable = $this->quantityCalculator->calculateReturnableQuantity($item);
             $view->vars['returnable_quantity'] = $returnable;
         } else {
             $view->vars['return_mode'] = false;
 
-            $expected = ShipmentUtil::calculateShippableQuantity($item);
-            $available = ShipmentUtil::calculateAvailableQuantity($item);
+            $expected = $this->quantityCalculator->calculateShippableQuantity($item);
+            $available = $this->quantityCalculator->calculateAvailableQuantity($item);
 
             $view->vars['expected_quantity'] = $expected;
             $view->vars['available_quantity'] = $available;

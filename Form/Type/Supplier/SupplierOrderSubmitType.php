@@ -24,15 +24,22 @@ class SupplierOrderSubmitType extends Form\AbstractType
      */
     private $orderClass;
 
+    /**
+     * @var string
+     */
+    protected $defaultCurrency;
+
 
     /**
      * Constructor.
      *
      * @param string $orderClass
+     * @param string $defaultCurrency
      */
-    public function __construct($orderClass)
+    public function __construct($orderClass, $defaultCurrency)
     {
         $this->orderClass = $orderClass;
+        $this->defaultCurrency = $defaultCurrency;
     }
 
     /**
@@ -94,14 +101,31 @@ class SupplierOrderSubmitType extends Form\AbstractType
 
             $form
                 ->get('order')
+                ->add('shippingCost', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
+                    'currency' => $currency->getCode(),
+                ])
+                ->add('customsDuty', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.customs_duty',
+                    'currency' => $currency->getCode(),
+                ])
+                ->add('customsVat', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
+                    'currency' => $this->defaultCurrency,
+                ])
+                ->add('administrativeFee', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.administrative_fee',
+                    'currency' => $this->defaultCurrency,
+                ])
                 ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                 ])
-                ->add('paymentTotal', MoneyType::class, [
-                    'label'    => 'ekyna_core.field.amount',
-                    'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
+                ->add('paymentDate', Type\DateTimeType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
+                    'required' => false,
                 ]);
         });
     }

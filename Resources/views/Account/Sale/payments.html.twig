@@ -12,10 +12,17 @@
                 <td>{{ payment.currency }}</td>
                 <td>{{ payment|payment_state_badge }}</td>
                 <td>{{ payment.createdAt|localizeddate('short', 'none') }}</td>
+                <td class="actions">
+                    {% if payment is payment_user_cancellable %}
+                        <a href="{{ path(cancel_route, {'key': payment.key}) }}" class="btn btn-danger btn-xs">
+                            {{ 'ekyna_core.button.cancel'|trans }}
+                        </a>
+                    {% endif %}
+                </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="7" class="text-center">
                     <em>{{ 'ekyna_commerce.account.payment.empty_list'|trans }}</em>
                 </td>
             </tr>

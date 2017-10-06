@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -54,13 +55,23 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
      */
     private function getFormOptions(SaleItemInterface $item, $property)
     {
-        if ($item->hasChildren() && in_array($property, ['netPrice', 'weight', 'taxGroup'])) {
-            return [
-                'disabled' => true,
-            ];
+        $options = [];
+
+        if ($property === 'netPrice') {
+            if (null === $sale = $item->getSale()) {
+                throw new LogicException("Item's sale must be set at this point.");
+            }
+            if (null === $currency = $sale->getCurrency()) {
+                throw new LogicException("Supplier's currency must be set at this point.");
+            }
+            $options['currency'] = $currency->getCode();
         }
 
-        return [];
+        if ($item->hasChildren() && in_array($property, ['netPrice', 'weight', 'taxGroup'])) {
+            $options['disabled'] = true;
+        }
+
+        return $options;
     }
 
     /**

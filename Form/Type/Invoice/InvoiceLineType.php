@@ -5,13 +5,13 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineTypes;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Ekyna\Component\Commerce\Invoice\Util\InvoiceUtil;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class InvoiceLineType
@@ -46,16 +46,28 @@ class InvoiceLineType extends ResourceFormType
         $view->vars['description'] = $line->getDescription();
         $view->vars['reference'] = $line->getReference();
 
-        $invoice = $line->getInvoice();
-        if ($invoice->getType() === InvoiceTypes::TYPE_INVOICE) {
+        if ($options['type'] === InvoiceTypes::TYPE_INVOICE) {
             $max = InvoiceUtil::calculateMaxInvoiceQuantity($line);
-        } elseif ($invoice->getType() === InvoiceTypes::TYPE_CREDIT) {
+        } elseif ($options['type'] === InvoiceTypes::TYPE_CREDIT) {
             $max = InvoiceUtil::calculateMaxCreditQuantity($line);
         } else {
             throw new InvalidArgumentException("Unexpected invoice type.");
         }
 
         $view->vars['max_quantity'] = $max;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'type' => null,
+            ])
+            ->setAllowedTypes('type', 'string')
+            ->setAllowedValues('type', InvoiceTypes::getTypes());
     }
 
     /**

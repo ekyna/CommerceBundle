@@ -42,6 +42,33 @@
             <argument type="service" id="ekyna_user.group.repository"/>
         </service>
 
+        <!-- Country repository -->
+        <service id="ekyna_commerce.country.repository"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <call method="setDefaultCode">
+                <argument>%ekyna_commerce.default.country%</argument>
+            </call>
+        </service>
+
+        <!-- Currency repository -->
+        <service id="ekyna_commerce.currency.repository"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CurrencyRepository">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>%ekyna_commerce.currency.class%</argument>
+            <call method="setDefaultCode">
+                <argument>%ekyna_commerce.default.currency%</argument>
+            </call>
+        </service>
+
+        <!-- Currency converter -->
+        <service id="ekyna_commerce.currency.converter"
+                 class="Ekyna\Component\Commerce\Bridge\Swap\SwapCurrencyConverter">
+            <argument type="service" id="florianv_swap.swap"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+
         <!-- Security listener -->
         <service id="ekyna_commerce.security_listener"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SecurityListener">
@@ -49,7 +76,6 @@
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <tag name="kernel.event_subscriber" />
         </service>
-
 
         <!-- OAuth authentication handlers -->
         <service id="ekyna_commerce.security.oauth_authentication_success_handler"

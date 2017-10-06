@@ -5,7 +5,7 @@
     <table class="table table-stripped">
         <tbody>
         {% for attachment in sale.customerAttachments %}
-            {% set path = path(detailRoute, {
+            {% set path = path(detail_route, {
                 'number': sale.number,
                 'id': attachment.id
             }) %}

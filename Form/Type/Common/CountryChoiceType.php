@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Component\Commerce\Common\Model\CountryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,15 +21,22 @@ class CountryChoiceType extends AbstractType
      */
     private $countryClass;
 
+    /**
+     * @var string
+     */
+    private $defaultCode;
+
 
     /**
      * Constructor.
      *
      * @param string $countryClass
+     * @param string $defaultCode
      */
-    public function __construct($countryClass)
+    public function __construct($countryClass, $defaultCode)
     {
         $this->countryClass = $countryClass;
+        $this->defaultCode = $defaultCode;
     }
 
     /**
@@ -64,6 +72,9 @@ class CountryChoiceType extends AbstractType
                 'class'         => $this->countryClass,
                 'enabled'       => true,
                 'query_builder' => $queryBuilderDefault,
+                'preferred_choices' => function (CountryInterface $country) {
+                    return $country->getCode() === $this->defaultCode;
+                },
             ])
             ->setAllowedTypes('enabled', 'bool')
             ->setNormalizer('attr', function(Options $options, $value) {

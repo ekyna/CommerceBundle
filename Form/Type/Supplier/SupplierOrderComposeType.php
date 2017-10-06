@@ -38,31 +38,36 @@ class SupplierOrderComposeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierInterface $supplier */
+        $supplier = $options['supplier'];
+
         /**
          * @param EntityRepository $repository
          *
          * @return \Doctrine\ORM\QueryBuilder
          */
-        $queryBuilder = function (EntityRepository $repository) use ($options) {
+        $queryBuilder = function (EntityRepository $repository) use ($supplier) {
             $qb = $repository->createQueryBuilder('sp');
 
             return $qb
                 ->andWhere($qb->expr()->eq('sp.supplier', ':supplier'))
-                ->setParameter('supplier', $options['supplier']);
+                ->setParameter('supplier', $supplier);
         };
+
+        $formatter = \NumberFormatter::create(\Locale::getDefault(), \NumberFormatter::CURRENCY);
 
         /**
          * @param \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $value
          *
          * @return string
          */
-        $choiceLabel = function ($value) {
+        $choiceLabel = function ($value) use ($formatter) {
             return sprintf(
-                '[%s] %s (%s - %s€) ',
+                '[%s] %s - %s (%s) ',
                 $value->getReference(),
                 $value->getDesignation(),
-                round($value->getAvailableStock()),
-                number_format($value->getNetPrice(), 2, ',', '')
+                $formatter->formatCurrency($value->getNetPrice(), $value->getSupplier()->getCurrency()->getCode()),
+                round($value->getAvailableStock())
             );
         };
 
@@ -73,15 +78,16 @@ class SupplierOrderComposeType extends AbstractType
          */
         $choiceAttributes = function ($value) {
             return [
-                'data-designation'  => $value->getDesignation(),
-                'data-reference'    => $value->getReference(),
-                'data-net-price'    => $value->getNetPrice(),
+                'data-designation' => $value->getDesignation(),
+                'data-reference'   => $value->getReference(),
+                'data-net-price'   => $value->getNetPrice(),
             ];
         };
 
         $builder
             ->add('items', SupplierOrderItemsType::class, [
-                'attr' => [
+                'currency' => $supplier->getCurrency()->getCode(),
+                'attr'     => [
                     'class' => 'order-compose-items',
                 ],
             ])
@@ -104,20 +110,6 @@ class SupplierOrderComposeType extends AbstractType
                     'class' => 'order-compose-quick-add-button',
                 ],
             ]);
-
-        /*$builder
-            ->add('quickAddSelect', EntitySearchType::class, [ // ResourceSearchType
-                'label'           => 'ekyna_commerce.supplier_product.label.singular',
-                'class'           => $this->supplierProductClass,
-                'search_route'    => 'ekyna_commerce_supplier_product_admin_search',
-                'find_route'      => 'ekyna_commerce_supplier_product_admin_find',
-                'allow_clear'     => false,
-                'format_function' =>
-                    "if(!data.id)return 'Rechercher';" .
-                    "return $('<span>'+data.designation+'</span>');",
-                'required'        => false,
-                'mapped'          => false,
-            ]);*/
     }
 
     /**

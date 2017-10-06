@@ -20,15 +20,22 @@ class CurrencyChoiceType extends AbstractType
      */
     private $currencyClass;
 
+    /**
+     * @var string
+     */
+    private $defaultCode;
+
 
     /**
      * Constructor.
      *
      * @param string $currencyClass
+     * @param string $defaultCode
      */
-    public function __construct($currencyClass)
+    public function __construct($currencyClass, $defaultCode)
     {
         $this->currencyClass = $currencyClass;
+        $this->defaultCode = $defaultCode;
     }
 
     /**
@@ -37,15 +44,15 @@ class CurrencyChoiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label'         => 'ekyna_commerce.currency.label.singular',
-            'class'         => $this->currencyClass,
-            'query_builder' => function (EntityRepository $er) {
+            'label'             => 'ekyna_commerce.currency.label.singular',
+            'class'             => $this->currencyClass,
+            'query_builder'     => function (EntityRepository $er) {
                 $qb = $er->createQueryBuilder('o');
 
                 return $qb->andWhere($qb->expr()->eq('o.enabled', true));
             },
             'preferred_choices' => function (CurrencyInterface $currency) {
-                return $currency->isDefault();
+                return $currency->getCode() === $this->defaultCode;
             },
         ]);
     }

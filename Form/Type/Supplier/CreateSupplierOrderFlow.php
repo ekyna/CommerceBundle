@@ -21,11 +21,11 @@ class CreateSupplierOrderFlow extends FormFlow
             [
                 'label'     => 'supplier',
                 'form_type' => SupplierOrderType::class,
-//                'skip'      => function ($estimatedCurrentStepNumber, FormFlowInterface $flow) {
-//                    /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
-//                    $supplierOrder = $flow->getFormData();
-//                    return $estimatedCurrentStepNumber == 1 && null !== $supplierOrder->getSupplier();
-//                },
+                'skip'      => function ($estimatedCurrentStepNumber, FormFlowInterface $flow) {
+                    /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
+                    $supplierOrder = $flow->getFormData();
+                    return $estimatedCurrentStepNumber == 1 && null !== $supplierOrder->getSupplier();
+                },
             ],
             [
                 'label'     => 'configuration',

@@ -35,7 +35,8 @@
                     {%- for button in shipment_gateway_buttons(shipment) -%}
                     <a href="{{ path(button.route, button.parameters) }}"
                        class="btn btn-primary btn-xs"
-                       title="{{ button.label|trans }}">
+                       title="{{ button.label|trans }}"
+                       target="_blank">
                         {% if button.icon -%}
                             <span class="glyphicon glyphicon-{{ button.icon }}"></span>
                         {%- else -%}
@@ -78,7 +79,13 @@
                             {% for item in shipment.items %}
                             {% set itemId = shipmentId ~ '_item_' ~ loop.index0 %}
                             <tr>
-                                <td id="{{ itemId ~ '_designation' }}">{{ item.saleItem|subject_admin_link }}</td>
+                                <td id="{{ itemId ~ '_designation' }}">
+                                {%- if item.saleItem is subject_set -%}
+                                    {{- item.saleItem|subject_admin_link -}}
+                                {%- else -%}
+                                    {{ item.saleItem.designation }}
+                                {%- endif -%}
+                                </td>
                                 <td id="{{ itemId ~ '_reference' }}">{{ item.saleItem.reference }}</td>
                                 <td id="{{ itemId ~ '_quantity' }}">{{ item.quantity|localizednumber }}</td>
                             </tr>

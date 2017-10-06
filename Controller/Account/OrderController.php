@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,6 +58,59 @@ class OrderController extends AbstractController
         return $this->render('EkynaCommerceBundle:Account/Order:show.html.twig', [
             'order'  => $order,
             'view'   => $orderView,
+            'orders' => $orders,
+        ]);
+    }
+
+    /**
+     * Payment action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paymentAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        $cancelUrl = $this->generateUrl('ekyna_commerce_account_order_show', [
+            'number' => $order->getNumber(),
+        ]);
+
+        if (!$this->validateSaleStep($order, SaleStepValidatorInterface::PAYMENT_STEP)) {
+            return $this->redirect($cancelUrl);
+        }
+
+        $checkout = $this->get('ekyna_commerce.checkout.payment_manager');
+
+        $checkout->initialize($order, $this->generateUrl('ekyna_commerce_account_order_payment', [
+            'number' => $order->getNumber(),
+        ]));
+
+        if (null !== $payment = $checkout->handleRequest($request)) {
+            $order->addPayment($payment);
+
+            $event = $this->get('ekyna_commerce.order.operator')->update($order);
+            if ($event->isPropagationStopped() || $event->hasErrors()) {
+                $event->toFlashes($this->getSession()->getFlashBag());
+
+                return $this->redirect($cancelUrl);
+            }
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_payment_order_capture', [
+                'key' => $payment->getKey(),
+            ]));
+        }
+
+        $orders = $this
+            ->get('ekyna_commerce.order.repository')
+            ->findByCustomer($customer);
+
+        return $this->render('EkynaCommerceBundle:Account/Order:payment.html.twig', [
+            'order'  => $order,
+            'forms'  => $checkout->getFormsViews(),
             'orders' => $orders,
         ]);
     }

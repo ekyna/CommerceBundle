@@ -39,7 +39,7 @@
                                class="btn btn-primary no-user-case"{% if controls.user == 1 %} style="display:none"{% endif %} data-user-modal>
                                 {{ 'ekyna_commerce.checkout.index.sign_in'|trans }}
                             </a>
-                            <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">
+                            <a href="{{ path('fos_user_registration_register', {}) }}" class="btn btn-default">
                                 {{ 'ekyna_commerce.checkout.index.register'|trans }}
                             </a>
                         </div>

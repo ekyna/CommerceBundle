@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Payment;
 
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuotePaymentRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -61,6 +62,14 @@ final class QuotePaymentController extends AbstractController
      */
     protected function afterDone(Request $request, PaymentInterface $payment)
     {
-        return $this->generateUrl('ekyna_commerce_quote_checkout_confirmation');
+        if ($payment instanceof QuotePaymentInterface) {
+            $quote = $payment->getQuote();
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_account_quote_show', [
+                'number' => $quote->getNumber(),
+            ]));
+        }
+
+        return $this->generateUrl('ekyna_commerce_account_quote_index');
     }
 }

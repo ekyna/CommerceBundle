@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Checkout;
 
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -71,12 +72,17 @@ class PaymentManager
      * for each available payment methods.
      *
      * @param SaleInterface $sale
+     * @param string $action
      */
-    public function initialize(SaleInterface $sale)
+    public function initialize(SaleInterface $sale, $action)
     {
         $this->forms = [];
 
-        $amount = $sale->getGrandTotal() - $sale->getPaidTotal();
+        if ($sale instanceof OrderInterface) {
+            $amount = $sale->getRemainingAmount();
+        } else {
+            $amount = $sale->getGrandTotal() - $sale->getPaidTotal();
+        }
 
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface[] $methods */
         $methods = $this->methodRepository->findAvailable();
@@ -90,7 +96,9 @@ class PaymentManager
                 ->setMethod($method)
                 ->setAmount($amount);
 
-            $event = new CheckoutPaymentEvent($sale, $payment);
+            $event = new CheckoutPaymentEvent($sale, $payment, [
+                'action' => $action,
+            ]);
 
             $this->eventDispatcher->dispatch(CheckoutPaymentEvent::BUILD_FORM, $event);
 

@@ -17,9 +17,16 @@
                     {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {{ form_row(form.email) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.customerCode, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.carrier, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
             {{ form_row(form.identity) }}
-            {{ form_row(form.customerCode) }}
+            {{ form_row(form.email) }}
             {{ form_row(form.address) }}
         </div>
     </div>

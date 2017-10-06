@@ -66,9 +66,9 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
     {
         $payment = $event->getPayment();
 
-        $form =$this
+        $form = $this
             ->formFactory
-            ->createNamed($this->getFormName($payment), PaymentType::class, $payment);
+            ->createNamed($this->getFormName($payment), PaymentType::class, $payment, $event->getFormOptions());
 
         $event->setForm($form);
     }
@@ -85,11 +85,13 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
         // Abort if no customer
         if (null === $customer = $sale->getCustomer()) {
             $event->stopPropagation();
+
             return;
         }
         // Abort if customer has no fund
         if (0 >= $customer->getCreditBalance()) {
             $event->stopPropagation();
+
             return;
         }
 
@@ -99,11 +101,12 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
             $payment->setAmount($available);
         }
 
+        $options = $event->getFormOptions();
+        $options['available_amount'] = (float)$available;
+
         $form = $this
             ->formFactory
-            ->createNamed($this->getFormName($payment), BalancePaymentType::class, $payment, [
-                'available_amount' => (float)$available
-            ]);
+            ->createNamed($this->getFormName($payment), BalancePaymentType::class, $payment, $options);
 
         $event->setForm($form);
     }
@@ -117,13 +120,21 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
     {
         $sale = $event->getSale();
 
+        // Abort if outstanding payment has already been used
+        if (0 < $sale->getOutstandingTotal()) {
+            $event->stopPropagation();
+
+            return;
+        }
         // Abort if no customer
         if (null === $customer = $sale->getCustomer()) {
             $event->stopPropagation();
+
             return;
         }
         if (null === $sale->getPaymentTerm()) {
             $event->stopPropagation();
+
             return;
         }
 
@@ -139,11 +150,12 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
             $payment->setAmount($available);
         }
 
+        $options = $event->getFormOptions();
+        $options['available_amount'] = (float)$available;
+
         $form = $this
             ->formFactory
-            ->createNamed($this->getFormName($payment), BalancePaymentType::class, $payment, [
-                'available_amount' => (float)$available
-            ]);
+            ->createNamed($this->getFormName($payment), BalancePaymentType::class, $payment, $options);
 
         $event->setForm($form);
     }

@@ -1,0 +1,22 @@
+<p>
+    {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
+        '%amount%': sale.grandTotal|localizedcurrency(sale.currency.code)
+    })|raw }}.<br>
+    {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
+        '%amount%': sale.remainingAmount|localizedcurrency(sale.currency.code)
+    })|raw }}.
+</p>
+
+<hr>
+
+{% for form in forms %}
+    {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                {{ form(form, {'style': 'inline'}) }}
+            </div>
+        </div>
+    </div>
+    {% if loop.last or loop.index0 % 2 == 1 %}</div>{% endif %}
+{% endfor %}

@@ -45,6 +45,7 @@
         <service id="ekyna_commerce.country_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType">
             <argument>%ekyna_commerce.country.class%</argument>
+            <argument>%ekyna_commerce.default.country%</argument>
             <tag name="form.type"/>
         </service>
 
@@ -52,6 +53,7 @@
         <service id="ekyna_commerce.currency_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType">
             <argument>%ekyna_commerce.currency.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
         </service>
 
@@ -169,6 +171,9 @@
         <service id="ekyna_commerce.order_shipment_item.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentItemType">
             <argument>%ekyna_commerce.order_shipment_item.class%</argument>
+            <call method="setQuantityCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.quantity_calculator"/>
+            </call>
             <tag name="form.type"/>
         </service>
         <!--<service id="ekyna_commerce.order.form_type"
@@ -320,6 +325,15 @@
             <argument>%ekyna_commerce.supplier_address.class%</argument>
             <tag name="form.type"/>
         </service>
+
+        <!-- Supplier type -->
+        <service id="ekyna_commerce.supplier.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierType">
+            <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
+            <argument>%ekyna_commerce.supplier.class%</argument>
+            <argument>%ekyna_commerce.supplier_carrier.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <!-- Supplier choice form type -->
         <service id="ekyna_product.supplier_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierChoiceType">
@@ -338,6 +352,8 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType">
             <argument>%ekyna_commerce.supplier_order.class%</argument>
             <argument>%ekyna_commerce.supplier.class%</argument>
+            <argument>%ekyna_commerce.supplier_carrier.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector=".commerce-supplier-order" path="ekyna-commerce/form/supplier-order"/>
         </service>
@@ -369,6 +385,7 @@
         <service id="ekyna_commerce.supplier_order_submit.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType">
             <argument>%ekyna_commerce.supplier_order.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
         </service>
 

@@ -19,6 +19,12 @@
             <argument>10</argument>
         </service>
 
+        <!-- Shipment quantity calculator -->
+        <service id="ekyna_commerce.shipment.quantity_calculator"
+                 class="Ekyna\Component\Commerce\Shipment\Calculator\QuantityCalculator">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+        </service>
+
         <!-- Shipment weight calculator -->
         <service id="ekyna_commerce.shipment.weight_calculator"
                  class="Ekyna\Component\Commerce\Shipment\Calculator\WeightCalculator"/>
@@ -60,6 +66,7 @@
         <service id="ekyna_commerce.shipment.builder"
                  class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.shipment.quantity_calculator"/>
         </service>
 
         <!-- Shipment price renderer -->

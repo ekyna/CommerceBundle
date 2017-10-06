@@ -43,6 +43,19 @@ class SubjectExtension extends \Twig_Extension
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getTests()
+    {
+        return [
+            new \Twig_SimpleTest(
+                'subject_set',
+                [$this->subjectHelper, 'hasSubject']
+            ),
+        ];
+    }
+
+    /**
      * Renders the subject relative's subject admin link.
      *
      * @param SubjectRelativeInterface $relative

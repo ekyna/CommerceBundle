@@ -46,6 +46,10 @@ ekyna_commerce_supplier_order_admin:
     resource: "admin/supplier_order.yml"
     prefix:   /supplier-orders
 
+ekyna_commerce_supplier_carrier_admin:
+    resource: "admin/supplier_carrier.yml"
+    prefix:   /supplier-carriers
+
 ekyna_commerce_tax_admin:
     resource: "admin/tax.yml"
     prefix:   /taxes

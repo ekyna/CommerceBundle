@@ -2,7 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
+use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Component\Commerce\Customer\Entity\CustomerGroupTranslation;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -43,6 +45,14 @@ class CustomerGroupType extends ResourceFormType
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
+            ])
+            ->add('translations', TranslationsFormsType::class, [
+                'form_type'      => CustomerGroupTranslationType::class,
+                'form_options'   => [
+                    'data_class' => CustomerGroupTranslation::class,
+                ],
+                'label'          => false,
+                'error_bubbling' => false,
             ]);
     }
 }

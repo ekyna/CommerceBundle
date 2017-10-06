@@ -17,26 +17,32 @@
         <div class="tab-content">
             <div class="tab-pane active" id="customer-group-general">
                 {{ show_row(customerGroup.name, 'text', 'ekyna_core.field.name', {
-                    'id': 'customer_group_name'
+                    'id': 'customerGroup_name'
+                }) }}
+                {{ show_translations_row(customerGroup.translations, {
+                    'id': 'customerGroup_translations',
+                    'fields': {
+                        'title': {'label': 'ekyna_core.field.title'}
+                    }
                 }) }}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customerGroup.business, 'checkbox', 'ekyna_commerce.customer_group.field.business', {
-                            'id': 'customer_group_business',
+                            'id': 'customerGroup_business',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
                         }) }}
                     </div>
                     <div class="col-md-6">
                         {{ show_row(customerGroup.registration, 'checkbox', 'ekyna_commerce.customer_group.field.registration', {
-                            'id': 'customer_group_registration',
+                            'id': 'customerGroup_registration',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
                         }) }}
                     </div>
                 </div>
                 {{ show_row(customerGroup.default, 'checkbox', 'ekyna_core.field.default', {
-                    'id': 'customer_group_default'
+                    'id': 'customerGroup_default'
                 }) }}
             </div>
         </div>

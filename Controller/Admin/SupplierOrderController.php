@@ -33,21 +33,34 @@ class SupplierOrderController extends ResourceController
 
         $context = $this->loadContext($request);
 
+        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $resource */
         $resource = $this->createNew($context);
         $resourceName = $this->config->getResourceName();
         $context->addResource($resourceName, $resource);
+
+        $actionParams = [];
+
+        if (0 < $supplierId = intval($request->query->get('supplierId'))) {
+            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierInterface $supplier */
+            if (null !== $supplier = $this->get('ekyna_commerce.supplier.repository')->find($supplierId)) {
+                $resource->setSupplier($supplier);
+                $actionParams['supplierId'] = $supplier->getId();
+            }
+        }
 
         $this->getOperator()->initialize($resource);
 
         $flow = $this->get('ekyna_commerce.supplier_order.create_form_flow');
         $flow->setGenericFormOptions([
-            'action'            => $this->generateResourcePath($resource, 'new'),
+            'action'            => $this->generateResourcePath($resource, 'new', $actionParams),
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal form-with-tabs'],
             'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
         $flow->bind($resource);
+
+        $this->getOperator()->initialize($resource);
 
         $form = $flow->createForm();
         if ($flow->isValid($form)) {
@@ -104,7 +117,7 @@ class SupplierOrderController extends ResourceController
 
         // TODO Use Symfony WorkFlow Component ? (can 'transition') (Sf 3.2)
         if ($resource->getState() !== SupplierOrderStates::STATE_NEW) {
-            $this->addFlash('warning', 'ekyna_commerce.supplier_order.message.cant_be_submitted');
+            $this->addFlash('ekyna_commerce.supplier_order.message.cant_be_submitted', 'warning');
             return $this->redirect($this->generateResourcePath($resource));
         }
 

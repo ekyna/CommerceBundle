@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Column\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
@@ -36,6 +37,20 @@ class SupplierType extends ResourceTableType
                 'label'    => 'ekyna_commerce.supplier.field.customer_code',
                 'position' => 30,
             ])
+            ->addColumn('currency', CType\Column\TextType::class, [
+                'label'         => 'ekyna_core.field.currency',
+                'property_path' => 'currency.code',
+                'position'      => 40,
+            ])
+            ->addColumn('carrier', EntityType::class, [
+                'label'                => 'ekyna_commerce.supplier_carrier.label.singular',
+                'entity_label'         => 'name',
+                'route_name'           => 'ekyna_commerce_supplier_carrier_admin_show',
+                'route_parameters_map' => [
+                    'supplierCarrierId' => 'id',
+                ],
+                'position'             => 50,
+            ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
@@ -60,7 +75,7 @@ class SupplierType extends ResourceTableType
             ])
             ->addFilter('email', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_core.field.email',
-                'position' => 10,
+                'position' => 20,
             ])
             ->addFilter('customerCode', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_commerce.supplier.field.customer_code',

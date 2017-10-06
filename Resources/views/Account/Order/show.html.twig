@@ -10,12 +10,24 @@
 
     {{- render_sale_view(view) -}}
 
+    {% if 0 < order.remainingAmount %}
+    <div class="text-center" style="margin-bottom: 40px;">
+        <a href="{{ path('ekyna_commerce_account_order_payment', {'number': order.number}) }}" class="btn btn-primary btn-lg">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            {{ 'ekyna_commerce.account.order.button.pay'|trans }}
+        </a>
+    </div>
+    {% endif %}
+
     {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
         'sale': order,
-        'detailRoute': 'ekyna_commerce_account_order_attachment_download'
+        'detail_route': 'ekyna_commerce_account_order_attachment_download'
     } -%}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': order} -%}
+    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+        'sale': order,
+        'cancel_route': 'ekyna_commerce_payment_order_cancel'
+    } -%}
 
     {%- include "EkynaCommerceBundle:Account/Sale:shipments.html.twig" with {'sale': order} -%}
 

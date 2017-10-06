@@ -105,6 +105,15 @@ class AdminMenuPass implements CompilerPassInterface
             'position' => 1,
         ]]);
 
+        // Supplier carriers
+        $pool->addMethodCall('createEntry', ['suppliers', [
+            'name'     => 'supplier_carriers',
+            'route'    => 'ekyna_commerce_supplier_carrier_admin_home',
+            'label'    => 'ekyna_commerce.supplier_carrier.label.plural',
+            'resource' => 'ekyna_commerce_supplier_carrier',
+            'position' => 1,
+        ]]);
+
         // ------------------------------------------------------------
 
         $pool->addMethodCall('createGroup', [[

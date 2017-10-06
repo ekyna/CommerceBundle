@@ -10,12 +10,24 @@
 
     {{- render_sale_view(view) -}}
 
+    {% if 0 < quote.remainingAmount %}
+        <div class="text-center" style="margin-bottom: 40px;">
+            <a href="{{ path('ekyna_commerce_account_quote_payment', {'number': quote.number}) }}" class="btn btn-primary btn-lg">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
+            </a>
+        </div>
+    {% endif %}
+
     {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
         'sale': quote,
-        'detailRoute': 'ekyna_commerce_account_quote_attachment_download'
+        'detail_route': 'ekyna_commerce_account_quote_attachment_download'
     } -%}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': quote} -%}
+    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+        'sale': quote,
+        'cancel_route': 'ekyna_commerce_payment_quote_cancel'
+    } -%}
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>

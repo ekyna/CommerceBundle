@@ -53,6 +53,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
         $invoice = $this->createNew($context);
+        $context->addResource('resource', $invoice);
 
         $type = $request->attributes->get('type');
         if (!InvoiceTypes::isValidType($type)) {

@@ -69,6 +69,7 @@
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
         </service>
 
         <!-- Stock subject updater -->

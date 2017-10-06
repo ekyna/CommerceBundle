@@ -101,6 +101,7 @@
             </div>
             <div class="tab-pane" id="order-invoices">
                 <h4 class="sub-header">
+                    {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': 'invoice'}) }}"
                        class="btn btn-primary btn-xs pull-right"
                        style="margin-left:16px">
@@ -111,6 +112,7 @@
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order, 'type': 'invoice'} %}
                 <hr>
                 <h4 class="sub-header">
+                    {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': 'credit'}) }}"
                        class="btn btn-primary btn-xs pull-right"
                        style="margin-left:16px">
@@ -124,6 +126,7 @@
             </div>
             <div class="tab-pane" id="order-payments">
                 <h4 class="sub-header">
+                    {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {'orderId': order.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.payment.button.new'|trans }}
@@ -134,6 +137,7 @@
             </div>
             <div class="tab-pane" id="order-shipments">
                 <h4 class="sub-header">
+                    {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id, 'return': 1}) }}"
                        class="btn btn-primary btn-xs pull-right"
                         style="margin-left:16px">
@@ -149,13 +153,14 @@
             </div>
             <div class="tab-pane" id="order-attachments">
                 <h4 class="sub-header">
+                    {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_attachment', 'new', {'orderId': order.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.attachment.button.new'|trans }}
                     </a>
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Attachment:_list.html.twig" with {'attachments': order.attachments} %}
             </div>
             <div class="tab-pane" id="order-informations">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': order} %}

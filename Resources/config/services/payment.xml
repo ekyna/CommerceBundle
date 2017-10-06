@@ -19,6 +19,19 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
+        <!-- Outstanding watcher -->
+        <service id="ekyna_commerce.payment.outstanding_watcher"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Watcher\OutstandingWatcher">
+            <argument id="ekyna_commerce.payment_term.repository" type="service"/>
+            <argument id="ekyna_commerce.payment_method.repository" type="service"/>
+            <call method="setManager">
+                <argument id="doctrine.orm.default_entity_manager" type="service"/>
+            </call>
+            <call method="setResourceHelper">
+                <argument id="ekyna_admin.helper.resource_helper" type="service"/>
+            </call>
+        </service>
+
         <!-- Payment abstract listener -->
         <service id="ekyna_commerce.payment.abstract_listener" abstract="true">
             <call method="setPersistenceHelper">
@@ -153,6 +166,7 @@
                  parent="ekyna_commerce.payum.action.abstract_action">
             <tag name="payum.action" all="true" prepend="true"/>
         </service>
+
 
     </services>
 

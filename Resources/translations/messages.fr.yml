@@ -22,11 +22,17 @@ ekyna_commerce:
         order:
             title: Mes commandes
             show: Détail de la commande <em>%number%</em>
+            payment: Paiement de la commande <em>%number%</em>
             empty_list: Aucune commande enregistré
+            button:
+                pay: Régler la commande
         quote:
             title: Mes devis
             show: Détail du devis <em>%number%</em>
+            payment: Paiement du devis <em>%number%</em>
             empty_list: Aucun devis enregistré
+            button:
+                pay: Régler le devis
         attachment:
             title: Documents
             empty_list: Aucun document enregistré
@@ -154,7 +160,7 @@ ekyna_commerce:
             attachment_remove: Êtes-vous sûr de vouloir supprimer cette pièce jointe ?
         payment:
             grand_total: |
-                Montant de votre panier : <strong>%amount%</strong>
+                Montant total : <strong>%amount%</strong>
             remaining_amount: |
                 Reste à régler : <strong>%amount%</strong>
             available_fund: |
@@ -187,12 +193,16 @@ ekyna_commerce:
             plural: Avoirs
         header:
             new: Créer un nouvel avoir
-            edit: Modifier l'avoir
-            remove: Supprimer l'avoir
+            edit: Modifier l'avoir <small>%name%</small>
+            remove: Supprimer l'avoir <small>%name%</small>
         button:
             new: Nouvel avoir
             edit: Modifier l'avoir
             remove: Supprimer l'avoir
+
+    document:
+        field:
+
 
     invoice:
         tab: Factures et avoirs
@@ -201,8 +211,8 @@ ekyna_commerce:
             plural: Factures
         header:
             new: Créer un nouvelle facture
-            edit: Modifier la facture
-            remove: Supprimer la facture
+            edit: Modifier la facture <small>%name%</small>
+            remove: Supprimer la facture <small>%name%</small>
         button:
             new: Nouvelle facture
             edit: Modifier la facture
@@ -956,6 +966,9 @@ ekyna_commerce:
 
         field:
             shipping_cost: Frais transport
+            customs_duty: Frais de douane
+            customs_vat: TVA en douane
+            administrative_fee: Frais administratifs
             payment_total: Total réglement
             payment_date: Date réglement
             estimated_date_of_arrival: Date de livraison estimée
@@ -981,6 +994,11 @@ ekyna_commerce:
             net_price: Prix d'achat HT
             supplier_data: Données Four.
             subject: Liaison
+
+    supplier_order_attachment:
+        label:
+            singular: Pièce jointe
+            plural: Pièce jointes
 
     supplier_product:
         label:
@@ -1009,6 +1027,25 @@ ekyna_commerce:
             subject: Liaison
         alert:
             no_item: Aucune référence fournisseur configuré
+
+    supplier_carrier:
+        label:
+            singular: Transporteur
+            plural: Transporteurs
+        header:
+            list: Transporteurs <small>Liste des transporteurs</small>
+            show: Détail du transporteur<small>%name%</small>
+            new: Créer un nouveau transporteur
+            edit: Modifier le transporteur <small>%name%</small>
+            remove: Supprimer le transporteur <small>%name%</small>
+        button:
+            list: Liste des transporteurs
+            show: Détail du transporteur
+            new: Nouveau transporteur
+            edit: Modifier le transporteur
+            remove: Supprimer le transporteur
+        alert:
+            no_item: Aucun transporteur configuré
 
     state:
         label:

@@ -54,3 +54,7 @@ ekyna_commerce_supplier_order_admin_render:
 ekyna_commerce_supplier_delivery_admin:
     resource: supplier_delivery.yml
     prefix: /{supplierOrderId}/deliveries
+
+ekyna_commerce_supplier_order_attachment_admin:
+    resource: supplier_order_attachment.yml
+    prefix: /{supplierOrderId}/attachment

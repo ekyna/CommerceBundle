@@ -22,14 +22,7 @@
                         {{ show_row(country.code, 'text', 'ekyna_core.field.code', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ show_row(country.enabled, 'checkbox', 'ekyna_core.field.enabled', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ show_row(country.default, 'checkbox', 'ekyna_core.field.default', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
-                    </div>
-                </div>
+                {{ show_row(country.enabled, 'checkbox', 'ekyna_core.field.enabled') }}
             </div>
         </div>
     </div>

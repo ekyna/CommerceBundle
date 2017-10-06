@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
+use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\SaleItemTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AdjustmentsType;
@@ -114,13 +115,13 @@ class SaleItemType extends ResourceFormType
                     'min'         => 0,
                 ],
             ]],
-            ['netPrice', Type\NumberType::class, [
+            ['netPrice', MoneyType::class, [
                 'label'    => 'ekyna_commerce.sale.field.net_unit',
-                'scale'    => 5,
+                //'scale'    => 5,
                 'required' => false,
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
-                    'input_group' => ['append' => '€'],  // TODO sale currency
+                    //'input_group' => ['append' => '€'],  // TODO sale currency
                 ],
             ]],
             ['taxGroup', TaxGroupChoiceType::class, [

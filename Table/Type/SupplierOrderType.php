@@ -60,6 +60,15 @@ class SupplierOrderType extends ResourceTableType
                 ],
                 'position'             => 20,
             ])
+            ->addColumn('carrier', DType\Column\EntityType::class, [
+                'label'                => 'ekyna_commerce.supplier_carrier.label.singular',
+                'entity_label'         => 'name',
+                'route_name'           => 'ekyna_commerce_supplier_carrier_admin_show',
+                'route_parameters_map' => [
+                    'supplierCarrierId' => 'id',
+                ],
+                'position'             => 30,
+            ])
             ->addColumn('state', SupplierOrderStateType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.state',
                 'position' => 30,

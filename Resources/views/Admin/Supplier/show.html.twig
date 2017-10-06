@@ -2,6 +2,11 @@
 
 {% block main %}
 <div class="actions">
+    {{- ui_button('ekyna_commerce.supplier_order.button.new', {
+        'path': path('ekyna_commerce_supplier_order_admin_new', {'supplierId': supplier.id}),
+        'type': 'link',
+        'icon': 'list'
+    }) -}}
     {{ admin_resource_btn(supplier, 'edit') }}
     {{ admin_resource_btn(supplier, 'remove') }}
 </div>
@@ -26,6 +31,20 @@
                         {{ show_row(supplier.currency, 'entity', 'ekyna_commerce.currency.label.singular', {
                             'route': 'ekyna_commerce_currency_admin_show',
                             'route_params_map': {'currencyId': 'id'},
+                            'label_nb_col': 4, 'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplier.customerCode, 'text', 'ekyna_commerce.supplier.field.customer_code', {
+                            'label_nb_col': 4, 'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(supplier.carrier, 'entity', 'ekyna_commerce.supplier_carrier.label.singular', {
+                            'route': 'ekyna_commerce_supplier_carrier_admin_show',
+                            'route_params_map': {'supplierCarrierId': 'id'},
                             'label_nb_col': 4, 'widget_nb_col': 8
                         }) }}
                     </div>

@@ -13,6 +13,7 @@ ekyna_commerce:
         company_is_mandatory: Veuillez saisir votre nom de votre entreprise.
         vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
         phone_or_mobile_is_mandatory: Veuillez saisir un numéro de téléphone ou de mobile.
+        term_required_for_outstanding: Vous devez sélectionner une condition de paiement si vous souahaitez définir une limite d'encours.
     gender:
         invalid: Ce titre n'est pas un titre valide.
     identity:

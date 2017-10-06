@@ -1,0 +1,35 @@
+{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+
+{% block account %}
+{% spaceless %}
+    <h3>{{ 'ekyna_commerce.account.quote.payment'|trans({'%number%': quote.number})|raw }}</h3>
+    <p>
+        Du {{ quote.createdAt|localizeddate('short', 'none') }}, {{ quote|sale_state_badge }}
+    </p>
+
+    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+        'sale': quote,
+        'cancel_route': 'ekyna_commerce_payment_quote_cancel'
+    } -%}
+
+    {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': quote} -%}
+
+    <div class="text-center">
+        <a href="{{ path('ekyna_commerce_account_quote_show', {'number': quote.number}) }}" class="btn btn-default btn-lg">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            {{ 'ekyna_core.button.back'|trans }}
+        </a>
+    </div>
+
+    <br><br>
+    <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
+    <hr>
+    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" %}
+
+{% endspaceless %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{- parent() -}}
+    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}

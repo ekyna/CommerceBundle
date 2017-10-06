@@ -8,6 +8,8 @@ ekyna_commerce_account_address_index:
             name: Mes adresses
             parent: ekyna_user_account_index
             position: 20
+            locked: true
+            advanced: false
             seo:
                 follow: false
                 index: false

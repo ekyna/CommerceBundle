@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Bundle\CoreBundle\Exception\RedirectException;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -29,7 +30,7 @@ class AbstractController extends Controller
     {
         if (null === $this->getUser()) {
             throw new RedirectException($this->generateUrl('fos_user_security_login', [
-                'target_path' => 'ekyna_user_account_index'
+                'target_path' => 'ekyna_user_account_index',
             ], UrlGeneratorInterface::ABSOLUTE_URL));
         }
 
@@ -37,7 +38,7 @@ class AbstractController extends Controller
 
         if (!$provider->hasCustomer()) {
             throw new RedirectException($this->generateUrl('fos_user_registration_register', [
-                'target_path' => 'ekyna_user_account_index'
+                'target_path' => 'ekyna_user_account_index',
             ], UrlGeneratorInterface::ABSOLUTE_URL));
         }
 
@@ -96,5 +97,33 @@ class AbstractController extends Controller
         $form->add('actions', FormActionsType::class, [
             'buttons' => $buttons,
         ]);
+    }
+
+    /**
+     * Validates the sale step.
+     *
+     * @param SaleInterface $sale
+     * @param string        $step
+     *
+     * @return bool
+     */
+    protected function validateSaleStep(SaleInterface $sale, $step)
+    {
+        $validator = $this->get('ekyna_commerce.sale_step_validator');
+
+        if ($validator->validate($sale, $step)) {
+            return true;
+        }
+
+        $messages = [];
+        foreach ($validator->getViolationList() as $violation) {
+            $messages[] = $violation->getMessage();
+        }
+
+        if (!empty($messages)) {
+            $this->addFlash(implode('<br>', $messages), 'danger');
+        }
+
+        return false;
     }
 }

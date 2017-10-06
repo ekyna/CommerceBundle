@@ -9,11 +9,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class SaleAttachmentController
+ * Class AttachmentController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Admin
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleAttachmentController extends ResourceController
+class AttachmentController extends ResourceController
 {
     /**
      * {@inheritdoc}
@@ -51,7 +51,7 @@ class SaleAttachmentController extends ResourceController
         $context = $this->loadContext($request);
 
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface $resource */
+        /** @var \Ekyna\Component\Commerce\Common\Model\AttachmentInterface $resource */
         $resource = $context->getResource($resourceName);
 
         $this->isGranted('VIEW', $resource);

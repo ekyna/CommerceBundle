@@ -18,21 +18,35 @@
     <div class="form-body">
         {{ bootstrap_set_style('horizontal') }}
         {{ bootstrap_set_col_size('md') }}
-
         <div class="row">
             <div class="col-md-6">
-                {{ form_row(form.order.paymentTotal, {'label_col': 4, 'widget_col': 8}) }}
+                {{ form_row(form.order.shippingCost, {'label_col': 4, 'widget_col': 8}) }}
             </div>
+            <div class="col-md-6">
+                {{ form_row(form.order.administrativeFee, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.order.customsDuty, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.order.customsVat, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-6">
                 {{ form_row(form.order.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
             </div>
+            <div class="col-md-6">
+                {{ form_row(form.order.paymentDate, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
         </div>
+        <hr>
         {{ form_row(form.emails) }}
         {{ form_row(form.message) }}
         {{ form_row(form.confirm) }}
-
         {{ form_rest(form) }}
-
     </div>
     {{ form_end(form) }}
 {% endblock main %}

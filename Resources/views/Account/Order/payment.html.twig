@@ -1,0 +1,35 @@
+{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+
+{% block account %}
+{% spaceless %}
+    <h3>{{ 'ekyna_commerce.account.order.payment'|trans({'%number%': order.number})|raw }}</h3>
+    <p>
+        Du {{ order.createdAt|localizeddate('short', 'none') }}, {{ order|sale_state_badge }}
+    </p>
+
+    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+        'sale': order,
+        'cancel_route': 'ekyna_commerce_payment_order_cancel'
+    } -%}
+
+    {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': order} -%}
+
+    <div class="text-center">
+        <a href="{{ path('ekyna_commerce_account_order_show', {'number': order.number}) }}" class="btn btn-default btn-lg">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            {{ 'ekyna_core.button.back'|trans }}
+        </a>
+    </div>
+
+    <br><br>
+    <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
+    <hr>
+    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" %}
+
+{% endspaceless %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{- parent() -}}
+    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}

@@ -102,6 +102,7 @@ class SaleTransformer extends BaseTransformer implements SaleTransformerInterfac
         if ($doProviderClear) {
             $this->cartProvider->clearCart(); // It calls EntityManager::flush()
         } else {
+            $this->manager->remove($cart);
             $this->manager->flush();
         }
 

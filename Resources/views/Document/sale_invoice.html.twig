@@ -9,7 +9,6 @@
 
 
 {% set currency = invoice.currency %}
-{# TODO translations #}
 
 
 {# --- TITLE --- #}
@@ -148,8 +147,8 @@
 <table class="table taxes">
     <thead>
         <tr>
-            <th>Taxe</th>
-            <th>Montant total</th>
+            <th>{{ 'ekyna_commerce.tax.label.singular' }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
         </tr>
     </thead>
     <tbody>

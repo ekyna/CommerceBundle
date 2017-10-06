@@ -10,6 +10,7 @@
     <div class="tab-content">
         <div class="tab-pane active" id="customer-group-general">
             {{ form_row(form.name) }}
+            {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}

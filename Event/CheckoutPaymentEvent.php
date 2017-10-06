@@ -27,6 +27,11 @@ class CheckoutPaymentEvent extends Event
     private $payment;
 
     /**
+     * @var array
+     */
+    private $formOptions;
+
+    /**
      * @var FormInterface
      */
     private $form;
@@ -37,11 +42,15 @@ class CheckoutPaymentEvent extends Event
      *
      * @param SaleInterface    $sale
      * @param PaymentInterface $payment
+     * @param array            $formOptions
      */
-    public function __construct(SaleInterface $sale, PaymentInterface $payment)
+    public function __construct(SaleInterface $sale, PaymentInterface $payment, array $formOptions)
     {
         $this->sale = $sale;
         $this->payment = $payment;
+        $this->formOptions = array_replace($formOptions, [
+            'validation_groups' => ['Checkout'],
+        ]);
     }
 
     /**
@@ -62,6 +71,16 @@ class CheckoutPaymentEvent extends Event
     public function getPayment()
     {
         return $this->payment;
+    }
+
+    /**
+     * Returns the form options.
+     *
+     * @return array
+     */
+    public function getFormOptions()
+    {
+        return $this->formOptions;
     }
 
     /**

@@ -5,6 +5,8 @@
         <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.state'|trans }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.shipment_state'|trans }}</th>
         <th>{{ 'ekyna_core.field.date'|trans }}</th>
         <th>&nbsp;</th>
     </tr>
@@ -14,35 +16,39 @@
         {% set path = path('ekyna_commerce_account_order_show', {'number': order.number}) %}
         <tr>
             <td>
-                <a href="{{ path }}">
-                    {{ order.number }}
-                </a>
+                <a href="{{ path }}">{{ order.number }}</a>
             </td>
             <td>
-                {% if order.voucherNumber is not empty %}
+                {%- if order.voucherNumber is not empty -%}
                     {{ order.voucherNumber }}
-                {% else %}
+                {%- else -%}
                     <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-                {% endif %}
+                {%- endif -%}
             </td>
             <td>
-                {{ order.grandTotal|localizedcurrency(order.currency.code) }}
+                {{- order.grandTotal|localizedcurrency(order.currency.code) -}}
             </td>
             <td>
-                {{ order|sale_state_badge }}
+                {{- order|sale_state_badge -}}
             </td>
             <td>
-                {{ order.createdAt|localizeddate('short', 'none') }}
+                {{- order.paymentState|payment_state_badge -}}
+            </td>
+            <td>
+                {{- order.shipmentState|shipment_state_badge -}}
+            </td>
+            <td>
+                {{- order.createdAt|localizeddate('short', 'none') -}}
             </td>
             <td>
                 <a href="{{ path }}" class="btn btn-xs btn-primary">
-                    {{ 'ekyna_core.button.show'|trans }}
+                    {{- 'ekyna_core.button.show'|trans -}}
                 </a>
             </td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="6">
+            <td colspan="8">
                 <em>{{ 'ekyna_commerce.account.order.empty_list'|trans }}</em>
             </td>
         </tr>

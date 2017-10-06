@@ -31,13 +31,6 @@ class CountryType extends ResourceFormType
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
-            ])
-            ->add('default', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.default',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
             ]);
     }
 }

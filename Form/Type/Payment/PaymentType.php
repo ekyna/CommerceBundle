@@ -62,7 +62,11 @@ class PaymentType extends ResourceFormType
             $method = null !== $payment ? $payment->getMethod() : null;
 
             $lockedMethod = (null !== $method) && ($method->getFactoryName() !== 'offline');
-            $lockedAmount = $lockedMethod || (null !== $payment && $payment->getState() !== States::STATE_NEW);
+            $lockedAmount = $lockedMethod || (
+                null !== $payment &&
+                !(null !== $method && $method->isManual()) &&
+                $payment->getState() !== States::STATE_NEW
+            );
 
             $form->add('amount', MoneyType::class, [
                 'label'    => 'ekyna_core.field.amount',

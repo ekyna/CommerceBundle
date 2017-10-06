@@ -8,6 +8,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form;
 
@@ -23,18 +24,32 @@ class SupplierOrderType extends ResourceFormType
      */
     protected $supplierClass;
 
+    /**
+     * @var string
+     */
+    protected $carrierClass;
+
+    /**
+     * @var string
+     */
+    protected $defaultCurrency;
+
 
     /**
      * Constructor.
      *
      * @param string $dataClass
      * @param string $supplierClass
+     * @param string $carrierClass
+     * @param string $defaultCurrency
      */
-    public function __construct($dataClass, $supplierClass)
+    public function __construct($dataClass, $supplierClass, $carrierClass, $defaultCurrency)
     {
         parent::__construct($dataClass);
 
         $this->supplierClass = $supplierClass;
+        $this->carrierClass = $carrierClass;
+        $this->defaultCurrency = $defaultCurrency;
     }
 
     /**
@@ -59,8 +74,19 @@ class SupplierOrderType extends ResourceFormType
                 return;
             }
 
+            if ($supplierOrder->getCurrency() !== $supplier->getCurrency()) {
+                $supplierOrder->setCurrency($supplier->getCurrency());
+            }
+            if (null === $supplierOrder->getCarrier()) {
+                $supplierOrder->setCarrier($supplier->getCarrier());
+            }
+
+            $event->setData($supplierOrder);
+
             /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
-            $currency = null !== $supplierOrder ? $supplierOrder->getCurrency() : null;
+            if (null === $currency = $supplierOrder->getCurrency()) {
+                throw new LogicException("Supplier order's currency must be set at this point.");
+            }
 
             // Step 2: Supplier is selected
             $form
@@ -69,36 +95,57 @@ class SupplierOrderType extends ResourceFormType
                     'class'    => $this->supplierClass,
                     'disabled' => true,
                 ])
+                ->add('carrier', ResourceType::class, [
+                    'label'     => 'ekyna_commerce.supplier_carrier.label.singular',
+                    'class'     => $this->carrierClass,
+                    'allow_new' => true,
+                ])
                 ->add('number', Symfony\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
                     'required' => false,
                     'disabled' => true,
                 ])
-                ->add('currency', Commerce\Common\CurrencyChoiceType::class)
+                ->add('currency', Commerce\Common\CurrencyChoiceType::class, [
+                    'required' => false,
+                    'disabled' => true,
+                ])
                 ->add('state', Symfony\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'choices'  => SupplierOrderStates::getChoices(),
                     'required' => false,
                     'disabled' => true,
                 ])
+                ->add('shippingCost', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
+                    'currency' => $currency->getCode(),
+                ])
+                ->add('paymentTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.payment_total',
+                    'currency' => $currency->getCode(),
+                    'disabled' => true,
+                    'required' => false,
+                ])
+                ->add('customsDuty', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.customs_duty',
+                    'currency' => $this->defaultCurrency,
+                ])
+                ->add('customsVat', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
+                    'currency' => $this->defaultCurrency,
+                ])
+                ->add('administrativeFee', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.administrative_fee',
+                    'currency' => $this->defaultCurrency,
+                ])
                 ->add('estimatedDateOfArrival', Symfony\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                 ])
-                ->add('shippingCost', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
-                    'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
-                ])
                 ->add('paymentDate', Symfony\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
-                ])
-                ->add('paymentTotal', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.payment_total',
-                    'currency' => $currency ? $currency->getCode() : 'EUR', // TODO default user currency
-                    'disabled' => true,
                 ])
                 ->add('compose', SupplierOrderComposeType::class, [
                     'supplier' => $supplier,

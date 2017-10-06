@@ -32,11 +32,14 @@
             <call method="setCreditNumberGenerator">
                 <argument type="service" id="ekyna_commerce.invoice.credit_number_generator"/>
             </call>
-            <call method="setUpdater">
+            <call method="setInvoiceUpdater">
                 <argument type="service" id="ekyna_commerce.invoice.updater"/>
             </call>
-            <call method="setCalculator">
+            <call method="setInvoiceCalculator">
                 <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            </call>
+            <call method="setCustomerUpdater">
+                <argument type="service" id="ekyna_commerce.customer.updater"/>
             </call>
         </service>
 

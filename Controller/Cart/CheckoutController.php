@@ -145,7 +145,7 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
         }
 
-        $this->paymentCheckout->initialize($cart);
+        $this->paymentCheckout->initialize($cart, $this->generateUrl('ekyna_commerce_cart_checkout_payment'));
 
         if (null !== $payment = $this->paymentCheckout->handleRequest($request)) {
             $cart->addPayment($payment);

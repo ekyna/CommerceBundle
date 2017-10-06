@@ -10,7 +10,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for attachment in sale.attachments %}
+        {% for attachment in attachments %}
             {% set attachmentId = 'attachment_' ~ loop.index0 %}
             {% set attachmentPath = admin_resource_path(attachment, 'download') %}
             <tr data-id="{{ attachment.id }}">

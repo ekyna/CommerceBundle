@@ -72,6 +72,7 @@
             </div>
             <div class="tab-pane" id="quote-payments">
                 <h4 class="sub-header">
+                    {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.quote_payment', 'new', {'quoteId': quote.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.payment.button.new'|trans }}
@@ -82,13 +83,14 @@
             </div>
             <div class="tab-pane" id="quote-attachments">
                 <h4 class="sub-header">
+                    {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.quote_attachment', 'new', {'quoteId': quote.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.attachment.button.new'|trans }}
                     </a>
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'sale': quote} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Attachment:_list.html.twig" with {'attachments': quote.attachments} %}
             </div>
             <div class="tab-pane" id="quote-informations">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': quote} %}

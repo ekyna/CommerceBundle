@@ -1,33 +1,45 @@
 <div class="row">
-    <div class="col-md-6">
-        {{ form_row(form.supplier, {'label_col': 4, 'widget_col': 8}) }}
+    <div class="col-md-4">
+        {{ form_row(form.number, {'label_col': 6, 'widget_col': 6}) }}
     </div>
-    <div class="col-md-6">
-        {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
+    <div class="col-md-4">
+        {{ form_row(form.supplier, {'label_col': 6, 'widget_col': 6}) }}
     </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        {{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}
-    </div>
-    <div class="col-md-6">
-        {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+    <div class="col-md-4">
+        {{ form_row(form.carrier, {'label_col': 6, 'widget_col': 6}) }}
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6">
-        {{ form_row(form.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
+    <div class="col-md-4">
+        {{ form_row(form.state, {'label_col': 6, 'widget_col': 6}) }}
     </div>
-    <div class="col-md-6">
-        {{ form_row(form.shippingCost, {'label_col': 4, 'widget_col': 8}) }}
+    <div class="col-md-4">
+        {{ form_row(form.paymentDate, {'label_col': 6, 'widget_col': 6}) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.estimatedDateOfArrival, {'label_col': 6, 'widget_col': 6}) }}
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6">
-        {{ form_row(form.paymentDate, {'label_col': 4, 'widget_col': 8}) }}
+    <div class="col-md-4">
+        {{ form_row(form.currency, {'label_col': 6, 'widget_col': 6}) }}
     </div>
-    <div class="col-md-6">
-        {{ form_row(form.paymentTotal, {'label_col': 4, 'widget_col': 8}) }}
+    <div class="col-md-4">
+        {{ form_row(form.paymentTotal, {'label_col': 6, 'widget_col': 6}) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.shippingCost, {'label_col': 6, 'widget_col': 6}) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        {{ form_row(form.customsDuty, {'label_col': 6, 'widget_col': 6}) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.customsVat, {'label_col': 6, 'widget_col': 6}) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.administrativeFee, {'label_col': 6, 'widget_col': 6}) }}
     </div>
 </div>
 <hr>

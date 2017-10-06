@@ -8,6 +8,8 @@ ekyna_commerce_account_quote_index:
             name: Mes devis
             parent: ekyna_user_account_index
             position: 40
+            locked: true
+            advanced: false
             seo:
                 follow: false
                 index: false
@@ -17,13 +19,12 @@ ekyna_commerce_account_quote_show:
     defaults:
         _controller: EkynaCommerceBundle:Account/Quote:show
     methods: [GET]
-    options:
-        _cms:
-            name: Détail du devis
-            parent: ekyna_commerce_account_quote_index
-            seo:
-                follow: false
-                index: false
+
+ekyna_commerce_account_quote_payment:
+    path: /{number}/payment
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:payment
+    methods: [GET, POST]
 
 ekyna_commerce_account_quote_attachment_download:
     path: /{number}/documents/{id}
@@ -31,15 +32,3 @@ ekyna_commerce_account_quote_attachment_download:
         _controller: EkynaCommerceBundle:Account/Quote:attachmentDownload
     methods: [GET]
 
-#ekyna_commerce_account_quote_edit:
-#    path: /edit
-#    defaults:
-#        _controller: EkynaCommerceBundle:Account/Quote:edit
-#    methods: [GET|POST]
-#    options:
-#        _cms:
-#            name: Modifiez vos devis
-#            parent: ekyna_commerce_account_quote_index
-#            seo:
-#                follow: false
-#                index: false

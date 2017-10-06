@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Intl\Intl;
 
 /**
  * Class Configuration
@@ -43,13 +44,23 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('company_logo')
                             ->defaultNull()
                         ->end()
-                        ->arrayNode('countries')
-                            ->defaultValue(['US'])
-                            ->prototype('scalar')->end()
+                        ->scalarNode('country')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->defaultValue('US')
+                            ->validate()
+                            ->ifNotInArray(array_keys(Intl::getRegionBundle()->getCountryNames()))
+                                ->thenInvalid('Invalid default country %s')
+                            ->end()
                         ->end()
-                        ->arrayNode('currencies')
-                            ->defaultValue(['USD'])
-                            ->prototype('scalar')->end()
+                        ->scalarNode('currency')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->defaultValue('USD')
+                            ->validate()
+                            ->ifNotInArray(array_keys(Intl::getCurrencyBundle()->getCurrencyNames()))
+                                ->thenInvalid('Invalid default currency %s')
+                            ->end()
                         ->end()
                         ->arrayNode('customer')
                             ->addDefaultsIfNotSet()
@@ -177,7 +188,7 @@ class Configuration implements ConfigurationInterface
                                     'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
                                 ])->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAttachmentController')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartAttachment')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAttachmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.cart')->end()
@@ -319,6 +330,17 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerGroupType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->end()
+                                ->arrayNode('translation')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerGroupTranslation')->end()
+                                        ->scalarNode('repository')->end()
+                                        ->arrayNode('fields')
+                                            ->prototype('scalar')->end()
+                                            ->defaultValue(['title'])
+                                        ->end()
+                                    ->end()
+                                ->end()
                             ->end()
                         ->end()
                         ->arrayNode('order')
@@ -359,7 +381,7 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderAttachment')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAttachmentController')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order')->end()
                             ->end()
@@ -526,7 +548,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Payment\Entity\PaymentTerm')->end()
                                 ->scalarNode('controller')->end()
                                 ->scalarNode('operator')->end()
-                                ->scalarNode('repository')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\PaymentTermRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\PaymentTermType')->end()
                                 ->scalarNode('parent')->end()
@@ -649,6 +671,23 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('event')->end()
                             ->end()
                         ->end()
+                        ->arrayNode('supplier_carrier')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/SupplierOrder:_form.html',
+                                    'show.html'   => 'EkynaCommerceBundle:Admin/SupplierOrder:show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierCarrier')->end()
+                                ->scalarNode('controller')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierCarrierType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\SupplierCarrierType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('supplier_order')
                             ->addDefaultsIfNotSet()
                             ->children()
@@ -673,6 +712,21 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierOrderItem')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemType')->end()
+                                ->scalarNode('parent')->defaultValue('ekyna_commerce.supplier_order')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('supplier_order_attachment')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierOrderAttachment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderAttachmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.supplier_order')->end()
                             ->end()
                         ->end()
@@ -736,7 +790,7 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteAttachment')->end()
-                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAttachmentController')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAttachmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.quote')->end()
                             ->end()

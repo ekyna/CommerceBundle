@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Payment;
 
+use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderPaymentRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,6 +62,14 @@ final class OrderPaymentController extends AbstractController
      */
     protected function afterDone(Request $request, PaymentInterface $payment)
     {
-        return $this->generateUrl('ekyna_commerce_order_checkout_confirmation'); // TODO
+        if ($payment instanceof OrderPaymentInterface) {
+            $order = $payment->getOrder();
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_account_order_show', [
+                'number' => $order->getNumber(),
+            ]));
+        }
+
+        return $this->generateUrl('ekyna_commerce_account_order_index');
     }
 }
