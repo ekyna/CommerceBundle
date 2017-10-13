@@ -3,7 +3,7 @@
 import * as $ from 'jquery';
 import * as _ from 'underscore';
 import * as Bootstrap from 'bootstrap';
-import * as Modal from 'ekyna-modal';
+//import * as Modal from 'ekyna-modal';
 import * as Ui from 'ekyna-ui';
 import * as Dispatcher from 'ekyna-dispatcher';
 

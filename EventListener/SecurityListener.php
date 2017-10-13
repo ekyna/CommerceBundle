@@ -29,8 +29,8 @@ class SecurityListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param CartProviderInterface         $cartProvider
-     * @param CustomerProviderInterface     $customerProvider
+     * @param CartProviderInterface     $cartProvider
+     * @param CustomerProviderInterface $customerProvider
      */
     public function __construct(
         CartProviderInterface $cartProvider,
@@ -73,9 +73,10 @@ class SecurityListener implements EventSubscriberInterface
             $customer = $this->customerProvider->getCustomer();
 
             if ($cart->getCustomer() !== $customer) {
-                $cart
-                    ->setCustomer($customer)
-                    ->setCustomerGroup($customer->getCustomerGroup());
+                $cart->setCustomer($customer);
+                if ($customer) {
+                    $cart->setCustomerGroup($customer->getCustomerGroup());
+                }
 
                 $this->cartProvider->saveCart();
             }
