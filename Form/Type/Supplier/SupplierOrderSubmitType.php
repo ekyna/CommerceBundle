@@ -107,7 +107,7 @@ class SupplierOrderSubmitType extends Form\AbstractType
                 ])
                 ->add('customsDuty', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_duty',
-                    'currency' => $currency->getCode(),
+                    'currency' => $this->defaultCurrency,
                 ])
                 ->add('customsVat', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
