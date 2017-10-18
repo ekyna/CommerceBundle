@@ -5,6 +5,14 @@
 
     <services>
 
+        <!-- Tax group event listener -->
+        <service id="ekyna_commerce.tax_group.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\TaxGroupEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.tax_group.repository"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Tax resolver -->
         <service id="ekyna_commerce.pricing.tax_resolver"
                  class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">

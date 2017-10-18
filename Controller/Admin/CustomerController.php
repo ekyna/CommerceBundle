@@ -4,6 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Search\CustomerRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class CustomerController
@@ -12,6 +15,38 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
  */
 class CustomerController extends ResourceController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function searchAction(Request $request)
+    {
+        //$callback = $request->query->get('callback');
+        $limit = intval($request->query->get('limit'));
+        $query = trim($request->query->get('query'));
+        $parent = intval($request->query->get('parent', 0));
+
+        $repository = $this->get('fos_elastica.manager')->getRepository($this->config->getResourceClass());
+        if (!$repository instanceOf CustomerRepository) {
+            throw new \RuntimeException('Expected instance of ' . CustomerRepository::class);
+        }
+
+        if (0 < $parent) {
+            $results = $repository->searchAvailableParents($query, $limit);
+        } else {
+            $results = $repository->defaultSearch($query, $limit);
+        }
+
+        $data = $this->container->get('serializer')->serialize([
+            'results'     => $results,
+            'total_count' => count($results),
+        ], 'json', ['groups' => ['Default']]);
+
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'text/javascript');
+
+        return $response;
+    }
+
     /**
      * @inheritDoc
      */
@@ -41,7 +76,14 @@ class CustomerController extends ResourceController
     protected function buildShowData(array &$data, Context $context)
     {
         $request = $context->getRequest();
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
         $customer = $context->getResource();
+
+        if (!$customer->hasParent()) {
+            if (null === $customer->getDefaultInvoiceAddress()) {
+                $this->addFlash('ekyna_commerce.customer.alert.no_invoice_address', 'warning');
+            }
+        }
 
         $tables = [
             'children' => [

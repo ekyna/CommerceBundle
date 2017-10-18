@@ -39,6 +39,20 @@
             <argument type="service" id="ekyna_commerce.pricing.updater"/>
             <tag name="resource.event_subscriber"/>
         </service>
+        <!-- Customer address event listener -->
+        <service id="ekyna_commerce.customer_address.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CustomerAddressEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.customer_address.repository"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+        <!-- Customer group event listener -->
+        <service id="ekyna_commerce.customer_group.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CustomerGroupEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
 
         <!-- Account menu event subscriber -->
         <service id="ekyna_commerce.account.menu_subscriber"

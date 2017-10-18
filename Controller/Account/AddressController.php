@@ -23,13 +23,19 @@ class AddressController extends AbstractController
     {
         $customer = $this->getCustomerOrRedirect();
 
-        $addresses = $this
+        $parameters = [];
+
+        $parameters['addresses'] = $this
             ->get('ekyna_commerce.customer_address.repository')
             ->findByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Address:index.html.twig', [
-            'addresses' => $addresses,
-        ]);
+        if (null !== $parent = $customer->getParent()) {
+            $parameters['parent_addresses'] = $this
+                ->get('ekyna_commerce.customer_address.repository')
+                ->findByCustomer($parent);
+        }
+
+        return $this->render('EkynaCommerceBundle:Account/Address:index.html.twig', $parameters);
     }
 
     /**
@@ -194,6 +200,84 @@ class AddressController extends AbstractController
             'form'    => $form->createView(),
             'addresses' => $addresses,
         ]);
+    }
+
+    /**
+     * Invoice default action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function invoiceDefaultAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        if (null === $address = $this->findAddressByRequest($request)) {
+            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        }
+
+        if (
+            $address->isInvoiceDefault() && !(
+                $customer->hasParent() &&
+                null !== $customer->getParent()->getDefaultInvoiceAddress(true)
+            )
+        ) {
+            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        }
+
+        $address->setInvoiceDefault(!$address->isInvoiceDefault());
+
+        $event = $this
+            ->get('ekyna_commerce.customer_address.operator')
+            ->update($address);
+
+        if ($event->hasErrors()) {
+            $event->toFlashes($this->getFlashBag());
+        } else {
+            $this->addFlash('ekyna_commerce.account.address.edit.success', 'success');
+        }
+
+        return $this->redirectToRoute('ekyna_commerce_account_address_index');
+    }
+
+    /**
+     * Delivery default action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deliveryDefaultAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        if (null === $address = $this->findAddressByRequest($request)) {
+            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        }
+
+        if (
+            $address->isDeliveryDefault() && !(
+                $customer->hasParent() &&
+                null !== $customer->getParent()->getDefaultDeliveryAddress(true)
+            )
+        ) {
+            return $this->redirectToRoute('ekyna_commerce_account_address_index');
+        }
+
+        $address->setDeliveryDefault(!$address->isDeliveryDefault());
+
+        $event = $this
+            ->get('ekyna_commerce.customer_address.operator')
+            ->update($address);
+
+        if ($event->hasErrors()) {
+            $event->toFlashes($this->getFlashBag());
+        } else {
+            $this->addFlash('ekyna_commerce.account.address.edit.success', 'success');
+        }
+
+        return $this->redirectToRoute('ekyna_commerce_account_address_index');
     }
 
     /**

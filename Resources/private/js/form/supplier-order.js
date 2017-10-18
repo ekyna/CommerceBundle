@@ -4,10 +4,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
     /**
      * Supplier order item widget
      */
-    $.fn.supplierOrderItemWidget = function(/*config*/) {
-
-        //config = $.extend({}, config);
-
+    $.fn.supplierOrderItemWidget = function() {
         this.each(function() {
 
             var $this = $(this);
@@ -32,10 +29,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
     /**
      * Supplier order compose widget
      */
-    $.fn.supplierOrderComposeWidget = function(/*config*/) {
-
-        //config = $.extend({}, config);
-
+    $.fn.supplierOrderComposeWidget = function() {
         this.each(function() {
 
             var $this = $(this),
@@ -75,10 +69,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
     /**
      * Supplier order item widget
      */
-    $.fn.supplierOrderWidget = function(/*config*/) {
-
-        //config = $.extend({}, config);
-
+    $.fn.supplierOrderWidget = function() {
         this.each(function() {
 
             var $this = $(this);
@@ -87,28 +78,6 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             $this
                 .find('.commerce-supplier-order-compose')
                 .supplierOrderComposeWidget();
-
-            /*function stringToFloat(value) {
-                return parseFloat(String(value).replace(',', '.'));
-            }
-
-            // Items change handler
-            function changeHandler() {
-                var total = 0;
-                // console.log('changed');
-                $this
-                    .find('.ekyna-collection-child')
-                    .each(function() {
-                        total += stringToFloat($(this).find('.order-item-quantity').val())
-                               * stringToFloat($(this).find('.order-item-net-price').val());
-                    });
-
-                $this.find('#supplier_order_paymentTotal').val(total);
-            }
-
-            $this.on('change blur', '.ekyna-collection-child input', changeHandler);
-
-            changeHandler();*/
         });
 
         return this;

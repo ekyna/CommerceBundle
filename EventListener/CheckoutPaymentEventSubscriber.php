@@ -138,6 +138,11 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Switch to parent if available
+        if ($customer->hasParent()) {
+            $customer = $customer->getParent();
+        }
+
         $payment = $event->getPayment();
 
         // Customer available fund

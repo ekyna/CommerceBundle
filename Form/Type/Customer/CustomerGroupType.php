@@ -7,6 +7,8 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Component\Commerce\Customer\Entity\CustomerGroupTranslation;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Class CustomerGroupType
@@ -39,13 +41,6 @@ class CustomerGroupType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
-            ->add('default', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.default',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => CustomerGroupTranslationType::class,
                 'form_options'   => [
@@ -54,5 +49,20 @@ class CustomerGroupType extends ResourceFormType
                 'label'          => false,
                 'error_bubbling' => false,
             ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface $group */
+            $group = $event->getData();
+            $form = $event->getForm();
+
+            $form->add('default', Type\CheckboxType::class, [
+                'label'    => 'ekyna_core.field.default',
+                'required' => false,
+                'disabled' => $group->isDefault(),
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ]);
+        });
     }
 }

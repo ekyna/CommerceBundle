@@ -35,6 +35,22 @@ ekyna_commerce_customer_address_admin_edit:
         customerId: \d+
         customerAddressId: \d+
 
+ekyna_commerce_customer_address_admin_default_invoice:
+    path: /{customerAddressId}/default-invoice
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:invoiceDefaultAction" }
+    methods: [GET]
+    requirements:
+        customerId: \d+
+        customerAddressId: \d+
+
+ekyna_commerce_customer_address_admin_default_delivery:
+    path: /{customerAddressId}/default-delivery
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:deliveryDefaultAction" }
+    methods: [GET]
+    requirements:
+        customerId: \d+
+        customerAddressId: \d+
+
 ekyna_commerce_customer_address_admin_remove:
     path: /{customerAddressId}/remove
     defaults: { _controller: "ekyna_commerce.customer_address.controller:removeAction" }

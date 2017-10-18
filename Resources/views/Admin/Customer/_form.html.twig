@@ -22,8 +22,6 @@
             </div>
             {{ form_row(form.description) }}
             <hr>
-            {{ form_row(form.customerGroup) }}
-            {{ form_row(form.parent) }}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.user, {'label_col': 4, 'widget_col': 8}) }}
@@ -33,6 +31,8 @@
                 </div>
             </div>
             <hr>
+            {{ form_row(form.parent) }}
+            {{ form_row(form.customerGroup) }}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}

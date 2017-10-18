@@ -154,6 +154,7 @@ class SupplierProductType extends ResourceTableType
         }
 
         $builder
+            ->setExportable(true)
             ->addColumn('reference', CType\Column\TextType::class, [
                 'label'    => 'ekyna_core.field.reference',
                 'sortable' => true,

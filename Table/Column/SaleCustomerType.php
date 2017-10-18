@@ -7,6 +7,7 @@ use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Context\ActiveSort;
+use Ekyna\Component\Table\Export\Value;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\AdapterInterface;
 use Ekyna\Component\Table\Source\RowInterface;
@@ -60,6 +61,14 @@ class SaleCustomerType extends AbstractColumnType
                 'value'        => $value,
             ]);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function exportValue(Value $value, ColumnInterface $column, RowInterface $row, array $options)
+    {
+        $value->setValue((string) $value->getValue());
     }
 
     /**

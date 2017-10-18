@@ -1,27 +1,59 @@
-<h3>{{ 'ekyna_commerce.account.address.title'|trans }}</h3>
+<h3>{{ title|default('ekyna_commerce.account.address.title')|trans }}</h3>
 
-{# TODO Warn about children access to addresses #}
 <hr>
+
+{% if buttons is not defined %}{% set buttons = true %}{% endif %}
 
 {% for address in addresses %}
     {%- if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-body">
-                {{ address|commerce_address }}
-
-                {% if address.invoiceDefault %}
-                    <br><span class="label label-default">
-                    {{- 'ekyna_commerce.customer_address.field.invoice_default'|trans -}}
-                </span>
-                {% endif %}
-
-                {% if address.deliveryDefault %}
-                    <br><span class="label label-default">
-                    {{- 'ekyna_commerce.customer_address.field.delivery_default'|trans -}}
-                </span>
-                {% endif %}
+                <p>{{ address|commerce_address }}</p>
+                {% set customer = address.customer %}
+                <p>
+                {%- if address.invoiceDefault -%}
+                    {%- if buttons and customer.hasParent() and customer.parent.getDefaultInvoiceAddress(true) is not same as(null) -%}
+                        <a href="{{ path('ekyna_commerce_account_address_default_invoice', {
+                            'addressId': address.id
+                        }) }}" class="btn btn-xs btn-primary">
+                            {{- 'ekyna_commerce.customer_address.field.invoice_default'|trans -}}
+                        </a>
+                    {%- else -%}
+                        <span class="btn btn-xs btn-primary disabled">
+                            {{- 'ekyna_commerce.customer_address.field.invoice_default'|trans -}}
+                        </span>
+                    {%- endif -%}
+                {%- elseif buttons -%}
+                    <a href="{{ path('ekyna_commerce_account_address_default_invoice', {
+                        'addressId': address.id
+                    }) }}" class="btn btn-xs btn-default">
+                        {{- 'ekyna_commerce.customer_address.button.invoice_default'|trans -}}
+                    </a>
+                {%- endif -%}
+                &nbsp;
+                {%- if address.deliveryDefault -%}
+                    {%- if buttons and customer.hasParent() and customer.parent.getDefaultDeliveryAddress(true) is not same as(null) -%}
+                        <a href="{{ path('ekyna_commerce_account_address_default_delivery', {
+                            'addressId': address.id
+                        }) }}" class="btn btn-xs btn-primary">
+                            {{- 'ekyna_commerce.customer_address.field.delivery_default'|trans -}}
+                        </a>
+                    {%- else -%}
+                        <span class="btn btn-xs btn-primary disabled">
+                            {{- 'ekyna_commerce.customer_address.field.delivery_default'|trans -}}
+                        </span>
+                    {%- endif -%}
+                {%- elseif buttons -%}
+                    <a href="{{ path('ekyna_commerce_account_address_default_delivery', {
+                        'addressId': address.id
+                    }) }}" class="btn btn-xs btn-default">
+                        {{- 'ekyna_commerce.customer_address.button.delivery_default'|trans -}}
+                    </a>
+                {%- endif -%}
+                </p>
             </div>
+            {%- if buttons -%}
             <div class="panel-footer">
                 <a href="{{ path('ekyna_commerce_account_address_edit', {'addressId': address.id}) }}"
                    class="btn btn-xs btn-default">
@@ -32,6 +64,7 @@
                     {{- 'ekyna_core.button.remove'|trans -}}
                 </a>
             </div>
+            {%- endif -%}
         </div>
     </div>
     {%- if (loop.index0 % 2 == 1) or loop.last %}</div>{% endif %}

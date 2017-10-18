@@ -13,6 +13,9 @@ use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Class CustomerType
@@ -53,17 +56,10 @@ class CustomerType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('customerGroup', ResourceType::class, [
-                'label'        => 'ekyna_commerce.customer_group.label.plural',
-                'class'        => $this->customerGroupClass,
-                'allow_new'    => true,
-                'choice_label' => 'name',
-            ])
-            ->add('parent', ResourceType::class, [
-                'label'     => 'ekyna_commerce.customer.field.parent',
-                'class'     => $this->dataClass,
-                'allow_new' => true,
-                'required'  => false,
+            ->add('parent', CustomerSearchType::class, [
+                'label'    => 'ekyna_commerce.customer.field.parent',
+                'required' => false,
+                'parent'   => true,
             ])
             ->add('user', UserSearchType::class, [
                 'required'  => false,
@@ -95,22 +91,55 @@ class CustomerType extends ResourceFormType
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
             ])
-            ->add('vatNumber', VatNumberType::class)
-            ->add('vatValid', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.pricing.field.vat_valid',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
-            ->add('paymentTerm', PaymentTermChoiceType::class)
-            ->add('outstandingLimit', Type\NumberType::class, [
-                'label' => 'ekyna_commerce.customer.field.outstanding_limit',
-                'scale' => 2,
-            ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.description',
                 'required' => false,
             ]);
+
+        $formModifier = function (FormInterface $form, $hasParent) {
+            $form
+                ->add('customerGroup', ResourceType::class, [
+                    'label'        => 'ekyna_commerce.customer_group.label.plural',
+                    'class'        => $this->customerGroupClass,
+                    'allow_new'    => true,
+                    'choice_label' => 'name',
+                    'disabled'     => $hasParent,
+                ])
+                ->add('vatNumber', VatNumberType::class, [
+                    'disabled' => $hasParent,
+                ])
+                ->add('vatValid', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.pricing.field.vat_valid',
+                    'required' => false,
+                    'disabled' => $hasParent,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('paymentTerm', PaymentTermChoiceType::class, [
+                    'disabled' => $hasParent,
+                ])
+                ->add('outstandingLimit', Type\NumberType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                    'scale'    => 2,
+                    'disabled' => $hasParent,
+                ]);
+        };
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier) {
+            /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+            $customer = $event->getData();
+
+            $formModifier($event->getForm(), $customer->hasParent());
+        });
+
+        $builder
+            ->get('parent')
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($formModifier) {
+                /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+                $parent = $event->getForm()->getData();
+
+                $formModifier($event->getForm()->getParent(), null !== $parent);
+            });
     }
 }

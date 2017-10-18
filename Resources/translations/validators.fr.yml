@@ -14,6 +14,7 @@ ekyna_commerce:
         vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
         phone_or_mobile_is_mandatory: Veuillez saisir un numéro de téléphone ou de mobile.
         term_required_for_outstanding: Vous devez sélectionner une condition de paiement si vous souahaitez définir une limite d'encours.
+        outstanding_required_for_term: Vous devez saisir une limite d'encours si vous souahaitez sélectionner une condition de paiement.
     gender:
         invalid: Ce titre n'est pas un titre valide.
     identity:

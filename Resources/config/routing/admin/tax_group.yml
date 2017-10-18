@@ -27,6 +27,14 @@ ekyna_commerce_tax_group_admin_edit:
     requirements:
         taxGroupId: \d+
 
+ekyna_commerce_tax_group_admin_toggle:
+    path: /{taxGroupId}/toggle/{field}
+    defaults: { _controller: "ekyna_commerce.tax_group.controller:toggleAction", field: default }
+    methods: [GET]
+    requirements:
+        taxGroupId: \d+
+        field: \w+
+
 ekyna_commerce_tax_group_admin_remove:
     path: /{taxGroupId}/remove
     defaults: { _controller: "ekyna_commerce.tax_group.controller:removeAction" }

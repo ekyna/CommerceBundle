@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
@@ -35,17 +34,17 @@ class CustomerGroupType extends ResourceTableType
                 'true_class'            => 'label-primary',
                 'false_class'           => 'label-default',
                 'disable_property_path' => 'business',
-                'position'              => 30,
+                'position'              => 20,
             ])
             ->addColumn('registration', CType\Column\BooleanType::class, [
-                'label'                 => 'ekyna_commerce.customer_group.field.registration',
-                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
-                'route_parameters'      => ['field' => 'registration'],
-                'route_parameters_map'  => ['customerGroupId' => 'id'],
-                'true_class'            => 'label-primary',
-                'false_class'           => 'label-default',
+                'label'                => 'ekyna_commerce.customer_group.field.registration',
+                'route_name'           => 'ekyna_commerce_customer_group_admin_toggle',
+                'route_parameters'     => ['field' => 'registration'],
+                'route_parameters_map' => ['customerGroupId' => 'id'],
+                'true_class'           => 'label-primary',
+                'false_class'          => 'label-default',
                 //'disable_property_path' => 'default',
-                'position'              => 30,
+                'position'             => 30,
             ])
             ->addColumn('default', CType\Column\BooleanType::class, [
                 'label'                 => 'ekyna_core.field.default',
@@ -55,7 +54,7 @@ class CustomerGroupType extends ResourceTableType
                 'true_class'            => 'label-primary',
                 'false_class'           => 'label-default',
                 'disable_property_path' => 'default',
-                'position'              => 20,
+                'position'              => 40,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -67,11 +66,12 @@ class CustomerGroupType extends ResourceTableType
                         'permission'           => 'edit',
                     ],
                     [
-                        'label'                => 'ekyna_core.button.remove',
-                        'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_customer_group_admin_remove',
-                        'route_parameters_map' => ['customerGroupId' => 'id'],
-                        'permission'           => 'delete',
+                        'label'                 => 'ekyna_core.button.remove',
+                        'class'                 => 'danger',
+                        'route_name'            => 'ekyna_commerce_customer_group_admin_remove',
+                        'route_parameters_map'  => ['customerGroupId' => 'id'],
+                        'permission'            => 'delete',
+                        'disable_property_path' => 'default',
                     ],
                 ],
             ])

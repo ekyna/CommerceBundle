@@ -49,10 +49,11 @@ class PaymentTermChoiceType extends AbstractType
 
         $resolver
             ->setDefaults([
+                'class'         => $this->dataClass,
                 'label'         => 'ekyna_commerce.payment_term.label.singular',
                 'placeholder'   => 'ekyna_core.value.none',
                 'required'      => false,
-                'class'         => $this->dataClass,
+                'select2'       => false,
                 'query_builder' => $queryBuilder,
             ]);
     }

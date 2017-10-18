@@ -30,9 +30,13 @@ class TaxGroupType extends ResourceTableType
                 'position'             => 10,
             ])
             ->addColumn('default', CType\Column\BooleanType::class, [
-                'label'    => 'ekyna_core.field.default',
-                'sortable' => true,
-                'position' => 20,
+                'label'                 => 'ekyna_core.field.default',
+                'sortable'              => true,
+                'position'              => 20,
+                'route_name'            => 'ekyna_commerce_tax_group_admin_toggle',
+                'route_parameters'      => ['field' => 'default'],
+                'route_parameters_map'  => ['taxGroupId' => 'id'],
+                'disable_property_path' => 'default',
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -53,6 +57,7 @@ class TaxGroupType extends ResourceTableType
                             'taxGroupId' => 'id',
                         ],
                         'permission'           => 'delete',
+                        'disable_property_path' => 'default',
                     ],
                 ],
             ])

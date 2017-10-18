@@ -12,5 +12,15 @@
             {{ 'ekyna_commerce.account.address.add.title'|trans }}
         </a>
     </p>
+
+    {% if parent_addresses is defined and parent_addresses is not empty %}
+        <br><br>
+        {% include "EkynaCommerceBundle:Account/Address:_list.html.twig" with {
+            'title': 'ekyna_commerce.account.address.parent_title',
+            'addresses': parent_addresses,
+            'buttons': false
+        } %}
+    {% endif %}
+
 {% endspaceless %}
 {% endblock account %}

@@ -7,6 +7,8 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -41,21 +43,29 @@ class CustomerAddressType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['defaults']) {
-            $builder
-                ->add('invoiceDefault', CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.customer_address.field.invoice_default',
-                    'required' => false,
-                    'attr'     => [
-                        'align_with_widget' => true,
-                    ],
-                ])
-                ->add('deliveryDefault', CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.customer_address.field.delivery_default',
-                    'required' => false,
-                    'attr'     => [
-                        'align_with_widget' => true,
-                    ],
-                ]);
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+                /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface $address */
+                $address = $event->getData();
+                $form = $event->getForm();
+
+                $form
+                    ->add('invoiceDefault', CheckboxType::class, [
+                        'label'    => 'ekyna_commerce.customer_address.field.invoice_default',
+                        'disabled' => $address->isInvoiceDefault(),
+                        'required' => false,
+                        'attr'     => [
+                            'align_with_widget' => true,
+                        ],
+                    ])
+                    ->add('deliveryDefault', CheckboxType::class, [
+                        'label'    => 'ekyna_commerce.customer_address.field.delivery_default',
+                        'disabled' => $address->isDeliveryDefault(),
+                        'required' => false,
+                        'attr'     => [
+                            'align_with_widget' => true,
+                        ],
+                    ]);
+            });
         }
 
         if ($options['customer_form']) {

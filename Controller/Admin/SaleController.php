@@ -45,13 +45,13 @@ class SaleController extends AbstractSaleController
         if (null !== $customer) {
             $sale->setCustomer($customer);
 
-            if (null !== $address = $customer->getDefaultInvoiceAddress()) {
+            if (null !== $address = $customer->getDefaultInvoiceAddress(true)) {
                 $invoiceAddress = $this->get('ekyna_commerce.sale_factory')->createAddressForSale($sale);
                 AddressUtil::copy($address, $invoiceAddress);
                 $sale->setInvoiceAddress($invoiceAddress);
             }
 
-            if (null !== $address = $customer->getDefaultDeliveryAddress()) {
+            if (null !== $address = $customer->getDefaultDeliveryAddress(true)) {
                 $deliveryAddress = $this->get('ekyna_commerce.sale_factory')->createAddressForSale($sale);
                 AddressUtil::copy($address, $deliveryAddress);
                 $sale->setInvoiceAddress($deliveryAddress);

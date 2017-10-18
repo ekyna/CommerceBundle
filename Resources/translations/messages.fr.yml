@@ -4,6 +4,7 @@ ekyna_commerce:
     account:
         address:
             title: Mes adresses
+            parent_title: Adresses de votre compte facturation
             add:
                 title: Ajouter une adresse
                 success: L'adresse a bien été enregistrée.
@@ -278,7 +279,7 @@ ekyna_commerce:
             edit: Modifier le client
             remove: Supprimer le client
         field:
-            parent: Comptabilité
+            parent: Compte facturation
             in_charge: Responsable
             children: Commerciaux
             outstanding_limit: Limite d'encours
@@ -286,6 +287,7 @@ ekyna_commerce:
             credit_balance: Solde avoirs
         alert:
             no_item: Aucun client configuré
+            no_invoice_address: Aucune adresse de facturation configuré.
 
     customer_address:
         label:
@@ -303,9 +305,13 @@ ekyna_commerce:
             new: Nouvelle adresse
             edit: Modifier l'adresse
             remove: Supprimer l'adresse
+            invoice_default: Definir par défaut pour la facturation
+            delivery_default: Definir par défaut pour la livraison
         field:
             invoice_default: Par défaut pour la facturation
             delivery_default: Par défaut pour la livraison
+        message:
+            cant_be_deleted: Les adresses par défaut pour la facturation ou la livraison ne peut être supprimées.
         alert:
             no_item: Aucune adresse configuré
 
@@ -328,6 +334,8 @@ ekyna_commerce:
         field:
             business: Entreprise
             registration: Disponible à l'inscription
+        message:
+            cant_be_deleted: Le groupe de client par défaut ne peut être supprimé.
         alert:
             no_item: Aucun groupe de clients configuré
 
@@ -1089,6 +1097,8 @@ ekyna_commerce:
             new: Nouveau groupe
             edit: Modifier le groupe
             remove: Supprimer le groupe
+        message:
+            cant_be_deleted: Le groupe de taxes par défaut ne peut être supprimé.
         alert:
             no_item: Aucun groupe de taxes configuré
 
