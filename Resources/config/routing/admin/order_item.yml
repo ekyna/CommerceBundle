@@ -35,3 +35,8 @@ ekyna_commerce_order_item_admin_remove:
     requirements:
         orderId: \d+
         orderItemId: \d+
+
+ekyna_commerce_order_item_admin_adjustment:
+    resource: order_item_adjustment.yml
+    prefix: /{orderItemId}/adjustments
+

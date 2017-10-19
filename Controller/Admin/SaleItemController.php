@@ -227,8 +227,10 @@ class SaleItemController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
         $item = $context->getResource($resourceName);
+
+        $saleName = $this->getParentConfiguration()->getResourceName();
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+        $sale = $context->getResource($saleName);
 
         $this->isGranted('EDIT', $item);
 
@@ -238,9 +240,14 @@ class SaleItemController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
+        $action = $this->generateUrl($this->getConfiguration()->getRoute('configure'), [
+            $saleName.'Id'     => $sale->getId(),
+            $saleName.'ItemId' => $item->getId(),
+        ]);
+
         $form = $this->createForm(SaleItemConfigureType::class, $item, [
             'method' => 'post',
-            'action' => $this->generateResourcePath($item, 'configure'),
+            'action' => $action,
             'attr'   => [
                 'class' => 'form-horizontal',
             ],
@@ -301,23 +308,32 @@ class SaleItemController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
         $item = $context->getResource($resourceName);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
-        if ($item->isImmutable()) {
+        $saleName = $this->getParentConfiguration()->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($saleName);
+
+        /*if ($item->isImmutable()) {
             throw new NotFoundHttpException('Item is immutable.');
         }
         if ($item->hasSubjectIdentity()) {
             throw new NotFoundHttpException('Item has identity.');
-        }
+        }*/
 
         $this->isGranted('EDIT', $item);
 
         $isXhr = $request->isXmlHttpRequest();
+
+        $action = $this->generateUrl($this->getConfiguration()->getRoute('edit'), [
+            $saleName.'Id'     => $sale->getId(),
+            $saleName.'ItemId' => $item->getId(),
+        ]);
+
         $form = $this->createEditResourceForm($context, !$isXhr, [
             'attr' => [
                 'class' => 'form-horizontal',
             ],
+            'action' => $action,
         ]);
 
         $form->handleRequest($request);
@@ -372,8 +388,10 @@ class SaleItemController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
         $item = $context->getResource($resourceName);
+
+        $saleName = $this->getParentConfiguration()->getResourceName();
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+        $sale = $context->getResource($saleName);
 
         if ($item->isImmutable()) {
             throw new NotFoundHttpException('Item is immutable.');

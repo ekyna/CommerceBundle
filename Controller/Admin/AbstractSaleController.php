@@ -23,8 +23,10 @@ abstract class AbstractSaleController extends ResourceController
      */
     protected function buildRecalculateForm(SaleInterface $sale)
     {
-        // TODO 'ekyna_commerce_order_admin_recalculate'
-        $config = $this->hasParent() ? $this->getParentConfiguration() : $this->config;
+        $config = $this->config;
+        while (null !== $parentId = $config->getParentConfigurationId()) {
+            $config = $this->get($parentId);
+        }
 
         $parameter = $config->getResourceName() . 'Id';
         $route = $config->getRoute('recalculate');

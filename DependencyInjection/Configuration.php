@@ -214,7 +214,15 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('cart_item_adjustment')
                             ->addDefaultsIfNotSet()
                             ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemAdjustmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemAdjustmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.cart_item')->end()
                             ->end()
                         ->end()
@@ -413,7 +421,15 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('order_item_adjustment')
                             ->addDefaultsIfNotSet()
                             ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemAdjustmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemAdjustmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.order_item')->end()
                             ->end()
                         ->end()
@@ -815,7 +831,15 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('quote_item_adjustment')
                             ->addDefaultsIfNotSet()
                             ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
+                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
+                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
+                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemAdjustmentController')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemAdjustmentType')->end()
                                 ->scalarNode('parent')->defaultValue('ekyna_commerce.quote_item')->end()
                             ->end()
                         ->end()

@@ -3,7 +3,7 @@
 {% block customer %}
     <div class="row">
         <div class="col-md-6">
-            {% if sale.customer is not same as (null) %}
+            {% if sale.customer is not null %}
                 {{ show_row(sale.customer|identity, 'entity', 'ekyna_commerce.customer.label.singular', {
                     'id': 'sale_customer',
                     'route': 'ekyna_commerce_customer_admin_show',

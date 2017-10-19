@@ -2,17 +2,18 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
+use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class SaleAdjustmentController
+ * Class SaleItemAdjustmentController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Admin
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleAdjustmentController extends AbstractSaleController
+class SaleItemAdjustmentController extends AbstractSaleController
 {
     /**
      * {@inheritdoc}
@@ -48,26 +49,39 @@ class SaleAdjustmentController extends AbstractSaleController
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+        /** @var \Ekyna\Component\Resource\Configuration\ConfigurationInterface $saleConfig */
+        $saleConfig = $this->get($this->getParentConfiguration()->getParentConfigurationId());
+        $itemConfig = $this->getParentConfiguration();
+
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        $item = $context->getResource($itemConfig->getResourceName());
 
         $isXhr = $request->isXmlHttpRequest();
 
         $adjustment = $this
             ->get('ekyna_commerce.sale_factory')
-            ->createAdjustmentForSale($sale);
-        $sale->addAdjustment($adjustment); // So that we can access to the sale from the adjustment.
+            ->createAdjustmentForItem($item);
+        $item->addAdjustment($adjustment); // So that we can access to the sale from the adjustment.
 
         $context->addResource($resourceName, $adjustment);
 
         $this->getOperator()->initialize($adjustment);
 
+        $action = $this->generateUrl($this->getConfiguration()->getRoute('new'), [
+            $saleConfig->getResourceName() . 'Id' => $item->getSale()->getId(),
+            $itemConfig->getResourceName() . 'Id' => $item->getId(),
+        ]);
+
         $form = $this->createNewResourceForm($context, !$isXhr, [
-            'attr' => [
+            'action' => $action,
+            'attr'   => [
                 'class' => 'form-horizontal',
             ],
             'types' => [
                 AdjustmentTypes::TYPE_DISCOUNT,
+            ],
+            'modes' => [
+                AdjustmentModes::MODE_PERCENT,
             ],
         ]);
 
@@ -82,10 +96,10 @@ class SaleAdjustmentController extends AbstractSaleController
 
             if (!$event->hasErrors()) {
                 if ($isXhr) {
-                    return $this->buildXhrSaleViewResponse($sale);
+                    return $this->buildXhrSaleViewResponse($item->getSale());
                 }
 
-                return $this->redirect($this->generateResourcePath($sale));
+                return $this->redirect($this->generateResourcePath($item));
             } elseif ($isXhr) {
                 // TODO all event messages should be bound to XHR response
                 foreach ($event->getErrors() as $error) {
@@ -95,7 +109,7 @@ class SaleAdjustmentController extends AbstractSaleController
         }
 
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.sale.header.adjustment.new');
+            $modal = $this->createModal('new', 'ekyna_commerce.sale.header.item_adjustment.new');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -105,7 +119,7 @@ class SaleAdjustmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_new', $resourceName),
-            'ekyna_commerce.sale.button.adjustment.new'
+            'ekyna_commerce.sale.button.item_adjustment.new'
         );
 
         return $this->render(
@@ -126,8 +140,9 @@ class SaleAdjustmentController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Common\Model\AdjustmentInterface $adjustment */
         $adjustment = $context->getResource($resourceName);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        $item = $context->getResource($this->getParentConfiguration()->getResourceName());
+        $sale = $item->getSale();
 
         if ($adjustment->isImmutable()) {
             throw new NotFoundHttpException('Adjustment is immutable.');
@@ -167,7 +182,7 @@ class SaleAdjustmentController extends AbstractSaleController
         }
 
         if ($isXhr) {
-            $modal = $this->createModal('new', 'ekyna_commerce.sale.header.adjustment.edit');
+            $modal = $this->createModal('new', 'ekyna_commerce.sale.header.item_adjustment.edit');
             $modal
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars());
@@ -177,13 +192,13 @@ class SaleAdjustmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_configure', $resourceName),
-            'ekyna_commerce.sale.button.adjustment.edit'
+            'ekyna_commerce.sale.button.item_adjustment.edit'
         );
 
         return $this->render(
             'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html.twig',
             $context->getTemplateVars([
-                'form'          => $form->createView(),
+                'form' => $form->createView(),
             ])
         );
     }
@@ -198,8 +213,9 @@ class SaleAdjustmentController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Common\Model\AdjustmentInterface $adjustment */
         $adjustment = $context->getResource($resourceName);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        $item = $context->getResource($this->getParentConfiguration()->getResourceName());
+        $sale = $item->getSale();
 
         if ($adjustment->isImmutable()) {
             throw new NotFoundHttpException('Adjustment is immutable.');
@@ -212,24 +228,24 @@ class SaleAdjustmentController extends AbstractSaleController
         // TODO confirmation form
 
         //if ($this->getSaleHelper()->removeSaleAdjustmentById($sale, $adjustment->getId())) {
-            // TODO use ResourceManager
-            $event = $this->getOperator()->delete($adjustment);
-            if (!$isXhr) {
-                $event->toFlashes($this->getFlashBag());
+        // TODO use ResourceManager
+        $event = $this->getOperator()->delete($adjustment);
+        if (!$isXhr) {
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        if (!$event->hasErrors()) {
+            if ($isXhr) {
+                return $this->buildXhrSaleViewResponse($sale);
             }
 
-            if (!$event->hasErrors()) {
-                if ($isXhr) {
-                    return $this->buildXhrSaleViewResponse($sale);
-                }
-
-                return $this->redirect($this->generateResourcePath($sale));
-            } /*elseif ($isXhr) {
-                // TODO all event messages should be bound to XHR response
-                foreach ($event->getErrors() as $error) {
-                    $form->addError(new FormError($error->getMessage()));
-                }
-            }*/
+            return $this->redirect($this->generateResourcePath($sale));
+        } /*elseif ($isXhr) {
+            // TODO all event messages should be bound to XHR response
+            foreach ($event->getErrors() as $error) {
+                $form->addError(new FormError($error->getMessage()));
+            }
+        }*/
         //}
 
         if ($isXhr) {
@@ -238,7 +254,7 @@ class SaleAdjustmentController extends AbstractSaleController
 
         $this->appendBreadcrumb(
             sprintf('%s_remove', $resourceName),
-            'ekyna_commerce.sale.button.adjustment.remove'
+            'ekyna_commerce.sale.button.item_adjustment.remove'
         );
 
         return $this->render(

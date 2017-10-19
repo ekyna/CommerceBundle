@@ -60,8 +60,6 @@ ekyna_commerce:
                 subject: Création de compte client
                 admin_link: Voir la fiche client dans l'administration
 
-
-
     adjustment:
         label:
             singular: Ajustement
@@ -285,6 +283,9 @@ ekyna_commerce:
             outstanding_limit: Limite d'encours
             outstanding_balance: Solde d'encours
             credit_balance: Solde avoirs
+        help:
+            hierarchy: >
+                ◊&nbsp;&nbsp;Contact&nbsp;facturation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
         alert:
             no_item: Aucun client configuré
             no_invoice_address: Aucune adresse de facturation configuré.
@@ -636,22 +637,30 @@ ekyna_commerce:
             singular: Vente
             plural: Ventes
         header:
+            adjustment:
+                new: Ajouter une remise
+                edit: Modifier la remise
+                remove: Supprimer la remise
             item:
                 add: Ajouter un article
                 configure: Configurer l'article
                 new: Créer une ligne
                 edit: Modifier la ligne
                 remove: Supprimer la ligne
+            item_adjustment:
+                new: Ajouter une remise de ligne
+                edit: Modifier la remise de ligne
+                remove: Supprimer la remise de ligne
+            shipment:
+                edit: Modifier les frais de port
+        button:
+            refresh: Rafraîchir
+            recalculate: Recalculer
+            notify: Notifier
             adjustment:
                 new: Ajouter une remise
                 edit: Modifier la remise
                 remove: Supprimer la remise
-            shipment:
-                edit: Modifier les frais de port
-        button:
-            refresh: Râfraichir
-            recalculate: Recalculer
-            notify: Notifier
             item:
                 add: Ajouter un article
                 new: Ajouter une ligne
@@ -659,10 +668,10 @@ ekyna_commerce:
                 edit: Modifier la ligne
                 remove: Supprimer la ligne
                 information: Afficher les information
-            adjustment:
-                new: Ajouter une remise
-                edit: Modifier la remise
-                remove: Supprimer la remise
+            item_adjustment:
+                new: Ajouter une remise de ligne
+                edit: Modifier la remise de ligne
+                remove: Supprimer la remise de ligne
             shipment:
                 edit: Modifier les frais de port
         confirm:
@@ -685,6 +694,7 @@ ekyna_commerce:
             addresses: Adresses
             details: Détail
             customer: Client
+            origin_customer: Client originel
             address_choice: Carnet d'adresses
             invoice_address: Adresse de facturation
             delivery_address: Adresse de livraison

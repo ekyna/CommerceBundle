@@ -6,6 +6,7 @@ use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
@@ -13,6 +14,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -20,7 +22,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Validator\Constraints;
 
 /**
  * Class SaleController
@@ -289,24 +290,34 @@ class SaleController extends AbstractSaleController
             throw new InvalidArgumentException('Invalid target.');
         }
 
-        $form = $this->createTransformConfirmForm($sourceSale, $target);
+        /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface $targetRepository */
+        $targetRepository = $this->get('ekyna_commerce.' . $target . '.repository');
+
+        // Create the target sale
+        /** @var SaleInterface $targetSale */
+        $targetSale = $targetRepository->createNew();
+
+        // Copy from source sale to target sale
+        $this->get('ekyna_commerce.sale_transformer')
+            ->copySale($sourceSale, $targetSale);
+
+        $form = $this->createTransformConfirmForm($sourceSale, $targetSale, $target);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface $targetRepository */
-            $targetRepository = $this->get('ekyna_commerce.' . $target . '.repository');
-
-            // Create the target sale
-            /** @var SaleInterface $targetSale */
-            $targetSale = $targetRepository->createNew();
-
-            // Copy from source sale to target sale
-            $this->get('ekyna_commerce.sale_transformer')
-                ->copySale($sourceSale, $targetSale);
-
             /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $targetOperator */
             $targetOperator = $this->get('ekyna_commerce.' . $target . '.operator');
+
+            if ($targetSale instanceof OrderInterface) {
+                if (null === $targetSale->getOriginCustomer()) {
+                    if (null !== $originCustomer = $sourceSale->getCustomer()) {
+                        if ($originCustomer !== $targetSale->getCustomer()) {
+                            $targetSale->setOriginCustomer($originCustomer);
+                        }
+                    }
+                }
+            }
 
             // Persist the target sale
             $targetEvent = $targetOperator->persist($targetSale);
@@ -346,14 +357,15 @@ class SaleController extends AbstractSaleController
     /**
      * Creates the transform confirm form.
      *
-     * @param SaleInterface $sale
+     * @param SaleInterface $sourceSale
+     * @param SaleInterface $targetSale
      * @param string        $target
      *
      * @return \Symfony\Component\Form\FormInterface
      */
-    protected function createTransformConfirmForm(SaleInterface $sale, $target)
+    protected function createTransformConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale, $target)
     {
-        $action = $this->generateResourcePath($sale, 'transform', ['target' => $target]);
+        $action = $this->generateResourcePath($sourceSale, 'transform', ['target' => $target]);
 
         $translator = $this->getTranslator();
         $message = $translator->trans('ekyna_commerce.sale.confirm.transform', [
@@ -361,20 +373,13 @@ class SaleController extends AbstractSaleController
         ]);
 
         return $this
-            ->createFormBuilder(null, [
+            ->createForm(SaleTransformType::class, $targetSale, [
                 'action'            => $action,
                 'attr'              => ['class' => 'form-horizontal'],
                 'method'            => 'POST',
                 'admin_mode'        => true,
                 '_redirect_enabled' => true,
-            ])
-            ->add('confirm', Type\CheckboxType::class, [
-                'label'       => $message,
-                'attr'        => ['align_with_widget' => true],
-                'required'    => true,
-                'constraints' => [
-                    new Constraints\IsTrue(),
-                ],
+                'message'           => $message,
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
@@ -395,13 +400,12 @@ class SaleController extends AbstractSaleController
                             'attr'         => [
                                 'class' => 'form-cancel-btn',
                                 'icon'  => 'remove',
-                                'href'  => $this->generateResourcePath($sale),
+                                'href'  => $this->generateResourcePath($sourceSale),
                             ],
                         ],
                     ],
                 ],
-            ])
-            ->getForm();
+            ]);
     }
 
     /**

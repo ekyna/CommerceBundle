@@ -1,0 +1,25 @@
+ekyna_commerce_order_item_adjustment_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.order_item_adjustment.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+
+ekyna_commerce_order_item_adjustment_admin_edit:
+    path: /{orderItemAdjustmentId}/edit
+    defaults: { _controller: "ekyna_commerce.order_item_adjustment.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+        orderItemAdjustmentId: \d+
+
+ekyna_commerce_order_item_adjustment_admin_remove:
+    path: /{orderItemAdjustmentId}/remove
+    defaults: { _controller: "ekyna_commerce.order_item_adjustment.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+        orderItemAdjustmentId: \d+

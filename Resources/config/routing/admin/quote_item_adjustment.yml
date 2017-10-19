@@ -1,0 +1,25 @@
+ekyna_commerce_quote_item_adjustment_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.quote_item_adjustment.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+        quoteItemId: \d+
+
+ekyna_commerce_quote_item_adjustment_admin_edit:
+    path: /{quoteItemAdjustmentId}/edit
+    defaults: { _controller: "ekyna_commerce.quote_item_adjustment.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+        quoteItemId: \d+
+        quoteItemAdjustmentId: \d+
+
+ekyna_commerce_quote_item_adjustment_admin_remove:
+    path: /{quoteItemAdjustmentId}/remove
+    defaults: { _controller: "ekyna_commerce.quote_item_adjustment.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+        quoteItemId: \d+
+        quoteItemAdjustmentId: \d+

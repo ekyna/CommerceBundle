@@ -3,3 +3,9 @@
 {% block title %}
     <h1>{{ 'ekyna_commerce.order.header.transform'|trans({'%number%': order.number})|raw }}</h1>
 {% endblock title %}
+
+{% block main %}
+    {{ form_start(form) }}
+    {% include "EkynaCommerceBundle:Admin/Common/Sale:_form_transform.html.twig" %}
+    {{ form_end(form) }}
+{% endblock main %}

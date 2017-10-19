@@ -35,3 +35,7 @@ ekyna_commerce_quote_item_admin_remove:
     requirements:
         quoteId: \d+
         quoteItemId: \d+
+
+ekyna_commerce_quote_item_admin_adjustment:
+    resource: quote_item_adjustment.yml
+    prefix: /{quoteItemId}/adjustments

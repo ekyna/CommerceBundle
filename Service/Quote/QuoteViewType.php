@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Quote;
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Quote\Model as Quote;
 
 /**
@@ -79,6 +80,18 @@ class QuoteViewType extends AbstractViewType
 
         $actions = [];
 
+        // New adjustment button
+        if (!$item->hasAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)) {
+            $newAdjustmentPath = $this->generateUrl('ekyna_commerce_quote_item_adjustment_admin_new', [
+                'quoteId'     => $item->getSale()->getId(),
+                'quoteItemId' => $item->getId(),
+            ]);
+            $actions[] = new View\Action($newAdjustmentPath, 'fa fa-percent', [
+                'title'           => 'ekyna_commerce.sale.button.adjustment.new',
+                'data-sale-modal' => null,
+            ]);
+        }
+
         if (!$item->isImmutable() && !$item->getParent()) {
             // Configure action
             if ($item->isConfigurable()) {
@@ -128,27 +141,33 @@ class QuoteViewType extends AbstractViewType
             return;
         }
 
-        // Only for sale adjustments
         $adjustable = $adjustment->getAdjustable();
-        if (!$adjustable instanceof Quote\QuoteInterface) {
-            return;
+        if ($adjustable instanceof Quote\QuoteInterface) {
+            $routePrefix = 'ekyna_commerce_quote_adjustment_admin_';
+            $parameters = [
+                'quoteId'           => $adjustable->getId(),
+                'quoteAdjustmentId' => $adjustment->getId(),
+            ];
+        } elseif ($adjustable instanceof Quote\QuoteItemInterface) {
+            $routePrefix = 'ekyna_commerce_quote_item_adjustment_admin_';
+            $parameters = [
+                'quoteId'               => $adjustable->getSale()->getId(),
+                'quoteItemId'           => $adjustable->getId(),
+                'quoteItemAdjustmentId' => $adjustment->getId(),
+            ];
+        } else {
+            throw new InvalidArgumentException("Unexpected adjustable.");
         }
 
         $actions = [];
 
-        $editPath = $this->generateUrl('ekyna_commerce_quote_adjustment_admin_edit', [
-            'quoteId'           => $adjustable->getId(),
-            'quoteAdjustmentId' => $adjustment->getId(),
-        ]);
+        $editPath = $this->generateUrl($routePrefix . 'edit', $parameters);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.adjustment.edit',
             'data-sale-modal' => null,
         ]);
 
-        $removePath = $this->generateUrl('ekyna_commerce_quote_adjustment_admin_remove', [
-            'quoteId'           => $adjustable->getId(),
-            'quoteAdjustmentId' => $adjustment->getId(),
-        ]);
+        $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.adjustment.remove',
             'confirm'       => 'ekyna_commerce.sale.confirm.adjustment.remove',

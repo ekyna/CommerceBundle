@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model as Order;
 
 /**
@@ -100,6 +101,18 @@ class OrderViewType extends AbstractViewType
 
         $actions = [];
 
+        // New adjustment button
+        if (!$item->hasAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)) {
+            $newAdjustmentPath = $this->generateUrl('ekyna_commerce_order_item_adjustment_admin_new', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $actions[] = new View\Action($newAdjustmentPath, 'fa fa-percent', [
+                'title'           => 'ekyna_commerce.sale.button.adjustment.new',
+                'data-sale-modal' => null,
+            ]);
+        }
+
         // Information
         if (!$item instanceof Order\OrderItemInterface) {
             throw new \Exception("Unexpected sale item type.");
@@ -172,27 +185,33 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
-        // Only for sale adjustments
         $adjustable = $adjustment->getAdjustable();
-        if (!$adjustable instanceof Order\OrderInterface) {
-            return;
+        if ($adjustable instanceof Order\OrderInterface) {
+            $routePrefix = 'ekyna_commerce_order_adjustment_admin_';
+            $parameters = [
+                'orderId'           => $adjustable->getId(),
+                'orderAdjustmentId' => $adjustment->getId(),
+            ];
+        } elseif ($adjustable instanceof Order\OrderItemInterface) {
+            $routePrefix = 'ekyna_commerce_order_item_adjustment_admin_';
+            $parameters = [
+                'orderId'               => $adjustable->getSale()->getId(),
+                'orderItemId'           => $adjustable->getId(),
+                'orderItemAdjustmentId' => $adjustment->getId(),
+            ];
+        } else {
+            throw new InvalidArgumentException("Unexpected adjustable.");
         }
 
         $actions = [];
 
-        $editPath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_edit', [
-            'orderId'           => $adjustable->getId(),
-            'orderAdjustmentId' => $adjustment->getId(),
-        ]);
+        $editPath = $this->generateUrl($routePrefix . 'edit', $parameters);
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => 'ekyna_commerce.sale.button.adjustment.edit',
             'data-sale-modal' => null,
         ]);
 
-        $removePath = $this->generateUrl('ekyna_commerce_order_adjustment_admin_remove', [
-            'orderId'           => $adjustable->getId(),
-            'orderAdjustmentId' => $adjustment->getId(),
-        ]);
+        $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
             'title'         => 'ekyna_commerce.sale.button.adjustment.remove',
             'confirm'       => 'ekyna_commerce.sale.confirm.adjustment.remove',

@@ -42,6 +42,9 @@ class CustomerSearchType extends AbstractType
                 'route'    => 'ekyna_commerce_customer_admin_search',
                 'required' => false,
                 'parent'   => false,
+                'attr'     => [
+                    'help_text' => 'ekyna_commerce.customer.help.hierarchy',
+                ],
             ])
             ->setAllowedTypes('parent', 'bool')
             ->setNormalizer('route_params', function (Options $options, $value) {
