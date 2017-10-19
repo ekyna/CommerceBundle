@@ -885,7 +885,7 @@ ekyna_commerce:
             out_of_stock: En rupture
 
     subject:
-        label: Sujet
+        label: Article
 
     supplier:
         label:
@@ -1001,7 +1001,7 @@ ekyna_commerce:
         field:
             net_price: Prix d'achat HT
             supplier_data: Données Four.
-            subject: Liaison
+            subject: Article
 
     supplier_order_attachment:
         label:
@@ -1032,7 +1032,7 @@ ekyna_commerce:
             ordered: Réappro.
             estimated_date_of_arrival: Date réappro.
             eda: E.D.A.
-            subject: Liaison
+            subject: Article
         alert:
             no_item: Aucune référence fournisseur configuré
 

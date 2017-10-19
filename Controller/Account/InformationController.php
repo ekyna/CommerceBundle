@@ -39,8 +39,9 @@ class InformationController extends AbstractController
         $customer = $this->getCustomerOrRedirect();
 
         $form = $this->createForm(InformationType::class, $customer, [
-            'action' => $this->generateUrl('ekyna_commerce_account_information_edit'),
-            'method' => 'POST',
+            'action'      => $this->generateUrl('ekyna_commerce_account_information_edit'),
+            'method'      => 'POST',
+            'cancel_path' => $this->generateUrl('ekyna_commerce_account_information_index'),
         ]);
 
         $form->handleRequest($request);

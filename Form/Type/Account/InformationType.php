@@ -10,6 +10,8 @@ use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -52,11 +54,6 @@ class InformationType extends AbstractType
                 'label'    => 'ekyna_core.field.email',
                 'disabled' => true,
             ])
-            ->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
-                'required' => false,
-            ])
-            ->add('vatNumber', VatNumberType::class)
             ->add('identity', IdentityType::class)
             ->add('phone', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.phone',
@@ -72,12 +69,25 @@ class InformationType extends AbstractType
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
-                    'save' => [
+                    'save'   => [
                         'type'    => Type\SubmitType::class,
                         'options' => [
                             'button_class' => 'primary',
                             'label'        => 'ekyna_core.button.save',
                             'attr'         => ['icon' => 'ok'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $options['cancel_path'],
+                            ],
                         ],
                     ],
                 ],
@@ -90,6 +100,22 @@ class InformationType extends AbstractType
                 'format'   => 'dd/MM/yyyy', // TODO localized format
             ]);
         }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+            $customer = $event->getData();
+            $form = $event->getForm();
+
+            $form
+                ->add('company', Type\TextType::class, [
+                    'label'    => 'ekyna_core.field.company',
+                    'required' => false,
+                    'disabled' => $customer->hasParent(),
+                ])
+                ->add('vatNumber', VatNumberType::class, [
+                    'disabled' => $customer->hasParent(),
+                ]);
+        });
     }
 
     /**
@@ -101,6 +127,8 @@ class InformationType extends AbstractType
             ->setDefaults([
                 'data_class'    => $this->customerClass,
                 'csrf_token_id' => 'information',
-            ]);
+                'cancel_path'   => null,
+            ])
+            ->setAllowedTypes('cancel_path', 'string');
     }
 }

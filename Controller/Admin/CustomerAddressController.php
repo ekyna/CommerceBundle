@@ -105,7 +105,7 @@ class CustomerAddressController extends ResourceController
 
         $addresses = $this
             ->get('ekyna_commerce.customer_address.repository')
-            ->findByCustomer($customer);
+            ->findByCustomerAndParents($customer);
 
         $data = $this
             ->get('serializer')

@@ -406,6 +406,12 @@
         </service>
 
         <!-- Sale item subject form type -->
+        <service id="ekyna_commerce.sale_item_subject.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType">
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-sale-item-subject" path="ekyna-commerce/form/sale-item-subject"/>
+        </service>
+        <!-- Sale item configure form type -->
         <service id="ekyna_commerce.sale_item_configure.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType">
             <argument type="service" id="event_dispatcher"/>

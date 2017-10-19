@@ -170,7 +170,7 @@ class SubjectChoiceType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'label'          => 'subject',
+                'label'          => 'ekyna_commerce.subject.label',
                 'lock_mode'      => false,
                 'data_class'     => SubjectIdentity::class,
                 'error_bubbling' => false,

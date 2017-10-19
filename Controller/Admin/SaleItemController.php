@@ -398,12 +398,12 @@ class SaleItemController extends AbstractSaleController
                 }
 
                 return $this->redirect($this->generateResourcePath($sale));
-            } elseif ($isXhr) {
+            } /*elseif ($isXhr) {
                 // TODO all event messages should be bound to XHR response
-                /*foreach ($event->getErrors() as $error) {
+                foreach ($event->getErrors() as $error) {
                     $form->addError(new FormError($error->getMessage()));
-                }*/
-            }
+                }
+            }*/
         //}
 
         if ($isXhr) {

@@ -514,6 +514,14 @@
 {% endblock ekyna_commerce_sale_item_widget %}
 
 
+{% block ekyna_commerce_sale_item_subject_widget %}
+{% spaceless %}
+    {{ form_row(form.subjectIdentity) }}
+    <div class="sale-item-subject-stock"></div>
+{% endspaceless %}
+{% endblock ekyna_commerce_sale_item_subject_widget %}
+
+
 {% block ekyna_commerce_shipment_items_widget %}
 {% spaceless %}
     <table class="table table-striped table-condensed">

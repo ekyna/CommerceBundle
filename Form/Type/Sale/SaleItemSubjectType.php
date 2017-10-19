@@ -3,9 +3,12 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Subject\SubjectChoiceType;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -27,6 +30,14 @@ class SaleItemSubjectType extends AbstractType
     }
 
     /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'commerce-sale-item-subject');
+    }
+
+    /**
      * @inheritdoc
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -35,5 +46,13 @@ class SaleItemSubjectType extends AbstractType
             'data_class' => SaleItemInterface::class,
             'required'   => false,
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBlockPrefix()
+    {
+        return 'ekyna_commerce_sale_item_subject';
     }
 }
