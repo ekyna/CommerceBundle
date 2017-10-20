@@ -81,6 +81,7 @@ ekyna_commerce:
             edit: Modifier la pièce jointe
             remove: Supprimer la pièce jointe
         button:
+            create: Éditer
             new: Nouvelle pièce jointe
             edit: Modifier la pièce jointe
             remove: Supprimer la pièce jointe
@@ -200,7 +201,12 @@ ekyna_commerce:
             remove: Supprimer l'avoir
 
     document:
-        field:
+        type:
+            form: Bon de commande
+            quote: Devis
+            proforma: Proforma
+            confirmation: Confirmation de commande
+        #field:
 
 
     invoice:
@@ -352,8 +358,10 @@ ekyna_commerce:
 
     notification:
         field:
+            from: Expéditeur
             recipients: Destinataires
             copies: Copies
+            invoices: Factures et avoirs
             attachments: Pièces jointes
             subject: Sujet
             payment_message: Message paiement
@@ -364,6 +372,12 @@ ekyna_commerce:
             none: Non
             after: Après le message
             before: Avant le message
+        message:
+            customer_area: >
+                Retrouvez toutes les informations concernant vos
+                devis et commandes dans votre <a href="{{url}}">espace client</a>.
+            sent: '{0} Aucun e-mail envoyé|{1} Un e-mail envoyé|]1,Inf[ %count% e-mails envoyés'
+
     message:
         label:
             singular: Message
@@ -681,6 +695,8 @@ ekyna_commerce:
                 remove: Souhaitez-vous réellement supprimer cette article ?
             adjustment:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
+        message:
+            already_exists: Un document de ce type existe déjà dans les pièces jointes.
         form:
             add_item: Ajouter une ligne produit
             remove_item: Supprimer la ligne produit ?

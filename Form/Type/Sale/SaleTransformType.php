@@ -60,7 +60,6 @@ class SaleTransformType extends AbstractType
                 if ($customer->hasParent()) {
                     $choices = [$customer, $customer->getParent()];
                     $sale->setCustomer($customer->getParent());
-
                 } elseif ($customer->hasChildren()) {
                     $choices = $customer->getChildren()->toArray();
                     array_unshift($choices, $customer);

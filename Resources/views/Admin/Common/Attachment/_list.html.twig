@@ -15,7 +15,7 @@
             {% set attachmentPath = admin_resource_path(attachment, 'download') %}
             <tr data-id="{{ attachment.id }}">
                 <td id="{{ attachmentId }}_filename">
-                    <a href="{{ attachmentPath }}">{{ attachment }}</a>
+                    <a href="{{ attachmentPath }}" target="_blank">{{ attachment }}</a>
                 </td>
                 <td id="{{ attachmentId }}_title">{{ attachment.title }}</td>
                 <td id="{{ attachmentId }}_updatedAt">{{ attachment.updatedAt|localizeddate('short', 'none') }}</td>

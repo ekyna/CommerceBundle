@@ -4,6 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Notification;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+//use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Recipient;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
 use Ekyna\Bundle\UserBundle\Repository\GroupRepository;
@@ -63,6 +65,14 @@ class NotificationBuilder
     {
         $notification = new Notification();
 
+        $from = $this->createWebsiteRecipient();
+        if ($sale instanceof OrderInterface/* || $sale instanceof QuoteInterface*/) {
+            if ($inCharge = $sale->getInCharge()) {
+                $from = $this->createRecipient($inCharge, 'Responsable');
+            }
+        }
+        $notification->setFrom($from);
+
         if ($customer = $sale->getCustomer()) {
             $notification->addRecipient($this->createRecipient($customer, 'Client')); // TODO constant / translation
         } else {
@@ -74,6 +84,26 @@ class NotificationBuilder
         // TODO Payment and shipment messages
 
         return $notification;
+    }
+
+    /**
+     * Creates the 'from' list from the given sale.
+     *
+     * @param SaleInterface $sale
+     *
+     * @return Recipient[]
+     */
+    public function createFromListFromSale(SaleInterface $sale)
+    {
+        $froms = [$this->createWebsiteRecipient()];
+
+        if ($sale instanceof OrderInterface/* || $sale instanceof QuoteInterface*/) {
+            if ($inCharge = $sale->getInCharge()) {
+                array_unshift($froms, $this->createRecipient($inCharge, 'Responsable'));
+            }
+        }
+
+        return $froms;
     }
 
     /**
@@ -96,6 +126,12 @@ class NotificationBuilder
             $recipients[] = $this->createRecipient($sale, 'Client');
         }
 
+        if ($sale instanceof OrderInterface) {
+            if (null !== $customer = $sale->getOriginCustomer()) {
+                $recipients[] = $this->createRecipient($customer, 'Client d\'origine');
+            }
+        }
+
         return $recipients;
     }
 
@@ -108,11 +144,7 @@ class NotificationBuilder
      */
     public function createCopyListFromSale(SaleInterface $sale)
     {
-        $copies = [new Recipient(
-            $this->settings->getParameter('general.admin_email'),
-            $this->settings->getParameter('general.admin_name'),
-            'WebSite'
-        )];
+        $copies = [$this->createWebsiteRecipient()];
 
         if ($customer = $sale->getCustomer()) {
             if ($parent = $customer->getParent()) {
@@ -125,10 +157,24 @@ class NotificationBuilder
             'group' => $this->groupRepository->findOneByRole('ROLE_ADMIN'),
         ]);
         foreach ($administrators as $administrator) {
-            $copies[] = new Recipient($administrator, 'Administrateur');
+            $copies[] = $this->createRecipient($administrator, 'Administrateur');
         }
 
         return $copies;
+    }
+
+    /**
+     * Returns the general website recipient.
+     *
+     * @return Recipient
+     */
+    protected function createWebsiteRecipient()
+    {
+        return new Recipient(
+            $this->settings->getParameter('general.admin_email'),
+            $this->settings->getParameter('general.admin_name'),
+            'WebSite'
+        );
     }
 
     /**

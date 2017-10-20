@@ -33,7 +33,7 @@
 
         <!-- Customer event listener -->
         <service id="ekyna_commerce.customer.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber">
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CustomerEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.customer.number_generator"/>
             <argument type="service" id="ekyna_commerce.pricing.updater"/>

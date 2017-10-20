@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 
 /**
- * Class InvoiceRenderer
+ * Class SupplierOrderRenderer
  * @package Ekyna\Bundle\CommerceBundle\Service\Document
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
@@ -28,6 +28,22 @@ class SupplierOrderRenderer extends AbstractRenderer
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getLastModified()
+    {
+        return $this->supplierOrder->getUpdatedAt();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFilename()
+    {
+        return $this->supplierOrder->getNumber();
+    }
+
+    /**
      * @inheritdoc
      */
     protected function getContent()
@@ -36,21 +52,5 @@ class SupplierOrderRenderer extends AbstractRenderer
             'logo_path'      => $this->logoPath,
             'supplier_order' => $this->supplierOrder,
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getLastModified()
-    {
-        return $this->supplierOrder->getUpdatedAt();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getFilename()
-    {
-        return $this->supplierOrder->getNumber();
     }
 }

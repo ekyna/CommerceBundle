@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\SaleView;
+use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
@@ -96,6 +97,10 @@ class SaleExtension extends \Twig_Extension
             new \Twig_SimpleFilter(
                 'sale_view',
                 [$this->viewBuilder, 'buildSaleView']
+            ),
+            new \Twig_SimpleFilter(
+                'sale_editable_document_types',
+                [SaleDocumentUtil::class, 'getSaleEditableDocumentTypes']
             ),
         ];
     }

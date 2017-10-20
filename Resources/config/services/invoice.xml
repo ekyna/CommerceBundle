@@ -22,7 +22,7 @@
         </service>
 
         <!-- Invoice abstract listener -->
-        <service id="ekyna_commerce.invoice.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.invoice.abstract_listener" abstract="true" lazy="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
@@ -32,11 +32,11 @@
             <call method="setCreditNumberGenerator">
                 <argument type="service" id="ekyna_commerce.invoice.credit_number_generator"/>
             </call>
-            <call method="setInvoiceUpdater">
-                <argument type="service" id="ekyna_commerce.invoice.updater"/>
+            <call method="setInvoiceBuilder">
+                <argument type="service" id="ekyna_commerce.invoice.builder"/>
             </call>
             <call method="setInvoiceCalculator">
-                <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+                <argument type="service" id="ekyna_commerce.document.calculator"/>
             </call>
             <call method="setCustomerUpdater">
                 <argument type="service" id="ekyna_commerce.customer.updater"/>
@@ -44,25 +44,17 @@
         </service>
 
         <!-- Invoice line abstract listener -->
-        <service id="ekyna_commerce.invoice_line.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.invoice_line.abstract_listener" abstract="true" lazy="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
         </service>
 
-        <!-- Invoice updater -->
-        <service id="ekyna_commerce.invoice.updater"
-                 class="Ekyna\Component\Commerce\Invoice\Updater\InvoiceUpdater">
-            <argument type="service" id="libphonenumber.phone_number_util"/>
-        </service>
-
-        <!-- Invoice updater -->
-        <service id="ekyna_commerce.invoice.calculator"
-                 class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculator"/>
-
         <!-- Invoice builder -->
         <service id="ekyna_commerce.invoice.builder"
-                 class="Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder">
+                 class="Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder"
+                 lazy="true">
+            <argument type="service" id="libphonenumber.phone_number_util"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 

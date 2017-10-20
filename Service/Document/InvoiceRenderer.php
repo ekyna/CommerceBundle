@@ -28,20 +28,9 @@ class InvoiceRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function getContent()
-    {
-        return $this->renderView('EkynaCommerceBundle:Document:sale_invoice.html.twig', [
-            'logo_path' => $this->logoPath,
-            'invoice'   => $this->invoice,
-        ]);
-    }
-
-    /**
      * @inheritDoc
      */
-    protected function getLastModified()
+    public function getLastModified()
     {
         return $this->invoice->getUpdatedAt();
     }
@@ -49,8 +38,19 @@ class InvoiceRenderer extends AbstractRenderer
     /**
      * @inheritdoc
      */
-    protected function getFilename()
+    public function getFilename()
     {
         return $this->invoice->getNumber();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getContent()
+    {
+        return $this->renderView('EkynaCommerceBundle:Document:invoice.html.twig', [
+            'logo_path' => $this->logoPath,
+            'document'  => $this->invoice,
+        ]);
     }
 }

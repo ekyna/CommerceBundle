@@ -2,6 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Knp\Snappy\GeneratorInterface;
@@ -45,6 +47,7 @@ class RendererFactory
      *
      * @param EngineInterface    $templating
      * @param GeneratorInterface $pdfGenerator
+     * @param GeneratorInterface $imageGenerator
      * @param string             $logoPath
      * @param bool               $debug
      */
@@ -60,6 +63,22 @@ class RendererFactory
         $this->imageGenerator = $imageGenerator;
         $this->logoPath = $logoPath;
         $this->debug = $debug;
+    }
+
+    /**
+     * Returns a new document renderer.
+     *
+     * @param DocumentInterface $document
+     *
+     * @return RendererInterface
+     */
+    public function createDocumentRenderer(DocumentInterface $document)
+    {
+        $renderer = new DocumentRenderer($document);
+
+        $this->buildRenderer($renderer);
+
+        return $renderer;
     }
 
     /**

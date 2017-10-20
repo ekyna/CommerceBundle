@@ -8,17 +8,21 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\Util\AddressUtil;
+use Ekyna\Component\Commerce\Document\Model\Document;
+use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -301,6 +305,15 @@ class SaleController extends AbstractSaleController
         $this->get('ekyna_commerce.sale_transformer')
             ->copySale($sourceSale, $targetSale);
 
+        if (null !== $sourceSale->getCustomer()) {
+            // Prepare for customer change.
+            $targetSale
+                ->setGender(null)
+                ->setFirstName(null)
+                ->setLastName(null)
+                ->setEmail(null);
+        }
+
         $form = $this->createTransformConfirmForm($sourceSale, $targetSale, $target);
 
         $form->handleRequest($request);
@@ -435,7 +448,16 @@ class SaleController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $sent = $this
+                ->get('ekyna_commerce.mailer')
+                ->sendNotification($notification, $sale);
 
+            $this->addFlash(
+                $this->getTranslator()->transChoice('ekyna_commerce.notification.message.sent', $sent),
+                0 < $sent ? 'success' : 'warning'
+            );
+
+            return $this->redirect($this->generateResourcePath($sale));
         }
 
         $this->appendBreadcrumb(
@@ -449,6 +471,76 @@ class SaleController extends AbstractSaleController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    /**
+     * Document action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function documentAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not supported.');
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        $redirect = $this->redirect($this->generateResourcePath($sale));
+
+        $type = $request->attributes->get('type');
+        $available = SaleDocumentUtil::getSaleEditableDocumentTypes($sale);
+        if (!in_array($type, $available, true)) {
+            $this->addFlash('ekyna_commerce.sale.message.already_exists', 'warning');
+
+            return $redirect;
+        }
+
+        // Generate the document file
+        $document = new Document();
+        $document
+            ->setSale($sale)
+            ->setType($type);
+
+        $this->get('ekyna_commerce.document.builder')->build($document);
+        $this->get('ekyna_commerce.document.calculator')->calculate($document);
+
+        $renderer = $this->get('ekyna_commerce.renderer_factory')->createDocumentRenderer($document);
+
+        $path = $renderer->create(RendererInterface::FORMAT_PDF);
+
+        // Fake uploaded file
+        $file = new UploadedFile($path, $renderer->getFilename(), null, null, null, true);
+
+        // Attachment
+        $attachment = $this
+            ->get('ekyna_commerce.sale_factory')
+            ->createAttachmentForSale($sale);
+
+        $attachment
+            ->setType($type)
+            ->setTitle($this->getTranslator()->trans('ekyna_commerce.document.type.' . $type))
+            ->setFile($file);
+
+        $sale->addAttachment($attachment);
+
+        // Persistence
+        $config = $this
+            ->get('ekyna_resource.configuration_registry')
+            ->findConfiguration($attachment);
+
+        /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $operator */
+        $operator = $this->get($config->getServiceKey('operator'));
+
+        $event = $operator->persist($attachment);
+        $event->toFlashes($this->getFlashBag());
+
+        return $redirect;
     }
 
     /**

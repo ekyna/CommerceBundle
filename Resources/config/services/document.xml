@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Document builder -->
+        <service id="ekyna_commerce.document.builder"
+                 class="Ekyna\Component\Commerce\Document\Builder\DocumentBuilder"
+                 lazy="true">
+            <argument type="service" id="libphonenumber.phone_number_util"/>
+        </service>
+
+        <!-- Document calculator -->
+        <service id="ekyna_commerce.document.calculator"
+                 class="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"
+                 lazy="true"/>
+
+    </services>
+
+</container>

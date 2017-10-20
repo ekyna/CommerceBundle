@@ -54,11 +54,20 @@ interface RendererInterface
     public function setDebug($debug);
 
     /**
+     * Create the document file.
+     *
+     * @param string $format
+     *
+     * @return string The file path
+     */
+    public function create($format = RendererInterface::FORMAT_PDF);
+
+    /**
      * Renders the document.
      *
      * @param string $format
      *
-     * @return string
+     * @return string The content
      */
     public function render($format = RendererInterface::FORMAT_HTML);
 
@@ -66,6 +75,22 @@ interface RendererInterface
      * Generates a response with the document.
      *
      * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function respond(Request $request);
+
+    /**
+     * Returns the document's last modification date.
+     *
+     * @return \DateTime
+     */
+    public function getLastModified();
+
+    /**
+     * Returns the document's filename.
+     *
+     * @return string
+     */
+    public function getFilename();
 }

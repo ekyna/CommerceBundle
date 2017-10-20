@@ -78,6 +78,15 @@ ekyna_commerce_quote_admin_notify:
     requirements:
         quoteId: \d+
 
+ekyna_commerce_quote_admin_document:
+    path: /{quoteId}/document/{type}
+    defaults:
+        _controller: "ekyna_commerce.quote.controller:documentAction"
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        type: "[a-z]+"
+
 ekyna_commerce_quote_admin_attachment:
     resource: quote_attachment.yml
     prefix: /{quoteId}/attachments

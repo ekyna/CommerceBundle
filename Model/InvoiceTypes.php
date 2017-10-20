@@ -27,16 +27,16 @@ final class InvoiceTypes extends AbstractConstants
     }
 
     /**
-     * Returns the theme for the given state.
+     * Returns the theme for the given type.
      *
-     * @param string $state
+     * @param string $type
      *
      * @return string
      */
-    static public function getTheme($state)
+    static public function getTheme($type)
     {
-        static::isValid($state, true);
+        static::isValid($type, true);
 
-        return static::getConfig()[$state][1];
+        return static::getConfig()[$type][1];
     }
 }

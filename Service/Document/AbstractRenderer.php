@@ -87,6 +87,28 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * @inheritdoc
      */
+    public function create($format = RendererInterface::FORMAT_PDF)
+    {
+        $this->validateFormat($format);
+
+        $content = $this->getContent();
+
+        $path = sys_get_temp_dir() . '/' . uniqid() . '.' . $format;
+
+        if ($format === RendererInterface::FORMAT_PDF) {
+            $this->pdfGenerator->generateFromHtml($content, $path);
+        } elseif ($format === RendererInterface::FORMAT_JPG) {
+            $this->imageGenerator->generateFromHtml($content, $path);
+        } else {
+            file_put_contents($path, $content);
+        }
+
+        return $path;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function render($format = RendererInterface::FORMAT_HTML)
     {
         $this->validateFormat($format);
@@ -141,6 +163,16 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    abstract public function getLastModified();
+
+    /**
+     * @inheritdoc
+     */
+    abstract public function getFilename();
+
+    /**
      * Validates the format.
      *
      * @param string $format
@@ -175,18 +207,4 @@ abstract class AbstractRenderer implements RendererInterface
      * @return string
      */
     abstract protected function getContent();
-
-    /**
-     * Returns the document's last modification date.
-     *
-     * @return \DateTime
-     */
-    abstract protected function getLastModified();
-
-    /**
-     * Returns the document's filename.
-     *
-     * @return string
-     */
-    abstract protected function getFilename();
 }

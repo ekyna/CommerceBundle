@@ -12,11 +12,11 @@
     </div>
     <div class="actions">
         {# TODO permission ? #}
-        {# TODO {{ ui_button('ekyna_core.button.notify', {
+        {{ ui_button('ekyna_core.button.notify', {
             'theme': 'default',
             'type': 'link',
-            'path': admin_resource_path(order, 'notify')
-        }) }}#}
+            'path': admin_resource_path(quote, 'notify')
+        }) }}
         {{ sale_transform_btn(quote) }}
         {{ admin_resource_btn(quote, 'edit') }}
         {{ admin_resource_btn(quote, 'remove') }}
@@ -71,23 +71,34 @@
                 {{ render_sale_view(sale_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
             </div>
             <div class="tab-pane" id="quote-payments">
-                <h4 class="sub-header">
+                <div class="actions">
                     {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.quote_payment', 'new', {'quoteId': quote.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.payment.button.new'|trans }}
                     </a>
+                </div>
+                <h4 class="sub-header">
                     {{ 'ekyna_commerce.payment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': quote} %}
             </div>
             <div class="tab-pane" id="quote-attachments">
-                <h4 class="sub-header">
+                <div class="actions">
+                    {% for type in quote|sale_editable_document_types -%}
+                    <a href="{{ admin_resource_path(quote, 'document', {'quoteId': quote.id, 'type': type}) }}"
+                       class="btn btn-default btn-xs pull-right">
+                        {{ 'ekyna_commerce.attachment.button.create'|trans }}
+                        {{ ('ekyna_commerce.document.type.' ~ type)|trans }}
+                    </a>
+                    {%- endfor %}
                     {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.quote_attachment', 'new', {'quoteId': quote.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.attachment.button.new'|trans }}
                     </a>
+                </div>
+                <h4 class="sub-header">
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Attachment:_list.html.twig" with {'attachments': quote.attachments} %}

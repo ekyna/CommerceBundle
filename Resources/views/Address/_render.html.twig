@@ -20,10 +20,10 @@
 <br>{{ address.country.code|country }}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}
 
 {% if display_phones %}
-    {% if address.phone != '' %}
+    {% if address.phone is not empty %}
         <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address.phone|phone_number_format }}
     {% endif %}
-    {% if address.mobile != '' %}
+    {% if address.mobile is not empty %}
         <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address.mobile|phone_number_format }}
     {% endif %}
 {% endif %}

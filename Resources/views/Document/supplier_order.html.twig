@@ -2,16 +2,18 @@
 
 {% import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
-{%- block title -%}
+
+{# --- HEAD TITLE --- #}
+{%- block head_title -%}
     {{- ('ekyna_commerce.supplier_order.label.singular')|trans }}
     {{ supplier_order.number -}}
-{%- endblock title -%}
+{%- endblock head_title -%}
 
 
 {% set currency = supplier_order.currency.code %}
 
 
-{# --- TITLE --- #}
+{# --- DOC TITLE --- #}
 {% block doc_title -%}
     <h1>
         {{- ('ekyna_commerce.supplier_order.label.singular')|trans }}

@@ -1,0 +1,37 @@
+{% extends "email.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .sale-view th, .sale-view td {
+            font-size: 13px;
+        }
+    </style>
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/sale-view.css')) }}" rel="stylesheet" type="text/css"/>
+{% endblock stylesheets %}
+
+{% block subject %}
+    {{ notification.subject }}
+{% endblock subject %}
+
+{% block body %}
+    {% if notification.includeView == 'before' %}
+        {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
+    {% endif %}
+
+    {{ notification.customMessage|raw }}
+
+    {{ notification.paymentMessage|raw }}
+
+    {{ notification.shipmentMessage|raw }}
+
+    {% if notification.includeView == 'after' %}
+        {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
+    {% endif %}
+
+    <p style="text-align: center;">
+        {{ 'ekyna_commerce.notification.message.customer_area'|trans({
+            '{{url}}': url('ekyna_user_account_index')
+        })|raw }}
+    </p>
+{% endblock body %}

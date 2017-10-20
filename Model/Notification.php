@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Entity\PaymentMessage;
 use Ekyna\Component\Commerce\Shipment\Entity\ShipmentMessage;
 
@@ -19,7 +20,7 @@ class Notification
     const VIEW_AFTER  = 'after';
 
     /**
-     * @var string
+     * @var Recipient
      */
     private $from;
 
@@ -42,6 +43,11 @@ class Notification
      * @var ArrayCollection
      */
     private $extraCopies;
+
+    /**
+     * @var ArrayCollection|InvoiceInterface[]
+     */
+    private $invoices;
 
     /**
      * @var ArrayCollection|AttachmentInterface[]
@@ -80,7 +86,10 @@ class Notification
     public function __construct()
     {
         $this->recipients = new ArrayCollection();
+        $this->extraRecipients = new ArrayCollection();
         $this->copies = new ArrayCollection();
+        $this->extraCopies = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
         $this->attachments = new ArrayCollection();
 
         $this->includeView = static::VIEW_NONE;
@@ -89,7 +98,7 @@ class Notification
     /**
      * Returns the from.
      *
-     * @return string
+     * @return Recipient
      */
     public function getFrom()
     {
@@ -99,9 +108,9 @@ class Notification
     /**
      * Sets the from.
      *
-     * @param string $from
+     * @param Recipient $from
      */
-    public function setFrom($from)
+    public function setFrom(Recipient $from)
     {
         $this->from = $from;
     }
@@ -109,7 +118,7 @@ class Notification
     /**
      * Returns the recipients.
      *
-     * @return ArrayCollection
+     * @return ArrayCollection|Recipient[]
      */
     public function getRecipients()
     {
@@ -119,11 +128,11 @@ class Notification
     /**
      * Adds the recipient.
      *
-     * @param string $recipient
+     * @param Recipient $recipient
      *
      * @return Notification
      */
-    public function addRecipient($recipient)
+    public function addRecipient(Recipient $recipient)
     {
         if (!$this->recipients->contains($recipient)) {
             $this->recipients->add($recipient);
@@ -135,11 +144,11 @@ class Notification
     /**
      * Removes the recipient.
      *
-     * @param string $recipient
+     * @param Recipient $recipient
      *
      * @return Notification
      */
-    public function removeRecipient($recipient)
+    public function removeRecipient(Recipient $recipient)
     {
         if ($this->recipients->contains($recipient)) {
             $this->recipients->removeElement($recipient);
@@ -151,7 +160,7 @@ class Notification
     /**
      * Returns the extra recipients.
      *
-     * @return ArrayCollection
+     * @return ArrayCollection|Recipient[]
      */
     public function getExtraRecipients()
     {
@@ -161,11 +170,11 @@ class Notification
     /**
      * Adds the extra recipient.
      *
-     * @param string $recipient
+     * @param Recipient $recipient
      *
      * @return Notification
      */
-    public function addExtraRecipient($recipient)
+    public function addExtraRecipient(Recipient $recipient)
     {
         if (!$this->extraRecipients->contains($recipient)) {
             $this->extraRecipients->add($recipient);
@@ -177,11 +186,11 @@ class Notification
     /**
      * Removes the extra recipient.
      *
-     * @param string $recipient
+     * @param Recipient $recipient
      *
      * @return Notification
      */
-    public function removeExtraRecipient($recipient)
+    public function removeExtraRecipient(Recipient $recipient)
     {
         if ($this->recipients->contains($recipient)) {
             $this->recipients->removeElement($recipient);
@@ -193,7 +202,7 @@ class Notification
     /**
      * Returns the copies.
      *
-     * @return ArrayCollection
+     * @return ArrayCollection|Recipient
      */
     public function getCopies()
     {
@@ -203,11 +212,11 @@ class Notification
     /**
      * Adds the copy.
      *
-     * @param string $copy
+     * @param Recipient $copy
      *
      * @return Notification
      */
-    public function addCopy($copy)
+    public function addCopy(Recipient $copy)
     {
         if (!$this->copies->contains($copy)) {
             $this->copies->add($copy);
@@ -219,11 +228,11 @@ class Notification
     /**
      * Removes the copy.
      *
-     * @param string $copy
+     * @param Recipient $copy
      *
      * @return Notification
      */
-    public function removeCopy($copy)
+    public function removeCopy(Recipient $copy)
     {
         if ($this->copies->contains($copy)) {
             $this->copies->removeElement($copy);
@@ -235,7 +244,7 @@ class Notification
     /**
      * Returns the extra copies.
      *
-     * @return ArrayCollection
+     * @return ArrayCollection|Recipient
      */
     public function getExtraCopies()
     {
@@ -245,11 +254,11 @@ class Notification
     /**
      * Adds the extra copy.
      *
-     * @param string $copy
+     * @param Recipient $copy
      *
      * @return Notification
      */
-    public function addExtraCopy($copy)
+    public function addExtraCopy(Recipient $copy)
     {
         if (!$this->extraCopies->contains($copy)) {
             $this->extraCopies->add($copy);
@@ -261,14 +270,56 @@ class Notification
     /**
      * Removes the extra copy.
      *
-     * @param string $copy
+     * @param Recipient $copy
      *
      * @return Notification
      */
-    public function removeExtraCopy($copy)
+    public function removeExtraCopy(Recipient $copy)
     {
         if ($this->extraCopies->contains($copy)) {
             $this->extraCopies->removeElement($copy);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the invoices.
+     *
+     * @return array|InvoiceInterface[]
+     */
+    public function getInvoices()
+    {
+        return $this->invoices;
+    }
+
+    /**
+     * Adds the invoice.
+     *
+     * @param InvoiceInterface $invoice
+     *
+     * @return Notification
+     */
+    public function addInvoice(InvoiceInterface $invoice)
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes the invoice.
+     *
+     * @param InvoiceInterface $invoice
+     *
+     * @return Notification
+     */
+    public function removeInvoice(InvoiceInterface $invoice)
+    {
+        if ($this->invoices->contains($invoice)) {
+            $this->invoices->removeElement($invoice);
         }
 
         return $this;

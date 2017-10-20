@@ -88,6 +88,15 @@ ekyna_commerce_order_admin_notify:
     requirements:
         orderId: \d+
 
+ekyna_commerce_order_admin_document:
+    path: /{orderId}/document/{type}
+    defaults:
+        _controller: "ekyna_commerce.order.controller:documentAction"
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        type: "[a-z]+"
+
 ekyna_commerce_order_attachment_admin:
     resource: order_attachment.yml
     prefix: /{orderId}/attachments

@@ -3,9 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Component\Commerce\Document\Builder\DocumentBuilderInterface;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
-use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -24,7 +24,7 @@ class InvoiceType extends ResourceFormType
     private $lineClass;
 
     /**
-     * @var InvoiceBuilderInterface
+     * @var DocumentBuilderInterface
      */
     private $invoiceBuilder;
 
@@ -45,9 +45,9 @@ class InvoiceType extends ResourceFormType
     /**
      * Sets the invoice builder.
      *
-     * @param InvoiceBuilderInterface $invoiceBuilder
+     * @param DocumentBuilderInterface $invoiceBuilder
      */
-    public function setInvoiceBuilder(InvoiceBuilderInterface $invoiceBuilder)
+    public function setInvoiceBuilder(DocumentBuilderInterface $invoiceBuilder)
     {
         $this->invoiceBuilder = $invoiceBuilder;
     }

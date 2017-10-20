@@ -7,6 +7,7 @@
         <import resource="services/cart.xml"/>
         <import resource="services/invoice.xml"/>
         <import resource="services/customer.xml"/>
+        <import resource="services/document.xml"/>
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
         <import resource="services/order.xml"/>
@@ -122,6 +123,8 @@
             <argument type="service" id="templating"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="ekyna_setting.manager"/>
+            <argument type="service" id="ekyna_commerce.renderer_factory"/>
+            <argument type="service" id="local_commerce_filesystem"/>
         </service>
 
         <!-- Subject providers registry-->

@@ -1,43 +1,45 @@
 {% extends "EkynaCommerceBundle:Document:base.html.twig" %}
 
+
 {% import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
-{%- block title -%}
-    {{- ('ekyna_commerce.' ~ invoice.type ~ '.label.singular')|trans }}
-    {{ invoice.number -}}
-{%- endblock title -%}
+
+{# --- HEAD TITLE --- #}
+{%- block head_title -%}
+    {{- ('ekyna_commerce.document.type.' ~ document.type)|trans }}
+    {{ document.sale.number -}}
+{%- endblock head_title -%}
 
 
-{% set currency = invoice.currency %}
-
-
-{# --- TITLE --- #}
+{# --- DOC TITLE --- #}
 {% block doc_title -%}
     <h1>
-        {{- ('ekyna_commerce.' ~ invoice.type ~ '.label.singular')|trans }}
-        {{ invoice.number -}}
+        {{- ('ekyna_commerce.document.type.' ~ document.type)|trans }}
+        {{ document.sale.number -}}
     </h1>
-    <p>Le {{ invoice.createdAt|localizeddate('long', 'none') }}.</p>
+    <p>Le {{ date|localizeddate('long', 'none') }}.</p>
 {%- endblock doc_title %}
 
 
 {# --- ADDRESSES --- #}
 {%- block doc_customer -%}
-    {{ macro.render_customer(invoice.customer) }}
+    {{ macro.render_customer(document.customer) }}
 {%- endblock doc_customer -%}
 
 {%- block doc_invoice_address -%}
-    {{ macro.render_address(invoice.invoiceAddress) }}
+    {{ macro.render_address(document.invoiceAddress) }}
 {%- endblock doc_invoice_address -%}
 
 {%- block doc_delivery_address -%}
-{% if invoice.deliveryAddress is not empty %}
-    {{ macro.render_address(invoice.deliveryAddress) }}
-{% else %}
-    {{ macro.render_address(invoice.invoiceAddress) }}
-{% endif %}
+    {% if document.deliveryAddress is not empty %}
+        {{ macro.render_address(document.deliveryAddress) }}
+    {% else %}
+        {{ macro.render_address(document.invoiceAddress) }}
+    {% endif %}
 {%- endblock doc_delivery_address -%}
 
+
+{% set currency = document.currency %}
 
 {# --- LINES --- #}
 {% block doc_lines %}
@@ -56,7 +58,7 @@
 
     {# GOODS #}
     <tbody class="stripped">
-    {% for line in invoice.linesByType('good') %}
+    {% for line in document.linesByType('good') %}
         <tr>
             <td>
                 {{- line.designation -}}
@@ -89,7 +91,7 @@
 
 
     {# DISCOUNTS #}
-    {% set discounts = invoice.linesByType('discount') %}
+    {% set discounts = document.linesByType('discount') %}
     {% if discounts is not empty %}
     {% block spacer %}
     <tbody class="spacer">
@@ -110,7 +112,7 @@
     {% endif %}
 
     {# SHIPMENT #}
-    {% set shipments = invoice.linesByType('shipment') %}
+    {% set shipments = document.linesByType('shipment') %}
     {% if shipments is not empty %}
     {{ block('spacer') }}
     <tbody>
@@ -129,30 +131,30 @@
     <tr>
         <td colspan="5" rowspan="3">&nbsp;</td>
         <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-        <td class="total text-right">{{ (invoice.goodsBase + invoice.shipmentBase)|localizedcurrency(currency) }}</td>
+        <td class="total text-right">{{ (document.goodsBase + document.shipmentBase)|localizedcurrency(currency) }}</td>
     </tr>
     <tr>
         <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-        <td class="total text-right">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
+        <td class="total text-right">{{ document.taxesTotal|localizedcurrency(currency) }}</td>
     </tr>
     <tr>
         <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
-        <td class="total final text-right">{{ invoice.grandTotal|localizedcurrency(currency) }}</td>
+        <td class="total final text-right">{{ document.grandTotal|localizedcurrency(currency) }}</td>
     </tr>
     </tbody>
 </table>
 
 {# Taxes details #}
-{% if invoice.taxesDetails is not empty %}
+{% if document.taxesDetails is not empty %}
 <table class="table taxes">
     <thead>
         <tr>
-            <th>{{ 'ekyna_commerce.tax.label.singular' }}</th>
+            <th>{{ 'ekyna_commerce.tax.label.singular'|trans }}</th>
             <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
         </tr>
     </thead>
     <tbody>
-        {%- for details in invoice.taxesDetails -%}
+        {%- for details in document.taxesDetails -%}
         <tr>
             <th>{{ details.name }}</th>
             <td class="text-right">{{ details.amount|localizedcurrency(currency) }}</td>
