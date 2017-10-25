@@ -6,23 +6,12 @@
                         http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <mapped-superclass
-            name="Ekyna\Bundle\CommerceBundle\Entity\Order"
-            table="commerce_order">
+            name="Ekyna\Bundle\CommerceBundle\Entity\Quote"
+            table="commerce_quote">
 
         <many-to-one target-entity="Ekyna\Bundle\UserBundle\Model\UserInterface" field="inCharge">
             <join-column name="in_charge_id" referenced-column-name="id" on-delete="RESTRICT" nullable="true"/>
         </many-to-one>
-
-        <many-to-many target-entity="Ekyna\Bundle\CmsBundle\Model\TagInterface" field="itemsTags">
-            <join-table name="commerce_order_items_tags">
-                <join-columns>
-                    <join-column name="order_id" referenced-column-name="id" on-delete="CASCADE"/>
-                </join-columns>
-                <inverse-join-columns>
-                    <join-column name="tag_id" referenced-column-name="id" on-delete="CASCADE"/>
-                </inverse-join-columns>
-            </join-table>
-        </many-to-many>
 
     </mapped-superclass>
 

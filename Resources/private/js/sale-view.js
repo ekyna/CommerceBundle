@@ -28,9 +28,8 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         $(modal).on('ekyna.modal.response', function (modalEvent) {
             if (modalEvent.contentType === 'xml') {
                 if (parseResponse(modalEvent.content, $saleView)) {
-
                     modalEvent.preventDefault();
-                    modal.close();
+                    modalEvent.modal.close();
                 }
             }
         });

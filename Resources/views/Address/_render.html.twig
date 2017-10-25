@@ -1,18 +1,19 @@
 {% spaceless %}
-<strong>
 {% if address.lastName is not empty and address.firstName is not empty %}
-    {{ address|identity }}
-{% else %}
-    {{ address.customer|identity }}
-{% endif %}
-</strong>
-
-{% if address.company != '' %}
-    <br><strong><em>{{ address.company }}</em></strong>
+    <strong>{{ address|identity }}</strong><br>
+{% elseif attribute(address, 'customer') is defined and address.customer is not null %}
+    <strong>{{ address.customer|identity }}</strong>
 {% endif %}
 
-<br>{{ address.street }}
-{% if address.supplement != '' %}
+{% if address.company is not empty %}
+    <strong><em>{{ address.company }}</em></strong><br>
+{% endif %}
+
+{{ address.street }}
+{% if address.complement is not empty %}
+    <br>{{ address.complement }}
+{% endif %}
+{% if address.supplement is not empty %}
     <br>{{ address.supplement }}
 {% endif %}
 

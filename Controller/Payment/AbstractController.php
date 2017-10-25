@@ -165,7 +165,7 @@ abstract class AbstractController
             return $event->getResponse();
         }
 
-        return new Response('', 204);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**

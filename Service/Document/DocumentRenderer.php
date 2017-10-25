@@ -2,10 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
-use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 
 /**
  * Class SaleRenderer

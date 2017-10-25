@@ -11,6 +11,7 @@ define(['jquery', 'routing'], function($, router) {
         this.each(function() {
 
             var $this = $(this),
+                mode = $this.data('mode'),
                 $customerChoice = $('#' + $this.data('customer-field')),
                 $sameCheckbox = $this.find('.sale-address-same'),
                 $choiceSelect = $this.find('.sale-address-choice'),
@@ -21,6 +22,7 @@ define(['jquery', 'routing'], function($, router) {
                     first_name: '.identity-first-name',
                     last_name: '.identity-last-name',
                     street: '.address-street',
+                    complement: '.address-complement',
                     supplement: '.address-supplement',
                     postal_code: '.address-postal-code',
                     city: '.address-city',
@@ -33,6 +35,15 @@ define(['jquery', 'routing'], function($, router) {
                     for (var key in mapping) {
                         if (mapping.hasOwnProperty(key)) {
                             $addressForm.find(mapping[key]).val(null).trigger("change");
+                        }
+                    }
+                },
+                setAddress = function(data) {
+                    clearForm();
+
+                    for (var key in mapping) {
+                        if (mapping.hasOwnProperty(key)) {
+                            $addressForm.find(mapping[key]).val(data[key]).trigger("change");
                         }
                     }
                 };
@@ -56,12 +67,32 @@ define(['jquery', 'routing'], function($, router) {
                             if (typeof data.choices !== 'undefined') {
                                 for (var i in data.choices) {
                                     if (data.choices.hasOwnProperty(i)) {
+                                        var addressData = data.choices[i];
                                         $choiceSelect.append(
                                             $('<option />')
-                                                .attr('value', data.choices[i].id)
-                                                .text(data.choices[i].text)
-                                                .data('address', data.choices[i])
+                                                .attr('value', addressData.id)
+                                                .text(addressData.text)
+                                                .data('address', addressData)
                                         );
+                                        if (mode === 'invoice' && addressData['invoice_default'] === 1) {
+                                            setAddress(addressData);
+                                        } else if (mode === 'delivery' && addressData['delivery_default'] === 1) {
+                                            if (addressData['invoice_default'] === 1) {
+                                                if (1 === $sameCheckbox.size()) {
+                                                    $sameCheckbox
+                                                        .prop('checked', true)
+                                                        .trigger('change');
+                                                }
+                                                clearForm();
+                                            } else {
+                                                if (1 === $sameCheckbox.size()) {
+                                                    $sameCheckbox
+                                                        .prop('checked', false)
+                                                        .trigger('change');
+                                                }
+                                                setAddress(addressData);
+                                            }
+                                        }
                                     }
                                 }
                                 $choiceSelect.prop('disabled', false);
@@ -79,28 +110,22 @@ define(['jquery', 'routing'], function($, router) {
                 }
 
                 var $option = $choiceSelect.find('option[value=' + $choiceSelect.val() + ']');
-                if (!$option.length) {
+                if (0 === $option.size()) {
                     return;
                 }
 
                 var data = $option.data('address');
                 if (data && data.hasOwnProperty('id')) {
-                    clearForm();
-
-                    for (var key in mapping) {
-                        if (mapping.hasOwnProperty(key)) {
-                            $addressForm.find(mapping[key]).val(data[key]).trigger("change");
-                        }
-                    }
+                    setAddress(data);
                 }
             });
 
-            if (1 === $sameCheckbox.length) {
+            if (1 === $sameCheckbox.size()) {
                 var $wrapper = $this.find('.sale-address-wrap'),
                     toggleAddress = function () {
                         if ($sameCheckbox.prop('checked')) {
                             $wrapper.slideUp(function() {
-                                if ($choiceSelect.length) {
+                                if ($choiceSelect.size()) {
                                     $choiceSelect.val(null).trigger('change');
                                 } else {
                                     clearForm();

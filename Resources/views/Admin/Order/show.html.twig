@@ -68,7 +68,7 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="order-general">
-                {% include "EkynaCommerceBundle:Admin/Order/Show:general.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': order} %}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
@@ -182,6 +182,13 @@
 </div>
 {% endblock %}
 
+{% block side %}
+    {{ parent() }}
+    {% if order.customer is not null %}
+        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:customer.html.twig" with {'customer': order.customer} %}
+    {% endif %}
+{% endblock side %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
@@ -192,3 +199,4 @@
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
     <script type="text/javascript">require(['ekyna-commerce/sale-admin']);</script>
 {% endblock javascripts %}
+

@@ -29,7 +29,19 @@
                     {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {{ form_row(form.customer) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.customer, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <p><em>{{ 'ekyna_commerce.sale.message.provide_customer_or_data'|trans }}</em></p>
+                </div>
+            </div>
             {{ form_row(form.identity) }}
             {{ form_row(form.email) }}
             <div class="row">
@@ -55,6 +67,11 @@
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.expiresAt, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
         </div>

@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;

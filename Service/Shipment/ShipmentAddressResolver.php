@@ -72,7 +72,8 @@ class ShipmentAddressResolver extends BaseResolver
         $companyAddress
             ->setCompany($companyName)
             ->setStreet($siteAddress->getStreet())
-            ->setSupplement($siteAddress->getSupplement())
+            ->setComplement($siteAddress->getSupplement())
+            //->setSupplement($siteAddress->getSupplement())
             ->setPostalCode($siteAddress->getPostalCode())
             ->setCity($siteAddress->getCity())
             ->setCountry($this->findCountryByCode($siteAddress->getCountry()))

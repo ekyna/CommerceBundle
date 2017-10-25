@@ -6,11 +6,14 @@ use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
+use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class OrderEventSubscriber
@@ -24,6 +27,16 @@ class OrderEventSubscriber extends BaseSubscriber
      */
     protected $subjectHelper;
 
+    /**
+     * @var UserProviderInterface
+     */
+    protected $userProvider;
+
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
+
 
     /**
      * Sets the subject helper.
@@ -36,37 +49,106 @@ class OrderEventSubscriber extends BaseSubscriber
     }
 
     /**
-     * @inheritDoc
+     * Sets the user provider.
+     *
+     * @param UserProviderInterface $provider
      */
-    public function onInsert(ResourceEventInterface $event)
+    public function setUserProvider(UserProviderInterface $provider)
     {
-        parent::onInsert($event);
+        $this->userProvider = $provider;
+    }
 
-        /** @var OrderInterface $order */
+    /**
+     * Sets the authorization checker.
+     *
+     * @param AuthorizationCheckerInterface $checker
+     */
+    public function setAuthorizationChecker(AuthorizationCheckerInterface $checker)
+    {
+        $this->authorizationChecker = $checker;
+    }
+
+    /**
+     * Initialize event handler.
+     *
+     * @param ResourceEventInterface $event
+     */
+    public function onInitialize(ResourceEventInterface $event)
+    {
+        parent::onInitialize($event);
+
+        /** @var \Ekyna\Bundle\CommerceBundle\Entity\Order $order */
         $order = $this->getSaleFromEvent($event);
 
-        $changed = $this->updateInCharge($order);
+        // Set in charge user
+        if (null === $user = $this->userProvider->getUser()) {
+            return;
+        }
+        if (!$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            return;
+        }
+        $order->setInCharge($user);
+    }
 
-        if ($changed) {
-            $this->persistenceHelper->persistAndRecompute($order);
+    /**
+     * @inheritdoc
+     */
+    public function onPreDelete(ResourceEventInterface $event)
+    {
+        try {
+            parent::onPreDelete($event);
+        } catch (CommerceExceptionInterface $e) {
+            $event->addMessage(new ResourceMessage(
+                'ekyna_commerce.order.message.cant_be_deleted',
+                ResourceMessage::TYPE_ERROR
+            ));
         }
     }
 
     /**
      * @inheritDoc
+     *
+     * @param OrderInterface $sale
      */
-    public function onUpdate(ResourceEventInterface $event)
+    protected function handleInsert(SaleInterface $sale)
     {
-        parent::onUpdate($event);
+        $changed = parent::handleInsert($sale);
 
-        /** @var OrderInterface $order */
-        $order = $this->getSaleFromEvent($event);
+        $changed |= $this->updateInCharge($sale);
 
-        $changed = $this->updateInCharge($order);
+        return $changed;
+    }
 
-        if ($changed) {
-            $this->persistenceHelper->persistAndRecompute($order);
+    /**
+     * @inheritDoc
+     *
+     * @param OrderInterface $sale
+     */
+    protected function handleUpdate(SaleInterface $sale)
+    {
+        $changed = parent::handleUpdate($sale);
+
+        $changed |= $this->updateInCharge($sale);
+
+        return $changed;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param OrderInterface $sale
+     */
+    protected function handleContentChange(SaleInterface $sale)
+    {
+        $changed = parent::handleContentChange($sale);
+
+        $tags = $sale->getItemsTags();
+
+        foreach ($sale->getItems() as $item) {
+            $changed |= $this->mergeItemTags($item, $tags);
         }
+
+        return $changed;
     }
 
     /**
@@ -96,31 +178,6 @@ class OrderEventSubscriber extends BaseSubscriber
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function onContentChange(ResourceEventInterface $event)
-    {
-        parent::onContentChange($event);
-
-        if ($event->isPropagationStopped()) {
-            return;
-        }
-
-        /** @var OrderInterface $sale */
-        $sale = $this->getSaleFromEvent($event);
-
-        $tags = $sale->getItemsTags();
-
-        $changed = false;
-        foreach ($sale->getItems() as $item) {
-            $changed |= $this->mergeItemTags($item, $tags);
-        }
-
-        if ($changed) {
-            $this->persistenceHelper->persistAndRecompute($sale, false);
-        }
-    }
 
     /**
      * Resolves the item tags.
@@ -155,21 +212,5 @@ class OrderEventSubscriber extends BaseSubscriber
         }
 
         return $changed;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function onPreDelete(ResourceEventInterface $event)
-    {
-        try {
-            parent::onPreDelete($event);
-        } catch (CommerceExceptionInterface $e) {
-            $event->addMessage(new ResourceMessage(
-                'ekyna_commerce.order.message.cant_be_deleted',
-                ResourceMessage::TYPE_ERROR
-            ));
-        }
     }
 }

@@ -60,6 +60,14 @@ ekyna_commerce:
                 subject: Création de compte client
                 admin_link: Voir la fiche client dans l'administration
 
+    address:
+        label:
+            singular: Adresse
+            plural: Adresses
+        field:
+            complement: Complément 1
+            supplement: Complément 2
+
     adjustment:
         label:
             singular: Ajustement
@@ -206,8 +214,7 @@ ekyna_commerce:
             quote: Devis
             proforma: Proforma
             confirmation: Confirmation de commande
-        #field:
-
+            delivery: Bon de livraison
 
     invoice:
         tab: Factures et avoirs
@@ -603,6 +610,8 @@ ekyna_commerce:
             remove: Supprimer le devis
             transform: Transform le devis
             notify: Notifier le devis
+        field:
+            expires_at: Date d'expiration
         alert:
             no_item: Aucun devis configuré
         state:
@@ -696,6 +705,9 @@ ekyna_commerce:
             adjustment:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
         message:
+            provide_customer_or_data: >
+                Si vous sélectionnez un client, les champs suivant seront remplis automatiquement
+                lors de l'enregistrement. Sinon veuillez saisir ces informations.
             already_exists: Un document de ce type existe déjà dans les pièces jointes.
         form:
             add_item: Ajouter une ligne produit

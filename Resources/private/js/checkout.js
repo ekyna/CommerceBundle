@@ -13,7 +13,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         $customer = $checkout.find('.cart-checkout-customer'),
         $forms = $checkout.find('.cart-checkout-forms'),
         $submit = $checkout.find('.cart-checkout-submit'),
-        refreshXHR;
+        preventRefresh = false;
 
     var updateElementsDisplay = function(response) {
         // Sale view
@@ -77,13 +77,15 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
     };
 
     function refreshCheckout() {
-        if (refreshXHR) {
-            refreshXHR.abort();
+        if (preventRefresh) {
+            return false;
         }
+
+        preventRefresh = true;
 
         $checkout.loadingSpinner();
 
-        refreshXHR = $.ajax({
+        var refreshXHR = $.ajax({
             url: $checkout.data('refresh-url'),
             dataType: 'xml',
             cache: false
@@ -98,6 +100,12 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         refreshXHR.fail(function() {
             console.log('Failed to update cart checkout content.');
         });
+
+        refreshXHR.always(function() {
+            preventRefresh = false;
+        });
+
+        return true;
     }
 
     Dispatcher.on('ekyna_commerce.sale_view_response', function(response) {
@@ -105,9 +113,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
     });
 
     Dispatcher.on('ekyna_user.user_status', function(e) {
-        //if (e.authenticated) {
-            refreshCheckout();
-        //}
+        refreshCheckout();
     });
 
     $(document).on('click', '.cart-checkout [data-cart-modal]', function(e) {
@@ -122,7 +128,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
             if (modalEvent.contentType === 'xml') {
                 if (parseResponse(modalEvent.content)) {
                     modalEvent.preventDefault();
-                    modal.close();
+                    modalEvent.modal.close();
                 }
             }
         });
@@ -152,32 +158,14 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
 
 
     // Refreshes the checkout on visibility change.
+    var preventWindowFocusRefresh = false;
+    $(window).on('focus', function () {
+        if (!preventWindowFocusRefresh && refreshCheckout()) {
+            preventWindowFocusRefresh = true;
 
-    var hidden, visibilityChange;
-    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
-        hidden = "hidden";
-        visibilityChange = "visibilitychange";
-    } else if (typeof document.msHidden !== "undefined") {
-        hidden = "msHidden";
-        visibilityChange = "msvisibilitychange";
-    } else if (typeof document.webkitHidden !== "undefined") {
-        hidden = "webkitHidden";
-        visibilityChange = "webkitvisibilitychange";
-    }
-
-    function handleVisibilityChange() {
-        if (document[hidden]) {
-
-        } else {
-            refreshCheckout();
+            setTimeout(function () {
+                preventWindowFocusRefresh = false;
+            }, 10000);
         }
-    }
-
-    if (typeof document.addEventListener === "undefined" || typeof document[hidden] === "undefined") {
-        //console.log("This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
-    } else {
-        // Handle page visibility change
-        document.addEventListener(visibilityChange, handleVisibilityChange, false);
-    }
-
+    });
 });

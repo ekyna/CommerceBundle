@@ -199,6 +199,7 @@ class SaleAddressType extends AbstractType
     {
         if (0 < strlen($options['customer_field'])) {
             $view->vars['attr']['data-customer-field'] = $view->parent->vars['id'] . '_' . $options['customer_field'];
+            $view->vars['attr']['data-mode'] = $options['delivery'] ? 'delivery' : 'invoice';
         }
     }
 

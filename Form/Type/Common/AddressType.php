@@ -51,8 +51,15 @@ class AddressType extends AbstractType
                     'class' => 'address-street',
                 ],
             ])
+            ->add('complement', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.address.field.complement',
+                'required' => false,
+                'attr'     => [
+                    'class' => 'address-complement',
+                ],
+            ])
             ->add('supplement', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.supplement',
+                'label'    => 'ekyna_commerce.address.field.supplement',
                 'required' => false,
                 'attr'     => [
                     'class' => 'address-supplement',
@@ -126,7 +133,7 @@ class AddressType extends AbstractType
                 'country'           => true,
                 'phones'            => true,
                 'company_required'  => false,
-                'identity_required' => true,
+                'identity_required' => false,
                 'phone_required'    => false,
                 'mobile_required'   => false,
                 'select2'           => true,

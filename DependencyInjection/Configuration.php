@@ -68,6 +68,12 @@ class Configuration implements ConfigurationInterface
                                 ->booleanNode('birthday')->defaultTrue()->end()
                             ->end()
                         ->end()
+                        ->arrayNode('expiration')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('cart')->defaultValue('+1 month')->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end();
@@ -779,7 +785,7 @@ class Configuration implements ConfigurationInterface
                                     'transform.html' => 'EkynaCommerceBundle:Admin/Quote:transform.html',
                                     'notify.html'    => 'EkynaCommerceBundle:Admin/Quote:notify.html',
                                 ])->end()
-                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\Quote')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Quote')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\QuoteRepository')->end()

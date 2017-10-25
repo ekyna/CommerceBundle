@@ -30,6 +30,8 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.default.currency', $config['default']['currency']);
         $container->setParameter('ekyna_commerce.default.customer', $config['default']['customer']);
 
+        $container->setParameter('ekyna_commerce.expiration.cart', $config['default']['expiration']['cart']);
+
         $this->configurePricing($config['pricing'], $container);
         $this->configureSaleFactory($container);
     }

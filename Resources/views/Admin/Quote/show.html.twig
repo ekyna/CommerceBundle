@@ -63,6 +63,14 @@
                             'widget_nb_col': 8
                         }) }}
                     </div>
+                    <div class="col-md-6">
+                        {{ show_row(product.releasedAt, 'datetime', 'ekyna_commerce.quote.field.expires_at', {
+                            'date_format': 'short',
+                            'time_format': 'none',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
                 </div>
                 <hr>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': quote} %}
@@ -110,6 +118,13 @@
     </div>
 </div>
 {% endblock %}
+
+{% block side %}
+    {{ parent() }}
+    {% if quote.customer is not null %}
+        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:customer.html.twig" with {'customer': quote.customer} %}
+    {% endif %}
+{% endblock side %}
 
 {% block stylesheets %}
     {{ parent() }}

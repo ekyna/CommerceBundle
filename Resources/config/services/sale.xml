@@ -75,6 +75,9 @@
             <call method="setPricingUpdater">
                 <argument type="service" id="ekyna_commerce.pricing.updater"/>
             </call>
+            <call method="setSaleFactory">
+                <argument type="service" id="ekyna_commerce.sale_factory"/>
+            </call>
             <call method="setSaleUpdater">
                 <argument type="service" id="ekyna_commerce.sale_updater"/>
             </call>

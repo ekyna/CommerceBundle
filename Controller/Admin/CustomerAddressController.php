@@ -111,6 +111,6 @@ class CustomerAddressController extends ResourceController
             ->get('serializer')
             ->serialize(['choices' => $addresses], 'json', ['groups' => ['Default']]);
 
-        return new Response($data, 200, ['Content-Type' => 'application/json']);
+        return new Response($data, Response::HTTP_OK, ['Content-Type' => 'application/json']);
     }
 }

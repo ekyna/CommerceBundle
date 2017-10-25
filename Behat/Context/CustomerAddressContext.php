@@ -71,6 +71,9 @@ class CustomerAddressContext implements Context, KernelAwareContext
                 ->setCity($row['city']);
 
             // Supplement / Phone / Mobile
+            if (isset($row['complement']) && 0 < strlen($complement = $row['complement'])) {
+                $address->setComplement($complement);
+            }
             if (isset($row['supplement']) && 0 < strlen($supplement = $row['supplement'])) {
                 $address->setSupplement($supplement);
             }

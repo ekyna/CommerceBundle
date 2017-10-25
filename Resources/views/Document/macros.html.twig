@@ -4,11 +4,11 @@
     <strong>{{ get_setting('general.site_name') }}</strong><br>
     {% set companyAddress = get_setting('general.site_address') %}
     {{ companyAddress.street }}<br>
-    {% if companyAddress.supplement|length > 0 %}{{ companyAddress.supplement }}<br>{% endif %}
+    {% if companyAddress.supplement is not empty %}{{ companyAddress.supplement }}<br>{% endif %}
     {{ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}<br>
 
-    {% if companyAddress.phone|length > 0 %}Tél. {{ companyAddress.phone }}<br>{% endif %}
-    {% if companyAddress.mobile|length > 0 %}Port. {{ companyAddress.mobile }}<br>{% endif %}
+    {% if companyAddress.phone is not empty %}Tél. {{ companyAddress.phone }}<br>{% endif %}
+    {% if companyAddress.mobile is not empty %}Port. {{ companyAddress.mobile }}<br>{% endif %}
 
     {{ get_setting('general.admin_email') }}<br>
     {{ absolute_url('/') }}
@@ -50,12 +50,17 @@
     <p>
         {% if address['company'] is not empty %}
             <strong>{{ address['company'] }}</strong><br>
-            {{ address['full_name'] }}<br>
-        {% else %}
+            {% if address['full_name'] is not empty %}
+                {{ address['full_name'] }}<br>
+            {% endif %}
+        {% elseif address['full_name'] is not empty %}
             <strong>{{ address['full_name'] }}</strong><br>
         {% endif %}
 
         {{ address['street'] }}<br>
+        {% if address['complement'] is not empty %}
+            {{ address['complement'] }}<br>
+        {% endif %}
         {% if address['supplement'] is not empty %}
             {{ address['supplement'] }}<br>
         {% endif %}
@@ -63,11 +68,11 @@
         {{ address['postal_code'] }} {{ address['city'] }}, {{ address['country'] }}
 
         {% if address['phone'] is not empty %}
-            <br>Téléphone : {{ address['phone'] }}
+            <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address['phone'] }}
         {% endif %}
 
         {% if address['mobile'] is not empty %}
-            <br>Mobile : {{ address['mobile'] }}
+            <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address['mobile'] }}
         {% endif %}
     </p>
 {% endspaceless %}
