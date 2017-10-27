@@ -55,7 +55,7 @@ class ProductContext implements Context, KernelAwareContext
                 ->setReference($hash['reference'])
                 ->setNetPrice($hash['price'])
                 ->setWeight($hash['weight'])
-                ->setStockMode(StockSubjectModes::MODE_ENABLED)
+                ->setStockMode(StockSubjectModes::MODE_AUTO)
             ;
 
             if (isset($row['taxGroup'])) {

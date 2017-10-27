@@ -56,14 +56,34 @@
 {% endmacro show_stock_floor %}
 
 
-{% macro show_eta(subject, options = {}) %}
+{% macro show_minimum_order_quantity(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.minimumOrderQuantity, 'number', 'ekyna_commerce.stock_subject.field.minimum_order_quantity', {
+        'id': 'subject_minimumOrderQuantity',
+        'precision': 0
+    }|merge(options)) }}
+{% endspaceless %}
+{% endmacro show_minimum_order_quantity %}
+
+
+{% macro show_eda(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.estimatedDateOfArrival, 'datetime', 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival', {
         'id': 'subject_estimatedDateOfArrival',
         'time': false
     }|merge(options)) }}
 {% endspaceless %}
-{% endmacro show_eta %}
+{% endmacro show_eda %}
+
+
+{% macro show_replenishment_time(subject, options = {}) %}
+{% spaceless %}
+    {{ show_row(subject.replenishmentTime, 'number', 'ekyna_commerce.stock_subject.field.replenishment_time', {
+        'id': 'subject_replenishmentTime',
+        'precision': 0
+    }|merge(options)) }}
+{% endspaceless %}
+{% endmacro show_replenishment_time %}
 
 
 {% macro show_stock_view(subject, prefix) %}
@@ -85,40 +105,56 @@
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_eta(subject, {
-                'id': prefix ~'_estimatedDateOfArrival',
+            {{ _self.show_replenishment_time(subject, {
+                'id': prefix ~'_replenishmentTime',
                 'label_nb_col': 6,
                 'widget_nb_col': 6
             }) }}
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             {{ _self.show_in_stock(subject, {
                 'id': prefix ~'_inStock',
-                'label_nb_col': 8,
-                'widget_nb_col': 4
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
-        <div class="col-md-3">
-            {{ _self.show_stock_floor(subject, {
-                'id': prefix ~'_stockFloor',
-                'label_nb_col': 8,
-                'widget_nb_col': 4
-            }) }}
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             {{ _self.show_available_stock(subject, {
                 'id': prefix ~'_availableStock',
-                'label_nb_col': 8,
-                'widget_nb_col': 4
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             {{ _self.show_virtual_stock(subject, {
                 'id': prefix ~'_virtualStock',
-                'label_nb_col': 8,
-                'widget_nb_col': 4
+                'label_nb_col': 6,
+                'widget_nb_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ _self.show_minimum_order_quantity(subject, {
+                'id': prefix ~'_minimumOrderQuantity',
+                'label_nb_col': 6,
+                'widget_nb_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ _self.show_stock_floor(subject, {
+                'id': prefix ~'_stockFloor',
+                'label_nb_col': 6,
+                'widget_nb_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ _self.show_eda(subject, {
+                'id': prefix ~'_estimatedDateOfArrival',
+                'label_nb_col': 6,
+                'widget_nb_col': 6
             }) }}
         </div>
     </div>

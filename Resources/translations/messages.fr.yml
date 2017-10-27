@@ -909,13 +909,16 @@ ekyna_commerce:
             mode: Mode stock
             state: État stock
             floor: Stock de rupture
+            minimum_order_quantity: Qté Min Com
             in_stock: Stock réel
             available_stock: Stock disponible
             virtual_stock: Stock prévisionnel
+            replenishment_time: Délai de réappro.
             estimated_date_of_arrival: Date de réappro.
         mode:
-            disabled: Désactivé
-            enabled: Activé
+            inherited: Hérité
+            manual: Manuel
+            auto: Automatique
             just_in_time: Flux tendu
         state:
             in_stock: En stock
