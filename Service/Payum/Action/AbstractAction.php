@@ -13,7 +13,7 @@ use Payum\Core\GatewayAwareTrait;
  * @package Ekyna\Bundle\CommerceBundle\Service\Payum\Action
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-abstract class AbstractPaymentStateAwareAction implements ActionInterface, GatewayAwareInterface
+abstract class AbstractAction implements ActionInterface, GatewayAwareInterface
 {
     use GatewayAwareTrait;
 

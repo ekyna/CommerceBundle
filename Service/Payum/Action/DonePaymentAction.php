@@ -13,7 +13,7 @@ use Payum\Core\Request\Sync;
  * @package Ekyna\Bundle\CommerceBundle\Service\Payum\Action
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class DonePaymentAction extends AbstractPaymentStateAwareAction
+class DonePaymentAction extends AbstractAction
 {
     /**
      * {@inheritDoc}

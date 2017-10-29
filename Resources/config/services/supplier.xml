@@ -26,7 +26,8 @@
         </service>
 
         <!-- Supplier* abstract event listener -->
-        <service id="ekyna_commerce.supplier_order.abstract_listener"
+        <service id="ekyna_commerce.supplier.abstract_listener"
+                 class="Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener"
                  abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
@@ -34,9 +35,6 @@
             <call method="setStockUnitLinker">
                 <argument type="service" id="ekyna_commerce.stock_unit.linker"/>
             </call>
-            <!--<call method="setStockUnitResolver">
-                <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
-            </call>-->
             <call method="setStockUnitUpdater">
                 <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
             </call>
@@ -45,7 +43,7 @@
         <!-- Supplier order event listener -->
         <service id="ekyna_commerce.supplier_order.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber"
-                 parent="ekyna_commerce.supplier_order.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener">
             <argument type="service" id="ekyna_commerce.supplier_order.number_generator"/>
             <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
             <argument type="service" id="ekyna_commerce.supplier_order.state_resolver"/>
@@ -55,21 +53,21 @@
         <!-- Supplier order item event listener -->
         <service id="ekyna_commerce.supplier_order_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderItemEventSubscriber"
-                 parent="ekyna_commerce.supplier_order.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier delivery event listener -->
         <service id="ekyna_commerce.supplier_delivery.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryEventSubscriber"
-                 parent="ekyna_commerce.supplier_order.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier delivery item event listener -->
         <service id="ekyna_commerce.supplier_delivery_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscriber"
-                 parent="ekyna_commerce.supplier_order.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 

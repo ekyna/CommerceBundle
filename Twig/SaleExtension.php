@@ -147,12 +147,16 @@ class SaleExtension extends \Twig_Extension
      *
      * @param \Twig_Environment $env
      * @param SaleView          $view
-     * @param string            $template TODO remove as defined in view vars
+     * @param string            $template
      *
      * @return string
      */
-    public function renderSaleView(\Twig_Environment $env, SaleView $view, $template = 'EkynaCommerceBundle:Common:sale_view.html.twig')
+    public function renderSaleView(\Twig_Environment $env, SaleView $view, $template = null)
     {
+        if (empty($template)) {
+            $template = $view->getTemplate();
+        }
+
         /** @noinspection PhpUndefinedMethodInspection */
         /** @noinspection PhpInternalEntityUsedInspection */
         return $env->loadTemplate($template)->renderBlock('sale', ['view' => $view]);

@@ -2,11 +2,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Payum\Action;
 
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
-use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
-use Payum\Core\GatewayAwareInterface;
-use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Request\Capture;
 use Payum\Core\Request\Convert;
 use Payum\Core\Request\GetHumanStatus;
@@ -16,10 +13,8 @@ use Payum\Core\Request\GetHumanStatus;
  * @package Ekyna\Bundle\CommerceBundle\Service\Payum\Action
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CapturePaymentAction implements ActionInterface, GatewayAwareInterface
+class CapturePaymentAction extends AbstractAction
 {
-    use GatewayAwareTrait;
-
     /**
      * @inheritdoc
      *

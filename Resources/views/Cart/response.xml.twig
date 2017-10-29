@@ -4,7 +4,7 @@
 <response>
 {%- if cart is not same as(null) -%}
     <view{{ macros.view_controls(controls) }}>
-        <![CDATA[{{ render_sale_view(view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}]]>
+        <![CDATA[{{ render_sale_view(view) }}]]>
     </view>
     <information><![CDATA[{{ macros.cart_information(cart) }}]]></information>
     <invoice-address><![CDATA[{{ macros.cart_invoice_address(cart) }}]]></invoice-address>

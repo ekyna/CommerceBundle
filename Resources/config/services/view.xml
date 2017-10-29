@@ -19,13 +19,24 @@
 
         <!-- Abstract view vars builder -->
         <service id="ekyna_commerce.abstract_view_type"
+                 class="Ekyna\Bundle\CommerceBundle\Service\AbstractViewType"
                  abstract="true">
             <call method="setUrlGenerator">
                 <argument type="service" id="router"/>
             </call>
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
             <call method="setSubjectHelper">
                 <argument type="service" id="ekyna_commerce.subject_helper"/>
             </call>
+        </service>
+
+        <!-- Sale view vars builder -->
+        <service id="ekyna_commerce.sale.view_type"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleViewType"
+                 parent="ekyna_commerce.abstract_view_type">
+            <tag name="ekyna_commerce.view_type"/>
         </service>
 
         <!-- Cart view vars builder -->

@@ -6,7 +6,9 @@
     <services>
 
         <!-- Cart abstract provider -->
-        <service id="ekyna_commerce.cart.abstract_provider" abstract="true">
+        <service id="ekyna_commerce.cart.abstract_provider"
+                 class="Ekyna\Component\Commerce\Cart\Provider\AbstractCartProvider"
+                 abstract="true">
             <call method="setCartRepository">
                 <argument type="service" id="ekyna_commerce.cart.repository"/>
             </call>
@@ -85,7 +87,9 @@
         </service>
 
         <!-- Abstract cart controller -->
-        <service id="ekyna_commerce.controller.cart.abstract" abstract="true">
+        <service id="ekyna_commerce.controller.cart.abstract"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\AbstractController"
+                 abstract="true">
             <call method="setTemplating">
                 <argument type="service" id="templating"/>
             </call>

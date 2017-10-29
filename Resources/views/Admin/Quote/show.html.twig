@@ -76,7 +76,7 @@
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': quote} %}
             </div>
             <div class="tab-pane" id="quote-details">
-                {{ render_sale_view(sale_view, 'EkynaCommerceBundle:Common:sale_view_editable.html.twig') }}
+                {{ render_sale_view(sale_view) }}
             </div>
             <div class="tab-pane" id="quote-payments">
                 <div class="actions">

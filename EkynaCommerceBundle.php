@@ -6,7 +6,7 @@ use Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler as BundlePass;
 use Ekyna\Bundle\ResourceBundle\AbstractBundle;
 use Ekyna\Component\Commerce;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
-use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\Compiler as ComponentPass;
+use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection as ComponentPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -28,6 +28,7 @@ class EkynaCommerceBundle extends AbstractBundle
         $container->addCompilerPass(new ComponentPass\RegisterViewTypePass());
         $container->addCompilerPass(new ComponentPass\PricingApiPass());
         $container->addCompilerPass(new ComponentPass\ShipmentGatewayRegistryPass());
+        $container->addCompilerPass(new ComponentPass\TwigPathCompilerPass());
 
         $container->addCompilerPass(new BundlePass\AdminMenuPass());
         $container->addCompilerPass(new BundlePass\SecurityPass());

@@ -65,7 +65,9 @@
         </service>
 
         <!-- Sale abstract listener -->
-        <service id="ekyna_commerce.sale.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.sale.abstract_listener"
+                 class="Ekyna\Component\Commerce\Common\EventListener\AbstractSaleListener"
+                 abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
@@ -84,14 +86,18 @@
         </service>
 
         <!-- Sale address abstract listener -->
-        <service id="ekyna_commerce.sale_address.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.sale_address.abstract_listener"
+                 class="Ekyna\Component\Commerce\Common\EventListener\AbstractSaleAddressListener"
+                 abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
         </service>
 
         <!-- Sale item abstract listener -->
-        <service id="ekyna_commerce.sale_item.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.sale_item.abstract_listener"
+                 class="Ekyna\Component\Commerce\Common\EventListener\AbstractSaleItemListener"
+                 abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
@@ -101,7 +107,9 @@
         </service>
 
         <!-- Adjustment abstract listener -->
-        <service id="ekyna_commerce.adjustment.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.adjustment.abstract_listener"
+                 class="Ekyna\Component\Commerce\Common\EventListener\AbstractAdjustmentListener"
+                 abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>

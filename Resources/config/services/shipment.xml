@@ -30,7 +30,9 @@
                  class="Ekyna\Component\Commerce\Shipment\Calculator\WeightCalculator"/>
 
         <!-- Shipment abstract listener -->
-        <service id="ekyna_commerce.shipment.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.shipment.abstract_listener"
+                 class="Ekyna\Component\Commerce\Shipment\EventListener\AbstractShipmentListener"
+                 abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
@@ -46,7 +48,9 @@
         </service>
 
         <!-- Shipment item abstract listener -->
-        <service id="ekyna_commerce.shipment_item.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.shipment_item.abstract_listener"
+                 class="Ekyna\Component\Commerce\Shipment\EventListener\AbstractShipmentItemListener"
+                 abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>

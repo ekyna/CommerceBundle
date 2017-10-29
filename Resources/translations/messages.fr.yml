@@ -731,6 +731,7 @@ ekyna_commerce:
             discount_total: Total Remise
             net_total: Total HT
             shipment_total: Port HT
+            shipping_cost: Frais de port
             tax_name: Taxe
             tax_amount: Montant
             tax_rate: Taux TVA

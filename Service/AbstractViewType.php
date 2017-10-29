@@ -7,6 +7,7 @@ use Ekyna\Component\Commerce\Common\View\AbstractViewType as BaseType;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class AbstractViewType
@@ -19,6 +20,11 @@ abstract class AbstractViewType extends BaseType
      * @var UrlGeneratorInterface
      */
     private $urlGenerator;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     /**
      * @var SubjectHelperInterface
@@ -34,6 +40,16 @@ abstract class AbstractViewType extends BaseType
     public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
+     * Sets the translator.
+     *
+     * @param TranslatorInterface $translator
+     */
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
     }
 
     /**
@@ -57,6 +73,20 @@ abstract class AbstractViewType extends BaseType
     protected function generateUrl($name, array $parameters = [])
     {
         return $this->urlGenerator->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * Translates the given message.
+     *
+     * @param string $id
+     * @param array  $parameters
+     * @param string $domain
+     *
+     * @return string
+     */
+    protected function trans($id, array $parameters = [], $domain = null)
+    {
+        return $this->translator->trans($id, $parameters, $domain);
     }
 
     /**

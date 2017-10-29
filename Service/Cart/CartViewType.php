@@ -32,7 +32,7 @@ class CartViewType extends AbstractViewType
                 'itemId' => $item->getId(),
             ]);
             $actions[] = new View\Action($configurePath, 'fa fa-cog', [
-                'title'           => 'ekyna_commerce.sale.button.item.configure',
+                'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
                 'data-sale-modal' => null,
             ]);
         }
@@ -42,8 +42,8 @@ class CartViewType extends AbstractViewType
             'itemId' => $item->getId(),
         ]);
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
-            'title'         => 'ekyna_commerce.sale.button.item.remove',
-            'confirm'       => 'ekyna_commerce.sale.confirm.item.remove',
+            'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
+            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
             'data-sale-xhr' => null,
         ]);
 
@@ -76,8 +76,8 @@ class CartViewType extends AbstractViewType
         }
 
         $actions[] = new View\Action($removePath, 'fa fa-remove', [
-            'title'         => 'ekyna_commerce.sale.button.adjustment.remove',
-            'confirm'       => 'ekyna_commerce.sale.confirm.adjustment.remove',
+            'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
+            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
             'data-sale-xhr' => null,
         ]);
 

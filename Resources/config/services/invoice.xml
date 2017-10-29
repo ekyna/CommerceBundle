@@ -22,7 +22,9 @@
         </service>
 
         <!-- Invoice abstract listener -->
-        <service id="ekyna_commerce.invoice.abstract_listener" abstract="true" lazy="true">
+        <service id="ekyna_commerce.invoice.abstract_listener"
+                 class="Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceListener"
+                 abstract="true" lazy="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
@@ -44,7 +46,9 @@
         </service>
 
         <!-- Invoice line abstract listener -->
-        <service id="ekyna_commerce.invoice_line.abstract_listener" abstract="true" lazy="true">
+        <service id="ekyna_commerce.invoice_line.abstract_listener"
+                 class="Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceLineListener"
+                 abstract="true" lazy="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>

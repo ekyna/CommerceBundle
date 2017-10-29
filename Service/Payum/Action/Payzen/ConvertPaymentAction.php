@@ -2,13 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Payzen;
 
+use Ekyna\Bundle\CommerceBundle\Service\Payum\Action\AbstractAction;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
-use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\RuntimeException;
-use Payum\Core\GatewayAwareInterface;
-use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Request\Convert;
 use Payum\Core\Request\GetCurrency;
 
@@ -17,10 +15,8 @@ use Payum\Core\Request\GetCurrency;
  * @package Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Payzen
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class ConvertPaymentAction implements ActionInterface, GatewayAwareInterface
+class ConvertPaymentAction extends AbstractAction
 {
-    use GatewayAwareTrait;
-
     /**
      * {@inheritDoc}
      *

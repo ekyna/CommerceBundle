@@ -6,7 +6,9 @@
     <services>
 
         <!-- Abstract stock unit listener -->
-        <service id="ekyna_commerce.stock_unit.abstract_listener" abstract="true">
+        <service id="ekyna_commerce.stock_unit.abstract_listener"
+                 class="Ekyna\Component\Commerce\Stock\EventListener\AbstractStockUnitListener"
+                 abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
