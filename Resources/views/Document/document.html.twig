@@ -1,7 +1,7 @@
-{% extends "EkynaCommerceBundle:Document:base.html.twig" %}
+{%- extends "EkynaCommerceBundle:Document:base.html.twig" -%}
 
 
-{% import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
+{%- import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
 
 {# --- HEAD TITLE --- #}
@@ -12,53 +12,72 @@
 
 
 {# --- DOC TITLE --- #}
-{% block doc_title -%}
+{%- block doc_title -%}
     <h1>
         {{- ('ekyna_commerce.document.type.' ~ document.type)|trans }}
         {{ document.sale.number -}}
     </h1>
     <p>Le {{ date|localizeddate('long', 'none') }}.</p>
-{%- endblock doc_title %}
+{%- endblock doc_title -%}
 
 
 {# --- ADDRESSES --- #}
 {%- block doc_customer -%}
-    {{ macro.render_customer(document.customer) }}
+    {{- macro.render_customer(document.customer) -}}
 {%- endblock doc_customer -%}
 
 {%- block doc_invoice_address -%}
-    {{ macro.render_address(document.invoiceAddress) }}
+    {{- macro.render_address(document.invoiceAddress) -}}
 {%- endblock doc_invoice_address -%}
 
 {%- block doc_delivery_address -%}
-    {% if document.deliveryAddress is not empty %}
+    {%- if document.deliveryAddress is not empty -%}
         {{ macro.render_address(document.deliveryAddress) }}
-    {% else %}
+    {%- else -%}
         {{ macro.render_address(document.invoiceAddress) }}
-    {% endif %}
+    {%- endif -%}
 {%- endblock doc_delivery_address -%}
 
 
-{% set currency = document.currency %}
+{%- set currency = document.currency -%}
+{%- set multiple_taxes = document.hasMultipleTaxes() -%}
+{%- set line_discount = document.hasLineDiscount() -%}
+
+{%- set columns_count = 5 -%}
+{%- if multiple_taxes %}{% set columns_count = columns_count + 1 %}{% endif -%}
+{%- if line_discount %}{% set columns_count = columns_count + 2 %}{% endif -%}
 
 {# --- LINES --- #}
-{% block doc_lines %}
+{%- block doc_lines -%}
 <table class="bloc table details">
     <thead>
     <tr>
         <th>{{ 'ekyna_core.field.designation'|trans }}</th>
         <th>{{ 'ekyna_core.field.reference'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
+        {% if multiple_taxes -%}
         <th>{{ 'ekyna_commerce.sale.field.tax_rate'|trans }}</th>
+        {%- endif %}
         <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+        {% if line_discount -%}
+        <th>{{ 'ekyna_commerce.sale.field.base_total'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.discount_total'|trans }}</th>
+        {%- endif %}
         <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
     </tr>
     </thead>
 
     {# GOODS #}
+    {% set baseTotal, discountTotal, netTotal = 0, 0, 0 %}
+    {% set goodLines = document.linesByType('good') %}
+    {% set discountLines = document.linesByType('discount') -%}
+    {% set shipmentLines = document.linesByType('shipment') -%}
+
     <tbody class="stripped">
-    {% for line in document.linesByType('good') %}
+    {% for line in goodLines %}
+        {% set baseTotal = baseTotal + line.baseTotal %}
+        {% set discountTotal = discountTotal + line.discountTotal %}
+        {% set netTotal = netTotal + line.netTotal %}
         <tr>
             <td>
                 {{- line.designation -}}
@@ -68,6 +87,7 @@
             </td>
             <td>{{ line.reference }}</td>
             <td class="text-right">{{ line.netPrice|localizedcurrency(currency) }}</td>
+            {% if multiple_taxes %}
             <td class="text-right">
                 {%- for rate in line.taxRates -%}
                     {{- rate|localizednumber }}%
@@ -76,7 +96,12 @@
                     &nbsp;
                 {%- endfor -%}
             </td>
+            {% endif %}
             <td class="text-right">{{ line.quantity|localizednumber }}</td>
+            {% if line_discount %}
+            <td class="text-right">
+                {{- line.baseTotal|localizedcurrency(currency) -}}
+            </td>
             <td class="text-right">
                 {%- if line.discountTotal -%}
                     {{- line.discountTotal|localizedcurrency(currency) -}}
@@ -84,68 +109,83 @@
                     &nbsp;
                 {%- endif -%}
             </td>
+            {% endif %}
             <td class="text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
         </tr>
     {% endfor %}
     </tbody>
+
+
+    <tbody class="spacer"><tr><td colspan="8">&nbsp;</td></tr></tbody>
+
+    {% if line_discount or (1 < goodLines|length and discountLines is not empty)  -%}
+    <tbody class="totals">
+        <tr>
+            <td colspan="{{ columns_count - (line_discount ? 3 : 1) }}">{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</td>
+            {% if line_discount -%}
+            <td class="text-right">{{ baseTotal|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ discountTotal|localizedcurrency(currency) }}</td>
+            {%- endif %}
+            <td class="text-right">{{ netTotal|localizedcurrency(currency) }}</td>
+        </tr>
+    </tbody>
+    {%- endif %}
 
 
     {# DISCOUNTS #}
-    {% set discounts = document.linesByType('discount') %}
-    {% if discounts is not empty %}
-    {% block spacer %}
-    <tbody class="spacer">
+    {% if discountLines is not empty -%}
+    <tbody class="totals">
+    {% for line in discountLines -%}
         <tr>
-            <td colspan="7">&nbsp;</td>
+            <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
+            <th>
+                {%- if line.designation is empty -%}
+                    {{- 'ekyna_commerce.adjustment.type.discount'|trans }}
+                {%- else -%}
+                    {{- line.designation -}}
+                {%- endif -%}
+            </th>
+            <td class="total text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
         </tr>
+    {%- endfor %}
     </tbody>
-    {% endblock spacer %}
+    {%- endif %}
 
-    <tbody>
-    {% for line in discounts %}
-        <tr>
-            <td colspan="6">{{ line.designation }}</td>
-            <td class="text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-    {% endif %}
 
     {# SHIPMENT #}
-    {% set shipments = document.linesByType('shipment') %}
-    {% if shipments is not empty %}
-    {{ block('spacer') }}
-    <tbody>
-    {% for line in shipments %}
+    {% if shipmentLines is not empty -%}
+    <tbody class="totals">
+    {% for line in shipmentLines -%}
         <tr>
-            <td colspan="6">{{ line.designation }}</td>
-            <td class="text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
+            <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
+            <th>{{ 'ekyna_commerce.sale.field.shipping_cost'|trans }}</th>
+            <td class="total text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
         </tr>
-    {% endfor %}
+    {%- endfor %}
     </tbody>
-    {% endif %}
+    {%- endif %}
+
 
     {# TOTALS #}
-    {{ block('spacer') }}
     <tbody class="totals">
-    <tr>
-        <td colspan="5" rowspan="3">&nbsp;</td>
-        <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-        <td class="total text-right">{{ (document.goodsBase + document.shipmentBase)|localizedcurrency(currency) }}</td>
-    </tr>
-    <tr>
-        <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-        <td class="total text-right">{{ document.taxesTotal|localizedcurrency(currency) }}</td>
-    </tr>
-    <tr>
-        <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
-        <td class="total final text-right">{{ document.grandTotal|localizedcurrency(currency) }}</td>
-    </tr>
+        <tr>
+            <td colspan="{{ columns_count - 2 }}" rowspan="3">&nbsp;</td>
+            <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+            <td class="total text-right">{{ (document.goodsBase + document.shipmentBase)|localizedcurrency(currency) }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
+            <td class="total text-right">{{ document.taxesTotal|localizedcurrency(currency) }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            <td class="total final text-right">{{ document.grandTotal|localizedcurrency(currency) }}</td>
+        </tr>
     </tbody>
 </table>
 
 {# Taxes details #}
-{% if document.taxesDetails is not empty %}
+{% if document.taxesDetails is not empty -%}
 <table class="table taxes">
     <thead>
         <tr>
@@ -154,20 +194,20 @@
         </tr>
     </thead>
     <tbody>
-        {%- for details in document.taxesDetails -%}
+        {% for details in document.taxesDetails -%}
         <tr>
             <th>{{ details.name }}</th>
             <td class="text-right">{{ details.amount|localizedcurrency(currency) }}</td>
         </tr>
-        {%- endfor -%}
+        {%- endfor %}
     </tbody>
 </table>
-{% endif %}
-{% endblock doc_lines %}
+{%- endif %}
+{%- endblock doc_lines %}
 
 
 {# --- MISC --- #}
-{% block doc_misc %}
+{% block doc_misc -%}
     {#
     <table class="order-doc-bloc order-doc-inf">
         <tbody>
@@ -185,14 +225,14 @@
         </tbody>
     </table>
     #}
-{% endblock doc_misc %}
+{%- endblock doc_misc %}
 
 {# --- FOOTER --- #}
-{% block doc_footer %}
+{% block doc_footer -%}
     {{- get_setting('commerce.invoice_footer')|raw -}}
-{% endblock doc_footer %}
+{%- endblock doc_footer %}
 
-{% block post_body %}
+{% block post_body -%}
 {# TERMS #}
 {#<hr>
 
@@ -203,5 +243,5 @@
     <p>Nulla facilisi. Nam enim quam, viverra ac neque quis, interdum blandit massa. Curabitur eleifend sed felis vitae semper. Integer eleifend est a pellentesque auctor. Suspendisse dictum lorem eget quam convallis, non ultrices justo ultricies. Donec eu lobortis enim. Vestibulum diam urna, porta a faucibus nec, tempus a ex. Duis cursus quam orci, at semper nisl blandit ut. Nullam ut leo non felis mollis dictum. Etiam eget metus dolor.</p>
     <p>Sed eget auctor ipsum. Nam nec massa tempus turpis fermentum gravida. Proin iaculis eu elit non ultrices. Pellentesque eros orci, scelerisque tristique sem a, finibus lacinia purus. Quisque porta leo quis lectus consectetur, vel iaculis nisl mattis. Donec nec lacinia sem. Fusce dictum leo sed finibus molestie. Etiam bibendum, mi non sollicitudin posuere, nulla dui bibendum urna, sed vestibulum purus neque at leo. Cras convallis lacus massa, nec fringilla nulla congue non. Nam massa nunc, pretium sit amet fringilla a, eleifend non neque. Morbi venenatis fringilla libero, vitae venenatis elit cursus eu. Praesent id nibh ac elit dignissim elementum sit amet in ipsum. Sed facilisis imperdiet nulla. Praesent fringilla pulvinar elit sit amet fermentum. Aliquam lacinia, nisi fringilla malesuada sagittis, orci nibh imperdiet mi, maximus elementum massa dui eget risus. Proin eu metus velit.</p>
 </div>#}
-{% endblock post_body %}
+{%- endblock post_body %}
 

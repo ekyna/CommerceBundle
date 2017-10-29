@@ -728,7 +728,8 @@ ekyna_commerce:
             delivery_address: Adresse de livraison
             same_address: Même adresse
             net_unit: PU HT
-            discount_total: Total Remise
+            base_total: Base HT
+            discount_total: Remise
             net_total: Total HT
             shipment_total: Port HT
             shipping_cost: Frais de port

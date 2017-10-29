@@ -1,3 +1,4 @@
+@font-size: 14px;
 @text-color: #333333;
 @head-color: #999999;
 @border-color: #dddddd;
@@ -5,7 +6,7 @@
 
 .wrapper {
     font-family: Herlvetica, Arial, sans-serif;
-    font-size: 12px;
+    font-size: @font-size;
     line-height: 21px;
     color: @text-color;
     max-width: 1200px;
@@ -14,8 +15,9 @@
 
 h1 {
     font-variant: small-caps;
+    font-weight: normal;
     color: @head-color;
-    font-size: 1.6em;
+    font-size: @font-size * 2.2;
 }
 
 .text-right {
@@ -82,7 +84,7 @@ table.header {
             padding: 0 8px;
             position: relative;
             text-align: left;
-            font-size: 12px;
+            font-size: @font-size - 1;
             line-height: 21px !important;
             border-bottom: 1px solid @border-color;
 
@@ -145,14 +147,16 @@ table.header {
             th {
                 text-transform: uppercase;
                 color: @head-color;
-                font-size: 12px;
+                font-size: @font-size - 1;
+                text-align: left;
             }
 
             td.total {
-                font-size: 14px;
+                font-size: @font-size;
 
                 &.final {
                     font-weight: bold;
+                    font-size: @font-size + 1;
                     background-color: @background-alt-color;
                 }
             }
@@ -169,7 +173,7 @@ table.header {
         p.description {
             margin: 0;
             padding: 0 0 0 12px;
-            font-size: 11px;
+            font-size: @font-size - 2;
             color: lighten(@text-color, 20%);
         }
     }
