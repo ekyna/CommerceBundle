@@ -20,6 +20,9 @@
             {% set total = 0 %}
 
             {% for invoice in sale.invoices if invoice.type == type %}
+                {% set currency = invoice.currency %}
+
+                {# TODO currency conversion ! #}
                 {% set goodsTotal = goodsTotal + invoice.goodsBase %}
                 {% set shipmentTotal = shipmentTotal + invoice.shipmentBase %}
                 {% set taxesTotal = taxesTotal + invoice.taxesTotal %}
@@ -29,10 +32,10 @@
             <tr data-id="{{ invoice.id }}">
                 <td id="{{ invoiceId }}_number">{{ invoice.number }}</td>
                 <td id="{{ invoiceId }}_type">{{ invoice|invoice_type_badge }}</td>
-                <td id="{{ invoiceId }}_goodsBase">{{ invoice.goodsBase|localizedcurrency('EUR') }}</td>
-                <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency('EUR') }}</td>
-                <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency('EUR') }}</td>
-                <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency('EUR') }}</td>
+                <td id="{{ invoiceId }}_goodsBase">{{ invoice.goodsBase|localizedcurrency(commerce_default_currency) }}</td>
+                <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(commerce_default_currency) }}</td>
+                <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(commerce_default_currency) }}</td>
+                <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
                 <td class="actions">
                     <a href="javascript:void(0)"
@@ -104,10 +107,10 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
-                <td>{{ goodsTotal|localizedcurrency('EUR') }}</td>
-                <td>{{ shipmentTotal|localizedcurrency('EUR') }}</td>
-                <td>{{ taxesTotal|localizedcurrency('EUR') }}</td>
-                <td>{{ total|localizedcurrency('EUR') }}</td>
+                <td>{{ goodsTotal|localizedcurrency(commerce_default_currency) }}</td>
+                <td>{{ shipmentTotal|localizedcurrency(commerce_default_currency) }}</td>
+                <td>{{ taxesTotal|localizedcurrency(commerce_default_currency) }}</td>
+                <td>{{ total|localizedcurrency(commerce_default_currency) }}</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>

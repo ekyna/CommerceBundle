@@ -1,4 +1,4 @@
-@commerce @order-shipment
+@commerce @sale @order-shipment
 Feature: Create order shipments
     In order to deliver products
     As an administrator
@@ -24,9 +24,12 @@ Feature: Create order shipments
             | designation | reference | price     | weight |
             | iPad Air    | IPAD-AIR  | 266.66667 | 0.8    |
             | Galaxy Tab  | GALA-TAB  | 249.16667 | 0.7    |
+        And The following supplier carriers:
+            | name |
+            | TNT  |
         And The following suppliers:
-            | name     | currency | email                | gender | lastName | firstName |
-            | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
+            | name     | currency | carrier | email                | gender | lastName | firstName |
+            | TechData | EUR      | TNT     | contact@techdata.com | mr     | Dupont   | Jean      |
         And The following supplier products:
             | supplier | designation | reference | price     | weight | available | ordered | acme_product |
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       | IPAD-AIR     |
@@ -48,7 +51,7 @@ Feature: Create order shipments
             | O-0001 | 4        | IPAD-AIR     |
             | O-0001 | 2        | GALA-TAB     |
 
-    @javascript @stock
+    @javascript @stock @current
     Scenario: Create a shipment
         Given The supplier order with number "SO-001" is received
         And The order with number "O-0001" is paid
@@ -72,6 +75,7 @@ Feature: Create order shipments
         # Product #1 assertions
         When I go to "acme_product_product_admin_show" route with "productId:1"
         Then I should see "6" in the "#product_inStock" element
+        Then I should see "2" in the "#product_availableStock" element
         And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "6" in the "#product_stockUnit_0_orderedQuantity" element
@@ -82,7 +86,9 @@ Feature: Create order shipments
         # Product #2 assertions
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "2" in the "#product_inStock" element
-        And I should see "En rupture" in the "#product_stockState" element
+        Then I should see "0" in the "#product_availableStock" element
+        # Supplier has available stock
+        And I should see "Pré-commande" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
         And I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
@@ -124,6 +130,7 @@ Feature: Create order shipments
         # Product #1 assertions
         When I go to "acme_product_product_admin_show" route with "productId:1"
         Then I should see "2" in the "#product_inStock" element
+        Then I should see "2" in the "#product_availableStock" element
         And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "6" in the "#product_stockUnit_0_orderedQuantity" element
@@ -134,6 +141,8 @@ Feature: Create order shipments
         # Product #2 assertions
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "0" in the "#product_inStock" element
+        Then I should see "0" in the "#product_availableStock" element
+        And I should see "Pré-commande" in the "#product_stockState" element
         And I should see "Aucune unité de stock disponible"
 
     @javascript @stock
@@ -162,6 +171,7 @@ Feature: Create order shipments
         # Product #1 assertions
         When I go to "acme_product_product_admin_show" route with "productId:1"
         Then I should see "6" in the "#product_inStock" element
+        Then I should see "2" in the "#product_availableStock" element
         And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "6" in the "#product_stockUnit_0_orderedQuantity" element
@@ -172,7 +182,8 @@ Feature: Create order shipments
         # Product #2 assertions
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "2" in the "#product_inStock" element
-        And I should see "En rupture" in the "#product_stockState" element
+        Then I should see "0" in the "#product_availableStock" element
+        And I should see "Pré-commande" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
         And I should see "2" in the "#product_stockUnit_0_receivedQuantity" element

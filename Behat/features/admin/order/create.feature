@@ -1,4 +1,4 @@
-@commerce @order
+@commerce @sale @order
 Feature: Create orders
     In order to sell products
     As an administrator
@@ -16,7 +16,7 @@ Feature: Create orders
     @javascript
     Scenario: Create an order without customer
         When I go to "ekyna_commerce_order_admin_new" route
-        And I select "Default customer group" from "order[customerGroup]"
+        And I select "Particuliers" from "order[customerGroup]"
         And I fill in "order[company]" with "Dupont et fils"
         And I select "Mr" from "order[identity][gender]"
         And I fill in "order[identity][lastName]" with "Dupont"
@@ -40,7 +40,7 @@ Feature: Create orders
         # Order assertions
         And I should see "Indéfini" in the "#sale_customer" element
         And I should see "Dupont et fils" in the "#sale_company" element
-        And I should see "Default customer group" in the "#sale_customerGroup" element
+        And I should see "Particuliers" in the "#sale_customerGroup" element
         And I should see "Mr Dupont Jean" in the "#sale_identity" element
         And I should see "contact@dupont.com" in the "#sale_email" element
 
@@ -75,7 +75,7 @@ Feature: Create orders
         # Order assertions
         And I should see "Mr Dupont Jean" in the "#sale_customer" element
         And I should see "Dupont et fils" in the "#sale_company" element
-        And I should see "Default customer group" in the "#sale_customerGroup" element
+        And I should see "Particuliers" in the "#sale_customerGroup" element
         And I should see "Mr Dupont Jean" in the "#sale_identity" element
         And I should see "contact@dupont.com" in the "#sale_email" element
 

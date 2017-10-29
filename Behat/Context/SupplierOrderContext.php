@@ -146,10 +146,13 @@ class SupplierOrderContext implements Context, KernelAwareContext
                 throw new \InvalidArgumentException("Failed to find the currency for code '{$row['currency']}'.");
             }
 
+            $carrier = $supplier->getCarrier();
+
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
             $supplierOrder = $supplierOrderRepository->createNew();
             $supplierOrder
                 ->setSupplier($supplier)
+                ->setCarrier($carrier)
                 ->setCurrency($currency)
                 ->setNumber($row['number'])
                 ->setShippingCost(isset($row['shippingCost']) ? $row['shippingCost'] : 0);

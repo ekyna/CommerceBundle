@@ -78,14 +78,25 @@ ekyna_commerce_quote_admin_notify:
     requirements:
         quoteId: \d+
 
-ekyna_commerce_quote_admin_document:
-    path: /{quoteId}/document/{type}
+ekyna_commerce_quote_admin_document_generate:
+    path: /{quoteId}/document/generate/{type}
     defaults:
-        _controller: "ekyna_commerce.quote.controller:documentAction"
+        _controller: "ekyna_commerce.quote.controller:documentGenerateAction"
     methods: [GET]
     requirements:
         quoteId: \d+
         type: "[a-z]+"
+
+ekyna_commerce_quote_admin_document_render:
+    path: /{quoteId}/document/render/{type}.{_format}
+    defaults:
+        _controller: "ekyna_commerce.quote.controller:documentRenderAction"
+        _format: html
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        type: "[a-z]+"
+        _format: html|pdf|jpg
 
 ekyna_commerce_quote_admin_attachment:
     resource: quote_attachment.yml

@@ -98,7 +98,7 @@
             <strong>{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</strong>
         </th>
         <th class="text-right sale-detail-gross" id="gross_base">
-            {{- view.gross.base|localizedcurrency('EUR') -}}
+            {{- view.gross.base -}}
         </th>
         <th>&nbsp;</th>
     </tr>
@@ -125,7 +125,7 @@
         <td class="text-right" colspan="2">&nbsp;</td>
         {{ block('line_tax_rates') }}
         <td class="text-right">&nbsp;</td>
-        <td class="text-right" id="{{ line.id }}_base">{{ line.base|localizedcurrency('EUR') }}</td>
+        <td class="text-right" id="{{ line.id }}_base">{{ line.base }}</td>
         {{ block('actions') }}
     </tr>
     </tbody>
@@ -142,20 +142,20 @@
         </th>
         <th>{{ 'ekyna_commerce.sale.field.net_total'|trans|upper }}</th>
         <td class="text-right sale-detail-total" id="final_base">
-            {{- view.final.base|localizedcurrency('EUR') -}}
+            {{- view.final.base -}}
         </td>
         <th rowspan="3">&nbsp;</th>
     </tr>
     <tr>
         <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans|upper }}</th>
         <td class="text-right sale-detail-total" id="final_tax">
-            {{- view.final.tax|localizedcurrency('EUR') -}}
+            {{- view.final.tax -}}
         </td>
     </tr>
     <tr>
         <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans|upper }}</th>
         <td class="text-right sale-detail-total" id="final_total">
-            {{- view.final.total|localizedcurrency('EUR') -}}
+            {{- view.final.total -}}
         </td>
     </tr>
     </tbody>

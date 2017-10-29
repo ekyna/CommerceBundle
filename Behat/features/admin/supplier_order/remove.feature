@@ -1,4 +1,4 @@
-@commerce @stock @supplier-order
+@commerce @supply @supplier-order
 Feature: Remove supplier orders
     In order to manage products supply
     As an administrator
@@ -6,9 +6,12 @@ Feature: Remove supplier orders
 
     Background:
         Given I am logged in as an administrator
+        And The following supplier carriers:
+            | name |
+            | TNT  |
         And The following suppliers:
-            | name     | currency | email                | gender | lastName | firstName |
-            | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
+            | name     | currency | carrier | email                | gender | lastName | firstName |
+            | TechData | EUR      | TNT     | contact@techdata.com | mr     | Dupont   | Jean      |
         And The following supplier orders:
             | number | supplier | currency |
             | SO-001 | TechData | EUR      |

@@ -94,7 +94,7 @@
             <div class="tab-pane" id="quote-attachments">
                 <div class="actions">
                     {% for type in quote|sale_editable_document_types -%}
-                    <a href="{{ admin_resource_path(quote, 'document', {'quoteId': quote.id, 'type': type}) }}"
+                    <a href="{{ admin_resource_path(quote, 'document_generate', {'quoteId': quote.id, 'type': type}) }}"
                        class="btn btn-default btn-xs pull-right">
                         {{ 'ekyna_commerce.attachment.button.create'|trans }}
                         {{ ('ekyna_commerce.document.type.' ~ type)|trans }}

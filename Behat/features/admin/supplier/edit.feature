@@ -1,4 +1,4 @@
-@commerce @supplier
+@commerce @supply @supplier
 Feature: Edit suppliers
     In order to manage products supply
     As an administrator
@@ -6,9 +6,12 @@ Feature: Edit suppliers
 
     Background:
         Given I am logged in as an administrator
+        And The following supplier carriers:
+            | name |
+            | TNT  |
         And The following suppliers:
-            | name     | currency | email                | gender | lastName | firstName |
-            | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
+            | name     | currency | carrier | email                | gender | lastName | firstName |
+            | TechData | EUR      | TNT     | contact@techdata.com | mr     | Dupont   | Jean      |
 
     Scenario: Edit the supplier
         When I go to "ekyna_commerce_supplier_admin_edit" route with "supplierId:1"

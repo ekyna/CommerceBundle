@@ -1,4 +1,4 @@
-@commerce @supplier-product
+@commerce @supply @supplier-product
 Feature: Remove supplier products
     In order to manage products supply
     As an administrator
@@ -6,9 +6,12 @@ Feature: Remove supplier products
 
     Background:
         Given I am logged in as an administrator
+        And The following supplier carriers:
+            | name |
+            | TNT  |
         And The following suppliers:
-            | name     | currency | email                | gender | lastName | firstName |
-            | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
+            | name     | currency | carrier | email                | gender | lastName | firstName |
+            | TechData | EUR      | TNT     | contact@techdata.com | mr     | Dupont   | Jean      |
         And The following supplier products:
             | supplier | designation          | reference | price     | weight | available | ordered | eda  |
             | TechData | Samsung Galaxy Tab A | S-GTAB-A  | 249.16667 | 0.5    | 40        | 0       |      |

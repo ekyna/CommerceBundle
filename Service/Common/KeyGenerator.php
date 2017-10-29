@@ -43,7 +43,8 @@ DQL;
             return $this;
         }
 
-        // TODO (eventually) $this->manager->getFilters()->disable('softdeleteable');
+        // TODO Prevent usage of a deleted subject's number
+        // $this->manager->getFilters()->disable('softdeleteable');
 
         $class = get_class($subject);
 
@@ -60,7 +61,7 @@ DQL;
 
         $subject->setKey($key);
 
-        // TODO (eventually) $this->manager->getFilters()->enable('softdeleteable');
+        // $this->manager->getFilters()->enable('softdeleteable');
 
         return $this;
     }

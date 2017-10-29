@@ -88,14 +88,25 @@ ekyna_commerce_order_admin_notify:
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_admin_document:
-    path: /{orderId}/document/{type}
+ekyna_commerce_order_admin_document_generate:
+    path: /{orderId}/document/generate/{type}
     defaults:
-        _controller: "ekyna_commerce.order.controller:documentAction"
+        _controller: "ekyna_commerce.order.controller:documentGenerateAction"
     methods: [GET]
     requirements:
         orderId: \d+
         type: "[a-z]+"
+
+ekyna_commerce_order_admin_document_render:
+    path: /{orderId}/document/render/{type}.{_format}
+    defaults:
+        _controller: "ekyna_commerce.order.controller:documentRenderAction"
+        _format: html
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        type: "[a-z]+"
+        _format: html|pdf|jpg
 
 ekyna_commerce_order_attachment_admin:
     resource: order_attachment.yml

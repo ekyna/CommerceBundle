@@ -1,4 +1,4 @@
-@commerce @order-item
+@commerce @sale @order-item
 Feature: Create order items
     In order to sell products
     As an administrator
@@ -32,9 +32,9 @@ Feature: Create order items
         And I show the "details" tab
         And I click "order_item_add"
         And I wait for the modal to appear
-        And I wait for the form "sale_item_subject" to appear
-        And I select "Acme Product" from "sale_item_subject[subjectIdentity][provider]"
-        And I search "iPad" in "sale_item_subject[subjectIdentity][subject]" and select the first result
+        And I wait for the form "ekyna_commerce_sale_item_subject" to appear
+        And I select "Acme Product" from "ekyna_commerce_sale_item_subject[subjectIdentity][provider]"
+        And I search "iPad" in "ekyna_commerce_sale_item_subject[subjectIdentity][subject]" and select the first result
         And I press "form_flow_submit"
         And I wait for the form "sale_item_configure" to appear
         And I fill in "sale_item_configure[quantity]" with "2"
@@ -47,16 +47,11 @@ Feature: Create order items
         And I should see "290,00" in the "#item_0_unit" element
         And I should see "20%" in the "#item_0_taxes" element
         # TODO And I should see "2" in the "#item_0_quantity" element
-        #And I should see "2" in the "sale_quantities[item_1]" element
         And I should see "580,00" in the "#item_0_base" element
-        And I should see "116,00" in the "#item_0_tax" element
-        And I should see "696,00" in the "#item_0_total" element
 
         # Shipment assertions
         And I should see "1,600" in the "#shipment_designation" element
         And I should see "0,00" in the "#shipment_base" element
-        And I should see "0,00" in the "#shipment_tax" element
-        And I should see "0,00" in the "#shipment_total" element
 
         # Final assertions
         And I should see "580,00" in the "#final_base" element
@@ -66,5 +61,5 @@ Feature: Create order items
 
         #And I should see "TVA France - marchandises et services" in the "#tax_rule_name" element
         #And I should see "Taux normal" in the "#tax_rule_taxGroups" element
-        #And I should see "Default customer group" in the "#tax_rule_customerGroups" element
+        #And I should see "Particuliers" in the "#tax_rule_customerGroups" element
         #And I should see "TVA 20%" in the "#tax_rule_taxes" element

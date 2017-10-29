@@ -5,23 +5,23 @@
 
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#shipment-method-general" data-toggle="tab">
+            <a href="#shipment-method-general" id="toggle-general" data-toggle="tab">
                 {{ 'ekyna_core.field.general'|trans }}
             </a>
         </li>
         {% if flow.getCurrentStepNumber() == 2 %}
             <li>
-                <a href="#shipment-method-content" data-toggle="tab">
+                <a href="#shipment-method-content" id="toggle-content" data-toggle="tab">
                     {{ 'ekyna_core.field.content'|trans }}
                 </a>
             </li>
             <li>
-                <a href="#shipment-method-pricing" data-toggle="tab">
+                <a href="#shipment-method-pricing" id="toggle-pricing" data-toggle="tab">
                     {{ 'ekyna_core.field.pricing'|trans }}
                 </a>
             </li>
             <li>
-                <a href="#shipment-method-messages" data-toggle="tab">
+                <a href="#shipment-method-messages" id="toggle-messages" data-toggle="tab">
                     {{ 'ekyna_commerce.message.label.plural'|trans }}
                 </a>
             </li>

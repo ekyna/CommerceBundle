@@ -60,7 +60,7 @@
                 {%- endif -%}
             </td>
             <td id="{{ stockUnitId ~ '_netPrice' }}" class="text-right">
-                {{- stockUnit.netPrice|localizedcurrency('EUR') -}} {# TODO currency #}
+                {{- stockUnit.netPrice|localizedcurrency(commerce_default_currency) -}}
             </td>
             <td class="actions">
                 {%- if stockUnit.supplierOrderItem is not same as(null) -%}

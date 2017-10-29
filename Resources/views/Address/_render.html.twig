@@ -2,7 +2,7 @@
 {% if address.lastName is not empty and address.firstName is not empty %}
     <strong>{{ address|identity }}</strong><br>
 {% elseif attribute(address, 'customer') is defined and address.customer is not null %}
-    <strong>{{ address.customer|identity }}</strong>
+    <strong>{{ address.customer|identity }}</strong><br>
 {% endif %}
 
 {% if address.company is not empty %}
@@ -10,6 +10,7 @@
 {% endif %}
 
 {{ address.street }}
+
 {% if address.complement is not empty %}
     <br>{{ address.complement }}
 {% endif %}

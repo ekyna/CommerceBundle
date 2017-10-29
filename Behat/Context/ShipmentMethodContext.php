@@ -59,8 +59,14 @@ class ShipmentMethodContext implements Context, KernelAwareContext
                 $shipmentMethod->setTaxGroup($taxGroupRepository->findDefault());
             }
 
+            # Gateway
+            $platform = isset($row['platform']) ? $row['platform'] : 'noop';
+            $config = isset($row['config']) ? $row['config'] : null;
+
             $shipmentMethod
                 ->setName($row['name'])
+                ->setPlatformName($platform)
+                ->setGatewayConfig($config)
                 ->setAvailable(isset($row['available']) ? $row['available'] : true)
                 ->setEnabled(isset($row['enabled']) ? $row['enabled'] : true)
                 ->translate('fr', true)

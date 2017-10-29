@@ -41,6 +41,7 @@ default:
                 - Ekyna\Behat\Context\SecurityContext
                 - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierCarrierContext
         admin_supplier_product_features:
             paths: [ "%paths.base%/features/admin/supplier_product" ]
             contexts:
@@ -49,6 +50,7 @@ default:
                 - Acme\ProductBundle\Behat\ProductContext
                 - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierCarrierContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
         admin_supplier_order_features:
             paths: [ "%paths.base%/features/admin/supplier_order" ]
@@ -58,6 +60,7 @@ default:
                 - Acme\ProductBundle\Behat\ProductContext
                 - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierCarrierContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext
@@ -71,6 +74,7 @@ default:
                 - Acme\ProductBundle\Behat\ProductContext
                 - Ekyna\Bundle\ResourceBundle\Behat\Context\ResourceContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierCarrierContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext
@@ -133,6 +137,7 @@ default:
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\OrderContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\OrderItemContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierContext
+                - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierCarrierContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierProductContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderContext
                 - Ekyna\Bundle\CommerceBundle\Behat\Context\SupplierOrderItemContext

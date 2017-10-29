@@ -43,11 +43,12 @@
                 <tbody>
                 {%- for price in list.prices -%}
                     <tr data-{{ list.filterBy }}="{{ attribute(price, list.filterBy).id }}">
+                        {# TODO packging format #}
                         <td class="text-right" id="shipment_price_{{ loop.index0 }}_weight">
-                            {{- price.weight|localizednumber ~ ' kg' -}}{# TODO packging format #}
+                            {{- (price.weight|localizednumber ~ '&nbsp;kg')|raw -}}
                         </td>
                         <td class="text-right" id="shipment_price_{{ loop.index0 }}_netPrice">
-                            {{- price.netPrice|localizedcurrency('EUR') -}} {# TODO currency #}
+                            {{- price.netPrice|localizedcurrency(commerce_default_currency) -}}
                         </td>
                     </tr>
                 {%- endfor -%}

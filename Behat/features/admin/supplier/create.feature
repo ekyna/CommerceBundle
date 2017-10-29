@@ -1,4 +1,4 @@
-@commerce @supplier
+@commerce @supply @supplier
 Feature: Create suppliers
     In order to manage products supply
     As an administrator
@@ -6,11 +6,16 @@ Feature: Create suppliers
 
     Background:
         Given I am logged in as an administrator
+        And The following supplier carriers:
+            | name |
+            | TNT  |
 
     Scenario: Create a supplier
         When I go to "ekyna_commerce_supplier_admin_new" route
         And I fill in "supplier[name]" with "TechData"
         And I fill in "supplier[email]" with "contact@techdata.com"
+        And I select "TNT" from "supplier[carrier]"
+        And I select "Euro" from "supplier[currency]"
         And I select "Mr" from "supplier[identity][gender]"
         And I fill in "supplier[identity][lastName]" with "Dupont"
         And I fill in "supplier[identity][firstName]" with "Jean"

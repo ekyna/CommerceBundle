@@ -1,4 +1,4 @@
-@commerce @stock @supplier-order
+@commerce @stock @supply @supplier-order
 Feature: Submit supplier orders
     In order to manage products supply
     As an administrator
@@ -9,9 +9,12 @@ Feature: Submit supplier orders
         And The following acme products:
             | designation | reference | price | weight |
             | iPad Air    | IPAD-AIR  | 290   | 0.8    |
+        And The following supplier carriers:
+            | name |
+            | TNT  |
         And The following suppliers:
-            | name     | currency | email                | gender | lastName | firstName |
-            | TechData | EUR      | contact@techdata.com | mr     | Dupont   | Jean      |
+            | name     | currency | carrier | email                | gender | lastName | firstName |
+            | TechData | EUR      | TNT     | contact@techdata.com | mr     | Dupont   | Jean      |
         And The following supplier products:
             | supplier | designation | reference | price     | weight | available | ordered | eda  | acme_product |
             | TechData | iPad Air    | IPAD-AIR  | 249.16667 | 0.8    | 40        | 0       |      | IPAD-AIR     |

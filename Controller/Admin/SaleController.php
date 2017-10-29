@@ -474,13 +474,13 @@ class SaleController extends AbstractSaleController
     }
 
     /**
-     * Document action.
+     * Document generate action.
      *
      * @param Request $request
      *
      * @return Response
      */
-    public function documentAction(Request $request)
+    public function documentGenerateAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException('Not supported.');
@@ -541,6 +541,43 @@ class SaleController extends AbstractSaleController
         $event->toFlashes($this->getFlashBag());
 
         return $redirect;
+    }
+
+    /**
+     * Document render action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function documentRenderAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not supported.');
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        $type = $request->attributes->get('type');
+        $available = SaleDocumentUtil::getSaleEditableDocumentTypes($sale);
+        if (!in_array($type, $available, true)) {
+            throw $this->createNotFoundException('Unsuppoerted type');
+        }
+
+        $document = new Document();
+        $document
+            ->setSale($sale)
+            ->setType($type);
+
+        $this->get('ekyna_commerce.document.builder')->build($document);
+        $this->get('ekyna_commerce.document.calculator')->calculate($document);
+
+        $renderer = $this->get('ekyna_commerce.renderer_factory')->createDocumentRenderer($document);
+
+        return $renderer->respond($request);
     }
 
     /**
