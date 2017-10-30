@@ -77,10 +77,10 @@ class SaleItemAdjustmentController extends AbstractSaleController
             'attr'   => [
                 'class' => 'form-horizontal',
             ],
-            'types' => [
+            'types'  => [
                 AdjustmentTypes::TYPE_DISCOUNT,
             ],
-            'modes' => [
+            'modes'  => [
                 AdjustmentModes::MODE_PERCENT,
             ],
         ]);
@@ -138,11 +138,14 @@ class SaleItemAdjustmentController extends AbstractSaleController
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
+        /** @var \Ekyna\Component\Resource\Configuration\ConfigurationInterface $saleConfig */
+        $saleConfig = $this->get($this->getParentConfiguration()->getParentConfigurationId());
+        $itemConfig = $this->getParentConfiguration();
+
         /** @var \Ekyna\Component\Commerce\Common\Model\AdjustmentInterface $adjustment */
         $adjustment = $context->getResource($resourceName);
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
-        $item = $context->getResource($this->getParentConfiguration()->getResourceName());
-        $sale = $item->getSale();
+        $item = $context->getResource($itemConfig->getResourceName());
 
         if ($adjustment->isImmutable()) {
             throw new NotFoundHttpException('Adjustment is immutable.');
@@ -152,9 +155,22 @@ class SaleItemAdjustmentController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
+        $action = $this->generateUrl($this->config->getRoute('edit'), [
+            $saleConfig->getResourceName() . 'Id' => $item->getSale()->getId(),
+            $itemConfig->getResourceName() . 'Id' => $item->getId(),
+            $resourceName . 'Id'                  => $adjustment->getId(),
+        ]);
+
         $form = $this->createEditResourceForm($context, !$isXhr, [
-            'attr' => [
+            'action' => $action,
+            'attr'   => [
                 'class' => 'form-horizontal',
+            ],
+            'types'  => [
+                AdjustmentTypes::TYPE_DISCOUNT,
+            ],
+            'modes'  => [
+                AdjustmentModes::MODE_PERCENT,
             ],
         ]);
 
@@ -169,10 +185,10 @@ class SaleItemAdjustmentController extends AbstractSaleController
 
             if (!$event->hasErrors()) {
                 if ($isXhr) {
-                    return $this->buildXhrSaleViewResponse($sale);
+                    return $this->buildXhrSaleViewResponse($item->getSale());
                 }
 
-                return $this->redirect($this->generateResourcePath($sale));
+                return $this->redirect($this->generateResourcePath($item->getSale()));
             } elseif ($isXhr) {
                 // TODO all event messages should be bound to XHR response
                 foreach ($event->getErrors() as $error) {
