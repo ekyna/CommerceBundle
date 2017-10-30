@@ -58,31 +58,45 @@
                 }
 
                 &.level-0 {
-                    .sale-detail-information {
+                    .sale-detail-information, .sale-detail-designation > span {
                         padding-left: @base-cell-padding;
                         background-position-x: -24px;
                     }
                 }
 
                 &.level-1 {
-                    .sale-detail-information {
+                    .sale-detail-information, .sale-detail-designation > span {
                         padding-left: @base-cell-padding + 24px;
                     }
                 }
 
                 &.level-2 {
-                    .sale-detail-information {
+                    .sale-detail-information, .sale-detail-designation > span {
                         padding-left: @base-cell-padding + 48px;
                         background-position-x: 24px;
                     }
                 }
 
                 &.level-3 {
-                    .sale-detail-information {
+                    .sale-detail-information, .sale-detail-designation > span {
                         padding-left: @base-cell-padding + 72px;
                         background-position-x: 48px;
                     }
                 }
+
+                /* TODO &.level-4 {
+                    .sale-detail-information, .sale-detail-designation {
+                        padding-left: @base-cell-padding + 72px;
+                        background-position-x: 48px;
+                    }
+                }
+
+                &.level-5 {
+                    .sale-detail-information, .sale-detail-designation {
+                        padding-left: @base-cell-padding + 72px;
+                        background-position-x: 48px;
+                    }
+                }*/
 
                 td, a {
                     text-overflow: ellipsis;
@@ -93,9 +107,9 @@
 
                 .sale-detail-designation {
                     padding: 0;
-                    line-height: 20px + (2*@base-cell-padding);
+                    line-height: 18px + (2*@base-cell-padding);
 
-                    i {
+                    > i {
                         display: inline-block;
                         width: 24px;
                         height: 20px + (2*@base-cell-padding);
@@ -117,6 +131,17 @@
                             &.last {
                                 background-image: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIplI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq7bucSwS9f2jef6zvf+XQAAOw==');
                             }
+                        }
+                    }
+
+                    > span {
+                        display: block;
+                        padding: @base-cell-padding+2 @base-cell-padding;
+                        line-height: 16px;
+
+                        > em {
+                            font-size: 11px;
+                            color: lighten(@text-color, 20%);
                         }
                     }
                 }
