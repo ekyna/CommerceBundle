@@ -64,6 +64,18 @@
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
         </service>
 
+        <!-- Sale state resolver -->
+        <service id="ekyna_commerce.sale.abstract_state_resolver"
+                 class="Ekyna\Component\Commerce\Common\Resolver\AbstractSaleStateResolver"
+                 abstract="true">
+            <call method="setPaymentStateResolver">
+                <argument type="service" id="ekyna_commerce.payment.subject_state_resolver"/>
+            </call>
+            <call method="setShipmentStateResolver">
+                <argument type="service" id="ekyna_commerce.shipment.subject_state_resolver"/>
+            </call>
+        </service>
+
         <!-- Sale abstract listener -->
         <service id="ekyna_commerce.sale.abstract_listener"
                  class="Ekyna\Component\Commerce\Common\EventListener\AbstractSaleListener"

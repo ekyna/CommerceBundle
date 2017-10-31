@@ -96,6 +96,10 @@
             <argument type="service" id="ekyna_commerce.country.repository"/>
         </service>
 
+        <!-- Shipment subject state resolver -->
+        <service id="ekyna_commerce.shipment.subject_state_resolver"
+                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentSubjectStateResolver"/>
+
         <!-- Shipment gateway registry -->
         <service id="ekyna_commerce.shipment.gateway_registry"
                  class="Ekyna\Component\Commerce\Shipment\Gateway\Registry"

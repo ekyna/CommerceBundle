@@ -106,6 +106,10 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Payment subject state resolver -->
+        <service id="ekyna_commerce.payment.subject_state_resolver"
+                 class="Ekyna\Component\Commerce\Payment\Resolver\PaymentSubjectStateResolver"/>
+
         <!-- Payum Sips actions -->
         <service id="ekyna_commerce.payum.action.sips.convert_payment"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payum\Action\Sips\ConvertPaymentAction">

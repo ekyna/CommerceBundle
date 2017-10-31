@@ -7,7 +7,8 @@
 
         <!-- Quote state resolver -->
         <service id="ekyna_commerce.quote.state_resolver"
-                 class="Ekyna\Component\Commerce\Quote\Resolver\QuoteStateResolver"/>
+                 class="Ekyna\Component\Commerce\Quote\Resolver\QuoteStateResolver"
+                 parent="ekyna_commerce.sale.abstract_state_resolver"/>
 
         <!-- Quote number generator -->
         <service id="ekyna_commerce.quote.number_generator"

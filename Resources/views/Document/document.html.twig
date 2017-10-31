@@ -118,7 +118,7 @@
 
     <tbody class="spacer"><tr><td colspan="8">&nbsp;</td></tr></tbody>
 
-    {% if line_discount or (1 < goodLines|length and discountLines is not empty)  -%}
+    {% if line_discount or (1 < goodLines|length and discountLines is not empty) -%}
     <tbody class="totals">
         <tr>
             <td colspan="{{ columns_count - (line_discount ? 3 : 1) }}">{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</td>

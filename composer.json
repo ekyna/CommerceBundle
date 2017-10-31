@@ -26,7 +26,7 @@
         "php-http/guzzle6-adapter": "^1.1",
         "symfony/psr-http-message-bridge": "~1.0",
         "zendframework/zend-diactoros": "~1.6",
-        "behat/transliterator": "~1.1",
+        "behat/transliterator": "~1.2",
         "knplabs/knp-snappy-bundle": "^1.4",
         "florianv/swap-bundle": "dev-swap-3"
     },

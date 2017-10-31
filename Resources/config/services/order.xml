@@ -7,7 +7,8 @@
 
         <!-- Order state resolver -->
         <service id="ekyna_commerce.order.state_resolver"
-                 class="Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver"/>
+                 class="Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver"
+                 parent="ekyna_commerce.sale.abstract_state_resolver"/>
 
         <!-- Order number generator -->
         <service id="ekyna_commerce.order.number_generator"
@@ -72,10 +73,6 @@
                  parent="ekyna_commerce.payment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
-
-        <!-- Order shipment state resolver -->
-        <service id="ekyna_commerce.order_shipment.state_resolver"
-                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentStateResolver"/>
 
         <!-- Order shipment event listener -->
         <service id="ekyna_commerce.order_shipment.event_subscriber"

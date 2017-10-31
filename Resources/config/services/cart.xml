@@ -40,7 +40,8 @@
 
         <!-- Cart state resolver -->
         <service id="ekyna_commerce.cart.state_resolver"
-                 class="Ekyna\Component\Commerce\Cart\Resolver\CartStateResolver"/>
+                 class="Ekyna\Component\Commerce\Cart\Resolver\CartStateResolver"
+                 parent="ekyna_commerce.sale.abstract_state_resolver"/>
 
         <!-- Cart event listener -->
         <service id="ekyna_commerce.cart.event_subscriber"
