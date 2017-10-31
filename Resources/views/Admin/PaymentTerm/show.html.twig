@@ -6,9 +6,9 @@
         {{ admin_resource_btn(paymentTerm, 'remove') }}
     </div>
     <div class="show show-with-tabs">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
             <li class="active">
-                <a href="#payment-term-general" data-toggle="tab">
+                <a href="#payment-term-general" id="toggle-general" data-toggle="tab">
                     {{ 'ekyna_core.field.general'|trans }}
                 </a>
             </li>

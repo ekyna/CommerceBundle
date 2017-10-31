@@ -1,6 +1,9 @@
-<ul class="nav nav-tabs">
+{% spaceless %}
+<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
     <li class="active">
-        <a href="#general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        <a href="#supplier-general" id="toggle-general" data-toggle="tab">
+            {{ 'ekyna_core.field.general'|trans }}
+        </a>
     </li>
 </ul>
 <div class="panel-body form-body">
@@ -8,7 +11,7 @@
     {{ bootstrap_set_col_size('md') }}
     {{ form_errors(form) }}
     <div class="tab-content">
-        <div class="tab-pane active" id="general">
+        <div class="tab-pane active" id="supplier-general">
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.name, {'label_col': 4, 'widget_col': 8}) }}
@@ -32,3 +35,4 @@
     </div>
     {{ form_rest(form) }}
 </div>
+{% endspaceless %}

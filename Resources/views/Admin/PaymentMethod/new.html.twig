@@ -3,21 +3,21 @@
 {% block main %}
     {{ form_start(form) }}
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
         <li class="active">
-            <a href="#payment-method-general" data-toggle="tab">
-                {{ 'ekyna_core.field.general'|trans }}
+            <a href="#payment-method-general" id="toggle-general" data-toggle="tab">
+                {{- 'ekyna_core.field.general'|trans -}}
             </a>
         </li>
         {% if flow.getCurrentStepNumber() == 2 %}
             <li>
-                <a href="#payment-method-content" data-toggle="tab">
-                    {{ 'ekyna_core.field.content'|trans }}
+                <a href="#payment-method-content" id="toggle-content" data-toggle="tab">
+                    {{- 'ekyna_core.field.content'|trans -}}
                 </a>
             </li>
             <li>
-                <a href="#payment-method-messages" data-toggle="tab">
-                    {{ 'ekyna_commerce.message.label.plural'|trans }}
+                <a href="#payment-method-messages" id="toggle-messages" data-toggle="tab">
+                    {{- 'ekyna_commerce.message.label.plural'|trans -}}
                 </a>
             </li>
         {% endif %}

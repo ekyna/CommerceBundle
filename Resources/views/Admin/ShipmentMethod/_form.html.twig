@@ -1,4 +1,5 @@
-<ul class="nav nav-tabs">
+{% spaceless %}
+<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
     <li class="active">
         <a href="#shipment-method-general" id="toggle-general" data-toggle="tab">
             {{ 'ekyna_core.field.general'|trans }}
@@ -54,5 +55,5 @@
         </div>
         {{ form_rest(form) }}
     </div>
-
 </div>
+{% endspaceless %}

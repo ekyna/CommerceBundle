@@ -23,10 +23,15 @@
     </div>
 </div>
 <div class="show show-with-tabs">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
         <li class="active">
             <a href="#quote-general" id="toggle-general" data-toggle="tab">
                 {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#quote-addresses" id="toggle-addresses" data-toggle="tab">
+                {{ 'ekyna_commerce.sale.field.addresses'|trans }}
             </a>
         </li>
         <li>
@@ -64,7 +69,7 @@
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(product.releasedAt, 'datetime', 'ekyna_commerce.quote.field.expires_at', {
+                        {{ show_row(quote.expiresAt, 'datetime', 'ekyna_commerce.quote.field.expires_at', {
                             'date_format': 'short',
                             'time_format': 'none',
                             'label_nb_col': 4,
@@ -72,7 +77,8 @@
                         }) }}
                     </div>
                 </div>
-                <hr>
+            </div>
+            <div class="tab-pane" id="quote-addresses">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': quote} %}
             </div>
             <div class="tab-pane" id="quote-details">

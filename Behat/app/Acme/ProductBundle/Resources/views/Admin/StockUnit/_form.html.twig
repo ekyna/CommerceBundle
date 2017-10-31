@@ -1,6 +1,8 @@
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
     <li class="active">
-        <a href="#stock-unit-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+        <a href="#stock-unit-general" id="toggle-general" data-toggle="tab">
+            {{ 'ekyna_core.field.general'|trans }}
+        </a>
     </li>
 </ul>
 <div class="panel-body form-body">

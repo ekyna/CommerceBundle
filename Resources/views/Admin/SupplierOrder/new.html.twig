@@ -3,9 +3,9 @@
 {% block main %}
     {{ form_start(form) }}
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
         <li class="active">
-            <a href="#supplier-order-general" data-toggle="tab">
+            <a href="#supplier-order-general" id="toggle-general" data-toggle="tab">
                 {{ 'ekyna_core.field.general'|trans }}
             </a>
         </li>

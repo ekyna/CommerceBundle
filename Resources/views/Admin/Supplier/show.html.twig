@@ -11,9 +11,9 @@
     {{ admin_resource_btn(supplier, 'remove') }}
 </div>
 <div class="show show-with-tabs">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
         <li class="active">
-            <a href="#supplier-general" id="toggle-supplier-general" data-toggle="tab">
+            <a href="#supplier-general" id="toggle-general" data-toggle="tab">
                 {{ 'ekyna_core.field.general'|trans }}
             </a>
         </li>

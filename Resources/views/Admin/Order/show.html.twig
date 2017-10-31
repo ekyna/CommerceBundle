@@ -28,10 +28,15 @@
     </div>
 </div>
 <div class="show show-with-tabs">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
         <li class="active">
             <a href="#order-general" id="toggle-general" data-toggle="tab">
                 {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#order-addresses" id="toggle-addresses" data-toggle="tab">
+                {{ 'ekyna_commerce.sale.field.addresses'|trans }}
             </a>
         </li>
         <li>
@@ -88,7 +93,8 @@
                     </div>
                 </div>
                 {{ _cms.show_tags(order) }}
-                <hr>
+            </div>
+            <div class="tab-pane" id="order-addresses">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-details">
