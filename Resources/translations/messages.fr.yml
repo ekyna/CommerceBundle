@@ -918,7 +918,7 @@ ekyna_commerce:
             replenishment_time: Délai de réappro.
             estimated_date_of_arrival: Date de réappro.
         mode:
-            inherited: Hérité
+            disabled: Désactivé
             manual: Manuel
             auto: Automatique
             just_in_time: Flux tendu

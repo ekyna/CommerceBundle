@@ -20,7 +20,7 @@ final class StockSubjectModes extends AbstractConstants
         $prefix = 'ekyna_commerce.stock_subject.mode.';
 
         return [
-            Modes::MODE_INHERITED    => [$prefix . Modes::MODE_INHERITED,    'default'],
+            Modes::MODE_DISABLED     => [$prefix . Modes::MODE_DISABLED,     'danger'],
             Modes::MODE_MANUAL       => [$prefix . Modes::MODE_MANUAL,       'danger'],
             Modes::MODE_AUTO         => [$prefix . Modes::MODE_AUTO,         'success'],
             Modes::MODE_JUST_IN_TIME => [$prefix . Modes::MODE_JUST_IN_TIME, 'warning'],

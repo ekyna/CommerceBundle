@@ -77,7 +77,6 @@
         <!-- Stock subject updater -->
         <service id="ekyna_commerce.stock_subject_updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater">
-            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
         </service>
