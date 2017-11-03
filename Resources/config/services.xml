@@ -25,6 +25,15 @@
         <import resource="services/view.xml"/>
     </imports>
 
+    <parameters>
+        <parameter key="ekyna_commerce.genders.class">Ekyna\Bundle\CommerceBundle\Model\Genders</parameter>
+
+        <parameter key="ekyna_commerce.shipment_price.list_template">EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig</parameter>
+        <parameter key="ekyna_commerce.stock_unit.list_template">EkynaCommerceBundle:Admin/Stock:stock_units.html.twig</parameter>
+        <parameter key="ekyna_commerce.subject_stock.list_template">EkynaCommerceBundle:Admin/Stock:subjects_stock.html.twig</parameter>
+        <parameter key="ekyna_commerce.supplier_address.class">Ekyna\Component\Commerce\Supplier\Entity\SupplierAddress</parameter>
+    </parameters>
+
     <!-- TODO remove parameters (some are defined by configuration, other are useless : view builders) -->
 
     <services>

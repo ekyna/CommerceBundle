@@ -8,3 +8,12 @@
     {#{{ admin_resource_btn(resource, 'list') }}#}
     {#{{ admin_resource_btn(resource, 'new') }}#}
 {% endblock actions %}
+
+{% block side %}
+    {{ parent() }}
+    {% if resource.sale is not null %}
+        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale_payment.html.twig" with {'sale': resource.sale} %}
+    {% endif %}
+{% endblock side %}
+
+

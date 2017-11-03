@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 
 /**
  * Class StockExtension
@@ -77,12 +78,33 @@ class StockExtension extends \Twig_Extension
     /**
      * @inheritdoc
      */
+    public function getTests()
+    {
+        $tests = [];
+
+        foreach (StockSubjectModes::getModes() as $constant) {
+            $tests[] = new \Twig_SimpleTest('stock_mode_' . $constant, function($mode) use ($constant) {
+                return $mode === $constant;
+            });
+        }
+
+        return $tests;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getFunctions()
     {
         return [
             new \Twig_SimpleFunction(
-                'render_subject_stock_unit_list',
-                [$this->stockRenderer, 'renderSubjectStockUnitList'],
+                'render_subject_stock_units',
+                [$this->stockRenderer, 'renderSubjectStockUnits'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFunction(
+                'render_subjects_stock',
+                [$this->stockRenderer, 'renderSubjectsStock'],
                 ['is_safe' => ['html']]
             ),
         ];

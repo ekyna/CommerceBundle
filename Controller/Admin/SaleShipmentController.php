@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -273,15 +274,19 @@ class SaleShipmentController extends AbstractSaleController
 
         $helper = $this->get('ekyna_commerce.shipment_helper');
 
-        $response = $helper->executeGatewayAction(
-            $shipment->getGatewayName(),
-            $request->attributes->get('action'),
-            $shipment,
-            $request
-        );
+        try {
+            $response = $helper->executeGatewayAction(
+                $shipment->getGatewayName(),
+                $request->attributes->get('action'),
+                $shipment,
+                $request
+            );
 
-        if (null !== $response) {
-            return $response;
+            if (null !== $response) {
+                return $response;
+            }
+        } catch (LogicException $e) {
+            $this->addFlash('ekyna_commerce.shipment.message.unsupported_action', 'danger');
         }
 
         if ($request->server->has('HTTP_REFERER') && !empty($referer = $request->server->get('HTTP_REFERER'))) {

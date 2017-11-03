@@ -22,9 +22,12 @@ ekyna_commerce_order_shipment_admin_remove:
         orderShipmentId: \d+
 
 ekyna_commerce_order_shipment_admin_gateway_action:
-    path: /{orderShipmentId}/gateway/{action}
-    defaults: { _controller: "ekyna_commerce.order_shipment.controller:gatewayActionAction" }
+    path: /{orderShipmentId}/gateway/{action}.{_format}
+    defaults:
+        _controller: "ekyna_commerce.order_shipment.controller:gatewayActionAction"
+        _format: html
     methods: [GET|POST]
     requirements:
         orderId: \d+
         orderShipmentId: \d+
+        _format: html|pdf

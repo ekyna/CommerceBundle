@@ -44,12 +44,12 @@ class ShipmentPricingType extends Form\AbstractType
     {
         $builder
             ->add('filter', EntityType::class, [
-                //'label'  => 'ekyna_commerce.shipment_' . $options['filter_by'] . '.label.singular',
-                'label'  => false,
-                'class'  => $this->{$options['filter_by'] . 'Class'},
-                'mapped' => false,
-                'select2' => false,
-                'attr'   => [
+                'label'    => false,
+                'class'    => $this->{$options['filter_by'] . 'Class'},
+                'mapped'   => false,
+                'select2'  => false,
+                'required' => false,
+                'attr'     => [
                     'data-filter-by' => $options['filter_by'],
                     'class'          => 'commerce-shipment-pricing-filter',
                 ],
@@ -57,6 +57,7 @@ class ShipmentPricingType extends Form\AbstractType
             ->add('prices', ShipmentPricesType::class, [
                 //'label'     => 'ekyna_commerce.shipment_price.label.plural',
                 'label'     => false,
+                'required'  => false,
                 'filter_by' => $options['filter_by'],
                 'attr'      => [
                     'class' => 'commerce-shipment-pricing-prices',

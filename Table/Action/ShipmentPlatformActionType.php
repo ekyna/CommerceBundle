@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
 use Ekyna\Component\Table\Source\RowInterface;
@@ -50,9 +51,13 @@ class ShipmentPlatformActionType extends AbstractActionType
             return $row->getData();
         }, $rows);
 
-        $response = $this->shipmentHelper->executePlatformAction($platformName, $actionName, $shipments);
-        if (null !== $response) {
-            return $response;
+        try {
+            $response = $this->shipmentHelper->executePlatformAction($platformName, $actionName, $shipments);
+            if (null !== $response) {
+                return $response;
+            }
+        } catch (LogicException $e) {
+            // TODO $this->addFlash('ekyna_commerce.shipment.message.unsupported_action', 'danger');
         }
 
         return true;

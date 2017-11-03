@@ -3,11 +3,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="ekyna_commerce.shipment_price.list_template">EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig</parameter>
-        <parameter key="ekyna_commerce.stock_unit.list_template">EkynaCommerceBundle:Admin/Stock:stock_unit_list.html.twig</parameter>
-    </parameters>
-
     <services>
 
         <!-- Document renderer factory -->

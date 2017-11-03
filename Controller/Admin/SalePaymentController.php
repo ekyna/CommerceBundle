@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
-use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -57,9 +56,12 @@ class SalePaymentController extends AbstractSaleController
 
         // Default amount
         // TODO should be done in a factory ...
-        $payment->setAmount($sale->getRemainingAmount());
+        $payment
+            ->setCurrency($sale->getCurrency())
+            ->setAmount($sale->getRemainingAmount());
 
         $context->addResource($resourceName, $payment);
+        $context->addResource('resource', $payment);
 
         $this->getOperator()->initialize($payment);
 

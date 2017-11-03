@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Component\Commerce\Common\Model\MessageInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Util\PaymentUtil;
 

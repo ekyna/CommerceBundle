@@ -88,6 +88,7 @@
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="templating"/>
             <argument>%ekyna_commerce.stock_unit.list_template%</argument>
+            <argument>%ekyna_commerce.subject_stock.list_template%</argument>
         </service>
 
     </services>

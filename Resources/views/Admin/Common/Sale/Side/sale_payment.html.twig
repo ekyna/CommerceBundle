@@ -1,0 +1,55 @@
+{% spaceless %}
+    <div class="show">
+        <div class="show-body">
+
+            <div class="row">
+                <div class="col-md-6 col-lg-12">
+                    {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
+                        'label_nb_col': 4,
+                        'widget_nb_col': 8
+                    }) }}
+                </div>
+                <div class="col-md-6 col-lg-12">
+                    {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
+                        'label_nb_col': 4,
+                        'widget_nb_col': 8
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-12">
+                    {{ show_row(sale.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
+                        'label_nb_col': 4,
+                        'widget_nb_col': 8
+                    }) }}
+                </div>
+                <div class="col-md-6 col-lg-12">
+                    {{ show_row(sale.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
+                        'route': 'ekyna_commerce_payment_term_admin_show',
+                        'route_params_map': {'paymentTermId': 'id'},
+                        'label_nb_col': 4,
+                        'widget_nb_col': 8
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-12">
+                    {{ show_row(sale.outstandingLimit|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_limit', {
+                        'label_nb_col': 4,
+                        'widget_nb_col': 8
+                    }) }}
+                </div>
+                <div class="col-md-6 col-lg-12">
+                    {{ show_row(sale.outstandingDate, 'datetime', 'ekyna_commerce.sale.field.outstanding_date', {
+                        'time': false,
+                        'label_nb_col': 4,
+                        'widget_nb_col': 8
+                    }) }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endspaceless %}

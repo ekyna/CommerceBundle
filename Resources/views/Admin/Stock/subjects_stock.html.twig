@@ -1,0 +1,63 @@
+{% spaceless %}
+    <div class="table-responsive">
+        <table class="{{ classes }}">
+            <thead>
+            <tr>
+                <th>
+                    {{- 'ekyna_commerce.stock_subject.field.mode'|trans -}}
+                </th>
+                <th>
+                    {{- 'ekyna_commerce.stock_subject.field.state'|trans -}}
+                </th>
+                <th>
+                    {{- 'ekyna_commerce.stock_subject.field.in_stock'|trans -}}
+                </th>
+                <th>
+                    {{- 'ekyna_commerce.stock_subject.field.available_stock'|trans -}}
+                </th>
+                <th>
+                    {{- 'ekyna_commerce.stock_subject.field.virtual_stock'|trans -}}
+                </th>
+                <th>
+                    {{- 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival'|trans -}}
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {%- for subject in subjects -%}
+                {%- set subjectId = prefix ~ '_' ~ loop.index0 -%}
+                <tr>
+                    <td id="{{ subjectId ~ '_mode' }}">
+                        {{- subject|stock_subject_mode_badge -}}
+                    </td>
+                    <td id="{{ subjectId ~ '_state' }}">
+                        {{- subject|stock_subject_state_badge -}}
+                    </td>
+                    <td id="{{ subjectId ~ '_inStock' }}" class="text-right">
+                        {{- subject.inStock|localizednumber -}}
+                    </td>
+                    <td id="{{ subjectId ~ '_availableStock' }}" class="text-right">
+                        {{- subject.availableStock|localizednumber -}}
+                    </td>
+                    <td id="{{ subjectId ~ '_virtualStock' }}" class="text-right">
+                        {{- subject.virtualStock|localizednumber -}}
+                    </td>
+                    <td id="{{ subjectId ~ '_estimatedDateOfArrival' }}">
+                        {%- if subject.estimatedDateOfArrival is not empty -%}
+                            {{ subject.estimatedDateOfArrival|localizeddate('short', 'none') }}
+                        {%- else -%}
+                            <em>{{ 'ekyna_core.value.unknown'|trans }}</em>
+                        {%- endif -%}
+                    </td>
+                </tr>
+            {%- else -%}
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <em>{{ 'ekyna_commerce.stock_unit.alert.empty_list'|trans }}</em>
+                    </td>
+                </tr>
+            {%- endfor -%}
+            </tbody>
+        </table>
+    </div>
+{% endspaceless %}

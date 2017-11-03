@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Ekyna\Bundle\ProductBundle\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Shipment\Gateway\Action;
 use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
@@ -60,12 +61,18 @@ class ShipmentHelper
      * @param Request|null            $sfRequest
      *
      * @return \Symfony\Component\HttpFoundation\Response|null
+     *
+     * @throws LogicException
      */
     public function executePlatformAction($platformName, $actionName, $shipments, Request $sfRequest = null)
     {
         $platform = $this->gatewayRegistry->getPlatform($platformName);
 
         $action = $this->createAction($actionName, $shipments, $sfRequest);
+
+        if (!$platform->supports($action)) {
+            throw new LogicException("Unsupported action.");
+        }
 
         if (null !== $psrResponse = $platform->execute($action)) {
             return (new HttpFoundationFactory())->createResponse($psrResponse);
@@ -83,12 +90,18 @@ class ShipmentHelper
      * @param Request|null            $sfRequest
      *
      * @return \Symfony\Component\HttpFoundation\Response|null
+     *
+     * @throws LogicException
      */
     public function executeGatewayAction($gatewayName, $actionName, $shipments, Request $sfRequest = null)
     {
         $gateway = $this->gatewayRegistry->getGateway($gatewayName);
 
         $action = $this->createAction($actionName, $shipments, $sfRequest);
+
+        if (!$gateway->supports($action)) {
+            throw new LogicException("Unsupported action.");
+        }
 
         if (null !== $psrResponse = $gateway->execute($action)) {
             return (new HttpFoundationFactory())->createResponse($psrResponse);

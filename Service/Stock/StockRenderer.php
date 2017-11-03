@@ -27,7 +27,12 @@ class StockRenderer
     /**
      * @var string
      */
-    private $defaultTemplate;
+    private $unitTemplate;
+
+    /**
+     * @var string
+     */
+    private $subjectTemplate;
 
 
     /**
@@ -35,16 +40,19 @@ class StockRenderer
      *
      * @param StockUnitResolverInterface $resolver
      * @param EngineInterface            $templating
-     * @param string                     $defaultTemplate
+     * @param string                     $unitTemplate
+     * @param string                     $subjectTemplate
      */
     public function __construct(
         StockUnitResolverInterface $resolver,
         EngineInterface $templating,
-        $defaultTemplate = 'EkynaCommerceBundle:Admin/Stock:stock_unit_list.html.twig'
+        $unitTemplate = 'EkynaCommerceBundle:Admin/Stock:stock_units.html.twig',
+        $subjectTemplate = 'EkynaCommerceBundle:Admin/Stock:subjects_stock.html.twig'
     ) {
         $this->resolver = $resolver;
         $this->templating = $templating;
-        $this->defaultTemplate = $defaultTemplate;
+        $this->unitTemplate = $unitTemplate;
+        $this->subjectTemplate = $subjectTemplate;
     }
 
     /**
@@ -55,9 +63,9 @@ class StockRenderer
      *
      * @return string
      */
-    public function renderStockUnitList($stockUnits, array $options = [])
+    public function renderStockUnits(array $stockUnits, array $options = [])
     {
-        $template = isset($options['template']) ? $options['template'] : $this->defaultTemplate;
+        $template = isset($options['template']) ? $options['template'] : $this->unitTemplate;
         $id = isset($options['id']) ? $options['id'] : 'stockUnit';
 
         $classes = ['table', 'table-striped', 'table-hover'];
@@ -68,7 +76,32 @@ class StockRenderer
         return $this->templating->render($template, [
             'stockUnits' => $stockUnits,
             'prefix'     => $id,
-            'classes' => implode(' ', $classes)
+            'classes'    => implode(' ', $classes),
+        ]);
+    }
+
+    /**
+     * Renders the stock units list.
+     *
+     * @param StockUnitInterface[] $subjects
+     * @param array                $options
+     *
+     * @return string
+     */
+    public function renderSubjectsStock(array $subjects, array $options = [])
+    {
+        $template = isset($options['template']) ? $options['template'] : $this->subjectTemplate;
+        $id = isset($options['id']) ? $options['id'] : 'subject';
+
+        $classes = ['table', 'table-striped', 'table-hover'];
+        if (isset($options['class'])) {
+            $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
+        }
+
+        return $this->templating->render($template, [
+            'subjects' => $subjects,
+            'prefix'   => $id,
+            'classes'  => implode(' ', $classes),
         ]);
     }
 
@@ -80,10 +113,10 @@ class StockRenderer
      *
      * @return string
      */
-    public function renderSubjectStockUnitList(StockSubjectInterface $subject, array $options = [])
+    public function renderSubjectStockUnits(StockSubjectInterface $subject, array $options = [])
     {
         $stockUnits = $this->resolver->findNotClosed($subject);
 
-        return $this->renderStockUnitList($stockUnits, $options);
+        return $this->renderStockUnits($stockUnits, $options);
     }
 }
