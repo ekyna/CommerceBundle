@@ -23,7 +23,6 @@
         <!-- Stock unit cache -->
         <service id="ekyna_commerce.stock_unit.cache"
                  class="Ekyna\Component\Commerce\Stock\Cache\StockUnitCache">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="resource.event_subscriber"/>
         </service>
 
