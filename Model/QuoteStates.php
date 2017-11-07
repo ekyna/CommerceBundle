@@ -20,12 +20,12 @@ final class QuoteStates extends AbstractConstants
         $prefix = 'ekyna_commerce.quote.state.';
 
         return [
-            States::STATE_NEW       => [$prefix . States::STATE_NEW,       'default', false],
-            States::STATE_PENDING   => [$prefix . States::STATE_PENDING,   'warning', true],
-            States::STATE_REFUSED   => [$prefix . States::STATE_REFUSED,   'danger',  false],
-            States::STATE_ACCEPTED  => [$prefix . States::STATE_ACCEPTED,  'success', true],
-            States::STATE_REFUNDED  => [$prefix . States::STATE_REFUNDED,  'primary', true],
-            States::STATE_CANCELLED => [$prefix . States::STATE_CANCELLED, 'default', false],
+            States::STATE_NEW      => [$prefix . States::STATE_NEW,      'default', false],
+            States::STATE_PENDING  => [$prefix . States::STATE_PENDING,  'warning', true],
+            States::STATE_REFUSED  => [$prefix . States::STATE_REFUSED,  'danger',  false],
+            States::STATE_ACCEPTED => [$prefix . States::STATE_ACCEPTED, 'success', true],
+            States::STATE_REFUNDED => [$prefix . States::STATE_REFUNDED, 'primary', true],
+            States::STATE_CANCELED => [$prefix . States::STATE_CANCELED, 'default', false],
         ];
     }
 

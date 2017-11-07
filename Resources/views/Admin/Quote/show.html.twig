@@ -87,15 +87,19 @@
             <div class="tab-pane" id="quote-payments">
                 <div class="actions">
                     {# TODO Permission #}
+                    {%- if quote.requiresPayment -%}
                     <a href="{{ admin_resource_path('ekyna_commerce.quote_payment', 'new', {'quoteId': quote.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.payment.button.new'|trans }}
                     </a>
+                    {%- endif -%}
                 </div>
                 <h4 class="sub-header">
                     {{ 'ekyna_commerce.payment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': quote} %}
+                <hr>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="quote-attachments">
                 <div class="actions">

@@ -18,16 +18,41 @@ ekyna_commerce_account_order_show:
     path: /{number}
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:show
+    requirements:
+        number: "[a-zA-Z0-9]+"
     methods: [GET]
 
-ekyna_commerce_account_order_payment:
+ekyna_commerce_account_order_payment: # TODO _create
     path: /{number}/payment
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:payment
+    requirements:
+        number: "[a-zA-Z0-9]+"
     methods: [GET, POST]
+
+ekyna_commerce_account_order_payment_cancel:
+    path: /{number}/payment/{key}/cancel
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:paymentCancel
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        key: "[a-zA-Z0-9]+"
+    methods: [GET, POST]
+
+ekyna_commerce_account_order_payment_status:
+    path: /{number}/payment/{key}/status
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:paymentStatus
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        key: "[a-zA-Z0-9]+"
+    methods: [GET]
 
 ekyna_commerce_account_order_attachment_download:
     path: /{number}/documents/{id}
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:attachmentDownload
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        id: \d+
     methods: [GET]

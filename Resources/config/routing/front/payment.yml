@@ -1,14 +1,39 @@
-ekyna_commerce_payment_cart:
-    resource: "payment/cart.yml"
-    prefix: /cart
+ekyna_commerce_payment_capture:
+    path: /capture/{payum_token}
+    defaults: { _controller: PayumBundle:Capture:do }
     options: { i18n: false }
 
-ekyna_commerce_payment_quote:
-    resource: "payment/quote.yml"
-    prefix: /quote
+ekyna_commerce_payment_authorize:
+    path: /authorize/{payum_token}
+    defaults: { _controller: PayumBundle:Authorize:do }
     options: { i18n: false }
 
-ekyna_commerce_payment_order:
-    resource: "payment/order.yml"
-    prefix: /order
+ekyna_commerce_payment_notify:
+    path: /notify/{payum_token}
+    defaults: { _controller: PayumBundle:Notify:do }
+    options: { i18n: false }
+
+ekyna_commerce_payment_cancel:
+    path: /cancel/{payum_token}
+    defaults: { _controller: PayumBundle:Cancel:do }
+    options: { i18n: false }
+
+ekyna_commerce_payment_refund:
+    path: /refund/{payum_token}
+    defaults: { _controller: PayumBundle:Refund:do }
+    options: { i18n: false }
+
+ekyna_commerce_payment_sync:
+    path: /sync/{payum_token}
+    defaults: { _controller: PayumBundle:Sync:do }
+    options: { i18n: false }
+
+ekyna_commerce_payment_accept:
+    path: /accept/{payum_token}
+    defaults: { _controller: EkynaCommerceBundle:Payment\Accept:do }
+    options: { i18n: false }
+
+ekyna_commerce_payment_hang:
+    path: /hang/{payum_token}
+    defaults: { _controller: EkynaCommerceBundle:Payment\Hang:do }
     options: { i18n: false }

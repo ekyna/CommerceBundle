@@ -13,6 +13,23 @@ ekyna_commerce_quote_payment_admin_edit:
         quoteId: \d+
         quotePaymentId: \d+
 
+ekyna_commerce_quote_payment_admin_action:
+    path: /{quotePaymentId}/action/{action}
+    defaults: { _controller: "ekyna_commerce.quote_payment.controller:actionAction" }
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        quotePaymentId: \d+
+        action: accept|cancel|hang|reject|refund
+
+ekyna_commerce_quote_payment_admin_status:
+    path: /{quotePaymentId}/status
+    defaults: { _controller: "ekyna_commerce.quote_payment.controller:statusAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+        quotePaymentId: \d+
+
 ekyna_commerce_quote_payment_admin_remove:
     path: /{quotePaymentId}/remove
     defaults: { _controller: "ekyna_commerce.quote_payment.controller:removeAction" }

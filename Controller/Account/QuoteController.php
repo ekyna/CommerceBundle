@@ -3,11 +3,16 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Payment\Util\PaymentUtil;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
+use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class QuoteController
@@ -89,6 +94,7 @@ class QuoteController extends AbstractController
             'number' => $quote->getNumber(),
         ]));
 
+        /** @var QuotePaymentInterface $payment */
         if (null !== $payment = $checkout->handleRequest($request)) {
             $quote->addPayment($payment);
 
@@ -99,9 +105,9 @@ class QuoteController extends AbstractController
                 return $this->redirect($cancelUrl);
             }
 
-            return $this->redirect($this->generateUrl('ekyna_commerce_payment_quote_capture', [
-                'key' => $payment->getKey(),
-            ]));
+            return $this
+                ->get('ekyna_commerce.payment_helper')
+                ->capture($payment, $this->getPaymentStatusUrl($quote, $payment));
         }
 
         $quotes = $this
@@ -112,6 +118,81 @@ class QuoteController extends AbstractController
             'quote'  => $quote,
             'forms'  => $checkout->getFormsViews(),
             'quotes' => $quotes,
+        ]);
+    }
+
+    /**
+     * Payment cancel action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function paymentCancelAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        $payment = $this->findPaymentByQuoteAndKey($quote, $request->attributes->get('key'));
+
+        $cancelUrl = $this->generateUrl('ekyna_commerce_account_order_show', [
+            'number' => $quote->getNumber(),
+        ]);
+
+        if (!PaymentUtil::isUserCancellable($payment)) {
+            return $this->redirect($cancelUrl);
+        }
+
+        $form = $this->createForm(ConfirmType::class, null, [
+            'message'      => 'ekyna_commerce.account.payment.confirm_cancel',
+            'cancel_path'  => $cancelUrl,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this
+                ->get('ekyna_commerce.payment_helper')
+                ->cancel($payment, $this->getPaymentStatusUrl($quote, $payment));
+        }
+
+        $quotes = $this
+            ->get('ekyna_commerce.quote.repository')
+            ->findByCustomer($customer);
+
+        return $this->render('EkynaCommerceBundle:Account/Quote:payment_cancel.html.twig', [
+            'quote'  => $quote,
+            'form'   => $form->createView(),
+            'quotes' => $quotes,
+        ]);
+    }
+
+    /**
+     * Payment status action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function paymentStatusAction(Request $request)
+    {
+        $payment = $this->get('ekyna_commerce.payment_helper')->status($request);
+
+        if (!$payment instanceof QuotePaymentInterface) {
+            throw new InvalidArgumentException("Expected instance of " . QuotePaymentInterface::class);
+        }
+
+        /** @var QuoteInterface $order */
+        $order = $payment->getQuote();
+
+        // TODO Check that quote belongs to the current user
+        // Problem : token has been invalidated
+
+        // TODO transform to order if accepted
+
+        return $this->redirectToRoute('ekyna_commerce_account_order_show', [
+            'number' => $order->getNumber(),
         ]);
     }
 
@@ -170,6 +251,30 @@ class QuoteController extends AbstractController
     }
 
     /**
+     * Finds the payment by quote and key.
+     *
+     * @param QuoteInterface $order
+     * @param string         $key
+     *
+     * @return QuotePaymentInterface
+     */
+    protected function findPaymentByQuoteAndKey(QuoteInterface $order, $key)
+    {
+        $payment = $this
+            ->get('ekyna_commerce.quote_payment.repository')
+            ->findOneBy([ // TODO repository method
+                'order' => $order,
+                'key'   => $key,
+            ]);
+
+        if (null === $payment) {
+            throw $this->createNotFoundException('Payment not found.');
+        }
+
+        return $payment;
+    }
+
+    /**
      * Finds the attachment by quote and id.
      *
      * @param QuoteInterface $quote
@@ -191,5 +296,21 @@ class QuoteController extends AbstractController
         }
 
         return $attachment;
+    }
+
+    /**
+     * Returns the payment status url.
+     *
+     * @param QuoteInterface        $quote
+     * @param QuotePaymentInterface $payment
+     *
+     * @return string
+     */
+    protected function getPaymentStatusUrl(QuoteInterface $quote, QuotePaymentInterface $payment)
+    {
+        return $this->generateUrl('ekyna_commerce_account_quote_payment_status', [
+            'number' => $quote->getNumber(),
+            'key'    => $payment->getKey(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

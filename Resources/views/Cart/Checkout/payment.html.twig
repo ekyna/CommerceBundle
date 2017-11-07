@@ -21,7 +21,7 @@
                     <th>{{ 'ekyna_core.field.method'|trans }}</th>
                     <th>{{ 'ekyna_core.field.amount'|trans }}</th>
                     <th>{{ 'ekyna_core.field.status'|trans }}</th>
-                    <th></th>
+                    {#<th></th>#}
                 </tr>
                 </thead>
                 <tbody>
@@ -31,19 +31,26 @@
                         <td id="{{ paymentId }}_method">{{ payment.method }}</td>
                         <td id="{{ paymentId }}_amount">{{ payment.amount|localizedcurrency(payment.currency.code) }}</td>
                         <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
-                        <td class="actions">
-                            {% if payment is payment_user_cancellable %}
-                                <a href="{{ path('ekyna_commerce_payment_cart_cancel', {'key': payment.key}) }}" class="btn btn-danger btn-xs">
-                                    {{ 'ekyna_core.button.cancel'|trans }}
-                                </a>
-                            {% endif %}
-                        </td>
+                        {#<td class="actions">
+                            TODO cancel button ?
+                        </td>#}
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
         {% endif %}
+
+        <p>
+            {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
+                '%amount%': sale.grandTotal|localizedcurrency(sale.currency.code)
+            })|raw }}.<br>
+            {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
+                '%amount%': sale.remainingAmount|localizedcurrency(sale.currency.code)
+            })|raw }}.
+        </p>
+
+        <hr>
 
         {% include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': cart} %}
 

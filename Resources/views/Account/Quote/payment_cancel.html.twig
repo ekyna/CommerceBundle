@@ -12,14 +12,13 @@
         'cancel_route': 'ekyna_commerce_account_quote_payment_cancel'
     } -%}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': quote} -%}
-
-    <div class="text-center">
-        <a href="{{ path('ekyna_commerce_account_quote_show', {'number': quote.number}) }}" class="btn btn-default btn-lg">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            {{ 'ekyna_core.button.back'|trans }}
-        </a>
+    {{ bootstrap_set_style('horizontal') }}
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    <div class="form-body">
+        {{ form_row(form.confirm) }}
+        {{ form_rest(form) }}
     </div>
+    {{ form_end(form) }}
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>

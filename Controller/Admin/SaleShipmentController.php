@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
-use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Exception;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -285,8 +285,10 @@ class SaleShipmentController extends AbstractSaleController
             if (null !== $response) {
                 return $response;
             }
-        } catch (LogicException $e) {
+        } catch (Exception\LogicException $e) {
             $this->addFlash('ekyna_commerce.shipment.message.unsupported_action', 'danger');
+        } catch (Exception\RuntimeException $e) {
+            $this->addFlash($e->getMessage(), 'danger');
         }
 
         if ($request->server->has('HTTP_REFERER') && !empty($referer = $request->server->get('HTTP_REFERER'))) {

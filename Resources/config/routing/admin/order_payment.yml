@@ -13,6 +13,23 @@ ekyna_commerce_order_payment_admin_edit:
         orderId: \d+
         orderPaymentId: \d+
 
+ekyna_commerce_order_payment_admin_action:
+    path: /{orderPaymentId}/action/{action}
+    defaults: { _controller: "ekyna_commerce.order_payment.controller:actionAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderPaymentId: \d+
+        action: accept|cancel|hang|reject|refund
+
+ekyna_commerce_order_payment_admin_status:
+    path: /{orderPaymentId}/status
+    defaults: { _controller: "ekyna_commerce.order_payment.controller:statusAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderPaymentId: \d+
+
 ekyna_commerce_order_payment_admin_remove:
     path: /{orderPaymentId}/remove
     defaults: { _controller: "ekyna_commerce.order_payment.controller:removeAction" }

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Ekyna\Bundle\ProductBundle\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Shipment\Gateway\Action;
 use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
@@ -74,7 +75,13 @@ class ShipmentHelper
             throw new LogicException("Unsupported action.");
         }
 
-        if (null !== $psrResponse = $platform->execute($action)) {
+        try {
+            $psrResponse = $platform->execute($action);
+        } catch(\Exception $e) {
+            throw new RuntimeException($e->getMessage());
+        }
+
+        if (null !== $psrResponse) {
             return (new HttpFoundationFactory())->createResponse($psrResponse);
         }
 
@@ -103,7 +110,13 @@ class ShipmentHelper
             throw new LogicException("Unsupported action.");
         }
 
-        if (null !== $psrResponse = $gateway->execute($action)) {
+        try {
+            $psrResponse = $gateway->execute($action);
+        } catch(\Exception $e) {
+            throw new RuntimeException($e->getMessage());
+        }
+
+        if (null !== $psrResponse) {
             return (new HttpFoundationFactory())->createResponse($psrResponse);
         }
 

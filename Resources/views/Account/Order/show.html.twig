@@ -26,7 +26,7 @@
 
     {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
         'sale': order,
-        'cancel_route': 'ekyna_commerce_payment_order_cancel'
+        'cancel_route': 'ekyna_commerce_account_order_payment_cancel'
     } -%}
 
     {%- include "EkynaCommerceBundle:Account/Sale:shipments.html.twig" with {'sale': order} -%}

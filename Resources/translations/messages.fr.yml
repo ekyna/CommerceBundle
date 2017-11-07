@@ -433,7 +433,7 @@ ekyna_commerce:
             accepted: Acceptée
             completed: Complétée
             refunded: Remboursée
-            cancelled: Annulée
+            canceled: Annulée
         message:
             already_paid: Cette commande est déjà réglée en totalité
             cant_be_deleted: Cette commande a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
@@ -496,6 +496,7 @@ ekyna_commerce:
         alert:
             no_item: Aucun paiement configuré
         message:
+            state_confirm: Souhaitez-vous réellement {{action}} ce paiement ?
             remove_confirm: Souhaitez-vous réellement supprimer ce paiement ?
             cant_be_deleted: Ce paiement est valide et ne peut être supprimé.
         state:
@@ -511,7 +512,7 @@ ekyna_commerce:
             failed:
                 label: Refusé
                 message: Votre paiement est refusé.
-            cancelled:
+            canceled:
                 label: Annulé
                 message: Votre paiement a été annulé.
             refunded:
@@ -523,6 +524,9 @@ ekyna_commerce:
             suspended:
                 label: Suspendu
                 message: Votre paiement est supendu.
+            payedout:
+                label: Fond versés
+                message: Les fonds ont été versés.
             authorized:
                 label: Autorisé
                 message: Votre paiement est autorisé.
@@ -533,17 +537,21 @@ ekyna_commerce:
                 label: Inconnu
                 message: Le statut de votre paiement est inconnu.
         transition:
-            create: Créer
-            hang: Attendre
-            capture: Accepter
-            fail: Refuser
-            cancel: Annuler
-            refund: Rembourser
-            authorize: Autoriser
-            suspend: Suspendre
-            expire: Expirer
-            void: Néant
-        impossible_transition: Impossible d'appliquer le changement de statut du paiement demandé.
+            hang:
+                label: Attendre
+                confirm: Êtes-vous sûr de vouloir mettre ce paiement EN ATTENTE ?
+            accept:
+                label: Accepter
+                confirm: Êtes-vous sûr de vouloir ACCEPTER ce paiement ?
+            reject:
+                label: Refuser
+                confirm: Êtes-vous sûr de vouloir REFUSER ce paiement ?
+            cancel:
+                label: Annuler
+                confirm: Êtes-vous sûr de vouloir ANNULER ce paiement ?
+            refund:
+                label: Rembourser
+                confirm: Êtes-vous sûr de vouloir REMBOURSER ce paiement ?
 
     payment_method:
         label:
@@ -627,7 +635,7 @@ ekyna_commerce:
             accepted: Acceptée
             completed: Complétée
             refunded: Remboursée
-            cancelled: Annulée
+            canceled: Annulée
         message:
             transformation_to_order_is_ready: Ce devis est prêt à être transformé en commande.
             already_paid: Ce devis est déjà réglée en totalité
@@ -810,7 +818,7 @@ ekyna_commerce:
             shipped: Expédié
             completed: Complété
             returned: Retourné
-            cancelled: Annulé
+            canceled: Annulé
         action:
             cancel: Annuler
             capture: Capturer
@@ -1039,7 +1047,7 @@ ekyna_commerce:
             ordered: En attente
             partial: Partiellement réceptionnée
             completed: Complétée
-            cancelled: Annulée
+            canceled: Annulée
         dashboard:
             title: Commandes fournisseur à traiter
             none: Aucune commande fournisseur à traiter

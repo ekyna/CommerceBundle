@@ -24,7 +24,7 @@ final class PaymentStates extends AbstractConstants
             States::STATE_NEW         => [$prefix.States::STATE_NEW.$suffix,         'default'],
             States::STATE_PENDING     => [$prefix.States::STATE_PENDING.$suffix,     'warning'],
             States::STATE_CAPTURED    => [$prefix.States::STATE_CAPTURED.$suffix,    'success'],
-            States::STATE_CANCELLED   => [$prefix.States::STATE_CANCELLED.$suffix,   'default'],
+            States::STATE_CANCELED    => [$prefix.States::STATE_CANCELED.$suffix,    'default'],
             States::STATE_FAILED      => [$prefix.States::STATE_FAILED.$suffix,      'danger'],
             States::STATE_REFUNDED    => [$prefix.States::STATE_REFUNDED.$suffix,    'primary'],
             States::STATE_AUTHORIZED  => [$prefix.States::STATE_AUTHORIZED.$suffix,  'success'],
@@ -39,6 +39,7 @@ final class PaymentStates extends AbstractConstants
      * Returns the theme for the given state.
      *
      * @param string $state
+     *
      * @return string
      */
     static public function getTheme($state)

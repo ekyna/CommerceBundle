@@ -24,14 +24,15 @@
                 <td id="{{ paymentId }}_createdAt">{{ payment.createdAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ paymentId }}_description">{{ payment.description }}</td>
                 <td class="actions">
-                    <a href="{{ admin_resource_path(payment, 'edit') }}" class="btn btn-warning btn-xs">
+                    {{ payment_admin_actions(payment) }}
+                    {#<a href="{{ admin_resource_path(payment, 'edit') }}" class="btn btn-warning btn-xs">
                         {{ 'ekyna_core.button.edit'|trans }}
-                    </a>
-                    {% if payment.getState() == 'new' %}
+                    </a>#}
+                    {#{% if payment.getState() == 'new' %}
                         <a href="{{ admin_resource_path(payment, 'remove') }}" class="btn btn-danger btn-xs">
                             {{ 'ekyna_core.button.remove'|trans }}
                         </a>
-                    {% endif %}
+                    {% endif %}#}
                 </td>
             </tr>
         {% else %}
@@ -44,5 +45,3 @@
         </tbody>
     </table>
 </div>
-<hr>
-{% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" %}

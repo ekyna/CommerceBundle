@@ -24,7 +24,7 @@ final class SupplierOrderStates extends AbstractConstants
             States::STATE_ORDERED   => [$prefix . States::STATE_ORDERED,   'primary', true],
             States::STATE_PARTIAL   => [$prefix . States::STATE_PARTIAL,   'warning', false],
             States::STATE_COMPLETED => [$prefix . States::STATE_COMPLETED, 'success', true],
-            States::STATE_CANCELLED => [$prefix . States::STATE_CANCELLED, 'default', false],
+            States::STATE_CANCELED  => [$prefix . States::STATE_CANCELED,  'default', false],
         ];
     }
 

@@ -4,11 +4,17 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
 use Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager;
+use Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformerInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
+use Ekyna\Component\Commerce\Cart\Model\CartPaymentInterface;
+use Ekyna\Component\Commerce\Cart\Model\CartStates;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class CheckoutController
@@ -18,28 +24,44 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class CheckoutController extends AbstractController
 {
     /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
+
+    /**
      * @var PaymentManager
      */
     protected $paymentCheckout;
 
     /**
-     * @var OrderRepositoryInterface
+     * @var PaymentHelper
      */
-    protected $orderRepository;
+    protected $paymentHelper;
+
+    /**
+     * @var SaleTransformerInterface
+     */
+    protected $saleTransformer;
 
 
     /**
      * Constructor.
      *
-     * @param OrderRepositoryInterface   $orderRepository
-     * @param PaymentManager             $paymentCheckout
+     * @param OrderRepositoryInterface $orderRepository
+     * @param PaymentManager           $paymentCheckout
+     * @param PaymentHelper            $paymentHelper
+     * @param SaleTransformerInterface $saleTransformer
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
-        PaymentManager $paymentCheckout
+        PaymentManager $paymentCheckout,
+        PaymentHelper $paymentHelper,
+        SaleTransformerInterface $saleTransformer
     ) {
         $this->orderRepository = $orderRepository;
         $this->paymentCheckout = $paymentCheckout;
+        $this->paymentHelper = $paymentHelper;
+        $this->saleTransformer = $saleTransformer;
     }
 
     /**
@@ -60,7 +82,7 @@ class CheckoutController extends AbstractController
 
             $saleForm = $saleHelper->createQuantitiesForm($cart, [
                 'method' => 'post',
-                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index')
+                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
             ]);
 
             $saleForm->handleRequest($request);
@@ -151,15 +173,51 @@ class CheckoutController extends AbstractController
             $cart->addPayment($payment);
             $this->saveCart();
 
-            return $this->redirect($this->generateUrl('ekyna_commerce_payment_cart_capture', [
-                'key' => $payment->getKey(),
-            ]));
+            $statusUrl = $this->generateUrl(
+                'ekyna_commerce_cart_checkout_status',
+                [],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return $this->paymentHelper->capture($payment, $statusUrl);
         }
 
         return $this->render('EkynaCommerceBundle:Cart/Checkout:payment.html.twig', [
             'cart'  => $cart,
             'forms' => $this->paymentCheckout->getFormsViews(),
         ]);
+    }
+
+    /**
+     * Status action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function statusAction(Request $request)
+    {
+        $payment = $this->paymentHelper->status($request);
+
+        if (!$payment instanceof CartPaymentInterface) {
+            throw new InvalidArgumentException("Expected instance of " . CartPaymentInterface::class);
+        }
+
+        // TODO Check that payment cart is the same as user (session) one
+        // Problem : token has been invalidated
+        $cart = $this->getCart();
+
+        // If cart is completed, transforms and redirect to order confirmation
+        if (in_array($cart->getState(), [CartStates::STATE_ACCEPTED])) {
+            $order = $this->saleTransformer->transformCartToOrder($cart);
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [
+                'orderKey' => $order->getKey(),
+            ]));
+        }
+
+        // Else go back to payments
+        return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
     }
 
     /**

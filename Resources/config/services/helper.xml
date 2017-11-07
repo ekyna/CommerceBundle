@@ -44,6 +44,14 @@
             <argument type="service" id="validator"/>
         </service>
 
+        <!-- Payment helper -->
+        <service id="ekyna_commerce.payment_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper">
+            <argument type="service" id="payum"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="router"/>
+        </service>
+
         <!-- Shipment helper -->
         <service id="ekyna_commerce.shipment_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper">

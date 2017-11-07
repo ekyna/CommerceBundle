@@ -7,6 +7,7 @@ use Ekyna\Bundle\InstallBundle\Install\OrderedInstallerInterface;
 use Ekyna\Bundle\MediaBundle\Model\FolderInterface;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
+use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Install\Installer;
 use Symfony\Component\Console\Command\Command;
@@ -178,13 +179,13 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
         $methods = array_merge($methods, [
             'Virement' => [
-                'factory'     => 'offline',
+                'factory'     => Offline::FACTORY_NAME,
                 'image'       => 'virement.png',
                 'description' => '<p>Veuillez adresser votre virement à l\'ordre de ...</p>',
                 'enabled'     => true,
             ],
             'Chèque'   => [
-                'factory'     => 'offline',
+                'factory'     => Offline::FACTORY_NAME,
                 'image'       => 'cheque.png',
                 'description' => '<p>Veuillez adresser votre chèque à l\'ordre de ...</p>',
                 'enabled'     => true,

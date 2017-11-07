@@ -131,6 +131,8 @@ class CartWidget {
 
                 if (modalEvent.content.success) {
                     this.loadContent();
+
+                    modalEvent.modal.close();
                 }
             }
         });

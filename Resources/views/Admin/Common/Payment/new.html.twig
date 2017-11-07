@@ -9,11 +9,30 @@
     {#{{ admin_resource_btn(resource, 'new') }}#}
 {% endblock actions %}
 
+{% block main %}
+{% spaceless %}
+
+    {% include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" %}
+
+    <div class="text-center">
+        <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}" class="btn btn-default">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            {{ 'ekyna_core.button.cancel'|trans }}
+        </a>
+    </div>
+
+    <hr>
+
+    {%- if sale.payments is not empty -%}
+        {% include "@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig" %}
+    {% endif %}
+
+{% endspaceless %}
+{% endblock main %}
+
 {% block side %}
     {{ parent() }}
-    {% if resource.sale is not null %}
-        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale_payment.html.twig" with {'sale': resource.sale} %}
-    {% endif %}
+    {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale_payment.html.twig" %}
 {% endblock side %}
 
 

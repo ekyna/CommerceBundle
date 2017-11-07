@@ -44,6 +44,8 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension"
                  public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_admin.helper.resource_helper"/>
+            <argument type="service" id="translator"/>
             <tag name="twig.extension"/>
         </service>
 

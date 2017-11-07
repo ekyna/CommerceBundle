@@ -50,6 +50,10 @@ class ShipmentMethodTypeSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $method->setGatewayConfig(array_replace_recursive(
+            $platform->getConfigDefaults(), (array)$method->getGatewayConfig()
+        ));
+
         $event->getForm()->add('config', ConfigurationType::class, [
             'definition'    => $definition,
             'property_path' => 'gatewayConfig',

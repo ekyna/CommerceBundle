@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 
@@ -48,7 +49,7 @@ class OrderContext implements Context, KernelAwareContext
 
         $methods = $this
             ->getContainer()->get('ekyna_commerce.payment_method.repository')
-            ->findBy(['enabled' => true, 'factoryName' => 'offline']);
+            ->findBy(['enabled' => true, 'factoryName' => Offline::FACTORY_NAME]);
 
         if (empty($methods)) {
             throw new \InvalidArgumentException("Failed to find a payment method.");

@@ -32,6 +32,14 @@ ekyna_commerce_cart_checkout_payment:
             locked: true
             advanced: false
 
+# TODO Payment cancel
+
+ekyna_commerce_cart_checkout_status:
+    path: /status
+    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:statusAction" }
+    methods: [GET]
+    options: { i18n: false }
+
 ekyna_commerce_cart_checkout_confirmation:
     path: /confirmation/{orderKey}
     defaults: { _controller: "ekyna_commerce.controller.cart_checkout:confirmationAction" }

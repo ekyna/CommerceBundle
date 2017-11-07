@@ -1,6 +1,3 @@
-ekyna_commerce_payum:
-    resource: "front/payum.yml"
-
 ekyna_commerce_payment:
     resource: "front/payment.yml"
     prefix:   /payment

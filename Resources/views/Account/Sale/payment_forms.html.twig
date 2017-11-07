@@ -1,14 +1,3 @@
-<p>
-    {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
-        '%amount%': sale.grandTotal|localizedcurrency(sale.currency.code)
-    })|raw }}.<br>
-    {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
-        '%amount%': sale.remainingAmount|localizedcurrency(sale.currency.code)
-    })|raw }}.
-</p>
-
-<hr>
-
 {% for form in forms %}
     {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
     <div class="col-md-6">

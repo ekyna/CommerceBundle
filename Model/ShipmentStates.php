@@ -31,7 +31,7 @@ final class ShipmentStates extends AbstractConstants
             States::STATE_SHIPPED     => [$prefix.States::STATE_SHIPPED,     'success'],
             States::STATE_COMPLETED   => [$prefix.States::STATE_COMPLETED,   'success'],
             States::STATE_RETURNED    => [$prefix.States::STATE_RETURNED,    'primary'],
-            States::STATE_CANCELLED   => [$prefix.States::STATE_CANCELLED,   'danger'],
+            States::STATE_CANCELED    => [$prefix.States::STATE_CANCELED,    'danger'],
         ];
     }
 

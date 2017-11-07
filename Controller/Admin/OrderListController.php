@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CommerceBundle\Table\Type;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
+use Ekyna\Component\Commerce\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -99,12 +100,18 @@ class OrderListController extends Controller
 
         $shipments = []; // TODO
 
-        $response = $this
-            ->get('ekyna_commerce.shipment.gateway_registry')
-            ->executePlatformAction($platformName, $actionName, $shipments);
+        try {
+            $response = $this
+                ->get('ekyna_commerce.shipment.gateway_registry')
+                ->executePlatformAction($platformName, $actionName, $shipments);
 
-        if (null !== $response) {
-            return $response;
+            if (null !== $response) {
+                return $response;
+            }
+        } catch (Exception\LogicException $e) {
+            $this->addFlash('ekyna_commerce.shipment.message.unsupported_action', 'danger');
+        } catch (Exception\RuntimeException $e) {
+            $this->addFlash($e->getMessage(), 'danger');
         }
 
         if ($request->server->has('HTTP_REFERER') && !empty($referer = $request->server->get('HTTP_REFERER'))) {
