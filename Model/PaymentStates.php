@@ -28,10 +28,12 @@ final class PaymentStates extends AbstractConstants
             States::STATE_FAILED      => [$prefix.States::STATE_FAILED.$suffix,      'danger'],
             States::STATE_REFUNDED    => [$prefix.States::STATE_REFUNDED.$suffix,    'primary'],
             States::STATE_AUTHORIZED  => [$prefix.States::STATE_AUTHORIZED.$suffix,  'success'],
-            States::STATE_OUTSTANDING => [$prefix.States::STATE_OUTSTANDING.$suffix, 'danger'],
             States::STATE_SUSPENDED   => [$prefix.States::STATE_SUSPENDED.$suffix,   'warning'],
             States::STATE_EXPIRED     => [$prefix.States::STATE_EXPIRED.$suffix,     'danger'],
             States::STATE_UNKNOWN     => [$prefix.States::STATE_UNKNOWN.$suffix,     'default'],
+            // Sale only
+            States::STATE_OUTSTANDING => [$prefix.States::STATE_OUTSTANDING.$suffix, 'danger'],
+            States::STATE_COMPLETED   => [$prefix.States::STATE_COMPLETED.$suffix,   'success'],
         ];
     }
 

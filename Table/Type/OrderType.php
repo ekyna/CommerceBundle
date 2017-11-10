@@ -114,19 +114,23 @@ class OrderType extends ResourceTableType
                 'position' => 70,
             ])
             ->addColumn('paymentState', Type\Column\PaymentStateType::class, [
-                'label'    => 'ekyna_commerce.sale.field.payment_state',
+                'label'    => 'ekyna_commerce.sale.table.payment_state',
                 'position' => 80,
             ])
             ->addColumn('shipmentState', Type\Column\ShipmentStateType::class, [
-                'label'    => 'ekyna_commerce.sale.field.shipment_state',
+                'label'    => 'ekyna_commerce.sale.table.shipment_state',
                 'position' => 90,
             ])
-            ->addColumn('inCharge', Type\Column\InChargeType::class, [
+            ->addColumn('invoiceState', Type\Column\InvoiceStateType::class, [
+                'label'    => 'ekyna_commerce.sale.table.invoice_state',
                 'position' => 100,
+            ])
+            ->addColumn('inCharge', Type\Column\InChargeType::class, [
+                'position' => 110,
             ])
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
-                'position'      => 110,
+                'position'      => 120,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -188,12 +192,17 @@ class OrderType extends ResourceTableType
                     'choices'  => Model\ShipmentStates::getChoices(),
                     'position' => 90,
                 ])
-                ->addFilter('inCharge', Type\Filter\InChargeType::class, [
+                ->addFilter('invoiceState', CType\Filter\ChoiceType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.invoice_state',
+                    'choices'  => Model\InvoiceStates::getChoices(),
                     'position' => 100,
+                ])
+                ->addFilter('inCharge', Type\Filter\InChargeType::class, [
+                    'position' => 110,
                 ])
                 ->addFilter('tags', Type\Filter\OrderTagsType::class, [
                     'label'    => 'ekyna_cms.tag.label.plural',
-                    'position' => 110,
+                    'position' => 120,
                 ]);
         }
 

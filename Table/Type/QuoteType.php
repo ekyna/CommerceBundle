@@ -78,7 +78,7 @@ class QuoteType extends ResourceTableType
                 'position' => 60,
             ])
             ->addColumn('paymentState', Column\PaymentStateType::class, [
-                'label'    => 'ekyna_commerce.sale.field.payment_state',
+                'label'    => 'ekyna_commerce.sale.table.payment_state',
                 'position' => 70,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [

@@ -3,12 +3,12 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
-use Ekyna\Component\Commerce\Payment\Util\PaymentUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -140,7 +140,7 @@ class OrderController extends AbstractController
             'number' => $order->getNumber(),
         ]);
 
-        if (!PaymentUtil::isUserCancellable($payment)) {
+        if (!PaymentTransitions::isUserCancellable($payment)) {
             return $this->redirect($cancelUrl);
         }
 

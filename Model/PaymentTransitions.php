@@ -11,7 +11,7 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentTransitions extends AbstractConstants
+final class PaymentTransitions extends AbstractConstants
 {
     const TRANSITION_CANCEL = 'cancel';
     const TRANSITION_HANG   = 'hang';
@@ -121,5 +121,26 @@ class PaymentTransitions extends AbstractConstants
         }
 
         return $transitions;
+    }
+
+    /**
+     * Returns whether the payment can be canceled by the user.
+     *
+     * @param PaymentInterface $payment
+     *
+     * @return bool
+     */
+    static public function isUserCancellable(PaymentInterface $payment)
+    {
+        return in_array(static::TRANSITION_CANCEL, static::getAvailableTransitions($payment), true);
+    }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
     }
 }

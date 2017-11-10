@@ -10,11 +10,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class WatchOutstandingCommand
+ * Class PaymentWatchCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class WatchOutstandingCommand extends ContainerAwareCommand
+class PaymentWatchCommand extends ContainerAwareCommand
 {
     /**
      * @var OutstandingWatcher
@@ -28,7 +28,7 @@ class WatchOutstandingCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ekyna_commerce:payment:watch')
+            ->setName('commerce:payment:watch')
             ->setDescription('Watches the payment states (outstanding).');
     }
 

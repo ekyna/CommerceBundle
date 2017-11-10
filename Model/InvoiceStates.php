@@ -2,26 +2,29 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates as States;
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
-use Ekyna\Component\Commerce\Cart\Model\CartStates as States;
 
 /**
- * Class CartStates
+ * Class InvoiceStates
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-final class CartStates extends AbstractConstants
+final class InvoiceStates extends AbstractConstants
 {
     /**
      * {@inheritdoc}
      */
     static public function getConfig()
     {
-        $prefix = 'ekyna_commerce.cart.state.';
+        $prefix = 'ekyna_commerce.invoice.state.';
 
         return [
-            States::STATE_NEW      => [$prefix . States::STATE_NEW,       'default', false],
-            States::STATE_ACCEPTED => [$prefix . States::STATE_ACCEPTED, 'success', true],
+            States::STATE_NEW      => [$prefix.States::STATE_NEW,      'default'],
+            States::STATE_PENDING  => [$prefix.States::STATE_PENDING,  'warning'],
+            States::STATE_PARTIAL  => [$prefix.States::STATE_PARTIAL,  'warning'],
+            States::STATE_INVOICED => [$prefix.States::STATE_INVOICED, 'success'],
+            States::STATE_CREDITED => [$prefix.States::STATE_CREDITED, 'primary'],
         ];
     }
 

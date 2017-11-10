@@ -43,4 +43,13 @@ final class OrderStates extends AbstractConstants
 
         return static::getConfig()[$state][1];
     }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
+    }
 }

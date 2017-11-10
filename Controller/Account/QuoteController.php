@@ -3,10 +3,10 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Payment\Util\PaymentUtil;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -140,7 +140,7 @@ class QuoteController extends AbstractController
             'number' => $quote->getNumber(),
         ]);
 
-        if (!PaymentUtil::isUserCancellable($payment)) {
+        if (!PaymentTransitions::isUserCancellable($payment)) {
             return $this->redirect($cancelUrl);
         }
 

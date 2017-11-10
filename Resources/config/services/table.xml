@@ -74,6 +74,13 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Invoice state column type -->
+        <service id="ekyna_commerce.invoice_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\InvoiceStateType">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Shipment actions column type -->
         <service id="ekyna_commerce.shipment_actions.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentActionsType">

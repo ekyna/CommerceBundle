@@ -15,7 +15,7 @@
         <!-- Shipment item validator product validator -->
         <service id="ekyna_commerce.shipment_item.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentItemValidator">
-            <argument type="service" id="ekyna_commerce.shipment.quantity_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
             <tag name="validator.constraint_validator" />
         </service>
 

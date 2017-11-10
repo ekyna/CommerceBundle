@@ -96,8 +96,13 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
         }
 
         $payment = $event->getPayment();
+
+        // Customer available fund
         $available = $customer->getCreditBalance();
+
+        // If customer available fund is lower than the payment amount
         if ($available < $payment->getAmount()) {
+            // Limit to available fund
             $payment->setAmount($available);
         }
 
@@ -121,7 +126,7 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
         $sale = $event->getSale();
 
         // Abort if outstanding payment has already been used
-        if (0 < $sale->getOutstandingTotal()) {
+        if (0 < $sale->getOutstandingAccepted()) {
             $event->stopPropagation();
 
             return;
@@ -146,12 +151,11 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
         $payment = $event->getPayment();
 
         // Customer available fund
-        // TODO logical/expected ?
-        $floor = max($customer->getOutstandingLimit(), $sale->getOutstandingLimit());
-        $available = $floor + $customer->getOutstandingBalance();
+        $available = $customer->getOutstandingLimit() + $sale->getOutstandingLimit() + $customer->getOutstandingBalance();
 
         // If customer available fund is lower than the payment amount
         if ($available < $payment->getAmount()) {
+            // Limit to available fund
             $payment->setAmount($available);
         }
 

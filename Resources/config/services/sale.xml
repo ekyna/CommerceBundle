@@ -7,7 +7,8 @@
 
         <!-- Sale factory -->
         <service id="ekyna_commerce.sale_factory"
-                 class="Ekyna\Component\Commerce\Common\Factory\SaleFactory">
+                 class="Ekyna\Component\Commerce\Common\Factory\SaleFactory"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument type="service" id="ekyna_commerce.currency.repository"/>
             <argument type="collection"/><!-- Replaced by DI extension -->
@@ -15,7 +16,8 @@
 
         <!-- Sale transformer -->
         <service id="ekyna_commerce.sale_transformer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformer">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformer"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="ekyna_resource.event_dispatcher"/>
@@ -26,25 +28,30 @@
 
         <!-- Sale updater -->
         <service id="ekyna_commerce.sale_updater"
-                 class="Ekyna\Component\Commerce\Common\Updater\SaleUpdater">
+                 class="Ekyna\Component\Commerce\Common\Updater\SaleUpdater"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.common.address_builder"/>
             <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
             <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
             <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
+            <argument type="service" id="ekyna_commerce.payment.calculator"/>
+            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
             <argument type="service" id="ekyna_commerce.payment.outstanding_releaser"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 
         <!-- Address builder -->
         <service id="ekyna_commerce.common.address_builder"
-                 class="Ekyna\Component\Commerce\Common\Builder\AddressBuilder">
+                 class="Ekyna\Component\Commerce\Common\Builder\AddressBuilder"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
         <!-- Adjustment builder -->
         <service id="ekyna_commerce.common.adjustment_builder"
-                 class="Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder">
+                 class="Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
@@ -73,6 +80,9 @@
             </call>
             <call method="setShipmentStateResolver">
                 <argument type="service" id="ekyna_commerce.shipment.subject_state_resolver"/>
+            </call>
+            <call method="setInvoiceStateResolver">
+                <argument type="service" id="ekyna_commerce.invoice.subject_state_resolver"/>
             </call>
         </service>
 

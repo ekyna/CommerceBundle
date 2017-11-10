@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
-use Ekyna\Component\Commerce\Shipment\Calculator\QuantityCalculatorInterface;
+use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,19 +19,19 @@ use Symfony\Component\Form\FormView;
 class ShipmentItemType extends ResourceFormType
 {
     /**
-     * @var QuantityCalculatorInterface
+     * @var ShipmentCalculatorInterface
      */
-    private $quantityCalculator;
+    private $shipmentCalculator;
 
 
     /**
      * Sets the quantity calculator.
      *
-     * @param QuantityCalculatorInterface $quantityCalculator
+     * @param ShipmentCalculatorInterface $calculator
      */
-    public function setQuantityCalculator(QuantityCalculatorInterface $quantityCalculator)
+    public function setShipmentCalculator(ShipmentCalculatorInterface $calculator)
     {
-        $this->quantityCalculator = $quantityCalculator;
+        $this->shipmentCalculator = $calculator;
     }
 
     /**
@@ -64,13 +64,13 @@ class ShipmentItemType extends ResourceFormType
         if ($item->getShipment()->isReturn()) {
             $view->vars['return_mode'] = true;
 
-            $returnable = $this->quantityCalculator->calculateReturnableQuantity($item);
+            $returnable = $this->shipmentCalculator->calculateReturnableQuantity($item);
             $view->vars['returnable_quantity'] = $returnable;
         } else {
             $view->vars['return_mode'] = false;
 
-            $expected = $this->quantityCalculator->calculateShippableQuantity($item);
-            $available = $this->quantityCalculator->calculateAvailableQuantity($item);
+            $expected = $this->shipmentCalculator->calculateShippableQuantity($item);
+            $available = $this->shipmentCalculator->calculateAvailableQuantity($item);
 
             $view->vars['expected_quantity'] = $expected;
             $view->vars['available_quantity'] = $available;

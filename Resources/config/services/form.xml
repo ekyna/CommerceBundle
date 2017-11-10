@@ -140,6 +140,7 @@
         </service>
         <service id="ekyna_commerce.order_invoice_line.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Invoice\InvoiceLineType">
+            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
             <argument>%ekyna_commerce.order_invoice_line.class%</argument>
             <tag name="form.type"/>
         </service>
@@ -172,8 +173,8 @@
         <service id="ekyna_commerce.order_shipment_item.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentItemType">
             <argument>%ekyna_commerce.order_shipment_item.class%</argument>
-            <call method="setQuantityCalculator">
-                <argument type="service" id="ekyna_commerce.shipment.quantity_calculator"/>
+            <call method="setShipmentCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.calculator"/>
             </call>
             <tag name="form.type"/>
         </service>

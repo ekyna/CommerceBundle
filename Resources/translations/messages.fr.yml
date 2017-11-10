@@ -240,6 +240,12 @@ ekyna_commerce:
                 label: Facture
             credit:
                 label: Avoir
+        state:
+            new: Création
+            pending: En attente
+            partial: Partielle
+            invoiced: Facturée
+            credited: Remboursée
         field:
             lines: Lignes
             goods_base: Marchandises HT
@@ -518,9 +524,6 @@ ekyna_commerce:
             refunded:
                 label: Remboursé
                 message: Votre paiement est remboursé.
-            outstanding:
-                label: Impayé
-                message: La date limite d'utilisation de votre encours est passée.
             suspended:
                 label: Suspendu
                 message: Votre paiement est supendu.
@@ -536,6 +539,12 @@ ekyna_commerce:
             unknown:
                 label: Inconnu
                 message: Le statut de votre paiement est inconnu.
+            outstanding:
+                label: Impayé
+                message: La date limite d'utilisation de votre encours est passée.
+            completed:
+                label: Complété
+                message: Le total de la commande est réglé.
         transition:
             hang:
                 label: Attendre
@@ -753,6 +762,7 @@ ekyna_commerce:
             tax_total: Total TVA
             adjustment_total: Total remises
             paid_total: Total réglé
+            invoice_total: Total facturé
             outstanding_limit: Limite d'encours
             outstanding_date: Dale limite
             voucher_number: N° bon d'achat
@@ -764,7 +774,11 @@ ekyna_commerce:
             state: Statut
             payment_state: Statut paiement
             shipment_state: Statut livraison
-
+            invoice_state: Statut facturation
+        table:
+            payment_state: Paiement
+            shipment_state: Livraison
+            invoice_state: Facturation
     sale_item:
         field:
             tax_group: Groupe

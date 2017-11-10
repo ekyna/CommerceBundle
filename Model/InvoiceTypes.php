@@ -39,4 +39,13 @@ final class InvoiceTypes extends AbstractConstants
 
         return static::getConfig()[$type][1];
     }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
+    }
 }

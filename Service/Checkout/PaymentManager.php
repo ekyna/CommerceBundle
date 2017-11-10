@@ -78,12 +78,6 @@ class PaymentManager
     {
         $this->forms = [];
 
-        if ($sale instanceof OrderInterface) {
-            $amount = $sale->getRemainingAmount();
-        } else {
-            $amount = $sale->getGrandTotal() - $sale->getPaidTotal();
-        }
-
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface[] $methods */
         $methods = $this->methodRepository->findAvailable();
         if (empty($methods)) {
@@ -92,9 +86,8 @@ class PaymentManager
 
         foreach ($methods as $method) {
             $payment = $this->saleFactory->createPaymentForSale($sale);
-            $payment
-                ->setMethod($method)
-                ->setAmount($amount);
+            // Amount and currency have been set by the factory
+            $payment->setMethod($method);
 
             $event = new CheckoutPaymentEvent($sale, $payment, [
                 'action' => $action,

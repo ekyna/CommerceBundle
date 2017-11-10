@@ -8,10 +8,13 @@ use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentSubjectInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
@@ -205,7 +208,7 @@ class ConstantsHelper extends AbstractConstantsHelper
     /**
      * Renders the payment state label.
      *
-     * @param PaymentInterface|string $stateOrPayment
+     * @param PaymentInterface|PaymentSubjectInterface|string $stateOrPayment
      *
      * @return string
      */
@@ -213,6 +216,8 @@ class ConstantsHelper extends AbstractConstantsHelper
     {
         if ($stateOrPayment instanceof PaymentInterface) {
             $stateOrPayment = $stateOrPayment->getState();
+        } elseif ($stateOrPayment instanceof PaymentSubjectInterface) {
+            $stateOrPayment = $stateOrPayment->getPaymentState();
         }
 
         if (Model\PaymentStates::isValid($stateOrPayment)) {
@@ -225,7 +230,7 @@ class ConstantsHelper extends AbstractConstantsHelper
     /**
      * Renders the payment state badge.
      *
-     * @param PaymentInterface|string $stateOrPayment
+     * @param PaymentInterface|PaymentSubjectInterface|string $stateOrPayment
      *
      * @return string
      */
@@ -233,6 +238,8 @@ class ConstantsHelper extends AbstractConstantsHelper
     {
         if ($stateOrPayment instanceof PaymentInterface) {
             $stateOrPayment = $stateOrPayment->getState();
+        } elseif ($stateOrPayment instanceof PaymentSubjectInterface) {
+            $stateOrPayment = $stateOrPayment->getPaymentState();
         }
 
         $theme = 'default';
@@ -246,7 +253,7 @@ class ConstantsHelper extends AbstractConstantsHelper
     /**
      * Renders the shipment state label.
      *
-     * @param ShipmentInterface|string $stateOrShipment
+     * @param ShipmentInterface|ShipmentSubjectInterface|string $stateOrShipment
      *
      * @return string
      */
@@ -254,6 +261,8 @@ class ConstantsHelper extends AbstractConstantsHelper
     {
         if ($stateOrShipment instanceof ShipmentInterface) {
             $stateOrShipment = $stateOrShipment->getState();
+        } elseif ($stateOrShipment instanceof ShipmentSubjectInterface) {
+            $stateOrShipment = $stateOrShipment->getShipmentState();
         }
 
         if (Model\ShipmentStates::isValid($stateOrShipment)) {
@@ -266,7 +275,7 @@ class ConstantsHelper extends AbstractConstantsHelper
     /**
      * Renders the shipment state badge.
      *
-     * @param ShipmentInterface|string $stateOrShipment
+     * @param ShipmentInterface|ShipmentSubjectInterface|string $stateOrShipment
      *
      * @return string
      */
@@ -274,6 +283,8 @@ class ConstantsHelper extends AbstractConstantsHelper
     {
         if ($stateOrShipment instanceof ShipmentInterface) {
             $stateOrShipment = $stateOrShipment->getState();
+        } elseif ($stateOrShipment instanceof ShipmentSubjectInterface) {
+            $stateOrShipment = $stateOrShipment->getShipmentState();
         }
 
         $theme = 'default';
@@ -282,6 +293,47 @@ class ConstantsHelper extends AbstractConstantsHelper
         }
 
         return $this->renderBadge($this->renderShipmentStateLabel($stateOrShipment), $theme);
+    }
+
+    /**
+     * Renders the invoice state label.
+     *
+     * @param InvoiceSubjectInterface|string $stateOrSubject
+     *
+     * @return string
+     */
+    public function renderInvoiceStateLabel($stateOrSubject)
+    {
+        if ($stateOrSubject instanceof InvoiceSubjectInterface) {
+            $stateOrSubject = $stateOrSubject->getInvoiceState();
+        }
+
+        if (Model\InvoiceStates::isValid($stateOrSubject)) {
+            return $this->renderLabel(Model\InvoiceStates::getLabel($stateOrSubject));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the invoice state badge.
+     *
+     * @param InvoiceSubjectInterface|string $stateOrSubject
+     *
+     * @return string
+     */
+    public function renderInvoiceStateBadge($stateOrSubject)
+    {
+        if ($stateOrSubject instanceof InvoiceSubjectInterface) {
+            $stateOrSubject = $stateOrSubject->getInvoiceState();
+        }
+
+        $theme = 'default';
+        if (Model\InvoiceStates::isValid($stateOrSubject)) {
+            $theme = Model\InvoiceStates::getTheme($stateOrSubject);
+        }
+
+        return $this->renderBadge($this->renderInvoiceStateLabel($stateOrSubject), $theme);
     }
 
     /**

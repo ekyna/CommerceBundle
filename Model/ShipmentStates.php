@@ -39,6 +39,7 @@ final class ShipmentStates extends AbstractConstants
      * Returns the theme for the given state.
      *
      * @param string $state
+     *
      * @return string
      */
     static public function getTheme($state)
@@ -59,7 +60,16 @@ final class ShipmentStates extends AbstractConstants
     {
         return static::getChoices(array_merge([
             States::STATE_NONE,
-            States::STATE_PARTIAL
+            States::STATE_PARTIAL,
         ], $restrict));
+    }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
     }
 }

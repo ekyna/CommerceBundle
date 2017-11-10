@@ -19,9 +19,9 @@
             <argument>10</argument>
         </service>
 
-        <!-- Shipment quantity calculator -->
-        <service id="ekyna_commerce.shipment.quantity_calculator"
-                 class="Ekyna\Component\Commerce\Shipment\Calculator\QuantityCalculator">
+        <!-- Shipment calculator -->
+        <service id="ekyna_commerce.shipment.calculator"
+                 class="Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculator">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
         </service>
 
@@ -70,7 +70,7 @@
         <service id="ekyna_commerce.shipment.builder"
                  class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
-            <argument type="service" id="ekyna_commerce.shipment.quantity_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
         </service>
 
         <!-- Shipment price renderer -->
@@ -98,7 +98,9 @@
 
         <!-- Shipment subject state resolver -->
         <service id="ekyna_commerce.shipment.subject_state_resolver"
-                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentSubjectStateResolver"/>
+                 class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentSubjectStateResolver">
+            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+        </service>
 
         <!-- Shipment gateway registry -->
         <service id="ekyna_commerce.shipment.gateway_registry"

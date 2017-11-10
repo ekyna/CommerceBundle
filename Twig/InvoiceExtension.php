@@ -44,6 +44,16 @@ class InvoiceExtension extends \Twig_Extension
                 [$this->constantHelper, 'renderInvoiceTypeBadge'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFilter(
+                'invoice_state_label',
+                [$this->constantHelper, 'renderInvoiceStateLabel'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'invoice_state_badge',
+                [$this->constantHelper, 'renderInvoiceStateBadge'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 

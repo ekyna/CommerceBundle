@@ -87,7 +87,7 @@
             <div class="tab-pane" id="quote-payments">
                 <div class="actions">
                     {# TODO Permission #}
-                    {%- if quote.requiresPayment -%}
+                    {%- if not quote.paid -%}
                     <a href="{{ admin_resource_path('ekyna_commerce.quote_payment', 'new', {'quoteId': quote.id}) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{ 'ekyna_commerce.payment.button.new'|trans }}

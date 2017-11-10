@@ -45,11 +45,6 @@
             </a>
         </li>
         <li>
-            <a href="#order-invoices" id="toggle-invoices" data-toggle="tab">
-                {{ 'ekyna_commerce.invoice.tab'|trans }}
-            </a>
-        </li>
-        <li>
             <a href="#order-payments" id="toggle-payments" data-toggle="tab">
                 {{ 'ekyna_commerce.payment.label.plural'|trans }}
             </a>
@@ -57,6 +52,11 @@
         <li>
             <a href="#order-shipments" id="toggle-shipments" data-toggle="tab">
                 {{ 'ekyna_commerce.shipment.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#order-invoices" id="toggle-invoices" data-toggle="tab">
+                {{ 'ekyna_commerce.invoice.tab'|trans }}
             </a>
         </li>
         <li>
@@ -92,6 +92,22 @@
                         }) }}
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(order.invoiceTotal|localizedcurrency(order.currency.code), 'text', 'ekyna_commerce.sale.field.invoice_total', {
+                            'id': 'sale_invoiceTotal',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(order.invoiceState|invoice_state_badge, 'text', 'ekyna_commerce.sale.field.invoice_state', {
+                            'id': 'sale_invoiceState',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
                 {{ _cms.show_tags(order) }}
             </div>
             <div class="tab-pane" id="order-addresses">
@@ -99,6 +115,41 @@
             </div>
             <div class="tab-pane" id="order-details">
                 {{ render_sale_view(sale_view) }}
+            </div>
+            <div class="tab-pane" id="order-payments">
+                <div class="actions">
+                    {# TODO Permission #}
+                    {%- if not order.paid -%}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {'orderId': order.id}) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{ 'ekyna_commerce.payment.button.new'|trans }}
+                    </a>
+                    {%- endif -%}
+                </div>
+                <h4 class="sub-header">
+                    {{ 'ekyna_commerce.payment.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': order} %}
+                <hr>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
+            </div>
+            <div class="tab-pane" id="order-shipments">
+                <div class="actions">
+                    {# TODO Permission #}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id, 'return': 1}) }}"
+                       class="btn btn-primary btn-xs pull-right"
+                        style="margin-left:16px">
+                        {{ 'ekyna_commerce.return.button.new'|trans }}
+                    </a>
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id}) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{ 'ekyna_commerce.shipment.button.new'|trans }}
+                    </a>
+                </div>
+                <h4 class="sub-header">
+                    {{ 'ekyna_commerce.shipment.label.plural'|trans }}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-invoices">
                 <div class="actions">
@@ -127,44 +178,7 @@
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order, 'type': 'credit'} %}
                 <hr>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
-            </div>
-            <div class="tab-pane" id="order-payments">
-                <div class="actions">
-                    {# TODO Permission #}
-                    {%- if order.requiresPayment -%}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {'orderId': order.id}) }}"
-                       class="btn btn-primary btn-xs pull-right">
-                        {{ 'ekyna_commerce.payment.button.new'|trans }}
-                    </a>
-                    {%- endif -%}
-                </div>
-                <h4 class="sub-header">
-                    {{ 'ekyna_commerce.payment.label.plural'|trans }}
-                </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': order} %}
-                <hr>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
-            </div>
-            <div class="tab-pane" id="order-shipments">
-                <div class="actions">
-                    {# TODO Permission #}
-                    {# TODO {%- if order.requiresShipment -%}#}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id, 'return': 1}) }}"
-                       class="btn btn-primary btn-xs pull-right"
-                        style="margin-left:16px">
-                        {{ 'ekyna_commerce.return.button.new'|trans }}
-                    </a>
-                    {#{%- endif -%}#}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id}) }}"
-                       class="btn btn-primary btn-xs pull-right">
-                        {{ 'ekyna_commerce.shipment.button.new'|trans }}
-                    </a>
-                </div>
-                <h4 class="sub-header">
-                    {{ 'ekyna_commerce.shipment.label.plural'|trans }}
-                </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:invoice_fields.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-attachments">
                 <div class="actions">

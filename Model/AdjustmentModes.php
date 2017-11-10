@@ -32,4 +32,13 @@ final class AdjustmentModes extends AbstractConstants
     {
         return Modes::MODE_PERCENT;
     }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
+    }
 }

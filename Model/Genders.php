@@ -10,7 +10,7 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class Genders extends AbstractConstants
+final class Genders extends AbstractConstants
 {
     /**
      * {@inheritdoc}
@@ -39,5 +39,14 @@ class Genders extends AbstractConstants
         static::isValid($constant, true);
 
         return static::getConfig()[$constant][$long ? 1 : 0];
+    }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
     }
 }

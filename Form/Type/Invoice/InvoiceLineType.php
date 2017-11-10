@@ -4,9 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
-use Ekyna\Component\Commerce\Invoice\Util\InvoiceUtil;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -21,13 +21,32 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class InvoiceLineType extends ResourceFormType
 {
     /**
+     * @var InvoiceCalculatorInterface
+     */
+    private $calculator;
+
+
+    /**
+     * Constructor.
+     *
+     * @param InvoiceCalculatorInterface $calculator
+     * @param string                     $class
+     */
+    public function __construct(InvoiceCalculatorInterface $calculator, $class)
+    {
+        parent::__construct($class);
+
+        $this->calculator = $calculator;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('quantity', Type\NumberType::class, [
-            'label' => 'ekyna_core.field.quantity',
-            'attr' => [
+            'label'          => 'ekyna_core.field.quantity',
+            'attr'           => [
                 'class' => 'input-sm',
             ],
             'error_bubbling' => true,
@@ -47,9 +66,9 @@ class InvoiceLineType extends ResourceFormType
         $view->vars['reference'] = $line->getReference();
 
         if ($options['type'] === InvoiceTypes::TYPE_INVOICE) {
-            $max = InvoiceUtil::calculateMaxInvoiceQuantity($line);
+            $max = $this->calculator->calculateInvoiceableQuantity($line);
         } elseif ($options['type'] === InvoiceTypes::TYPE_CREDIT) {
-            $max = InvoiceUtil::calculateMaxCreditQuantity($line);
+            $max = $this->calculator->calculateCreditableQuantity($line);
         } else {
             throw new InvalidArgumentException("Unexpected invoice type.");
         }

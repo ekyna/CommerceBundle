@@ -33,4 +33,13 @@ final class AdjustmentTypes extends AbstractConstants
     {
         return Types::TYPE_DISCOUNT;
     }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
+    }
 }
