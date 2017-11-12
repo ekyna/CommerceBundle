@@ -1,21 +1,21 @@
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.invoiceState|invoice_state_badge, 'text', 'ekyna_commerce.sale.field.invoice_state', {
-            'id': 'sale_paymentState',
+            'class': 'sale-invoice-state',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
-            'id': 'sale_grandTotal',
+            'class': 'sale-grand-total',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
     <div class="col-md-4">
         {{ show_row(sale.invoiceTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.invoice_total', {
-            'id': 'sale_invoiceTotal',
+            'class': 'sale-invoice-total',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}

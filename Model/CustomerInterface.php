@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Customer\Model\CustomerInterface as BaseInterface;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-interface CustomerInterface extends BaseInterface
+interface CustomerInterface extends BaseInterface, InChargeSubjectInterface
 {
     /**
      * Returns the user.
@@ -27,20 +27,4 @@ interface CustomerInterface extends BaseInterface
      * @return $this|CustomerInterface
      */
     public function setUser(UserInterface $user = null);
-
-    /**
-     * Returns the 'in charge' user.
-     *
-     * @return UserInterface
-     */
-    public function getInCharge();
-
-    /**
-     * Sets the 'in charge' user.
-     *
-     * @param UserInterface $user
-     *
-     * @return $this|CustomerInterface
-     */
-    public function setInCharge(UserInterface $user = null);
 }

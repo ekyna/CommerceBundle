@@ -2,24 +2,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <repsonse>
     <fields>
-        <granTotal>
-            <![CDATA[{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}]]>
-        </granTotal>
-        <paidTotal>
-            <![CDATA[{{ sale.paidTotal|localizedcurrency(sale.currency.code) }}]]>
-        </paidTotal>
-        <weightTotal>
-            <![CDATA[{{ sale.weightTotal|localizednumber }}]]>
-        </weightTotal>
-        <state>
-            <![CDATA[{{ sale|sale_state_badge }}]]>
-        </state>
-        <paymentState>
-            <![CDATA[{{ sale.paymentState|payment_state_badge }}]]>
-        </paymentState>
-        {% if with_shipment %}<shipmentState>
-            <![CDATA[{{ sale.shipmentState|shipment_state_badge }}]]>
-        </shipmentState>{% endif %}
+        <state><![CDATA[{{ sale|sale_state_badge }}]]></state>
+        <weightTotal><![CDATA[{{ (sale.weightTotal|localizednumber ~ '&nbsp;kg')|raw }}]]></weightTotal>
+        <shipmentMethod><![CDATA[
+            {%- if sale.preferredShipmentMethod is null -%}
+                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+            {%- else -%}
+                <a href="{{ path('ekyna_commerce_shipment_method_admin_show', {
+                    'shipmentMethodId': sale.preferredShipmentMethod.id
+                }) }}" class="show-entity">{{ sale.preferredShipmentMethod }}</a>
+            {%- endif -%}
+        ]]></shipmentMethod>
+
+        {% if sale is payment_subject -%}
+        <grandTotal><![CDATA[{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}]]></grandTotal>
+        <paidTotal><![CDATA[{{ sale.paidTotal|localizedcurrency(sale.currency.code) }}]]></paidTotal>
+        <outstandingAccepted><![CDATA[{{ sale.outstandingAccepted|localizedcurrency(sale.currency.code) }}]]></outstandingAccepted>
+        <outstandingExpired><![CDATA[{{ sale.outstandingExpired|localizedcurrency(sale.currency.code) }}]]></outstandingExpired>
+        <outstandingLimit><![CDATA[{{ sale.outstandingLimit|localizedcurrency(sale.currency.code) }}]]></outstandingLimit>
+        <outstandingDate><![CDATA[
+            {%- if sale.outstandingDate is empty -%}
+                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+            {%- else -%}
+                {{- content|localizeddate('short', 'none') -}}
+            {%- endif -%}
+        ]]></outstandingDate>
+        <paymentTerm><![CDATA[
+            {%- if sale.paymentTerm is null -%}
+                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+            {%- else -%}
+                <a href="{{ path('ekyna_commerce_payment_term_admin_show', {
+                    'paymentTermId': sale.paymentTerm.id
+                }) }}" class="show-entity">{{ sale.paymentTerm }}</a>
+            {%- endif -%}
+        ]]></paymentTerm>
+        <paymentState><![CDATA[{{ sale.paymentState|payment_state_badge }}]]></paymentState>
+        {%- endif %}
+
+        {% if sale is shipment_subject -%}
+        <shipmentState><![CDATA[{{ sale.shipmentState|shipment_state_badge }}]]></shipmentState>
+        {%- endif %}
+
+        {% if sale is invoice_subject -%}
+        <invoiceTotal><![CDATA[{{ sale.invoiceTotal|localizedcurrency(sale.currency.code) }}]]></invoiceTotal>
+        <invoiceState><![CDATA[{{ sale.invoiceState|invoice_state_badge }}]]></invoiceState>
+        {%- endif %}
     </fields>
     <view>
         <![CDATA[{{ render_sale_view(sale_view) }}]]>

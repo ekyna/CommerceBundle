@@ -17,7 +17,6 @@ use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -294,64 +293,29 @@ class SaleController extends AbstractSaleController
             throw new InvalidArgumentException('Invalid target.');
         }
 
+        // Create the target sale
         /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface $targetRepository */
         $targetRepository = $this->get('ekyna_commerce.' . $target . '.repository');
-
-        // Create the target sale
         /** @var SaleInterface $targetSale */
         $targetSale = $targetRepository->createNew();
 
-        // Copy from source sale to target sale
-        $this->get('ekyna_commerce.sale_transformer')
-            ->copySale($sourceSale, $targetSale);
-
-        if (null !== $sourceSale->getCustomer()) {
-            // Prepare for customer change.
-            $targetSale
-                ->setGender(null)
-                ->setFirstName(null)
-                ->setLastName(null)
-                ->setEmail(null);
-        }
+        // Initialize the transformation
+        $transformer = $this->get('ekyna_commerce.sale_transformer');
+        $transformer->initialize($sourceSale, $targetSale);
 
         $form = $this->createTransformConfirmForm($sourceSale, $targetSale, $target);
 
         $form->handleRequest($request);
 
+        // If user confirmed
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $targetOperator */
-            $targetOperator = $this->get('ekyna_commerce.' . $target . '.operator');
-
-            if ($targetSale instanceof OrderInterface) {
-                if (null === $targetSale->getOriginCustomer()) {
-                    if (null !== $originCustomer = $sourceSale->getCustomer()) {
-                        if ($originCustomer !== $targetSale->getCustomer()) {
-                            $targetSale->setOriginCustomer($originCustomer);
-                        }
-                    }
-                }
+            // Do sale transformation
+            if (null === $event = $transformer->transform()) {
+                // Redirect to target sale
+                return $this->redirect($this->generateResourcePath($targetSale));
             }
 
-            // Persist the target sale
-            $targetEvent = $targetOperator->persist($targetSale);
-            if ($targetEvent->isPropagationStopped() || $targetEvent->hasErrors()) {
-                $targetEvent->toFlashes($this->getFlashBag());
-            } else {
-                // Disable the uploadable listener so that files won't be removed.
-                $uploadableListener = $this->get('ekyna_commerce.common.uploadable_listener');
-                $uploadableListener->setEnabled(false);
-
-                // Delete the source sale
-                $sourceEvent = $this->getOperator()->delete($sourceSale, true); // Hard delete
-                if ($sourceEvent->isPropagationStopped() || $sourceEvent->hasErrors()) {
-                    $sourceEvent->toFlashes($this->getFlashBag());
-                } else {
-                    // Redirect to target sale
-                    return $this->redirect($this->generateResourcePath($targetSale));
-                }
-
-                $uploadableListener->setEnabled(true);
-            }
+            $event->toFlashes($this->getFlashBag());
         }
 
         $this->appendBreadcrumb(
@@ -365,60 +329,6 @@ class SaleController extends AbstractSaleController
                 'form' => $form->createView(),
             ])
         );
-    }
-
-    /**
-     * Creates the transform confirm form.
-     *
-     * @param SaleInterface $sourceSale
-     * @param SaleInterface $targetSale
-     * @param string        $target
-     *
-     * @return \Symfony\Component\Form\FormInterface
-     */
-    protected function createTransformConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale, $target)
-    {
-        $action = $this->generateResourcePath($sourceSale, 'transform', ['target' => $target]);
-
-        $translator = $this->getTranslator();
-        $message = $translator->trans('ekyna_commerce.sale.confirm.transform', [
-            '%target%' => $translator->trans('ekyna_commerce.' . $target . '.label.singular'),
-        ]);
-
-        return $this
-            ->createForm(SaleTransformType::class, $targetSale, [
-                'action'            => $action,
-                'attr'              => ['class' => 'form-horizontal'],
-                'method'            => 'POST',
-                'admin_mode'        => true,
-                '_redirect_enabled' => true,
-                'message'           => $message,
-            ])
-            ->add('actions', FormActionsType::class, [
-                'buttons' => [
-                    'remove' => [
-                        'type'    => Type\SubmitType::class,
-                        'options' => [
-                            'button_class' => 'warning',
-                            'label'        => 'ekyna_core.button.transform',
-                            'attr'         => ['icon' => 'ok'],
-                        ],
-                    ],
-                    'cancel' => [
-                        'type'    => Type\ButtonType::class,
-                        'options' => [
-                            'label'        => 'ekyna_core.button.cancel',
-                            'button_class' => 'default',
-                            'as_link'      => true,
-                            'attr'         => [
-                                'class' => 'form-cancel-btn',
-                                'icon'  => 'remove',
-                                'href'  => $this->generateResourcePath($sourceSale),
-                            ],
-                        ],
-                    ],
-                ],
-            ]);
     }
 
     /**
@@ -578,6 +488,60 @@ class SaleController extends AbstractSaleController
         $renderer = $this->get('ekyna_commerce.renderer_factory')->createDocumentRenderer($document);
 
         return $renderer->respond($request);
+    }
+
+    /**
+     * Creates the transform confirm form.
+     *
+     * @param SaleInterface $sourceSale
+     * @param SaleInterface $targetSale
+     * @param string        $target
+     *
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    protected function createTransformConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale, $target)
+    {
+        $action = $this->generateResourcePath($sourceSale, 'transform', ['target' => $target]);
+
+        $translator = $this->getTranslator();
+        $message = $translator->trans('ekyna_commerce.sale.confirm.transform', [
+            '%target%' => $translator->trans('ekyna_commerce.' . $target . '.label.singular'),
+        ]);
+
+        return $this
+            ->createForm(SaleTransformType::class, $targetSale, [
+                'action'            => $action,
+                'attr'              => ['class' => 'form-horizontal'],
+                'method'            => 'POST',
+                'admin_mode'        => true,
+                '_redirect_enabled' => true,
+                'message'           => $message,
+            ])
+            ->add('actions', FormActionsType::class, [
+                'buttons' => [
+                    'remove' => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'button_class' => 'warning',
+                            'label'        => 'ekyna_core.button.transform',
+                            'attr'         => ['icon' => 'ok'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\ButtonType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $this->generateResourcePath($sourceSale),
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
     }
 
     /**

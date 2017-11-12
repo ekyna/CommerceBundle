@@ -763,6 +763,8 @@ ekyna_commerce:
             adjustment_total: Total remises
             paid_total: Total réglé
             invoice_total: Total facturé
+            outstanding_accepted: Encours accepté
+            outstanding_expired: Encours expiré
             outstanding_limit: Limite d'encours
             outstanding_date: Dale limite
             voucher_number: N° bon d'achat

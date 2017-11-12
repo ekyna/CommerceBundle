@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 
 /**
@@ -63,6 +64,9 @@ class InvoiceExtension extends \Twig_Extension
     public function getTests()
     {
         return [
+            new \Twig_SimpleTest('invoice_subject', function($subject) {
+                return $subject instanceof InvoiceSubjectInterface;
+            }),
             new \Twig_SimpleTest(
                 'invoice_invoice',
                 [InvoiceTypes::class, 'isInvoice']

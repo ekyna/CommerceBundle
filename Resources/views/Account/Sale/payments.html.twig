@@ -6,12 +6,12 @@
         <tbody>
         {% for payment in sale.payments %}
             <tr>
-                <td>{{ payment.number }}</td>
-                <td>{{ payment.method }}</td>
-                <td>{{ payment.amount|localizedcurrency(payment.currency.code) }}</td>
-                <td>{{ payment.currency }}</td>
+                <td>{{ payment.getNumber() }}</td>
+                <td>{{ payment.getMethod() }}</td>
+                <td>{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
+                <td>{{ payment.getCurrency() }}</td>
                 <td>{{ payment|payment_state_badge }}</td>
-                <td>{{ payment.createdAt|localizeddate('short', 'none') }}</td>
+                <td>{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
                 <td class="actions">
                     {{ payment_account_actions(payment) }}
                 </td>

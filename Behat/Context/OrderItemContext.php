@@ -63,7 +63,7 @@ class OrderItemContext implements Context, KernelAwareContext
             $item = $itemRepository->createNew();
             $item
                 ->setOrder($order)
-                ->setQuantity($row['quantity']);
+                ->setQuantity($row['quantity']); // TODO Use packaging format
 
             if (isset($row['acme_product'])) {
                 $acmeProduct = $acmeProductRepository->findOneBy(['reference' => $row['acme_product']]);

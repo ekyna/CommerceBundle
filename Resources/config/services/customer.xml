@@ -33,6 +33,9 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.customer.number_generator"/>
             <argument type="service" id="ekyna_commerce.pricing.updater"/>
+            <call method="setInChargeResolver">
+                <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
+            </call>
             <tag name="resource.event_subscriber"/>
         </service>
         <!-- Customer address event listener -->

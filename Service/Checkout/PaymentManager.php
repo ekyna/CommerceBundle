@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Checkout;
 
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;

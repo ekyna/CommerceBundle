@@ -1,3 +1,4 @@
+{% spaceless %}
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.number, 'text', 'ekyna_core.field.number', {
@@ -16,6 +17,7 @@
     <div class="col-md-4">
         {{ show_row(sale|sale_state_badge, 'text', 'ekyna_commerce.sale.field.state', {
             'id': 'sale_state',
+            'class': 'sale-state',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -104,6 +106,7 @@
     <div class="col-md-6">
         {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
             'id': 'sale_grandTotal',
+            'class': 'sale-grand-total',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -120,6 +123,7 @@
     <div class="col-md-6">
         {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
             'id': 'sale_paidTotal',
+            'class': 'sale-paid-total',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
@@ -127,8 +131,52 @@
     <div class="col-md-6">
         {{ show_row(sale.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
             'id': 'sale_paymentState',
+            'class': 'sale-payment-state',
             'label_nb_col': 4,
             'widget_nb_col': 8
         }) }}
     </div>
 </div>
+{% if sale is shipment_subject %}
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
+            'id': 'sale_weightTotal',
+            'class': 'sale-weight-total',
+            'precision': 3,
+            'append': 'kg',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
+            'id': 'sale_shipmentState',
+            'class': 'sale-shipment-state',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+{% endif %}
+{% if sale is invoice_subject %}
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.invoiceTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.invoice_total', {
+            'id': 'sale_invoiceTotal',
+            'class': 'sale-invoice-total',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.invoiceState|invoice_state_badge, 'text', 'ekyna_commerce.sale.field.invoice_state', {
+            'id': 'sale_invoiceState',
+            'class': 'sale-invoice-state',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
+{% endif %}
+{% endspaceless %}

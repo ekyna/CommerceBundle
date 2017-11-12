@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectTrait;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Customer\Entity\Customer as BaseCustomer;
 
@@ -13,6 +14,8 @@ use Ekyna\Component\Commerce\Customer\Entity\Customer as BaseCustomer;
  */
 class Customer extends BaseCustomer implements CustomerInterface
 {
+    use InChargeSubjectTrait;
+
     /**
      * @var UserInterface
      */
@@ -38,25 +41,6 @@ class Customer extends BaseCustomer implements CustomerInterface
     public function setUser(UserInterface $user = null)
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function getInCharge()
-    {
-        return $this->inCharge;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setInCharge(UserInterface $user = null)
-    {
-        $this->inCharge = $user;
 
         return $this;
     }

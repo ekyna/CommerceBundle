@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -78,7 +77,6 @@ abstract class AbstractSaleController extends ResourceController
         $response = $this->render('EkynaCommerceBundle:Common:sale_response.xml.twig', [
             'sale'          => $sale,
             'sale_view'     => $this->buildSaleView($sale, $form),
-            'with_shipment' => $sale instanceof ShipmentSubjectInterface,
         ]);
 
         $response->headers->set('Content-type', 'application/xml');

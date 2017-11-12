@@ -2,7 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
+use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Customer\Event\CustomerEvents;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 
@@ -13,6 +15,35 @@ use Ekyna\Component\Resource\Event\ResourceEventInterface;
  */
 class CustomerEventSubscriber extends BaseSubscriber
 {
+    /**
+     * @var InChargeResolver
+     */
+    protected $inChargeResolver;
+
+
+    /**
+     * Sets the 'in charge' resolver.
+     *
+     * @param InChargeResolver $inChargeResolver
+     */
+    public function setInChargeResolver(InChargeResolver $inChargeResolver)
+    {
+        $this->inChargeResolver = $inChargeResolver;
+    }
+
+    /**
+     * Initialize event handler.
+     *
+     * @param ResourceEventInterface $event
+     */
+    public function onInitialize(ResourceEventInterface $event)
+    {
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        $customer = $this->getCustomerFromEvent($event);
+
+        $this->inChargeResolver->update($customer);
+    }
+
     /**
      * @inheritDoc
      */
@@ -46,5 +77,16 @@ class CustomerEventSubscriber extends BaseSubscriber
         }
 
         return $changed;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public static function getSubscribedEvents()
+    {
+        return array_merge(parent::getSubscribedEvents(), [
+            CustomerEvents::INITIALIZE => ['onInitialize', 0],
+        ]);
     }
 }

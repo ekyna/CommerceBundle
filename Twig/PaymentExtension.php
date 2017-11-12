@@ -10,6 +10,7 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
+use Ekyna\Component\Commerce\Payment\Model\PaymentSubjectInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -107,6 +108,9 @@ class PaymentExtension extends \Twig_Extension
     public function getTests()
     {
         return [
+            new \Twig_SimpleTest('payment_subject', function($subject) {
+                return $subject instanceof PaymentSubjectInterface;
+            }),
             new \Twig_SimpleTest(
                 'payment_user_cancellable',
                 [PaymentTransitions::class, 'isUserCancellable']

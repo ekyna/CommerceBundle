@@ -12,7 +12,7 @@
 {% block main %}
 <div class="main-header">
     <div class="infos">
-        <span id="sale_state">{{ order|sale_state_badge }}</span>
+        <span class="sale-state">{{ order|sale_state_badge }}</span>
         {{ order.allTags|cms_tags({'text': false}) }}
     </div>
     <div class="actions">
@@ -74,40 +74,6 @@
         <div class="tab-content">
             <div class="tab-pane active" id="order-general">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': order} %}
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ show_row(order.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
-                            'id': 'sale_weightTotal',
-                            'precision': 3,
-                            'append': 'kg',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ show_row(order.shipmentState|shipment_state_badge, 'text', 'ekyna_commerce.sale.field.shipment_state', {
-                            'id': 'sale_shipmentState',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ show_row(order.invoiceTotal|localizedcurrency(order.currency.code), 'text', 'ekyna_commerce.sale.field.invoice_total', {
-                            'id': 'sale_invoiceTotal',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ show_row(order.invoiceState|invoice_state_badge, 'text', 'ekyna_commerce.sale.field.invoice_state', {
-                            'id': 'sale_invoiceState',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
-                        }) }}
-                    </div>
-                </div>
                 {{ _cms.show_tags(order) }}
             </div>
             <div class="tab-pane" id="order-addresses">
@@ -150,6 +116,8 @@
                     {{ 'ekyna_commerce.shipment.label.plural'|trans }}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {'sale': order} %}
+                <hr>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:shipment_fields.html.twig" with {'sale': order} %}
             </div>
             <div class="tab-pane" id="order-invoices">
                 <div class="actions">

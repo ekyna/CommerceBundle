@@ -4,11 +4,11 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
 use Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager;
-use Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartPaymentInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
+use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -204,16 +204,29 @@ class CheckoutController extends AbstractController
         }
 
         // TODO Check that payment cart is the same as user (session) one
-        // Problem : token has been invalidated
+        // Problem: token has been invalidated
+
         $cart = $this->getCart();
 
-        // If cart is completed, transforms and redirect to order confirmation
-        if (in_array($cart->getState(), [CartStates::STATE_ACCEPTED])) {
-            $order = $this->saleTransformer->transformCartToOrder($cart);
+        // If cart is accepted
+        if (CartStates::STATE_ACCEPTED === $cart->getState()) {
+            // New order
+            $order = $this->orderRepository->createNew();
+            // Initialize transformation
+            $this->saleTransformer->initialize($cart, $order);
+            // Transform
+            if (null === $event = $this->saleTransformer->transform()) {
+                // Redirect to order confirmation
+                return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [
+                    'orderKey' => $order->getKey(),
+                ]));
+            }
 
-            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [
-                'orderKey' => $order->getKey(),
-            ]));
+            // Display event's flash messages
+            if (null !== $session = $request->getSession()) {
+                /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+                $event->toFlashes($session->getFlashBag());
+            }
         }
 
         // Else go back to payments

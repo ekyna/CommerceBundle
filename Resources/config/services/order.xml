@@ -34,11 +34,8 @@
             <call method="setSubjectHelper">
                 <argument type="service" id="ekyna_commerce.subject_helper"/>
             </call>
-            <call method="setUserProvider">
-                <argument type="service" id="ekyna_user.user_provider"/>
-            </call>
-            <call method="setAuthorizationChecker">
-                <argument type="service" id="security.authorization_checker"/>
+            <call method="setInChargeResolver">
+                <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
             </call>
             <tag name="resource.event_subscriber"/>
         </service>

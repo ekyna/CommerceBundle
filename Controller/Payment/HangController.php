@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Payment;
 
-use Ekyna\Component\Commerce\Bridge\Payum\Offline\Request\Hang;
+use Ekyna\Component\Commerce\Bridge\Payum\Request\Hang;
 use Payum\Bundle\PayumBundle\Controller\PayumController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

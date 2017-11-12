@@ -2,7 +2,6 @@
 <h3>{{ 'ekyna_commerce.customer.label.singular'|trans }}</h3>
 <div class="show">
     <div class="show-body">
-
         <div class="row">
             <div class="col-md-6 col-lg-12">
                 {{ show_row(customer.number, 'text', 'ekyna_core.field.number', {
@@ -12,13 +11,11 @@
             </div>
             <div class="col-md-6 col-lg-12">
                 {{ show_row(customer.company, 'text', 'ekyna_core.field.company', {
-                    'id': 'customer_company',
                     'label_nb_col': 4,
                     'widget_nb_col': 8
                 }) }}
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-6 col-lg-12">
                 {{ show_row(customer|identity, 'entity', 'ekyna_commerce.customer.label.singular', {
@@ -35,7 +32,6 @@
                 }) }}
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-6 col-lg-12">
                 {% if customer.description is not empty %}
@@ -56,9 +52,7 @@
                 {% endif %}
             </div>
         </div>
-
         {% set customerSource = customer.hasParent() ? customer.parent : customer %}
-
         <div class="row">
             <div class="col-md-6 col-lg-12">
                 {{ show_row(customerSource.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
@@ -75,7 +69,6 @@
                 }) }}
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-6 col-lg-12">
                 {{ show_row(customerSource.outstandingBalance|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.customer.field.outstanding_balance', {
@@ -90,7 +83,6 @@
                 }) }}
             </div>
         </div>
-
     </div>
 </div>
 {% endspaceless %}

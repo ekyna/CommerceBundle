@@ -5,15 +5,14 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
-use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class OrderEventSubscriber
@@ -28,14 +27,9 @@ class OrderEventSubscriber extends BaseSubscriber
     protected $subjectHelper;
 
     /**
-     * @var UserProviderInterface
+     * @var InChargeResolver
      */
-    protected $userProvider;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
+    protected $inChargeResolver;
 
 
     /**
@@ -49,23 +43,13 @@ class OrderEventSubscriber extends BaseSubscriber
     }
 
     /**
-     * Sets the user provider.
+     * Sets the 'in charge' resolver.
      *
-     * @param UserProviderInterface $provider
+     * @param InChargeResolver $inChargeResolver
      */
-    public function setUserProvider(UserProviderInterface $provider)
+    public function setInChargeResolver(InChargeResolver $inChargeResolver)
     {
-        $this->userProvider = $provider;
-    }
-
-    /**
-     * Sets the authorization checker.
-     *
-     * @param AuthorizationCheckerInterface $checker
-     */
-    public function setAuthorizationChecker(AuthorizationCheckerInterface $checker)
-    {
-        $this->authorizationChecker = $checker;
+        $this->inChargeResolver = $inChargeResolver;
     }
 
     /**
@@ -77,17 +61,10 @@ class OrderEventSubscriber extends BaseSubscriber
     {
         parent::onInitialize($event);
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Entity\Order $order */
-        $order = $this->getSaleFromEvent($event);
+        /** @var OrderInterface $sale */
+        $sale = $this->getSaleFromEvent($event);
 
-        // Set in charge user
-        if (null === $user = $this->userProvider->getUser()) {
-            return;
-        }
-        if (!$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-            return;
-        }
-        $order->setInCharge($user);
+        $this->inChargeResolver->update($sale);
     }
 
     /**
@@ -114,7 +91,7 @@ class OrderEventSubscriber extends BaseSubscriber
     {
         $changed = parent::handleInsert($sale);
 
-        $changed |= $this->updateInCharge($sale);
+        $changed |= $this->inChargeResolver->update($sale);
 
         return $changed;
     }
@@ -128,7 +105,7 @@ class OrderEventSubscriber extends BaseSubscriber
     {
         $changed = parent::handleUpdate($sale);
 
-        $changed |= $this->updateInCharge($sale);
+        $changed |= $this->inChargeResolver->update($sale);
 
         return $changed;
     }
@@ -150,34 +127,6 @@ class OrderEventSubscriber extends BaseSubscriber
 
         return $changed;
     }
-
-    /**
-     * Updates the order in charge field.
-     *
-     * @param OrderInterface $order
-     *
-     * @return bool
-     */
-    private function updateInCharge(OrderInterface $order)
-    {
-        if (null !== $order->getInCharge()) {
-            return false;
-        }
-
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
-        if (null === $customer = $order->getCustomer()) {
-            return false;
-        }
-
-        if (null === $inCharge = $customer->getInCharge()) {
-            return false;
-        }
-
-        $order->setInCharge($inCharge);
-
-        return true;
-    }
-
 
     /**
      * Resolves the item tags.

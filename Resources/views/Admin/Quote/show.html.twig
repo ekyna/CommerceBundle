@@ -8,7 +8,7 @@
 {% block main %}
 <div class="main-header">
     <div class="infos">
-        <span id="sale_state">{{ quote|sale_state_badge }}</span>
+        <span class="sale-state">{{ quote|sale_state_badge }}</span>
     </div>
     <div class="actions">
         {# TODO permission ? #}
@@ -99,7 +99,7 @@
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': quote} %}
                 <hr>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': quote} %}
             </div>
             <div class="tab-pane" id="quote-attachments">
                 <div class="actions">

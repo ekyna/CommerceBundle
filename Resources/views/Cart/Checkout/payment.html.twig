@@ -43,10 +43,10 @@
 
         <p>
             {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
-                '%amount%': sale.grandTotal|localizedcurrency(sale.currency.code)
+                '%amount%': cart.grandTotal|localizedcurrency(cart.currency.code)
             })|raw }}.<br>
             {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
-                '%amount%': sale.remainingAmount|localizedcurrency(sale.currency.code)
+                '%amount%': cart.remainingAmount|localizedcurrency(cart.currency.code)
             })|raw }}.
         </p>
 

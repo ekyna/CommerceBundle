@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Shipment\Gateway\Action\ActionInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
 
 /**
@@ -114,6 +115,18 @@ class ShipmentExtension extends \Twig_Extension
                 'shipment_gateway_buttons',
                 [$this, 'getGatewayButtons']
             ),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTests()
+    {
+        return [
+            new \Twig_SimpleTest('shipment_subject', function($subject) {
+                return $subject instanceof ShipmentSubjectInterface;
+            }),
         ];
     }
 

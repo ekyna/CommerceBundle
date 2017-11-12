@@ -2,12 +2,20 @@ define(['jquery', 'ekyna-dispatcher'], function ($, Dispatcher) {
     "use strict";
 
     var mapping = {
-        'granTotal': '#sale_grandTotal',
-        'paidTotal': '#sale_paidTotal',
-        'weightTotal': '#sale_weightTotal',
-        'state': '#sale_state',
-        'paymentState': '#sale_paymentState',
-        'shipmentState': '#sale_shipmentState'
+        'state': '.sale-state',
+        'grandTotal': '.sale-grand-total',
+        'paidTotal': '.sale-paid-total',
+        'outstandingAccepted': '.sale-outstanding-accepted',
+        'outstandingExpired': '.sale-outstanding-expired',
+        'outstandingLimit': '.sale-outstanding-limit',
+        'outstandingDate': '.sale-outstanding-date',
+        'paymentTerm': '.sale-payment-term',
+        'paymentState': '.sale-payment-state',
+        'weightTotal': '.sale-weight-total',
+        'shipmentMethod': '.sale-shipment-method',
+        'shipmentState': '.sale-shipment-state',
+        'invoiceTotal': '.sale-invoice-total',
+        'invoiceState': '.sale-invoice-state'
     };
 
     var parseResponse = function (response) {

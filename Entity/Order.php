@@ -5,8 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ekyna\Bundle\CmsBundle\Model\TagInterface;
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectTrait;
+use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectTrait;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
 
 /**
@@ -16,12 +16,8 @@ use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
  */
 class Order extends BaseOrder implements OrderInterface
 {
-    use TagsSubjectTrait;
-
-    /**
-     * @var UserInterface
-     */
-    protected $inCharge;
+    use InChargeSubjectTrait,
+        TagsSubjectTrait;
 
     /**
      * @var ArrayCollection|TagInterface[]
@@ -38,24 +34,6 @@ class Order extends BaseOrder implements OrderInterface
 
         $this->tags = new ArrayCollection();
         $this->itemsTags = new ArrayCollection();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getInCharge()
-    {
-        return $this->inCharge;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setInCharge(UserInterface $user = null)
-    {
-        $this->inCharge = $user;
-
-        return $this;
     }
 
     /**

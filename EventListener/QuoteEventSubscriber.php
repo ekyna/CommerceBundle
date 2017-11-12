@@ -2,12 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
+use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\QuoteEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class QuoteEventSubscriber
@@ -17,34 +18,19 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class QuoteEventSubscriber extends BaseSubscriber
 {
     /**
-     * @var UserProviderInterface
+     * @var InChargeResolver
      */
-    protected $userProvider;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
+    protected $inChargeResolver;
 
 
     /**
-     * Sets the user provider.
+     * Sets the 'in charge' resolver.
      *
-     * @param UserProviderInterface $userProvider
+     * @param InChargeResolver $inChargeResolver
      */
-    public function setUserProvider(UserProviderInterface $userProvider)
+    public function setInChargeResolver(InChargeResolver $inChargeResolver)
     {
-        $this->userProvider = $userProvider;
-    }
-
-    /**
-     * Sets the authorization checker.
-     *
-     * @param AuthorizationCheckerInterface $checker
-     */
-    public function setAuthorizationChecker(AuthorizationCheckerInterface $checker)
-    {
-        $this->authorizationChecker = $checker;
+        $this->inChargeResolver = $inChargeResolver;
     }
 
     /**
@@ -56,18 +42,10 @@ class QuoteEventSubscriber extends BaseSubscriber
     {
         parent::onInitialize($event);
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Entity\Quote $quote */
-        $quote = $this->getSaleFromEvent($event);
+        /** @var QuoteInterface $sale */
+        $sale = $this->getSaleFromEvent($event);
 
-        // Set in charge user
-        if (null === $user = $this->userProvider->getUser()) {
-            return;
-        }
-        if (!$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-            return;
-        }
-
-        $quote->setInCharge($user);
+        $this->inChargeResolver->update($sale);
     }
 
     /**
@@ -83,5 +61,33 @@ class QuoteEventSubscriber extends BaseSubscriber
                 ResourceMessage::TYPE_ERROR
             ));
         }
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param QuoteInterface $sale
+     */
+    protected function handleInsert(SaleInterface $sale)
+    {
+        $changed = parent::handleInsert($sale);
+
+        $changed |= $this->inChargeResolver->update($sale);
+
+        return $changed;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param QuoteInterface $sale
+     */
+    protected function handleUpdate(SaleInterface $sale)
+    {
+        $changed = parent::handleUpdate($sale);
+
+        $changed |= $this->inChargeResolver->update($sale);
+
+        return $changed;
     }
 }

@@ -1,47 +1,66 @@
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
-            'id': 'sale_grandTotal',
+            'class': 'sale-grand-total',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
-            'id': 'sale_paidTotal',
+            'class': 'sale-paid-total',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         {{ show_row(sale.outstandingLimit|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_limit', {
             'id': 'sale_outstandingLimit',
+            'class': 'sale-outstanding-limit',
+            'label_nb_col': 6,
+            'widget_nb_col': 6
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ show_row(sale.outstandingAccepted|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_accepted', {
+            'id': 'sale_outstandingAccepted',
+            'class': 'sale-outstanding-accepted',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
 </div>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         {{ show_row(sale.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
-            'id': 'sale_paymentState',
+            'class': 'sale-payment-state',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         {{ show_row(sale.outstandingDate, 'datetime', 'ekyna_commerce.sale.field.outstanding_date', {
             'id': 'sale_outstandingDate',
+            'class': 'sale-outstanding-date',
             'time': false,
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         {{ show_row(sale.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
             'id': 'sale_paymentTerm',
+            'class': 'sale-payment-term',
             'route': 'ekyna_commerce_payment_term_admin_show',
             'route_params_map': {'paymentTermId': 'id'},
+            'label_nb_col': 6,
+            'widget_nb_col': 6
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ show_row(sale.outstandingExpired|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_expired', {
+            'id': 'sale_outstandingExpired',
+            'class': 'sale-outstanding-expired',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}

@@ -103,13 +103,18 @@ final class PaymentTransitions extends AbstractConstants
                         $transitions[] = static::TRANSITION_ACCEPT;
                         break;
                 }
+            } elseif ($method->isOutstanding() || $method->isManual()) {
+                if ($state === PaymentStates::STATE_CAPTURED) {
+                    $transitions[] = static::TRANSITION_CANCEL;
+                } else {
+                    $transitions[] = static::TRANSITION_ACCEPT;
+                }
             } else {
                 if ($state === PaymentStates::STATE_CAPTURED) {
                     $transitions[] = static::TRANSITION_REFUND;
                 }
                 /*if ($state === PaymentStates::STATE_PENDING) {
-                    $d = $payment->getUpdatedAt()->diff(new \DateTime());
-                    if ($d->y || $d->m || $d->d) {
+                    if (0 < $payment->getUpdatedAt()->diff(new \DateTime())->days) {
                         $transitions[] = static::TRANSITION_CANCEL;
                     }
                 }*/
