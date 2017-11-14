@@ -20,18 +20,19 @@ final class ShipmentStates extends AbstractConstants
         $prefix = 'ekyna_commerce.shipment.state.';
 
         return [
-            States::STATE_NONE        => [$prefix.States::STATE_NONE,        'default'],
             States::STATE_NEW         => [$prefix.States::STATE_NEW,         'default'],
             //States::STATE_CHECKOUT    => [$prefix.States::STATE_CHECKOUT,    'default'],
             //States::STATE_ONHOLD      => [$prefix.States::STATE_ONHOLD,      'warning'],
             States::STATE_PENDING     => [$prefix.States::STATE_PENDING,     'warning'],
             //States::STATE_BACKORDERED => [$prefix.States::STATE_BACKORDERED, 'warning'],
             States::STATE_READY       => [$prefix.States::STATE_READY,       'warning'],
-            States::STATE_PARTIAL     => [$prefix.States::STATE_PARTIAL,     'warning'],
             States::STATE_SHIPPED     => [$prefix.States::STATE_SHIPPED,     'success'],
-            States::STATE_COMPLETED   => [$prefix.States::STATE_COMPLETED,   'success'],
             States::STATE_RETURNED    => [$prefix.States::STATE_RETURNED,    'primary'],
             States::STATE_CANCELED    => [$prefix.States::STATE_CANCELED,    'danger'],
+            // For Sale
+            States::STATE_NONE        => [$prefix.States::STATE_NONE,        'default'],
+            States::STATE_PARTIAL     => [$prefix.States::STATE_PARTIAL,     'warning'],
+            States::STATE_COMPLETED   => [$prefix.States::STATE_COMPLETED,   'success'],
         ];
     }
 
@@ -50,18 +51,32 @@ final class ShipmentStates extends AbstractConstants
     }
 
     /**
-     * Returns the choices for the shipment form type.
+     * Returns the available state choices for the shipment form type.
      *
-     * @param array $restrict
+     * @param bool $return
+     * @param bool $restrict
      *
      * @return array
      */
-    static function getFormChoices(array $restrict = [])
+    static function getFormChoices($return = false, $restrict = false)
     {
-        return static::getChoices(array_merge([
-            States::STATE_NONE,
-            States::STATE_PARTIAL,
-        ], $restrict));
+        $states = [
+            States::STATE_NEW,
+            States::STATE_PENDING,
+        ];
+
+        if (!$restrict) {
+            if ($return) {
+                $states[] = States::STATE_RETURNED;
+            } else {
+                $states[] = States::STATE_READY;
+                $states[] = States::STATE_SHIPPED;
+            }
+        }
+
+        $states[] = States::STATE_CANCELED;
+
+        return static::getChoices($states, 1);
     }
 
     /**

@@ -156,6 +156,9 @@ ekyna_commerce:
             place_order: Commander
             sign_in: Connexion
             register: Ouverture de compte
+        confirmation:
+            order_state: Votre commande est
+            see_details: Retrouvez tous les détails de cette commande dans votre espace client
         message:
             register: |
                 Créez votre compte client pour voir vos tarifs
@@ -846,6 +849,7 @@ ekyna_commerce:
             return: Retour
             items: Éléments
             tracking_number: Numéro de suivi
+            auto_invoice: Facturation automatique
             sender_address: Addresse expéditeur
             receiver_address: Addresse destinataire
         platforms: Plateformes
@@ -1058,6 +1062,7 @@ ekyna_commerce:
             state: Statut
         alert:
             no_item: Aucune commande fournisseur configuré
+            empty: Aucun article configuré
         state:
             new: Création
             ordered: En attente

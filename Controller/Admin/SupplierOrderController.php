@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class SupplierOrderController extends ResourceController
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function newAction(Request $request)
     {

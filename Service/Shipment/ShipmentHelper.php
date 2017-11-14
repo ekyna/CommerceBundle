@@ -5,9 +5,11 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 use Ekyna\Bundle\ProductBundle\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Shipment\Calculator\WeightCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Gateway\Action;
 use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +28,11 @@ class ShipmentHelper
     private $gatewayRegistry;
 
     /**
+     * @var WeightCalculatorInterface
+     */
+    private $weightCalculator;
+
+    /**
      * @var RequestStack
      */
     private $requestStack;
@@ -34,12 +41,17 @@ class ShipmentHelper
     /**
      * Constructor.
      *
-     * @param RegistryInterface $gatewayRegistry
-     * @param RequestStack      $requestStack
+     * @param RegistryInterface         $gatewayRegistry
+     * @param WeightCalculatorInterface $weightCalculator
+     * @param RequestStack              $requestStack
      */
-    public function __construct(RegistryInterface $gatewayRegistry, RequestStack $requestStack)
-    {
+    public function __construct(
+        RegistryInterface $gatewayRegistry,
+        WeightCalculatorInterface $weightCalculator,
+        RequestStack $requestStack
+    ) {
         $this->gatewayRegistry = $gatewayRegistry;
+        $this->weightCalculator = $weightCalculator;
         $this->requestStack = $requestStack;
     }
 
@@ -51,6 +63,34 @@ class ShipmentHelper
     public function getGatewayRegistry()
     {
         return $this->gatewayRegistry;
+    }
+
+    /**
+     * Returns the shipment's total weight.
+     *
+     * @param ShipmentInterface $shipment
+     *
+     * @return float
+     */
+    public function getShipmentWeight(ShipmentInterface $shipment)
+    {
+        if (0 < $shipment->getWeight()) {
+            return $shipment->getWeight();
+        }
+
+        return $this->weightCalculator->calculateShipment($shipment);
+    }
+
+    /**
+     * Returns whether or not the given shipment can be deleted.
+     *
+     * @param ShipmentInterface $shipment
+     *
+     * @return bool
+     */
+    public function isShipmentDeleteable(ShipmentInterface $shipment)
+    {
+        return ShipmentStates::isDeletableState($shipment->getState());
     }
 
     /**
@@ -77,7 +117,7 @@ class ShipmentHelper
 
         try {
             $psrResponse = $platform->execute($action);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new RuntimeException($e->getMessage());
         }
 
@@ -112,7 +152,7 @@ class ShipmentHelper
 
         try {
             $psrResponse = $gateway->execute($action);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new RuntimeException($e->getMessage());
         }
 
@@ -312,9 +352,12 @@ class ShipmentHelper
     public function getActionIcon($name)
     {
         switch ($name) {
-            case Action\PrintLabel::NAME : return 'barcode';
-            case Action\Cancel::NAME : return 'remove';
-            case Action\Ship::NAME : return 'road';
+            case Action\PrintLabel::NAME :
+                return 'barcode';
+            case Action\Cancel::NAME :
+                return 'remove';
+            case Action\Ship::NAME :
+                return 'road';
         }
 
         return null;

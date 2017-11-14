@@ -38,8 +38,15 @@
                     {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.trackingNumber, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.autoInvoice, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
             {{ form_row(form.items) }}
-            {{ form_row(form.trackingNumber) }}
             {{ form_row(form.description) }}
         </div>
         <div class="tab-pane" id="shipment-receiver-address">

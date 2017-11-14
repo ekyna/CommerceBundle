@@ -36,7 +36,7 @@ class PaymentMethodController extends Controller\ResourceController
 
         $this->getOperator()->initialize($resource);
 
-        $flow = $this->get('ekyna_commerce.payment_method_create.form_flow');
+        $flow = $this->get('ekyna_commerce.payment_method.create_form_flow');
         $flow->setGenericFormOptions([
             'action'            => $this->generateResourcePath($resource, 'new'),
             'method'            => 'POST',

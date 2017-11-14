@@ -592,6 +592,7 @@
                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                 <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
                 <th>{{ 'ekyna_commerce.invoice_line.field.max_quantity'|trans }}</th>
+                <th>{{ 'ekyna_commerce.shipment_item.field.shipped'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -624,6 +625,7 @@
         <td>{{ reference }}</td>
         <td>{{ form_widget(form.quantity, {'data-max': max_quantity}) }}</td>
         <td>{{ max_quantity }}</td>{# TODO packaging format #}
+        <td>{{ shipped_quantity }}</td>{# TODO packaging format #}
     </tr>
     {% if errors|length > 0 %}
         <tr>

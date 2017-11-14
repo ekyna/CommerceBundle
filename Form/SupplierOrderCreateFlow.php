@@ -1,16 +1,17 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
+namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Craue\FormFlowBundle\Form\FormFlow;
 use Craue\FormFlowBundle\Form\FormFlowInterface;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType;
 
 /**
- * Class CreateSupplierOrderFlow
- * @package Ekyna\Bundle\CommerceBundle\Form\Type\Supplier
+ * Class SupplierOrderCreateFlow
+ * @package Ekyna\Bundle\CommerceBundle\Form
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CreateSupplierOrderFlow extends FormFlow
+class SupplierOrderCreateFlow extends FormFlow
 {
     /**
      * @inheritdoc

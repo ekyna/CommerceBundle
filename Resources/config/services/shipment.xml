@@ -45,6 +45,9 @@
             <call method="setStockUnitAssigner">
                 <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
             </call>
+            <call method="setInvoiceSynchronizer">
+                <argument type="service" id="ekyna_commerce.shipment.invoice_synchronizer"/>
+            </call>
         </service>
 
         <!-- Shipment item abstract listener -->
@@ -71,6 +74,14 @@
                  class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+        </service>
+
+        <!-- Shipment invoice synchronizer -->
+        <service id="ekyna_commerce.shipment.invoice_synchronizer"
+                 class="Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer">
+            <argument type="service" id="ekyna_commerce.invoice.builder"/>
+            <argument type="service" id="ekyna_commerce.document.calculator"/>
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
         <!-- Shipment price renderer -->
@@ -108,6 +119,9 @@
                  lazy="true">
             <call method="setAddressResolver">
                 <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
+            </call>
+            <call method="setWeightCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
             </call>
         </service>
 

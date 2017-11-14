@@ -11,6 +11,7 @@
     </tr>
     </thead>
     <tbody>
+    {% if supplierOrder.items is not empty %}
     {% for item in supplierOrder.items %}
     {% set itemId = 'item_' ~ loop.index0 ~ '_' -%}
     <tr>
@@ -47,6 +48,22 @@
         </td>
     </tr>
     {%- endfor %}
+    <tr>
+        <td colspan="3" class="text-right">
+            <strong>{{ 'ekyna_commerce.supplier_order.field.payment_total'|trans }}</strong>
+        </td>
+        <td class="text-right">
+            <strong>{{ supplierOrder.paymentTotal|localizedcurrency(supplierOrder.currency.code) }}</strong>
+        </td>
+        <td colspan="2"></td>
+    </tr>
+    {%- else %}
+    <tr>
+        <td colspan="6" class="text-center">
+            <em>{{ 'ekyna_commerce.supplier_order.alert.empty'|trans }}</em>
+        </td>
+    </tr>
+    {%- endif -%}
     </tbody>
 </table>
 {% endspaceless %}

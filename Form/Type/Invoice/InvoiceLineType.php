@@ -7,6 +7,7 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
+use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculatorInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -23,20 +24,30 @@ class InvoiceLineType extends ResourceFormType
     /**
      * @var InvoiceCalculatorInterface
      */
-    private $calculator;
+    private $invoiceCalculator;
+
+    /**
+     * @var ShipmentCalculatorInterface
+     */
+    private $shipmentCalculator;
 
 
     /**
      * Constructor.
      *
-     * @param InvoiceCalculatorInterface $calculator
-     * @param string                     $class
+     * @param InvoiceCalculatorInterface  $invoiceCalculator
+     * @param ShipmentCalculatorInterface $shipmentCalculator
+     * @param string                      $class
      */
-    public function __construct(InvoiceCalculatorInterface $calculator, $class)
-    {
+    public function __construct(
+        InvoiceCalculatorInterface $invoiceCalculator,
+        ShipmentCalculatorInterface $shipmentCalculator,
+        $class
+    ) {
         parent::__construct($class);
 
-        $this->calculator = $calculator;
+        $this->invoiceCalculator = $invoiceCalculator;
+        $this->shipmentCalculator = $shipmentCalculator;
     }
 
     /**
@@ -66,13 +77,14 @@ class InvoiceLineType extends ResourceFormType
         $view->vars['reference'] = $line->getReference();
 
         if ($options['type'] === InvoiceTypes::TYPE_INVOICE) {
-            $max = $this->calculator->calculateInvoiceableQuantity($line);
+            $max = $this->invoiceCalculator->calculateInvoiceableQuantity($line);
         } elseif ($options['type'] === InvoiceTypes::TYPE_CREDIT) {
-            $max = $this->calculator->calculateCreditableQuantity($line);
+            $max = $this->invoiceCalculator->calculateCreditableQuantity($line);
         } else {
             throw new InvalidArgumentException("Unexpected invoice type.");
         }
 
+        $view->vars['shipped_quantity'] = $this->shipmentCalculator->calculateShippedQuantity($line->getSaleItem());
         $view->vars['max_quantity'] = $max;
     }
 

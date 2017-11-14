@@ -36,7 +36,7 @@ class ShipmentMethodController extends Controller\ResourceController
 
         $this->getOperator()->initialize($resource);
 
-        $flow = $this->get('ekyna_commerce.shipment_method_create.form_flow');
+        $flow = $this->get('ekyna_commerce.shipment_method.create_form_flow');
         $flow->setGenericFormOptions([
             'action'            => $this->generateResourcePath($resource, 'new'),
             'method'            => 'POST',

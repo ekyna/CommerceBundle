@@ -12,6 +12,17 @@
 {% block main %}
 {% spaceless %}
 
+    <p>
+        {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
+            '%amount%': sale.grandTotal|localizedcurrency(sale.currency.code)
+        })|raw }}.<br>
+        {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
+            '%amount%': sale.remainingAmount|localizedcurrency(sale.currency.code)
+        })|raw }}.
+    </p>
+
+    <hr>
+
     {% include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" %}
 
     <div class="text-center">

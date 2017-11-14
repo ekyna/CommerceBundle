@@ -69,13 +69,14 @@ class PaymentType extends ResourceFormType
                 throw new LogicException("Payment method must be set.");
             }
 
-            $disabled = !$method->isManual();
+            $methodDisabled = !$method->isManual();
+            $amountDisabled = !($method->isManual() || $method->isOutstanding() || $method->isCredit());
 
             $form
                 ->add('amount', MoneyType::class, [
                     'label'    => 'ekyna_core.field.amount',
                     'currency' => $currency->getCode(),
-                    'disabled' => $disabled,
+                    'disabled' => $amountDisabled,
                 ])
                 ->add('number', Type\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
@@ -102,14 +103,14 @@ class PaymentType extends ResourceFormType
                 ->add('method', EntityType::class, [
                     'label'         => 'ekyna_commerce.payment_method.label.singular',
                     'class'         => $this->methodClass,
-                    'disabled'      => $disabled,
-                    'query_builder' => function (EntityRepository $repository) use ($disabled) {
+                    'disabled'      => $methodDisabled,
+                    'query_builder' => function (EntityRepository $repository) use ($methodDisabled) {
                         $qb = $repository
                             ->createQueryBuilder('m')
                             ->andWhere('m.enabled = :enabled')
                             ->setParameter('enabled', true);
 
-                        if (!$disabled) {
+                        if (!$methodDisabled) {
                             $qb
                                 ->andWhere('m.factoryName = :factoryName')
                                 ->setParameter('factoryName', Offline::FACTORY_NAME);

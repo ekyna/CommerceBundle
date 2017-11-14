@@ -185,7 +185,7 @@ class PaymentExtension extends \Twig_Extension
 
         /** @var PaymentMethodInterface $method */
         $method = $payment->getMethod();
-        if ($method->isManual()) {
+        if ($method->isManual() || $method->isOutstanding() || $method->isCredit()) {
             $buttons['edit'] = [
                 'label' => '<span class="fa fa-pencil"></span>',
                 'theme' => 'warning',

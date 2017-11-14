@@ -89,6 +89,14 @@ class ShipmentExtension extends \Twig_Extension
                 [$this->shipmentHelper, 'getActionLabel'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFilter(
+                'shipment_weight',
+                [$this->shipmentHelper, 'getShipmentWeight']
+            ),
+            new \Twig_SimpleFilter(
+                'shipment_deleteable',
+                [$this->shipmentHelper, 'isShipmentDeleteable']
+            ),
         ];
     }
 

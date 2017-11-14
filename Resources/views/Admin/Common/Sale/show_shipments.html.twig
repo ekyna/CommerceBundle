@@ -30,7 +30,7 @@
                 </td>
                 <td id="{{ shipmentId }}_method">{{ shipment.method }}</td>
                 <td id="{{ shipmentId }}_state">{{ shipment|shipment_state_badge }}</td>
-                <td id="{{ shipmentId }}_weight">{{ shipment.weight|localizednumber }} Kg</td>
+                <td id="{{ shipmentId }}_weight">{{ shipment|shipment_weight|localizednumber }}&nbsp;kg</td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td class="actions">
                     {%- for button in shipment_gateway_buttons(shipment) -%}
@@ -56,7 +56,7 @@
                        class="btn btn-warning btn-xs">
                         {{ 'ekyna_core.button.edit'|trans }}
                     </a>
-                    {% if shipment.state == 'new' %}
+                    {% if shipment|shipment_deleteable %}
                         <a href="{{ admin_resource_path(shipment, 'remove') }}"
                            id="{{ shipmentId }}_remove"
                            class="btn btn-danger btn-xs">

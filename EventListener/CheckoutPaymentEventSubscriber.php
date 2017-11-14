@@ -126,11 +126,12 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
         $sale = $event->getSale();
 
         // Abort if outstanding payment has already been used
-        if (0 < $sale->getOutstandingAccepted()) {
+        if (0 < $sale->getOutstandingAccepted() || 0 < $sale->getOutstandingExpired()) {
             $event->stopPropagation();
 
             return;
         }
+
         // Abort if no customer
         if (null === $customer = $sale->getCustomer()) {
             $event->stopPropagation();

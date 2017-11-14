@@ -7,29 +7,40 @@
 
 
 {% block content %}
+{% spaceless %}
     <div class="container checkout">
-        {{ cms_title() }}
-        {{ cms_content() }}
+        {{- cms_title() -}}
+        {{- cms_content() -}}
 
         <hr>
 
-        {{ order.payments|last|payment_state_message|raw }}
+        {{- order.payments|last|payment_state_message|raw -}}
 
-        <p>Statut de votre commande : {{ order|sale_state_badge }}</p>
+        <p class="text-center">
+            {{- 'ekyna_commerce.checkout.confirmation.order_state'|trans }} {{ order|sale_state_badge -}}
+        </p>
 
-        <p>Statut du dernier paiement : {{ order.payments|last|payment_state_badge }}</p>
+        {{- render_sale_view(order|sale_view({'taxes_view': false})) -}}
 
+        {%- if order.customer is not null and is_granted('ROLE_USER') -%}
+        <p class="text-center">
+            <a href="{{ path('ekyna_commerce_account_order_show', {'number': order.number}) }}" class="btn btn-primary">
+                {{- 'ekyna_commerce.checkout.confirmation.see_details'|trans -}}
+            </a>
+        </p>
+        {%- endif %}
     </div>
+{% endspaceless %}
 {% endblock content %}
 
 
-{#{% block stylesheets -%}
+{% block stylesheets -%}
     {{ parent() }}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
 {%- endblock stylesheets %}
 
 
-{% block javascripts -%}
+{#{% block javascripts -%}
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
 {%- endblock javascripts %}#}

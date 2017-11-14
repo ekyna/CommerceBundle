@@ -8,7 +8,6 @@ use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilderInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates as CShipStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -85,6 +84,13 @@ class ShipmentType extends ResourceFormType
                 'label'    => 'ekyna_commerce.shipment.field.tracking_number',
                 'required' => false,
             ])
+            ->add('autoInvoice', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.auto_invoice',
+                'required' => false,
+                'attr' => [
+                    'align_with_widget' => true,
+                ]
+            ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.description',
                 'required' => false,
@@ -116,13 +122,10 @@ class ShipmentType extends ResourceFormType
                 throw new RuntimeException("Not yet supported.");
             }
 
-            $stateRestrictions = [];
-            // If sale is NOT in a stockable state
-            if (!OrderStates::isStockableState($sale->getState())) {
-                // Restrict to non stockable states
-                $stateRestrictions = CShipStates::getStockableStates();
-            }
-            $availableStateChoices = BShipStates::getFormChoices($stateRestrictions);
+            $availableStateChoices = BShipStates::getFormChoices(
+                $shipment->isReturn(),
+                !OrderStates::isStockableState($sale->getState())
+            );
 
             $form->add('state', Type\ChoiceType::class, [
                 'label'    => 'ekyna_core.field.status',

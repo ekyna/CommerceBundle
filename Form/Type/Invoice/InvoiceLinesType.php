@@ -34,7 +34,7 @@ class InvoiceLinesType extends AbstractType
             }
 
             //$event->getForm()->setData($items);
-            //$event->setData($items);
+            $event->setData($items);
         }, 51); // Before collection type's submit event listener
     }
 

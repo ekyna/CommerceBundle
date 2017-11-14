@@ -141,6 +141,7 @@
         <service id="ekyna_commerce.order_invoice_line.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Invoice\InvoiceLineType">
             <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
             <argument>%ekyna_commerce.order_invoice_line.class%</argument>
             <tag name="form.type"/>
         </service>
@@ -242,7 +243,7 @@
         </service>
 
         <!-- Payment method create form flow -->
-        <service id="ekyna_commerce.payment_method_create.form_flow"
+        <service id="ekyna_commerce.payment_method.create_form_flow"
                  class="Ekyna\Bundle\CommerceBundle\Form\PaymentMethodCreateFlow"
                  parent="craue.form.flow">
         </service>
@@ -306,7 +307,7 @@
         </service>
 
         <!-- Shipment method create form flow -->
-        <service id="ekyna_commerce.shipment_method_create.form_flow"
+        <service id="ekyna_commerce.shipment_method.create_form_flow"
                  class="Ekyna\Bundle\CommerceBundle\Form\ShipmentMethodCreateFlow"
                  parent="craue.form.flow">
         </service>
@@ -380,7 +381,7 @@
         </service>
         <!-- Supplier order create form flow -->
         <service id="ekyna_commerce.supplier_order.create_form_flow"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\CreateSupplierOrderFlow"
+                 class="Ekyna\Bundle\CommerceBundle\Form\SupplierOrderCreateFlow"
                  parent="craue.form.flow">
         </service>
         <!-- Supplier order compose type -->

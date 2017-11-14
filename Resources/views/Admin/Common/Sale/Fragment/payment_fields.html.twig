@@ -14,17 +14,17 @@
         }) }}
     </div>
     <div class="col-md-3">
-        {{ show_row(sale.outstandingLimit|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_limit', {
-            'id': 'sale_outstandingLimit',
-            'class': 'sale-outstanding-limit',
+        {{ show_row(sale.outstandingAccepted|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_accepted', {
+            'id': 'sale_outstandingAccepted',
+            'class': 'sale-outstanding-accepted',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
     </div>
     <div class="col-md-3">
-        {{ show_row(sale.outstandingAccepted|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_accepted', {
-            'id': 'sale_outstandingAccepted',
-            'class': 'sale-outstanding-accepted',
+        {{ show_row(sale.outstandingExpired|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_expired', {
+            'id': 'sale_outstandingExpired',
+            'class': 'sale-outstanding-expired',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
@@ -34,15 +34,6 @@
     <div class="col-md-3">
         {{ show_row(sale.paymentState|payment_state_badge, 'text', 'ekyna_commerce.sale.field.payment_state', {
             'class': 'sale-payment-state',
-            'label_nb_col': 6,
-            'widget_nb_col': 6
-        }) }}
-    </div>
-    <div class="col-md-3">
-        {{ show_row(sale.outstandingDate, 'datetime', 'ekyna_commerce.sale.field.outstanding_date', {
-            'id': 'sale_outstandingDate',
-            'class': 'sale-outstanding-date',
-            'time': false,
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
@@ -58,9 +49,18 @@
         }) }}
     </div>
     <div class="col-md-3">
-        {{ show_row(sale.outstandingExpired|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_expired', {
-            'id': 'sale_outstandingExpired',
-            'class': 'sale-outstanding-expired',
+        {{ show_row(sale.outstandingDate, 'datetime', 'ekyna_commerce.sale.field.outstanding_date', {
+            'id': 'sale_outstandingDate',
+            'class': 'sale-outstanding-date',
+            'time': false,
+            'label_nb_col': 6,
+            'widget_nb_col': 6
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ show_row(sale.outstandingLimit|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.outstanding_limit', {
+            'id': 'sale_outstandingLimit',
+            'class': 'sale-outstanding-limit',
             'label_nb_col': 6,
             'widget_nb_col': 6
         }) }}
