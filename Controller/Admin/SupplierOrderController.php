@@ -233,7 +233,7 @@ class SupplierOrderController extends ResourceController
 
         $renderer = $this
             ->get('ekyna_commerce.renderer_factory')
-            ->createSupplierOrderRenderer($order);
+            ->createRenderer($order);
 
         $message->attach(\Swift_Attachment::newInstance(
             $renderer->render(RendererInterface::FORMAT_PDF),
@@ -255,14 +255,14 @@ class SupplierOrderController extends ResourceController
     {
         $context = $this->loadContext($request);
 
-        /** @var SupplierOrderInterface $supplierOrder */
-        $supplierOrder = $context->getResource();
+        /** @var SupplierOrderInterface $order */
+        $order = $context->getResource();
 
-        $this->isGranted('VIEW', $supplierOrder);
+        $this->isGranted('VIEW', $order);
 
         $renderer = $this
             ->get('ekyna_commerce.renderer_factory')
-            ->createSupplierOrderRenderer($supplierOrder);
+            ->createRenderer($order);
 
         return $renderer->respond($request);
     }

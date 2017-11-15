@@ -78,12 +78,4 @@ class SubjectExtension extends \Twig_Extension
 
         return 'Undefined'; // TODO translation
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_subject';
-    }
 }

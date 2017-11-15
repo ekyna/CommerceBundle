@@ -10,31 +10,60 @@
 
     {{- render_sale_view(view) -}}
 
-    {% if 0 < order.remainingAmount %}
+    {% if not order.paid %}
     <div class="text-center" style="margin-bottom: 40px;">
-        <a href="{{ path('ekyna_commerce_account_order_payment', {'number': order.number}) }}" class="btn btn-primary btn-lg">
+        <a href="{{ path('ekyna_commerce_account_order_payment_create', {'number': order.number}) }}"
+           class="btn btn-primary btn-lg">
             <span class="glyphicon glyphicon-chevron-right"></span>
             {{ 'ekyna_commerce.account.order.button.pay'|trans }}
         </a>
     </div>
     {% endif %}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
-        'sale': order,
-        'detail_route': 'ekyna_commerce_account_order_attachment_download'
-    } -%}
+    {# Payments #}
+    {%- if order is sale_with_payment -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': order} only -%}
+    {%- endif -%}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
-        'sale': order,
-        'cancel_route': 'ekyna_commerce_account_order_payment_cancel'
-    } -%}
+    {# Shipments #}
+    {%- if order is sale_with_shipment -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:shipments.html.twig" with {
+            'sale': order, 'return': false, 'route_prefix': route_prefix
+        } only -%}
+    {%- endif -%}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:shipments.html.twig" with {'sale': order} -%}
+    {# Returns #}
+    {%- if order is sale_with_return -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:shipments.html.twig" with {
+            'sale': order, 'return': true, 'route_prefix': route_prefix
+        } only -%}
+    {%- endif -%}
+
+    {# Invoices #}
+    {%- if order is sale_with_invoice -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:invoices.html.twig" with {
+            'sale': order, 'credit': false, 'route_prefix': route_prefix
+        } only -%}
+    {%- endif -%}
+
+    {# Credits #}
+    {%- if order is sale_with_credit -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:invoices.html.twig" with {
+            'sale': order, 'credit': true, 'route_prefix': route_prefix
+        } only -%}
+    {%- endif -%}
+
+    {# Attachments #}
+    {%- if order is sale_with_attachment -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
+            'sale': order, 'route_prefix': route_prefix
+        } only -%}
+    {% endif %}
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" %}
+    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" with {'orders': orders} only %}
 
 {% endspaceless %}
 {% endblock %}

@@ -16,13 +16,6 @@
             <argument>%kernel.debug%</argument>
         </service>
 
-        <!-- Address extension -->
-        <service id="ekyna_commerce.twig.address_extension"
-                 class="Ekyna\Bundle\CommerceBundle\Twig\AddressExtension"
-                 public="false">
-            <tag name="twig.extension"/>
-        </service>
-
         <!-- Common extension -->
         <service id="ekyna_commerce.twig.common_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension"

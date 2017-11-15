@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 
 /**
@@ -10,12 +11,17 @@ use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CommonExtension extends \Twig_Extension
+class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRuntimeInterface
 {
     /**
      * @var ConstantsHelper
      */
     private $constantHelper;
+
+    /**
+     * @var \Twig_TemplateInterface
+     */
+    private $addressTemplate;
 
 
     /**
@@ -31,14 +37,54 @@ class CommonExtension extends \Twig_Extension
     /**
      * @inheritdoc
      */
+    public function initRuntime(\Twig_Environment $twig)
+    {
+        /** @var \Twig_TemplateInterface addressTemplate */
+        $this->addressTemplate = $twig->loadTemplate('EkynaCommerceBundle:Address:_render.html.twig'); // TODO config
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('identity',              [$this, 'renderIdentity'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFilter('gender',                [$this, 'getGenderLabel']),
-            new \Twig_SimpleFilter('adjustment_type_label', [$this, 'getAdjustmentTypeLabel']),
-            new \Twig_SimpleFilter('adjustment_mode_label', [$this, 'getAdjustmentModeLabel']),
+            new \Twig_SimpleFilter(
+                'gender',
+                [$this, 'getGenderLabel']
+            ),
+            new \Twig_SimpleFilter(
+                'identity',
+                [$this, 'renderIdentity'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'address',
+                [$this, 'renderAddress'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'adjustment_type_label',
+                [$this, 'getAdjustmentTypeLabel']
+            ),
+            new \Twig_SimpleFilter(
+                'adjustment_mode_label',
+                [$this, 'getAdjustmentModeLabel']
+            ),
         ];
+    }
+
+    /**
+     * Returns the gender label.
+     *
+     * @param string $gender
+     * @param bool   $long
+     *
+     * @return string
+     */
+    public function getGenderLabel($gender, $long = false)
+    {
+        return $this->constantHelper->getGenderLabel($gender, $long);
     }
 
     /**
@@ -55,16 +101,19 @@ class CommonExtension extends \Twig_Extension
     }
 
     /**
-     * Returns the gender label.
+     * Renders the address.
      *
-     * @param string $gender
-     * @param bool   $long
+     * @param AddressInterface $address
+     * @param bool             $displayPhones
      *
      * @return string
      */
-    public function getGenderLabel($gender, $long = false)
+    public function renderAddress(AddressInterface $address, $displayPhones = true)
     {
-        return $this->constantHelper->getGenderLabel($gender, $long);
+        return $this->addressTemplate->render([
+            'address'        => $address,
+            'display_phones' => $displayPhones,
+        ]);
     }
 
     /**
@@ -89,13 +138,5 @@ class CommonExtension extends \Twig_Extension
     public function getAdjustmentModeLabel($mode)
     {
         return $this->constantHelper->getAdjustmentModeLabel($mode);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_common';
     }
 }

@@ -24,7 +24,7 @@
                     <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
                 {%- endif -%}
             </td>
-            <td>
+            <td class="text-right">
                 {{- quote.grandTotal|localizedcurrency(quote.currency.code) -}}
             </td>
             <td>
@@ -36,7 +36,7 @@
             <td>
                 {{- quote.createdAt|localizeddate('short', 'none') -}}
             </td>
-            <td>
+            <td class="text-right">
                 <a href="{{ path }}" class="btn btn-xs btn-primary">
                     {{- 'ekyna_core.button.show'|trans -}}
                 </a>

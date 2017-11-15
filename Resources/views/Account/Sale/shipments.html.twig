@@ -1,61 +1,66 @@
+{% spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        {{ 'ekyna_commerce.account.shipment.title'|trans|raw }} - {{ sale.shipmentState|shipment_state_badge }}
+        {%- if return -%}
+            {%- set shipments = sale|sale_returns -%}
+            {{- 'ekyna_commerce.account.return.title'|trans|raw -}}
+        {%- else -%}
+            {%- set shipments = sale|sale_shipments -%}
+            {{- 'ekyna_commerce.account.shipment.title'|trans|raw -}}
+        {%- endif -%}
     </div>
     <table class="table table-striped table-hover">
         <tbody>
-        {% for shipment in sale.shipments %}
-            {% set shipmentId = 'shipment_' ~ loop.index0 %}
+        {%- for shipment in shipments -%}
+            {%- set shipmentId = 'shipment_' ~ shipment.id -%}
+            {%- set path = path(route_prefix ~ '_shipment_download', {'number': sale.number, 'id': shipment.id}) -%}
             <tr>
-                <td>{{ shipment.number }}</td>
                 <td>
-                    {% if shipment.return %}
-                        <span class="label label-warning">
-                                {{ 'ekyna_core.value.yes'|trans }}
-                            </span>
-                    {% else %}
-                        <span class="label label-default">
-                                {{ 'ekyna_core.value.no'|trans }}
-                            </span>
-                    {% endif %}
+                    <a href="{{ path }}" target="_blank">
+                        {{- shipment.number -}}
+                    </a>
                 </td>
                 <td>{{ shipment.method }}</td>
                 <td>{{ shipment|shipment_state_badge }}</td>
                 <td>{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
-                <td class="actions">
+                <td class="actions text-right">
                     <a href="javascript:void(0)"
                        id="{{ shipmentId }}_toggle_details"
                        class="btn btn-default btn-xs"
                        data-toggle-details="{{ shipmentId ~ '_details' }}">
                         <span class="fa fa-info-circle"></span>
+                    </a>&nbsp;
+                    <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
+                        {{- 'ekyna_core.button.download'|trans -}}
                     </a>
+                    {# TODO Tracking link #}
                 </td>
             </tr>
             <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
                 <td>&nbsp;</td>
                 <td colspan="4">
                     <table class="table table-alt table-striped table-condensed">
-                        <tbody>
-                        {% for item in shipment.items %}
-                            {% set itemId = shipmentId ~ '_item_' ~ loop.index0 %}
+                        <thead>
                             <tr>
-                                <td>{{ item.saleItem|subject_admin_link }}</td>
-                                <td>{{ item.saleItem.reference }}</td>
-                                <td>{{ item.quantity|localizednumber }}</td>
+                                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
                             </tr>
-                        {% endfor %}
+                        </thead>
+                        <tbody>
+                        {%- for item in shipment.items -%}
+                            <tr>
+                                <td>{{ item.saleItem.designation }}</td>{# TODO Public link #}
+                                <td>{{ item.saleItem.reference }}</td>
+                                <td>{{ item.quantity|localizednumber }}</td> {# TODO Packaging format #}
+                            </tr>
+                        {%- endfor -%}
                         </tbody>
                     </table>
                 </td>
-                <td>&nbsp;</td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="6" class="text-center">
-                    <em>{{ 'ekyna_commerce.account.shipment.empty_list'|trans }}</em>
-                </td>
-            </tr>
-        {% endfor %}
+        {%- endfor -%}
         </tbody>
     </table>
 </div>
+{% endspaceless %}

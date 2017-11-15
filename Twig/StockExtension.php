@@ -109,12 +109,4 @@ class StockExtension extends \Twig_Extension
             ),
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_stock';
-    }
 }

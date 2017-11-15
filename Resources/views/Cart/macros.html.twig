@@ -22,7 +22,7 @@
     {%- if cart is same as(null) or cart.invoiceAddress is same as(null) -%}
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
     {%- else -%}
-        {{ cart.invoiceAddress|commerce_address }}
+        {{ cart.invoiceAddress|address }}
     {%- endif -%}
 {% endspaceless %}
 {% endmacro cart_invoice_address %}
@@ -37,7 +37,7 @@
     {%- elseif cart.deliveryAddress is same as(null) -%}
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
     {%- else -%}
-        {{- cart.deliveryAddress|commerce_address -}}
+        {{- cart.deliveryAddress|address -}}
     {%- endif -%}
 {% endspaceless %}
 {% endmacro cart_delivery_address %}

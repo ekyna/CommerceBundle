@@ -1,0 +1,82 @@
+{% extends "EkynaCommerceBundle:Document:base.html.twig" %}
+
+{% import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
+
+
+{# --- HEAD TITLE --- #}
+{%- block head_title -%}
+    {{- ('ekyna_commerce.document.type.' ~ (shipment.return ? 'return' : 'delivery'))|trans }}
+    {{ shipment.number -}}
+{%- endblock head_title -%}
+
+
+{# --- DOC TITLE --- #}
+{% block doc_title -%}
+    <h1>
+        {{- ('ekyna_commerce.document.type.' ~ (shipment.return ? 'return' : 'delivery'))|trans }}
+        {{ shipment.number -}}
+    </h1>
+    <p>
+        Le {{ shipment.createdAt|localizeddate('long', 'none') }},
+        commande <strong>{{ shipment.sale.number }}</strong>
+        {% if shipment.sale.customer is not null %}
+            , client <strong>{{ shipment.sale.customer.number }}</strong>
+        {% endif %}.
+    </p>{# TODO trans #}
+{%- endblock doc_title %}
+
+
+{# --- ADDRESSES --- #}
+{% block doc_addresses -%}
+    <table class="bloc table addresses">
+        <thead>
+        <tr>
+            <th>{{ 'ekyna_commerce.shipment.field.sender_address'|trans }}</th>
+            <th class="blank">&nbsp;</th>
+            <th>{{ 'ekyna_commerce.shipment.field.receiver_address'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="address">
+                {{- shipment|shipment_sender_address|address -}}
+            </td>
+            <td>&nbsp;</td>
+            <td class="address">
+                {{- shipment|shipment_receiver_address|address -}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{%- endblock doc_addresses %}
+
+
+{# --- LINES --- #}
+{% block doc_lines %}
+    <table class="bloc table details">
+        <thead>
+        <tr>
+            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+            <th class="text-right">{{ 'ekyna_core.field.quantity'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody class="stripped">
+        {% for item in shipment.items %}
+            <tr>
+                <td>{{ item.saleItem.designation }}</td>
+                <td>{{ item.saleItem.reference }}</td>
+                <td class="text-right">{{ item.quantity|localizednumber }}</td>{# TODO Packing format #}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock doc_lines %}
+
+
+{# --- FOOTER --- #}
+{% block doc_footer %}
+    {#{{- get_setting('commerce.invoice_footer')|raw -}}#}
+{% endblock doc_footer %}
+
+

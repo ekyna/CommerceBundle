@@ -61,20 +61,21 @@ class QuoteController extends AbstractController
             ->findByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Quote:show.html.twig', [
-            'quote' => $quote,
-            'view'  => $quoteView,
-            'quotes' => $quotes,
+            'quote'        => $quote,
+            'view'         => $quoteView,
+            'quotes'       => $quotes,
+            'route_prefix' => 'ekyna_commerce_account_quote',
         ]);
     }
 
     /**
-     * Payment action.
+     * Payment create action.
      *
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function paymentAction(Request $request)
+    public function paymentCreateAction(Request $request)
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -90,7 +91,7 @@ class QuoteController extends AbstractController
 
         $checkout = $this->get('ekyna_commerce.checkout.payment_manager');
 
-        $checkout->initialize($quote, $this->generateUrl('ekyna_commerce_account_quote_payment', [
+        $checkout->initialize($quote, $this->generateUrl('ekyna_commerce_account_quote_payment_create', [
             'number' => $quote->getNumber(),
         ]));
 
@@ -145,8 +146,8 @@ class QuoteController extends AbstractController
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'message'      => 'ekyna_commerce.account.payment.confirm_cancel',
-            'cancel_path'  => $cancelUrl,
+            'message'     => 'ekyna_commerce.account.payment.confirm_cancel',
+            'cancel_path' => $cancelUrl,
         ]);
 
         $form->handleRequest($request);

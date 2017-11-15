@@ -12,6 +12,15 @@
         'cancel_route': 'ekyna_commerce_account_quote_payment_cancel'
     } -%}
 
+    <p>
+        {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
+            '%amount%': quote.grandTotal|localizedcurrency(quote.currency.code)
+        })|raw }}.<br>
+        {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
+            '%amount%': quote.remainingAmount|localizedcurrency(quote.currency.code)
+        })|raw }}.
+    </p>
+
     {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': quote} -%}
 
     <div class="text-center">

@@ -38,17 +38,20 @@ ekyna_commerce:
             empty_list: Aucun devis enregistré
             button:
                 pay: Régler le devis
-        attachment:
-            title: Documents
-            empty_list: Aucun document enregistré
         payment:
             title: Paiements
-            empty_list: Aucun paiment enregistré
             #confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment {{number}} d'un montant de {{amount}} ?
             confirm_cancel: Êtes-vous sûr de vouloir ce paiment ?
         shipment:
             title: Expéditions
-            empty_list: Aucune expédition enregistré
+        return:
+            title: Retours
+        invoice:
+            title: Factures
+        credit:
+            title: Avoirs
+        attachment:
+            title: Documents
         registration:
             title: Ouverture de compte
             credentials: Identifiants
@@ -179,7 +182,7 @@ ekyna_commerce:
             grand_total: |
                 Montant total : <strong>%amount%</strong>
             remaining_amount: |
-                Reste à régler : <strong>%amount%</strong>
+                Montant du paiement : <strong>%amount%</strong>
             available_fund: |
                 Fonds disponibles : <strong>%amount%</strong>
             insuffisant_fund: |
@@ -224,6 +227,7 @@ ekyna_commerce:
             proforma: Proforma
             confirmation: Confirmation de commande
             delivery: Bon de livraison
+            return: Bon de retour
 
     invoice:
         tab: Factures et avoirs

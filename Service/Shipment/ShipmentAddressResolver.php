@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentAddress;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentAddressResolver as BaseResolver;
+use libphonenumber\PhoneNumberUtil;
 
 /**
  * Class ShipmentAddressResolver
@@ -31,6 +32,11 @@ class ShipmentAddressResolver extends BaseResolver
      * @var CountryRepositoryInterface
      */
     private $countryRepository;
+
+    /**
+     * @var PhoneNumberUtil
+     */
+    private $phoneUtil;
 
 
     /**
@@ -68,6 +74,8 @@ class ShipmentAddressResolver extends BaseResolver
             throw new LogicException("Site name and site address parameters must be set.");
         }
 
+        $country = $this->findCountryByCode($siteAddress->getCountry());
+
         $companyAddress = new ShipmentAddress();
         $companyAddress
             ->setCompany($companyName)
@@ -76,10 +84,18 @@ class ShipmentAddressResolver extends BaseResolver
             //->setSupplement($siteAddress->getSupplement())
             ->setPostalCode($siteAddress->getPostalCode())
             ->setCity($siteAddress->getCity())
-            ->setCountry($this->findCountryByCode($siteAddress->getCountry()))
-            // TODO ->setState($this->findStateByName($siteAddress->getState()))
-            ->setPhone($siteAddress->getPhone())
-            ->setMobile($siteAddress->getMobile());
+            ->setCountry($country);
+            // TODO ->setState($this->findStateByName($siteAddress->getState()));
+
+        if (null === $this->phoneUtil) {
+            $this->phoneUtil = PhoneNumberUtil::getInstance();
+        }
+        if (!empty($phone = $siteAddress->getPhone())) {
+            $companyAddress->setPhone($this->phoneUtil->parse($phone, $country->getCode()));
+        }
+        if (!empty($mobile = $siteAddress->getMobile())) {
+            $companyAddress->setMobile($this->phoneUtil->parse($mobile, $country->getCode()));
+        }
 
         return $this->companyAddress = $companyAddress;
     }

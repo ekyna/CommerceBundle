@@ -61,20 +61,21 @@ class OrderController extends AbstractController
             ->findByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Order:show.html.twig', [
-            'order'  => $order,
-            'view'   => $orderView,
-            'orders' => $orders,
+            'order'        => $order,
+            'view'         => $orderView,
+            'orders'       => $orders,
+            'route_prefix' => 'ekyna_commerce_account_order',
         ]);
     }
 
     /**
-     * Payment action.
+     * Payment create action.
      *
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function paymentAction(Request $request)
+    public function paymentCreateAction(Request $request)
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -90,7 +91,7 @@ class OrderController extends AbstractController
 
         $checkout = $this->get('ekyna_commerce.checkout.payment_manager');
 
-        $checkout->initialize($order, $this->generateUrl('ekyna_commerce_account_order_payment', [
+        $checkout->initialize($order, $this->generateUrl('ekyna_commerce_account_order_payment_create', [
             'number' => $order->getNumber(),
         ]));
 
@@ -145,8 +146,8 @@ class OrderController extends AbstractController
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'message'      => 'ekyna_commerce.account.payment.confirm_cancel',
-            'cancel_path'  => $cancelUrl,
+            'message'     => 'ekyna_commerce.account.payment.confirm_cancel',
+            'cancel_path' => $cancelUrl,
         ]);
 
         $form->handleRequest($request);
@@ -192,6 +193,50 @@ class OrderController extends AbstractController
         return $this->redirectToRoute('ekyna_commerce_account_order_show', [
             'number' => $order->getNumber(),
         ]);
+    }
+
+    /**
+     * Order attachment download action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function shipmentDownloadAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        $shipment = $this->findShipmentByOrderAndId($order, $request->attributes->get('id'));
+
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createRenderer($shipment);
+
+        return $renderer->respond($request);
+    }
+
+    /**
+     * Order attachment download action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function invoiceDownloadAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        $invoice = $this->findInvoiceByOrderAndId($order, $request->attributes->get('id'));
+
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createRenderer($invoice);
+
+        return $renderer->respond($request);
     }
 
     /**
@@ -270,6 +315,54 @@ class OrderController extends AbstractController
         }
 
         return $payment;
+    }
+
+    /**
+     * Finds the attachment by order and id.
+     *
+     * @param OrderInterface $order
+     * @param integer        $id
+     *
+     * @return \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface
+     */
+    protected function findShipmentByOrderAndId(OrderInterface $order, $id)
+    {
+        $shipment = $this
+            ->get('ekyna_commerce.order_shipment.repository')
+            ->findOneBy([
+                'order' => $order,
+                'id'    => $id,
+            ]);
+
+        if (null === $shipment) {
+            throw $this->createNotFoundException('Shipment not found.');
+        }
+
+        return $shipment;
+    }
+
+    /**
+     * Finds the invoice by order and id.
+     *
+     * @param OrderInterface $order
+     * @param integer        $id
+     *
+     * @return \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface
+     */
+    protected function findInvoiceByOrderAndId(OrderInterface $order, $id)
+    {
+        $invoice = $this
+            ->get('ekyna_commerce.order_invoice.repository')
+            ->findOneBy([
+                'order' => $order,
+                'id'    => $id,
+            ]);
+
+        if (null === $invoice) {
+            throw $this->createNotFoundException('Invoice not found.');
+        }
+
+        return $invoice;
     }
 
     /**

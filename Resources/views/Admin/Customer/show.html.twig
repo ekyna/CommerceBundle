@@ -180,7 +180,7 @@
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-body" id="customer_address_{{ loop.index0 }}">
-                                <p>{{ address|commerce_address }}</p>
+                                <p>{{ address|address }}</p>
                                 <p>
                                 {%- if address.invoiceDefault -%}
                                     {%- if customer.hasParent() and customer.parent.getDefaultInvoiceAddress(true) is not same as(null) -%}

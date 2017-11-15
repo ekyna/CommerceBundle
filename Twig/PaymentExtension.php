@@ -287,12 +287,4 @@ class PaymentExtension extends \Twig_Extension
 
         return null;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_payment';
-    }
 }

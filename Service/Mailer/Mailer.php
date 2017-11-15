@@ -138,7 +138,7 @@ class Mailer
 
         // Invoices
         foreach ($notification->getInvoices() as $invoice) {
-            $renderer = $this->rendererFactory->createInvoiceRenderer($invoice);
+            $renderer = $this->rendererFactory->createRenderer($invoice);
             $content = $renderer->render(RendererInterface::FORMAT_PDF);
 
             $attach = new \Swift_Attachment($content, $renderer->getFilename() . '.pdf', 'application/pdf');

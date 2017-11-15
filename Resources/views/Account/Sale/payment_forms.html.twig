@@ -1,3 +1,4 @@
+{% spaceless %}
 {% for form in forms %}
     {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
     <div class="col-md-6">
@@ -9,3 +10,4 @@
     </div>
     {% if loop.last or loop.index0 % 2 == 1 %}</div>{% endif %}
 {% endfor %}
+{% endspaceless %}

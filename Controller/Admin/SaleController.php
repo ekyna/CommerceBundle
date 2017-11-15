@@ -420,7 +420,7 @@ class SaleController extends AbstractSaleController
         $this->get('ekyna_commerce.document.builder')->build($document);
         $this->get('ekyna_commerce.document.calculator')->calculate($document);
 
-        $renderer = $this->get('ekyna_commerce.renderer_factory')->createDocumentRenderer($document);
+        $renderer = $this->get('ekyna_commerce.renderer_factory')->createRenderer($document);
 
         $path = $renderer->create(RendererInterface::FORMAT_PDF);
 
@@ -485,7 +485,7 @@ class SaleController extends AbstractSaleController
         $this->get('ekyna_commerce.document.builder')->build($document);
         $this->get('ekyna_commerce.document.calculator')->calculate($document);
 
-        $renderer = $this->get('ekyna_commerce.renderer_factory')->createDocumentRenderer($document);
+        $renderer = $this->get('ekyna_commerce.renderer_factory')->createRenderer($document);
 
         return $renderer->respond($request);
     }

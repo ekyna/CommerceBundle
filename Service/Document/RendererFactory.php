@@ -3,7 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Knp\Snappy\GeneratorInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -65,64 +67,32 @@ class RendererFactory
     }
 
     /**
-     * Returns a new document renderer.
+     * Returns a new renderer.
      *
-     * @param DocumentInterface $document
-     *
-     * @return RendererInterface
-     */
-    public function createDocumentRenderer(DocumentInterface $document)
-    {
-        $renderer = new DocumentRenderer($document);
-
-        $this->buildRenderer($renderer);
-
-        return $renderer;
-    }
-
-    /**
-     * Returns a new invoice renderer.
-     *
-     * @param InvoiceInterface $invoice
+     * @param mixed $subject
      *
      * @return RendererInterface
      */
-    public function createInvoiceRenderer(InvoiceInterface $invoice)
+    public function createRenderer($subject)
     {
-        $renderer = new InvoiceRenderer($invoice);
+        if ($subject instanceof SupplierOrderInterface) {
+            $renderer = new SupplierOrderRenderer($subject);
+        } elseif ($subject instanceof ShipmentInterface) {
+            $renderer = new ShipmentRenderer($subject);
+        } elseif ($subject instanceof InvoiceInterface) {
+            $renderer = new InvoiceRenderer($subject);
+        } elseif ($subject instanceof DocumentInterface) {
+            $renderer = new DocumentRenderer($subject);
+        } else {
+            throw new InvalidArgumentException("Unsupported subject.");
+        }
 
-        $this->buildRenderer($renderer);
-
-        return $renderer;
-    }
-
-    /**
-     * Returns a new supplier order renderer.
-     *
-     * @param SupplierOrderInterface $supplierOrder
-     *
-     * @return RendererInterface
-     */
-    public function createSupplierOrderRenderer(SupplierOrderInterface $supplierOrder)
-    {
-        $renderer = new SupplierOrderRenderer($supplierOrder);
-
-        $this->buildRenderer($renderer);
-
-        return $renderer;
-    }
-
-    /**
-     * Builds the renderer.
-     *
-     * @param RendererInterface $renderer
-     */
-    private function buildRenderer(RendererInterface $renderer)
-    {
         $renderer->setTemplating($this->templating);
         $renderer->setPdfGenerator($this->pdfGenerator);
         $renderer->setImageGenerator($this->imageGenerator);
         $renderer->setLogoPath($this->logoPath);
         $renderer->setDebug($this->debug);
+
+        return $renderer;
     }
 }

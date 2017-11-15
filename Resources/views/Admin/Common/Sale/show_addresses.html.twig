@@ -8,7 +8,7 @@
             <div class="col-md-8">
                 <div class="panel panel-default" id="sale_invoiceAddress">
                     <div class="panel-body">
-                        {{ sale.invoiceAddress|commerce_address }}
+                        {{ sale.invoiceAddress|address }}
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                 {% if not sale.sameAddress %}
                     <div class="panel panel-default">
                         <div class="panel-body" id="sale_deliveryAddress">
-                            {{ sale.deliveryAddress|commerce_address }}
+                            {{ sale.deliveryAddress|address }}
                         </div>
                     </div>
                 {% else %}

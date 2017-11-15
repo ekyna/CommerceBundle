@@ -56,8 +56,13 @@
         <service id="ekyna_commerce.shipment_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper">
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
-            <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
             <argument type="service" id="request_stack"/>
+            <call method="setWeightCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
+            </call>
+            <call method="setAddressResolver">
+                <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
+            </call>
         </service>
 
     </services>

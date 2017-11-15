@@ -12,6 +12,15 @@
         'cancel_route': 'ekyna_commerce_account_order_payment_cancel'
     } -%}
 
+    <p>
+        {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
+            '%amount%': order.grandTotal|localizedcurrency(order.currency.code)
+        })|raw }}<br>
+        {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
+            '%amount%': order.remainingAmount|localizedcurrency(order.currency.code)
+        })|raw }}
+    </p>
+
     {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': order} -%}
 
     <div class="text-center">

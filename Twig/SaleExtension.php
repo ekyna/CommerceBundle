@@ -4,16 +4,16 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CoreBundle\Twig\UiExtension;
-use Ekyna\Component\Commerce\Cart\Model\CartInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
+use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\SaleView;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Order\Model\OrderInterface;
-use Ekyna\Component\Commerce\Order\Model\OrderStates;
+use Ekyna\Component\Commerce\Invoice\Model as Invoice;
+use Ekyna\Component\Commerce\Order\Model as Order;
+use Ekyna\Component\Commerce\Payment\Model as Payment;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
+use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -73,7 +73,31 @@ class SaleExtension extends \Twig_Extension
             new \Twig_SimpleTest(
                 'sale_stockable_state',
                 [$this, 'isSaleStockableSale']
-            )
+            ),
+            new \Twig_SimpleTest(
+                'sale_with_payment',
+                [$this, 'isSaleWithPayment']
+            ),
+            new \Twig_SimpleTest(
+                'sale_with_shipment',
+                [$this, 'isSaleWithShipment']
+            ),
+            new \Twig_SimpleTest(
+                'sale_with_return',
+                [$this, 'isSaleWithReturn']
+            ),
+            new \Twig_SimpleTest(
+                'sale_with_invoice',
+                [$this, 'isSaleWithInvoice']
+            ),
+            new \Twig_SimpleTest(
+                'sale_with_credit',
+                [$this, 'isSaleWithCredit']
+            ),
+            new \Twig_SimpleTest(
+                'sale_with_attachment',
+                [$this, 'isSaleWithAttachment']
+            ),
         ];
     }
 
@@ -92,6 +116,30 @@ class SaleExtension extends \Twig_Extension
                 'sale_state_badge',
                 [$this->constantHelper, 'renderSaleStateBadge'],
                 ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'sale_payments',
+                [$this, 'getSalePayments']
+            ),
+            new \Twig_SimpleFilter(
+                'sale_shipments',
+                [$this, 'getSaleShipments']
+            ),
+            new \Twig_SimpleFilter(
+                'sale_returns',
+                [$this, 'getSaleReturns']
+            ),
+            new \Twig_SimpleFilter(
+                'sale_invoices',
+                [$this, 'getSaleInvoices']
+            ),
+            new \Twig_SimpleFilter(
+                'sale_credits',
+                [$this, 'getSaleCredits']
+            ),
+            new \Twig_SimpleFilter(
+                'sale_attachments',
+                [$this, 'getSaleAttachments']
             ),
             // Builds the sale view form the sale
             new \Twig_SimpleFilter(
@@ -129,17 +177,257 @@ class SaleExtension extends \Twig_Extension
     /**
      * Returns whether the sale is in a stockable state.
      *
-     * @param SaleInterface $sale
+     * @param Common\SaleInterface $sale
      *
      * @return bool
      */
-    public function isSaleStockableSale(SaleInterface $sale)
+    public function isSaleStockableSale(Common\SaleInterface $sale)
     {
-        if ($sale instanceof OrderInterface) {
-            return OrderStates::isStockableState($sale->getState());
+        if ($sale instanceof Order\OrderInterface) {
+            return Order\OrderStates::isStockableState($sale->getState());
         }
 
         return false;
+    }
+
+    /**
+     * Returns whether or not the sale has at least one payment (which is not 'new').
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleWithPayment(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Payment\PaymentSubjectInterface) {
+            return false;
+        }
+
+        foreach ($sale->getPayments() as $payment) {
+            if ($payment->getState() !== Payment\PaymentStates::STATE_NEW) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether or not the sale has at least one shipment (which is not 'new' or a return).
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleWithShipment(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Shipment\ShipmentSubjectInterface) {
+            return false;
+        }
+
+        foreach ($sale->getShipments() as $shipment) {
+            if ($shipment->isReturn()) {
+                continue;
+            }
+
+            if ($shipment->getState() !== Shipment\ShipmentStates::STATE_NEW) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether or not the sale has at least one return shipment (which is not 'new').
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleWithReturn(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Shipment\ShipmentSubjectInterface) {
+            return false;
+        }
+
+        foreach ($sale->getShipments() as $shipment) {
+            if (!$shipment->isReturn()) {
+                continue;
+            }
+
+            if ($shipment->getState() !== Shipment\ShipmentStates::STATE_NEW) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether or not the sale has at least one invoice (which is not a credit).
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleWithInvoice(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Invoice\InvoiceSubjectInterface) {
+            return false;
+        }
+
+        foreach ($sale->getInvoices() as $invoice) {
+            if (Invoice\InvoiceTypes::isInvoice($invoice)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether or not the sale has at least one credit invoice.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleWithCredit(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Invoice\InvoiceSubjectInterface) {
+            return false;
+        }
+
+        foreach ($sale->getInvoices() as $invoice) {
+            if (Invoice\InvoiceTypes::isCredit($invoice)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether or not the sale has at least one attachment (which is not internal).
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleWithAttachment(Common\SaleInterface $sale)
+    {
+        foreach ($sale->getAttachments() as $attachment) {
+            if (!$attachment->isInternal()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the sale's payments (which are not 'new').
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return array
+     */
+    public function getSalePayments(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Payment\PaymentSubjectInterface) {
+            return [];
+        }
+
+        return $sale->getPayments()->filter(function(Payment\PaymentInterface $payment) {
+            return $payment->getState() !== Payment\PaymentStates::STATE_NEW;
+        })->toArray();
+    }
+
+    /**
+     * Returns the sale's shipments (which are not 'new' or returns).
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return array
+     */
+    public function getSaleShipments(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Shipment\ShipmentSubjectInterface) {
+            return [];
+        }
+
+        return $sale->getShipments()->filter(function(Shipment\ShipmentInterface $shipment) {
+            return !$shipment->isReturn() && $shipment->getState() !== Shipment\ShipmentStates::STATE_NEW;
+        })->toArray();
+    }
+
+    /**
+     * Returns the sale's returns (which are not 'new').
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return array
+     */
+    public function getSaleReturns(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Shipment\ShipmentSubjectInterface) {
+            return [];
+        }
+
+        return $sale->getShipments()->filter(function(Shipment\ShipmentInterface $shipment) {
+            return $shipment->isReturn() && $shipment->getState() !== Shipment\ShipmentStates::STATE_NEW;
+        })->toArray();
+    }
+
+    /**
+     * Returns the sale's invoices (which are not credits).
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return array
+     */
+    public function getSaleInvoices(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Invoice\InvoiceSubjectInterface) {
+            return [];
+        }
+
+        return $sale->getInvoices()->filter(function(Invoice\InvoiceInterface $invoice) {
+            return Invoice\InvoiceTypes::isInvoice($invoice);
+        })->toArray();
+    }
+
+    /**
+     * Returns the sale's credits.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return array
+     */
+    public function getSaleCredits(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Invoice\InvoiceSubjectInterface) {
+            return [];
+        }
+
+        return $sale->getInvoices()->filter(function(Invoice\InvoiceInterface $invoice) {
+            return Invoice\InvoiceTypes::isCredit($invoice);
+        })->toArray();
+    }
+
+    /**
+     * Returns the sale's attachments (which are not internal).
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return array
+     */
+    public function getSaleAttachments(Common\SaleInterface $sale)
+    {
+        return $sale->getAttachments()->filter(function(Common\AttachmentInterface $attachment) {
+            return !$attachment->isInternal();
+        })->toArray();
     }
 
     /**
@@ -165,19 +453,19 @@ class SaleExtension extends \Twig_Extension
     /**
      * Renders the sale transform button.
      *
-     * @param SaleInterface $sale
+     * @param Common\SaleInterface $sale
      *
      * @return string
      */
-    public function renderSaleTransformButton(SaleInterface $sale)
+    public function renderSaleTransformButton(Common\SaleInterface $sale)
     {
         $actions = [];
 
         // TODO use constants for target
 
-        $targets = TransformationTargets::getTargetsForSale($sale);
+        $targets = Common\TransformationTargets::getTargetsForSale($sale);
 
-        if ($sale instanceof CartInterface) {
+        /*if ($sale instanceof CartInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
                     $this->urlGenerator->generate('ekyna_commerce_cart_admin_transform', [
@@ -185,7 +473,8 @@ class SaleExtension extends \Twig_Extension
                         'target' => $target,
                     ]);
             }
-        } elseif ($sale instanceof QuoteInterface) {
+        } else*/
+        if ($sale instanceof QuoteInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
                     $this->urlGenerator->generate('ekyna_commerce_quote_admin_transform', [
@@ -193,7 +482,7 @@ class SaleExtension extends \Twig_Extension
                         'target'  => $target,
                     ]);
             }
-        } elseif ($sale instanceof OrderInterface) {
+        } elseif ($sale instanceof Order\OrderInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
                     $this->urlGenerator->generate('ekyna_commerce_order_admin_transform', [
@@ -208,13 +497,5 @@ class SaleExtension extends \Twig_Extension
         return $this
             ->uiExtension
             ->renderButtonDropdown('ekyna_core.button.transform', $actions);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_sale';
     }
 }

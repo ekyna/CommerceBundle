@@ -5,8 +5,7 @@
 
 {# --- HEAD TITLE --- #}
 {%- block head_title -%}
-    {{- ('ekyna_commerce.supplier_order.label.singular')|trans }}
-    {{ supplier_order.number -}}
+    {{- 'ekyna_commerce.document.type.form'|trans }} {{ supplier_order.number -}}
 {%- endblock head_title -%}
 
 
@@ -16,13 +15,13 @@
 {# --- DOC TITLE --- #}
 {% block doc_title -%}
     <h1>
-        {{- ('ekyna_commerce.supplier_order.label.singular')|trans }}
+        {{- 'ekyna_commerce.supplier_order.label.singular'|trans }}
         {{ supplier_order.number -}}
     </h1>
     {% if supplier_order.orderedAt is not same as(null) -%}
-    <p>Le {{ supplier_order.orderedAt|localizeddate('long', 'none') }}.</p>
+    <p>Le {{ supplier_order.orderedAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
     {%- else -%}
-    <p>Le {{ supplier_order.createdAt|localizeddate('long', 'none') }}.</p>
+    <p>Le {{ supplier_order.createdAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
     {%- endif -%}
 {%- endblock doc_title %}
 
@@ -69,7 +68,7 @@
                 <td>{{ item.designation }}</td>
                 <td>{{ item.reference }}</td>
                 <td class="text-right">{{ item.netPrice|localizedcurrency(currency) }}</td>
-                <td class="text-right">{{ item.quantity|localizednumber }}</td>
+                <td class="text-right">{{ item.quantity|localizednumber }}</td>{# TODO Packing format #}
                 <td class="text-right">{{ (item.netPrice * item.quantity)|localizedcurrency(currency) }}</td>
             </tr>
         {% endfor %}

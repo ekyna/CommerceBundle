@@ -17,7 +17,7 @@
         {{- ('ekyna_commerce.document.type.' ~ document.type)|trans }}
         {{ document.sale.number -}}
     </h1>
-    <p>Le {{ date|localizeddate('long', 'none') }}.</p>
+    <p>Le {{ date|localizeddate('long', 'none') }}.</p>{# TODO trans #}
 {%- endblock doc_title -%}
 
 
@@ -97,7 +97,7 @@
                 {%- endfor -%}
             </td>
             {% endif %}
-            <td class="text-right">{{ line.quantity|localizednumber }}</td>
+            <td class="text-right">{{ line.quantity|localizednumber }}</td>{# TODO Packing format #}
             {% if line_discount %}
             <td class="text-right">
                 {{- line.baseTotal|localizedcurrency(currency) -}}

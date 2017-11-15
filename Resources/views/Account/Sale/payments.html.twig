@@ -1,28 +1,24 @@
+{% spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        {{ 'ekyna_commerce.account.payment.title'|trans|raw }} - {{ sale.paymentState|payment_state_badge }}
+        {{- 'ekyna_commerce.account.payment.title'|trans|raw -}}
     </div>
     <table class="table table-striped table-hover">
         <tbody>
-        {% for payment in sale.payments %}
+        {%- for payment in sale|sale_payments -%}
             <tr>
                 <td>{{ payment.getNumber() }}</td>
                 <td>{{ payment.getMethod() }}</td>
                 <td>{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
-                <td>{{ payment.getCurrency() }}</td>
+                {#<td>{{ payment.getCurrency() }}</td>#}
                 <td>{{ payment|payment_state_badge }}</td>
                 <td>{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
-                <td class="actions">
-                    {{ payment_account_actions(payment) }}
+                <td class="actions text-right">
+                    {{- payment_account_actions(payment) -}}
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="7" class="text-center">
-                    <em>{{ 'ekyna_commerce.account.payment.empty_list'|trans }}</em>
-                </td>
-            </tr>
-        {% endfor %}
+        {%- endfor -%}
         </tbody>
     </table>
 </div>
+{% endspaceless %}

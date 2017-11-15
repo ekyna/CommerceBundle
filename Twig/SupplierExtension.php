@@ -71,12 +71,4 @@ class SupplierExtension extends \Twig_Extension
             }),
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_supplier';
-    }
 }

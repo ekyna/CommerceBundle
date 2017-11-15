@@ -13,5 +13,9 @@
         {{- ('ekyna_commerce.' ~ document.type ~ '.label.singular')|trans }}
         {{ document.number -}}
     </h1>
-    <p>Le {{ document.createdAt|localizeddate('long', 'none') }}.</p>
+    <p>
+        Le {{ document.createdAt|localizeddate('long', 'none') }},
+        commande <strong>{{ document.sale.number }}</strong>.
+    </p>
+    {# TODO trans #}
 {%- endblock doc_title %}

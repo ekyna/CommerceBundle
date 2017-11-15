@@ -10,29 +10,30 @@
 
     {{- render_sale_view(view) -}}
 
-    {% if 0 < quote.remainingAmount %}
+    {% if not quote.paid %}
         <div class="text-center" style="margin-bottom: 40px;">
-            <a href="{{ path('ekyna_commerce_account_quote_payment', {'number': quote.number}) }}" class="btn btn-primary btn-lg">
+            <a href="{{ path('ekyna_commerce_account_quote_payment_create', {'number': quote.number}) }}"
+               class="btn btn-primary btn-lg">
                 <span class="glyphicon glyphicon-chevron-right"></span>
                 {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
             </a>
         </div>
     {% endif %}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
-        'sale': quote,
-        'detail_route': 'ekyna_commerce_account_quote_attachment_download'
-    } -%}
+    {# Payments #}
+    {%- if quote is sale_with_payment -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': quote} only -%}
+    {%- endif -%}
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
-        'sale': quote,
-        'cancel_route': 'ekyna_commerce_account_quote_payment_cancel'
-    } -%}
+    {# Attachments #}
+    {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
+        'sale': quote, 'route_prefix': route_prefix
+    } only -%}
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" %}
+    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {'quotes': quotes} only %}
 {% endspaceless %}
 {% endblock %}
 

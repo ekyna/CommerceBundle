@@ -311,7 +311,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         $renderer = $this
             ->get('ekyna_commerce.renderer_factory')
-            ->createInvoiceRenderer($invoice);
+            ->createRenderer($invoice);
 
         return $renderer->respond($request);
     }

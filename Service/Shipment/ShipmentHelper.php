@@ -5,11 +5,11 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 use Ekyna\Bundle\ProductBundle\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
-use Ekyna\Component\Commerce\Shipment\Calculator\WeightCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Gateway\Action;
 use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
+use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
+use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentAddressResolverInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,17 +20,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @package Ekyna\Bundle\CommerceBundle\Service\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentHelper
+class ShipmentHelper implements
+    Shipment\WeightCalculatorAwareInterface,
+    Shipment\AddressResolverAwareInterface,
+    ShipmentAddressResolverInterface
 {
+    use Shipment\WeightCalculatorAwareTrait,
+        Shipment\AddressResolverAwareTrait;
+
     /**
      * @var RegistryInterface
      */
     private $gatewayRegistry;
-
-    /**
-     * @var WeightCalculatorInterface
-     */
-    private $weightCalculator;
 
     /**
      * @var RequestStack
@@ -41,17 +42,14 @@ class ShipmentHelper
     /**
      * Constructor.
      *
-     * @param RegistryInterface         $gatewayRegistry
-     * @param WeightCalculatorInterface $weightCalculator
-     * @param RequestStack              $requestStack
+     * @param RegistryInterface $gatewayRegistry
+     * @param RequestStack      $requestStack
      */
     public function __construct(
         RegistryInterface $gatewayRegistry,
-        WeightCalculatorInterface $weightCalculator,
         RequestStack $requestStack
     ) {
         $this->gatewayRegistry = $gatewayRegistry;
-        $this->weightCalculator = $weightCalculator;
         $this->requestStack = $requestStack;
     }
 
@@ -68,11 +66,11 @@ class ShipmentHelper
     /**
      * Returns the shipment's total weight.
      *
-     * @param ShipmentInterface $shipment
+     * @param Shipment\ShipmentInterface $shipment
      *
      * @return float
      */
-    public function getShipmentWeight(ShipmentInterface $shipment)
+    public function getShipmentWeight(Shipment\ShipmentInterface $shipment)
     {
         if (0 < $shipment->getWeight()) {
             return $shipment->getWeight();
@@ -82,24 +80,40 @@ class ShipmentHelper
     }
 
     /**
+     * @inheritdoc
+     */
+    public function resolveSenderAddress(ShipmentInterface $shipment)
+    {
+        return $this->addressResolver->resolveSenderAddress($shipment);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function resolveReceiverAddress(ShipmentInterface $shipment)
+    {
+        return $this->addressResolver->resolveReceiverAddress($shipment);
+    }
+
+    /**
      * Returns whether or not the given shipment can be deleted.
      *
-     * @param ShipmentInterface $shipment
+     * @param Shipment\ShipmentInterface $shipment
      *
      * @return bool
      */
-    public function isShipmentDeleteable(ShipmentInterface $shipment)
+    public function isShipmentDeleteable(Shipment\ShipmentInterface $shipment)
     {
-        return ShipmentStates::isDeletableState($shipment->getState());
+        return Shipment\ShipmentStates::isDeletableState($shipment->getState());
     }
 
     /**
      * Executes the platform action.
      *
-     * @param string                  $platformName
-     * @param string                  $actionName
-     * @param array|ShipmentInterface $shipments
-     * @param Request|null            $sfRequest
+     * @param string                           $platformName
+     * @param string                           $actionName
+     * @param array|Shipment\ShipmentInterface $shipments
+     * @param Request|null                     $sfRequest
      *
      * @return \Symfony\Component\HttpFoundation\Response|null
      *
@@ -131,10 +145,10 @@ class ShipmentHelper
     /**
      * Executes the gateway action.
      *
-     * @param string                  $gatewayName
-     * @param string                  $actionName
-     * @param array|ShipmentInterface $shipments
-     * @param Request|null            $sfRequest
+     * @param string                           $gatewayName
+     * @param string                           $actionName
+     * @param array|Shipment\ShipmentInterface $shipments
+     * @param Request|null                     $sfRequest
      *
      * @return \Symfony\Component\HttpFoundation\Response|null
      *
@@ -166,9 +180,9 @@ class ShipmentHelper
     /**
      * Creates the shipment action.
      *
-     * @param string                  $name
-     * @param array|ShipmentInterface $shipments
-     * @param Request                 $sfRequest
+     * @param string                           $name
+     * @param array|Shipment\ShipmentInterface $shipments
+     * @param Request                          $sfRequest
      *
      * @return Action\ActionInterface
      */
@@ -242,12 +256,12 @@ class ShipmentHelper
     /**
      * Returns the shipment gateway actions.
      *
-     * @param ShipmentInterface $shipment
-     * @param string            $scope
+     * @param Shipment\ShipmentInterface $shipment
+     * @param string                     $scope
      *
      * @return array
      */
-    public function getGatewayActions(ShipmentInterface $shipment = null, $scope = null)
+    public function getGatewayActions(Shipment\ShipmentInterface $shipment = null, $scope = null)
     {
         $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 
@@ -267,12 +281,12 @@ class ShipmentHelper
     /**
      * Returns the shipment gateway actions names.
      *
-     * @param ShipmentInterface $shipment
-     * @param string            $scope
+     * @param Shipment\ShipmentInterface $shipment
+     * @param string                     $scope
      *
      * @return array
      */
-    public function getGatewayActionsNames(ShipmentInterface $shipment = null, $scope = null)
+    public function getGatewayActionsNames(Shipment\ShipmentInterface $shipment = null, $scope = null)
     {
         return array_map([$this, 'getActionName'], $this->getGatewayActions($shipment, $scope));
     }

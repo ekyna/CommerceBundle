@@ -35,7 +35,7 @@ ekyna_commerce_order_invoice_admin_render:
     path: /{orderInvoiceId}/render.{_format}
     defaults:
         _controller: "ekyna_commerce.order_invoice.controller:renderAction"
-        _format: html
+        _format: pdf
     methods: [GET]
     requirements:
         orderId: \d+

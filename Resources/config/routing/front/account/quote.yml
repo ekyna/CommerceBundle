@@ -22,16 +22,16 @@ ekyna_commerce_account_quote_show:
         number: "[a-zA-Z0-9]+"
     methods: [GET]
 
-ekyna_commerce_account_quote_payment: # TODO _create
-    path: /{number}/payment
+ekyna_commerce_account_quote_payment_create:
+    path: /{number}/payments/create
     defaults:
-        _controller: EkynaCommerceBundle:Account/Quote:payment
+        _controller: EkynaCommerceBundle:Account/Quote:paymentCreate
     requirements:
         number: "[a-zA-Z0-9]+"
     methods: [GET, POST]
 
 ekyna_commerce_account_quote_payment_cancel:
-    path: /{number}/payment/{key}/cancel
+    path: /{number}/payments/{key}/cancel
     defaults:
         _controller: EkynaCommerceBundle:Account/Quote:paymentCancel
     requirements:
@@ -40,7 +40,7 @@ ekyna_commerce_account_quote_payment_cancel:
     methods: [GET, POST]
 
 ekyna_commerce_account_quote_payment_status:
-    path: /{number}/payment/{key}/status
+    path: /{number}/payments/{key}/status
     defaults:
         _controller: EkynaCommerceBundle:Account/Quote:paymentStatus
     requirements:
@@ -49,7 +49,7 @@ ekyna_commerce_account_quote_payment_status:
     methods: [GET]
 
 ekyna_commerce_account_quote_attachment_download:
-    path: /{number}/documents/{id}
+    path: /{number}/documents/{id}/download
     defaults:
         _controller: EkynaCommerceBundle:Account/Quote:attachmentDownload
     requirements:

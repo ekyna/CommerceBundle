@@ -68,7 +68,7 @@
                     <div class="col-md-10">
                     {% if supplier.address is not same as(null) %}
                         <div class="show-widget show-widget-block">
-                            {{ supplier.address|commerce_address }}
+                            {{ supplier.address|address }}
                         </div>
                     {% else %}
                         <div class="show-widget show-widget-inline">

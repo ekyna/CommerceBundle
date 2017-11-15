@@ -22,16 +22,16 @@ ekyna_commerce_account_order_show:
         number: "[a-zA-Z0-9]+"
     methods: [GET]
 
-ekyna_commerce_account_order_payment: # TODO _create
-    path: /{number}/payment
+ekyna_commerce_account_order_payment_create:
+    path: /{number}/payments/create
     defaults:
-        _controller: EkynaCommerceBundle:Account/Order:payment
+        _controller: EkynaCommerceBundle:Account/Order:paymentCreate
     requirements:
         number: "[a-zA-Z0-9]+"
     methods: [GET, POST]
 
 ekyna_commerce_account_order_payment_cancel:
-    path: /{number}/payment/{key}/cancel
+    path: /{number}/payments/{key}/cancel
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:paymentCancel
     requirements:
@@ -40,7 +40,7 @@ ekyna_commerce_account_order_payment_cancel:
     methods: [GET, POST]
 
 ekyna_commerce_account_order_payment_status:
-    path: /{number}/payment/{key}/status
+    path: /{number}/payments/{key}/status
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:paymentStatus
     requirements:
@@ -48,8 +48,30 @@ ekyna_commerce_account_order_payment_status:
         key: "[a-zA-Z0-9]+"
     methods: [GET]
 
+ekyna_commerce_account_order_shipment_download:
+    path: /{number}/shipments/{id}/download.{_format}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:shipmentDownload
+        _format: pdf
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        id: \d+
+        _format: pdf|html|jpg
+    methods: [GET]
+
+ekyna_commerce_account_order_invoice_download:
+    path: /{number}/invoices/{id}/download.{_format}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:invoiceDownload
+        _format: pdf
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        id: \d+
+        _format: pdf|html|jpg
+    methods: [GET]
+
 ekyna_commerce_account_order_attachment_download:
-    path: /{number}/documents/{id}
+    path: /{number}/documents/{id}/download
     defaults:
         _controller: EkynaCommerceBundle:Account/Order:attachmentDownload
     requirements:

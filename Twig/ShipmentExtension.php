@@ -97,6 +97,14 @@ class ShipmentExtension extends \Twig_Extension
                 'shipment_deleteable',
                 [$this->shipmentHelper, 'isShipmentDeleteable']
             ),
+            new \Twig_SimpleFilter(
+                'shipment_sender_address',
+                [$this->shipmentHelper, 'resolveSenderAddress']
+            ),
+            new \Twig_SimpleFilter(
+                'shipment_receiver_address',
+                [$this->shipmentHelper, 'resolveReceiverAddress']
+            ),
         ];
     }
 
@@ -208,13 +216,5 @@ class ShipmentExtension extends \Twig_Extension
         return $this->template->render([
             'list' => $list,
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_shipment';
     }
 }
