@@ -115,6 +115,7 @@
         <service id="ekyna_commerce.notification.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType">
             <argument type="service" id="ekyna_commerce.notification.builder"/>
+            <argument type="service" id="translator"/>
             <tag name="form.type"/>
         </service>
 
@@ -383,6 +384,7 @@
         <service id="ekyna_commerce.supplier_order.create_form_flow"
                  class="Ekyna\Bundle\CommerceBundle\Form\SupplierOrderCreateFlow"
                  parent="craue.form.flow">
+            <argument type="service" id="ekyna_commerce.supplier_order.operator"/>
         </service>
         <!-- Supplier order compose type -->
         <service id="ekyna_commerce.supplier_order_submit.form_type"

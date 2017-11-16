@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
+use Ekyna\Component\Commerce\Exception\LogicException;
 
 /**
  * Class SaleRenderer
@@ -12,27 +13,31 @@ use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 class DocumentRenderer extends AbstractRenderer
 {
     /**
-     * @var DocumentInterface
-     */
-    private $document;
-
-
-    /**
-     * Constructor.
-     *
-     * @param DocumentInterface $document
-     */
-    public function __construct(DocumentInterface $document)
-    {
-        $this->document = $document;
-    }
-
-    /**
      * @inheritDoc
      */
     public function getLastModified()
     {
-        return $this->document->getSale()->getUpdatedAt();
+        if (empty($this->subjects)) {
+            throw new LogicException("Please add subject(s) first.");
+        }
+
+        if (1 === count($this->subjects)) {
+            /** @var DocumentInterface $subject */
+            $subject = reset($this->subjects);
+
+            return $subject->getSale()->getUpdatedAt();
+        }
+
+        $date = null;
+
+        /** @var DocumentInterface $s */
+        foreach ($this->subjects as $s) {
+            if (null === $date || $s->getSale()->getUpdatedAt() > $date) {
+               $date = $s->getSale()->getUpdatedAt();
+            }
+        }
+
+        return $date;
     }
 
     /**
@@ -40,18 +45,43 @@ class DocumentRenderer extends AbstractRenderer
      */
     public function getFilename()
     {
-        return $this->document->getType() . '_' . $this->document->getSale()->getNumber();
+        if (empty($this->subjects)) {
+            throw new LogicException("Please add subject(s) first.");
+        }
+
+        if (1 < count($this->subjects)) {
+            return 'documents';
+        }
+
+        /** @var DocumentInterface $subject */
+        $subject = reset($this->subjects);
+
+        return $subject->getType() . '_' . $subject->getSale()->getNumber();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function supports($subject)
+    {
+        return $subject instanceof DocumentInterface;
     }
 
     /**
      * @inheritdoc
      */
-    protected function getContent()
+    protected function getTemplate()
     {
-        return $this->renderView('EkynaCommerceBundle:Document:document.html.twig', [
-            'logo_path' => $this->logoPath,
-            'document'  => $this->document,
-            'date'      => new \DateTime(),
-        ]);
+        return 'EkynaCommerceBundle:Document:document.html.twig';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getParameters()
+    {
+        return [
+            'date' => new \DateTime(),
+        ];
     }
 }

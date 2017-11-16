@@ -12,45 +12,18 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 class SupplierOrderRenderer extends AbstractRenderer
 {
     /**
-     * @var SupplierOrderInterface
-     */
-    private $supplierOrder;
-
-
-    /**
-     * Constructor.
-     *
-     * @param SupplierOrderInterface $supplierOrder
-     */
-    public function __construct(SupplierOrderInterface $supplierOrder)
-    {
-        $this->supplierOrder = $supplierOrder;
-    }
-
-    /**
      * @inheritDoc
      */
-    public function getLastModified()
+    protected function supports($subject)
     {
-        return $this->supplierOrder->getUpdatedAt();
+        return $subject instanceof SupplierOrderInterface;
     }
 
     /**
      * @inheritdoc
      */
-    public function getFilename()
+    protected function getTemplate()
     {
-        return $this->supplierOrder->getNumber();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getContent()
-    {
-        return $this->renderView('EkynaCommerceBundle:Document:supplier_order.html.twig', [
-            'logo_path'      => $this->logoPath,
-            'supplier_order' => $this->supplierOrder,
-        ]);
+        return 'EkynaCommerceBundle:Document:supplier_order.html.twig';
     }
 }

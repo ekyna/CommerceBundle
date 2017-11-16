@@ -4,11 +4,10 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
+use Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentPlatformActionType;
-use Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType;
 use Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentActionsType;
 use Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType;
-use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Shipment\Gateway\Action\ActionInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -156,5 +155,9 @@ class OrderShipmentType extends AbstractOrderListType
                 ]);
             }
         }
+
+        $builder->addAction('documents', ShipmentDocumentActionType::class, [
+            'label' => 'Afficher les bons de livraison/retour', // TODO trans
+        ]);
     }
 }

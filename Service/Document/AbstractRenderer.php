@@ -2,7 +2,10 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Component\Commerce\Common\Model\NumberSubjectInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Resource\Model\TimestampableInterface;
 use Knp\Snappy\GeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,9 +44,48 @@ abstract class AbstractRenderer implements RendererInterface
      */
     protected $debug;
 
+    /**
+     * @var array
+     */
+    protected $subjects;
+
 
     /**
-     * @inheritdoc
+     * Constructor.
+     *
+     * @param mixed $subjects
+     */
+    public function __construct($subjects)
+    {
+        $this->subjects = [];
+
+        if (is_array($subjects)) {
+            foreach ($subjects as $subject) {
+                $this->addSubject($subject);
+            }
+        } else {
+            $this->addSubject($subjects);
+        }
+    }
+
+    /**
+     * Adds the subject.
+     *
+     * @param mixed $subject
+     */
+    private function addSubject($subject)
+    {
+        if (!$this->supports($subject)) {
+            throw new InvalidArgumentException("Unsupported subject.");
+        }
+
+        $this->subjects[] = $subject;
+    }
+
+    /**
+     * Sets the templating engine.
+     *
+     * @param EngineInterface $templating
      */
     public function setTemplating(EngineInterface $templating)
     {
@@ -51,7 +93,9 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * Sets the pdf generator.
+     *
+     * @param GeneratorInterface $generator
      */
     public function setPdfGenerator(GeneratorInterface $generator)
     {
@@ -69,7 +113,9 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * Sets the logo path.
+     *
+     * @param string $logoPath
      */
     public function setLogoPath($logoPath)
     {
@@ -77,7 +123,9 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * Sets whether to debug.
+     *
+     * @param bool $debug
      */
     public function setDebug($debug)
     {
@@ -115,10 +163,18 @@ abstract class AbstractRenderer implements RendererInterface
 
         $content = $this->getContent();
 
-        if ($format === RendererInterface::FORMAT_PDF) {
-            return $this->pdfGenerator->getOutputFromHtml($content);
-        } elseif ($format === RendererInterface::FORMAT_JPG) {
-            return $this->imageGenerator->getOutputFromHtml($content);
+        if ($format !== RendererInterface::FORMAT_HTML) {
+            $options = [
+                'margin-top'    => "0",
+                'margin-right'  => "0",
+                'margin-bottom' => "0",
+                'margin-left'   => "0",
+            ];
+            if ($format === RendererInterface::FORMAT_PDF) {
+                return $this->pdfGenerator->getOutputFromHtml($content, $options);
+            } elseif ($format === RendererInterface::FORMAT_JPG) {
+                return $this->imageGenerator->getOutputFromHtml($content, $options);
+            }
         }
 
         return $content;
@@ -163,16 +219,6 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    abstract public function getLastModified();
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getFilename();
-
-    /**
      * Validates the format.
      *
      * @param string $format
@@ -189,22 +235,88 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * Renders the view.
-     *
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return string
-     */
-    protected function renderView($name, array $parameters = [])
-    {
-        return $this->templating->render($name, $parameters);
-    }
-
-    /**
      * Returns the document's content.
      *
      * @return string
      */
-    abstract protected function getContent();
+    protected function getContent()
+    {
+        return $this->templating->render('EkynaCommerceBundle:Document:render.html.twig', array_replace([
+            'debug'     => $this->debug,
+            'logo_path' => $this->logoPath,
+            'subjects'  => $this->subjects,
+            'template'  => $this->getTemplate(),
+        ], $this->getParameters()));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLastModified()
+    {
+        if (empty($this->subjects)) {
+            throw new LogicException("Please add subject(s) first.");
+        }
+
+        /** @var TimestampableInterface $subject */
+        $subject = null;
+
+        if (1 === count($this->subjects)) {
+            $subject = reset($this->subjects);
+        } else {
+            /** @var TimestampableInterface $s */
+            foreach ($this->subjects as $s) {
+                if (null === $subject || $subject->getUpdatedAt() < $s->getUpdatedAt()) {
+                    $subject = $s;
+                }
+            }
+        }
+
+        return $subject->getUpdatedAt();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFilename()
+    {
+        if (empty($this->subjects)) {
+            throw new LogicException("Please add subject(s) first.");
+        }
+
+        if (1 < count($this->subjects)) {
+            return 'document';
+        }
+
+        /** @var NumberSubjectInterface $shipment */
+        $shipment = reset($this->subjects);
+
+        return $shipment->getNumber();
+    }
+
+    /**
+     * Returns whether the render supports the given subject.
+     *
+     * @param mixed $subject
+     *
+     * @return bool
+     */
+    abstract protected function supports($subject);
+
+    /**
+     * Returns the template.
+     *
+     * @return string
+     */
+    abstract protected function getTemplate();
+
+    /**
+     * Returns the template parameters.
+     *
+     * @return array
+     */
+    protected function getParameters()
+    {
+        return [];
+    }
 }

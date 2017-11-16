@@ -2,26 +2,19 @@
 
 {% import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
-
-{# --- HEAD TITLE --- #}
-{%- block head_title -%}
-    {{- 'ekyna_commerce.document.type.form'|trans }} {{ supplier_order.number -}}
-{%- endblock head_title -%}
-
-
-{% set currency = supplier_order.currency.code %}
+{% set currency = subject.currency.code %}
 
 
 {# --- DOC TITLE --- #}
 {% block doc_title -%}
     <h1>
         {{- 'ekyna_commerce.supplier_order.label.singular'|trans }}
-        {{ supplier_order.number -}}
+        {{ subject.number -}}
     </h1>
-    {% if supplier_order.orderedAt is not same as(null) -%}
-    <p>Le {{ supplier_order.orderedAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
+    {% if subject.orderedAt is not same as(null) -%}
+    <p>Le {{ subject.orderedAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
     {%- else -%}
-    <p>Le {{ supplier_order.createdAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
+    <p>Le {{ subject.createdAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
     {%- endif -%}
 {%- endblock doc_title %}
 
@@ -30,7 +23,7 @@
 {%- block doc_customer -%}
     <p>
         {{- get_setting('general.site_name') }}<br>
-        {{- supplier_order.supplier.customerCode -}}
+        {{- subject.supplier.customerCode -}}
     </p>
 {%- endblock doc_customer -%}
 
@@ -60,7 +53,7 @@
 
         {# GOODS #}
         <tbody class="stripped">
-        {% for item in supplier_order.items %}
+        {% for item in subject.items %}
             {% set line_total = item.netPrice * item.quantity %}
             {% set total = total + line_total %}
 
@@ -75,7 +68,7 @@
         </tbody>
 
         {# SHIPMENT #}
-        {% if 0 < supplier_order.shippingCost %}
+        {% if 0 < subject.shippingCost %}
             {% block spacer %}
             <tbody class="spacer">
             <tr>
@@ -85,8 +78,8 @@
             {% endblock spacer %}
             <tbody>
                 <tr>
-                    <td colspan="4">{{ 'ekyna_commerce.supplier_order.field.shipping_cost'|trans }}</td>
-                    <td class="text-right">{{ supplier_order.shippingCost|localizedcurrency(currency) }}</td>
+                    <td colspan="4">{{ 'ekyna_commerce.subject.field.shipping_cost'|trans }}</td>
+                    <td class="text-right">{{ subject.shippingCost|localizedcurrency(currency) }}</td>
                 </tr>
             </tbody>
         {% endif %}
@@ -97,17 +90,8 @@
         <tr>
             <td colspan="3" rowspan="3">&nbsp;</td>
             <th class="text-right">{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-            <td class="total final text-right">{{ (total + supplier_order.shippingCost)|localizedcurrency(currency) }}</td>
+            <td class="total final text-right">{{ (total + subject.shippingCost)|localizedcurrency(currency) }}</td>
         </tr>
         </tbody>
     </table>
-
 {% endblock doc_lines %}
-
-
-{# --- FOOTER --- #}
-{% block doc_footer %}
-    {#{{- get_setting('commerce.invoice_footer')|raw -}}#}
-{% endblock doc_footer %}
-
-

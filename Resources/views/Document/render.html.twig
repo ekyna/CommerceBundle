@@ -1,0 +1,16 @@
+{% spaceless %}
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Sale document</title>
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/document.css')) }}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+{% for subject in subjects %}
+    {% if not loop.first %}<hr>{% endif %}
+    <div class="wrapper">{% include template %}</div>
+{% endfor %}
+</body>
+</html>
+{% endspaceless %}

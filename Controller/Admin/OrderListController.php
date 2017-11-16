@@ -39,6 +39,39 @@ class OrderListController extends Controller
     }
 
     /**
+     * Order invoices documents action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function invoiceDocumentAction(Request $request)
+    {
+        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_invoice.class'));
+
+        $ids = (array) $request->query->get('id');
+        $repository = $this->get('ekyna_commerce.order_invoice.repository');
+
+        $invoices = [];
+
+        foreach ($ids as $id) {
+            if (null !== $invoice = $repository->find($id)) {
+                $invoices[] = $invoice;
+            }
+        }
+
+        if (empty($invoices)) {
+            return $this->redirectToRoute('ekyna_commerce_admin_order_list_invoice');
+        }
+
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createRenderer($invoices);
+
+        return $renderer->respond($request);
+    }
+
+    /**
      * Order payments list action.
      *
      * @param Request $request
@@ -84,6 +117,39 @@ class OrderListController extends Controller
         return $this->render('EkynaCommerceBundle:Admin/OrderList:shipment.html.twig', [
             'shipments' => $table->createView(),
         ]);
+    }
+
+    /**
+     * Order shipments documents action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function shipmentDocumentAction(Request $request)
+    {
+        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_shipment.class'));
+
+        $ids = (array) $request->query->get('id');
+        $repository = $this->get('ekyna_commerce.order_shipment.repository');
+
+        $shipments = [];
+
+        foreach ($ids as $id) {
+            if (null !== $shipment = $repository->find($id)) {
+                $shipments[] = $shipment;
+            }
+        }
+
+        if (empty($shipments)) {
+            return $this->redirectToRoute('ekyna_commerce_admin_order_list_shipment');
+        }
+
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createRenderer($shipments);
+
+        return $renderer->respond($request);
     }
 
     /**

@@ -60,6 +60,8 @@ class PaymentMethodController extends Controller\ResourceController
                 $event->toFlashes($this->getFlashBag());
 
                 if (!$event->hasErrors()) {
+                    $flow->reset();
+
                     return $this->redirect($this->generateUrl(
                         $this->config->getRoute('show'),
                         $context->getIdentifiers(true)

@@ -89,9 +89,23 @@
         </service>
 
         <!-- Shipment platform action action type -->
-        <service id="ekyna_commerce.shipment_platform_action.action_type"
+        <service id="ekyna_commerce.shipment_platform.action_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentPlatformActionType">
             <argument type="service" id="ekyna_commerce.shipment_helper"/>
+            <tag name="table.action_type"/>
+        </service>
+
+        <!-- Shipment form action type -->
+        <service id="ekyna_commerce.shipment_form.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentDocumentActionType">
+            <argument type="service" id="router"/>
+            <tag name="table.action_type"/>
+        </service>
+
+        <!-- Invoice form action type -->
+        <service id="ekyna_commerce.invoice_form.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType">
+            <argument type="service" id="router"/>
             <tag name="table.action_type"/>
         </service>
 

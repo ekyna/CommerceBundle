@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Column\InvoiceTypeType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -66,5 +67,9 @@ class OrderInvoiceType extends AbstractOrderListType
                 'position' => 10,
             ]);
         }
+
+        $builder->addAction('documents', InvoiceDocumentActionType::class, [
+            'label' => 'Afficher les factures/avoirs', // TODO trans
+        ]);
     }
 }

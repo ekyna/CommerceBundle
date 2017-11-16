@@ -74,5 +74,41 @@
         </property>
     </class>
 
+    <!-- Notification -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Model\Notification">
+        <property name="from">
+            <constraint name="NotNull"/>
+            <constraint name="Valid"/>
+        </property>
+        <property name="recipients">
+            <constraint name="Count">
+                <option name="min">1</option>
+            </constraint>
+            <constraint name="Valid"/>
+        </property>
+        <property name="extraRecipients">
+            <constraint name="Valid"/>
+        </property>
+        <property name="copies">
+            <constraint name="Valid"/>
+        </property>
+        <property name="extraCopies">
+            <constraint name="Valid"/>
+        </property>
+        <property name="subject">
+            <constraint name="NotBlank"/>
+        </property>
+    </class>
+
+    <!-- Recipient -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Model\Recipient">
+        <property name="email">
+            <constraint name="NotNull"/>
+            <constraint name="Email"/>
+        </property>
+    </class>
+
 
 </constraint-mapping>

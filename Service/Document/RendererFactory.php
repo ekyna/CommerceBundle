@@ -69,20 +69,26 @@ class RendererFactory
     /**
      * Returns a new renderer.
      *
-     * @param mixed $subject
+     * @param mixed $subjects
      *
      * @return RendererInterface
      */
-    public function createRenderer($subject)
+    public function createRenderer($subjects)
     {
+        if (is_array($subjects)) {
+            $subject = current($subjects);
+        } else {
+            $subject = $subjects;
+        }
+
         if ($subject instanceof SupplierOrderInterface) {
-            $renderer = new SupplierOrderRenderer($subject);
+            $renderer = new SupplierOrderRenderer($subjects);
         } elseif ($subject instanceof ShipmentInterface) {
-            $renderer = new ShipmentRenderer($subject);
+            $renderer = new ShipmentRenderer($subjects);
         } elseif ($subject instanceof InvoiceInterface) {
-            $renderer = new InvoiceRenderer($subject);
+            $renderer = new InvoiceRenderer($subjects);
         } elseif ($subject instanceof DocumentInterface) {
-            $renderer = new DocumentRenderer($subject);
+            $renderer = new DocumentRenderer($subjects);
         } else {
             throw new InvalidArgumentException("Unsupported subject.");
         }

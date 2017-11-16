@@ -1,21 +1,14 @@
 {% extends "EkynaCommerceBundle:Document:document.html.twig" %}
 
-{# --- HEAD TITLE --- #}
-{%- block head_title -%}
-    {{- ('ekyna_commerce.' ~ document.type ~ '.label.singular')|trans }}
-    {{ document.number -}}
-{%- endblock head_title -%}
-
-
 {# --- DOC TITLE --- #}
 {% block doc_title -%}
     <h1>
-        {{- ('ekyna_commerce.' ~ document.type ~ '.label.singular')|trans }}
-        {{ document.number -}}
+        {{- ('ekyna_commerce.' ~ subject.type ~ '.label.singular')|trans }}
+        {{ subject.number -}}
     </h1>
     <p>
-        Le {{ document.createdAt|localizeddate('long', 'none') }},
-        commande <strong>{{ document.sale.number }}</strong>.
+        Le {{ subject.createdAt|localizeddate('long', 'none') }},
+        commande <strong>{{ subject.sale.number }}</strong>.
     </p>
     {# TODO trans #}
 {%- endblock doc_title %}

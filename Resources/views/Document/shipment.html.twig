@@ -1,26 +1,20 @@
 {% extends "EkynaCommerceBundle:Document:base.html.twig" %}
 
+
 {% import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
 
-{# --- HEAD TITLE --- #}
-{%- block head_title -%}
-    {{- ('ekyna_commerce.document.type.' ~ (shipment.return ? 'return' : 'delivery'))|trans }}
-    {{ shipment.number -}}
-{%- endblock head_title -%}
-
-
-{# --- DOC TITLE --- #}
+{# --- TITLE --- #}
 {% block doc_title -%}
     <h1>
-        {{- ('ekyna_commerce.document.type.' ~ (shipment.return ? 'return' : 'delivery'))|trans }}
-        {{ shipment.number -}}
+        {{- ('ekyna_commerce.document.type.' ~ (subject.return ? 'return' : 'delivery'))|trans }}
+        {{ subject.number -}}
     </h1>
     <p>
-        Le {{ shipment.createdAt|localizeddate('long', 'none') }},
-        commande <strong>{{ shipment.sale.number }}</strong>
-        {% if shipment.sale.customer is not null %}
-            , client <strong>{{ shipment.sale.customer.number }}</strong>
+        Le {{ subject.createdAt|localizeddate('long', 'none') }},
+        commande <strong>{{ subject.sale.number }}</strong>
+        {% if subject.sale.customer is not null %}
+            , client <strong>{{ subject.sale.customer.number }}</strong>
         {% endif %}.
     </p>{# TODO trans #}
 {%- endblock doc_title %}
@@ -39,11 +33,11 @@
         <tbody>
         <tr>
             <td class="address">
-                {{- shipment|shipment_sender_address|address -}}
+                {{- subject|shipment_sender_address|address -}}
             </td>
             <td>&nbsp;</td>
             <td class="address">
-                {{- shipment|shipment_receiver_address|address -}}
+                {{- subject|shipment_receiver_address|address -}}
             </td>
         </tr>
         </tbody>
@@ -62,7 +56,7 @@
         </tr>
         </thead>
         <tbody class="stripped">
-        {% for item in shipment.items %}
+        {% for item in subject.items %}
             <tr>
                 <td>{{ item.saleItem.designation }}</td>
                 <td>{{ item.saleItem.reference }}</td>
@@ -72,11 +66,3 @@
         </tbody>
     </table>
 {% endblock doc_lines %}
-
-
-{# --- FOOTER --- #}
-{% block doc_footer %}
-    {#{{- get_setting('commerce.invoice_footer')|raw -}}#}
-{% endblock doc_footer %}
-
-

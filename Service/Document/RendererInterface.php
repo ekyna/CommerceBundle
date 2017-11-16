@@ -2,9 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
-use Knp\Snappy\GeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Interface RendererInterface
@@ -17,41 +15,6 @@ interface RendererInterface
     const FORMAT_PDF  = 'pdf';
     const FORMAT_JPG  = 'jpg';
 
-
-    /**
-     * Sets the templating.
-     *
-     * @param EngineInterface $templating
-     */
-    public function setTemplating(EngineInterface $templating);
-
-    /**
-     * Sets the pdf generator.
-     *
-     * @param GeneratorInterface $generator
-     */
-    public function setPdfGenerator(GeneratorInterface $generator);
-
-    /**
-     * Sets the image generator.
-     *
-     * @param GeneratorInterface $generator
-     */
-    public function setImageGenerator($generator);
-
-    /**
-     * Sets the logoPath.
-     *
-     * @param string $logoPath
-     */
-    public function setLogoPath($logoPath);
-
-    /**
-     * Sets whether to debug.
-     *
-     * @param bool $debug
-     */
-    public function setDebug($debug);
 
     /**
      * Create the document file.

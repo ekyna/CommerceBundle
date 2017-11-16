@@ -256,6 +256,29 @@ class SaleShipmentController extends AbstractSaleController
     }
 
     /**
+     * Render action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function renderAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+        $shipment = $context->getResource();
+
+        $this->isGranted('VIEW', $shipment);
+
+        $renderer = $this
+            ->get('ekyna_commerce.renderer_factory')
+            ->createRenderer($shipment);
+
+        return $renderer->respond($request);
+    }
+
+    /**
      * @inheritdoc
      */
     public function gatewayActionAction(Request $request)

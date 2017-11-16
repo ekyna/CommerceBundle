@@ -20,12 +20,15 @@ class ShipmentMethodCreateFlow extends FormFlow
     {
         return [
             [
-                'label' => 'factory',
-                'type'  => ShipmentMethodFactoryChoiceType::class,
+                'label'        => 'factory',
+                'form_type'    => ShipmentMethodFactoryChoiceType::class,
             ],
             [
-                'label' => 'config',
-                'type'  => ShipmentMethodType::class,
+                'label'        => 'config',
+                'form_type'    => ShipmentMethodType::class,
+                'form_options' => [
+                    'validation_groups' => ['Default'],
+                ],
             ],
         ];
     }

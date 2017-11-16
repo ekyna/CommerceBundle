@@ -21,6 +21,17 @@ ekyna_commerce_order_shipment_admin_remove:
         orderId: \d+
         orderShipmentId: \d+
 
+ekyna_commerce_order_shipment_admin_render:
+    path: /{orderShipmentId}/render.{_format}
+    defaults:
+        _controller: "ekyna_commerce.order_shipment.controller:renderAction"
+        _format: pdf
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderShipmentId: \d+
+        _format: html|pdf|jpg
+
 ekyna_commerce_order_shipment_admin_gateway_action:
     path: /{orderShipmentId}/gateway/{action}.{_format}
     defaults:

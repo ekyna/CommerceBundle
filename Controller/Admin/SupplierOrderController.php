@@ -45,10 +45,10 @@ class SupplierOrderController extends ResourceController
             if (null !== $supplier = $this->get('ekyna_commerce.supplier.repository')->find($supplierId)) {
                 $resource->setSupplier($supplier);
                 $actionParams['supplierId'] = $supplier->getId();
+
+                $this->getOperator()->initialize($resource);
             }
         }
-
-        $this->getOperator()->initialize($resource);
 
         $flow = $this->get('ekyna_commerce.supplier_order.create_form_flow');
         $flow->setGenericFormOptions([
@@ -58,9 +58,8 @@ class SupplierOrderController extends ResourceController
             'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
-        $flow->bind($resource);
 
-        $this->getOperator()->initialize($resource);
+        $flow->bind($resource);
 
         $form = $flow->createForm();
         if ($flow->isValid($form)) {
@@ -76,6 +75,8 @@ class SupplierOrderController extends ResourceController
                 $event->toFlashes($this->getFlashBag());
 
                 if (!$event->hasErrors()) {
+                    $flow->reset();
+
                     return $this->redirect($this->generateUrl(
                         $this->config->getRoute('show'),
                         $context->getIdentifiers(true)

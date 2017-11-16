@@ -3,19 +3,11 @@
 
 {%- import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
-
-{# --- HEAD TITLE --- #}
-{%- block head_title -%}
-    {{- ('ekyna_commerce.document.type.' ~ document.type)|trans }}
-    {{ document.sale.number -}}
-{%- endblock head_title -%}
-
-
-{# --- DOC TITLE --- #}
+{# --- TITLE --- #}
 {%- block doc_title -%}
     <h1>
-        {{- ('ekyna_commerce.document.type.' ~ document.type)|trans }}
-        {{ document.sale.number -}}
+        {{- ('ekyna_commerce.document.type.' ~ subject.type)|trans }}
+        {{ subject.sale.number -}}
     </h1>
     <p>Le {{ date|localizeddate('long', 'none') }}.</p>{# TODO trans #}
 {%- endblock doc_title -%}
@@ -23,25 +15,25 @@
 
 {# --- ADDRESSES --- #}
 {%- block doc_customer -%}
-    {{- macro.render_customer(document.customer) -}}
+    {{- macro.render_customer(subject.customer) -}}
 {%- endblock doc_customer -%}
 
 {%- block doc_invoice_address -%}
-    {{- macro.render_address(document.invoiceAddress) -}}
+    {{- macro.render_address(subject.invoiceAddress) -}}
 {%- endblock doc_invoice_address -%}
 
 {%- block doc_delivery_address -%}
-    {%- if document.deliveryAddress is not empty -%}
-        {{ macro.render_address(document.deliveryAddress) }}
+    {%- if subject.deliveryAddress is not empty -%}
+        {{ macro.render_address(subject.deliveryAddress) }}
     {%- else -%}
-        {{ macro.render_address(document.invoiceAddress) }}
+        {{ macro.render_address(subject.invoiceAddress) }}
     {%- endif -%}
 {%- endblock doc_delivery_address -%}
 
 
-{%- set currency = document.currency -%}
-{%- set multiple_taxes = document.hasMultipleTaxes() -%}
-{%- set line_discount = document.hasLineDiscount() -%}
+{%- set currency = subject.currency -%}
+{%- set multiple_taxes = subject.hasMultipleTaxes() -%}
+{%- set line_discount = subject.hasLineDiscount() -%}
 
 {%- set columns_count = 5 -%}
 {%- if multiple_taxes %}{% set columns_count = columns_count + 1 %}{% endif -%}
@@ -69,9 +61,9 @@
 
     {# GOODS #}
     {% set baseTotal, discountTotal, netTotal = 0, 0, 0 %}
-    {% set goodLines = document.linesByType('good') %}
-    {% set discountLines = document.linesByType('discount') -%}
-    {% set shipmentLines = document.linesByType('shipment') -%}
+    {% set goodLines = subject.linesByType('good') %}
+    {% set discountLines = subject.linesByType('discount') -%}
+    {% set shipmentLines = subject.linesByType('shipment') -%}
 
     <tbody class="stripped">
     {% for line in goodLines %}
@@ -171,21 +163,21 @@
         <tr>
             <td colspan="{{ columns_count - 2 }}" rowspan="3">&nbsp;</td>
             <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-            <td class="total text-right">{{ (document.goodsBase + document.shipmentBase)|localizedcurrency(currency) }}</td>
+            <td class="total text-right">{{ (subject.goodsBase + subject.shipmentBase)|localizedcurrency(currency) }}</td>
         </tr>
         <tr>
             <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-            <td class="total text-right">{{ document.taxesTotal|localizedcurrency(currency) }}</td>
+            <td class="total text-right">{{ subject.taxesTotal|localizedcurrency(currency) }}</td>
         </tr>
         <tr>
             <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
-            <td class="total final text-right">{{ document.grandTotal|localizedcurrency(currency) }}</td>
+            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency) }}</td>
         </tr>
     </tbody>
 </table>
 
 {# Taxes details #}
-{% if document.taxesDetails is not empty -%}
+{% if subject.taxesDetails is not empty -%}
 <table class="table taxes">
     <thead>
         <tr>
@@ -194,7 +186,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for details in document.taxesDetails -%}
+        {% for details in subject.taxesDetails -%}
         <tr>
             <th>{{ details.name }}</th>
             <td class="text-right">{{ details.amount|localizedcurrency(currency) }}</td>
@@ -204,44 +196,3 @@
 </table>
 {%- endif %}
 {%- endblock doc_lines %}
-
-
-{# --- MISC --- #}
-{% block doc_misc -%}
-    {#
-    <table class="order-doc-bloc order-doc-inf">
-        <tbody>
-            <tr>
-                <td>{{ sale.paiementMethod.title }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="order-doc-bloc order-doc-inf">
-        <tbody>
-            <tr>
-                <td>{{ sale.comment|raw }}</td>
-            </tr>
-        </tbody>
-    </table>
-    #}
-{%- endblock doc_misc %}
-
-{# --- FOOTER --- #}
-{% block doc_footer -%}
-    {{- get_setting('commerce.invoice_footer')|raw -}}
-{%- endblock doc_footer %}
-
-{% block post_body -%}
-{# TERMS #}
-{#<hr>
-
-<div class="sale-invoice">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla posuere lectus quis lobortis consequat. Vivamus vehicula mauris sed ligula semper, et rutrum dolor porta. Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras iaculis odio felis, nec viverra urna tristique vitae. Vivamus consectetur gravida porta. Integer sollicitudin libero nulla, in porta nulla euismod in. Donec gravida consequat nibh consequat aliquam. Morbi tincidunt velit sed tellus efficitur, at consectetur eros aliquam. Ut tortor velit, maximus sit amet leo id, aliquam fringilla urna. Nullam maximus erat vel velit rutrum, venenatis dapibus nisl commodo. Quisque est risus, imperdiet ac neque sit amet, condimentum dapibus libero. Proin id gravida ipsum. Nunc blandit lacus nec magna bibendum, nec scelerisque purus placerat. Phasellus sed metus venenatis, mattis turpis ut, faucibus libero. Integer id dictum dolor.</p>
-    <p>Nulla laoreet ligula ac nulla commodo, in bibendum nulla pharetra. Aliquam viverra justo risus, sed luctus urna tempor et. Mauris semper fermentum dolor nec varius. Etiam eget viverra ipsum, id bibendum enim. Donec mollis nunc dui, nec tempor velit hendrerit in. Donec nec felis sed felis viverra eleifend in nec lacus. Vivamus et vulputate quam, in molestie sapien. Mauris luctus est odio, at tincidunt ex vulputate sed. Curabitur luctus urna lectus, nec consequat urna feugiat a. Mauris mauris tellus, aliquet id finibus a, elementum ac tellus. Suspendisse non dictum sapien.</p>
-    <p>Pellentesque elementum nulla at arcu facilisis, ut pretium eros ultrices. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla et est non magna pellentesque vehicula ac ullamcorper libero. Nullam iaculis vel metus id condimentum. Sed nec aliquam justo. Nunc rutrum ante eget nisl accumsan mattis. Vivamus tincidunt feugiat eros quis tincidunt. Aliquam in sem lacinia, finibus elit vel, elementum tellus. Sed porta ligula ac leo malesuada, at malesuada ex laoreet. Suspendisse quam metus, suscipit sed condimentum vitae, sollicitudin id lorem. Praesent ac nulla dapibus, iaculis arcu a, ornare turpis.</p>
-    <p>Nulla facilisi. Nam enim quam, viverra ac neque quis, interdum blandit massa. Curabitur eleifend sed felis vitae semper. Integer eleifend est a pellentesque auctor. Suspendisse dictum lorem eget quam convallis, non ultrices justo ultricies. Donec eu lobortis enim. Vestibulum diam urna, porta a faucibus nec, tempus a ex. Duis cursus quam orci, at semper nisl blandit ut. Nullam ut leo non felis mollis dictum. Etiam eget metus dolor.</p>
-    <p>Sed eget auctor ipsum. Nam nec massa tempus turpis fermentum gravida. Proin iaculis eu elit non ultrices. Pellentesque eros orci, scelerisque tristique sem a, finibus lacinia purus. Quisque porta leo quis lectus consectetur, vel iaculis nisl mattis. Donec nec lacinia sem. Fusce dictum leo sed finibus molestie. Etiam bibendum, mi non sollicitudin posuere, nulla dui bibendum urna, sed vestibulum purus neque at leo. Cras convallis lacus massa, nec fringilla nulla congue non. Nam massa nunc, pretium sit amet fringilla a, eleifend non neque. Morbi venenatis fringilla libero, vitae venenatis elit cursus eu. Praesent id nibh ac elit dignissim elementum sit amet in ipsum. Sed facilisis imperdiet nulla. Praesent fringilla pulvinar elit sit amet fermentum. Aliquam lacinia, nisi fringilla malesuada sagittis, orci nibh imperdiet mi, maximus elementum massa dui eget risus. Proin eu metus velit.</p>
-</div>#}
-{%- endblock post_body %}
-

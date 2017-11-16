@@ -20,12 +20,15 @@ class PaymentMethodCreateFlow extends FormFlow
     {
         return [
             [
-                'label' => 'factory',
-                'type'  => PaymentMethodFactoryChoiceType::class,
+                'label'        => 'factory',
+                'form_type'    => PaymentMethodFactoryChoiceType::class,
             ],
             [
-                'label' => 'config',
-                'type'  => PaymentMethodType::class,
+                'label'        => 'config',
+                'form_type'    => PaymentMethodType::class,
+                'form_options' => [
+                    'validation_groups' => ['Default'],
+                ],
             ],
         ];
     }

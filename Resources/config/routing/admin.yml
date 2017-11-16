@@ -68,20 +68,38 @@ ekyna_commerce_tax_rule_admin:
 
 ekyna_commerce_admin_order_list_payment:
     path: /order-payments
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:payment }
     methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:payment }
 
 ekyna_commerce_admin_order_list_shipment:
     path: /order-shipments
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipment }
     methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipment }
+
+ekyna_commerce_admin_order_list_shipment_document:
+    path: /order-shipments/documents.{_format}
+    methods: [GET]
+    defaults:
+        _controller: EkynaCommerceBundle:Admin/OrderList:shipmentDocument
+        _format: pdf
+    requirements:
+        _format: pdf|html|jpg
 
 ekyna_commerce_admin_order_list_shipment_platform_action:
     path: /order-shipments/platform/{name}/{action}
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:platformAction }
     methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:platformAction }
 
 ekyna_commerce_admin_order_list_invoice:
     path: /order-invoices
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:invoice }
     methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:invoice }
+
+ekyna_commerce_admin_order_list_invoice_document:
+    path: /order-invoices/documents.{_format}
+    methods: [GET]
+    defaults:
+        _controller: EkynaCommerceBundle:Admin/OrderList:invoiceDocument
+        _format: pdf
+    requirements:
+        _format: pdf|html|jpg

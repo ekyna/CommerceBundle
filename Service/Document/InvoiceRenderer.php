@@ -12,45 +12,18 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 class InvoiceRenderer extends AbstractRenderer
 {
     /**
-     * @var InvoiceInterface
+     * @inheritdoc
      */
-    private $invoice;
-
-
-    /**
-     * Constructor.
-     *
-     * @param InvoiceInterface $invoice
-     */
-    public function __construct(InvoiceInterface $invoice)
+    protected function supports($subject)
     {
-        $this->invoice = $invoice;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getLastModified()
-    {
-        return $this->invoice->getUpdatedAt();
+        return $subject instanceof InvoiceInterface;
     }
 
     /**
      * @inheritdoc
      */
-    public function getFilename()
+    protected function getTemplate()
     {
-        return $this->invoice->getNumber();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getContent()
-    {
-        return $this->renderView('EkynaCommerceBundle:Document:invoice.html.twig', [
-            'logo_path' => $this->logoPath,
-            'document'  => $this->invoice,
-        ]);
+        return 'EkynaCommerceBundle:Document:invoice.html.twig';
     }
 }

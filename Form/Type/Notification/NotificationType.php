@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notification;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
+use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Service\Notification\NotificationBuilder;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
@@ -20,6 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Count;
 
 /**
@@ -34,15 +36,22 @@ class NotificationType extends AbstractType
      */
     private $notificationBuilder;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
 
     /**
      * Constructor.
      *
      * @param NotificationBuilder $notificationBuilder
+     * @param TranslatorInterface $translator
      */
-    public function __construct(NotificationBuilder $notificationBuilder)
+    public function __construct(NotificationBuilder $notificationBuilder, TranslatorInterface $translator)
     {
         $this->notificationBuilder = $notificationBuilder;
+        $this->translator = $translator;
     }
 
     /**
@@ -138,6 +147,10 @@ class NotificationType extends AbstractType
                     return $qb
                         ->andWhere($qb->expr()->eq('i.' . $saleProperty, ':sale'))
                         ->setParameter('sale', $sale);
+                },
+                'choice_label' => function ($value) {
+                    /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $value */
+                    return $this->translator->trans(InvoiceTypes::getLabel($value->getType())) . ' ' . $value->getNumber();
                 },
                 'multiple'      => true,
                 'expanded'      => true,

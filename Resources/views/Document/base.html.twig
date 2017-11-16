@@ -1,97 +1,94 @@
 {% import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
-{% spaceless %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{%- block head_title -%}Sale Document{%- endblock head_title -%}</title>
+{# --- HEADER --- #}
+{% block doc_header -%}
+<table class="bloc header">
+    <tr>
+        <td class="logo">
+            {%- block logo -%}
+                <a href="{{ absolute_url('/') }}">
+                    <img alt="{{ get_setting('general.site_name') }}" src="{{ absolute_url(asset(logo_path)) }}">
+                </a>
+            {%- endblock logo -%}
+        </td>
+        <td class="blank">
+            &nbsp;
+        </td>
+        <td class="address">
+            {%- block company -%}
+                {{ macro.render_company() }}
+            {%- endblock company -%}
+        </td>
+    </tr>
+</table>
+{%- endblock doc_header %}
 
-    {% block stylesheets %}
-        <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/document.css')) }}" rel="stylesheet" type="text/css" />
-    {% endblock stylesheets %}
-</head>
-<body>
-    {% block body %}
-    <div class="wrapper">
 
-        {# --- HEADER --- #}
-        {% block doc_header -%}
-        <table class="bloc header">
+{# --- TITLE --- #}
+<div class="bloc title">
+{% block doc_title %}<h1>Sale document</h1>{% endblock doc_title %}
+</div>
+
+
+{# --- ADDRESSES --- #}
+{% block doc_addresses -%}
+<table class="bloc table addresses">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_commerce.sale.field.customer'|trans }}</th>
+        <th class="blank">&nbsp;</th>
+        <th>{{ 'ekyna_commerce.sale.field.invoice_address'|trans }}</th>
+        <th class="blank">&nbsp;</th>
+        <th>{{ 'ekyna_commerce.sale.field.delivery_address'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td class="customer">
+        {%- block doc_customer %}{% endblock doc_customer -%}
+        </td>
+        <td>&nbsp;</td>
+        <td class="address">
+        {%- block doc_invoice_address %}{% endblock doc_invoice_address -%}
+        </td>
+        <td>&nbsp;</td>
+        <td class="address">
+        {%- block doc_delivery_address %}{% endblock doc_delivery_address -%}
+        </td>
+    </tr>
+    </tbody>
+</table>
+{%- endblock doc_addresses %}
+
+
+{# --- ITEMS --- #}
+{% block doc_lines %}{% endblock doc_lines %}
+
+
+{# --- MISC --- #}
+{% block doc_misc %}
+    {#<table class="order-doc-bloc order-doc-inf">
+        <tbody>
             <tr>
-                <td class="logo">
-                    {%- block logo -%}
-                        <a href="{{ absolute_url('/') }}">
-                            <img alt="{{ get_setting('general.site_name') }}" src="{{ absolute_url(asset(logo_path)) }}">
-                        </a>
-                    {%- endblock logo -%}
-                </td>
-                <td class="blank">
-                    &nbsp;
-                </td>
-                <td class="address">
-                    {%- block company -%}
-                        {{ macro.render_company() }}
-                    {%- endblock company -%}
-                </td>
+                <td>{{ sale.paiementMethod.title }}</td>
             </tr>
-        </table>
-        {%- endblock doc_header %}
+        </tbody>
+    </table>
 
-        {# --- TITLE --- #}
-        <div class="bloc title">
-        {% block doc_title %}<h1>Sale document</h1>{% endblock doc_title %}
-        </div>
-
-        {# --- ADDRESSES --- #}
-        {% block doc_addresses -%}
-        <table class="bloc table addresses">
-            <thead>
+    <table class="order-doc-bloc order-doc-inf">
+        <tbody>
             <tr>
-                <th>{{ 'ekyna_commerce.sale.field.customer'|trans }}</th>
-                <th class="blank">&nbsp;</th>
-                <th>{{ 'ekyna_commerce.sale.field.invoice_address'|trans }}</th>
-                <th class="blank">&nbsp;</th>
-                <th>{{ 'ekyna_commerce.sale.field.delivery_address'|trans }}</th>
+                <td>{{ sale.comment|raw }}</td>
             </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td class="customer">
-                {%- block doc_customer %}<p>&nbsp;</p>{% endblock doc_customer -%}
-                </td>
-                <td>&nbsp;</td>
-                <td class="address">
-                {%- block doc_invoice_address %}<p>&nbsp;</p>{% endblock doc_invoice_address -%}
-                </td>
-                <td>&nbsp;</td>
-                <td class="address">
-                {%- block doc_delivery_address %}<p>&nbsp;</p>{% endblock doc_delivery_address -%}
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        {%- endblock doc_addresses %}
+        </tbody>
+    </table>#}
+{% endblock doc_misc %}
 
-        {# --- ITEMS --- #}
-        {% block doc_lines %}<p>&nbsp;</p>{% endblock doc_lines %}
 
-        {# --- MISC --- #}
-        {% block doc_misc %}{% endblock doc_misc %}
-
-        {# --- FOOTER --- #}
-        <div class="bloc footer">
-        {% block doc_footer %}
-            {{- get_setting('commerce.invoice_footer')|raw -}}
-        {% endblock doc_footer %}
-        </div>
-    </div>
-    {% endblock body %}
-
-    {% block post_body %}{% endblock post_body %}
-</body>
-</html>
-{% endspaceless %}
+{# --- FOOTER --- #}
+<div class="bloc footer">
+{% block doc_footer %}
+    {{- get_setting('commerce.invoice_footer')|raw -}}
+{% endblock doc_footer %}
+</div>

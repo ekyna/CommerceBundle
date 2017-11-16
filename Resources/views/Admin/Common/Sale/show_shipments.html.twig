@@ -51,6 +51,12 @@
                        data-toggle-details="{{ shipmentId ~ '_details' }}">
                         <span class="fa fa-info-circle"></span>
                     </a>
+                    <a href="{{ admin_resource_path(shipment, 'render') }}"
+                       id="{{ shipmentId }}_render"
+                       class="btn btn-primary btn-xs"
+                       target="_blank">
+                        <span class="fa fa-download"></span>
+                    </a>
                     <a href="{{ admin_resource_path(shipment, 'edit') }}"
                        id="{{ shipmentId }}_edit"
                        class="btn btn-warning btn-xs">

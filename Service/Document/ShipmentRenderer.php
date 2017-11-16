@@ -12,45 +12,18 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 class ShipmentRenderer extends AbstractRenderer
 {
     /**
-     * @var ShipmentInterface
-     */
-    private $shipment;
-
-
-    /**
-     * Constructor.
-     *
-     * @param ShipmentInterface $shipment
-     */
-    public function __construct(ShipmentInterface $shipment)
-    {
-        $this->shipment = $shipment;
-    }
-
-    /**
      * @inheritDoc
      */
-    public function getLastModified()
+    protected function supports($subject)
     {
-        return $this->shipment->getUpdatedAt();
+        return $subject instanceof ShipmentInterface;
     }
 
     /**
      * @inheritdoc
      */
-    public function getFilename()
+    protected function getTemplate()
     {
-        return $this->shipment->getNumber();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getContent()
-    {
-        return $this->renderView('EkynaCommerceBundle:Document:shipment.html.twig', [
-            'logo_path' => $this->logoPath,
-            'shipment'  => $this->shipment,
-        ]);
+        return 'EkynaCommerceBundle:Document:shipment.html.twig';
     }
 }
