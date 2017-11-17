@@ -3,13 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Component\Commerce\Document\Builder\DocumentBuilderInterface;
-use Ekyna\Component\Commerce\Exception\RuntimeException;
-use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\InvoiceLinesDataTransformer;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class InvoiceType
@@ -19,37 +20,22 @@ use Symfony\Component\Form\FormEvents;
 class InvoiceType extends ResourceFormType
 {
     /**
-     * @var string
+     * @var InvoiceBuilderInterface
      */
-    private $lineClass;
-
-    /**
-     * @var DocumentBuilderInterface
-     */
-    private $invoiceBuilder;
+    private $builder;
 
 
     /**
      * Constructor.
      *
-     * @param string $dataClass
-     * @param string $itemClass
+     * @param InvoiceBuilderInterface $builder
+     * @param string                  $dataClass
      */
-    public function __construct($dataClass, $itemClass)
+    public function __construct(InvoiceBuilderInterface $builder, $dataClass)
     {
         parent::__construct($dataClass);
 
-        $this->lineClass = $itemClass;
-    }
-
-    /**
-     * Sets the invoice builder.
-     *
-     * @param DocumentBuilderInterface $invoiceBuilder
-     */
-    public function setInvoiceBuilder(DocumentBuilderInterface $invoiceBuilder)
-    {
-        $this->invoiceBuilder = $invoiceBuilder;
+        $this->builder = $builder;
     }
 
     /**
@@ -66,30 +52,30 @@ class InvoiceType extends ResourceFormType
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.description',
                 'required' => false,
-            ]);
+            ])
+            ->add('lines', InvoiceLinesType::class, [
+                'entry_type' => $options['line_type'],
+            ])
+            ->addModelTransformer(new InvoiceLinesDataTransformer($this->builder));
+    }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
-            $invoice = $event->getData();
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'invoice');
+    }
 
-            if (null === $sale = $invoice->getSale()) {
-                throw new RuntimeException("The invoice must be associated with a sale at this point.");
-            }
-            if (!$sale instanceof OrderInterface) {
-                throw new RuntimeException("Not yet supported.");
-            }
+    /**
+     * @inheritdoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
 
-            if (0 === $invoice->getLines()->count()) {
-                $this->invoiceBuilder->build($invoice);
-            }
-
-            $event->getForm()->add('lines', InvoiceLinesType::class, [
-                'label'         => 'ekyna_commerce.invoice.field.lines',
-                'entry_options' => [
-                    'type'       => $invoice->getType(),
-                    'data_class' => $this->lineClass,
-                ],
-            ]);
-        });
+        $resolver
+            ->setRequired(['line_type'])
+            ->setAllowedTypes('line_type', 'string');
     }
 }

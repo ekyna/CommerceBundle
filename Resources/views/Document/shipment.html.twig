@@ -6,8 +6,9 @@
 
 {# --- TITLE --- #}
 {% block doc_title -%}
+{% spaceless %}
     <h1>
-        {{- ('ekyna_commerce.document.type.' ~ (subject.return ? 'return' : 'delivery'))|trans }}
+        {{- ('ekyna_commerce.document.type.' ~ (subject.return ? 'return' : 'shipment') ~ '_' ~ type)|trans }}
         {{ subject.number -}}
     </h1>
     <p>
@@ -17,11 +18,13 @@
             , client <strong>{{ subject.sale.customer.number }}</strong>
         {% endif %}.
     </p>{# TODO trans #}
+    {% endspaceless %}
 {%- endblock doc_title %}
 
 
 {# --- ADDRESSES --- #}
 {% block doc_addresses -%}
+{% spaceless %}
     <table class="bloc table addresses">
         <thead>
         <tr>
@@ -42,11 +45,13 @@
         </tr>
         </tbody>
     </table>
+{% endspaceless %}
 {%- endblock doc_addresses %}
 
 
 {# --- LINES --- #}
 {% block doc_lines %}
+{% spaceless %}
     <table class="bloc table details">
         <thead>
         <tr>
@@ -57,12 +62,23 @@
         </thead>
         <tbody class="stripped">
         {% for item in subject.items %}
-            <tr>
-                <td>{{ item.saleItem.designation }}</td>
+            {% set private = item.saleItem.private %}
+            {% if not (type == 'bill' and private) %}
+            <tr{% if private %} style="color:#666"{% endif %}>
+                <td{% if private %} style="padding-left:20px;"{% endif %}>
+                    {%- if private %}&bull;&nbsp;{% endif -%}
+                    {{- item.saleItem.designation -}}
+                </td>
                 <td>{{ item.saleItem.reference }}</td>
                 <td class="text-right">{{ item.quantity|localizednumber }}</td>{# TODO Packing format #}
             </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
+{% endspaceless %}
 {% endblock doc_lines %}
+
+
+{# --- FOOTER --- #}
+{% block doc_footer %}{% endblock doc_footer %}

@@ -88,7 +88,7 @@
 
 {# --- FOOTER --- #}
 <div class="bloc footer">
-{% block doc_footer %}
-    {{- get_setting('commerce.invoice_footer')|raw -}}
-{% endblock doc_footer %}
+    {% block doc_footer %}
+        {{- get_setting('commerce.invoice_footer')|raw -}}
+    {% endblock doc_footer %}
 </div>

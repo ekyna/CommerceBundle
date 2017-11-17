@@ -25,6 +25,9 @@ class SaleViewType extends AbstractViewType
             'unit_net_price' => $this->trans('ekyna_commerce.sale.field.net_unit'),
             'quantity'       => $this->trans('ekyna_core.field.quantity'),
 
+            'gross'          => $this->trans('ekyna_commerce.sale.field.gross'),
+            'discount'       => $this->trans('ekyna_commerce.sale.field.discount'),
+
             'tax_rate'       => $this->trans('ekyna_commerce.sale.field.tax_rate'),
             'tax_name'       => $this->trans('ekyna_commerce.sale.field.tax_name'),
             'tax_amount'     => $this->trans('ekyna_commerce.sale.field.tax_amount'),

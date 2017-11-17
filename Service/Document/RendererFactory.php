@@ -69,11 +69,12 @@ class RendererFactory
     /**
      * Returns a new renderer.
      *
-     * @param mixed $subjects
+     * @param mixed  $subjects The subjects
+     * @param string $type     The document type
      *
      * @return RendererInterface
      */
-    public function createRenderer($subjects)
+    public function createRenderer($subjects, $type = null)
     {
         if (is_array($subjects)) {
             $subject = current($subjects);
@@ -84,7 +85,7 @@ class RendererFactory
         if ($subject instanceof SupplierOrderInterface) {
             $renderer = new SupplierOrderRenderer($subjects);
         } elseif ($subject instanceof ShipmentInterface) {
-            $renderer = new ShipmentRenderer($subjects);
+            $renderer = new ShipmentRenderer($subjects, $type);
         } elseif ($subject instanceof InvoiceInterface) {
             $renderer = new InvoiceRenderer($subjects);
         } elseif ($subject instanceof DocumentInterface) {

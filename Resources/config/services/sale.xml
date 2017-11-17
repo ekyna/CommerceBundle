@@ -38,12 +38,18 @@
                  lazy="true">
             <argument type="service" id="ekyna_commerce.common.address_builder"/>
             <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
-            <argument type="service" id="ekyna_commerce.common.amounts_calculator"/>
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
             <argument type="service" id="ekyna_commerce.invoice.calculator"/>
             <argument type="service" id="ekyna_commerce.payment.outstanding_releaser"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
+        </service>
+
+        <!-- Discount resolver -->
+        <service id="ekyna_commerce.common.discount_resolver"
+                 class="Ekyna\Component\Commerce\Common\Resolver\DiscountResolver">
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <!-- Address builder -->
@@ -59,15 +65,14 @@
                  class="Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
-            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
-            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="ekyna_commerce.common.discount_resolver"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
         <!-- Calculator -->
-        <service id="ekyna_commerce.common.amounts_calculator"
-                 class="Ekyna\Component\Commerce\Common\Calculator\AmountsCalculator"/>
+        <service id="ekyna_commerce.common.amount_calculator"
+                 class="Ekyna\Component\Commerce\Common\Calculator\AmountCalculator"/>
         <service id="ekyna_commerce.common.weight_calculator"
                  class="Ekyna\Component\Commerce\Common\Calculator\WeightCalculator"/>
 

@@ -7,6 +7,7 @@ use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -61,13 +62,25 @@ class ShipmentDocumentActionType extends AbstractActionType
             return new RedirectResponse($this->urlGenerator->generate('ekyna_commerce_order_shipment_admin_render', [
                 'orderId'         => $shipment->getOrder()->getId(),
                 'orderShipmentId' => $shipment->getId(),
+                'type'            => $options['type'],
             ]));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('ekyna_commerce_admin_order_list_shipment_document', [
-            'id' => array_map(function(ShipmentInterface $shipment) {
+            'id'   => array_map(function (ShipmentInterface $shipment) {
                 return $shipment->getId();
             }, $shipments),
+            'type' => $options['type'],
         ]));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired('type')
+            ->setAllowedValues('type', ['form', 'bill']);
     }
 }

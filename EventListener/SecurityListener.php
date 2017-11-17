@@ -74,10 +74,8 @@ class SecurityListener implements EventSubscriberInterface
 
             if ($cart->getCustomer() !== $customer) {
                 $cart->setCustomer($customer);
-                if ($customer) {
-                    $cart->setCustomerGroup($customer->getCustomerGroup());
-                }
 
+                $this->cartProvider->updateCustomerGroupAndCurrency();
                 $this->cartProvider->saveCart();
             }
         }

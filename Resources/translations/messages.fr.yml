@@ -226,8 +226,9 @@ ekyna_commerce:
             quote: Devis
             proforma: Proforma
             confirmation: Confirmation de commande
-            delivery: Bon de livraison
-            return: Bon de retour
+            shipment_form: Bon de préparation
+            shipment_bill: Bon de livraison
+            return_bill: Bon de retour
 
     invoice:
         tab: Factures et avoirs
@@ -758,8 +759,9 @@ ekyna_commerce:
             delivery_address: Adresse de livraison
             same_address: Même adresse
             net_unit: PU HT
+            gross: Base HT
             base_total: Base HT
-            discount_total: Remise
+            discount: Remise
             net_total: Total HT
             shipment_total: Port HT
             shipping_cost: Frais de port
@@ -849,6 +851,8 @@ ekyna_commerce:
             import: Importer les numéros de suivi
             print_label: Imprimer étiquette
             ship: Expédier
+            bills: Afficher les bons de livraison
+            forms: Afficher les bons de préparation
         field:
             return: Retour
             items: Éléments

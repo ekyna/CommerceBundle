@@ -130,16 +130,9 @@ class OrderListController extends Controller
     {
         $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_shipment.class'));
 
-        $ids = (array) $request->query->get('id');
-        $repository = $this->get('ekyna_commerce.order_shipment.repository');
-
-        $shipments = [];
-
-        foreach ($ids as $id) {
-            if (null !== $shipment = $repository->find($id)) {
-                $shipments[] = $shipment;
-            }
-        }
+        $shipments = $this
+            ->get('ekyna_commerce.order_shipment.repository')
+            ->findBy(['id' => (array) $request->query->get('id')]);
 
         if (empty($shipments)) {
             return $this->redirectToRoute('ekyna_commerce_admin_order_list_shipment');
@@ -147,7 +140,7 @@ class OrderListController extends Controller
 
         $renderer = $this
             ->get('ekyna_commerce.renderer_factory')
-            ->createRenderer($shipments);
+            ->createRenderer($shipments, $request->attributes->get('type'));
 
         return $renderer->respond($request);
     }

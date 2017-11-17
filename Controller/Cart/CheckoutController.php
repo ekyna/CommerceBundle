@@ -88,6 +88,8 @@ class CheckoutController extends AbstractController
             $saleForm->handleRequest($request);
 
             if ($saleForm->isSubmitted() && $saleForm->isValid()) {
+                $this->getCartHelper()->getCartProvider()->updateCustomerGroupAndCurrency();
+
                 $saleHelper->recalculate($cart);
 
                 $this->saveCart();

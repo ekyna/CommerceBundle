@@ -19,6 +19,7 @@
 <div class="panel-body form-body">
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
+    {{ bootstrap_set_sizing('sm') }}
     {{ form_errors(form) }}
     <div class="tab-content">
         <div class="tab-pane active" id="shipment-general">
@@ -56,7 +57,6 @@
             {{ form_row(form.senderAddress) }}
         </div>
     </div>
-
     {{ form_rest(form) }}
 </div>
 {% endspaceless %}

@@ -15,7 +15,9 @@
         <!-- Document calculator -->
         <service id="ekyna_commerce.document.calculator"
                  class="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"
-                 lazy="true"/>
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+        </service>
 
     </services>
 

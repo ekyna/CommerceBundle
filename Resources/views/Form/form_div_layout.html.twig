@@ -525,7 +525,8 @@
 
 {% block ekyna_commerce_shipment_items_widget %}
 {% spaceless %}
-    <table class="table table-striped table-condensed">
+    {% if form.vars.headers -%}
+    <table class="table table-striped table-condensed shipment-items">
         <thead>
             <tr>
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
@@ -540,44 +541,52 @@
             </tr>
         </thead>
         <tbody>
+    {%- endif %}
         {% set previous_style = bootstrap_get_style() %}
         {{ bootstrap_set_style('') }}
         {% for child in form %}
             {{ form_widget(child) }}
         {% endfor %}
         {{ bootstrap_set_style(previous_style) }}
+    {% if form.vars.headers -%}
         </tbody>
     </table>
     {{ form_errors(form) }}
     {{ form_rest(form) }}
+    {% endif -%}
 {% endspaceless %}
 {% endblock ekyna_commerce_shipment_items_widget %}
 
 
 {% block ekyna_commerce_shipment_item_widget %}
 {% spaceless %}
-    {% if errors|length > 0 %}
-        {% set attr = attr|merge({'class': ('has-error ' ~ (attr.class|default('')))|trim }) %}
-    {% endif %}
+    {%- if errors|length > 0 -%}
+        {%- set attr = attr|merge({'class': ('has-error ' ~ (attr.class|default('')))|trim }) -%}
+    {%- endif -%}
     <tr {{ block('widget_container_attributes') }}>
-        <td>{{ designation }}</td>
-        <td>{{ reference }}</td>
+        <td style="padding-left:{{ level * 20 }}px">
+            {{ form.vars.item.saleItem.designation }}
+            {%- if form.vars.item.saleItem.description is not empty -%}
+                <br><p style="font-size:11px;padding-left:12px;">{{ form.vars.item.saleItem.description|nl2br }}</p>
+            {%- endif -%}
+        </td>
+        <td>{{ form.vars.item.saleItem.reference }}</td>
+        <td>{{ form_widget(form.quantity) }}</td>
         {% if return_mode %}
-            <td>{{ form_widget(form.quantity, {'data-max': returnable_quantity}) }}</td>
-            <td>{{ returnable_quantity }}</td>{# TODO packaging format #}
+            <td>{{ form.vars.item.available }}</td>{# TODO packaging format #}
         {% else %}
-            <td>{{ form_widget(form.quantity, {'data-max': available_quantity}) }}</td>
-            <td>{{ expected_quantity }}</td>{# TODO packaging format #}
-            <td>{{ available_quantity }}</td>{# TODO packaging format #}
+            <td>{{ form.vars.item.expected }}</td>{# TODO packaging format #}
+            <td>{{ form.vars.item.available }}</td>{# TODO packaging format #}
         {% endif %}
     </tr>
-    {% if errors|length > 0 %}
-        <tr>
-            <td colspan="6">
-                {{ form_errors(form) }}
-            </td>
-        </tr>
-    {% endif %}
+    {% if errors|length > 0 -%}
+    <tr>
+        <td colspan="6">
+            {{ form_errors(form) }}
+        </td>
+    </tr>
+    {%- endif %}
+    {{ form_widget(form.children) }}
     {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_shipment_item_widget %}
@@ -585,7 +594,8 @@
 
 {% block ekyna_commerce_invoice_lines_widget %}
 {% spaceless %}
-    <table class="table table-striped table-condensed">
+    {% if form.vars.headers -%}
+    <table class="table table-striped table-condensed invoice-items">
         <thead>
             <tr>
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
@@ -596,44 +606,52 @@
             </tr>
         </thead>
         <tbody>
+    {%- endif %}
         {% set previous_style = bootstrap_get_style() %}
         {{ bootstrap_set_style('') }}
         {% for child in form %}
             {{ form_widget(child) }}
         {% endfor %}
         {{ bootstrap_set_style(previous_style) }}
+    {% if form.vars.headers -%}
         </tbody>
     </table>
     {{ form_errors(form) }}
     {{ form_rest(form) }}
+    {% endif %}
 {% endspaceless %}
 {% endblock ekyna_commerce_invoice_lines_widget %}
 
 
 {% block ekyna_commerce_invoice_line_widget %}
 {% spaceless %}
-    {% if errors|length > 0 %}
-        {% set attr = attr|merge({'class': ('has-error ' ~ (attr.class|default('')))|trim }) %}
-    {% endif %}
+    {%- if errors|length > 0 -%}
+        {%- set attr = attr|merge({'class': ('has-error ' ~ (attr.class|default('')))|trim }) -%}
+    {%- endif -%}
     <tr {{ block('widget_container_attributes') }}>
-        <td>
-            {{- designation -}}
-            {%- if description is not empty -%}
-                <br><p style="font-size:11px;padding-left:12px;">{{ description|nl2br }}</p>
+        <td style="padding-left:{{ level * 20 }}px">
+            {%- if form.vars.line.designation is empty and form.vars.line.type == 'discount' -%}
+                {{- 'ekyna_commerce.adjustment.type.discount'|trans }}
+            {%- else -%}
+                {{- form.vars.line.designation -}}
+            {%- endif -%}
+            {%- if form.vars.line.description is not empty -%}
+                <br><p style="font-size:11px;padding-left:12px;">{{ form.vars.line.description|nl2br }}</p>
             {%- endif -%}
         </td>
-        <td>{{ reference }}</td>
-        <td>{{ form_widget(form.quantity, {'data-max': max_quantity}) }}</td>
-        <td>{{ max_quantity }}</td>{# TODO packaging format #}
-        <td>{{ shipped_quantity }}</td>{# TODO packaging format #}
+        <td>{{ form.vars.line.reference }}</td>
+        <td>{{ form_widget(form.quantity) }}</td>
+        <td>{{ form.vars.line.available }}</td>{# TODO packaging format #}
+        <td>{{ form.vars.line.expected }}</td>{# TODO packaging format #}
     </tr>
-    {% if errors|length > 0 %}
+    {% if errors|length > 0 -%}
         <tr>
             <td colspan="6">
                 {{ form_errors(form) }}
             </td>
         </tr>
-    {% endif %}
+    {%- endif %}
+    {{ form_widget(form.children) }}
     {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_invoice_line_widget %}

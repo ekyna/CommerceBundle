@@ -33,6 +33,7 @@
                 <td id="{{ shipmentId }}_weight">{{ shipment|shipment_weight|localizednumber }}&nbsp;kg</td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td class="actions">
+                    {# Gateway actions #}
                     {%- for button in shipment_gateway_buttons(shipment) -%}
                     <a href="{{ path(button.route, button.parameters) }}"
                        class="btn btn-primary btn-xs"
@@ -45,23 +46,38 @@
                         {%- endif -%}
                     </a>
                     {%- endfor %}
+                    {# Toggle details #}
                     <a href="javascript:void(0)"
                        id="{{ shipmentId }}_toggle_details"
                        class="btn btn-default btn-xs"
                        data-toggle-details="{{ shipmentId ~ '_details' }}">
                         <span class="fa fa-info-circle"></span>
                     </a>
-                    <a href="{{ admin_resource_path(shipment, 'render') }}"
+                    {# Bill document #}
+                    <a href="{{ admin_resource_path(shipment, 'render', {'type': 'bill'}) }}"
                        id="{{ shipmentId }}_render"
                        class="btn btn-primary btn-xs"
+                       title="{{ ('ekyna_commerce.document.type.' ~ (shipment.return ? 'return' : 'shipment') ~ '_bill')|trans }}"
                        target="_blank">
-                        <span class="fa fa-download"></span>
+                        <span class="fa fa-file"></span>
                     </a>
+                    {# Form document #}
+                    {%- if not shipment.return -%}
+                    <a href="{{ admin_resource_path(shipment, 'render', {'type': 'form'}) }}"
+                       id="{{ shipmentId }}_render"
+                       class="btn btn-primary btn-xs"
+                       title="{{ 'ekyna_commerce.document.type.shipment_form'|trans }}"
+                       target="_blank">
+                        <span class="fa fa-check-square-o"></span>
+                    </a>
+                    {%- endif -%}
+                    {# Edit #}
                     <a href="{{ admin_resource_path(shipment, 'edit') }}"
                        id="{{ shipmentId }}_edit"
                        class="btn btn-warning btn-xs">
                         {{ 'ekyna_core.button.edit'|trans }}
                     </a>
+                    {# Delete #}
                     {% if shipment|shipment_deleteable %}
                         <a href="{{ admin_resource_path(shipment, 'remove') }}"
                            id="{{ shipmentId }}_remove"
@@ -73,7 +89,7 @@
             </tr>
             <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
                 <td>&nbsp;</td>
-                <td colspan="4">
+                <td colspan="5">
                     <table class="table table-alt table-striped table-condensed">
                         <thead>
                             <tr>

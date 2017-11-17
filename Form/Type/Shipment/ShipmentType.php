@@ -3,7 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\ShipmentItemsDataTransformer;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates as BShipStates;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
@@ -14,6 +16,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ShipmentType
@@ -23,37 +26,22 @@ use Symfony\Component\Form\FormView;
 class ShipmentType extends ResourceFormType
 {
     /**
-     * @var string
-     */
-    private $itemClass;
-
-    /**
      * @var ShipmentBuilderInterface
      */
-    private $shipmentBuilder;
+    private $builder;
 
 
     /**
      * Constructor.
      *
-     * @param string $dataClass
-     * @param string $itemClass
+     * @param ShipmentBuilderInterface $builder
+     * @param string                   $dataClass
      */
-    public function __construct($dataClass, $itemClass)
+    public function __construct(ShipmentBuilderInterface $builder, $dataClass)
     {
         parent::__construct($dataClass);
 
-        $this->itemClass = $itemClass;
-    }
-
-    /**
-     * Sets the shipment builder.
-     *
-     * @param ShipmentBuilderInterface $shipmentBuilder
-     */
-    public function setShipmentBuilder(ShipmentBuilderInterface $shipmentBuilder)
-    {
-        $this->shipmentBuilder = $shipmentBuilder;
+        $this->builder = $builder;
     }
 
     /**
@@ -84,22 +72,12 @@ class ShipmentType extends ResourceFormType
                 'label'    => 'ekyna_commerce.shipment.field.tracking_number',
                 'required' => false,
             ])
-            ->add('autoInvoice', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.auto_invoice',
-                'required' => false,
-                'attr' => [
-                    'align_with_widget' => true,
-                ]
-            ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.description',
                 'required' => false,
             ])
             ->add('items', ShipmentItemsType::class, [
-                'label'         => 'ekyna_commerce.shipment.field.items',
-                'entry_options' => [
-                    'data_class' => $this->itemClass,
-                ],
+                'entry_type' => $options['item_type'],
             ])
             ->add('receiverAddress', ShipmentAddressType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.receiver_address',
@@ -108,34 +86,42 @@ class ShipmentType extends ResourceFormType
             ->add('senderAddress', ShipmentAddressType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.sender_address',
                 'required' => false,
-            ]);
+            ])
+            ->addModelTransformer(new ShipmentItemsDataTransformer($this->builder))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+                /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+                $shipment = $event->getData();
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
-            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-            $shipment = $event->getData();
+                if (null === $sale = $shipment->getSale()) {
+                    throw new RuntimeException("The shipment must be associated with a sale at this point.");
+                }
+                if (!$sale instanceof OrderInterface) {
+                    throw new RuntimeException("Not yet supported.");
+                }
 
-            if (null === $sale = $shipment->getSale()) {
-                throw new RuntimeException("The shipment must be associated with a sale at this point.");
-            }
-            if (!$sale instanceof OrderInterface) {
-                throw new RuntimeException("Not yet supported.");
-            }
+                $availableStateChoices = BShipStates::getFormChoices(
+                    $shipment->isReturn(),
+                    !OrderStates::isStockableState($sale->getState())
+                );
 
-            $availableStateChoices = BShipStates::getFormChoices(
-                $shipment->isReturn(),
-                !OrderStates::isStockableState($sale->getState())
-            );
+                if (null === $shipment->getId() || null !== $shipment->getInvoice()) {
+                    $shipment->setAutoInvoice(true);
+                }
 
-            $form->add('state', Type\ChoiceType::class, [
-                'label'    => 'ekyna_core.field.status',
-                'choices'  => $availableStateChoices,
-            ]);
-
-            if (null === $shipment->getId()) {
-                $this->shipmentBuilder->build($shipment);
-            }
-        });
+                $form
+                    ->add('state', Type\ChoiceType::class, [
+                        'label'   => 'ekyna_core.field.status',
+                        'choices' => $availableStateChoices,
+                    ])
+                    ->add('autoInvoice', Type\CheckboxType::class, [
+                        'label'    => 'ekyna_commerce.shipment.field.auto_invoice',
+                        'required' => false,
+                        'attr'     => [
+                            'align_with_widget' => true,
+                        ],
+                    ]);
+            });
     }
 
     /**
@@ -147,5 +133,25 @@ class ShipmentType extends ResourceFormType
         $shipment = $form->getData();
 
         $view->vars['return_mode'] = $shipment->isReturn();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'shipment');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setRequired(['item_type'])
+            ->setAllowedTypes('item_type', 'string');
     }
 }

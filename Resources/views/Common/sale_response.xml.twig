@@ -24,7 +24,7 @@
             {%- if sale.outstandingDate is empty -%}
                 <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
             {%- else -%}
-                {{- content|localizeddate('short', 'none') -}}
+                {{- sale.outstandingDate|localizeddate('short', 'none') -}}
             {%- endif -%}
         ]]></outstandingDate>
         <paymentTerm><![CDATA[

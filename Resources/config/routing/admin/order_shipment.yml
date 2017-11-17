@@ -22,7 +22,7 @@ ekyna_commerce_order_shipment_admin_remove:
         orderShipmentId: \d+
 
 ekyna_commerce_order_shipment_admin_render:
-    path: /{orderShipmentId}/render.{_format}
+    path: /{orderShipmentId}/render/{type}.{_format}
     defaults:
         _controller: "ekyna_commerce.order_shipment.controller:renderAction"
         _format: pdf
@@ -30,6 +30,7 @@ ekyna_commerce_order_shipment_admin_render:
     requirements:
         orderId: \d+
         orderShipmentId: \d+
+        type: form|bill
         _format: html|pdf|jpg
 
 ekyna_commerce_order_shipment_admin_gateway_action:

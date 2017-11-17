@@ -156,8 +156,14 @@ class OrderShipmentType extends AbstractOrderListType
             }
         }
 
-        $builder->addAction('documents', ShipmentDocumentActionType::class, [
-            'label' => 'Afficher les bons de livraison/retour', // TODO trans
+        $builder->addAction('bills', ShipmentDocumentActionType::class, [
+            'label' => 'ekyna_commerce.shipment.action.bills',
+            'type'  => 'bill',
+        ]);
+
+        $builder->addAction('forms', ShipmentDocumentActionType::class, [
+            'label' => 'ekyna_commerce.shipment.action.forms',
+            'type'  => 'form',
         ]);
     }
 }

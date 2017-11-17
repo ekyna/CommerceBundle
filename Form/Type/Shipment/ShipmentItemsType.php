@@ -4,9 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -19,23 +18,9 @@ class ShipmentItemsType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-            /** @var \Doctrine\Common\Collections\Collection $items */
-            $items = $event->getData();
-
-            /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface $item */
-            foreach ($items as $item) {
-                if (0 == $item->getQuantity()) {
-                    $items->removeElement($item);
-                    $item->setShipment(null);
-                }
-            }
-
-            //$event->getForm()->setData($items);
-            $event->setData($items);
-        }, 51); // Before collection type's submit event listener
+        $view->vars['headers'] = $options['headers'];
     }
 
     /**
@@ -43,9 +28,13 @@ class ShipmentItemsType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'entry_type'     => ShipmentItemType::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'label'      => 'ekyna_commerce.shipment.field.items',
+                'entry_type' => ShipmentItemType::class,
+                'headers'    => true,
+            ])
+            ->setAllowedTypes('headers', 'bool');
     }
 
     /**

@@ -28,10 +28,12 @@ ekyna_commerce:
         method:
             not_null: Veuillez choisir un mode de paiement.
     invoice:
-        hierarchy_integrity: |
-            Erreur d'intégrité entre les différents éléments.
+        hierarchy_integrity: Erreur d'intégrité entre les différents éléments.
+        empty_good_lines: Veuillez sélectionner au moins un article.
     invoice_line:
         shipment_is_not_return: L'éxpédition liée n'est pas un retour.
+        null_sale_item: Cette ligne doit être liée à un article.
+        empty_designation: La désignation ne peut pas être vide.
         sale_item_and_shipment_item_miss_match: Les lignes de commande et de retour ne correspondent pas.
         quantity_is_greater_than_returned: La quantité ne peut pas exceder la quantité retournée (max %max%).
         sale_and_credit_miss_match: La commande et le retour ne correspondent pas.
@@ -49,7 +51,9 @@ ekyna_commerce:
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
     sale_item:
-        tax_group_must_not_be_null: Le groupe de taxe doit être défini.
+        root_item_cant_be_private: Cet article ne peut pas être privé.
+        privacy_integrity: Les articles privés ne peuvent pas contenir des articles publiques.
+        tax_group_integrity: Erreur d'intégrité sur le groupe de taxation.
         quantity_is_lower_than_shipped: Le quantité doit être supérieure ou égale à la quantité expédiée (max %max%).
         quantity_is_lower_than_credited: Le quantité doit être supérieure ou égale à la quantité des avoirs (max %max%).
     subject:
@@ -71,8 +75,10 @@ ekyna_commerce:
             La quantité expédiée doit être inférieure ou égale à la quantité disponible (%max%).
         quantity_must_be_lower_than_or_equal_shipped: |
             La quantité retournée doit être inférieure ou égale à la quantité expédiée (%max%).
+        quantity_must_be_multiple_of_parent: |
+            La quantité doit être un multiple de %multiple%.
     supplier_order:
-        duplicate_subject_identity: |
+        duplicate_subject: |
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.
         order_and_delivery_items_miss_match: |
             Au moins une ligne de la commande ne correspond pas aux lignes des livraisons.

@@ -158,14 +158,16 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
 
 
     // Refreshes the checkout on visibility change.
-    var preventWindowFocusRefresh = false;
-    $(window).on('focus', function () {
-        if (!preventWindowFocusRefresh && refreshCheckout()) {
-            preventWindowFocusRefresh = true;
+    if (!$('html').data('debug')) {
+        var preventWindowFocusRefresh = false;
+        $(window).on('focus', function () {
+            if (!preventWindowFocusRefresh && refreshCheckout()) {
+                preventWindowFocusRefresh = true;
 
-            setTimeout(function () {
-                preventWindowFocusRefresh = false;
-            }, 10000);
-        }
-    });
+                setTimeout(function () {
+                    preventWindowFocusRefresh = false;
+                }, 10000);
+            }
+        });
+    }
 });

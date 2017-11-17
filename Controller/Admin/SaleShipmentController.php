@@ -271,9 +271,11 @@ class SaleShipmentController extends AbstractSaleController
 
         $this->isGranted('VIEW', $shipment);
 
+        $type = $request->attributes->get('type');
+
         $renderer = $this
             ->get('ekyna_commerce.renderer_factory')
-            ->createRenderer($shipment);
+            ->createRenderer($shipment, $type);
 
         return $renderer->respond($request);
     }

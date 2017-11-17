@@ -37,7 +37,7 @@
 
 {%- set columns_count = 5 -%}
 {%- if multiple_taxes %}{% set columns_count = columns_count + 1 %}{% endif -%}
-{%- if line_discount %}{% set columns_count = columns_count + 2 %}{% endif -%}
+{%- if line_discount %}{% set columns_count = columns_count + 3 %}{% endif -%}
 
 {# --- LINES --- #}
 {%- block doc_lines -%}
@@ -52,24 +52,25 @@
         {%- endif %}
         <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
         {% if line_discount -%}
-        <th>{{ 'ekyna_commerce.sale.field.base_total'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.discount_total'|trans }}</th>
+        <th>{{ 'ekyna_commerce.sale.field.gross'|trans }}</th>
+        <th colspan="2">{{ 'ekyna_commerce.sale.field.discount'|trans }}</th>
         {%- endif %}
         <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
     </tr>
     </thead>
 
     {# GOODS #}
-    {% set baseTotal, discountTotal, netTotal = 0, 0, 0 %}
+    {% set grossTotal, discountTotal, baseTotal = 0, 0, 0 %}
     {% set goodLines = subject.linesByType('good') %}
     {% set discountLines = subject.linesByType('discount') -%}
     {% set shipmentLines = subject.linesByType('shipment') -%}
 
     <tbody class="stripped">
     {% for line in goodLines %}
-        {% set baseTotal = baseTotal + line.baseTotal %}
-        {% set discountTotal = discountTotal + line.discountTotal %}
-        {% set netTotal = netTotal + line.netTotal %}
+        {% if not line.saleItem.private %}
+        {% set grossTotal = grossTotal + line.gross %}
+        {% set discountTotal = discountTotal + line.discount %}
+        {% set baseTotal = baseTotal + line.base %}
         <tr>
             <td>
                 {{- line.designation -}}
@@ -78,7 +79,7 @@
                 {%- endif -%}
             </td>
             <td>{{ line.reference }}</td>
-            <td class="text-right">{{ line.netPrice|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ line.unit|localizedcurrency(currency) }}</td>
             {% if multiple_taxes %}
             <td class="text-right">
                 {%- for rate in line.taxRates -%}
@@ -92,33 +93,43 @@
             <td class="text-right">{{ line.quantity|localizednumber }}</td>{# TODO Packing format #}
             {% if line_discount %}
             <td class="text-right">
-                {{- line.baseTotal|localizedcurrency(currency) -}}
+                {{- line.gross|localizedcurrency(currency) -}}
             </td>
+            {%- if 0 < line.discount -%}
             <td class="text-right">
-                {%- if line.discountTotal -%}
-                    {{- line.discountTotal|localizedcurrency(currency) -}}
+                {%- for rate in line.discountRates -%}
+                    {{- rate|localizednumber }}%
+                    {%- if not loop.last %}, {% endif -%}
                 {%- else -%}
                     &nbsp;
-                {%- endif -%}
+                {%- endfor -%}
             </td>
+            <td class="text-right">-{{- line.discount|localizedcurrency(currency) -}}</td>
+            {%- else -%}
+            <td class="text-right">&nbsp;</td>
+            <td class="text-right">&nbsp;</td>
+            {%- endif -%}
             {% endif %}
-            <td class="text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ line.base|localizedcurrency(currency) }}</td>
         </tr>
+        {% endif %}
     {% endfor %}
     </tbody>
 
 
-    <tbody class="spacer"><tr><td colspan="8">&nbsp;</td></tr></tbody>
+    <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
 
     {% if line_discount or (1 < goodLines|length and discountLines is not empty) -%}
     <tbody class="totals">
         <tr>
-            <td colspan="{{ columns_count - (line_discount ? 3 : 1) }}">{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</td>
+            <td colspan="{{ columns_count - (line_discount ? 4 : 1) }}">{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</td>
             {% if line_discount -%}
-            <td class="text-right">{{ baseTotal|localizedcurrency(currency) }}</td>
-            <td class="text-right">{{ discountTotal|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ grossTotal|localizedcurrency(currency) }}</td>
+            <td class="text-right" colspan="2">
+                {%- if 0 < discountTotal %}-{% endif %}{{ discountTotal|localizedcurrency(currency) -}}
+            </td>
             {%- endif %}
-            <td class="text-right">{{ netTotal|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ baseTotal|localizedcurrency(currency) }}</td>
         </tr>
     </tbody>
     {%- endif %}
@@ -137,7 +148,7 @@
                     {{- line.designation -}}
                 {%- endif -%}
             </th>
-            <td class="total text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
+            <td class="total text-right">-{{ line.base|localizedcurrency(currency) }}</td>
         </tr>
     {%- endfor %}
     </tbody>
@@ -151,7 +162,7 @@
         <tr>
             <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
             <th>{{ 'ekyna_commerce.sale.field.shipping_cost'|trans }}</th>
-            <td class="total text-right">{{ line.netTotal|localizedcurrency(currency) }}</td>
+            <td class="total text-right">{{ line.base|localizedcurrency(currency) }}</td>
         </tr>
     {%- endfor %}
     </tbody>
@@ -163,7 +174,7 @@
         <tr>
             <td colspan="{{ columns_count - 2 }}" rowspan="3">&nbsp;</td>
             <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-            <td class="total text-right">{{ (subject.goodsBase + subject.shipmentBase)|localizedcurrency(currency) }}</td>
+            <td class="total text-right">{{ (subject.goodsBase - subject.discountBase + subject.shipmentBase)|localizedcurrency(currency) }}</td>
         </tr>
         <tr>
             <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>

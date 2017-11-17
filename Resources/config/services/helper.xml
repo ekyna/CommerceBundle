@@ -32,9 +32,9 @@
         <!-- Cart helper -->
         <service id="ekyna_commerce.cart_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.sale_helper"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument>%ekyna_commerce.cart_item.class%</argument>
         </service>
 

@@ -77,12 +77,13 @@ ekyna_commerce_admin_order_list_shipment:
     defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipment }
 
 ekyna_commerce_admin_order_list_shipment_document:
-    path: /order-shipments/documents.{_format}
+    path: /order-shipments/documents/{type}.{_format}
     methods: [GET]
     defaults:
         _controller: EkynaCommerceBundle:Admin/OrderList:shipmentDocument
         _format: pdf
     requirements:
+        type: form|bill
         _format: pdf|html|jpg
 
 ekyna_commerce_admin_order_list_shipment_platform_action:

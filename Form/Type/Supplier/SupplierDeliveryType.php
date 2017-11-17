@@ -5,9 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\SupplierDeliveryItemsTransformer;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class SupplierDeliveryType

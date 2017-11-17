@@ -13,9 +13,9 @@
 
 {% block side %}
     {% if shipment.sale is not sale_stockable_state %}
-        <div class="alert alert-warning">
-            {{ 'ekyna_commerce.shipment.message.sale_is_not_stackable'|trans|raw }}
-        </div>
+    <div class="alert alert-warning">
+        {{ 'ekyna_commerce.shipment.message.sale_is_not_stackable'|trans|raw }}
+    </div>
     {% endif %}
     {{ parent() }}
 {% endblock side %}

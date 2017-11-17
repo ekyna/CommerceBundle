@@ -3,11 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
-use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculatorInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -22,46 +18,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class InvoiceLineType extends ResourceFormType
 {
     /**
-     * @var InvoiceCalculatorInterface
-     */
-    private $invoiceCalculator;
-
-    /**
-     * @var ShipmentCalculatorInterface
-     */
-    private $shipmentCalculator;
-
-
-    /**
-     * Constructor.
-     *
-     * @param InvoiceCalculatorInterface  $invoiceCalculator
-     * @param ShipmentCalculatorInterface $shipmentCalculator
-     * @param string                      $class
-     */
-    public function __construct(
-        InvoiceCalculatorInterface $invoiceCalculator,
-        ShipmentCalculatorInterface $shipmentCalculator,
-        $class
-    ) {
-        parent::__construct($class);
-
-        $this->invoiceCalculator = $invoiceCalculator;
-        $this->shipmentCalculator = $shipmentCalculator;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('quantity', Type\NumberType::class, [
-            'label'          => 'ekyna_core.field.quantity',
-            'attr'           => [
-                'class' => 'input-sm',
-            ],
-            'error_bubbling' => true,
-        ]);
+        $builder
+            ->add('quantity', Type\NumberType::class, [
+                'label'          => 'ekyna_core.field.quantity',
+                'disabled'       => 0 < $options['level'],
+                'attr'           => [
+                    'class' => 'input-sm',
+                ],
+                'error_bubbling' => true,
+            ])
+            ->add('children', InvoiceLinesType::class, [
+                'headers'       => false,
+                'entry_type'    => static::class,
+                'entry_options' => [
+                    'level' => $options['level'] + 1,
+                ],
+            ]);
     }
 
     /**
@@ -72,20 +48,24 @@ class InvoiceLineType extends ResourceFormType
         /** @var InvoiceLineInterface $line */
         $line = $form->getData();
 
-        $view->vars['designation'] = $line->getDesignation();
-        $view->vars['description'] = $line->getDescription();
-        $view->vars['reference'] = $line->getReference();
+        $view->vars['line'] = $line;
+        $view->vars['level'] = $options['level'];
+    }
 
-        if ($options['type'] === InvoiceTypes::TYPE_INVOICE) {
-            $max = $this->invoiceCalculator->calculateInvoiceableQuantity($line);
-        } elseif ($options['type'] === InvoiceTypes::TYPE_CREDIT) {
-            $max = $this->invoiceCalculator->calculateCreditableQuantity($line);
-        } else {
-            throw new InvalidArgumentException("Unexpected invoice type.");
+    /**
+     * @inheritdoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        /** @var InvoiceLineInterface $line */
+        $line = $view->vars['line'];
+
+        $view->children['quantity']->vars['attr']['data-max'] = $line->getAvailable();
+
+        if (0 < $options['level']) {
+            $view->children['quantity']->vars['attr']['data-quantity'] = $line->getSaleItem()->getQuantity();
+            $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
-
-        $view->vars['shipped_quantity'] = $this->shipmentCalculator->calculateShippedQuantity($line->getSaleItem());
-        $view->vars['max_quantity'] = $max;
     }
 
     /**
@@ -94,11 +74,9 @@ class InvoiceLineType extends ResourceFormType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults([
-                'type' => null,
-            ])
-            ->setAllowedTypes('type', 'string')
-            ->setAllowedValues('type', InvoiceTypes::getTypes());
+            ->setDefault('level', 0)
+            ->setDefault('data_class', $this->dataClass)
+            ->setAllowedTypes('level', 'int');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Invoice\InvoiceType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class OrderInvoiceType
@@ -11,5 +12,13 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Invoice\InvoiceType;
  */
 class OrderInvoiceType extends InvoiceType
 {
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
 
+        $resolver->setDefault('line_type', OrderInvoiceLineType::class);
+    }
 }

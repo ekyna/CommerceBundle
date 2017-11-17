@@ -147,6 +147,12 @@
         <service id="ekyna_commerce.subject.provider_registry"
                  class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
 
+        <!-- Sale item event listener -->
+        <service id="ekyna_commerce.sale_item.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SaleItemEventSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
     </services>
 
 </container>

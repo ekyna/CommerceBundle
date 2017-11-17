@@ -18,11 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 class CartHelper
 {
     /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
-
-    /**
      * @var \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
      */
     protected $saleHelper;
@@ -33,28 +28,33 @@ class CartHelper
     protected $cartProvider;
 
     /**
+     * @var SubjectHelperInterface
+     */
+    private $subjectHelper;
+
+    /**
      * @var string
      */
-    protected $cartItemClass;
+    private $cartItemClass;
 
 
     /**
      * Constructor.
      *
-     * @param SubjectHelperInterface $subjectHelper
      * @param SaleHelper             $saleHelper
      * @param CartProviderInterface  $cartProvider
+     * @param SubjectHelperInterface $subjectHelper
      * @param string                 $cartItemClass
      */
     public function __construct(
-        SubjectHelperInterface $subjectHelper,
         SaleHelper $saleHelper,
         CartProviderInterface $cartProvider,
+        SubjectHelperInterface $subjectHelper,
         $cartItemClass
     ) {
-        $this->subjectHelper = $subjectHelper;
         $this->saleHelper = $saleHelper;
         $this->cartProvider = $cartProvider;
+        $this->subjectHelper = $subjectHelper;
         $this->cartItemClass = $cartItemClass;
     }
 

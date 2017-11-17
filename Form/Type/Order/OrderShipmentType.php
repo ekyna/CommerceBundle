@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class OrderShipmentType
@@ -11,5 +12,13 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentType;
  */
 class OrderShipmentType extends ShipmentType
 {
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
 
+        $resolver->setDefault('item_type', OrderShipmentItemType::class);
+    }
 }

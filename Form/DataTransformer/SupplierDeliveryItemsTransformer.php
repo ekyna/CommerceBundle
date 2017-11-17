@@ -6,8 +6,6 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface;
 use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\InvalidArgumentException;
-use Symfony\Component\Form\Exception\RuntimeException;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
@@ -39,11 +37,11 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
     public function transform($delivery)
     {
         if (!$delivery instanceof SupplierDeliveryInterface) {
-            throw new InvalidArgumentException("Expected instance of SupplierDeliveryInterface.");
+            throw new TransformationFailedException("Expected instance of " . SupplierDeliveryInterface::class);
         }
 
         if (null === $order = $delivery->getOrder()) {
-            throw new RuntimeException("Supplier delivery's order must be set.");
+            throw new TransformationFailedException("Supplier delivery's order must be set.");
         }
 
         // For each order items
@@ -79,7 +77,7 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
     public function reverseTransform($delivery)
     {
         if (!$delivery instanceof SupplierDeliveryInterface) {
-            throw new InvalidArgumentException("Expected instance of SupplierDeliveryInterface.");
+            throw new TransformationFailedException("Expected instance of " . SupplierDeliveryInterface::class);
         }
 
         // Removed zero quantity delivery item
