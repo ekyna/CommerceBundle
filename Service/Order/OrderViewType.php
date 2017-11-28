@@ -121,12 +121,10 @@ class OrderViewType extends AbstractViewType
         if (!$item instanceof Order\OrderItemInterface) {
             throw new \Exception("Unexpected sale item type.");
         }
-
         $stockUnits = [];
         foreach ($item->getStockAssignments() as $assignment) {
             $stockUnits[] = $assignment->getStockUnit();
         }
-
         if (!empty($stockUnits)) {
             $view->vars['information'] = $this->stockRenderer->renderStockUnits($stockUnits, [
                 'template' => 'EkynaCommerceBundle:Common:sale_stock_unit_list.html.twig',
@@ -137,15 +135,40 @@ class OrderViewType extends AbstractViewType
             $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
                 'title'               => $this->trans('ekyna_commerce.sale.button.item.information'),
                 'data-toggle-details' => $view->getId() . '_information',
+                'class'               => 'text-info',
             ]);
         }
 
-        if (!$item->isImmutable()) {
-            // New adjustment button
-            if (
-                !$item->hasAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT) &&
-                !($item->hasChildren() && !$item->hasPrivateChildren())
-            ) {
+        // Manual adjustments
+        if (
+            !$item->getSale()->isAutoDiscount() &&
+            !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
+        ) {
+            $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
+            if (false !== $adjustment) {
+                $routePrefix = 'ekyna_commerce_order_item_adjustment_admin_';
+                $parameters = [
+                    'orderId'               => $item->getSale()->getId(),
+                    'orderItemId'           => $item->getId(),
+                    'orderItemAdjustmentId' => $adjustment->getId(),
+                ];
+
+                $editPath = $this->generateUrl($routePrefix . 'edit', $parameters);
+                $actions[] = new View\Action($editPath, 'fa fa-percent', [
+                    'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.edit'),
+                    'class'           => 'text-warning',
+                    'data-sale-modal' => null,
+                ]);
+
+                $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
+                $actions[] = new View\Action($removePath, 'fa fa-percent', [
+                    'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
+                    'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
+                    'class'         => 'text-danger',
+                    'data-sale-xhr' => null,
+                ]);
+            } else {
+                // New adjustment button
                 $newAdjustmentPath = $this->generateUrl('ekyna_commerce_order_item_adjustment_admin_new', [
                     'orderId'     => $item->getSale()->getId(),
                     'orderItemId' => $item->getId(),
@@ -153,45 +176,49 @@ class OrderViewType extends AbstractViewType
                 $actions[] = new View\Action($newAdjustmentPath, 'fa fa-percent', [
                     'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.new'),
                     'data-sale-modal' => null,
+                    'class'           => 'text-success',
                 ]);
             }
+        }
 
-            if (!$item->getParent()) {
-                // Configure action
-                if ($item->isConfigurable()) {
-                    $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
-                        'orderId'     => $item->getSale()->getId(),
-                        'orderItemId' => $item->getId(),
-                    ]);
-                    $actions[] = new View\Action($configurePath, 'fa fa-cog', [
-                        'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
-                        'data-sale-modal' => null,
-                    ]);
-                }
-
-                // Edit action
-                if (!$item->hasSubjectIdentity()) {
-                    $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
-                        'orderId'     => $item->getSale()->getId(),
-                        'orderItemId' => $item->getId(),
-                    ]);
-                    $actions[] = new View\Action($editPath, 'fa fa-pencil', [
-                        'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
-                        'data-sale-modal' => null,
-                    ]);
-                }
-
-                // Remove action
-                $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+        if (!$item->isImmutable() && !$item->getParent()) {
+            // Configure action
+            if ($item->isConfigurable()) {
+                $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
                     'orderId'     => $item->getSale()->getId(),
                     'orderItemId' => $item->getId(),
                 ]);
-                $actions[] = new View\Action($removePath, 'fa fa-remove', [
-                    'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-                    'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
-                    'data-sale-xhr' => null,
+                $actions[] = new View\Action($configurePath, 'fa fa-cog', [
+                    'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
+                    'data-sale-modal' => null,
+                    'class'           => 'text-primary',
                 ]);
             }
+
+            // Edit action
+            if (!$item->hasSubjectIdentity()) {
+                $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
+                    'orderId'     => $item->getSale()->getId(),
+                    'orderItemId' => $item->getId(),
+                ]);
+                $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+                    'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
+                    'data-sale-modal' => null,
+                    'class'           => 'text-danger',
+                ]);
+            }
+
+            // Remove action
+            $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $actions[] = new View\Action($removePath, 'fa fa-remove', [
+                'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
+                'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
+                'data-sale-xhr' => null,
+                'class'         => 'text-danger',
+            ]);
         }
 
         $view->vars['actions'] = $actions;
@@ -213,14 +240,7 @@ class OrderViewType extends AbstractViewType
                 'orderId'           => $adjustable->getId(),
                 'orderAdjustmentId' => $adjustment->getId(),
             ];
-        }/* elseif ($adjustable instanceof Order\OrderItemInterface) {
-            $routePrefix = 'ekyna_commerce_order_item_adjustment_admin_';
-            $parameters = [
-                'orderId'               => $adjustable->getSale()->getId(),
-                'orderItemId'           => $adjustable->getId(),
-                'orderItemAdjustmentId' => $adjustment->getId(),
-            ];
-        }*/ else {
+        } else {
             throw new InvalidArgumentException("Unexpected adjustable.");
         }
 
@@ -230,6 +250,7 @@ class OrderViewType extends AbstractViewType
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.edit'),
             'data-sale-modal' => null,
+            'class'           => 'text-warning',
         ]);
 
         $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
@@ -237,6 +258,7 @@ class OrderViewType extends AbstractViewType
             'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
             'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
             'data-sale-xhr' => null,
+            'class'         => 'text-danger',
         ]);
 
         $view->vars['actions'] = $actions;
@@ -259,6 +281,7 @@ class OrderViewType extends AbstractViewType
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('ekyna_commerce.sale.button.shipment.edit'),
             'data-sale-modal' => null,
+            'class'           => 'text-warning',
         ]);
 
         $view->vars['actions'] = $actions;

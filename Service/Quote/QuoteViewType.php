@@ -100,12 +100,36 @@ class QuoteViewType extends AbstractViewType
 
         $actions = [];
 
-        if (!$item->isImmutable()) {
-            // New adjustment button
-            if (
-                !$item->hasAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT) &&
-                !($item->hasChildren() && !$item->hasPrivateChildren())
-            ) {
+        // Manual adjustments
+        if (
+            !$item->getSale()->isAutoDiscount() &&
+            !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
+        ) {
+            $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
+            if (false !== $adjustment) {
+                $routePrefix = 'ekyna_commerce_quote_item_adjustment_admin_';
+                $parameters = [
+                    'quoteId'               => $item->getSale()->getId(),
+                    'quoteItemId'           => $item->getId(),
+                    'quoteItemAdjustmentId' => $adjustment->getId(),
+                ];
+
+                $editPath = $this->generateUrl($routePrefix . 'edit', $parameters);
+                $actions[] = new View\Action($editPath, 'fa fa-percent', [
+                    'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.edit'),
+                    'class'           => 'text-warning',
+                    'data-sale-modal' => null,
+                ]);
+
+                $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
+                $actions[] = new View\Action($removePath, 'fa fa-percent', [
+                    'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
+                    'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
+                    'class'         => 'text-danger',
+                    'data-sale-xhr' => null,
+                ]);
+            } else {
+                // New adjustment button
                 $newAdjustmentPath = $this->generateUrl('ekyna_commerce_quote_item_adjustment_admin_new', [
                     'quoteId'     => $item->getSale()->getId(),
                     'quoteItemId' => $item->getId(),
@@ -113,45 +137,50 @@ class QuoteViewType extends AbstractViewType
                 $actions[] = new View\Action($newAdjustmentPath, 'fa fa-percent', [
                     'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.new'),
                     'data-sale-modal' => null,
+                    'class'           => 'text-success',
                 ]);
             }
+        }
 
-            if (!$item->getParent()) {
-                // Configure action
-                if ($item->isConfigurable()) {
-                    $configurePath = $this->generateUrl('ekyna_commerce_quote_item_admin_configure', [
-                        'quoteId'     => $item->getSale()->getId(),
-                        'quoteItemId' => $item->getId(),
-                    ]);
-                    $actions[] = new View\Action($configurePath, 'fa fa-cog', [
-                        'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
-                        'data-sale-modal' => null,
-                    ]);
-                }
-
-                // Edit action
-                if (!$item->hasSubjectIdentity()) {
-                    $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
-                        'quoteId'     => $item->getSale()->getId(),
-                        'quoteItemId' => $item->getId(),
-                    ]);
-                    $actions[] = new View\Action($editPath, 'fa fa-pencil', [
-                        'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
-                        'data-sale-modal' => null,
-                    ]);
-                }
-
-                // Remove action
-                $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
+        if (!$item->isImmutable() && !$item->getParent()) {
+            // Configure action
+            if ($item->isConfigurable()) {
+                $configurePath = $this->generateUrl('ekyna_commerce_quote_item_admin_configure', [
                     'quoteId'     => $item->getSale()->getId(),
                     'quoteItemId' => $item->getId(),
                 ]);
-                $actions[] = new View\Action($removePath, 'fa fa-remove', [
-                    'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-                    'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
-                    'data-sale-xhr' => null,
+                $actions[] = new View\Action($configurePath, 'fa fa-cog', [
+                    'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
+                    'data-sale-modal' => null,
+                    'class'           => 'text-primary',
                 ]);
             }
+
+            // Edit action
+            if (!$item->hasSubjectIdentity()) {
+                $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
+                    'quoteId'     => $item->getSale()->getId(),
+                    'quoteItemId' => $item->getId(),
+                ]);
+                $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+                    'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
+                    'data-sale-modal' => null,
+                    'class'           => 'text-warning',
+                ]);
+            }
+
+            // Remove action
+            $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
+                'quoteId'     => $item->getSale()->getId(),
+                'quoteItemId' => $item->getId(),
+            ]);
+            $actions[] = new View\Action($removePath, 'fa fa-remove', [
+                'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
+                'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
+                'data-sale-xhr' => null,
+                'class'         => 'text-danger',
+            ]);
+
         }
 
         $view->vars['actions'] = $actions;
@@ -173,14 +202,7 @@ class QuoteViewType extends AbstractViewType
                 'quoteId'           => $adjustable->getId(),
                 'quoteAdjustmentId' => $adjustment->getId(),
             ];
-        }/* elseif ($adjustable instanceof Quote\QuoteItemInterface) {
-            $routePrefix = 'ekyna_commerce_quote_item_adjustment_admin_';
-            $parameters = [
-                'quoteId'               => $adjustable->getSale()->getId(),
-                'quoteItemId'           => $adjustable->getId(),
-                'quoteItemAdjustmentId' => $adjustment->getId(),
-            ];
-        }*/ else {
+        } else {
             throw new InvalidArgumentException("Unexpected adjustable.");
         }
 
@@ -190,6 +212,7 @@ class QuoteViewType extends AbstractViewType
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.edit'),
             'data-sale-modal' => null,
+            'class'           => 'text-warning',
         ]);
 
         $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
@@ -197,6 +220,7 @@ class QuoteViewType extends AbstractViewType
             'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
             'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
             'data-sale-xhr' => null,
+            'class'         => 'text-danger',
         ]);
 
         $view->vars['actions'] = $actions;
@@ -219,6 +243,7 @@ class QuoteViewType extends AbstractViewType
         $actions[] = new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('ekyna_commerce.sale.button.shipment.edit'),
             'data-sale-modal' => null,
+            'class'           => 'text-warning',
         ]);
 
         $view->vars['actions'] = $actions;

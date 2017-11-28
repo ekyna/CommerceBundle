@@ -34,6 +34,7 @@ class CartViewType extends AbstractViewType
             $actions[] = new View\Action($configurePath, 'fa fa-cog', [
                 'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
                 'data-sale-modal' => null,
+                'class'           => 'text-primary',
             ]);
         }
 
@@ -45,6 +46,7 @@ class CartViewType extends AbstractViewType
             'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
             'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
             'data-sale-xhr' => null,
+            'class'         => 'text-danger',
         ]);
 
         $view->vars['actions'] = $actions;
@@ -79,6 +81,7 @@ class CartViewType extends AbstractViewType
             'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
             'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
             'data-sale-xhr' => null,
+            'class'         => 'text-danger',
         ]);
 
         $view->vars['actions'] = $actions;

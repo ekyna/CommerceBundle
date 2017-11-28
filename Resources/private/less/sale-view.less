@@ -161,11 +161,6 @@
                     //line-height: 18px;
                     text-align: center;
                     margin-right: 2px;
-                    color: lighten(@text-color, 30%);
-
-                    &:hover {
-                        color: @text-color;
-                    }
 
                     &:last-child {
                         margin-right: 0;
@@ -173,24 +168,11 @@
                 }
             }
 
-            .sale-detail-private > td {
+            .sale-detail-private > td.sale-detail-designation {
                 color: lighten(@text-color, 30%);
 
                 a {
                     color: lighten(@text-color, 15%);
-                }
-
-                &.sale-detail-actions {
-                    padding: 6px 6px 0 6px;
-                    text-align: right;
-
-                    > a {
-                        color: lighten(@text-color, 30%);
-
-                        &:hover {
-                            color: @text-color;
-                        }
-                    }
                 }
             }
 
