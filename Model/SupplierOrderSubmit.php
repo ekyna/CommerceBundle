@@ -29,7 +29,13 @@ class SupplierOrderSubmit
     /**
      * @var bool
      */
-    private $confirm;
+    private $confirm = false;
+
+    /**
+     * @var bool
+     */
+    private $sendEmail = true;
+
 
     /**
      * Returns the order.
@@ -126,4 +132,29 @@ class SupplierOrderSubmit
 
         return $this;
     }
+
+    /**
+     * Returns whether to send the email.
+     *
+     * @return bool
+     */
+    public function isSendEmail()
+    {
+        return $this->sendEmail;
+    }
+
+    /**
+     * Sets whether to send the email.
+     *
+     * @param bool $send
+     *
+     * @return SupplierOrderSubmit
+     */
+    public function setSendEmail($send)
+    {
+        $this->sendEmail = (bool)$send;
+
+        return $this;
+    }
 }
+

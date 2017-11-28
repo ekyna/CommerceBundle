@@ -73,11 +73,17 @@ class SupplierOrderSubmitType extends Form\AbstractType
             ])
             ->add('confirm', Type\CheckboxType::class, [
                 'label'       => 'ekyna_core.message.action_confirm',
-                'required'    => false,
                 'constraints' => [
                     new Assert\IsTrue(),
                 ],
                 'attr'        => [
+                    'align_with_widget' => true,
+                ],
+            ])
+            ->add('sendEmail', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.supplier_order.field.send_email',
+                'required' => false,
+                'attr'     => [
                     'align_with_widget' => true,
                 ],
             ])

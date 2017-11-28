@@ -43,7 +43,7 @@
                 {{ item.orderItem.reference }}
             </td>
             <td id="{{ itemId ~ 'quantity' }}" class="text-right">
-                {{ item.quantity|number_format }}{# TODO packaging format #}
+                {{ item.quantity|localizednumber }}{# TODO packaging format #}
             </td>
         </tr>
         {% endfor %}

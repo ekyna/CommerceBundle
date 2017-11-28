@@ -49,46 +49,46 @@
             tr {
                 background-color: transparent;
 
-                &:nth-of-type(even) {
-                    background-color: #f9f9f9;
+                &:hover {
+                    background-color: #f5f5f5;
                 }
 
                 .sale-detail-information {
                     background: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIulI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq6bW7ZwJc+f7dW4o++jn+kBD8JUAQA7') 0 0 repeat-y scroll;
                 }
 
-                &.level-0 {
-                    .sale-detail-information, .sale-detail-designation > span {
-                        padding-left: @base-cell-padding;
-                        background-position-x: -24px;
-                    }
+                &.level-0 .sale-detail-information, .sale-detail-designation > span {
+                    padding-left: @base-cell-padding;
+                    background-position-x: -24px;
                 }
 
-                &.level-1 {
-                    .sale-detail-information, .sale-detail-designation > span {
-                        padding-left: @base-cell-padding + 24px;
-                    }
+                &.level-1 .sale-detail-information, .sale-detail-designation > span {
+                    padding-left: @base-cell-padding + 24px;
                 }
 
-                &.level-2 {
-                    .sale-detail-information, .sale-detail-designation > span {
-                        padding-left: @base-cell-padding + 48px;
-                        background-position-x: 24px;
-                    }
+                &.level-2 .sale-detail-information, .sale-detail-designation > span {
+                    padding-left: @base-cell-padding + 48px;
+                    background-position-x: 24px;
                 }
 
-                &.level-3 {
-                    .sale-detail-information, .sale-detail-designation > span {
-                        padding-left: @base-cell-padding + 72px;
-                        background-position-x: 48px;
-                    }
+                &.level-3 .sale-detail-information, .sale-detail-designation > span {
+                    padding-left: @base-cell-padding + 72px;
+                    background-position-x: 48px;
                 }
 
-                &.level-4 {
-                    .sale-detail-information, .sale-detail-designation {
-                        padding-left: @base-cell-padding + 96px;
-                        background-position-x: 72px;
-                    }
+                &.level-4 .sale-detail-information, .sale-detail-designation {
+                    padding-left: @base-cell-padding + 96px;
+                    background-position-x: 72px;
+                }
+
+                &.level-5 .sale-detail-information, .sale-detail-designation {
+                    padding-left: @base-cell-padding + 120px;
+                    background-position-x: 96px;
+                }
+
+                &.level-6 .sale-detail-information, .sale-detail-designation {
+                    padding-left: @base-cell-padding + 144px;
+                    background-position-x: 120px;
                 }
 
                 td, a {
@@ -150,14 +150,6 @@
                 }
             }
 
-            .sale-detail-private > td {
-                color: lighten(@text-color, 30%);
-
-                a {
-                    color: lighten(@text-color, 15%);
-                }
-            }
-
             .sale-detail-actions {
                 padding: 6px 6px 0 6px;
                 text-align: right;
@@ -177,6 +169,27 @@
 
                     &:last-child {
                         margin-right: 0;
+                    }
+                }
+            }
+
+            .sale-detail-private > td {
+                color: lighten(@text-color, 30%);
+
+                a {
+                    color: lighten(@text-color, 15%);
+                }
+
+                &.sale-detail-actions {
+                    padding: 6px 6px 0 6px;
+                    text-align: right;
+
+                    > a {
+                        color: lighten(@text-color, 30%);
+
+                        &:hover {
+                            color: @text-color;
+                        }
                     }
                 }
             }

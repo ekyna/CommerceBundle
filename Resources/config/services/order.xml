@@ -57,6 +57,13 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Order item adjustment event listener -->
+        <service id="ekyna_commerce.order_item_adjustment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\OrderItemAdjustmentEventSubscriber"
+                 parent="ekyna_commerce.adjustment.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Order adjustment event listener -->
         <service id="ekyna_commerce.order_adjustment.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderAdjustmentEventSubscriber"

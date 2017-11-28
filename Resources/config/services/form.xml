@@ -262,6 +262,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType">
             <argument>%ekyna_commerce.supplier_order.class%</argument>
             <argument>%ekyna_commerce.supplier.class%</argument>
+            <argument>%ekyna_commerce.supplier_product.class%</argument>
             <argument>%ekyna_commerce.supplier_carrier.class%</argument>
             <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
@@ -281,11 +282,11 @@
             <tag name="form.type"/>
         </service>
         <!-- Supplier order compose type -->
-        <service id="ekyna_commerce.supplier_order_compose.form_type"
+        <!--<service id="ekyna_commerce.supplier_order_compose.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderComposeType">
             <argument>%ekyna_commerce.supplier_product.class%</argument>
             <tag name="form.type"/>
-        </service>
+        </service>-->
         <!-- Supplier order create form flow -->
         <service id="ekyna_commerce.supplier_order.create_form_flow"
                  class="Ekyna\Bundle\CommerceBundle\Form\SupplierOrderCreateFlow"

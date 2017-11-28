@@ -821,7 +821,7 @@
             <td>{{ form.vars.designation }}</td>
             <td>{{ form.vars.reference }}</td>
             <td class="text-right">{{ form_widget(form.quantity) }}</td>
-            <td class="text-right">{{ form.vars.remaining_quantity|number_format }}</td>{# TODO packaging format #}
+            <td class="text-right">{{ form.vars.remaining_quantity|localizednumber }}</td>{# TODO packaging format #}
         </tr>
         {% if errors|length > 0 %}
             <tr>
@@ -941,23 +941,6 @@
     {{ bootstrap_restore_form_settings() }}
 {% endspaceless %}
 {% endblock ekyna_commerce_supplier_order_item_widget %}
-
-
-{% block ekyna_commerce_supplier_order_compose_widget %}
-{% spaceless %}
-    <div {{ block('widget_container_attributes') }}>
-        {{ form_widget(form.items) }}
-        <div class="row">
-            <div class="col-md-10">
-                {{ form_row(form.quickAddSelect, {'label_col': 3, 'widget_col': 9}) }}
-            </div>
-            <div class="col-md-2">
-                {{ form_row(form.quickAddButton) }}
-            </div>
-        </div>
-    </div>
-{% endspaceless %}
-{% endblock ekyna_commerce_supplier_order_compose_widget %}
 
 
 {% block ekyna_commerce_recipients_widget %}

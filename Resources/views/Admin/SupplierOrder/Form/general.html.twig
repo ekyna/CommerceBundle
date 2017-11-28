@@ -43,4 +43,12 @@
     </div>
 </div>
 <hr>
-{{ form_widget(form.compose) }}
+{{ form_widget(form.items) }}
+<div class="row">
+    <div class="col-md-10">
+        {{ form_row(form.quickAddSelect, {'label_col': 3, 'widget_col': 9}) }}
+    </div>
+    <div class="col-md-2">
+        {{ form_row(form.quickAddButton) }}
+    </div>
+</div>

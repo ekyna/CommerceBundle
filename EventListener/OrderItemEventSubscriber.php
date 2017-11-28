@@ -17,15 +17,24 @@ class OrderItemEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
+    public function onPreUpdate(ResourceEventInterface $event)
+    {
+        try {
+            parent::onPreUpdate($event);
+        } catch (CommerceExceptionInterface $e) {
+            $event->addMessage(new ResourceMessage($e->getMessage(), ResourceMessage::TYPE_ERROR));
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function onPreDelete(ResourceEventInterface $event)
     {
         try {
             parent::onPreDelete($event);
         } catch (CommerceExceptionInterface $e) {
-            $event->addMessage(new ResourceMessage(
-                'ekyna_commerce.order.message.cant_be_deleted',
-                ResourceMessage::TYPE_ERROR
-            ));
+            $event->addMessage(new ResourceMessage($e->getMessage(), ResourceMessage::TYPE_ERROR));
         }
     }
 }

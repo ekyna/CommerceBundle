@@ -27,9 +27,9 @@ define(['jquery', 'ekyna-form/collection'], function($) {
     };
 
     /**
-     * Supplier order compose widget
+     * Supplier order item widget
      */
-    $.fn.supplierOrderComposeWidget = function() {
+    $.fn.supplierOrderWidget = function() {
         this.each(function() {
 
             var $this = $(this),
@@ -44,7 +44,6 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 .supplierOrderItemWidget();
 
             $button.on('click', function() {
-
                 var selectorVal = $selector.val(),
                     $productChoice = $selector.find('option[value=' + selectorVal + ']');
 
@@ -59,25 +58,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 $form.supplierOrderItemWidget();
 
                 $form.find('.order-item-product').val(selectorVal).trigger('change');
-
             });
-        });
-
-        return this;
-    };
-
-    /**
-     * Supplier order item widget
-     */
-    $.fn.supplierOrderWidget = function() {
-        this.each(function() {
-
-            var $this = $(this);
-
-            // Init order compose widget
-            $this
-                .find('.commerce-supplier-order-compose')
-                .supplierOrderComposeWidget();
         });
 
         return this;

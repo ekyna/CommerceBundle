@@ -183,10 +183,12 @@ class SupplierOrderController extends ResourceController
             $event->toFlashes($this->getFlashBag());
 
             if (!$event->hasErrors()) {
-                if ($this->sendSubmitMessage($submit)) {
-                    $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
-                } else {
-                    $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
+                if ($submit->isSendEmail()) {
+                    if ($this->sendSubmitMessage($submit)) {
+                        $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
+                    } else {
+                        $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
+                    }
                 }
 
                 return $this->redirect($this->generateUrl(

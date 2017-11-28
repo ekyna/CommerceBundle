@@ -740,6 +740,7 @@ ekyna_commerce:
                 Si vous sélectionnez un client, les champs suivant seront remplis automatiquement
                 lors de l'enregistrement. Sinon veuillez saisir ces informations.
             already_exists: Un document de ce type existe déjà dans les pièces jointes.
+            immutable_element: Cet élément ne peut pas être modifié ou supprimé.
         form:
             add_item: Ajouter une ligne produit
             remove_item: Supprimer la ligne produit ?
@@ -758,6 +759,8 @@ ekyna_commerce:
             invoice_address: Adresse de facturation
             delivery_address: Adresse de livraison
             same_address: Même adresse
+            tax_exempt: Hors taxe
+            auto_discount: Remises automatiques
             net_unit: PU HT
             gross: Base HT
             base_total: Base HT
@@ -1068,6 +1071,7 @@ ekyna_commerce:
             estimated_date_of_arrival: Date de livraison estimée
 #            items: Lignes
             state: Statut
+            send_email: Envoyer l'email au fournisseur
         alert:
             no_item: Aucune commande fournisseur configuré
             empty: Aucun article configuré

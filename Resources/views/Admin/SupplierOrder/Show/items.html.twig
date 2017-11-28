@@ -27,16 +27,16 @@
             {{- item.reference -}}
         </td>
         <td id="{{ itemId ~ 'quantity' }}" class="text-right">
-            {{ item.quantity|number_format }}
+            {{ item.quantity|localizednumber }}
         </td>
         <td id="{{ itemId ~ 'netPrice' }}" class="text-right">
             {{ item.netPrice|localizedcurrency(supplierOrder.currency.code) }}
         </td>
         <td id="{{ itemId ~ 'supplierData' }}">
             {% if item.product is not same as(null) %}
-                [{{ item.product.availableStock|number_format }}]{# TODO packaging format #}
+                [{{ item.product.availableStock|localizednumber }}]{# TODO packaging format #}
                 {% if 0 < item.product.orderedStock %}
-                    [{{ item.product.orderedStock|number_format }}]{# TODO packaging format #}
+                    [{{ item.product.orderedStock|localizednumber }}]{# TODO packaging format #}
                 {% endif %}
                 {% if item.product.estimatedDateOfArrival is not same as(null) %}
                     ({{ item.product.estimatedDateOfArrival|localizeddate('short', 'none') }})

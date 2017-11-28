@@ -46,14 +46,21 @@
 
         <!-- Quote item event listener -->
         <service id="ekyna_commerce.quote_item.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\QuoteItemEventSubscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuoteItemEventSubscriber"
                  parent="ekyna_commerce.sale_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Quote item adjustment event listener -->
+        <service id="ekyna_commerce.quote_item_adjustment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuoteItemAdjustmentEventSubscriber"
+                 parent="ekyna_commerce.adjustment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Quote adjustment event listener -->
         <service id="ekyna_commerce.quote_adjustment.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\QuoteAdjustmentEventSubscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\QuoteAdjustmentEventSubscriber"
                  parent="ekyna_commerce.adjustment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>

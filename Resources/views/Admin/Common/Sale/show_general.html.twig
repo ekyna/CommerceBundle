@@ -101,6 +101,22 @@
     </div>
 </div>
 {% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': sale, 'prefix': 'sale'} %}
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.taxExempt, 'checkbox', 'ekyna_commerce.sale.field.tax_exempt', {
+            'id': 'sale_taxExempt',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.autoDiscount, 'checkbox', 'ekyna_commerce.sale.field.auto_discount', {
+            'id': 'sale_autoDiscount',
+            'label_nb_col': 4,
+            'widget_nb_col': 8
+        }) }}
+    </div>
+</div>
 <hr>
 <div class="row">
     <div class="col-md-6">

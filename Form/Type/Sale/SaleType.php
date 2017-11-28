@@ -78,6 +78,20 @@ class SaleType extends ResourceFormType
                     'align_with_widget' => true,
                 ]
             ])
+            ->add('autoDiscount', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.sale.field.auto_discount',
+                'required' => false,
+                'attr' => [
+                    'align_with_widget' => true,
+                ]
+            ])
+            ->add('taxExempt', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.sale.field.tax_exempt',
+                'required' => false,
+                'attr' => [
+                    'align_with_widget' => true,
+                ]
+            ])
             ->add('preferredShipmentMethod', ShipmentMethodChoiceType::class)
             ->add('paymentTerm', PaymentTermChoiceType::class, [
                 'disabled' => true,

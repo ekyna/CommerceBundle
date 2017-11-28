@@ -78,7 +78,7 @@ ekyna_commerce:
         quantity_must_be_multiple_of_parent: |
             La quantité doit être un multiple de %multiple%.
     supplier_order:
-        duplicate_subject: |
+        duplicate_product: |
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.
         order_and_delivery_items_miss_match: |
             Au moins une ligne de la commande ne correspond pas aux lignes des livraisons.
