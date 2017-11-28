@@ -86,6 +86,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\SupplierExtension"
                  public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
             <tag name="twig.extension"/>
         </service>
 

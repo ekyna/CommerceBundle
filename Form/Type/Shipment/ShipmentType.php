@@ -105,10 +105,6 @@ class ShipmentType extends ResourceFormType
                     !OrderStates::isStockableState($sale->getState())
                 );
 
-                if (null === $shipment->getId() || null !== $shipment->getInvoice()) {
-                    $shipment->setAutoInvoice(true);
-                }
-
                 $form
                     ->add('state', Type\ChoiceType::class, [
                         'label'   => 'ekyna_core.field.status',

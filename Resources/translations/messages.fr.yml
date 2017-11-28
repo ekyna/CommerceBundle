@@ -781,7 +781,7 @@ ekyna_commerce:
             outstanding_date: Dale limite
             voucher_number: N° bon d'achat
             origin_number: N° d'origine
-            gross_totals: Total avant remise(s)
+            gross_totals: Sous-total
             grand_total: Total TTC
             weight_total: Poids total
             document_footer: Pied de page des documents

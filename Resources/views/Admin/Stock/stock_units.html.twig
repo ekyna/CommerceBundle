@@ -68,7 +68,7 @@
                         {{- 'ekyna_commerce.stock_unit.field.supplier_order'|trans }}
                         {{ stockUnit.supplierOrderItem.order.number -}}
                     </a>
-                {%- else -%}
+                {%- elseif manual|default(false) -%}
                     <a href="{{ admin_resource_path(stockUnit, 'edit') }}" class="btn btn-xs btn-warning">
                         {{- 'ekyna_core.button.edit'|trans -}}
                     </a>

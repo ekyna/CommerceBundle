@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolverInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -67,6 +68,7 @@ class StockRenderer
     {
         $template = isset($options['template']) ? $options['template'] : $this->unitTemplate;
         $id = isset($options['id']) ? $options['id'] : 'stockUnit';
+        $manual = isset($options['manual']) ? (bool)$options['manual'] : false;
 
         $classes = ['table', 'table-striped', 'table-hover'];
         if (isset($options['class'])) {
@@ -77,6 +79,7 @@ class StockRenderer
             'stockUnits' => $stockUnits,
             'prefix'     => $id,
             'classes'    => implode(' ', $classes),
+            'manual'     => $manual,
         ]);
     }
 
@@ -116,6 +119,8 @@ class StockRenderer
     public function renderSubjectStockUnits(StockSubjectInterface $subject, array $options = [])
     {
         $stockUnits = $this->resolver->findNotClosed($subject);
+
+        $options['manual'] = $subject->getStockMode() === StockSubjectModes::MODE_MANUAL;
 
         return $this->renderStockUnits($stockUnits, $options);
     }

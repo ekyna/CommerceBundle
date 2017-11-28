@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 
@@ -18,15 +19,22 @@ class SupplierExtension extends \Twig_Extension
      */
     private $constantHelper;
 
+    /**
+     * @var SupplierOrderCalculatorInterface
+     */
+    private $calculator;
+
 
     /**
      * Constructor.
      *
-     * @param ConstantsHelper $constantHelper
+     * @param ConstantsHelper                  $constantHelper
+     * @param SupplierOrderCalculatorInterface $calculator
      */
-    public function __construct(ConstantsHelper $constantHelper)
+    public function __construct(ConstantsHelper $constantHelper, SupplierOrderCalculatorInterface $calculator)
     {
         $this->constantHelper = $constantHelper;
+        $this->calculator = $calculator;
     }
 
     /**
@@ -45,6 +53,10 @@ class SupplierExtension extends \Twig_Extension
                 [$this->constantHelper, 'renderSupplierOrderStateBadge'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFilter(
+                'supplier_order_weight_total',
+                [$this->calculator, 'calculateWeightTotal']
+            ),
         ];
     }
 
@@ -54,19 +66,19 @@ class SupplierExtension extends \Twig_Extension
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest('new_supplier_order', function(SupplierOrderInterface $order) {
+            new \Twig_SimpleTest('new_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_NEW;
             }),
-            new \Twig_SimpleTest('ordered_supplier_order', function(SupplierOrderInterface $order) {
+            new \Twig_SimpleTest('ordered_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_ORDERED;
             }),
-            new \Twig_SimpleTest('partial_supplier_order', function(SupplierOrderInterface $order) {
+            new \Twig_SimpleTest('partial_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_PARTIAL;
             }),
-            new \Twig_SimpleTest('canceled_supplier_order', function(SupplierOrderInterface $order) {
+            new \Twig_SimpleTest('canceled_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_CANCELED;
             }),
-            new \Twig_SimpleTest('completed_supplier_order', function(SupplierOrderInterface $order) {
+            new \Twig_SimpleTest('completed_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_COMPLETED;
             }),
         ];
