@@ -76,11 +76,13 @@ class RendererFactory
      */
     public function createRenderer($subjects, $type = null)
     {
-        if (is_array($subjects)) {
-            $subject = current($subjects);
-        } else {
+        if (is_object($subjects)) {
             $subject = $subjects;
             $subjects = [$subjects];
+        } elseif (is_array($subjects)) {
+            $subject = reset($subjects);
+        } else {
+            throw new InvalidArgumentException("Unexpected subjects.");
         }
 
         if ($subject instanceof SupplierOrderInterface) {
