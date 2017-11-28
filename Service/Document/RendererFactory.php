@@ -80,6 +80,7 @@ class RendererFactory
             $subject = current($subjects);
         } else {
             $subject = $subjects;
+            $subjects = [$subjects];
         }
 
         if ($subject instanceof SupplierOrderInterface) {
