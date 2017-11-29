@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -28,16 +29,8 @@ class SaleTransformType extends AbstractType
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'required' => false,
             ])
-            ->add('originNumber', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.origin_number',
-                'required' => false,
-            ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',
-                'required' => false,
-            ])
-            ->add('description', Type\TextareaType::class, [
-                'label'    => 'ekyna_core.field.description',
                 'required' => false,
             ])
             ->add('confirm', Type\CheckboxType::class, [
@@ -50,35 +43,57 @@ class SaleTransformType extends AbstractType
                 ],
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        if (!$options['front']) {
+            $builder
+                ->add('originNumber', Type\TextType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.origin_number',
+                    'required' => false,
+                ])
+                ->add('description', Type\TextareaType::class, [
+                    'label'    => 'ekyna_core.field.description',
+                    'required' => false,
+                ]);
+        }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             /** @var SaleInterface $sale */
             $sale = $event->getData();
             $form = $event->getForm();
 
-            $customer = $sale->getCustomer();
-            if (null !== $customer) {
-                if ($customer->hasParent()) {
-                    $choices = [$customer, $customer->getParent()];
-                    $sale->setCustomer($customer->getParent());
-                } elseif ($customer->hasChildren()) {
-                    $choices = $customer->getChildren()->toArray();
-                    array_unshift($choices, $customer);
-                } else {
-                    return;
-                }
-
-                $form->add('customer', Type\ChoiceType::class, [
-                    'label'             => 'ekyna_commerce.customer.label.singular',
-                    'choices'           => $choices,
-                    'choice_value'      => 'id',
-                    'choice_label'      => function ($customer) {
-                        return (string)$customer;
-                    },
-                    'attr' => [
-                        'help_text' => 'ekyna_commerce.customer.help.hierarchy',
+            if ($options['front']) {
+                $form->add('preferredShipmentMethod', ShipmentMethodChoiceType::class, [
+                    'sale'     => $sale,
+                    'expanded' => false,
+                    'attr'     => [
+                        'class' => 'sale-shipment-method',
                     ],
-                    'select2' => false,
                 ]);
+            } else {
+                $customer = $sale->getCustomer();
+                if (null !== $customer) {
+                    if ($customer->hasParent()) {
+                        $choices = [$customer, $customer->getParent()];
+                        $sale->setCustomer($customer->getParent());
+                    } elseif ($customer->hasChildren()) {
+                        $choices = $customer->getChildren()->toArray();
+                        array_unshift($choices, $customer);
+                    } else {
+                        return;
+                    }
+
+                    $form->add('customer', Type\ChoiceType::class, [
+                        'label'        => 'ekyna_commerce.customer.label.singular',
+                        'choices'      => $choices,
+                        'choice_value' => 'id',
+                        'choice_label' => function ($customer) {
+                            return (string)$customer;
+                        },
+                        'attr'         => [
+                            'help_text' => 'ekyna_commerce.customer.help.hierarchy',
+                        ],
+                        'select2'      => false,
+                    ]);
+                }
             }
         });
     }
@@ -92,7 +107,9 @@ class SaleTransformType extends AbstractType
             ->setDefaults([
                 'data_class' => SaleInterface::class,
                 'message'    => null,
+                'front'      => true,
             ])
-            ->setAllowedTypes('message', 'string');
+            ->setAllowedTypes('message', 'string')
+            ->setAllowedTypes('front', 'bool');
     }
 }

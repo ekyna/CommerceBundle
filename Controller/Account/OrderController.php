@@ -211,7 +211,7 @@ class OrderController extends AbstractController
         $shipment = $this->findShipmentByOrderAndId($order, $request->attributes->get('id'));
 
         $renderer = $this
-            ->get('ekyna_commerce.renderer_factory')
+            ->get('ekyna_commerce.document.renderer_factory')
             ->createRenderer($shipment);
 
         return $renderer->respond($request);
@@ -233,7 +233,7 @@ class OrderController extends AbstractController
         $invoice = $this->findInvoiceByOrderAndId($order, $request->attributes->get('id'));
 
         $renderer = $this
-            ->get('ekyna_commerce.renderer_factory')
+            ->get('ekyna_commerce.document.renderer_factory')
             ->createRenderer($invoice);
 
         return $renderer->respond($request);

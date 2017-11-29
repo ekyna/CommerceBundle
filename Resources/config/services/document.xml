@@ -19,6 +19,28 @@
             <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
         </service>
 
+        <!-- Document renderer factory -->
+        <service id="ekyna_commerce.document.renderer_factory"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory"
+                 lazy="true">
+            <argument type="service" id="templating"/>
+            <argument type="service" id="knp_snappy.pdf"/>
+            <argument type="service" id="knp_snappy.image"/>
+            <argument>%ekyna_commerce.company_logo%</argument>
+            <argument>%kernel.debug%</argument>
+        </service>
+
+        <!-- Document generator -->
+        <service id="ekyna_commerce.document.generator"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.document.builder"/>
+            <argument type="service" id="ekyna_commerce.document.calculator"/>
+            <argument type="service" id="ekyna_commerce.document.renderer_factory"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="translator"/>
+        </service>
+
     </services>
 
 </container>

@@ -404,42 +404,17 @@ class SaleController extends AbstractSaleController
         $redirect = $this->redirect($this->generateResourcePath($sale));
 
         $type = $request->attributes->get('type');
-        $available = SaleDocumentUtil::getSaleEditableDocumentTypes($sale);
-        if (!in_array($type, $available, true)) {
+
+        try {
+            $attachment = $this
+                ->get('ekyna_commerce.document.generator')
+                ->generate($sale, $type);
+        } catch (InvalidArgumentException $e) {
             $this->addFlash('ekyna_commerce.sale.message.already_exists', 'warning');
 
             return $redirect;
         }
 
-        // Generate the document file
-        $document = new Document();
-        $document
-            ->setSale($sale)
-            ->setType($type);
-
-        $this->get('ekyna_commerce.document.builder')->build($document);
-        $this->get('ekyna_commerce.document.calculator')->calculate($document);
-
-        $renderer = $this->get('ekyna_commerce.renderer_factory')->createRenderer($document);
-
-        $path = $renderer->create(RendererInterface::FORMAT_PDF);
-
-        // Fake uploaded file
-        $file = new UploadedFile($path, $renderer->getFilename(), null, null, null, true);
-
-        // Attachment
-        $attachment = $this
-            ->get('ekyna_commerce.sale_factory')
-            ->createAttachmentForSale($sale);
-
-        $attachment
-            ->setType($type)
-            ->setTitle($this->getTranslator()->trans('ekyna_commerce.document.type.' . $type))
-            ->setFile($file);
-
-        $sale->addAttachment($attachment);
-
-        // Persistence
         $config = $this
             ->get('ekyna_resource.configuration_registry')
             ->findConfiguration($attachment);
@@ -485,7 +460,7 @@ class SaleController extends AbstractSaleController
         $this->get('ekyna_commerce.document.builder')->build($document);
         $this->get('ekyna_commerce.document.calculator')->calculate($document);
 
-        $renderer = $this->get('ekyna_commerce.renderer_factory')->createRenderer($document);
+        $renderer = $this->get('ekyna_commerce.document.renderer_factory')->createRenderer($document);
 
         return $renderer->respond($request);
     }
@@ -516,6 +491,7 @@ class SaleController extends AbstractSaleController
                 'admin_mode'        => true,
                 '_redirect_enabled' => true,
                 'message'           => $message,
+                'front'             => false,
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [

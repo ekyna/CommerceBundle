@@ -73,4 +73,31 @@ class AttachmentController extends ResourceController
 
         return $response;
     }
+
+    /**
+     * Archive action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function archiveAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\AttachmentInterface $resource */
+        $resource = $context->getResource($resourceName);
+
+        $this->isGranted('EDIT', $resource);
+
+        $resource
+            ->setType(null)
+            ->setInternal(true)
+            ->setTitle('[archived] ' . $resource->getTitle());
+
+        $this->getOperator()->update($resource);
+
+        return $this->redirect($this->generateResourcePath($this->getParentResource($context)));
+    }
 }

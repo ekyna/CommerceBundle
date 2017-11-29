@@ -16,13 +16,20 @@
             {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
             <div class="row">
                 <div class="col-md-6">
+                    {{ form_row(form.default, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
                     {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.registration, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
+                <div class="col-md-6">
+                    {{ form_row(form.quoteAllowed, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
             </div>
-            {{ form_row(form.default) }}
         </div>
     </div>
     {{ form_rest(form) }}

@@ -28,3 +28,11 @@ ekyna_commerce_supplier_order_attachment_admin_download:
     requirements:
         supplierOrderId: \d+
         supplierOrderAttachmentId: \d+
+
+ekyna_commerce_supplier_order_attachment_admin_archive:
+    path: /{supplierOrderAttachmentId}/archive
+    defaults: { _controller: "ekyna_commerce.supplier_order_attachment.controller:archiveAction" }
+    methods: [GET]
+    requirements:
+        supplierOrderId: \d+
+        supplierOrderAttachmentId: \d+

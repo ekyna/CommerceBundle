@@ -30,6 +30,12 @@
             <argument type="service" id="ekyna_commerce.quote.operator"/>
             <argument type="service" id="ekyna_commerce.order.operator"/>
             <argument type="service" id="ekyna_commerce.common.uploadable_listener"/>
+            <call method="setDocumentGenerator">
+                <argument type="service" id="ekyna_commerce.document.generator"/>
+            </call>
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            </call>
         </service>
 
         <!-- Sale updater -->

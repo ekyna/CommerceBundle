@@ -41,6 +41,13 @@ class CustomerGroupType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
+            ->add('quoteAllowed', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.customer_group.field.quote_allowed',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => CustomerGroupTranslationType::class,
                 'form_options'   => [

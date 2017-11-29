@@ -235,7 +235,7 @@ class SupplierOrderController extends ResourceController
             ->setBody($submit->getMessage(), 'text/html');
 
         $renderer = $this
-            ->get('ekyna_commerce.renderer_factory')
+            ->get('ekyna_commerce.document.renderer_factory')
             ->createRenderer($order);
 
         $message->attach(\Swift_Attachment::newInstance(
@@ -264,7 +264,7 @@ class SupplierOrderController extends ResourceController
         $this->isGranted('VIEW', $order);
 
         $renderer = $this
-            ->get('ekyna_commerce.renderer_factory')
+            ->get('ekyna_commerce.document.renderer_factory')
             ->createRenderer($order);
 
         return $renderer->respond($request);

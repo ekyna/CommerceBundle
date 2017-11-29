@@ -166,7 +166,7 @@
                 <h4 class="sub-header">
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Attachment:_list.html.twig" with {'attachments': order.attachments} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'attachments': order.attachments} %}
             </div>
             <div class="tab-pane" id="order-informations">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': order} %}

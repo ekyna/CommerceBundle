@@ -27,6 +27,13 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Sale item validators -->
+        <service id="ekyna_commerce.sale_item.validator"
+                 class="Ekyna\Bundle\CommerceBundle\Validator\Constraints\SaleItemValidator">
+            <argument type="service" id="event_dispatcher"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
     </services>
 
 </container>

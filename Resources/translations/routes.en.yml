@@ -1,4 +1,5 @@
 ekyna_commerce_cart_checkout_index: /my-cart
+ekyna_commerce_cart_checkout_quote: /my-cart/transform-to-quote
 ekyna_commerce_cart_checkout_shipment: /my-cart/shipment
 ekyna_commerce_cart_checkout_payment: /my-cart/payment
 ekyna_commerce_cart_checkout_confirmation: /my-cart/confirmation/{orderKey}

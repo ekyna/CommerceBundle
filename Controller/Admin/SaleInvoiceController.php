@@ -310,7 +310,7 @@ class SaleInvoiceController extends AbstractSaleController
         $this->isGranted('VIEW', $invoice);
 
         $renderer = $this
-            ->get('ekyna_commerce.renderer_factory')
+            ->get('ekyna_commerce.document.renderer_factory')
             ->createRenderer($invoice);
 
         return $renderer->respond($request);

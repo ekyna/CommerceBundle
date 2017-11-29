@@ -28,3 +28,11 @@ ekyna_commerce_quote_attachment_admin_download:
     requirements:
         quoteId: \d+
         quoteAttachmentId: \d+
+
+ekyna_commerce_quote_attachment_admin_archive:
+    path: /{quoteAttachmentId}/archive
+    defaults: { _controller: "ekyna_commerce.quote_attachment.controller:archiveAction" }
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        quoteAttachmentId: \d+

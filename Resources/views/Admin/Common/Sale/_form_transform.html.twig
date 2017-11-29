@@ -7,6 +7,11 @@
     {% if form.customer is defined %}
         {{ form_row(form.customer) }}
     {% endif %}
+    {% if form.preferredShipmentMethod is defined %}
+        {{ form_row(form.preferredShipmentMethod) }}
+    {% endif %}
+
+    {% if form.originNumber is defined %}
     <div class="row">
         <div class="col-md-6">
             {{ form_row(form.voucherNumber, {'label_col': 4, 'widget_col': 8}) }}
@@ -15,8 +20,14 @@
             {{ form_row(form.originNumber, {'label_col': 4, 'widget_col': 8}) }}
         </div>
     </div>
+    {% else %}
+        {{ form_row(form.voucherNumber) }}
+    {% endif %}
+
     {{ form_row(form.comment) }}
-    {{ form_row(form.description) }}
+    {% if form.description is defined %}
+        {{ form_row(form.description) }}
+    {% endif %}
     {{ form_row(form.confirm) }}
 
     {{ form_rest(form) }}

@@ -27,12 +27,21 @@
                 }) }}
                 <div class="row">
                     <div class="col-md-6">
+                        {{ show_row(customerGroup.default, 'checkbox', 'ekyna_core.field.default', {
+                            'id': 'customerGroup_default',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
                         {{ show_row(customerGroup.business, 'checkbox', 'ekyna_commerce.customer_group.field.business', {
                             'id': 'customerGroup_business',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
                         }) }}
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customerGroup.registration, 'checkbox', 'ekyna_commerce.customer_group.field.registration', {
                             'id': 'customerGroup_registration',
@@ -40,10 +49,14 @@
                             'widget_nb_col': 8
                         }) }}
                     </div>
+                    <div class="col-md-6">
+                        {{ show_row(customerGroup.quoteAllowed, 'checkbox', 'ekyna_commerce.customer_group.field.quote_allowed', {
+                            'id': 'customerGroup_registration',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
                 </div>
-                {{ show_row(customerGroup.default, 'checkbox', 'ekyna_core.field.default', {
-                    'id': 'customerGroup_default'
-                }) }}
             </div>
         </div>
     </div>

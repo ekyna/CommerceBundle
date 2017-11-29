@@ -13,6 +13,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         $customer = $checkout.find('.cart-checkout-customer'),
         $forms = $checkout.find('.cart-checkout-forms'),
         $submit = $checkout.find('.cart-checkout-submit'),
+        $quote = $checkout.find('.cart-checkout-quote'),
         preventRefresh = false;
 
     var updateElementsDisplay = function(response) {
@@ -38,6 +39,12 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
                         $customer.find('.no-user-case').show();
                         $customer.find('.user-case').hide();
                     }
+                }
+
+                if (1 === parseInt($view.attr('quote'))) {
+                    $quote.show();
+                } else {
+                    $quote.hide();
                 }
 
                 if (1 === parseInt($view.attr('valid'))) {
@@ -112,7 +119,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         updateElementsDisplay(response);
     });
 
-    Dispatcher.on('ekyna_user.user_status', function(e) {
+    Dispatcher.on('ekyna_user.user_status', function() {
         refreshCheckout();
     });
 

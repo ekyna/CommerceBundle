@@ -198,11 +198,14 @@ class AbstractController
      */
     protected function buildCartControls(SaleInterface $cart = null)
     {
+        $customer = $this->getCustomer();
+
         $controls = [
             'empty'    => 1,
             'valid'    => 0,
             'user'     => null !== $this->getUser() ? 1 : 0,
-            'customer' => null !== $this->getCustomer() ? 1 : 0,
+            'customer' => null !== $customer ? 1 : 0,
+            'quote'    => null !== $customer && $customer->getCustomerGroup()->isQuoteAllowed() ? 1 : 0,
         ];
 
         if ($cart && 0 < $cart->getItems()->count()) {

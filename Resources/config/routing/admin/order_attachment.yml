@@ -28,3 +28,11 @@ ekyna_commerce_order_attachment_admin_download:
     requirements:
         orderId: \d+
         orderAttachmentId: \d+
+
+ekyna_commerce_order_attachment_admin_archive:
+    path: /{orderAttachmentId}/archive
+    defaults: { _controller: "ekyna_commerce.order_attachment.controller:archiveAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderAttachmentId: \d+

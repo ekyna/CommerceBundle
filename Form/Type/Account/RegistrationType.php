@@ -127,7 +127,7 @@ class RegistrationType extends AbstractType
 
         $form
             ->add('identity', IdentityType::class, [
-                'required' => false,
+                'required' => true,
             ])
             ->add('email', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.account.registration.field.invoice_email',
@@ -152,6 +152,7 @@ class RegistrationType extends AbstractType
             ->add('applyGroup', CustomerGroupChoiceType::class, [
                 'label'         => 'ekyna_commerce.account.registration.field.apply_group',
                 'select2'       => false,
+                'choice_label'  => 'title',
                 'query_builder' => function (EntityRepository $er) {
                     $qb = $er->createQueryBuilder('cg');
 
@@ -161,13 +162,13 @@ class RegistrationType extends AbstractType
                 },
             ])
             ->add('invoiceAddress', CustomerAddressType::class, [
-                'label'         => false,
-                'required'      => true,
-                'identity'      => false,
-                'company'       => false,
-                'phones'        => false,
-                'defaults'      => false,
-                'select2'       => false,
+                'label'    => false,
+                'required' => true,
+                'identity' => false,
+                'company'  => false,
+                'phones'   => false,
+                'defaults' => false,
+                'select2'  => false,
             ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',

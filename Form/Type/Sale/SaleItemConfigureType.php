@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemFormEvent;
+use Ekyna\Bundle\CommerceBundle\Validator\Constraints\SaleItem;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
@@ -10,11 +11,13 @@ use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -45,6 +48,12 @@ class SaleItemConfigureType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($options['submit_button']) {
+            $builder->add('submit', SubmitType::class, [
+                'label' => 'ekyna_commerce.cart.button.add_item',
+            ]);
+        }
+
         $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 if (null === $item = $event->getData()) {
@@ -102,9 +111,20 @@ class SaleItemConfigureType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => SaleItemInterface::class,
-                'extended'   => true,
+                'data_class'    => SaleItemInterface::class,
+                'extended'      => true,
+                'front'         => true,
+                'submit_button' => false,
+                'constraints'   => function (Options $options) {
+                    if ($options['front']) {
+                        return [new SaleItem()];
+                    }
+
+                    return [];
+                },
             ])
-            ->setAllowedTypes('extended', 'bool');
+            ->setAllowedTypes('extended', 'bool')
+            ->setAllowedTypes('front', 'bool')
+            ->setAllowedTypes('submit_button', 'bool');
     }
 }

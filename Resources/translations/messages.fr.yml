@@ -102,11 +102,13 @@ ekyna_commerce:
             new: Nouvelle pièce jointe
             edit: Modifier la pièce jointe
             remove: Supprimer la pièce jointe
+            archive: Archiver
         field:
             internal: Interne
         alert:
             no_item: Aucune pièce jointe configuré
         message:
+            archive_confirm: Souhaitez-vous réellement archiver cette pièce jointe ?
             remove_confirm: Souhaitez-vous réellement supprimer cette pièce jointe ?
 
     cart:
@@ -118,6 +120,8 @@ ekyna_commerce:
             total: pour un total de
             show_cart: Voir votre panier
             empty: Votre panier est vide.
+        button:
+            add_item: Ajouter au panier
         message:
             transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
             already_paid: Ce panier est déjà réglée en totalité
@@ -157,6 +161,7 @@ ekyna_commerce:
             comment: Commentaire
             attachments: Pièces jointes
             place_order: Commander
+            to_quote: Créer un devis
             sign_in: Connexion
             register: Ouverture de compte
         confirmation:
@@ -169,6 +174,9 @@ ekyna_commerce:
             sign_in_or_register: |
                 Connectez-vous à votre compte client pour voir vos tarifs
                 préférentiels et accéder à votre carnet d'adresses.
+            quote_confirm: |
+                Confirmer la transformation en devis ?<br>
+                <em>Vous serez redirigé vers le détail du devis dans votre espace client</em>.
         button:
             attachment_add: Ajouter une pièce jointe
             attachment_remove: Supprimer cette pièce jointe
@@ -367,7 +375,8 @@ ekyna_commerce:
             remove: Supprimer le groupe de clients
         field:
             business: Entreprise
-            registration: Disponible à l'inscription
+            registration: Dispo à l'inscription
+            quote_allowed: Création de devis
         message:
             cant_be_deleted: Le groupe de client par défaut ne peut être supprimé.
         alert:

@@ -127,6 +127,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController"
                  parent="ekyna_commerce.controller.cart.abstract">
             <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.quote.repository"/>
             <argument type="service" id="ekyna_commerce.checkout.payment_manager"/>
             <argument type="service" id="ekyna_commerce.payment_helper"/>
             <argument type="service" id="ekyna_commerce.sale_transformer"/>

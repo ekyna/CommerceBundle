@@ -102,6 +102,7 @@ class CartController extends AbstractController
         $form = $this
             ->getFormFactory()
             ->create(SaleType\SaleItemConfigureType::class, $item, [
+                'front'  => true,
                 'method' => 'post',
                 'action' => $this->generateUrl('ekyna_commerce_cart_item_configure', [
                     'itemId' => $item->getId(),

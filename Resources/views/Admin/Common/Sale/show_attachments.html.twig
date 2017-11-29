@@ -13,10 +13,10 @@
         <tbody>
         {% for attachment in attachments %}
             {% set attachmentId = 'attachment_' ~ loop.index0 %}
-            {% set attachmentPath = admin_resource_path(attachment, 'download') %}
+            {% set downloadPath = admin_resource_path(attachment, 'download') %}
             <tr data-id="{{ attachment.id }}">
                 <td id="{{ attachmentId }}_filename">
-                    <a href="{{ attachmentPath }}" target="_blank">{{ attachment }}</a>
+                    <a href="{{ downloadPath }}" target="_blank">{{ attachment }}</a>
                 </td>
                 <td id="{{ attachmentId }}_title">{{ attachment.title }}</td>
                 <td id="{{ attachmentId }}_updatedAt">{{ attachment.updatedAt|localizeddate('short', 'none') }}</td>
@@ -32,13 +32,22 @@
                     {% endif %}
                 </td>
                 <td class="actions">
-                    <a href="{{ attachmentPath }}" class="btn btn-primary btn-xs" target="_blank">
+                    <a href="{{ downloadPath }}" class="btn btn-primary btn-xs" target="_blank">
                         {{ 'ekyna_core.button.download'|trans }}
                     </a>
-                    <a href="{{ admin_resource_path(attachment, 'edit') }}" class="btn btn-warning btn-xs">
+                    {%- if attachment.type is not null -%}
+                    <a href="{{ admin_resource_path(attachment, 'archive') }}"
+                       class="btn btn-default btn-xs"
+                       onclick="return confirm('{{ 'ekyna_commerce.attachment.message.archive_confirm'|trans }}')">
+                        {{ 'ekyna_commerce.attachment.button.archive'|trans }}
+                    </a>
+                    {%- endif -%}
+                    <a href="{{ admin_resource_path(attachment, 'edit') }}"
+                       class="btn btn-warning btn-xs">
                         {{ 'ekyna_core.button.edit'|trans }}
                     </a>
-                    <a href="{{ admin_resource_path(attachment, 'remove') }}" class="btn btn-danger btn-xs">
+                    <a href="{{ admin_resource_path(attachment, 'remove') }}"
+                       class="btn btn-danger btn-xs">
                         {{ 'ekyna_core.button.remove'|trans }}
                     </a>
                 </td>

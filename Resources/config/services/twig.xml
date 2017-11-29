@@ -5,17 +5,6 @@
 
     <services>
 
-        <!-- Document renderer factory -->
-        <service id="ekyna_commerce.renderer_factory"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory"
-                 lazy="true">
-            <argument type="service" id="templating"/>
-            <argument type="service" id="knp_snappy.pdf"/>
-            <argument type="service" id="knp_snappy.image"/>
-            <argument>%ekyna_commerce.company_logo%</argument>
-            <argument>%kernel.debug%</argument>
-        </service>
-
         <!-- Common extension -->
         <service id="ekyna_commerce.twig.common_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension"

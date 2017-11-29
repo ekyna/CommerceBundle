@@ -65,7 +65,7 @@ class OrderListController extends Controller
         }
 
         $renderer = $this
-            ->get('ekyna_commerce.renderer_factory')
+            ->get('ekyna_commerce.document.renderer_factory')
             ->createRenderer($invoices);
 
         return $renderer->respond($request);
@@ -139,7 +139,7 @@ class OrderListController extends Controller
         }
 
         $renderer = $this
-            ->get('ekyna_commerce.renderer_factory')
+            ->get('ekyna_commerce.document.renderer_factory')
             ->createRenderer($shipments, $request->attributes->get('type'));
 
         return $renderer->respond($request);

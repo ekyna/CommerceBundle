@@ -56,11 +56,11 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     /**
      * @inheritdoc
      */
-    public function getCart()
+    public function getCart($create = false)
     {
         $this->initialize();
 
-        return parent::getCart();
+        return parent::getCart($create);
     }
 
     /**

@@ -111,15 +111,17 @@ class CartHelper
         $this->subjectHelper->assign($item, $subject);
 
         // Set cart if available for taxes resolution TODO wtf ?
-        if ($this->cartProvider->hasCart()) {
+        /*if ($this->cartProvider->hasCart()) {
             $item->setSale($this->cartProvider->getCart());
-        }
+        }*/
 
         $options = array_merge_recursive([
             'attr' => [
                 'class' => 'form-horizontal',
             ],
         ], $options);
+
+        $options['front'] = true;
 
         return $this
             ->saleHelper
@@ -142,13 +144,7 @@ class CartHelper
         if ($form->isSubmitted() && $form->isValid()) {
             $item = $form->getData();
 
-            if ($this->cartProvider->hasCart()) {
-                $cart = $this->cartProvider->getCart();
-            } else {
-                $cart = $this->cartProvider->createCart();
-            }
-
-            $cart->addItem($item);
+            $this->cartProvider->getCart(true)->addItem($item);
 
             // TODO Validate and add violations to form errors ?
 

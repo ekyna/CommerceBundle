@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
+use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -137,7 +138,7 @@ class QuoteController extends AbstractController
 
         $payment = $this->findPaymentByQuoteAndKey($quote, $request->attributes->get('key'));
 
-        $cancelUrl = $this->generateUrl('ekyna_commerce_account_order_show', [
+        $cancelUrl = $this->generateUrl('ekyna_commerce_account_quote_show', [
             'number' => $quote->getNumber(),
         ]);
 
@@ -184,16 +185,38 @@ class QuoteController extends AbstractController
             throw new InvalidArgumentException("Expected instance of " . QuotePaymentInterface::class);
         }
 
-        /** @var QuoteInterface $order */
-        $order = $payment->getQuote();
+        /** @var QuoteInterface $quote */
+        $quote = $payment->getQuote();
 
         // TODO Check that quote belongs to the current user
         // Problem : token has been invalidated
 
-        // TODO transform to order if accepted
+        // If quote is ACCEPTED
+        if ($quote->getState() === QuoteStates::STATE_ACCEPTED) {
+            // Transform to order
+            $transformer = $this->get('ekyna_commerce.sale_transformer');
 
-        return $this->redirectToRoute('ekyna_commerce_account_order_show', [
-            'number' => $order->getNumber(),
+            // New order
+            /** @var \Ekyna\Bundle\CommerceBundle\Model\OrderInterface $order */
+            $order = $this->get('ekyna_commerce.order.repository')->createNew();
+
+            // Initialize transformation
+            $transformer->initialize($quote, $order);
+            // Transform
+            if (null === $event = $transformer->transform()) {
+
+                // Redirect to order details
+                return $this->redirect($this->generateUrl('ekyna_commerce_account_order_show', [
+                    'number' => $order->getNumber(),
+                ]));
+            } else {
+                $event->toFlashes($this->getFlashBag());
+            }
+        }
+
+        // Redirect to quote details
+        return $this->redirectToRoute('ekyna_commerce_account_quote_show', [
+            'number' => $quote->getNumber(),
         ]);
     }
 
@@ -254,17 +277,17 @@ class QuoteController extends AbstractController
     /**
      * Finds the payment by quote and key.
      *
-     * @param QuoteInterface $order
+     * @param QuoteInterface $quote
      * @param string         $key
      *
      * @return QuotePaymentInterface
      */
-    protected function findPaymentByQuoteAndKey(QuoteInterface $order, $key)
+    protected function findPaymentByQuoteAndKey(QuoteInterface $quote, $key)
     {
         $payment = $this
             ->get('ekyna_commerce.quote_payment.repository')
             ->findOneBy([ // TODO repository method
-                'order' => $order,
+                'quote' => $quote,
                 'key'   => $key,
             ]);
 

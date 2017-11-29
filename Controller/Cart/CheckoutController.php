@@ -2,7 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
+use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
@@ -11,6 +13,8 @@ use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,6 +31,11 @@ class CheckoutController extends AbstractController
      * @var OrderRepositoryInterface
      */
     protected $orderRepository;
+
+    /**
+     * @var QuoteRepositoryInterface
+     */
+    protected $quoteRepository;
 
     /**
      * @var PaymentManager
@@ -48,17 +57,20 @@ class CheckoutController extends AbstractController
      * Constructor.
      *
      * @param OrderRepositoryInterface $orderRepository
+     * @param QuoteRepositoryInterface $quoteRepository
      * @param PaymentManager           $paymentCheckout
      * @param PaymentHelper            $paymentHelper
      * @param SaleTransformerInterface $saleTransformer
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
+        QuoteRepositoryInterface $quoteRepository,
         PaymentManager $paymentCheckout,
         PaymentHelper $paymentHelper,
         SaleTransformerInterface $saleTransformer
     ) {
         $this->orderRepository = $orderRepository;
+        $this->quoteRepository = $quoteRepository;
         $this->paymentCheckout = $paymentCheckout;
         $this->paymentHelper = $paymentHelper;
         $this->saleTransformer = $saleTransformer;
@@ -108,6 +120,95 @@ class CheckoutController extends AbstractController
         }
 
         return $this->render('EkynaCommerceBundle:Cart/Checkout:index.html.twig', $parameters);
+    }
+
+    /**
+     * Quote transformation action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function quoteAction(Request $request)
+    {
+        if (null === $cart = $this->getCart()) {
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        if (null === $customer = $cart->getCustomer()) {
+            throw new AccessDeniedHttpException();
+        }
+        if (!$customer->getCustomerGroup()->isQuoteAllowed()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $cancelPath = $this->generateUrl('ekyna_commerce_cart_checkout_index');
+
+        if (!$this->stepValidator->validate($cart, SaleStepValidatorInterface::SHIPMENT_STEP)) {
+            $this->violationToFlashes($this->stepValidator->getViolationList(), $request);
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        $form = $this
+            ->getFormFactory()
+            ->create(SaleTransformType::class, $cart, [
+                'action'  => $this->generateUrl('ekyna_commerce_cart_checkout_quote'),
+                'method'  => 'POST',
+                'message' => 'ekyna_commerce.checkout.message.quote_confirm',
+            ])
+            ->add('actions', FormActionsType::class, [
+                'buttons' => [
+                    'remove' => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'button_class' => 'success',
+                            'label'        => 'ekyna_core.button.transform',
+                            'attr'         => ['icon' => 'ok'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\ButtonType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $cancelPath,
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // New quote
+            $quote = $this->quoteRepository->createNew();
+            // Initialize transformation
+            $this->saleTransformer->initialize($cart, $quote);
+            // Transform
+            if (null === $event = $this->saleTransformer->transform()) {
+                // Redirect to quote details
+                return $this->redirect($this->generateUrl('ekyna_commerce_account_quote_show', [
+                    'number' => $quote->getNumber(),
+                ]));
+            }
+
+            // Display event's flash messages
+            if (null !== $session = $request->getSession()) {
+                /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+                $event->toFlashes($session->getFlashBag());
+            }
+        }
+
+        return $this->render('EkynaCommerceBundle:Cart/Checkout:quote.html.twig', [
+            'cart' => $cart,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
