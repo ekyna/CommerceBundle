@@ -8,7 +8,6 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
-use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -21,7 +20,6 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -491,7 +489,6 @@ class SaleController extends AbstractSaleController
                 'admin_mode'        => true,
                 '_redirect_enabled' => true,
                 'message'           => $message,
-                'front'             => false,
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [

@@ -13,12 +13,12 @@
         <tbody>
         {%- for shipment in shipments -%}
             {%- set shipmentId = 'shipment_' ~ shipment.id -%}
-            {%- set path = path(route_prefix ~ '_shipment_download', {'number': sale.number, 'id': shipment.id}) -%}
+            {#{%- set path = path(route_prefix ~ '_shipment_download', {'number': sale.number, 'id': shipment.id}) -%}#}
             <tr>
                 <td>
-                    <a href="{{ path }}" target="_blank">
+                    {#<a href="{{ path }}" target="_blank">#}
                         {{- shipment.number -}}
-                    </a>
+                    {#</a>#}
                 </td>
                 <td>{{ shipment.method }}</td>
                 <td>{{ shipment|shipment_state_badge }}</td>
@@ -30,9 +30,9 @@
                        data-toggle-details="{{ shipmentId ~ '_details' }}">
                         <span class="fa fa-info-circle"></span>
                     </a>&nbsp;
-                    <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
+                    {#<a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
                         {{- 'ekyna_core.button.download'|trans -}}
-                    </a>
+                    </a>#}
                     {# TODO Tracking link #}
                 </td>
             </tr>

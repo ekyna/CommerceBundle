@@ -113,10 +113,9 @@ class SaleItemConfigureType extends AbstractType
             ->setDefaults([
                 'data_class'    => SaleItemInterface::class,
                 'extended'      => true,
-                'front'         => true,
                 'submit_button' => false,
                 'constraints'   => function (Options $options) {
-                    if ($options['front']) {
+                    if (!$options['admin_mode']) {
                         return [new SaleItem()];
                     }
 
@@ -124,7 +123,6 @@ class SaleItemConfigureType extends AbstractType
                 },
             ])
             ->setAllowedTypes('extended', 'bool')
-            ->setAllowedTypes('front', 'bool')
             ->setAllowedTypes('submit_button', 'bool');
     }
 }

@@ -43,7 +43,7 @@ class SaleTransformType extends AbstractType
                 ],
             ]);
 
-        if (!$options['front']) {
+        if ($options['admin_mode']) {
             $builder
                 ->add('originNumber', Type\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.origin_number',
@@ -60,15 +60,7 @@ class SaleTransformType extends AbstractType
             $sale = $event->getData();
             $form = $event->getForm();
 
-            if ($options['front']) {
-                $form->add('preferredShipmentMethod', ShipmentMethodChoiceType::class, [
-                    'sale'     => $sale,
-                    'expanded' => false,
-                    'attr'     => [
-                        'class' => 'sale-shipment-method',
-                    ],
-                ]);
-            } else {
+            if ($options['admin_mode']) {
                 $customer = $sale->getCustomer();
                 if (null !== $customer) {
                     if ($customer->hasParent()) {
@@ -94,6 +86,14 @@ class SaleTransformType extends AbstractType
                         'select2'      => false,
                     ]);
                 }
+            } else {
+                $form->add('preferredShipmentMethod', ShipmentMethodChoiceType::class, [
+                    'sale'     => $sale,
+                    'expanded' => false,
+                    'attr'     => [
+                        'class' => 'sale-shipment-method',
+                    ],
+                ]);
             }
         });
     }
@@ -107,9 +107,7 @@ class SaleTransformType extends AbstractType
             ->setDefaults([
                 'data_class' => SaleInterface::class,
                 'message'    => null,
-                'front'      => true,
             ])
-            ->setAllowedTypes('message', 'string')
-            ->setAllowedTypes('front', 'bool');
+            ->setAllowedTypes('message', 'string');
     }
 }

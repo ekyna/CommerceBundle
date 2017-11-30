@@ -121,8 +121,6 @@ class CartHelper
             ],
         ], $options);
 
-        $options['front'] = true;
-
         return $this
             ->saleHelper
             ->getFormFactory()

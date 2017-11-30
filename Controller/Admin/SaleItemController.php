@@ -241,14 +241,15 @@ class SaleItemController extends AbstractSaleController
         $isXhr = $request->isXmlHttpRequest();
 
         $action = $this->generateUrl($this->getConfiguration()->getRoute('configure'), [
-            $saleName.'Id'     => $sale->getId(),
-            $saleName.'ItemId' => $item->getId(),
+            $saleName . 'Id'     => $sale->getId(),
+            $saleName . 'ItemId' => $item->getId(),
         ]);
 
         $form = $this->createForm(SaleItemConfigureType::class, $item, [
-            'method' => 'post',
-            'action' => $action,
-            'attr'   => [
+            'method'     => 'post',
+            'action'     => $action,
+            'admin_mode' => true,
+            'attr'       => [
                 'class' => 'form-horizontal',
             ],
         ]);
@@ -325,12 +326,12 @@ class SaleItemController extends AbstractSaleController
         $isXhr = $request->isXmlHttpRequest();
 
         $action = $this->generateUrl($this->getConfiguration()->getRoute('edit'), [
-            $saleName.'Id'     => $sale->getId(),
-            $saleName.'ItemId' => $item->getId(),
+            $saleName . 'Id'     => $sale->getId(),
+            $saleName . 'ItemId' => $item->getId(),
         ]);
 
         $form = $this->createEditResourceForm($context, !$isXhr, [
-            'attr' => [
+            'attr'   => [
                 'class' => 'form-horizontal',
             ],
             'action' => $action,
@@ -404,19 +405,19 @@ class SaleItemController extends AbstractSaleController
         // TODO confirmation form
 
         //if ($this->getSaleHelper()->removeItemById($sale, $item->getId())) {
-            // TODO use ResourceManager
-            $event = $this->getOperator()->delete($item);
-            if (!$isXhr) {
-                $event->toFlashes($this->getFlashBag());
+        // TODO use ResourceManager
+        $event = $this->getOperator()->delete($item);
+        if (!$isXhr) {
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        if (!$event->hasErrors()) {
+            if ($isXhr) {
+                return $this->buildXhrSaleViewResponse($sale);
             }
 
-            if (!$event->hasErrors()) {
-                if ($isXhr) {
-                    return $this->buildXhrSaleViewResponse($sale);
-                }
-
-                return $this->redirect($this->generateResourcePath($sale));
-            } /*elseif ($isXhr) {
+            return $this->redirect($this->generateResourcePath($sale));
+        } /*elseif ($isXhr) {
                 // TODO all event messages should be bound to XHR response
                 foreach ($event->getErrors() as $error) {
                     $form->addError(new FormError($error->getMessage()));
