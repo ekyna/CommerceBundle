@@ -50,7 +50,7 @@ class SaleTransformType extends AbstractType
                     'required' => false,
                 ])
                 ->add('description', Type\TextareaType::class, [
-                    'label'    => 'ekyna_core.field.description',
+                    'label'    => 'ekyna_commerce.field.description',
                     'required' => false,
                 ]);
         }

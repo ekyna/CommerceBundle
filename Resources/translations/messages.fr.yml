@@ -4,6 +4,8 @@ ekyna_commerce:
     # TODO group common fields
     field:
         eta: ETA
+        sample: Échantillon
+        description: Note interne
 
     account:
         address:
@@ -769,7 +771,7 @@ ekyna_commerce:
             delivery_address: Adresse de livraison
             same_address: Même adresse
             tax_exempt: Hors taxe
-            auto_discount: Remises automatiques
+            auto_discount: Remises auto.
             net_unit: PU HT
             gross: Base HT
             base_total: Base HT

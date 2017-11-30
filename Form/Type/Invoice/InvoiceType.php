@@ -50,7 +50,7 @@ class InvoiceType extends ResourceFormType
                 'disabled' => true,
             ])
             ->add('description', Type\TextareaType::class, [
-                'label'    => 'ekyna_core.field.description',
+                'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
             ])
             ->add('lines', InvoiceLinesType::class, [

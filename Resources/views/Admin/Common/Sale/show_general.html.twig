@@ -18,12 +18,12 @@
         {{ show_row(sale|sale_state_badge, 'text', 'ekyna_commerce.sale.field.state', {
             'id': 'sale_state',
             'class': 'sale-state',
-            'label_nb_col': 4,
-            'widget_nb_col': 8
+            'label_nb_col': 6,
+            'widget_nb_col': 6
         }) }}
     </div>
 </div>
-{% if attribute(sale, 'getInCharge') is defined %}
+{% if sale.inCharge is defined %}
     <div class="row">
         <div class="col-md-6">
             {% if sale.customer is not null %}
@@ -101,23 +101,35 @@
     </div>
 </div>
 {% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': sale, 'prefix': 'sale'} %}
+<hr>
 <div class="row">
-    <div class="col-md-6">
+    {%- if sale.sample is defined -%}
+        {%- set col_size = 4 -%}
+        {%- set field_sizes = {'label_nb_col': 6, 'widget_nb_col': 6} -%}
+    {%- else -%}
+        {%- set col_size = 6 %}
+        {%- set field_sizes = {'label_nb_col': 4, 'widget_nb_col': 8} -%}
+    {%- endif -%}
+    <div class="col-md-{{ col_size }}">
         {{ show_row(sale.taxExempt, 'checkbox', 'ekyna_commerce.sale.field.tax_exempt', {
-            'id': 'sale_taxExempt',
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
+            'id': 'sale_taxExempt'
+        }|merge(field_sizes)) }}
     </div>
-    <div class="col-md-6">
+    <div class="col-md-{{ col_size }}">
         {{ show_row(sale.autoDiscount, 'checkbox', 'ekyna_commerce.sale.field.auto_discount', {
             'id': 'sale_autoDiscount',
-            'label_nb_col': 4,
-            'widget_nb_col': 8
-        }) }}
+        }|merge(field_sizes)) }}
     </div>
+    {% if sale.sample is defined -%}
+        <div class="col-md-4">
+            {{ show_row(sale.sample, 'checkbox', 'ekyna_commerce.field.sample', {
+                'id': 'sale_sample',
+                'label_nb_col': 6,
+                'widget_nb_col': 6
+            }) }}
+        </div>
+    {%- endif %}
 </div>
-<hr>
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.grand_total', {
@@ -135,6 +147,7 @@
         }) }}
     </div>
 </div>
+{% if not sale.sample %}
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.paid_total', {
@@ -153,6 +166,7 @@
         }) }}
     </div>
 </div>
+{% endif %}
 {% if sale is shipment_subject %}
 <div class="row">
     <div class="col-md-6">
@@ -175,7 +189,7 @@
     </div>
 </div>
 {% endif %}
-{% if sale is invoice_subject %}
+{% if sale is invoice_subject and not sale.sample %}
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale.invoiceTotal|localizedcurrency(sale.currency.code), 'text', 'ekyna_commerce.sale.field.invoice_total', {

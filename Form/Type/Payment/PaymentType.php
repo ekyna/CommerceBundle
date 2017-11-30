@@ -120,7 +120,7 @@ class PaymentType extends ResourceFormType
                     },
                 ])
                 ->add('description', Type\TextareaType::class, [
-                    'label'    => 'ekyna_core.field.description',
+                    'label'    => 'ekyna_commerce.field.description',
                     'required' => false,
                 ]);
         });

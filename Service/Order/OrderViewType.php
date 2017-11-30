@@ -139,9 +139,11 @@ class OrderViewType extends AbstractViewType
             ]);
         }
 
+        $sale = $item->getSale();
+
         // Manual adjustments
         if (
-            !$item->getSale()->isAutoDiscount() &&
+            !$sale->isAutoDiscount() && !$sale->isSample() &&
             !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
         ) {
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());

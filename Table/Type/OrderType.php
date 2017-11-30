@@ -128,9 +128,15 @@ class OrderType extends ResourceTableType
             ->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 110,
             ])
+            ->addColumn('sample', CType\Column\BooleanType::class, [
+                'label'       => 'ekyna_commerce.field.sample',
+                'true_class'  => 'label-warning',
+                'false_class' => 'label-default',
+                'position'    => 120,
+            ])
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
-                'position'      => 120,
+                'position'      => 130,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -200,9 +206,13 @@ class OrderType extends ResourceTableType
                 ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 110,
                 ])
+                ->addFilter('sample', CType\Filter\BooleanType::class, [
+                    'label'    => 'ekyna_commerce.field.sample',
+                    'position' => 120,
+                ])
                 ->addFilter('tags', Type\Filter\OrderTagsType::class, [
                     'label'    => 'ekyna_cms.tag.label.plural',
-                    'position' => 120,
+                    'position' => 130,
                 ]);
         }
 

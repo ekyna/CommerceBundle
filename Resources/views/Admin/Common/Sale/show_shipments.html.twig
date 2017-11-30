@@ -1,6 +1,6 @@
 {% spaceless %}
 <div class="table-responsive">
-    <table class="table table-striped table-hover">
+    <table class="table table-hover">
         <thead>
         <tr>
             <th>{{ 'ekyna_core.field.number'|trans }}</th>
@@ -30,7 +30,13 @@
                 </td>
                 <td id="{{ shipmentId }}_method">{{ shipment.method }}</td>
                 <td id="{{ shipmentId }}_state">{{ shipment|shipment_state_badge }}</td>
-                <td id="{{ shipmentId }}_weight">{{ shipment|shipment_weight|localizednumber }}&nbsp;kg</td>
+                <td id="{{ shipmentId }}_weight">
+                    {%- if 0 < shipment.weight -%}
+                        {{ shipment.weight|localizednumber }}&nbsp;kg
+                    {%- else -%}
+                        {{ shipment|shipment_weight|localizednumber }}&nbsp;kg (auto)
+                    {%- endif -%}
+                </td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td class="actions">
                     {# Gateway actions #}

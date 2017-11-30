@@ -92,7 +92,7 @@ class CustomerType extends ResourceFormType
                 'format'         => PhoneNumberFormat::NATIONAL,
             ])
             ->add('description', Type\TextareaType::class, [
-                'label'    => 'ekyna_core.field.description',
+                'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
             ]);
 

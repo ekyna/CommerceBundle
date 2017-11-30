@@ -13,6 +13,9 @@
 <div class="main-header">
     <div class="infos">
         <span class="sale-state">{{ order|sale_state_badge }}</span>
+        {% if order.sample -%}
+            <span class="label label-info" style="margin-left:6px;">{{ 'ekyna_commerce.field.sample'|trans }}</span>
+        {%- endif %}
         {{ order.allTags|cms_tags({'text': false}) }}
     </div>
     <div class="actions">
@@ -44,21 +47,25 @@
                 {{ 'ekyna_commerce.sale.field.details'|trans }}
             </a>
         </li>
+        {% if not order.sample -%}
         <li>
             <a href="#order-payments" id="toggle-payments" data-toggle="tab">
                 {{ 'ekyna_commerce.payment.label.plural'|trans }}
             </a>
         </li>
+        {%- endif %}
         <li>
             <a href="#order-shipments" id="toggle-shipments" data-toggle="tab">
                 {{ 'ekyna_commerce.shipment.label.plural'|trans }}
             </a>
         </li>
+        {% if not order.sample -%}
         <li>
             <a href="#order-invoices" id="toggle-invoices" data-toggle="tab">
                 {{ 'ekyna_commerce.invoice.tab'|trans }}
             </a>
         </li>
+        {%- endif %}
         <li>
             <a href="#order-attachments" id="toggle-attachments" data-toggle="tab">
                 {{ 'ekyna_commerce.attachment.label.plural'|trans }}
@@ -82,6 +89,7 @@
             <div class="tab-pane" id="order-details">
                 {{ render_sale_view(sale_view) }}
             </div>
+            {% if not order.sample -%}
             <div class="tab-pane" id="order-payments">
                 <div class="actions">
                     {# TODO Permission #}
@@ -99,6 +107,7 @@
                 <hr>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
             </div>
+            {%- endif %}
             <div class="tab-pane" id="order-shipments">
                 <div class="actions">
                     {# TODO Permission #}
@@ -119,6 +128,7 @@
                 <hr>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:shipment_fields.html.twig" with {'sale': order} %}
             </div>
+            {% if not order.sample -%}
             <div class="tab-pane" id="order-invoices">
                 <div class="actions">
                     {# TODO Permission #}
@@ -148,6 +158,7 @@
                 <hr>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:invoice_fields.html.twig" with {'sale': order} %}
             </div>
+            {%- endif %}
             <div class="tab-pane" id="order-attachments">
                 <div class="actions">
                     {% for type in order|sale_editable_document_types -%}
