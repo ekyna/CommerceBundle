@@ -132,7 +132,7 @@ class OrderViewType extends AbstractViewType
                 'class'    => 'table-alt',
             ]);
 
-            $actions[] = new View\Action('javascript: void(0)', 'fa fa-info-circle', [
+            $actions[] = new View\Action('javascript: void(0)', 'fa fa-tasks', [
                 'title'               => $this->trans('ekyna_commerce.sale.button.item.information'),
                 'data-toggle-details' => $view->getId() . '_information',
                 'class'               => 'text-info',

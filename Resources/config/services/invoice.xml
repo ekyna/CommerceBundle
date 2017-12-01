@@ -56,6 +56,9 @@
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             </call>
+            <call method="setStockUnitAssigner">
+                <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
+            </call>
         </service>
 
         <!-- Invoice builder -->

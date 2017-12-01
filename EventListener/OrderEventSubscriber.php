@@ -83,6 +83,18 @@ class OrderEventSubscriber extends BaseSubscriber
     }
 
     /**
+     * @inheritdoc
+     */
+    public function onPreUpdate(ResourceEventInterface $event)
+    {
+        try {
+            parent::onPreUpdate($event);
+        } catch (CommerceExceptionInterface $e) {
+            $event->addMessage(new ResourceMessage($e->getMessage(), ResourceMessage::TYPE_ERROR));
+        }
+    }
+
+    /**
      * @inheritDoc
      *
      * @param OrderInterface $sale

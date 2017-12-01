@@ -147,9 +147,10 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
 
             foreach ($line->getChildren() as $child) {
                 $saleItem = $child->getSaleItem();
-                if ($saleItem->isPrivate()) {
+
+                //if ($saleItem->isPrivate()) {
                     $child->setQuantity($line->getQuantity() * $saleItem->getQuantity());
-                }
+                //}
 
                 $this->flattenInvoiceLine($child, $flat);
             }

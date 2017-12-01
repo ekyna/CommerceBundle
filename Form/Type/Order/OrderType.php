@@ -7,6 +7,8 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -24,13 +26,6 @@ class OrderType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
-            ->add('sample', CheckboxType::class, [
-                'label'    => 'ekyna_commerce.field.sample',
-                'required' => false,
-                'attr' => [
-                    'align_with_widget' => true,
-                ]
-            ])
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => 'ekyna_commerce.customer.field.in_charge',
                 'required' => false,
@@ -40,6 +35,23 @@ class OrderType extends SaleType
                 'required' => false,
                 'multiple' => true,
             ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            /** @var \Ekyna\Bundle\CommerceBundle\Model\OrderInterface $order */
+            $order = $event->getData();
+            $form = $event->getForm();
+
+            $disabled = null !== $order && ($order->hasPayments() || $order->hasInvoices());
+
+            $form->add('sample', CheckboxType::class, [
+                'label'    => 'ekyna_commerce.field.sample',
+                'required' => false,
+                'disabled' => $disabled,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ]);
+        });
     }
 
     /**

@@ -82,6 +82,7 @@ class PaymentType extends ResourceFormType
                     'label'    => 'ekyna_core.field.number',
                     'disabled' => true,
                 ])
+                // TODO Use CurrencyChoiceType
                 ->add('currency', EntityType::class, [
                     'label'         => 'ekyna_commerce.currency.label.singular',
                     'class'         => $this->currencyClass,
@@ -100,6 +101,7 @@ class PaymentType extends ResourceFormType
                     'choices'  => PaymentStates::getChoices(),
                     'disabled' => true,
                 ])
+                // TODO Use PaymentMethodChoiceType
                 ->add('method', EntityType::class, [
                     'label'         => 'ekyna_commerce.payment_method.label.singular',
                     'class'         => $this->methodClass,

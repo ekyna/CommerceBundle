@@ -3,8 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
-use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
-use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
+use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions as Transitions;
 
 /**
  * Class PaymentTransitions
@@ -13,13 +12,6 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
  */
 final class PaymentTransitions extends AbstractConstants
 {
-    const TRANSITION_CANCEL = 'cancel';
-    const TRANSITION_HANG   = 'hang';
-    const TRANSITION_ACCEPT = 'accept';
-    const TRANSITION_REJECT = 'reject';
-    const TRANSITION_REFUND = 'refund';
-
-
     /**
      * {@inheritdoc}
      */
@@ -29,11 +21,11 @@ final class PaymentTransitions extends AbstractConstants
         $suffix = '.label';
 
         return [
-            static::TRANSITION_CANCEL => [$prefix . static::TRANSITION_CANCEL . $suffix, 'warning'],
-            static::TRANSITION_HANG   => [$prefix . static::TRANSITION_HANG .   $suffix, 'warning'],
-            static::TRANSITION_ACCEPT => [$prefix . static::TRANSITION_ACCEPT . $suffix, 'success'],
-            static::TRANSITION_REJECT => [$prefix . static::TRANSITION_REJECT . $suffix, 'danger'],
-            static::TRANSITION_REFUND => [$prefix . static::TRANSITION_REFUND . $suffix, 'primary'],
+            Transitions::TRANSITION_CANCEL => [$prefix . Transitions::TRANSITION_CANCEL . $suffix, 'warning'],
+            Transitions::TRANSITION_HANG   => [$prefix . Transitions::TRANSITION_HANG .   $suffix, 'warning'],
+            Transitions::TRANSITION_ACCEPT => [$prefix . Transitions::TRANSITION_ACCEPT . $suffix, 'success'],
+            Transitions::TRANSITION_REJECT => [$prefix . Transitions::TRANSITION_REJECT . $suffix, 'danger'],
+            //Transitions::TRANSITION_REFUND => [$prefix . Transitions::TRANSITION_REFUND . $suffix, 'primary'],
         ];
     }
 
@@ -63,81 +55,6 @@ final class PaymentTransitions extends AbstractConstants
         static::isValid($transition, true);
 
         return static::getConfig()[$transition][1];
-    }
-
-    /**
-     * Returns the available payment transitions.
-     *
-     * @param PaymentInterface $payment
-     * @param bool             $admin
-     *
-     * @return array
-     */
-    static function getAvailableTransitions(PaymentInterface $payment, $admin = false)
-    {
-        $transitions = [];
-
-        /** @var PaymentMethodInterface $method */
-        $method = $payment->getMethod();
-        $state = $payment->getState();
-
-        if ($admin) {
-            if ($method->isManual()) {
-                switch ($state) {
-                    case PaymentStates::STATE_PENDING:
-                        $transitions[] = static::TRANSITION_CANCEL;
-                        $transitions[] = static::TRANSITION_ACCEPT;
-                        break;
-                    case PaymentStates::STATE_CAPTURED:
-                        $transitions[] = static::TRANSITION_CANCEL;
-                        $transitions[] = static::TRANSITION_HANG;
-                        $transitions[] = static::TRANSITION_REFUND;
-                        break;
-                    case PaymentStates::STATE_REFUNDED:
-                        $transitions[] = static::TRANSITION_CANCEL;
-                        $transitions[] = static::TRANSITION_HANG;
-                        $transitions[] = static::TRANSITION_ACCEPT;
-                        break;
-                    case PaymentStates::STATE_CANCELED:
-                        $transitions[] = static::TRANSITION_HANG;
-                        $transitions[] = static::TRANSITION_ACCEPT;
-                        break;
-                }
-            } elseif ($method->isOutstanding() || $method->isManual()) {
-                if ($state === PaymentStates::STATE_CAPTURED) {
-                    $transitions[] = static::TRANSITION_CANCEL;
-                } else {
-                    $transitions[] = static::TRANSITION_ACCEPT;
-                }
-            } else {
-                if ($state === PaymentStates::STATE_CAPTURED) {
-                    $transitions[] = static::TRANSITION_REFUND;
-                }
-                /*if ($state === PaymentStates::STATE_PENDING) {
-                    if (0 < $payment->getUpdatedAt()->diff(new \DateTime())->days) {
-                        $transitions[] = static::TRANSITION_CANCEL;
-                    }
-                }*/
-            }
-        } else {
-            if ($state === PaymentStates::STATE_PENDING && $method->isManual()) {
-                $transitions[] = static::TRANSITION_CANCEL;
-            }
-        }
-
-        return $transitions;
-    }
-
-    /**
-     * Returns whether the payment can be canceled by the user.
-     *
-     * @param PaymentInterface $payment
-     *
-     * @return bool
-     */
-    static public function isUserCancellable(PaymentInterface $payment)
-    {
-        return in_array(static::TRANSITION_CANCEL, static::getAvailableTransitions($payment), true);
     }
 
     /**

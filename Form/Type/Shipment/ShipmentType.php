@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\ShipmentItemsDataTransformer;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates as BShipStates;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
@@ -117,6 +118,13 @@ class ShipmentType extends ResourceFormType
                             'align_with_widget' => true,
                         ],
                     ]);
+
+                if ($shipment->isReturn()) {
+                    $form->add('paymentMethod', PaymentMethodChoiceType::class, [
+                        'label'         => 'ekyna_commerce.invoice.field.payment_method',
+                        'property_path' => 'invoice.paymentMethod',
+                    ]);
+                }
             });
     }
 

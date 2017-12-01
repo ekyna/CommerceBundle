@@ -134,9 +134,10 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
 
             foreach ($item->getChildren() as $child) {
                 $saleItem = $child->getSaleItem();
-                if ($saleItem->isPrivate()) {
+
+                //if ($saleItem->isPrivate()) {
                     $child->setQuantity($item->getQuantity() * $saleItem->getQuantity());
-                }
+                //}
 
                 $this->flattenShipmentItem($child, $flat);
             }

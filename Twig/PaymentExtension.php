@@ -4,13 +4,14 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
-use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions;
+use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions as BTransitions;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Ekyna\Component\Commerce\Payment\Model\PaymentSubjectInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions as CTransitions;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -113,7 +114,7 @@ class PaymentExtension extends \Twig_Extension
             }),
             new \Twig_SimpleTest(
                 'payment_user_cancellable',
-                [PaymentTransitions::class, 'isUserCancellable']
+                [CTransitions::class, 'isUserCancellable']
             ),
         ];
     }
@@ -127,7 +128,7 @@ class PaymentExtension extends \Twig_Extension
      */
     public function getPaymentAccountActions(PaymentInterface $payment)
     {
-        $transitions = PaymentTransitions::getAvailableTransitions($payment);
+        $transitions = CTransitions::getAvailableTransitions($payment);
 
         if (empty($transitions)) {
             return '';
@@ -152,7 +153,7 @@ class PaymentExtension extends \Twig_Extension
 
             $buttons[$transition] = [
                 'href'    => $url,
-                'confirm' => $this->translator->trans(PaymentTransitions::getConfirm($transition)),
+                'confirm' => $this->translator->trans(BTransitions::getConfirm($transition)),
             ];
         }
 
@@ -168,7 +169,7 @@ class PaymentExtension extends \Twig_Extension
      */
     public function getPaymentAdminActions(PaymentInterface $payment)
     {
-        $transitions = PaymentTransitions::getAvailableTransitions($payment, true);
+        $transitions = CTransitions::getAvailableTransitions($payment, true);
 
         $buttons = [];
 
@@ -179,7 +180,7 @@ class PaymentExtension extends \Twig_Extension
 
             $buttons[$transition] = [
                 'href'    => $url,
-                'confirm' => $this->translator->trans(PaymentTransitions::getConfirm($transition)),
+                'confirm' => $this->translator->trans(BTransitions::getConfirm($transition)),
             ];
         }
 
@@ -220,11 +221,11 @@ class PaymentExtension extends \Twig_Extension
             }
 
             if (!isset($config['label'])) {
-                $config['label'] = $this->translator->trans(PaymentTransitions::getLabel($transition));
+                $config['label'] = $this->translator->trans(BTransitions::getLabel($transition));
             }
 
             if (!isset($config['theme'])) {
-                $config['theme'] = PaymentTransitions::getTheme($transition);
+                $config['theme'] = BTransitions::getTheme($transition);
             }
 
             $confirm = '';

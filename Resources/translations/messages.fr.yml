@@ -270,6 +270,7 @@ ekyna_commerce:
             shipment_base: Frais de port HT
             taxes_total: Taxes
             grand_total: Total TTC
+            payment_method: Mode de remboursement
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
             cant_be_deleted: Cet facture ne peut être supprimée.

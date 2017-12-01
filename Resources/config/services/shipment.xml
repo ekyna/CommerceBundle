@@ -23,6 +23,7 @@
         <service id="ekyna_commerce.shipment.calculator"
                  class="Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculator">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
         </service>
 
         <!-- Shipment weight calculator -->

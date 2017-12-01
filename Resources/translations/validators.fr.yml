@@ -30,6 +30,7 @@ ekyna_commerce:
     invoice:
         hierarchy_integrity: Erreur d'intégrité entre les différents éléments.
         empty_good_lines: Veuillez sélectionner au moins un article.
+        null_credit_method: Veuillez sélectionner un mode de rembousement.
     invoice_line:
         shipment_is_not_return: L'éxpédition liée n'est pas un retour.
         null_sale_item: Cette ligne doit être liée à un article.

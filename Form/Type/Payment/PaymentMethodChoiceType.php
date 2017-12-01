@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Doctrine\ORM\EntityRepository;
+use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
@@ -39,9 +40,18 @@ class PaymentMethodChoiceType extends AbstractType
         $queryBuilder = function (Options $options) {
             return function (EntityRepository $repository) use ($options) {
                 $qb = $repository->createQueryBuilder('m');
-                $qb->andWhere($qb->expr()->eq('m.enabled', true));
-                if ($options['available']) {
-                    $qb->andWhere($qb->expr()->eq('m.available', true));
+
+                if ($options['disabled']) {
+                    $qb
+                        ->andWhere('m.factoryName = :factoryName')
+                        ->setParameter('factoryName', Offline::FACTORY_NAME);
+                } else {
+                    if ($options['enabled']) {
+                        $qb->andWhere($qb->expr()->eq('m.enabled', true));
+                    }
+                    if ($options['available']) {
+                        $qb->andWhere($qb->expr()->eq('m.available', true));
+                    }
                 }
 
                 return $qb;
@@ -50,13 +60,21 @@ class PaymentMethodChoiceType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'label'         => false,
-                'expanded'      => true,
-                'available'     => true,
+                'label'         => 'ekyna_commerce.payment_method.label.singular',
+                'enabled'       => false,
+                'available'     => false,
                 'class'         => $this->dataClass,
                 'query_builder' => $queryBuilder,
             ])
-            ->setAllowedTypes('available', 'bool');
+            ->setAllowedTypes('enabled', 'bool')
+            ->setAllowedTypes('available', 'bool')
+            ->setNormalizer('enabled', function(Options $options, $value) {
+                if ($options['disabled'] || $options['available']) {
+                    return true;
+                }
+
+                return $value;
+            });
     }
 
     /**
