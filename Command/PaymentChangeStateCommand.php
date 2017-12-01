@@ -27,7 +27,7 @@ class PaymentChangeStateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('commerce:payment:change-state')
+            ->setName('ekyna:commerce:payment:change-state')
             ->setDescription('Change the payment state.')
             ->addArgument('number', InputArgument::REQUIRED, 'The payment number')
             ->addArgument('state', InputArgument::REQUIRED, 'The payment new state');

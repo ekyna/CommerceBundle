@@ -19,7 +19,7 @@ class CartPurgeCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('commerce:cart:purge')
+            ->setName('ekyna:commerce:cart:purge')
             ->setDescription('Removes the expired carts.');
     }
 
@@ -41,6 +41,7 @@ class CartPurgeCommand extends ContainerAwareCommand
 
         $operator = $this->getContainer()->get('ekyna_commerce.cart.operator');
 
+        /** @var \Ekyna\Component\Commerce\Cart\Model\CartInterface $cart */
         foreach ($expiredCarts as $cart) {
             $number = $cart->getNumber();
             $output->write(sprintf(

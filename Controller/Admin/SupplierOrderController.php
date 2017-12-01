@@ -226,7 +226,6 @@ class SupplierOrderController extends ResourceController
         $fromEmail = $settings->getParameter('notification.from_email');
         $fromName = $settings->getParameter('notification.from_name');
 
-        /** @var \Swift_Mime_Message $message */
         $message = new \Swift_Message();
         $message
             ->setSubject('Bon de commande ' . $order->getNumber())

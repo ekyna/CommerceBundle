@@ -38,7 +38,7 @@ class OrderDateModifyCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('commerce:order:modify-date')
+            ->setName('ekyna:commerce:order:modify-date')
             ->setDescription('Modify the order dates.')
             ->addArgument('number', InputArgument::REQUIRED, 'The order number')
             ->addArgument('modifier', InputArgument::REQUIRED, 'The dates modifier');

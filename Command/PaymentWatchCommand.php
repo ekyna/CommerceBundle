@@ -28,7 +28,7 @@ class PaymentWatchCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('commerce:payment:watch')
+            ->setName('ekyna:commerce:payment:watch')
             ->setDescription('Watches the payment states (outstanding).');
     }
 
