@@ -4,10 +4,16 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\InvoiceLinesDataTransformer;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -56,7 +62,25 @@ class InvoiceType extends ResourceFormType
             ->add('lines', InvoiceLinesType::class, [
                 'entry_type' => $options['line_type'],
             ])
-            ->addModelTransformer(new InvoiceLinesDataTransformer($this->builder));
+            ->addModelTransformer(new InvoiceLinesDataTransformer($this->builder))
+            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+                /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+                $invoice = $event->getData();
+
+                if (null === $sale = $invoice->getSale()) {
+                    throw new RuntimeException("The invoice must be associated with a sale at this point.");
+                }
+                if (!$sale instanceof OrderInterface) {
+                    throw new RuntimeException("Not yet supported.");
+                };
+
+                if (InvoiceTypes::isCredit($invoice)) {
+                    $form->add('paymentMethod', PaymentMethodChoiceType::class, [
+                        'label'         => 'ekyna_commerce.invoice.field.payment_method',
+                    ]);
+                }
+            });
     }
 
     /**

@@ -45,6 +45,7 @@
 
         {% if sale is invoice_subject -%}
         <invoiceTotal><![CDATA[{{ sale.invoiceTotal|localizedcurrency(sale.currency.code) }}]]></invoiceTotal>
+        <creditTotal><![CDATA[{{ sale.creditTotal|localizedcurrency(sale.currency.code) }}]]></creditTotal>
         <invoiceState><![CDATA[{{ sale.invoiceState|invoice_state_badge }}]]></invoiceState>
         {%- endif %}
     </fields>

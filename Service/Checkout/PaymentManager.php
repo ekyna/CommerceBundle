@@ -85,6 +85,7 @@ class PaymentManager
 
         foreach ($methods as $method) {
             $payment = $this->saleFactory->createPaymentForSale($sale);
+
             // Amount and currency have been set by the factory
             $payment->setMethod($method);
 

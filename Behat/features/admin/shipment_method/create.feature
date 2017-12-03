@@ -47,16 +47,17 @@ Feature: Create shipment methods
         # Assertions
         Then I should see the resource saved confirmation message
 
-        And I should see "GLS" in the "#shipment_method_name" element
+        When I show the "general" tab
+        Then I should see "GLS" in the "#shipment_method_name" element
         And I should see "Taux normal" in the "#shipment_method_taxGroup" element
         And I should see "Oui" in the "#shipment_method_available" element
         And I should see "Oui" in the "#shipment_method_enabled" element
 
-        And I show the "content" tab
-        And I should see "Titre GLS" in the "#shipmentMethod_translations_fr_title" element
+        When I show the "content" tab
+        Then I should see "Titre GLS" in the "#shipmentMethod_translations_fr_title" element
         And I should see "Description GLS" in the "#shipmentMethod_translations_fr_description" element
 
-        And I show the "pricing" tab
+        When I show the "pricing" tab
         And I select "France" from "shipment-price-filter"
         And I should see "2 kg" in the "#shipment_price_0_weight" element
         And I should see "8,50 €" in the "#shipment_price_0_netPrice" element

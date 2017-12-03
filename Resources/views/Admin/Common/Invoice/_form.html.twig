@@ -4,6 +4,9 @@
     {{ form_errors(form) }}
 
     {{ form_row(form.number) }}
+    {% if form.paymentMethod is defined -%}
+        {{ form_row(form.paymentMethod) }}
+    {%- endif %}
     {{ form_row(form.lines) }}
     {{ form_row(form.description) }}
 

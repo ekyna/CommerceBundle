@@ -26,9 +26,9 @@ Feature: Create supplier orders
         And I press "form_flow_submit"
         And I select "Euro" from "supplier_order[currency]"
         And I fill in "supplier_order[shippingCost]" with "30"
-        And I wait for Select2 initialization on "supplier_order[compose][quickAddSelect]"
-        And I select "[IPAD-AIR] iPad Air" from "supplier_order[compose][quickAddSelect]"
-        And I press "supplier_order[compose][quickAddButton]"
+        And I wait for Select2 initialization on "supplier_order[quickAddSelect]"
+        And I select "[IPAD-AIR] iPad Air" from "supplier_order[quickAddSelect]"
+        And I press "supplier_order[quickAddButton]"
         And I press "form_flow_submit"
 
         Then I should see the resource saved confirmation message

@@ -38,6 +38,7 @@ Feature: Create orders
 
         Then I should see the resource saved confirmation message
         # Order assertions
+        When I show the "general" tab
         And I should see "Indéfini" in the "#sale_customer" element
         And I should see "Dupont et fils" in the "#sale_company" element
         And I should see "Particuliers" in the "#sale_customerGroup" element
@@ -48,9 +49,11 @@ Feature: Create orders
         And I should see "Création" in the "#sale_state" element
         And I should see "0,00 €" in the "#sale_paidTotal" element
         And I should see "Création" in the "#sale_paymentState" element
-        And I should see "0,000 kg" in the "#sale_weightTotal" element
+        And I should see "0 kg" in the "#sale_weightTotal" element
         And I should see "Aucun" in the "#sale_shipmentState" element
+        # TODO invoice fields
 
+        When I show the "addresses" tab
         And I should see "Mr Dupont Jean" in the "#sale_invoiceAddress" element
         And I should see "10 rue de la soif" in the "#sale_invoiceAddress" element
         And I should see "35000 Rennes" in the "#sale_invoiceAddress" element
@@ -73,6 +76,7 @@ Feature: Create orders
 
         Then I should see the resource saved confirmation message
         # Order assertions
+        When I show the "general" tab
         And I should see "Mr Dupont Jean" in the "#sale_customer" element
         And I should see "Dupont et fils" in the "#sale_company" element
         And I should see "Particuliers" in the "#sale_customerGroup" element
@@ -83,9 +87,10 @@ Feature: Create orders
         And I should see "Création" in the "#sale_state" element
         And I should see "0,00 €" in the "#sale_paidTotal" element
         And I should see "Création" in the "#sale_paymentState" element
-        And I should see "0,000 kg" in the "#sale_weightTotal" element
+        And I should see "0 kg" in the "#sale_weightTotal" element
         And I should see "Aucun" in the "#sale_shipmentState" element
 
+        When I show the "addresses" tab
         And I should see "Mr Dupont Jean" in the "#sale_invoiceAddress" element
         And I should see "10 rue de la soif" in the "#sale_invoiceAddress" element
         And I should see "35000 Rennes" in the "#sale_invoiceAddress" element

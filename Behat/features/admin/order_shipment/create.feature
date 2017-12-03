@@ -51,7 +51,7 @@ Feature: Create order shipments
             | O-0001 | 4        | IPAD-AIR     |
             | O-0001 | 2        | GALA-TAB     |
 
-    @javascript @stock @current
+    @javascript @stock
     Scenario: Create a shipment
         Given The supplier order with number "SO-001" is received
         And The order with number "O-0001" is paid
@@ -152,7 +152,7 @@ Feature: Create order shipments
         And The order with number "O-0001" is shipped
 
         When I go to "ekyna_commerce_order_shipment_admin_new" route with "{orderId:1,return:1}"
-        And I select "Expédié" from "order_shipment[state]"
+        And I select "Retourné" from "order_shipment[state]"
         And I fill in "order_shipment[items][0][quantity]" with "4"
         And I fill in "order_shipment[items][1][quantity]" with "2"
         And I press "order_shipment[actions][save]"
@@ -162,7 +162,7 @@ Feature: Create order shipments
         When I show the "shipments" tab
         Then I should see "Oui" in the "#shipment_1_return" element
         #And I should see "GLS" in the "#shipment_1_method" element
-        And I should see "Expédié" in the "#shipment_1_state" element
+        And I should see "Retourné" in the "#shipment_1_state" element
 
         When I click "shipment_1_toggle_details"
         Then I should see "4" in the "#shipment_1_item_0_quantity" element
@@ -171,23 +171,23 @@ Feature: Create order shipments
         # Product #1 assertions
         When I go to "acme_product_product_admin_show" route with "productId:1"
         Then I should see "6" in the "#product_inStock" element
-        Then I should see "2" in the "#product_availableStock" element
+        Then I should see "6" in the "#product_availableStock" element
         And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "6" in the "#product_stockUnit_0_orderedQuantity" element
         And I should see "6" in the "#product_stockUnit_0_receivedQuantity" element
-        And I should see "4" in the "#product_stockUnit_0_soldQuantity" element
+        And I should see "0" in the "#product_stockUnit_0_soldQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
         # Product #2 assertions
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "2" in the "#product_inStock" element
-        Then I should see "0" in the "#product_availableStock" element
-        And I should see "Pré-commande" in the "#product_stockState" element
+        Then I should see "2" in the "#product_availableStock" element
+        And I should see "En stock" in the "#product_stockState" element
         And I should see "Prête" in the "#product_stockUnit_0_state" element
         And I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
         And I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
-        And I should see "2" in the "#product_stockUnit_0_soldQuantity" element
+        And I should see "0" in the "#product_stockUnit_0_soldQuantity" element
         And I should see "0" in the "#product_stockUnit_0_shippedQuantity" element
 
 # TODO

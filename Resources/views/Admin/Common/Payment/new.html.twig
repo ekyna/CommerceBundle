@@ -26,7 +26,7 @@
     {% include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" %}
 
     <div class="text-center">
-        <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}" class="btn btn-default">
+        <a href="{{ admin_resource_path(sale) }}" class="btn btn-default">
             <span class="glyphicon glyphicon-chevron-left"></span>
             {{ 'ekyna_core.button.cancel'|trans }}
         </a>

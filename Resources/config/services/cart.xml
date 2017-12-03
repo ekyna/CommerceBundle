@@ -104,7 +104,7 @@
                 <argument type="service" id="ekyna_commerce.cart_helper"/>
             </call>
             <call method="setUserProvider">
-                <argument type="service" id="ekyna_user.user_provider"/>
+                <argument type="service" id="ekyna_user.user.provider"/>
             </call>
             <call method="setCustomerProvider">
                 <argument type="service" id="ekyna_commerce.customer.security_provider"/>

@@ -38,7 +38,7 @@ class RegistrationController extends Controller
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 
-        if (null === $user = $this->get('ekyna_user.user_provider')->getUser()) {
+        if (null === $user = $this->get('ekyna_user.user.provider')->getUser()) {
             /** @var \Ekyna\Bundle\UserBundle\Model\UserInterface $user */
             $user = $userManager->createUser();
             $user->setEnabled(true);

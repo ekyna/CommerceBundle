@@ -49,7 +49,7 @@ Feature: Edit supplier orders
             | order  | delivery | reference | quantity |
             | SO-001 | 0        | IPAD-AIR  | 10       |
         When I go to "ekyna_commerce_supplier_order_admin_edit" route with "supplierOrderId:1"
-        And I fill in "supplier_order[compose][items][0][quantity]" with "9"
+        And I fill in "supplier_order[items][0][quantity]" with "9"
         And I press "supplier_order_actions_save"
         Then I should see "La quantité commandée doit être supérieure ou égale à la quantité réceptionnée"
 
@@ -62,7 +62,7 @@ Feature: Edit supplier orders
             | order  | delivery | reference | quantity |
             | SO-001 | 0        | IPAD-AIR  | 10       |
         When I go to "ekyna_commerce_supplier_order_admin_edit" route with "supplierOrderId:1"
-        And I remove element with index "0" from collection field "supplier_order_compose_items"
+        And I remove element with index "0" from collection field "supplier_order_items"
         And I press "supplier_order_actions_save"
         Then I should see "Au moins une ligne de la commande ne correspond pas aux lignes des livraisons"
 

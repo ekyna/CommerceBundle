@@ -66,10 +66,15 @@ class OrderContext implements Context, KernelAwareContext
 
         $order->addPayment($payment);
 
-        $manager = $this->getContainer()->get('ekyna_commerce.order_payment.manager');
-        $manager->persist($payment);
-        $manager->flush();
-        $manager->clear();
+        $this
+            ->getContainer()
+            ->get('ekyna_commerce.order_payment.operator')
+            ->create($payment);
+
+        $this
+            ->getContainer()
+            ->get('ekyna_commerce.order_payment.manager')
+            ->clear();
     }
 
     /**
@@ -96,7 +101,7 @@ class OrderContext implements Context, KernelAwareContext
 
         $shipment
             ->setMethod($methods[0])
-            ->setState(ShipmentStates::STATE_COMPLETED);
+            ->setState(ShipmentStates::STATE_SHIPPED);
 
         $order->addShipment($shipment);
 
@@ -105,10 +110,15 @@ class OrderContext implements Context, KernelAwareContext
             ->get('ekyna_commerce.shipment.builder')
             ->build($shipment);
 
-        $manager = $this->getContainer()->get('ekyna_commerce.order_shipment.manager');
-        $manager->persist($shipment);
-        $manager->flush();
-        $manager->clear();
+        $this
+            ->getContainer()
+            ->get('ekyna_commerce.order_shipment.operator')
+            ->create($shipment);
+
+        $this
+            ->getContainer()
+            ->get('ekyna_commerce.order_shipment.manager')
+            ->clear();
     }
 
     /**

@@ -39,7 +39,8 @@ Feature: Create supplier deliveries
         And I should not see "Soumettre au fournisseur"
 
         # Order assertions
-        And I should see "TechData" in the "#order_supplier" element
+        When I show the "general" tab
+        Then I should see "TechData" in the "#order_supplier" element
         And I should see "20,55" in the "#order_shippingCost" element
         And I should see "1 348,89" in the "#order_paymentTotal" element
         And I should see "Partiellement réceptionnée" in the "#order_state" element
@@ -59,27 +60,27 @@ Feature: Create supplier deliveries
 #        And I should see "Galaxy Tab" in the "#item_1_subject" element
 
         # Deliveries assertions
-        And I show the "deliveries" tab
+        When I show the "deliveries" tab
         And I should see "2" in the "#delivery_0_item_0_quantity" element
 
         # Product assertions
         When I go to "acme_product_product_admin_show" route with "productId:1"
         Then I should see "Pré-commande" in the "#product_stockState" element
-        Then I should see "0" in the "#product_inStock" element
-        Then I should see "2" in the "#product_virtualStock" element
-        Then I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
-        Then I should see "En attente" in the "#product_stockUnit_0_state" element
-        Then I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
-        Then I should see "0" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "0" in the "#product_inStock" element
+        And I should see "2" in the "#product_virtualStock" element
+        And I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
+        And I should see "En attente" in the "#product_stockUnit_0_state" element
+        And I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
+        And I should see "0" in the "#product_stockUnit_0_receivedQuantity" element
 
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "En stock" in the "#product_stockState" element
-        Then I should see "2" in the "#product_inStock" element
-        Then I should see "4" in the "#product_virtualStock" element
-        Then I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
-        Then I should see "Prête" in the "#product_stockUnit_0_state" element
-        Then I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
-        Then I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "2" in the "#product_inStock" element
+        And I should see "4" in the "#product_virtualStock" element
+        And I should see "01/01/2020" in the "#product_estimatedDateOfArrival" element
+        And I should see "Prête" in the "#product_stockUnit_0_state" element
+        And I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
+        And I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
 
     @javascript @stock
     Scenario: Create the supplier complete delivery
@@ -91,6 +92,7 @@ Feature: Create supplier deliveries
 
         # Order assertions
         # TODO And I should not see "Soumettre au fournisseur"
+        When I show the "general" tab
         And I should see "TechData" in the "#order_supplier" element
         And I should see "20,55" in the "#order_shippingCost" element
         And I should see "1 348,89" in the "#order_paymentTotal" element
@@ -111,25 +113,25 @@ Feature: Create supplier deliveries
         And I should see "Galaxy Tab" in the "#item_1_subject" element
 
         # Deliveries assertions
-        And I show the "deliveries" tab
-        And I should see "2" in the "#delivery_0_item_0_quantity" element
+        When I show the "deliveries" tab
+        Then I should see "2" in the "#delivery_0_item_0_quantity" element
         And I should see "4" in the "#delivery_0_item_1_quantity" element
 
         # Product assertions
         When I go to "acme_product_product_admin_show" route with "productId:1"
         Then I should see "En stock" in the "#product_stockState" element
-        Then I should see "2" in the "#product_inStock" element
-        Then I should see "2" in the "#product_virtualStock" element
-        Then I should see "Indéfini" in the "#product_estimatedDateOfArrival" element
-        Then I should see "Prête" in the "#product_stockUnit_0_state" element
-        Then I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
-        Then I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "2" in the "#product_inStock" element
+        And I should see "2" in the "#product_virtualStock" element
+        And I should see "Indéfini" in the "#product_estimatedDateOfArrival" element
+        And I should see "Prête" in the "#product_stockUnit_0_state" element
+        And I should see "2" in the "#product_stockUnit_0_orderedQuantity" element
+        And I should see "2" in the "#product_stockUnit_0_receivedQuantity" element
 
         When I go to "acme_product_product_admin_show" route with "productId:2"
         Then I should see "En stock" in the "#product_stockState" element
-        Then I should see "4" in the "#product_inStock" element
-        Then I should see "4" in the "#product_virtualStock" element
-        Then I should see "Indéfini" in the "#product_estimatedDateOfArrival" element
-        Then I should see "Prête" in the "#product_stockUnit_0_state" element
-        Then I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
-        Then I should see "4" in the "#product_stockUnit_0_receivedQuantity" element
+        And I should see "4" in the "#product_inStock" element
+        And I should see "4" in the "#product_virtualStock" element
+        And I should see "Indéfini" in the "#product_estimatedDateOfArrival" element
+        And I should see "Prête" in the "#product_stockUnit_0_state" element
+        And I should see "4" in the "#product_stockUnit_0_orderedQuantity" element
+        And I should see "4" in the "#product_stockUnit_0_receivedQuantity" element

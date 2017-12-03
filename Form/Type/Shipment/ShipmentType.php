@@ -89,7 +89,7 @@ class ShipmentType extends ResourceFormType
                 'required' => false,
             ])
             ->addModelTransformer(new ShipmentItemsDataTransformer($this->builder))
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
                 $form = $event->getForm();
                 /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
                 $shipment = $event->getData();
@@ -119,7 +119,7 @@ class ShipmentType extends ResourceFormType
                         ],
                     ]);
 
-                if ($shipment->isReturn()) {
+                if ($shipment->isReturn() && null === $shipment->getInvoice()->getId()) {
                     $form->add('paymentMethod', PaymentMethodChoiceType::class, [
                         'label'         => 'ekyna_commerce.invoice.field.payment_method',
                         'property_path' => 'invoice.paymentMethod',

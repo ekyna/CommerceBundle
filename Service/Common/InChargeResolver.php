@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
 use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
@@ -21,6 +22,11 @@ class InChargeResolver
     private $userProvider;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $userManager;
+
+    /**
      * @var AuthorizationCheckerInterface
      */
     private $authorizationChecker;
@@ -30,13 +36,16 @@ class InChargeResolver
      * Constructor.
      *
      * @param UserProviderInterface         $userProvider
+     * @param EntityManagerInterface        $userManager
      * @param AuthorizationCheckerInterface $authorizationChecker
      */
     public function __construct(
         UserProviderInterface $userProvider,
+        EntityManagerInterface $userManager,
         AuthorizationCheckerInterface $authorizationChecker
     ) {
         $this->userProvider = $userProvider;
+        $this->userManager = $userManager;
         $this->authorizationChecker = $authorizationChecker;
     }
 
@@ -54,6 +63,8 @@ class InChargeResolver
         }
 
         if (null !== $inCharge = $this->resolve($subject)) {
+            $inCharge = $this->userManager->merge($inCharge);
+
             $subject->setInCharge($inCharge);
 
             return true;

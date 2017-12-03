@@ -107,7 +107,8 @@
         <!-- In charge resolver -->
         <service id="ekyna_commerce.common.in_charge_resolver"
                  class="Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver">
-            <argument type="service" id="ekyna_user.user_provider" />
+            <argument type="service" id="ekyna_user.user.provider" />
+            <argument type="service" id="ekyna_user.user.manager" />
             <argument type="service" id="security.authorization_checker" />
         </service>
 

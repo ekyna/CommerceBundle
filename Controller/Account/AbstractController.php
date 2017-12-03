@@ -52,7 +52,7 @@ class AbstractController extends Controller
      */
     protected function getUser()
     {
-        return $this->get('ekyna_user.user_provider')->getUser();
+        return $this->get('ekyna_user.user.provider')->getUser();
     }
 
     /**

@@ -786,7 +786,8 @@ ekyna_commerce:
             tax_total: Total TVA
             adjustment_total: Total remises
             paid_total: Total réglé
-            invoice_total: Total facturé
+            invoice_total: Total factures
+            credit_total: Total avoirs
             outstanding_accepted: Encours accepté
             outstanding_expired: Encours expiré
             outstanding_limit: Limite d'encours
