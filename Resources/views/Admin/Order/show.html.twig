@@ -80,107 +80,161 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="order-general">
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {
+                    'sale': order
+                } %}
                 {{ _cms.show_tags(order) }}
             </div>
             <div class="tab-pane" id="order-addresses">
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {
+                    'sale': order
+                } %}
             </div>
             <div class="tab-pane" id="order-details">
-                {{ render_sale_view(sale_view) }}
+                {{- render_sale_view(sale_view) -}}
             </div>
             {% if not order.sample -%}
             <div class="tab-pane" id="order-payments">
+                {# --------------- PAYMENTS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
                     {%- if not order.paid -%}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {'orderId': order.id}) }}"
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {
+                        'orderId': order.id
+                    }) }}"
                        class="btn btn-primary btn-xs pull-right">
-                        {{ 'ekyna_commerce.payment.button.new'|trans }}
+                        {{- 'ekyna_commerce.payment.button.new'|trans -}}
                     </a>
                     {%- endif -%}
                 </div>
                 <h4 class="sub-header">
-                    {{ 'ekyna_commerce.payment.label.plural'|trans }}
+                    {{- 'ekyna_commerce.payment.label.plural'|trans -}}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {
+                    'sale': order
+                } %}
                 <hr>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {
+                    'sale': order
+                } %}
             </div>
             {%- endif %}
             <div class="tab-pane" id="order-shipments">
+                {# --------------- SHIPMENTS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id, 'return': 1}) }}"
-                       class="btn btn-primary btn-xs pull-right"
-                        style="margin-left:16px">
-                        {{ 'ekyna_commerce.return.button.new'|trans }}
-                    </a>
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {'orderId': order.id}) }}"
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {
+                        'orderId': order.id
+                    }) }}"
                        class="btn btn-primary btn-xs pull-right">
-                        {{ 'ekyna_commerce.shipment.button.new'|trans }}
+                        {{- 'ekyna_commerce.shipment.button.new'|trans -}}
                     </a>
                 </div>
                 <h4 class="sub-header">
-                    {{ 'ekyna_commerce.shipment.label.plural'|trans }}
+                    {{- 'ekyna_commerce.shipment.label.plural'|trans -}}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {
+                    'shipments': order.getShipments(true),
+                    'prefix': 'shipment'
+                } %}
                 <hr>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:shipment_fields.html.twig" with {'sale': order} %}
+                {# --------------- RETURNS --------------- #}
+                <div class="actions">
+                    {# TODO Permission #}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {
+                        'orderId': order.id, 'return': 1
+                    }) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'ekyna_commerce.return.button.new'|trans -}}
+                    </a>
+                </div>
+                <h4 class="sub-header">
+                    {{- 'ekyna_commerce.return.label.plural'|trans -}}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_shipments.html.twig" with {
+                    'shipments': order.getShipments(false),
+                    'prefix': 'return'
+                } %}
+                <hr>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:shipment_fields.html.twig" with {
+                    'sale': order
+                } %}
             </div>
             {% if not order.sample -%}
             <div class="tab-pane" id="order-invoices">
+                {# --------------- INVOICES --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': 'invoice'}) }}"
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {
+                        'orderId': order.id, 'type': 'invoice'
+                    }) }}"
                        class="btn btn-primary btn-xs pull-right"
                        style="margin-left:16px">
-                        {{ ('ekyna_commerce.invoice.button.new')|trans }}
+                        {{- 'ekyna_commerce.invoice.button.new'|trans -}}
                     </a>
                 </div>
                 <h4 class="sub-header">
-                    {{ 'ekyna_commerce.invoice.label.plural'|trans }}
+                    {{- 'ekyna_commerce.invoice.label.plural'|trans -}}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order, 'type': 'invoice'} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {
+                    'invoices': order.getInvoices(true),
+                    'prefix': 'invoice'
+                } %}
                 <hr>
+                {# --------------- CREDITS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {'orderId': order.id, 'type': 'credit'}) }}"
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {
+                        'orderId': order.id, 'type': 'credit'
+                    }) }}"
                        class="btn btn-primary btn-xs pull-right"
                        style="margin-left:16px">
-                        {{ ('ekyna_commerce.credit.button.new')|trans }}
+                        {{- 'ekyna_commerce.credit.button.new'|trans -}}
                     </a>
                 </div>
                 <h4 class="sub-header">
-                    {{ 'ekyna_commerce.credit.label.plural'|trans }}
+                    {{- 'ekyna_commerce.credit.label.plural'|trans -}}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {'sale': order, 'type': 'credit'} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_invoices.html.twig" with {
+                    'invoices': order.getInvoices(false),
+                    'prefix': 'credit'
+                } %}
                 <hr>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:invoice_fields.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:invoice_fields.html.twig" with {
+                    'sale': order
+                } %}
             </div>
             {%- endif %}
             <div class="tab-pane" id="order-attachments">
                 <div class="actions">
                     {% for type in order|sale_editable_document_types -%}
-                    <a href="{{ admin_resource_path(order, 'document_generate', {'orderId': order.id, 'type': type}) }}"
+                    <a href="{{ admin_resource_path(order, 'document_generate', {
+                        'orderId': order.id, 'type': type
+                    }) }}"
                        class="btn btn-default btn-xs pull-right">
-                        {{ 'ekyna_commerce.attachment.button.create'|trans }}
-                        {{ ('ekyna_commerce.document.type.' ~ type)|trans }}
+                        {{- 'ekyna_commerce.attachment.button.create'|trans }}
+                        {{ ('ekyna_commerce.document.type.' ~ type)|trans -}}
                     </a>
                     {%- endfor %}
                     {# TODO Permission #}
-                    <a href="{{ admin_resource_path('ekyna_commerce.order_attachment', 'new', {'orderId': order.id}) }}"
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_attachment', 'new', {
+                        'orderId': order.id
+                    }) }}"
                        class="btn btn-primary btn-xs pull-right">
-                        {{ 'ekyna_commerce.attachment.button.new'|trans }}
+                        {{- 'ekyna_commerce.attachment.button.new'|trans -}}
                     </a>
                 </div>
                 <h4 class="sub-header">
-                    {{ 'ekyna_commerce.attachment.label.plural'|trans }}
+                    {{- 'ekyna_commerce.attachment.label.plural'|trans -}}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'attachments': order.attachments} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {
+                    'attachments': order.attachments
+                } %}
             </div>
             <div class="tab-pane" id="order-informations">
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': order} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {
+                    'sale': order
+                } %}
             </div>
         </div>
     </div>

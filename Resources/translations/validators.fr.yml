@@ -32,13 +32,14 @@ ekyna_commerce:
         empty_good_lines: Veuillez sélectionner au moins un article.
         null_credit_method: Veuillez sélectionner un mode de rembousement.
     invoice_line:
-        shipment_is_not_return: L'éxpédition liée n'est pas un retour.
         null_sale_item: Cette ligne doit être liée à un article.
         empty_designation: La désignation ne peut pas être vide.
-        sale_item_and_shipment_item_miss_match: Les lignes de commande et de retour ne correspondent pas.
-        quantity_is_greater_than_returned: La quantité ne peut pas exceder la quantité retournée (max %max%).
-        sale_and_credit_miss_match: La commande et le retour ne correspondent pas.
-        quantity_is_greater_than_creditable: La quantité ne peut pas exceder la quantité vendue non expédiée (max %max%).
+        hierarchy_integrity: Erreur d'intégrité entre les différents éléments.
+        invoiceable_overflow: La quantité ne peut pas exceder la quantité facturable (max %max%).
+        shipped_miss_match: La quantité doit correspondre à la quantité livrée (%qty%).
+        creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
+        returned_miss_match: La quantité doit correspondre à la quantité retournée (%qty%).
+        creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
     sale:
         no_customer:
             customer_group_is_required: Le groupe de client est requis si aucun client n'est sélectionné.
@@ -55,8 +56,8 @@ ekyna_commerce:
         root_item_cant_be_private: Cet article ne peut pas être privé.
         privacy_integrity: Les articles privés ne peuvent pas contenir des articles publiques.
         tax_group_integrity: Erreur d'intégrité sur le groupe de taxation.
-        quantity_is_lower_than_shipped: Le quantité doit être supérieure ou égale à la quantité expédiée (max %max%).
-        quantity_is_lower_than_credited: Le quantité doit être supérieure ou égale à la quantité des avoirs (max %max%).
+        quantity_is_lower_than_shipped: Le quantité doit être supérieure ou égale à la quantité expédiée (min %min%).
+        quantity_is_lower_than_invoiced: Le quantité doit être supérieure ou égale à la quantité facturée/annulée (min %min%).
     subject:
         identity_subject_must_be_selected: Veuillez sélectionner un sujet.
     stock_unit:
@@ -70,13 +71,11 @@ ekyna_commerce:
         shipped_state_denied: |
             Le statut de la vente ne permet pas de sélectionner ce statut d'expédition.
     shipment_item:
-        quantity_must_be_lower_than_or_equal_expected: |
-            La quantité expédiée doit être inférieure ou égale à la quantité attendue (%max%).
-        quantity_must_be_lower_than_or_equal_available: |
-            La quantité expédiée doit être inférieure ou égale à la quantité disponible (%max%).
-        quantity_must_be_lower_than_or_equal_shipped: |
-            La quantité retournée doit être inférieure ou égale à la quantité expédiée (%max%).
-        quantity_must_be_multiple_of_parent: |
+        returnable_overflow: |
+            La quantité retournée doit être inférieure ou égale à %max%.
+        shippable_overflow: |
+            La quantité expédiée doit être inférieure ou égale à %max%.
+        parent_quantity_integrity: |
             La quantité doit être un multiple de %multiple%.
     supplier_order:
         duplicate_product: |

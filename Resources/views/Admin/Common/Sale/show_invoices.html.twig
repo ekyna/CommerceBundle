@@ -5,6 +5,9 @@
         <tr>
             <th>{{ 'ekyna_core.field.number'|trans }}</th>
             <th>{{ 'ekyna_core.field.type'|trans }}</th>
+            {% if prefix == 'credit' -%}
+                <th>{{ 'ekyna_core.field.mode'|trans }}</th>
+            {%- endif %}
             <th>{{ 'ekyna_commerce.invoice.field.goods_base'|trans }}</th>
             <th>{{ 'ekyna_commerce.invoice.field.shipment_base'|trans }}</th>
             <th>{{ 'ekyna_commerce.invoice.field.taxes_total'|trans }}</th>
@@ -14,13 +17,13 @@
         </tr>
         </thead>
         <tbody>
-        {% if 0 < sale.invoices|length %}
+        {% if 0 < invoices|length %}
             {% set goodsTotal = 0 %}
             {% set shipmentTotal = 0 %}
             {% set taxesTotal = 0 %}
             {% set total = 0 %}
 
-            {% for invoice in sale.invoices if invoice.type == type %}
+            {% for invoice in invoices %}
                 {% set currency = invoice.currency %}
 
                 {# TODO currency conversion ! #}
@@ -29,10 +32,13 @@
                 {% set taxesTotal = taxesTotal + invoice.taxesTotal %}
                 {% set total = total + invoice.grandTotal %}
 
-                {% set invoiceId = type ~ '_' ~ loop.index0 %}
+                {% set invoiceId = prefix ~ '_' ~ loop.index0 %}
             <tr data-id="{{ invoice.id }}">
                 <td id="{{ invoiceId }}_number">{{ invoice.number }}</td>
                 <td id="{{ invoiceId }}_type">{{ invoice|invoice_type_badge }}</td>
+                {% if prefix == 'credit' -%}
+                    <td id="{{ invoiceId }}_mode">{{ invoice.paymentMethod.title }}</td>
+                {%- endif %}
                 <td id="{{ invoiceId }}_goodsBase">{{ invoice.goodsBase|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(commerce_default_currency) }}</td>
@@ -48,30 +54,34 @@
                     <a href="{{ admin_resource_path(invoice, 'render') }}"
                        id="{{ invoiceId }}_render"
                        class="btn btn-primary btn-xs"
+                       title="{{ 'ekyna_core.button.download'|trans }}"
                        target="_blank">
                         <span class="fa fa-download"></span>
                     </a>
                     <a href="{{ admin_resource_path(invoice, 'recalculate') }}"
                        id="{{ invoiceId }}_recalculate"
                        class="btn btn-warning btn-xs"
-                       onclick="return confirm('Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).');">
+                       title="{{ 'ekyna_commerce.invoice.button.recalculate'|trans }}"
+                       onclick="return confirm('{{ 'ekyna_commerce.invoice.message.recalculate_confirm'|trans }}');">
                         <span class="fa fa-refresh"></span>
                     </a>
                     <a href="{{ admin_resource_path(invoice, 'edit') }}"
                        id="{{ invoiceId }}_edit"
-                       class="btn btn-warning btn-xs">
-                        {{ 'ekyna_core.button.edit'|trans }}
+                       class="btn btn-warning btn-xs"
+                       title="{{ 'ekyna_core.button.edit'|trans }}">
+                        <span class="fa fa-pencil"></span>
                     </a>
                     <a href="{{ admin_resource_path(invoice, 'remove') }}"
                        id="{{ invoiceId }}_remove"
-                       class="btn btn-danger btn-xs">
-                        {{ 'ekyna_core.button.remove'|trans }}
+                       class="btn btn-danger btn-xs"
+                       title="{{ 'ekyna_core.button.remove'|trans }}">
+                        <span class="fa fa-trash"></span>
                     </a>
                 </td>
             </tr>
             <tr style="display:none;" id="{{ invoiceId ~ '_details' }}">
                 <td>&nbsp;</td>
-                <td colspan="6">
+                <td colspan="{{ prefix == 'credit' ? 7 : 6 }}">
                     <table class="table table-condensed table-alt table-striped">
                         <thead>
                             <tr>
@@ -108,6 +118,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                {% if prefix == 'credit' %}<td>&nbsp;</td>{% endif %}
                 <td>{{ goodsTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td>{{ shipmentTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td>{{ taxesTotal|localizedcurrency(commerce_default_currency) }}</td>
@@ -117,7 +128,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="8" class="text-center">
+                <td colspan="{{ prefix == 'credit' ? 9 : 8 }}" class="text-center">
                     <em>{{ 'ekyna_commerce.invoice.alert.no_item'|trans }}</em>
                 </td>
             </tr>

@@ -13,8 +13,8 @@
         </tr>
         </thead>
         <tbody>
-        {% for shipment in sale.shipments %}
-            {% set shipmentId = 'shipment_' ~ loop.index0 %}
+        {% for shipment in shipments %}
+            {% set shipmentId = prefix ~ '_' ~ loop.index0 %}
             <tr data-id="{{ shipment.id }}">
                 <td id="{{ shipmentId }}_number">{{ shipment.number }}</td>
                 <td id="{{ shipmentId }}_return">
@@ -80,15 +80,17 @@
                     {# Edit #}
                     <a href="{{ admin_resource_path(shipment, 'edit') }}"
                        id="{{ shipmentId }}_edit"
-                       class="btn btn-warning btn-xs">
-                        {{ 'ekyna_core.button.edit'|trans }}
+                       class="btn btn-warning btn-xs"
+                       title="{{ 'ekyna_core.button.edit'|trans }}">
+                        <span class="fa fa-pencil"></span>
                     </a>
                     {# Delete #}
                     {% if shipment|shipment_deleteable %}
                         <a href="{{ admin_resource_path(shipment, 'remove') }}"
                            id="{{ shipmentId }}_remove"
-                           class="btn btn-danger btn-xs">
-                            {{ 'ekyna_core.button.remove'|trans }}
+                           class="btn btn-danger btn-xs"
+                           title="{{ 'ekyna_core.button.remove'|trans }}">
+                            <span class="fa fa-trash"></span>
                         </a>
                     {% endif %}
                 </td>

@@ -21,9 +21,12 @@
 
         <!-- Shipment calculator -->
         <service id="ekyna_commerce.shipment.calculator"
-                 class="Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculator">
+                 class="Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculator"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            <call method="setInvoiceCalculator">
+                <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            </call>
         </service>
 
         <!-- Shipment weight calculator -->

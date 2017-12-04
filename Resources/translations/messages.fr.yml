@@ -253,6 +253,7 @@ ekyna_commerce:
             new: Nouvelle facture
             edit: Modifier la facture
             remove: Supprimer la facture
+            recalculate: Recalculer
         type:
             invoice:
                 label: Facture
@@ -273,6 +274,7 @@ ekyna_commerce:
             payment_method: Mode de remboursement
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
+            recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
             cant_be_deleted: Cet facture ne peut être supprimée.
         alert:
             no_item: Aucune facture configuré

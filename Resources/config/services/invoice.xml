@@ -23,7 +23,12 @@
 
         <!-- Invoice calculator -->
         <service id="ekyna_commerce.invoice.calculator"
-                 class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculator"/>
+                 class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculator"
+                 lazy="true">
+            <call method="setShipmentCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            </call>
+        </service>
 
         <!-- Invoice abstract listener -->
         <service id="ekyna_commerce.invoice.abstract_listener"

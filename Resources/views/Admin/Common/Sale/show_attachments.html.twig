@@ -32,23 +32,27 @@
                     {% endif %}
                 </td>
                 <td class="actions">
-                    <a href="{{ downloadPath }}" class="btn btn-primary btn-xs" target="_blank">
-                        {{ 'ekyna_core.button.download'|trans }}
+                    <a href="{{ downloadPath }}" class="btn btn-primary btn-xs" target="_blank"
+                       title="{{ 'ekyna_core.button.download'|trans }}">
+                        <span class="fa fa-download"></span>
                     </a>
                     {%- if attachment.type is not null -%}
                     <a href="{{ admin_resource_path(attachment, 'archive') }}"
                        class="btn btn-default btn-xs"
-                       onclick="return confirm('{{ 'ekyna_commerce.attachment.message.archive_confirm'|trans }}')">
-                        {{ 'ekyna_commerce.attachment.button.archive'|trans }}
+                       onclick="return confirm('{{ 'ekyna_commerce.attachment.message.archive_confirm'|trans }}')"
+                       title="{{ 'ekyna_commerce.attachment.button.archive'|trans }}">
+                        <span class="fa fa-archive"></span>
                     </a>
                     {%- endif -%}
                     <a href="{{ admin_resource_path(attachment, 'edit') }}"
-                       class="btn btn-warning btn-xs">
-                        {{ 'ekyna_core.button.edit'|trans }}
+                       class="btn btn-warning btn-xs"
+                       title="{{ 'ekyna_core.button.edit'|trans }}">
+                        <span class="fa fa-pencil"></span>
                     </a>
                     <a href="{{ admin_resource_path(attachment, 'remove') }}"
-                       class="btn btn-danger btn-xs">
-                        {{ 'ekyna_core.button.remove'|trans }}
+                       class="btn btn-danger btn-xs"
+                       title="{{ 'ekyna_core.button.remove'|trans }}">
+                        <span class="fa fa-trash"></span>
                     </a>
                 </td>
             </tr>
