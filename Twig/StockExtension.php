@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 
@@ -23,17 +24,27 @@ class StockExtension extends \Twig_Extension
      */
     private $stockRenderer;
 
+    /**
+     * @var AvailabilityHelper
+     */
+    private $availabilityHelper;
+
 
     /**
      * Constructor.
      *
-     * @param ConstantsHelper $constantHelper
-     * @param StockRenderer   $stockRenderer
+     * @param ConstantsHelper    $constantHelper
+     * @param StockRenderer      $stockRenderer
+     * @param AvailabilityHelper $availabilityHelper
      */
-    public function __construct(ConstantsHelper $constantHelper, StockRenderer $stockRenderer)
-    {
+    public function __construct(
+        ConstantsHelper $constantHelper,
+        StockRenderer $stockRenderer,
+        AvailabilityHelper $availabilityHelper
+    ) {
         $this->constantHelper = $constantHelper;
         $this->stockRenderer = $stockRenderer;
+        $this->availabilityHelper = $availabilityHelper;
     }
 
     /**
@@ -72,6 +83,11 @@ class StockExtension extends \Twig_Extension
                 [$this->constantHelper, 'renderStockSubjectModeBadge'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFilter(
+                'stock_subject_availability',
+                [$this->availabilityHelper, 'getAvailabilityMessage'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
@@ -83,7 +99,7 @@ class StockExtension extends \Twig_Extension
         $tests = [];
 
         foreach (StockSubjectModes::getModes() as $constant) {
-            $tests[] = new \Twig_SimpleTest('stock_mode_' . $constant, function($mode) use ($constant) {
+            $tests[] = new \Twig_SimpleTest('stock_mode_' . $constant, function ($mode) use ($constant) {
                 return $mode === $constant;
             });
         }

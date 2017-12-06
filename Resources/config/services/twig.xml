@@ -59,6 +59,7 @@
                  public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.stock.stock_renderer"/>
+            <argument type="service" id="ekyna_commerce.availability_helper"/>
             <tag name="twig.extension"/>
         </service>
 

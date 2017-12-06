@@ -972,12 +972,15 @@ ekyna_commerce:
             mode: Mode stock
             state: État stock
             floor: Stock de rupture
-            minimum_order_quantity: Qté Min Com
             in_stock: Stock réel
             available_stock: Stock disponible
             virtual_stock: Stock prévisionnel
-            replenishment_time: Délai de réappro.
             estimated_date_of_arrival: Date de réappro.
+            replenishment_time: Délai de réappro.
+            geocode: Geocode
+            minimum_order_quantity: Qté Min Com
+            end_of_life: Fin de vie
+            quote_only: Sur devis uniquement
         mode:
             disabled: Désactivé
             manual: Manuel
@@ -986,6 +989,13 @@ ekyna_commerce:
         state:
             in_stock: En stock
             pre_order: Pré-commande
+            out_of_stock: En rupture
+        availability:
+            quote_only: Sur devis uniquement
+            in_stock: Disponible (%qty%)
+            pre_order: Dispo. le %eda% (%qty%)
+            replenishment: Réassort ~%days% jours
+            end_of_life: Fin de vie
             out_of_stock: En rupture
 
     subject:

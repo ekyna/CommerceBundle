@@ -12,6 +12,14 @@
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
         </service>
 
+        <!-- Availability helper -->
+        <service id="ekyna_commerce.availability_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper">
+            <argument type="service" id="translator"/>
+            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+
         <!-- Constants helper -->
         <service id="ekyna_commerce.constants_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper">

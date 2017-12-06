@@ -3,6 +3,10 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="ekyna_commerce.stock_subject.form_type.builder.class">Ekyna\Bundle\CommerceBundle\Form\StockSubjectFormBuilder</parameter>
+    </parameters>
+
     <services>
 
         <!-- TODO remove forms defined by resources di builder -->
@@ -218,6 +222,10 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\ShipmentMethodCreateFlow"
                  parent="craue.form.flow">
         </service>
+
+        <!-- Stock subject form type builder -->
+        <service id="ekyna_commerce.stock_subject.form_type.builder"
+                 class="%ekyna_commerce.stock_subject.form_type.builder.class%"/>
 
         <!-- (Relative) Subject choice type -->
         <service id="ekyna_commerce.subject_choice.form_type"
