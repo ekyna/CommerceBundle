@@ -36,8 +36,9 @@
 
         <!-- Sale item validators -->
         <service id="ekyna_commerce.sale_item_configure.validator"
-                 class="Ekyna\Bundle\CommerceBundle\Validator\Constraints\SaleItemValidator">
-            <argument type="service" id="event_dispatcher"/>
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemAvailabilityValidator">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.availability_helper"/>
             <tag name="validator.constraint_validator" />
         </service>
         <service id="ekyna_commerce.sale_item.validator"

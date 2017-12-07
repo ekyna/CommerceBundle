@@ -3,8 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
+use Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 
 /**
@@ -25,7 +25,7 @@ class StockExtension extends \Twig_Extension
     private $stockRenderer;
 
     /**
-     * @var AvailabilityHelper
+     * @var AvailabilityHelperInterface
      */
     private $availabilityHelper;
 
@@ -33,14 +33,14 @@ class StockExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantsHelper    $constantHelper
-     * @param StockRenderer      $stockRenderer
-     * @param AvailabilityHelper $availabilityHelper
+     * @param ConstantsHelper             $constantHelper
+     * @param StockRenderer               $stockRenderer
+     * @param AvailabilityHelperInterface $availabilityHelper
      */
     public function __construct(
         ConstantsHelper $constantHelper,
         StockRenderer $stockRenderer,
-        AvailabilityHelper $availabilityHelper
+        AvailabilityHelperInterface $availabilityHelper
     ) {
         $this->constantHelper = $constantHelper;
         $this->stockRenderer = $stockRenderer;

@@ -56,11 +56,9 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
     }
 
     /**
-     * Returns the formatter.
-     *
-     * @return Formatter
+     * @inheritdoc
      */
-    protected function getFormatter()
+    public function getFormatter()
     {
         if (null !== $this->formatter) {
             return $this->formatter;
@@ -75,7 +73,7 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
     /**
      * @inheritdoc
      */
-    protected function translate($id, array $parameters = [])
+    public function translate($id, array $parameters = [])
     {
         return $this->translator->trans($this->prefix . $id, $parameters);
     }

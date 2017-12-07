@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemFormEvent;
-use Ekyna\Bundle\CommerceBundle\Validator\Constraints\SaleItem;
+use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemAvailability;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleItemEvents;
@@ -116,7 +116,7 @@ class SaleItemConfigureType extends AbstractType
                 'submit_button' => false,
                 'constraints'   => function (Options $options) {
                     if (!$options['admin_mode']) {
-                        return [new SaleItem()];
+                        return [new SaleItemAvailability()];
                     }
 
                     return [];

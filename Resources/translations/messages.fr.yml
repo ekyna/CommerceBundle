@@ -992,11 +992,14 @@ ekyna_commerce:
             out_of_stock: En rupture
         availability:
             quote_only: Sur devis uniquement
+            available: Disponible
             in_stock: Disponible (%qty%)
             pre_order: Dispo. le %eda% (%qty%)
             replenishment: Réassort ~%days% jours
             end_of_life: Fin de vie
             out_of_stock: En rupture
+            min_quantity: La quantité minimum d'achat est de %min%.
+            max_quantity: La quantité maximum disponible est de %max%.
 
     subject:
         label: Article
