@@ -34,14 +34,21 @@ ekyna_commerce:
             empty_list: Aucune commande enregistré
             button:
                 pay: Régler la commande
+            message:
+                payment_denied: Contactez votre service d'achat pour le réglement de cette commande.
         quote:
             title: Mes devis
+            children_title: Devis des commerciaux
+            child: Commercial
             show: Détail du devis <em>%number%</em>
             payment: Paiement du devis <em>%number%</em>
             attachment: Ajouter une pièce jointe au devis <em>%number%</em>
             empty_list: Aucun devis enregistré
             button:
                 pay: Régler le devis
+            message:
+                expired: Ce devis est expiré, veuillez nous contacter pour l'actualiser.
+                payment_denied: Contactez votre service d'achat pour le réglement de ce devis.
         payment:
             title: Paiements
             #confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment {{number}} d'un montant de {{amount}} ?
@@ -325,7 +332,7 @@ ekyna_commerce:
             edit: Modifier le client
             remove: Supprimer le client
         field:
-            parent: Compte facturation
+            parent: Compte service achat
             in_charge: Responsable
             children: Commerciaux
             outstanding_limit: Limite d'encours
@@ -333,7 +340,7 @@ ekyna_commerce:
             credit_balance: Solde avoirs
         help:
             hierarchy: >
-                ◊&nbsp;&nbsp;Contact&nbsp;facturation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
+                ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
         alert:
             no_item: Aucun client configuré
             no_invoice_address: Aucune adresse de facturation configuré.

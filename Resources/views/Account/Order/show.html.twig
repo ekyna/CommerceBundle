@@ -4,20 +4,27 @@
 {% spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
     <p>
-        Du {{ order.createdAt|localizeddate('short', 'none') }}, {{ order|sale_state_badge }}
+        {{ order|sale_state_badge }}
+        Créée le {{ order.createdAt|localizeddate('short', 'none') }}.
     </p>
     <hr>
 
     {{- render_sale_view(view) -}}
 
     {% if not order.paid %}
-    <div class="text-center" style="margin-bottom: 40px;">
-        <a href="{{ path('ekyna_commerce_account_order_payment_create', {'number': order.number}) }}"
-           class="btn btn-primary btn-lg">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-            {{ 'ekyna_commerce.account.order.button.pay'|trans }}
-        </a>
-    </div>
+        {% if customer.parent is null %}
+        <div class="text-center" style="margin-bottom: 40px;">
+            <a href="{{ path('ekyna_commerce_account_order_payment_create', {'number': order.number}) }}"
+               class="btn btn-primary btn-lg">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                {{ 'ekyna_commerce.account.order.button.pay'|trans }}
+            </a>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            {{ 'ekyna_commerce.account.order.message.payment_denied'|trans }}
+        </div>
+        {% endif %}
     {% endif %}
 
     {# Payments #}

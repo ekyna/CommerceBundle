@@ -36,8 +36,16 @@ class QuoteController extends AbstractController
             ->get('ekyna_commerce.quote.repository')
             ->findByCustomer($customer);
 
+        $childrenQuotes = null;
+        if ($customer->hasChildren()) {
+            $childrenQuotes = $this
+                ->get('ekyna_commerce.quote.repository')
+                ->findByParent($customer);
+        }
+
         return $this->render('EkynaCommerceBundle:Account/Quote:index.html.twig', [
-            'quotes' => $quotes,
+            'quotes'         => $quotes,
+            'childrenQuotes' => $childrenQuotes,
         ]);
     }
 
@@ -63,6 +71,7 @@ class QuoteController extends AbstractController
             ->findByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Quote:show.html.twig', [
+            'customer'     => $customer,
             'quote'        => $quote,
             'view'         => $quoteView,
             'quotes'       => $quotes,
@@ -86,6 +95,12 @@ class QuoteController extends AbstractController
         $cancelUrl = $this->generateUrl('ekyna_commerce_account_quote_show', [
             'number' => $quote->getNumber(),
         ]);
+
+        if ($customer->hasParent()) {
+            $this->addFlash('ekyna_commerce.account.quote.message.payment_denied', 'warning');
+
+            return $this->redirect($cancelUrl);
+        }
 
         if (!$this->validateSaleStep($quote, SaleStepValidatorInterface::PAYMENT_STEP)) {
             return $this->redirect($cancelUrl);

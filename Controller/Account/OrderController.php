@@ -31,6 +31,8 @@ class OrderController extends AbstractController
     {
         $customer = $this->getCustomerOrRedirect();
 
+        // TODO list orders by originCustomer (for children)
+
         $orders = $this
             ->get('ekyna_commerce.order.repository')
             ->findByCustomer($customer);
@@ -62,6 +64,7 @@ class OrderController extends AbstractController
             ->findByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Order:show.html.twig', [
+            'customer'     => $customer,
             'order'        => $order,
             'view'         => $orderView,
             'orders'       => $orders,
@@ -85,6 +88,12 @@ class OrderController extends AbstractController
         $cancelUrl = $this->generateUrl('ekyna_commerce_account_order_show', [
             'number' => $order->getNumber(),
         ]);
+
+        if ($customer->hasParent()) {
+            $this->addFlash('ekyna_commerce.account.order.message.payment_denied', 'warning');
+
+            return $this->redirect($cancelUrl);
+        }
 
         if (!$this->validateSaleStep($order, SaleStepValidatorInterface::PAYMENT_STEP)) {
             return $this->redirect($cancelUrl);

@@ -190,18 +190,6 @@ class CheckoutController extends AbstractController
             $quote = $this->quoteRepository->createNew();
             // Initialize transformation
             $this->saleTransformer->initialize($cart, $quote);
-
-            /** @var \Ekyna\Bundle\CoreBundle\Model\UploadableInterface $upload */
-            $upload = $form->get('upload')->getData();
-            /** @var \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface $attachment */
-            $attachment = $this->getSaleFactory()->createAttachmentForSale($quote);
-            $attachment
-                ->setFile($upload->getFile())
-                ->setKey($upload->getKey())
-                ->setRename('bon-d-achat')
-                ->setTitle('Bon d\'achat');
-            $quote->addAttachment($attachment);
-
             // Transform
             if (null === $event = $this->saleTransformer->transform()) {
                 // Redirect to quote details

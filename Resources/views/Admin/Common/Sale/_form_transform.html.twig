@@ -20,12 +20,6 @@
             {{ form_row(form.originNumber, {'label_col': 4, 'widget_col': 8}) }}
         </div>
     </div>
-    {% else %}
-        {{ form_row(form.voucherNumber) }}
-    {% endif %}
-
-    {% if form.upload is defined %}
-        {{ form_row(form.upload) }}
     {% endif %}
 
     {{ form_row(form.comment) }}

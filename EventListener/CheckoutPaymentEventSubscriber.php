@@ -153,6 +153,12 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
 
         // Customer available fund
         $available = $customer->getOutstandingLimit() + $sale->getOutstandingLimit() + $customer->getOutstandingBalance();
+        // Abort if non available fund
+        if (0 >= $available) {
+            $event->stopPropagation();
+
+            return;
+        }
 
         // If customer available fund is lower than the payment amount
         if ($available < $payment->getAmount()) {

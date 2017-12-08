@@ -10,6 +10,9 @@ ekyna_commerce:
         phone_is_mandatory: Veuillez saisir le numéro de téléphone.
         mobile_is_mandatory: Veuillez saisir le numéro de téléphone mobile.
     customer:
+        hierarchy_overflow: Ce client est un contact facturation et ne peut être rattaché un autre contact facturation.
+        non_zero_balance: Ce client a un solde d'encours ou d'avoir non nul et ne peut être rattaché à un contact facturation.
+        parent_company_is_mandatory: Le contact facturation doit avoir un nom d'entreprise.
         company_is_mandatory: Veuillez saisir votre nom de votre entreprise.
         vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
         phone_or_mobile_is_mandatory: Veuillez saisir un numéro de téléphone ou de mobile.

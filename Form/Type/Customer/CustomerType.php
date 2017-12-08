@@ -59,7 +59,6 @@ class CustomerType extends ResourceFormType
             ->add('parent', CustomerSearchType::class, [
                 'label'    => 'ekyna_commerce.customer.field.parent',
                 'required' => false,
-                'parent'   => true,
             ])
             ->add('user', UserSearchType::class, [
                 'required'  => false,

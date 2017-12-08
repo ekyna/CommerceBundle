@@ -23,10 +23,6 @@
 
     <hr>
 
-    {% set businessCustomer = customer %}
-    {% if customer.hasParent() %}
-        {% set businessCustomer = customer.parent %}
-    {% endif %}
 
     <div class="form-horizontal">
         {{ macros.field('ekyna_core.field.email', customer.email, 3, 9) }}
@@ -49,15 +45,16 @@
             {% endif %}
         </div>
 
+        {% set businessCustomer = customer %}
         {% if customer.hasParent() %}
+            {% set businessCustomer = customer.parent %}
             <hr>
             {% set parent = (customer.parent|identity) ~ '&nbsp;<em>&lt;' ~ customer.parent.email ~ '&gt;</em>' %}
             {{ macros.field('ekyna_commerce.customer.field.parent', parent, 3, 9) }}
         {% endif %}
-
         <div class="row">
             <div class="col-md-6">
-                {{ macros.field('ekyna_core.field.company', customer.company, 6, 6) }}
+                {{ macros.field('ekyna_core.field.company', businessCustomer.company, 6, 6) }}
             </div>
             {% if businessCustomer.vatNumber is not empty %}
             <div class="col-md-6">
@@ -66,23 +63,25 @@
             {% endif %}
         </div>
 
-        {% if businessCustomer.paymentTerm is not null %}
-            {{ macros.field('ekyna_commerce.payment_term.label.singular', businessCustomer.paymentTerm.title, 3, 9) }}
+        {% if customer.paymentTerm is not null %}
+            {{ macros.field('ekyna_commerce.payment_term.label.singular', customer.paymentTerm.title, 3, 9) }}
             <div class="row">
                 <div class="col-md-6">
-                    {{ macros.field('ekyna_commerce.customer.field.outstanding_limit', businessCustomer.outstandingLimit|localizedcurrency(commerce_default_currency), 6, 6) }}
+                    {{ macros.field('ekyna_commerce.customer.field.outstanding_limit', customer.outstandingLimit|localizedcurrency(commerce_default_currency), 6, 6) }}
                 </div>
                 <div class="col-md-6">
-                    {{ macros.field('ekyna_commerce.customer.field.outstanding_balance', businessCustomer.outstandingBalance|localizedcurrency(commerce_default_currency), 6, 6) }}
+                    {{ macros.field('ekyna_commerce.customer.field.outstanding_balance', customer.outstandingBalance|localizedcurrency(commerce_default_currency), 6, 6) }}
                 </div>
             </div>
         {% endif %}
 
+        {% if not customer.hasParent() %}
         <div class="row">
             <div class="col-md-6">
-                {{ macros.field('ekyna_commerce.customer.field.credit_balance', businessCustomer.creditBalance|localizedcurrency(commerce_default_currency), 6, 6) }}
+                {{ macros.field('ekyna_commerce.customer.field.credit_balance', customer.creditBalance|localizedcurrency(commerce_default_currency), 6, 6) }}
             </div>
         </div>
+        {% endif %}
     </div>
 
     <hr>

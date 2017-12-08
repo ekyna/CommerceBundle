@@ -3,8 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
-use Ekyna\Bundle\CoreBundle\Form\Type\UploadType;
-use Ekyna\Bundle\CoreBundle\Validator\Constraints\Uploadable;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -27,10 +25,6 @@ class SaleTransformType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('voucherNumber', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'required' => !$options['admin_mode'],
-            ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',
                 'required' => false,
@@ -47,6 +41,10 @@ class SaleTransformType extends AbstractType
 
         if ($options['admin_mode']) {
             $builder
+                ->add('voucherNumber', Type\TextType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                    'required' => !$options['admin_mode'],
+                ])
                 ->add('originNumber', Type\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.origin_number',
                     'required' => false,
@@ -55,16 +53,6 @@ class SaleTransformType extends AbstractType
                     'label'    => 'ekyna_commerce.field.description',
                     'required' => false,
                 ]);
-        } else {
-            $builder->add('upload', UploadType::class, [
-                'label'        => 'Votre bon d\'achat',
-                'rename_field' => false,
-                'required'     => true,
-                'mapped'       => false,
-                'constraints'  => [
-                    new Uploadable(),
-                ],
-            ]);
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
@@ -77,7 +65,6 @@ class SaleTransformType extends AbstractType
                 if (null !== $customer) {
                     if ($customer->hasParent()) {
                         $choices = [$customer, $customer->getParent()];
-                        $sale->setCustomer($customer->getParent());
                     } elseif ($customer->hasChildren()) {
                         $choices = $customer->getChildren()->toArray();
                         array_unshift($choices, $customer);
