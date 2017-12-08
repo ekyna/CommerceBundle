@@ -10,7 +10,6 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Symfony\Component\Form;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SupplierOrderSubmitType
@@ -58,14 +57,6 @@ class SupplierOrderSubmitType extends Form\AbstractType
                         'widget_col' => 12,
                     ],
                 ],
-                'constraints'   => [
-                    new Assert\Count(['min' => 1]),
-                    new Assert\All([
-                        'constraints' => [
-                            new Assert\Email(),
-                        ],
-                    ]),
-                ],
             ])
             ->add('message', TinymceType::class, [
                 'label'    => 'ekyna_core.field.message',
@@ -73,9 +64,6 @@ class SupplierOrderSubmitType extends Form\AbstractType
             ])
             ->add('confirm', Type\CheckboxType::class, [
                 'label'       => 'ekyna_core.message.action_confirm',
-                'constraints' => [
-                    new Assert\IsTrue(),
-                ],
                 'attr'        => [
                     'align_with_widget' => true,
                 ],
@@ -126,7 +114,7 @@ class SupplierOrderSubmitType extends Form\AbstractType
                 ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
-                    'required' => false,
+                    'required' => true,
                 ])
                 ->add('paymentDate', Type\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_date',

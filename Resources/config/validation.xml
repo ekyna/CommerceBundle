@@ -110,5 +110,25 @@
         </property>
     </class>
 
+    <!-- Supplier order submit -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit">
+        <property name="emails">
+            <constraint name="Count">
+                <option name="min">1</option>
+            </constraint>
+            <constraint name="All">
+                <constraint name="NotBlank"/>
+                <constraint name="Email"/>
+            </constraint>
+        </property>
+        <property name="confirm">
+            <constraint name="IsTrue"/>
+        </property>
+        <property name="order">
+            <constraint name="Valid"/>
+        </property>
+    </class>
+
 
 </constraint-mapping>

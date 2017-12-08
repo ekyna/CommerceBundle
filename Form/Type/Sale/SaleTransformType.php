@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
+use Ekyna\Bundle\CoreBundle\Form\Type\UploadType;
+use Ekyna\Bundle\CoreBundle\Validator\Constraints\Uploadable;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -27,7 +29,7 @@ class SaleTransformType extends AbstractType
         $builder
             ->add('voucherNumber', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'required' => false,
+                'required' => !$options['admin_mode'],
             ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',
@@ -53,6 +55,16 @@ class SaleTransformType extends AbstractType
                     'label'    => 'ekyna_commerce.field.description',
                     'required' => false,
                 ]);
+        } else {
+            $builder->add('upload', UploadType::class, [
+                'label'        => 'Votre bon d\'achat',
+                'rename_field' => false,
+                'required'     => true,
+                'mapped'       => false,
+                'constraints'  => [
+                    new Uploadable(),
+                ],
+            ]);
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {

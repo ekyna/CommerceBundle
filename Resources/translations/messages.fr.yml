@@ -30,6 +30,7 @@ ekyna_commerce:
             title: Mes commandes
             show: Détail de la commande <em>%number%</em>
             payment: Paiement de la commande <em>%number%</em>
+            attachment: Ajouter une pièce jointe à la commande <em>%number%</em>
             empty_list: Aucune commande enregistré
             button:
                 pay: Régler la commande
@@ -37,6 +38,7 @@ ekyna_commerce:
             title: Mes devis
             show: Détail du devis <em>%number%</em>
             payment: Paiement du devis <em>%number%</em>
+            attachment: Ajouter une pièce jointe au devis <em>%number%</em>
             empty_list: Aucun devis enregistré
             button:
                 pay: Régler le devis

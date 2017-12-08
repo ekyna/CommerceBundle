@@ -1,6 +1,10 @@
 {% spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
+        <a href="{{ path(route_prefix ~ '_attachment_create', {'number': sale.number}) }}"
+            class="btn btn-xs btn-success pull-right">
+            {{ 'ekyna_core.button.add'|trans }}
+        </a>
         {{ 'ekyna_commerce.account.attachment.title'|trans|raw }}
     </div>
     <table class="table table-stripped">
@@ -12,6 +16,9 @@
                     <a href="{{ path }}" target="_blank">
                         {{- attachment -}}
                     </a>
+                </td>
+                <td>
+                    {{- attachment.title -}}
                 </td>
                 <td class="text-right">
                     <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">

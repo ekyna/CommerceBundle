@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
@@ -237,6 +238,59 @@ class OrderController extends AbstractController
             ->createRenderer($invoice);
 
         return $renderer->respond($request);
+    }
+
+    /**
+     * Order attachment create action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function attachmentCreateAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        /** @var \Ekyna\Component\Commerce\Order\Model\OrderAttachmentInterface $attachment */
+        $attachment = $this->get('ekyna_commerce.sale_factory')->createAttachmentForSale($order);
+        $attachment->setOrder($order);
+
+        $cancelPath = $this->generateUrl('ekyna_commerce_account_order_show', [
+            'number' => $order->getNumber(),
+        ]);
+
+        $form = $this->createForm(OrderAttachmentType::class, $attachment, [
+            'action' => $this->generateUrl('ekyna_commerce_account_order_attachment_create', [
+                'number' => $order->getNumber(),
+            ]),
+        ]);
+
+        $this->createFormFooter($form, ['cancel_path' => $cancelPath]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $event = $this->get('ekyna_commerce.order_attachment.operator')->create($attachment);
+
+            $event->toFlashes($this->getFlashBag());
+
+            if (!$event->hasErrors()) {
+                return $this->redirect($cancelPath);
+            }
+        }
+
+        $orders = $this
+            ->get('ekyna_commerce.order.repository')
+            ->findByCustomer($customer);
+
+        return $this->render('EkynaCommerceBundle:Account/Order:attachment_create.html.twig', [
+            'route_prefix' => 'ekyna_commerce_account_order',
+            'order'        => $order,
+            'form'         => $form->createView(),
+            'orders'       => $orders,
+        ]);
     }
 
     /**

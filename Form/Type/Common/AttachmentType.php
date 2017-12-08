@@ -20,16 +20,18 @@ class AttachmentType extends ResourceFormType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('title', TextType::class, [
-                'label'    => 'ekyna_core.field.title',
-                'required' => false,
-            ])
-            ->add('internal', CheckboxType::class, [
+        $builder->add('title', TextType::class, [
+            'label'    => 'ekyna_core.field.title',
+            'required' => false,
+        ]);
+
+        if ($options['admin_mode']) {
+            $builder->add('internal', CheckboxType::class, [
                 'label'    => 'ekyna_commerce.attachment.field.internal',
                 'required' => false,
                 'attr'     => ['align_with_widget' => true],
             ]);
+        }
     }
 
     /**

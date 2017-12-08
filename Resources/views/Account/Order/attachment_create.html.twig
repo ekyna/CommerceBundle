@@ -1,0 +1,34 @@
+{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+
+{% block account %}
+{% spaceless %}
+    <h3>{{ 'ekyna_commerce.account.order.attachment'|trans({'%number%': order.number})|raw }}</h3>
+
+    <hr>
+
+    {{ bootstrap_set_style('horizontal') }}
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    <div class="form-body">
+        {{ form_errors(form) }}
+        {{ form_row(form.title) }}
+        <div class="upload-widget">
+            {{ form_row(form.file) }}
+            {{ form_row(form.rename) }}
+            {{ form_row(form.key) }}
+        </div>
+        {{ form_rest(form) }}
+    </div>
+    {{ form_end(form) }}
+
+    <br><br>
+    <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
+    <hr>
+    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" %}
+
+{% endspaceless %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{- parent() -}}
+    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}

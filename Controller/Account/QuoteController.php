@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
@@ -217,6 +218,59 @@ class QuoteController extends AbstractController
         // Redirect to quote details
         return $this->redirectToRoute('ekyna_commerce_account_quote_show', [
             'number' => $quote->getNumber(),
+        ]);
+    }
+
+    /**
+     * Quote attachment create action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function attachmentCreateAction(Request $request)
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        /** @var \Ekyna\Component\Commerce\Quote\Model\QuoteAttachmentInterface $attachment */
+        $attachment = $this->get('ekyna_commerce.sale_factory')->createAttachmentForSale($quote);
+        $attachment->setQuote($quote);
+
+        $cancelPath = $this->generateUrl('ekyna_commerce_account_quote_show', [
+            'number' => $quote->getNumber(),
+        ]);
+
+        $form = $this->createForm(QuoteAttachmentType::class, $attachment, [
+            'action' => $this->generateUrl('ekyna_commerce_account_quote_attachment_create', [
+                'number' => $quote->getNumber(),
+            ]),
+        ]);
+
+        $this->createFormFooter($form, ['cancel_path' => $cancelPath]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $event = $this->get('ekyna_commerce.quote_attachment.operator')->create($attachment);
+
+            $event->toFlashes($this->getFlashBag());
+
+            if (!$event->hasErrors()) {
+                return $this->redirect($cancelPath);
+            }
+        }
+
+        $quotes = $this
+            ->get('ekyna_commerce.quote.repository')
+            ->findByCustomer($customer);
+
+        return $this->render('EkynaCommerceBundle:Account/Quote:attachment_create.html.twig', [
+            'route_prefix' => 'ekyna_commerce_account_quote',
+            'quote'        => $quote,
+            'form'         => $form->createView(),
+            'quotes'       => $quotes,
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 
 /**
  * Class SupplierOrderSubmit
@@ -36,6 +37,20 @@ class SupplierOrderSubmit
      */
     private $sendEmail = true;
 
+    /**
+     * Constructor.
+     *
+     * @param SupplierOrderInterface $order
+     */
+    public function __construct(SupplierOrderInterface $order)
+    {
+        $this->order = $order;
+
+        // For validation
+        $this->order
+            ->setState(SupplierOrderStates::STATE_ORDERED)
+            ->setOrderedAt(new \DateTime());
+    }
 
     /**
      * Returns the order.
@@ -45,20 +60,6 @@ class SupplierOrderSubmit
     public function getOrder()
     {
         return $this->order;
-    }
-
-    /**
-     * Sets the order.
-     *
-     * @param SupplierOrderInterface $order
-     *
-     * @return SupplierOrderSubmit
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-
-        return $this;
     }
 
     /**

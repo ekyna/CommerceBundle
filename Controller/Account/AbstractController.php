@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AbstractController extends Controller
+abstract class AbstractController extends Controller
 {
     /**
      * Returns the current (logged in) customer or redirect.

@@ -122,9 +122,8 @@ class SupplierOrderController extends ResourceController
             return $this->redirect($this->generateResourcePath($resource));
         }
 
-        $submit = new SupplierOrderSubmit();
+        $submit = new SupplierOrderSubmit($resource);
         $submit
-            ->setOrder($resource)
             ->setEmails([$resource->getSupplier()->getEmail()])
             ->setMessage(
                 $this->getTranslator()->trans(
@@ -174,9 +173,6 @@ class SupplierOrderController extends ResourceController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO use a service (workflow ?) (same in behat supplier order context)
-            $resource->setOrderedAt(new \DateTime());
-
             // TODO use ResourceManager
             $event = $this->getOperator()->update($resource);
 

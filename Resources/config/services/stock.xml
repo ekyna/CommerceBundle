@@ -31,6 +31,7 @@
                  class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
         </service>
 

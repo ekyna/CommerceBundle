@@ -82,6 +82,8 @@ ekyna_commerce:
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.
         order_and_delivery_items_miss_match: |
             Au moins une ligne de la commande ne correspond pas aux lignes des livraisons.
+        null_estimated_date_of_arrival:
+            Veuillez saisir une date de livraison.
     supplier_order_item:
         quantity_must_be_greater_than_or_equal_received: |
             La quantité commandée doit être supérieure ou égale à la quantité réceptionnée (%min%).
