@@ -5,8 +5,11 @@
     <h3>{{ 'ekyna_commerce.account.quote.show'|trans({'%number%': quote.number})|raw }}</h3>
     <p>
         {{ quote|sale_state_badge }}
-        Créé le {{ quote.createdAt|localizeddate('short', 'none') }},
-        expire le {{ quote.expiresAt|localizeddate('short', 'none') }}
+        Créé le <em>{{ quote.createdAt|localizeddate('short', 'none') }}</em>,
+        expire le <em>{{ quote.expiresAt|localizeddate('short', 'none') }}</em>.
+        {% if quote.voucherNumber is not empty -%}
+            {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ quote.voucherNumber }}</strong>.
+        {%- endif %}
     </p>
     <hr>
 
@@ -18,13 +21,30 @@
         </div>
     {% elseif not quote.paid %}
         {% if customer.parent is null %}
-        <div class="text-center" style="margin-bottom: 40px;">
-            <a href="{{ path('ekyna_commerce_account_quote_payment_create', {'number': quote.number}) }}"
-               class="btn btn-primary btn-lg">
-                <span class="glyphicon glyphicon-chevron-right"></span>
-                {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
-            </a>
-        </div>
+            {# Voucher required message #}
+            {% if not quote.hasVoucher() %}
+            <div class="alert alert-info">
+                {{ 'ekyna_commerce.account.quote.message.voucher_required'|trans }}
+            </div>
+            {% endif %}
+
+            <div class="text-center" style="margin-bottom: 40px;">
+                {# Voucher button #}
+                <a href="{{ path('ekyna_commerce_account_quote_voucher', {'number': quote.number}) }}"
+                   class="btn btn-lg {% if quote.hasVoucher() %}btn-default{% else %}btn-primary{% endif %}"
+                   style="margin-right: 12px">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    {{ 'ekyna_commerce.account.quote.button.voucher'|trans }}
+                </a>
+                {# Payment button #}
+                {% if quote.hasVoucher() %}
+                    <a href="{{ path('ekyna_commerce_account_quote_payment_create', {'number': quote.number}) }}"
+                       class="btn btn-primary btn-lg">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
+                    </a>
+                {% endif %}
+            </div>
         {% else %}
         <div class="alert alert-info">
             {{ 'ekyna_commerce.account.quote.message.payment_denied'|trans }}
@@ -34,18 +54,22 @@
 
     {# Payments #}
     {%- if quote is sale_with_payment -%}
-        {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': quote} only -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+            'sale': quote, 'customer': customer
+        } only -%}
     {%- endif -%}
 
     {# Attachments #}
     {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
-        'sale': quote, 'route_prefix': route_prefix
+        'sale': quote, 'route_prefix': route_prefix, 'customer': customer
     } only -%}
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {'quotes': quotes} only %}
+    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {
+        'quotes': quotes, 'customer': customer
+    } only %}
 {% endspaceless %}
 {% endblock %}
 

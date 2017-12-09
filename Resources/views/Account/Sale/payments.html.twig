@@ -13,9 +13,11 @@
                 {#<td>{{ payment.getCurrency() }}</td>#}
                 <td>{{ payment|payment_state_badge }}</td>
                 <td>{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
+                {% if not customer.hasParent() %}
                 <td class="actions text-right">
                     {{- payment_account_actions(payment) -}}
                 </td>
+                {% endif %}
             </tr>
         {%- endfor -%}
         </tbody>

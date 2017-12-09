@@ -38,16 +38,20 @@ ekyna_commerce:
                 payment_denied: Contactez votre service d'achat pour le réglement de cette commande.
         quote:
             title: Mes devis
-            children_title: Devis des commerciaux
-            child: Commercial
             show: Détail du devis <em>%number%</em>
+            voucher: Bon d'achat du devis <em>%number%</em>
             payment: Paiement du devis <em>%number%</em>
             attachment: Ajouter une pièce jointe au devis <em>%number%</em>
             empty_list: Aucun devis enregistré
             button:
+                voucher: Ajouter/modifier votre bon d'achat
                 pay: Régler le devis
             message:
                 expired: Ce devis est expiré, veuillez nous contacter pour l'actualiser.
+                voucher_required: >
+                    Avant de procéder au réglement du devis, nous vous prions
+                    de bien vouloir ajouter votre bon d'achat.
+                voucher_denied: Contactez votre service d'achat pour la gestion du bon d'achat.
                 payment_denied: Contactez votre service d'achat pour le réglement de ce devis.
         payment:
             title: Paiements
@@ -242,6 +246,7 @@ ekyna_commerce:
     document:
         type:
             form: Bon de commande
+            voucher: Bon d'achat
             quote: Devis
             proforma: Proforma
             confirmation: Confirmation de commande
@@ -777,7 +782,7 @@ ekyna_commerce:
             addresses: Adresses
             details: Détail
             customer: Client
-            origin_customer: Client originel
+            origin_customer: Commercial
             address_choice: Carnet d'adresses
             invoice_address: Adresse de facturation
             delivery_address: Adresse de livraison

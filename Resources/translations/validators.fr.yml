@@ -55,6 +55,7 @@ ekyna_commerce:
         invoice_address_must_be_set: Veuillez saisir une adresse de facturation.
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
+        voucher_must_be_set: Veuillez saisir votre bon d'achat.
     sale_item:
         root_item_cant_be_private: Cet article ne peut pas être privé.
         privacy_integrity: Les articles privés ne peuvent pas contenir des articles publiques.

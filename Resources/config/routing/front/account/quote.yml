@@ -22,6 +22,14 @@ ekyna_commerce_account_quote_show:
         number: "[a-zA-Z0-9]+"
     methods: [GET]
 
+ekyna_commerce_account_quote_voucher:
+    path: /{number}/voucher
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:voucher
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [GET, POST]
+
 ekyna_commerce_account_quote_payment_create:
     path: /{number}/payments/create
     defaults:

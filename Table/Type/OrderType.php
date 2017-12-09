@@ -29,8 +29,13 @@ class OrderType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        /** @var SubjectInterface $subject */
+        $subject = $options['subject'];
+        /** @var CustomerInterface $customer */
+        $customer = $options['customer'];
+
         $filters = false;
-        if (null !== $subject = $options['subject']) {
+        if (null !== $subject) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
                 throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
@@ -60,16 +65,22 @@ class OrderType extends ResourceTableType
             });
 
             $builder->setFilterable(false);
-        } elseif (null !== $customer = $options['customer']) {
+        } elseif (null !== $customer) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
                 throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
             }
 
             $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
-                $qb
-                    ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
-                    ->setParameter('customer', $customer);
+                if ($customer->hasParent()) {
+                    $qb->andWhere($qb->expr()->orX(
+                            $qb->expr()->in($alias . '.customer', ':customer'),
+                            $qb->expr()->in($alias . '.originCustomer', ':customer')
+                        ));
+                } else {
+                    $qb->andWhere($qb->expr()->eq($alias . '.customer', ':customer'));
+                }
+                $qb->setParameter('customer', $customer);
             });
 
             $builder->setFilterable(false);
@@ -161,11 +172,34 @@ class OrderType extends ResourceTableType
                 ],
             ]);
 
+        if (null === $customer) {
+            $builder->addColumn('customer', Type\Column\SaleCustomerType::class, [
+                'label'    => 'ekyna_commerce.customer.label.singular',
+                'position' => 20,
+            ]);
+        }
+
         if ($filters) {
             $builder
                 ->addFilter('number', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
                     'position' => 10,
+                ])
+                ->addFilter('email', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.email',
+                    'position' => 20,
+                ])
+                ->addFilter('company', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.company',
+                    'position' => 21,
+                ])
+                ->addFilter('firstName', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.first_name',
+                    'position' => 22,
+                ])
+                ->addFilter('lastName', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.last_name',
+                    'position' => 23,
                 ])
                 ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.voucher_number',
@@ -214,34 +248,6 @@ class OrderType extends ResourceTableType
                     'label'    => 'ekyna_cms.tag.label.plural',
                     'position' => 130,
                 ]);
-        }
-
-        if (null === $options['customer']) {
-            $builder
-                ->addColumn('customer', Type\Column\SaleCustomerType::class, [
-                    'label'    => 'ekyna_commerce.customer.label.singular',
-                    'position' => 20,
-                ]);
-
-            if ($filters) {
-                $builder
-                    ->addFilter('email', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.email',
-                        'position' => 20,
-                    ])
-                    ->addFilter('company', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.company',
-                        'position' => 21,
-                    ])
-                    ->addFilter('firstName', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.first_name',
-                        'position' => 22,
-                    ])
-                    ->addFilter('lastName', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.last_name',
-                        'position' => 23,
-                    ]);
-            }
         }
     }
 

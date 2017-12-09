@@ -1,12 +1,13 @@
+{% spaceless %}
+{% set show_customer = not customer.hasParent() %}
 <table class="table table-stripped">
     <thead>
     <tr>
         <th>{{ 'ekyna_core.field.number'|trans }}</th>
-        {% if show_child|default(false) -%}
-        <th>{{ 'ekyna_commerce.account.quote.child'|trans }}</th>
-        {%- else -%}
-        <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
+        {% if show_customer -%}
+        <th>{{ 'ekyna_commerce.sale.field.origin_customer'|trans }}</th>
         {%- endif %}
+        <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.state'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
@@ -21,13 +22,16 @@
             <td>
                 <a href="{{ path }}">{{ quote.number }}</a>
             </td>
+            {% if show_customer -%}
             <td>
-                {%- if show_child|default(false) -%}
-                    {{ quote.customer|identity }}
-                {%- elseif quote.voucherNumber is not empty -%}
+                {{- quote.customer|identity -}}
+            </td>
+            {% endif -%}
+            <td>
+                {%- if quote.voucherNumber is not empty -%}
                     {{ quote.voucherNumber }}
                 {%- else -%}
-                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    &dash;
                 {%- endif -%}
             </td>
             <td class="text-right">
@@ -50,10 +54,11 @@
         </tr>
     {% else %}
         <tr>
-            <td colspan="7">
+            <td colspan="{{ show_customer ? 8 : 7 }}">
                 <em>{{ 'ekyna_commerce.account.quote.empty_list'|trans }}</em>
             </td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+{% endspaceless %}

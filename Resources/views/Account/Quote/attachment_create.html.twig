@@ -23,7 +23,9 @@
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" %}
+    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {
+        'quotes': quotes, 'customer': customer
+    } only %}
 
 {% endspaceless %}
 {% endblock %}

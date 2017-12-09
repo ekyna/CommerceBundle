@@ -5,14 +5,14 @@
     <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
     <p>
         {{ order|sale_state_badge }}
-        Créée le {{ order.createdAt|localizeddate('short', 'none') }}.
+        Créée le <em>{{ order.createdAt|localizeddate('short', 'none') }}</em>. {# TODO translations #}
     </p>
     <hr>
 
     {{- render_sale_view(view) -}}
 
     {% if not order.paid %}
-        {% if customer.parent is null %}
+        {% if customer.id == order.customer.id %}
         <div class="text-center" style="margin-bottom: 40px;">
             <a href="{{ path('ekyna_commerce_account_order_payment_create', {'number': order.number}) }}"
                class="btn btn-primary btn-lg">
@@ -29,7 +29,9 @@
 
     {# Payments #}
     {%- if order is sale_with_payment -%}
-        {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {'sale': order} only -%}
+        {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+            'sale': order, 'customer': customer
+        } only -%}
     {%- endif -%}
 
     {# Shipments #}
@@ -70,7 +72,9 @@
     <br><br>
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" with {'orders': orders} only %}
+    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" with {
+        'orders': orders, 'customer': customer
+    } only %}
 
 {% endspaceless %}
 {% endblock %}

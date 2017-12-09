@@ -28,6 +28,7 @@ class QuoteType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $filters = false;
+        /** @var CustomerInterface $customer */
         if (null !== $customer = $options['customer']) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
@@ -35,9 +36,15 @@ class QuoteType extends ResourceTableType
             }
 
             $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
-                $qb
-                    ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
-                    ->setParameter('customer', $customer);
+                if ($customer->hasChildren()) {
+                    $qb
+                        ->andWhere($qb->expr()->in($alias . '.customer', ':customers'))
+                        ->setParameter('customers', array_merge([$customer], $customer->getChildren()->toArray()));
+                } else {
+                    $qb
+                        ->andWhere($qb->expr()->eq($alias . '.customer', ':customer'))
+                        ->setParameter('customer', $customer);
+                }
             });
 
             $builder->setFilterable(false);
@@ -104,11 +111,34 @@ class QuoteType extends ResourceTableType
                 ],
             ]);
 
+        if (null === $customer || $customer->hasChildren()) {
+            $builder->addColumn('customer', Column\SaleCustomerType::class, [
+                'label'    => 'ekyna_commerce.customer.label.singular',
+                'position' => 20,
+            ]);
+        }
+
         if ($filters) {
             $builder
                 ->addFilter('number', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
                     'position' => 10,
+                ])
+                ->addFilter('email', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.email',
+                    'position' => 20,
+                ])
+                ->addFilter('company', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.company',
+                    'position' => 21,
+                ])
+                ->addFilter('firstName', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.first_name',
+                    'position' => 22,
+                ])
+                ->addFilter('lastName', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.last_name',
+                    'position' => 23,
                 ])
                 ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.voucher_number',
@@ -132,34 +162,6 @@ class QuoteType extends ResourceTableType
                     'choices'  => Model\PaymentStates::getChoices(),
                     'position' => 70,
                 ]);
-        }
-
-        if (null === $options['customer']) {
-            $builder
-                ->addColumn('customer', Column\SaleCustomerType::class, [
-                    'label'    => 'ekyna_commerce.customer.label.singular',
-                    'position' => 20,
-                ]);
-
-            if ($filters) {
-                $builder
-                    ->addFilter('email', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.email',
-                        'position' => 20,
-                    ])
-                    ->addFilter('company', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.company',
-                        'position' => 21,
-                    ])
-                    ->addFilter('firstName', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.first_name',
-                        'position' => 22,
-                    ])
-                    ->addFilter('lastName', CType\Filter\TextType::class, [
-                        'label'    => 'ekyna_core.field.last_name',
-                        'position' => 23,
-                    ]);
-            }
         }
     }
 

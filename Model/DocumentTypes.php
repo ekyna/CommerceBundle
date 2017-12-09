@@ -22,9 +22,10 @@ final class DocumentTypes extends AbstractConstants
         $prefix = 'ekyna_commerce.document.type.';
 
         return [
-            Types::TYPE_FORM         => [$prefix . types::TYPE_FORM, 'default', CartInterface::class],
-            Types::TYPE_QUOTE        => [$prefix . types::TYPE_QUOTE, 'default', QuoteInterface::class],
-            types::TYPE_PROFORMA     => [$prefix . types::TYPE_PROFORMA, 'default', OrderInterface::class],
+            Types::TYPE_FORM         => [$prefix . types::TYPE_FORM,         'default', CartInterface::class],
+            Types::TYPE_VOUCHER      => [$prefix . types::TYPE_VOUCHER,      'default', QuoteInterface::class],
+            Types::TYPE_QUOTE        => [$prefix . types::TYPE_QUOTE,        'default', QuoteInterface::class],
+            types::TYPE_PROFORMA     => [$prefix . types::TYPE_PROFORMA,     'default', OrderInterface::class],
             types::TYPE_CONFIRMATION => [$prefix . types::TYPE_CONFIRMATION, 'default', OrderInterface::class],
         ];
     }

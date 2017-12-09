@@ -31,14 +31,11 @@ class OrderController extends AbstractController
     {
         $customer = $this->getCustomerOrRedirect();
 
-        // TODO list orders by originCustomer (for children)
-
-        $orders = $this
-            ->get('ekyna_commerce.order.repository')
-            ->findByCustomer($customer);
+        $orders = $this->findOrdersByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Order:index.html.twig', [
-            'orders' => $orders,
+            'customer' => $customer,
+            'orders'   => $orders,
         ]);
     }
 
@@ -59,9 +56,7 @@ class OrderController extends AbstractController
             'taxes_view' => false,
         ]);
 
-        $orders = $this
-            ->get('ekyna_commerce.order.repository')
-            ->findByCustomer($customer);
+        $orders = $this->findOrdersByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Order:show.html.twig', [
             'customer'     => $customer,
@@ -121,14 +116,13 @@ class OrderController extends AbstractController
                 ->capture($payment, $this->getPaymentStatusUrl($order, $payment));
         }
 
-        $orders = $this
-            ->get('ekyna_commerce.order.repository')
-            ->findByCustomer($customer);
+        $orders = $this->findOrdersByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Order:payment.html.twig', [
-            'order'  => $order,
-            'forms'  => $checkout->getFormsViews(),
-            'orders' => $orders,
+            'customer' => $customer,
+            'order'    => $order,
+            'forms'    => $checkout->getFormsViews(),
+            'orders'   => $orders,
         ]);
     }
 
@@ -151,6 +145,12 @@ class OrderController extends AbstractController
             'number' => $order->getNumber(),
         ]);
 
+        if ($customer->hasParent()) {
+            $this->addFlash('ekyna_commerce.account.order.message.payment_denied', 'warning');
+
+            return $this->redirect($cancelUrl);
+        }
+
         if (!PaymentTransitions::isUserCancellable($payment)) {
             return $this->redirect($cancelUrl);
         }
@@ -168,14 +168,13 @@ class OrderController extends AbstractController
                 ->cancel($payment, $this->getPaymentStatusUrl($order, $payment));
         }
 
-        $orders = $this
-            ->get('ekyna_commerce.order.repository')
-            ->findByCustomer($customer);
+        $orders = $this->findOrdersByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Order:payment_cancel.html.twig', [
-            'order'  => $order,
-            'form'   => $form->createView(),
-            'orders' => $orders,
+            'customer' => $customer,
+            'order'    => $order,
+            'form'     => $form->createView(),
+            'orders'   => $orders,
         ]);
     }
 
@@ -290,11 +289,10 @@ class OrderController extends AbstractController
             }
         }
 
-        $orders = $this
-            ->get('ekyna_commerce.order.repository')
-            ->findByCustomer($customer);
+        $orders = $this->findOrdersByCustomer($customer);
 
         return $this->render('EkynaCommerceBundle:Account/Order:attachment_create.html.twig', [
+            'customer'     => $customer,
             'route_prefix' => 'ekyna_commerce_account_order',
             'order'        => $order,
             'form'         => $form->createView(),
@@ -333,6 +331,26 @@ class OrderController extends AbstractController
         );
 
         return $response;
+    }
+
+    /**
+     * Finds the orders by customer.
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return array|OrderInterface[]
+     */
+    protected function findOrdersByCustomer(CustomerInterface $customer)
+    {
+        if ($customer->hasParent()) {
+            return $this
+                ->get('ekyna_commerce.order.repository')
+                ->findByOriginCustomer($customer);
+        } else {
+            return $this
+                ->get('ekyna_commerce.order.repository')
+                ->findByCustomer($customer);
+        }
     }
 
     /**

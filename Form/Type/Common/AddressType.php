@@ -2,8 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;

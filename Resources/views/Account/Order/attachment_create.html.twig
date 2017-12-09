@@ -23,7 +23,9 @@
     <br><br>
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" %}
+    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" with {
+        'orders': orders, 'customer': customer
+    } only %}
 
 {% endspaceless %}
 {% endblock %}

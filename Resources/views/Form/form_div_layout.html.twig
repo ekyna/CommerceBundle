@@ -178,6 +178,14 @@
 {% endblock ekyna_commerce_adjustment_widget %}
 
 
+{% block ekyna_commerce_attachment_widget %}
+{% spaceless %}
+    {{ form_row(form.title) }}
+    {{ block('ekyna_upload_widget') }}
+{% endspaceless %}
+{% endblock ekyna_commerce_attachment_widget %}
+
+
 {% block ekyna_commerce_checkout_payment_widget %}
 {% spaceless %}
     <div class="row">

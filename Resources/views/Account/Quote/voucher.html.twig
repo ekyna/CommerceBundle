@@ -2,20 +2,15 @@
 
 {% block account %}
 {% spaceless %}
-    <h3>{{ 'ekyna_commerce.account.quote.payment'|trans({'%number%': quote.number})|raw }}</h3>
-    <p>
-        Du {{ quote.createdAt|localizeddate('short', 'none') }}, {{ quote|sale_state_badge }}
-    </p>
+    <h3>{{ 'ekyna_commerce.account.quote.voucher'|trans({'%number%': quote.number})|raw }}</h3>
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
-        'sale': quote,
-        'cancel_route': 'ekyna_commerce_account_quote_payment_cancel'
-    } -%}
+    <hr>
 
     {{ bootstrap_set_style('horizontal') }}
     {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
     <div class="form-body">
-        {{ form_row(form.confirm) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
         {{ form_rest(form) }}
     </div>
     {{ form_end(form) }}

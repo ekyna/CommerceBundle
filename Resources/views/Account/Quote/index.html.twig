@@ -4,13 +4,8 @@
 {% spaceless %}
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {'quotes': quotes} only %}
-
-    {% if childrenQuotes is not null %}
-    <br><br><br>
-    <h3>{{ 'ekyna_commerce.account.quote.children_title'|trans|raw }}</h3>
-    <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {'quotes': childrenQuotes, 'show_child': true} only %}
-    {% endif %}
+    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {
+        'quotes': quotes, 'customer': customer
+    } only %}
 {% endspaceless %}
 {% endblock account %}

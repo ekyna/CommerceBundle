@@ -7,6 +7,8 @@ use Ekyna\Bundle\CoreBundle\Form\Type\UploadType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Class AttachmentType
@@ -20,11 +22,6 @@ class AttachmentType extends ResourceFormType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', TextType::class, [
-            'label'    => 'ekyna_core.field.title',
-            'required' => false,
-        ]);
-
         if ($options['admin_mode']) {
             $builder->add('internal', CheckboxType::class, [
                 'label'    => 'ekyna_commerce.attachment.field.internal',
@@ -32,6 +29,20 @@ class AttachmentType extends ResourceFormType
                 'attr'     => ['align_with_widget' => true],
             ]);
         }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+            /** @var \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface $data */
+            $data = $event->getData();
+            $form = $event->getForm();
+
+            $lock = null !== $data->getType();
+
+            $form->add('title', TextType::class, [
+                'label'    => 'ekyna_core.field.title',
+                'disabled' => $lock,
+                'required' => !$lock,
+            ]);
+        });
     }
 
     /**
@@ -40,5 +51,13 @@ class AttachmentType extends ResourceFormType
     public function getParent()
     {
         return UploadType::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBlockPrefix()
+    {
+        return 'ekyna_commerce_attachment';
     }
 }
