@@ -57,7 +57,7 @@ class SaleShipmentType extends AbstractType
                 $sale = $event->getData();
                 $form = $event->getForm();
 
-                $form->add('preferredShipmentMethod', ShipmentMethodChoiceType::class, [
+                $form->add('shipmentMethod', ShipmentMethodChoiceType::class, [
                     'label' => 'ekyna_commerce.shipment_method.label.singular',
                     'sale'  => $sale,
                     'attr'  => [
@@ -80,7 +80,7 @@ class SaleShipmentType extends AbstractType
             : $sale->getDeliveryAddress();
 
         $country = $deliveryAddress ? $deliveryAddress->getCountry() : null;
-        $method = $sale->getPreferredShipmentMethod();
+        $method = $sale->getShipmentMethod();
 
         $view->vars['total_weight'] = $sale->getWeightTotal();
         $view->vars['delivery_country'] = $country;

@@ -26,7 +26,7 @@ class ShipmentType extends AbstractType
             $sale = $event->getData();
             $form = $event->getForm();
 
-            $form->add('preferredShipmentMethod', ShipmentMethodChoiceType::class, [
+            $form->add('shipmentMethod', ShipmentMethodChoiceType::class, [
                 'sale'     => $sale,
                 'expanded' => true,
                 'attr'     => [

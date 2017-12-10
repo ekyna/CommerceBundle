@@ -242,6 +242,8 @@ class CheckoutController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->saveCart();
 
+            // TODO If method supports relay point ...
+
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
         }
 

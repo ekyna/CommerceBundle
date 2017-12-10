@@ -86,7 +86,7 @@ class SaleTransformType extends AbstractType
                     ]);
                 }
             } else {
-                $form->add('preferredShipmentMethod', ShipmentMethodChoiceType::class, [
+                $form->add('shipmentMethod', ShipmentMethodChoiceType::class, [
                     'sale'     => $sale,
                     'expanded' => false,
                     'attr'     => [

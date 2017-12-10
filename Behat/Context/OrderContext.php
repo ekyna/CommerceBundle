@@ -204,7 +204,7 @@ class OrderContext implements Context, KernelAwareContext
                 if (null === $method = $shipmentMethodRepository->findOneBy(['name' => $row['shipmentMethod']])) {
                     throw new \InvalidArgumentException("Failed to find the shipment method with name '{$row['shipmentMethod']}'.");
                 }
-                $order->setPreferredShipmentMethod($method);
+                $order->setShipmentMethod($method);
             }
 
             if (isset($row['number'])) {

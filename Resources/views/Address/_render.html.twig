@@ -1,32 +1,32 @@
 {% spaceless %}
-{% if address.lastName is not empty and address.firstName is not empty %}
+{% if address.lastName is not empty and address.firstName is not empty -%}
     <strong>{{ address|identity }}</strong><br>
-{% elseif attribute(address, 'customer') is defined and address.customer is not null %}
+{%- elseif attribute(address, 'customer') is defined and address.customer is not null -%}
     <strong>{{ address.customer|identity }}</strong><br>
-{% endif %}
+{%- endif %}
 
-{% if address.company is not empty %}
+{% if address.company is not empty -%}
     <strong><em>{{ address.company }}</em></strong><br>
-{% endif %}
+{%- endif %}
 
-{{ address.street }}
+{{- address.street -}}
 
-{% if address.complement is not empty %}
-    <br>{{ address.complement }}
-{% endif %}
-{% if address.supplement is not empty %}
-    <br>{{ address.supplement }}
-{% endif %}
+{% if address.complement is not empty -%}
+    <br>{{ address.complement -}}
+{%- endif %}
+{% if address.supplement is not empty -%}
+    <br>{{ address.supplement -}}
+{%- endif %}
 
-<br>{{ address.postalCode }} {{ address.city }}
-<br>{{ address.country.code|country }}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}
+<br>{{ address.postalCode }} {{ address.city -}}
+<br>{{ address.country.code|country -}}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}
 
-{% if display_phones %}
-    {% if address.phone is not empty %}
-        <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address.phone|phone_number_format }}
-    {% endif %}
-    {% if address.mobile is not empty %}
-        <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address.mobile|phone_number_format }}
-    {% endif %}
-{% endif %}
+{% if display_phones -%}
+    {% if address.phone is not empty -%}
+        <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address.phone|phone_number_format -}}
+    {%- endif %}
+    {% if address.mobile is not empty -%}
+        <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address.mobile|phone_number_format -}}
+    {%- endif %}
+{%- endif %}
 {% endspaceless %}

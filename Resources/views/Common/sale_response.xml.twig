@@ -5,12 +5,12 @@
         <state><![CDATA[{{ sale|sale_state_badge }}]]></state>
         <weightTotal><![CDATA[{{ (sale.weightTotal|localizednumber ~ '&nbsp;kg')|raw }}]]></weightTotal>
         <shipmentMethod><![CDATA[
-            {%- if sale.preferredShipmentMethod is null -%}
+            {%- if sale.shipmentMethod is null -%}
                 <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
             {%- else -%}
                 <a href="{{ path('ekyna_commerce_shipment_method_admin_show', {
-                    'shipmentMethodId': sale.preferredShipmentMethod.id
-                }) }}" class="show-entity">{{ sale.preferredShipmentMethod }}</a>
+                    'shipmentMethodId': sale.shipmentMethod.id
+                }) }}" class="show-entity">{{ sale.shipmentMethod }}</a>
             {%- endif -%}
         ]]></shipmentMethod>
 

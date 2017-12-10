@@ -54,14 +54,14 @@
                 <div class="row">
                     {# Information #}
                     <div class="col-md-4">
-                        <h3>
-                            <a href="{{ path('ekyna_commerce_cart_information') }}"
-                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
-                                {{- 'ekyna_core.button.edit'|trans -}}
-                            </a>
-                            {{ 'ekyna_commerce.checkout.index.information'|trans }}<span>*</span>
-                        </h3>
                         <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="{{ path('ekyna_commerce_cart_information') }}"
+                                   class="btn btn-primary" data-cart-modal>
+                                    {{- 'ekyna_core.button.edit'|trans -}}
+                                </a>
+                                {{ 'ekyna_commerce.checkout.index.information'|trans }}<span>*</span>
+                            </div>
                             <div class="panel-body cart-checkout-information">
                                 {{ macros.cart_information(cart) }}
                             </div>
@@ -70,14 +70,14 @@
 
                     {# Invoice #}
                     <div class="col-md-4">
-                        <h3>
-                            <a href="{{ path('ekyna_commerce_cart_invoice_address') }}"
-                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
-                                {{- 'ekyna_core.button.edit'|trans -}}
-                            </a>
-                            {{ 'ekyna_commerce.checkout.index.invoice'|trans }}<span>*</span>
-                        </h3>
                         <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="{{ path('ekyna_commerce_cart_invoice_address') }}"
+                                   class="btn btn-primary" data-cart-modal>
+                                    {{- 'ekyna_core.button.edit'|trans -}}
+                                </a>
+                                {{ 'ekyna_commerce.checkout.index.invoice'|trans }}<span>*</span>
+                            </div>
                             <div class="panel-body cart-checkout-invoice-address">
                                 {{ macros.cart_invoice_address(cart) }}
                             </div>
@@ -86,14 +86,14 @@
 
                     {# Delivery #}
                     <div class="col-md-4">
-                        <h3>
-                            <a href="{{ path('ekyna_commerce_cart_delivery_address') }}"
-                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
-                                {{- 'ekyna_core.button.edit'|trans -}}
-                            </a>
-                            {{ 'ekyna_commerce.checkout.index.delivery'|trans }}
-                        </h3>
                         <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="{{ path('ekyna_commerce_cart_delivery_address') }}"
+                                   class="btn btn-primary" data-cart-modal>
+                                    {{- 'ekyna_core.button.edit'|trans -}}
+                                </a>
+                                {{ 'ekyna_commerce.checkout.index.delivery'|trans }}
+                            </div>
                             <div class="panel-body cart-checkout-delivery-address">
                                 {{ macros.cart_delivery_address(cart) }}
                             </div>
@@ -106,14 +106,14 @@
                 <div class="row">
                     {# Comment #}
                     <div class="col-md-6">
-                        <h3>
-                            <a href="{{ path('ekyna_commerce_cart_comment') }}"
-                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
-                                {{- 'ekyna_core.button.edit'|trans -}}
-                            </a>
-                            {{ 'ekyna_commerce.checkout.index.comment'|trans }}
-                        </h3>
                         <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="{{ path('ekyna_commerce_cart_comment') }}"
+                                   class="btn btn-primary" data-cart-modal>
+                                    {{- 'ekyna_core.button.edit'|trans -}}
+                                </a>
+                                {{ 'ekyna_commerce.checkout.index.comment'|trans }}
+                            </div>
                             <div class="panel-body cart-checkout-comment">
                                 {{ macros.cart_comment(cart) }}
                             </div>
@@ -121,14 +121,14 @@
                     </div>
                     {# Attachments #}
                     <div class="col-md-6">
-                        <h3>
-                            <a href="{{ path('ekyna_commerce_cart_attachment_add') }}"
-                               class="btn btn-primary btn-sm pull-right" data-cart-modal>
-                                {{- 'ekyna_core.button.add'|trans -}}
-                            </a>
-                            {{ 'ekyna_commerce.checkout.index.attachments'|trans }}
-                        </h3>
                         <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="{{ path('ekyna_commerce_cart_attachment_add') }}"
+                                   class="btn btn-primary" data-cart-modal>
+                                    {{- 'ekyna_core.button.add'|trans -}}
+                                </a>
+                                {{ 'ekyna_commerce.checkout.index.attachments'|trans }}
+                            </div>
                             <div class="panel-body cart-checkout-attachments">
                                 {{ macros.cart_attachments(cart) }}
                             </div>

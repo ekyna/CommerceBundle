@@ -61,7 +61,7 @@ class SaleViewType extends AbstractViewType
      */
     public function buildShipmentView(Model\SaleInterface $sale, LineView $view, array $options)
     {
-        if (null !== $sale->getPreferredShipmentMethod()) {
+        if (null !== $sale->getShipmentMethod()) {
             return;
         }
 

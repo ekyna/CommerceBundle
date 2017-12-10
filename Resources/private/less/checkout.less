@@ -8,12 +8,6 @@
 
     }
 
-    h3 {
-        > span {
-            color: red;
-        }
-    }
-
     .cart-checkout-customer {
         padding: 20px 0;
         background-color: #e6e6e6;
@@ -21,6 +15,33 @@
 
     .cart-checkout-forms {
         margin-bottom: 20px;
+
+        .panel-heading {
+            position: relative;
+            font-weight: bold;
+            padding: 6px 12px;
+
+            > span {
+                color: red;
+            }
+
+            > a {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 0 4px 0 0;
+                border-bottom: 0;
+                border-top: 0;
+                border-right: 0;
+                font-weight: normal;
+            }
+        }
+
+        .panel-body {
+            padding: 10px 12px;
+            font-size: 13px;
+        }
     }
 
     .cart-checkout-submit {
