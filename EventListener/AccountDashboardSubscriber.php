@@ -69,7 +69,10 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                     'EkynaCommerceBundle:Account/Order:_list.html.twig'
                 );
                 $widget
-                    ->setParameters(['orders' => $orders])
+                    ->setParameters([
+                        'customer' => $customer,
+                        'orders'   => $orders,
+                    ])
                     ->setPriority(1000);
 
                 $event->addWidget($widget);
@@ -82,7 +85,10 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                     'EkynaCommerceBundle:Account/Quote:_list.html.twig'
                 );
                 $widget
-                    ->setParameters(['quotes' => $quotes])
+                    ->setParameters([
+                        'customer' => $customer,
+                        'quotes'   => $quotes,
+                    ])
                     ->setPriority(900);
 
                 $event->addWidget($widget);

@@ -7,11 +7,11 @@ use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Context\ActiveSort;
-use Ekyna\Component\Table\Export\Value;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\AdapterInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class OrderCustomerType
@@ -41,14 +41,19 @@ class SaleCustomerType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $value = $this->helper->renderIdentity($row->getData());
+        $prefix = '';
+        if (false !== $path = $column->getConfig()->getPropertyPath()) {
+            $prefix = $path . '.';
+        }
 
-        if (0 < strlen($company = $row->getData('company'))) {
+        $value = $this->helper->renderIdentity($row->getData($path));
+
+        if (0 < strlen($company = $row->getData($prefix . 'company'))) {
             $value = sprintf('<strong>%s</strong> %s', $company, $value);
         }
 
         /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
-        if (null !== $customer = $row->getData('customer')) {
+        if (null !== $customer = $row->getData($prefix.'customer')) {
             $view->vars = array_replace($view->vars, [
                 'block_prefix' => 'anchor',
                 'value'        => $value,
@@ -61,14 +66,6 @@ class SaleCustomerType extends AbstractColumnType
                 'value'        => $value,
             ]);
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function exportValue(Value $value, ColumnInterface $column, RowInterface $row, array $options)
-    {
-        $value->setValue((string) $value->getValue());
     }
 
     /**
@@ -94,6 +91,14 @@ class SaleCustomerType extends AbstractColumnType
         }
 
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('property_path', false);
     }
 
     /**

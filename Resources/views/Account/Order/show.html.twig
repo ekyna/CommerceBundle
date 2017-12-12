@@ -11,13 +11,14 @@
 
     {{- render_sale_view(view) -}}
 
-    {% if not order.paid %}
+    {% if 0 < order.remainingAmount %}
         {% if customer.id == order.customer.id %}
         <div class="text-center" style="margin-bottom: 40px;">
             <a href="{{ path('ekyna_commerce_account_order_payment_create', {'number': order.number}) }}"
                class="btn btn-primary btn-lg">
                 <span class="glyphicon glyphicon-chevron-right"></span>
                 {{ 'ekyna_commerce.account.order.button.pay'|trans }}
+                ({{ order.remainingAmount|localizedcurrency(order.currency.code) }})
             </a>
         </div>
         {% else %}

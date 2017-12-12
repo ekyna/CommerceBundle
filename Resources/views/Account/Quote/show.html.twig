@@ -19,7 +19,7 @@
         <div class="alert alert-warning">
             {{ 'ekyna_commerce.account.quote.message.expired'|trans }}
         </div>
-    {% elseif not quote.paid %}
+    {% elseif 0 < order.remainingAmount %}
         {% if customer.parent is null %}
             {# Voucher required message #}
             {% if not quote.hasVoucher() %}
@@ -42,6 +42,7 @@
                        class="btn btn-primary btn-lg">
                         <span class="glyphicon glyphicon-chevron-right"></span>
                         {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
+                        ({{ quote.remainingAmount|localizedcurrency(quote.currency.code) }})
                     </a>
                 {% endif %}
             </div>

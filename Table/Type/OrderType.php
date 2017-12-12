@@ -74,9 +74,9 @@ class OrderType extends ResourceTableType
             $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
                 if ($customer->hasParent()) {
                     $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->in($alias . '.customer', ':customer'),
-                            $qb->expr()->in($alias . '.originCustomer', ':customer')
-                        ));
+                        $qb->expr()->in($alias . '.customer', ':customer'),
+                        $qb->expr()->in($alias . '.originCustomer', ':customer')
+                    ));
                 } else {
                     $qb->andWhere($qb->expr()->eq($alias . '.customer', ':customer'));
                 }

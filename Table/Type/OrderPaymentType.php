@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
-use Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType;
+use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -48,24 +48,29 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
+            ->addColumn('customer', Column\SaleCustomerType::class, [
+                'label'         => 'ekyna_commerce.customer.label.singular',
+                'property_path' => 'order',
+                'position'      => 20,
+            ])
             ->addColumn('method', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.method',
                 'property_path' => 'method.name',
-                'position'      => 20,
+                'position'      => 30,
             ])
             ->addColumn('amount', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_core.field.amount',
                 'currency_path' => 'currency.code',
-                'position'      => 30,
+                'position'      => 40,
             ])
             ->addColumn('currency', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.currency',
                 'property_path' => 'currency.name',
-                'position'      => 40,
+                'position'      => 50,
             ])
-            ->addColumn('state', PaymentStateType::class, [
+            ->addColumn('state', Column\PaymentStateType::class, [
                 'label'    => 'ekyna_core.field.status',
-                'position' => 50,
+                'position' => 60,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',

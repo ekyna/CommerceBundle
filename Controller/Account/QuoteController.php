@@ -230,7 +230,9 @@ class QuoteController extends AbstractController
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'message'     => 'ekyna_commerce.account.payment.confirm_cancel',
+            'message'     => $this->getTranslator()->trans('ekyna_commerce.account.payment.confirm_cancel', [
+                '%number%' => $payment->getNumber(),
+            ]),
             'cancel_path' => $cancelUrl,
         ]);
 

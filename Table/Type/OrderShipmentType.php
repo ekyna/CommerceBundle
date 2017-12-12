@@ -4,10 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
-use Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentDocumentActionType;
-use Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentPlatformActionType;
-use Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentActionsType;
-use Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType;
+use Ekyna\Bundle\CommerceBundle\Table\Action;
+use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Component\Commerce\Shipment\Gateway\Action\ActionInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -80,31 +78,36 @@ class OrderShipmentType extends AbstractOrderListType
                 'false_class' => 'label-default',
                 'position'    => 20,
             ])
+            ->addColumn('customer', Column\SaleCustomerType::class, [
+                'label'         => 'ekyna_commerce.customer.label.singular',
+                'property_path' => 'order',
+                'position'      => 30,
+            ])
             ->addColumn('method', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.method',
                 'property_path' => 'method.name',
-                'position'      => 30,
+                'position'      => 40,
             ])
-            ->addColumn('state', ShipmentStateType::class, [
+            ->addColumn('state', Column\ShipmentStateType::class, [
                 'label'    => 'ekyna_core.field.status',
-                'position' => 40,
+                'position' => 50,
             ])
             ->addColumn('weight', CType\Column\NumberType::class, [
                 'label'     => 'ekyna_core.field.weight',
                 'precision' => 3,
                 'append'    => 'kg',
-                'position'  => 50,
+                'position'  => 60,
             ])
             ->addColumn('trackingNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.tracking_number',
-                'position' => 60,
+                'position' => 70,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',
                 'time_format' => 'none',
-                'position'    => 70,
+                'position'    => 80,
             ])
-            ->addColumn('actions', ShipmentActionsType::class, [
+            ->addColumn('actions', Column\ShipmentActionsType::class, [
                 'position' => 999,
             ]);
 
@@ -148,7 +151,7 @@ class OrderShipmentType extends AbstractOrderListType
             foreach ($platformActions as $action) {
                 $label = $this->translator->trans($this->shipmentHelper->getActionLabel($action));
 
-                $builder->addAction("{$name}_{$action}", ShipmentPlatformActionType::class, [
+                $builder->addAction("{$name}_{$action}", Action\ShipmentPlatformActionType::class, [
                     'label'    => sprintf('[%s] %s', ucfirst($name), $label),
                     'platform' => $name,
                     'action'   => $action,
@@ -156,12 +159,12 @@ class OrderShipmentType extends AbstractOrderListType
             }
         }
 
-        $builder->addAction('bills', ShipmentDocumentActionType::class, [
+        $builder->addAction('bills', Action\ShipmentDocumentActionType::class, [
             'label' => 'ekyna_commerce.shipment.action.bills',
             'type'  => 'bill',
         ]);
 
-        $builder->addAction('forms', ShipmentDocumentActionType::class, [
+        $builder->addAction('forms', Action\ShipmentDocumentActionType::class, [
             'label' => 'ekyna_commerce.shipment.action.forms',
             'type'  => 'form',
         ]);

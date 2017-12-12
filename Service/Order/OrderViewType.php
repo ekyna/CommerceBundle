@@ -206,7 +206,7 @@ class OrderViewType extends AbstractViewType
                 $actions[] = new View\Action($editPath, 'fa fa-pencil', [
                     'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
                     'data-sale-modal' => null,
-                    'class'           => 'text-danger',
+                    'class'           => 'text-warning',
                 ]);
             }
 

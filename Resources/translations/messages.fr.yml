@@ -55,8 +55,7 @@ ekyna_commerce:
                 payment_denied: Contactez votre service d'achat pour le réglement de ce devis.
         payment:
             title: Paiements
-            #confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment {{number}} d'un montant de {{amount}} ?
-            confirm_cancel: Êtes-vous sûr de vouloir ce paiment ?
+            confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment %number% ?
         shipment:
             title: Expéditions
         return:

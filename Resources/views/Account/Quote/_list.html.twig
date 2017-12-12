@@ -12,6 +12,7 @@
         <th>{{ 'ekyna_commerce.sale.field.state'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
         <th>{{ 'ekyna_core.field.date'|trans }}</th>
+        <th>{{ 'ekyna_core.field.expires_at'|trans }}</th>
         <th></th>
     </tr>
     </thead>
@@ -45,6 +46,11 @@
             </td>
             <td>
                 {{- quote.createdAt|localizeddate('short', 'none') -}}
+            </td>
+            <td>
+                {%- if quote.expiresAt is not null -%}
+                    {{- quote.expiresAt|localizeddate('short', 'none') -}}
+                {%- endif -%}
             </td>
             <td class="text-right">
                 <a href="{{ path }}" class="btn btn-xs btn-primary">
