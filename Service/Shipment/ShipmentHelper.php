@@ -10,6 +10,7 @@ use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentAddressResolverInterface;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,19 +39,27 @@ class ShipmentHelper implements
      */
     private $requestStack;
 
+    /**
+     * @var LabelsRenderer
+     */
+    private $renderer;
+
 
     /**
      * Constructor.
      *
-     * @param RegistryInterface $gatewayRegistry
-     * @param RequestStack      $requestStack
+     * @param RegistryInterface  $gatewayRegistry
+     * @param RequestStack       $requestStack
+     * @param LabelsRenderer    $renderer
      */
     public function __construct(
         RegistryInterface $gatewayRegistry,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        LabelsRenderer $renderer
     ) {
         $this->gatewayRegistry = $gatewayRegistry;
         $this->requestStack = $requestStack;
+        $this->renderer = $renderer;
     }
 
     /**
@@ -130,16 +139,20 @@ class ShipmentHelper implements
         }
 
         try {
-            $psrResponse = $platform->execute($action);
+            $response = $platform->execute($action);
+
+            if ($action instanceof Action\PrintLabel) {
+                $response = $this->renderer->render($action);
+            }
         } catch (\Exception $e) {
             throw new RuntimeException($e->getMessage());
         }
 
-        if (null !== $psrResponse) {
-            return (new HttpFoundationFactory())->createResponse($psrResponse);
+        if ($response instanceof ResponseInterface) {
+            return (new HttpFoundationFactory())->createResponse($response);
         }
 
-        return null;
+        return $response;
     }
 
     /**
@@ -165,16 +178,20 @@ class ShipmentHelper implements
         }
 
         try {
-            $psrResponse = $gateway->execute($action);
+            $response = $gateway->execute($action);
+
+            if (null === $response && $action instanceof Action\PrintLabel) {
+                $response = $this->renderer->render($action);
+            }
         } catch (\Exception $e) {
             throw new RuntimeException($e->getMessage());
         }
 
-        if (null !== $psrResponse) {
-            return (new HttpFoundationFactory())->createResponse($psrResponse);
+        if ($response instanceof ResponseInterface) {
+            return (new HttpFoundationFactory())->createResponse($response);
         }
 
-        return null;
+        return $response;
     }
 
     /**

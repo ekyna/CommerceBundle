@@ -7,14 +7,16 @@
 
         <!-- Subject helper -->
         <service id="ekyna_commerce.subject_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
         </service>
 
         <!-- Availability helper -->
         <service id="ekyna_commerce.availability_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"
+                 lazy="true">
             <argument type="service" id="translator"/>
             <argument type="service" id="ekyna_resource.locale.request_provider"/>
             <argument>%ekyna_commerce.default.currency%</argument>
@@ -22,14 +24,16 @@
 
         <!-- Constants helper -->
         <service id="ekyna_commerce.constants_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"
+                 lazy="true">
             <argument type="service" id="translator"/>
             <argument>%ekyna_commerce.genders.class%</argument>
         </service>
 
         <!-- Sale helper -->
         <service id="ekyna_commerce.sale_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\SaleHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\SaleHelper"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.sale_updater"/>
@@ -39,7 +43,8 @@
 
         <!-- Cart helper -->
         <service id="ekyna_commerce.cart_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.sale_helper"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
@@ -48,13 +53,15 @@
 
         <!-- Sale step validator -->
         <service id="ekyna_commerce.sale_step_validator"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidator">
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidator"
+                 lazy="true">
             <argument type="service" id="validator"/>
         </service>
 
         <!-- Payment helper -->
         <service id="ekyna_commerce.payment_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper"
+                 lazy="true">
             <argument type="service" id="payum"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="router"/>
@@ -62,15 +69,24 @@
 
         <!-- Shipment helper -->
         <service id="ekyna_commerce.shipment_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <argument type="service" id="request_stack"/>
+            <argument type="service" id="ekyna_commerce.shipment_renderer"/>
             <call method="setWeightCalculator">
                 <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
             </call>
             <call method="setAddressResolver">
                 <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
             </call>
+        </service>
+
+        <service id="ekyna_commerce.shipment_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelsRenderer"
+                 lazy="true">
+            <argument type="service" id="templating"/>
+            <argument type="service" id="knp_snappy.pdf"/>
         </service>
 
     </services>
