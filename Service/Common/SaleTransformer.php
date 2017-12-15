@@ -49,6 +49,8 @@ class SaleTransformer extends BaseTransformer
         $this->entityManager = $manager;
     }
 
+
+
     /**
      * @inheritDoc
      */

@@ -47,15 +47,6 @@ ekyna_commerce_account_quote_payment_cancel:
         key: "[a-zA-Z0-9]+"
     methods: [GET, POST]
 
-ekyna_commerce_account_quote_payment_status:
-    path: /{number}/payments/{key}/status
-    defaults:
-        _controller: EkynaCommerceBundle:Account/Quote:paymentStatus
-    requirements:
-        number: "[a-zA-Z0-9]+"
-        key: "[a-zA-Z0-9]+"
-    methods: [GET]
-
 ekyna_commerce_account_quote_attachment_create:
     path: /{number}/documents/create
     defaults:

@@ -6,7 +6,6 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
@@ -111,9 +110,13 @@ class OrderController extends AbstractController
                 return $this->redirect($cancelUrl);
             }
 
+            $statusUrl = $this->generateUrl(
+                'ekyna_commerce_account_payment_status', [], UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
             return $this
                 ->get('ekyna_commerce.payment_helper')
-                ->capture($payment, $this->getPaymentStatusUrl($order, $payment));
+                ->capture($payment, $statusUrl);
         }
 
         $orders = $this->findOrdersByCustomer($customer);
@@ -165,9 +168,13 @@ class OrderController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $statusUrl = $this->generateUrl(
+                'ekyna_commerce_account_payment_status', [], UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
             return $this
                 ->get('ekyna_commerce.payment_helper')
-                ->cancel($payment, $this->getPaymentStatusUrl($order, $payment));
+                ->cancel($payment, $statusUrl);
         }
 
         $orders = $this->findOrdersByCustomer($customer);
@@ -177,32 +184,6 @@ class OrderController extends AbstractController
             'order'    => $order,
             'form'     => $form->createView(),
             'orders'   => $orders,
-        ]);
-    }
-
-    /**
-     * Payment status action.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function paymentStatusAction(Request $request)
-    {
-        $payment = $this->get('ekyna_commerce.payment_helper')->status($request);
-
-        if (!$payment instanceof OrderPaymentInterface) {
-            throw new InvalidArgumentException("Expected instance of " . OrderPaymentInterface::class);
-        }
-
-        /** @var OrderInterface $order */
-        $order = $payment->getOrder();
-
-        // TODO Check that order belongs to the current user
-        // Problem : token has been invalidated
-
-        return $this->redirectToRoute('ekyna_commerce_account_order_show', [
-            'number' => $order->getNumber(),
         ]);
     }
 
@@ -470,21 +451,5 @@ class OrderController extends AbstractController
         }
 
         return $attachment;
-    }
-
-    /**
-     * Returns the payment status url.
-     *
-     * @param OrderInterface        $order
-     * @param OrderPaymentInterface $payment
-     *
-     * @return string
-     */
-    protected function getPaymentStatusUrl(OrderInterface $order, OrderPaymentInterface $payment)
-    {
-        return $this->generateUrl('ekyna_commerce_account_order_payment_status', [
-            'number' => $order->getNumber(),
-            'key'    => $payment->getKey(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

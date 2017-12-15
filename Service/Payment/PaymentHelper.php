@@ -11,7 +11,6 @@ use Payum\Core\Payum;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class PaymentHelper
@@ -31,11 +30,6 @@ class PaymentHelper
     private $dispatcher;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
      * @var boolean
      */
     private $debug;
@@ -46,18 +40,15 @@ class PaymentHelper
      *
      * @param Payum                    $payum
      * @param EventDispatcherInterface $dispatcher
-     * @param UrlGeneratorInterface    $urlGenerator
      * @param bool                     $debug
      */
     public function __construct(
         Payum $payum,
         EventDispatcherInterface $dispatcher,
-        UrlGeneratorInterface $urlGenerator,
         $debug = false
     ) {
         $this->payum = $payum;
         $this->dispatcher = $dispatcher;
-        $this->urlGenerator = $urlGenerator;
         $this->debug = (bool)$debug;
     }
 
@@ -174,6 +165,8 @@ class PaymentHelper
      * @param Request $request
      *
      * @return PaymentInterface
+     *
+     * @TODO remove
      */
     public function status(Request $request)
     {
@@ -181,11 +174,11 @@ class PaymentHelper
 
         $gateway = $this->payum->getGateway($token->getGatewayName());
 
+        $gateway->execute($done = new Status($token));
+
         if (!$this->debug) {
             $this->payum->getHttpRequestVerifier()->invalidate($token);
         }
-
-        $gateway->execute($done = new Status($token));
 
         /** @var PaymentInterface $payment */
         $payment = $done->getFirstModel();
@@ -242,19 +235,6 @@ class PaymentHelper
         }
 
         return null;
-    }
-
-    /**
-     * Generates an url for the given route and parameters.
-     *
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return string
-     */
-    protected function generateUrl($name, array $parameters = [])
-    {
-        return $this->urlGenerator->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**

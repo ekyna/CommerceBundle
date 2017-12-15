@@ -64,7 +64,6 @@
                  lazy="true">
             <argument type="service" id="payum"/>
             <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="router"/>
         </service>
 
         <!-- Shipment helper -->

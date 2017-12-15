@@ -7,12 +7,15 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
+use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
-use Ekyna\Component\Commerce\Cart\Model\CartPaymentInterface;
-use Ekyna\Component\Commerce\Cart\Model\CartStates;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Commerce\Payment\Handler\PaymentDoneHandler;
+use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,6 +55,11 @@ class CheckoutController extends AbstractController
      */
     protected $saleTransformer;
 
+    /**
+     * @var PaymentDoneHandler
+     */
+    protected $paymentHandler;
+
 
     /**
      * Constructor.
@@ -61,19 +69,22 @@ class CheckoutController extends AbstractController
      * @param PaymentManager           $paymentCheckout
      * @param PaymentHelper            $paymentHelper
      * @param SaleTransformerInterface $saleTransformer
+     * @param PaymentDoneHandler $paymentHandler
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         QuoteRepositoryInterface $quoteRepository,
         PaymentManager $paymentCheckout,
         PaymentHelper $paymentHelper,
-        SaleTransformerInterface $saleTransformer
+        SaleTransformerInterface $saleTransformer,
+        PaymentDoneHandler $paymentHandler
     ) {
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
         $this->paymentCheckout = $paymentCheckout;
         $this->paymentHelper = $paymentHelper;
         $this->saleTransformer = $saleTransformer;
+        $this->paymentHandler = $paymentHandler;
     }
 
     /**
@@ -302,36 +313,33 @@ class CheckoutController extends AbstractController
      */
     public function statusAction(Request $request)
     {
-        $payment = $this->paymentHelper->status($request);
-
-        if (!$payment instanceof CartPaymentInterface) {
-            throw new InvalidArgumentException("Expected instance of " . CartPaymentInterface::class);
+        if ($request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException("XHR is not supported.");
         }
 
-        // TODO Check that payment cart is the same as user (session) one
-        // Problem: token has been invalidated
+        $payum = $this->paymentHandler->getPayum();
 
-        $cart = $this->getCart();
+        $token = $payum->getHttpRequestVerifier()->verify($request);
 
-        // If cart is accepted
-        if (CartStates::STATE_ACCEPTED === $cart->getState()) {
-            // New order
-            $order = $this->orderRepository->createNew();
-            // Initialize transformation
-            $this->saleTransformer->initialize($cart, $order);
-            // Transform
-            if (null === $event = $this->saleTransformer->transform()) {
-                // Redirect to order confirmation
-                return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [
-                    'orderKey' => $order->getKey(),
-                ]));
-            }
+        $gateway = $payum->getGateway($token->getGatewayName());
 
-            // Display event's flash messages
-            if (null !== $session = $request->getSession()) {
-                /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-                $event->toFlashes($session->getFlashBag());
-            }
+        $gateway->execute($done = new Status($token));
+
+        $payum->getHttpRequestVerifier()->invalidate($token);
+
+        /** @var PaymentInterface $payment */
+        $payment = $done->getFirstModel();
+
+        $sale = $this->paymentHandler->handle($payment);
+
+        if ($sale instanceof OrderInterface) {
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [
+                'orderKey' => $sale->getKey(),
+            ]));
+        }
+
+        if (!$sale instanceof CartInterface) {
+            throw new InvalidArgumentException("Expected instance of " . CartInterface::class);
         }
 
         // Else go back to payments

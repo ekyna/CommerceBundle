@@ -66,6 +66,11 @@ ekyna_commerce_tax_rule_admin:
     resource: "admin/tax_rule.yml"
     prefix:   /tax-rules
 
+ekyna_commerce_payment_admin_status:
+    path: /payment/status
+    defaults: { _controller: "ekyna_commerce.controller.admin.payment:statusAction" }
+    methods: [GET]
+
 ekyna_commerce_admin_order_list_payment:
     path: /order-payments
     methods: [GET]

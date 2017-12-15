@@ -94,8 +94,8 @@ class SalePaymentController extends AbstractSaleController
             }
 
             $statusUrl = $this->generateUrl(
-                $this->config->getRoute('status'),
-                $context->getIdentifiers(true),
+                'ekyna_commerce_payment_admin_status',
+                [],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
@@ -268,8 +268,8 @@ class SalePaymentController extends AbstractSaleController
         $helper = $this->get('ekyna_commerce.payment_helper');
 
         $statusUrl = $this->generateUrl(
-            $this->config->getRoute('status'),
-            $context->getIdentifiers(true),
+            'ekyna_commerce_payment_admin_status',
+            [],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
@@ -285,27 +285,5 @@ class SalePaymentController extends AbstractSaleController
             default:
                 throw $this->createNotFoundException("Unexpected payment action.");
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function statusAction(Request $request)
-    {
-        if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException("XHR is not yet supported.");
-        }
-
-        $context = $this->loadContext($request);
-        $resourceName = $this->config->getResourceName();
-
-        /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
-        $payment = $context->getResource($resourceName);
-
-        $this->isGranted('EDIT', $payment);
-
-        $this->get('ekyna_commerce.payment_helper')->status($request);
-
-        return $this->redirect($this->generateResourcePath($payment->getSale()));
     }
 }

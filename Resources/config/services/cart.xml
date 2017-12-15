@@ -131,6 +131,7 @@
             <argument type="service" id="ekyna_commerce.checkout.payment_manager"/>
             <argument type="service" id="ekyna_commerce.payment_helper"/>
             <argument type="service" id="ekyna_commerce.sale_transformer"/>
+            <argument type="service" id="ekyna_commerce.payment.done_handler"/>
         </service>
 
     </services>

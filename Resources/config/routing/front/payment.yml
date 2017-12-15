@@ -8,11 +8,6 @@ ekyna_commerce_payment_authorize:
     defaults: { _controller: PayumBundle:Authorize:do }
     options: { i18n: false }
 
-ekyna_commerce_payment_notify:
-    path: /notify/{payum_token}
-    defaults: { _controller: PayumBundle:Notify:do }
-    options: { i18n: false }
-
 ekyna_commerce_payment_cancel:
     path: /cancel/{payum_token}
     defaults: { _controller: PayumBundle:Cancel:do }
@@ -26,6 +21,11 @@ ekyna_commerce_payment_refund:
 ekyna_commerce_payment_sync:
     path: /sync/{payum_token}
     defaults: { _controller: PayumBundle:Sync:do }
+    options: { i18n: false }
+
+ekyna_commerce_payment_notify:
+    path: /notify/{payum_token}
+    defaults: { _controller: "ekyna_commerce.controller.payment_notify:doAction" }
     options: { i18n: false }
 
 ekyna_commerce_payment_accept:

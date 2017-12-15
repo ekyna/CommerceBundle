@@ -30,7 +30,7 @@ class AttachmentType extends ResourceFormType
             ]);
         }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface $data */
             $data = $event->getData();
             $form = $event->getForm();
@@ -40,7 +40,7 @@ class AttachmentType extends ResourceFormType
             $form->add('title', TextType::class, [
                 'label'    => 'ekyna_core.field.title',
                 'disabled' => $lock,
-                'required' => !$lock,
+                'required' => false,
             ]);
         });
     }
