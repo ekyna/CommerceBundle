@@ -363,8 +363,11 @@ class CheckoutController extends AbstractController
 
         $orderCustomer = $order->getCustomer();
         $currentCustomer = $this->getCustomer();
+        if ($currentCustomer && $currentCustomer->hasParent()) {
+            $currentCustomer = $currentCustomer->getParent();
+        }
 
-        if ($orderCustomer && $currentCustomer && $orderCustomer !== $currentCustomer) {
+        if ($orderCustomer !== $currentCustomer) {
             throw new AccessDeniedHttpException();
         }
 

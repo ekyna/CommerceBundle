@@ -22,15 +22,22 @@ class NotifyController
      */
     private $handler;
 
+    /**
+     * @var bool
+     */
+    private $debug;
+
 
     /**
      * Constructor.
      *
      * @param PaymentDoneHandler $handler
+     * @param bool               $debug
      */
-    public function __construct(PaymentDoneHandler $handler)
+    public function __construct(PaymentDoneHandler $handler, $debug = false)
     {
         $this->handler = $handler;
+        $this->debug = $debug;
     }
 
     /**
@@ -56,7 +63,9 @@ class NotifyController
         $gateway->execute($notify = new Notify($token));
 
         // Invalidate token
-        $payum->getHttpRequestVerifier()->invalidate($token);
+        if (!$this->debug) {
+            $payum->getHttpRequestVerifier()->invalidate($token);
+        }
 
         /** @var PaymentInterface $payment */
         $payment = $notify->getFirstModel();
