@@ -1,5 +1,7 @@
 @base-cell-padding: 6px;
 @text-color: #526273;
+@warning-color: #8a6d3b;
+@danger-color: #a94442;
 @spinner-size: 120px;
 
 .sale-view {
@@ -139,6 +141,56 @@
                     }
                 }
 
+                .sale-detail-availability {
+                    text-align: right;
+                }
+
+                .sale-detail-quantity {
+                    > span {
+                        display: inline-block;
+                        width: 100%;
+                        text-align: right;
+                        padding-right: 15px;
+
+                    }
+                    > input {
+                        display: inline-block;
+                        width: 56px;
+                        text-align: right;
+                        padding: 0;
+                        height: auto;
+                        font-size: 13px;
+                    }
+                }
+
+                &.private > td.sale-detail-designation {
+                    color: lighten(@text-color, 30%);
+
+                    a {
+                        color: lighten(@text-color, 15%);
+                    }
+                }
+
+                &.warning {
+                    color: @warning-color;
+
+                    a {
+                        color: @warning-color;
+                    }
+
+                    .sale-detail-availability {
+                        color: @danger-color;
+                    }
+                }
+
+                &.danger {
+                    color: @danger-color;
+
+                    a {
+                        color: @danger-color;
+                    }
+                }
+
                 &.sale-detail-spacer {
                     background-color: transparent;
 
@@ -172,37 +224,11 @@
                 }
             }
 
-            .sale-detail-private > td.sale-detail-designation {
-                color: lighten(@text-color, 30%);
-
-                a {
-                    color: lighten(@text-color, 15%);
-                }
-            }
-
             .sale-detail-totals th {
                 font-weight: 700;
                 position: relative;
                 text-transform: uppercase;
                 font-size: 11px;
-            }
-
-            span.sale-detail-quantity {
-                display: inline-block;
-                width: 100%;
-                text-align: right;
-                padding-right: 15px;
-            }
-
-            div.sale-detail-quantity {
-                input {
-                    display: inline-block;
-                    width: 56px;
-                    text-align: right;
-                    padding: 0;
-                    height: auto;
-                    font-size: 13px;
-                }
             }
         }
     }

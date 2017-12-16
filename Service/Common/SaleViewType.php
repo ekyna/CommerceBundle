@@ -4,8 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Component\Commerce\Common\Model;
-use Ekyna\Component\Commerce\Common\View\LineView;
-use Ekyna\Component\Commerce\Common\View\SaleView;
+use Ekyna\Component\Commerce\Common\View;
 
 /**
  * Class SaleViewType
@@ -17,11 +16,12 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildSaleView(Model\SaleInterface $sale, SaleView $view, array $options)
+    public function buildSaleView(Model\SaleInterface $sale, View\SaleView $view, array $options)
     {
         $view->setTranslations([
             'designation'    => $this->trans('ekyna_core.field.designation'),
             'reference'      => $this->trans('ekyna_core.field.reference'),
+            'availability'   => $this->trans('ekyna_commerce.sale.field.availability'),
             'unit_net_price' => $this->trans('ekyna_commerce.sale.field.net_unit'),
             'quantity'       => $this->trans('ekyna_core.field.quantity'),
 
@@ -42,7 +42,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildAdjustmentView(Model\AdjustmentInterface $adjustment, LineView $view, array $options)
+    public function buildAdjustmentView(Model\AdjustmentInterface $adjustment, View\LineView $view, array $options)
     {
         if (!empty($adjustment->getDesignation())) {
             return;
@@ -59,7 +59,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildShipmentView(Model\SaleInterface $sale, LineView $view, array $options)
+    public function buildShipmentView(Model\SaleInterface $sale, View\LineView $view, array $options)
     {
         if (null !== $sale->getShipmentMethod()) {
             return;

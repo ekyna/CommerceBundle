@@ -788,6 +788,7 @@ ekyna_commerce:
             same_address: Même adresse
             tax_exempt: Hors taxe
             auto_discount: Remises auto.
+            availability: Dispo.
             net_unit: PU HT
             gross: Base HT
             base_total: Base HT
