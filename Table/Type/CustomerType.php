@@ -119,6 +119,7 @@ class CustomerType extends ResourceTableType
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
+                        'icon'                 => 'pencil',
                         'class'                => 'warning',
                         'route_name'           => 'ekyna_commerce_customer_admin_edit',
                         'route_parameters_map' => ['customerId' => 'id'],
@@ -126,6 +127,7 @@ class CustomerType extends ResourceTableType
                     ],
                     [
                         'label'                => 'ekyna_core.button.remove',
+                        'icon'                 => 'remove',
                         'class'                => 'danger',
                         'route_name'           => 'ekyna_commerce_customer_admin_remove',
                         'route_parameters_map' => ['customerId' => 'id'],

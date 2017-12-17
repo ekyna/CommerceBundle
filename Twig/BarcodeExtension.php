@@ -19,35 +19,25 @@ class BarcodeExtension extends \Twig_Extension
         ];
     }
 
-    public function getBarcodeDatamatrix($data)
+    public function getBarcodeDatamatrix($data, $width = 256, $height = 256)
     {
         $barcode = new Barcode();
 
-        $bobj = $barcode->getBarcodeObj(
-            'DATAMATRIX',               // barcode type and additional comma-separated parameters
-            $data,                      // data string to encode
-            256,                        // bar height (use absolute or negative value as multiplication factor)
-            256,                        // bar width (use absolute or negative value as multiplication factor)
-            'black',                    // foreground color
-            array(0, 0, 0, 0)           // padding (use absolute or negative values as multiplication factors)
-        )->setBackgroundColor('white'); // background color
+        $bc = $barcode
+            ->getBarcodeObj('DATAMATRIX', $data, $width, $height, 'black', array(0, 0, 0, 0))
+            ->setBackgroundColor('white');
 
-        return base64_encode($bobj->getPngData());
+        return base64_encode($bc->getPngData());
     }
 
-    public function getBarcode128($data)
+    public function getBarcode128($data, $width = 380, $height = 135)
     {
         $barcode = new Barcode();
 
-        $bobj = $barcode->getBarcodeObj(
-            'C128',
-            $data,
-            380,
-            135,
-            'black',
-            array(0, 0, 0, 0)
-        )->setBackgroundColor('white');
+        $bc = $barcode
+            ->getBarcodeObj('C128', $data, $width, $height, 'black', array(0, 0, 0, 0))
+            ->setBackgroundColor('white');
 
-        return base64_encode($bobj->getPngData());
+        return base64_encode($bc->getPngData());
     }
 }
