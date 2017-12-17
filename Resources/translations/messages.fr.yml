@@ -812,6 +812,7 @@ ekyna_commerce:
             origin_number: N° d'origine
             gross_totals: Sous-total
             grand_total: Total TTC
+            margin: Marge
             weight_total: Poids total
             document_footer: Pied de page des documents
             state: Statut

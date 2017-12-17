@@ -78,26 +78,19 @@
                     background-position-x: 48px;
                 }
 
-                &.level-4 .sale-detail-information, .sale-detail-designation {
+                &.level-4 .sale-detail-information, .sale-detail-designation > span {
                     padding-left: @base-cell-padding + 96px;
                     background-position-x: 72px;
                 }
 
-                &.level-5 .sale-detail-information, .sale-detail-designation {
+                &.level-5 .sale-detail-information, .sale-detail-designation > span {
                     padding-left: @base-cell-padding + 120px;
                     background-position-x: 96px;
                 }
 
-                &.level-6 .sale-detail-information, .sale-detail-designation {
+                &.level-6 .sale-detail-information, .sale-detail-designation > span {
                     padding-left: @base-cell-padding + 144px;
                     background-position-x: 120px;
-                }
-
-                td, a {
-                    text-overflow: ellipsis;
-                    max-width: 100%;
-                    white-space: nowrap;
-                    overflow: hidden;
                 }
 
                 .sale-detail-designation {
@@ -133,6 +126,10 @@
                         display: block;
                         padding: @base-cell-padding+2 @base-cell-padding;
                         line-height: 16px;
+                        text-overflow: ellipsis;
+                        max-width: 100%;
+                        white-space: nowrap;
+                        overflow: hidden;
 
                         > em {
                             font-size: 11px;
@@ -146,13 +143,14 @@
                 }
 
                 .sale-detail-quantity {
+                    text-align: right;
+
                     > span {
                         display: inline-block;
                         width: 100%;
-                        text-align: right;
                         padding-right: 15px;
-
                     }
+
                     > input {
                         display: inline-block;
                         width: 56px;

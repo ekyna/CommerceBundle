@@ -76,11 +76,25 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
-        <!-- Calculator -->
+        <!-- Sale amount calculator -->
         <service id="ekyna_commerce.common.amount_calculator"
                  class="Ekyna\Component\Commerce\Common\Calculator\AmountCalculator"/>
+
+        <!-- Sale weight calculator -->
         <service id="ekyna_commerce.common.weight_calculator"
                  class="Ekyna\Component\Commerce\Common\Calculator\WeightCalculator"/>
+
+        <!-- Sale margin calculator -->
+        <service id="ekyna_commerce.common.margin_calculator"
+                 class="Ekyna\Component\Commerce\Common\Calculator\MarginCalculator"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
+            <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.subject.purchase_cost_guesser"/>
+        </service>
 
         <!-- Generators -->
         <service id="ekyna_commerce.common.key_generator"

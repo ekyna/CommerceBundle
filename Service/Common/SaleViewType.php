@@ -36,6 +36,7 @@ class SaleViewType extends AbstractViewType
             'net_total'      => $this->trans('ekyna_commerce.sale.field.net_total'),
             'tax_total'      => $this->trans('ekyna_commerce.sale.field.tax_total'),
             'grand_total'    => $this->trans('ekyna_commerce.sale.field.grand_total'),
+            'margin'         => $this->trans('ekyna_commerce.sale.field.margin'),
         ]);
     }
 
