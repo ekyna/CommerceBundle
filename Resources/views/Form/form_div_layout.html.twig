@@ -333,7 +333,7 @@
                         </label>
                     </div>
                     <div class="col-sm-9 commerce-method-choice-description">
-                        <p>{{ method.title }}</p>
+                        <p>{{ child.vars.label|raw }}</p>
                         {{ method.description|raw }}
                         <p>
                             <label for="{{ child.vars.id }}" class="btn btn-xs btn-primary">

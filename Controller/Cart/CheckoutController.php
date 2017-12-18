@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -17,6 +18,7 @@ use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Handler\PaymentDoneHandler;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
+use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -39,6 +41,11 @@ class CheckoutController extends AbstractController
      * @var QuoteRepositoryInterface
      */
     protected $quoteRepository;
+
+    /**
+     * @var ShipmentPriceResolverInterface
+     */
+    protected $shipmentPriceResolver;
 
     /**
      * @var PaymentManager
@@ -64,16 +71,18 @@ class CheckoutController extends AbstractController
     /**
      * Constructor.
      *
-     * @param OrderRepositoryInterface $orderRepository
-     * @param QuoteRepositoryInterface $quoteRepository
-     * @param PaymentManager           $paymentCheckout
-     * @param PaymentHelper            $paymentHelper
-     * @param SaleTransformerInterface $saleTransformer
-     * @param PaymentDoneHandler $paymentHandler
+     * @param OrderRepositoryInterface       $orderRepository
+     * @param QuoteRepositoryInterface       $quoteRepository
+     * @param ShipmentPriceResolverInterface $shipmentPriceResolver
+     * @param PaymentManager                 $paymentCheckout
+     * @param PaymentHelper                  $paymentHelper
+     * @param SaleTransformerInterface       $saleTransformer
+     * @param PaymentDoneHandler             $paymentHandler
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         QuoteRepositoryInterface $quoteRepository,
+        ShipmentPriceResolverInterface $shipmentPriceResolver,
         PaymentManager $paymentCheckout,
         PaymentHelper $paymentHelper,
         SaleTransformerInterface $saleTransformer,
@@ -81,6 +90,7 @@ class CheckoutController extends AbstractController
     ) {
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
+        $this->shipmentPriceResolver = $shipmentPriceResolver;
         $this->paymentCheckout = $paymentCheckout;
         $this->paymentHelper = $paymentHelper;
         $this->saleTransformer = $saleTransformer;
@@ -197,6 +207,8 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->updateShipmentAmount($cart);
+
             // New quote
             $quote = $this->quoteRepository->createNew();
             // Initialize transformation
@@ -251,6 +263,8 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->updateShipmentAmount($cart);
+
             $this->saveCart();
 
             // TODO If method supports relay point ...
@@ -258,10 +272,42 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
         }
 
+        $view = $form->createView();
+
         return $this->render('EkynaCommerceBundle:Cart/Checkout:shipment.html.twig', [
             'cart' => $cart,
-            'form' => $form->createView(),
+            'form' => $view,
         ]);
+    }
+
+    /**
+     * Updates the sale shipment amount.
+     *
+     * @param SaleInterface $sale
+     */
+    private function updateShipmentAmount(SaleInterface $sale)
+    {
+        $deliveryAddress = $sale->isSameAddress()
+            ? $sale->getInvoiceAddress()
+            : $sale->getDeliveryAddress();
+
+        $country = $deliveryAddress ? $deliveryAddress->getCountry() : null;
+        $method = $sale->getShipmentMethod();
+        $weight = $sale->getWeightTotal();
+
+        if ($country && $method) {
+            $price = $this
+                ->shipmentPriceResolver
+                ->getPriceByCountryAndMethodAndWeight($country, $method, $weight);
+
+            if (null !== $price) {
+                $sale->setShipmentAmount($price->getNetPrice());
+            }
+
+            return;
+        }
+
+        $sale->setShipmentAmount(0);
     }
 
     /**

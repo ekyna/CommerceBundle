@@ -128,7 +128,7 @@ class ShipmentMethodChoiceType extends AbstractType
         if (null !== $price = $this->findPriceByMethod($method)) {
             return sprintf(
                 '%s (%s)',
-                $price->getMethod()->getTitle(),
+                $method->getTitle(),
                 number_format($price->getNetPrice(), 2, ',', '') . ' €' // TODO localized currency
             );
         }
