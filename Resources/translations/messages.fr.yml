@@ -504,23 +504,23 @@ ekyna_commerce:
 
     order_adjustment:
         label:
-            singular: Ajustement de commande
-            plural: Ajustements de commande
+            singular: Ajustement
+            plural: Ajustements
 
     order_payment:
         label:
-            singular: Paiement de commande
-            plural: Paiements de commande
+            singular: Paiement
+            plural: Paiements
 
     order_shipment:
         label:
-            singular: Expédition de commande
-            plural: Expéditions de commande
+            singular: Expédition
+            plural: Expéditions
 
     order_shipment_item:
         label:
-            singular: Ligne d'expédition de commande
-            plural: Lignes d'expédition de commande
+            singular: Ligne d'expédition
+            plural: Lignes d'expédition
 
     payment:
         label:

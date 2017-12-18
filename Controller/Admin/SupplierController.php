@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
-use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 

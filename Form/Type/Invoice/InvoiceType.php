@@ -77,7 +77,8 @@ class InvoiceType extends ResourceFormType
 
                 if (InvoiceTypes::isCredit($invoice)) {
                     $form->add('paymentMethod', PaymentMethodChoiceType::class, [
-                        'label'         => 'ekyna_commerce.invoice.field.payment_method',
+                        'label'   => 'ekyna_commerce.invoice.field.payment_method',
+                        'invoice' => $invoice,
                     ]);
                 }
             });

@@ -121,8 +121,9 @@ class ShipmentType extends ResourceFormType
 
                 if ($shipment->isReturn() && null === $shipment->getInvoice()->getId()) {
                     $form->add('paymentMethod', PaymentMethodChoiceType::class, [
-                        'label'         => 'ekyna_commerce.invoice.field.payment_method',
-                        'property_path' => 'invoice.paymentMethod',
+                        'label'             => 'ekyna_commerce.invoice.field.payment_method',
+                        'property_path'     => 'invoice.paymentMethod',
+                        'invoice' => $shipment->getInvoice()
                     ]);
                 }
             });

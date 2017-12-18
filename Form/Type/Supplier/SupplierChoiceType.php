@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
+use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,8 +36,11 @@ class SupplierChoiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label' => 'ekyna_commerce.supplier.label.singular',
-            'class' => $this->supplierClass,
+            'label'         => 'ekyna_commerce.supplier.label.singular',
+            'class'         => $this->supplierClass,
+            'query_builder' => function (EntityRepository $repository) {
+                return $repository->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+            },
         ]);
     }
 

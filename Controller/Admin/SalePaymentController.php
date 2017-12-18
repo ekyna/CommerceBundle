@@ -276,8 +276,8 @@ class SalePaymentController extends AbstractSaleController
         switch ($request->attributes->get('action')) {
             case 'accept' :
                 return $helper->accept($payment, $statusUrl);
-            /*case 'refund' :
-                return $helper->refund($payment, $statusUrl);*/
+            case 'refund' :
+                return $helper->refund($payment, $statusUrl);
             case 'cancel' :
                 return $helper->cancel($payment, $statusUrl);
             case 'hang' :

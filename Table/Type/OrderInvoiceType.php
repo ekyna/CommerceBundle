@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
 use Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
@@ -67,10 +68,25 @@ class OrderInvoiceType extends AbstractOrderListType
             ]);
 
         if ($filters) {
-            $builder->addFilter('number', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'position' => 10,
-            ]);
+            $builder
+                ->addFilter('number', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.number',
+                    'position' => 10,
+                ])
+                ->addFilter('type', CType\Filter\ChoiceType::class, [
+                    'label'    => 'ekyna_core.field.type',
+                    'choices'  => InvoiceTypes::getChoices(),
+                    'position' => 20,
+                ])
+                // TODO Customer
+                ->addFilter('grandTotal', CType\Filter\NumberType::class, [
+                    'label'    => 'ekyna_commerce.invoice.field.grand_total',
+                    'position' => 70,
+                ])
+                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                    'label'    => 'ekyna_core.field.created_at',
+                    'position' => 80,
+                ]);
         }
 
         $builder->addAction('documents', InvoiceDocumentActionType::class, [

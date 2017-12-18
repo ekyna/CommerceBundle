@@ -9,6 +9,7 @@ ekyna_commerce:
         company_is_mandatory: Veuillez saisir le nom de l'entreprise.
         phone_is_mandatory: Veuillez saisir le numéro de téléphone.
         mobile_is_mandatory: Veuillez saisir le numéro de téléphone mobile.
+        invalid_zip_code: Ce code postal n'est pas valide.
     customer:
         hierarchy_overflow: Ce client est un contact facturation et ne peut être rattaché un autre contact facturation.
         non_zero_balance: Ce client a un solde d'encours ou d'avoir non nul et ne peut être rattaché à un contact facturation.

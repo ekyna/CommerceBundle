@@ -143,8 +143,6 @@ class PaymentHelper
      * @param string           $afterUrl
      *
      * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @deprecated Do not refund payment -> use credit invoice
      */
     public function refund(PaymentInterface $payment, $afterUrl)
     {
