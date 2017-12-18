@@ -135,7 +135,7 @@ class OrderViewType extends AbstractViewType
             $actions[] = new View\Action('javascript: void(0)', 'fa fa-tasks', [
                 'title'               => $this->trans('ekyna_commerce.sale.button.item.information'),
                 'data-toggle-details' => $view->getId() . '_information',
-                'class'               => 'text-info',
+                'class'               => 'text-muted',
             ]);
         }
 
