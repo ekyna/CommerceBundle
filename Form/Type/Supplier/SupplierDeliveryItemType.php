@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -22,14 +23,19 @@ class SupplierDeliveryItemType extends ResourceFormType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('quantity', NumberType::class, [
-            'label' => 'ekyna_core.field.quantity',
-            'attr' => [
-                'class' => 'text-right'
-            ],
-            // TODO 'scale' => 2, // from packaging mode
-            'error_bubbling' => true,
-        ]);
+        $builder
+            ->add('quantity', NumberType::class, [
+                'label'          => 'ekyna_core.field.quantity',
+                'attr'           => [
+                    'class' => 'text-right',
+                ],
+                // TODO 'scale' => 2, // from packaging mode
+                'error_bubbling' => true,
+            ])
+            ->add('geocode', TextType::class, [
+                'label'          => 'ekyna_commerce.stock_unit.field.geocode',
+                'error_bubbling' => true,
+            ]);
     }
 
     /**

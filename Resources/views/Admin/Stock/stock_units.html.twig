@@ -38,7 +38,7 @@
                 {{- stockUnit|stock_unit_state_badge -}}
             </td>
             <td id="{{ stockUnitId ~ '_geocode' }}">
-                {{- stockUnit.geocode -}}
+                {{- stockUnit.geocodes|join(', ') -}}
             </td>
             <td id="{{ stockUnitId ~ '_orderedQuantity' }}" class="text-right">
                 {{- stockUnit.orderedQuantity|localizednumber -}}

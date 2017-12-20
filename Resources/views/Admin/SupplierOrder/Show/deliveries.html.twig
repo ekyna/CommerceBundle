@@ -24,6 +24,7 @@
         <tr>
             <th>{{ 'ekyna_core.field.designation'|trans }}</th>
             <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+            <th>{{ 'ekyna_commerce.stock_unit.field.geocode'|trans }}</th>
             <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
         </tr>
         </thead>
@@ -41,6 +42,9 @@
             </td>
             <td id="{{ itemId ~ 'reference' }}">
                 {{ item.orderItem.reference }}
+            </td>
+            <td id="{{ itemId ~ 'geocode' }}">
+                {{ item.geocode }}
             </td>
             <td id="{{ itemId ~ 'quantity' }}" class="text-right">
                 {{ item.quantity|localizednumber }}{# TODO packaging format #}

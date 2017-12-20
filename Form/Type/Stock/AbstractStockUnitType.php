@@ -21,10 +21,10 @@ abstract class AbstractStockUnitType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('geocode', SF\TextType::class, [
+            /*->add('geocode', SF\TextType::class, [
                 'label'    => 'ekyna_commerce.stock_unit.field.geocode',
                 'required' => false,
-            ])
+            ])*/
             ->add('shippedQuantity', SF\NumberType::class, [
                 'label'    => 'ekyna_commerce.stock_unit.field.shipped_quantity',
                 'disabled' => true,

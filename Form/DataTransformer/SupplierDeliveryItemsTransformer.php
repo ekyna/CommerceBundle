@@ -2,6 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface;
 use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
@@ -20,15 +22,24 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
      */
     private $deliveryItemRepository;
 
+    /**
+     * @var SubjectHelperInterface
+     */
+    private $subjectHelper;
+
 
     /**
      * Constructor.
      *
      * @param ResourceRepositoryInterface $deliveryItemRepository
+     * @param SubjectHelperInterface      $subjectHelper
      */
-    public function __construct(ResourceRepositoryInterface $deliveryItemRepository)
-    {
+    public function __construct(
+        ResourceRepositoryInterface $deliveryItemRepository,
+        SubjectHelperInterface $subjectHelper
+    ) {
         $this->deliveryItemRepository = $deliveryItemRepository;
+        $this->subjectHelper = $subjectHelper;
     }
 
     /**
@@ -58,11 +69,18 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
 
             // Create a new delivery item if remaining quantity is greater than zero
             if (0 < $remainingQuantity) {
+                $geocode = null;
+                $subject = $this->subjectHelper->resolve($orderItem);
+                if ($subject instanceof StockSubjectInterface) {
+                    $geocode = $subject->getGeocode();
+                }
+
                 /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface $deliveryItem */
                 $deliveryItem = $this->deliveryItemRepository->createNew();
                 $deliveryItem
                     ->setOrderItem($orderItem)
-                    ->setQuantity($remainingQuantity);
+                    ->setQuantity($remainingQuantity)
+                    ->setGeocode($geocode);
 
                 $delivery->addItem($deliveryItem);
             }

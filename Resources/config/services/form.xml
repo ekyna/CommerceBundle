@@ -261,8 +261,9 @@
         <!-- Supplier delivery item type -->
         <service id="ekyna_commerce.supplier_delivery.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierDeliveryType">
-            <argument>%ekyna_commerce.supplier_delivery.class%</argument>
             <argument type="service" id="ekyna_commerce.supplier_delivery_item.repository"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument>%ekyna_commerce.supplier_delivery.class%</argument>
             <tag name="form.type"/>
         </service>
         <!-- Supplier order type -->
