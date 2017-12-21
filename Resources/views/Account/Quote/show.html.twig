@@ -19,7 +19,7 @@
         <div class="alert alert-warning">
             {{ 'ekyna_commerce.account.quote.message.expired'|trans }}
         </div>
-    {% elseif 0 < order.remainingAmount %}
+    {% elseif 0 < quote.remainingAmount %}
         {% if customer.parent is null %}
             {# Voucher required message #}
             {% if not quote.hasVoucher() %}
