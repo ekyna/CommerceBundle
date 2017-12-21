@@ -105,7 +105,7 @@
 
     <class name="Ekyna\Bundle\CommerceBundle\Model\Recipient">
         <property name="email">
-            <constraint name="NotNull"/>
+            <constraint name="NotBlank"/>
             <constraint name="Email"/>
         </property>
     </class>

@@ -5,12 +5,13 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Notification;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-//use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Recipient;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
 use Ekyna\Bundle\UserBundle\Repository\GroupRepository;
 use Ekyna\Bundle\UserBundle\Repository\UserRepository;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
+use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 
@@ -27,6 +28,11 @@ class NotificationBuilder
     private $settings;
 
     /**
+     * @var UserProviderInterface
+     */
+    private $userProvider;
+
+    /**
      * @var UserRepository
      */
     private $userRepository;
@@ -40,16 +46,19 @@ class NotificationBuilder
     /**
      * Constructor.
      *
-     * @param SettingsManager $settings
-     * @param UserRepository  $userRepository
-     * @param GroupRepository $groupRepository
+     * @param SettingsManager       $settings
+     * @param UserProviderInterface $userProvider
+     * @param UserRepository        $userRepository
+     * @param GroupRepository       $groupRepository
      */
     public function __construct(
         SettingsManager $settings,
+        UserProviderInterface $userProvider,
         UserRepository $userRepository,
         GroupRepository $groupRepository
     ) {
         $this->settings = $settings;
+        $this->userProvider = $userProvider;
         $this->userRepository = $userRepository;
         $this->groupRepository = $groupRepository;
     }
@@ -66,9 +75,11 @@ class NotificationBuilder
         $notification = new Notification();
 
         $from = $this->createWebsiteRecipient();
-        if ($sale instanceof OrderInterface/* || $sale instanceof QuoteInterface*/) {
+        if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
             if ($inCharge = $sale->getInCharge()) {
                 $from = $this->createRecipient($inCharge, 'Responsable');
+            } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
+                $from = $recipient;
             }
         }
         $notification->setFrom($from);
@@ -100,6 +111,8 @@ class NotificationBuilder
         if ($sale instanceof OrderInterface/* || $sale instanceof QuoteInterface*/) {
             if ($inCharge = $sale->getInCharge()) {
                 array_unshift($froms, $this->createRecipient($inCharge, 'Responsable'));
+            } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
+                array_unshift($froms, $recipient);
             }
         }
 
@@ -129,6 +142,13 @@ class NotificationBuilder
         if ($sale instanceof OrderInterface) {
             if (null !== $customer = $sale->getOriginCustomer()) {
                 $recipients[] = $this->createRecipient($customer, 'Client d\'origine');
+            }
+        }
+        if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
+            if ($inCharge = $sale->getInCharge()) {
+                $recipients[] = $this->createRecipient($inCharge, 'Responsable');
+            } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
+                $recipients[] = $recipient;
             }
         }
 
@@ -175,6 +195,24 @@ class NotificationBuilder
             $this->settings->getParameter('general.admin_name'),
             'WebSite'
         );
+    }
+
+    /**
+     * Returns the current user recipient.
+     *
+     * @return Recipient
+     */
+    protected function createCurrentUserRecipient()
+    {
+        if (null !== $user = $this->userProvider->getUser()) {
+            return new Recipient(
+                $user->getEmail(),
+                $user->getUsername(),
+                'You'
+            );
+        }
+
+        return null;
     }
 
     /**
