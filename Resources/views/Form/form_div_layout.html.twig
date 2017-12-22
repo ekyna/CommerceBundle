@@ -491,18 +491,20 @@
             </td>
         </tr>
     {% endif %}
-    {% if form.vars.with_collections %}
+    {% if form.items is defined %}
         <tr>
             <td colspan="6" class="commerce-sale-item-children">
                 {{ form_widget(form.items) }}
             </td>
         </tr>
     {% endif %}
+    {% if form.adjustments is defined %}
     <tr>
         <td colspan="6" class="commerce-sale-item-children">
             {{ form_widget(form.adjustments) }}
         </td>
     </tr>
+    {% endif %}
     {#{{ form_rest(form) }}#}
     </tbody>
     {{ bootstrap_restore_form_settings() }}

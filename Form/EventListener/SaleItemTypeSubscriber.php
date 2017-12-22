@@ -2,9 +2,14 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
+use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
+//use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AdjustmentsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
+//use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemsType;
+use Ekyna\Bundle\CoreBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\Exception\LogicException;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -16,19 +21,40 @@ use Symfony\Component\Form\FormEvents;
 class SaleItemTypeSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var array
+     * @var bool
      */
-    private $fields;
+    private $addCollections;
+
+    /**
+     * @var string
+     */
+    private $itemType;
+
+    /**
+     * @var string
+     */
+    private $adjustmentType;
+
+    /**
+     * @var string
+     */
+    private $currency;
 
 
     /**
      * Constructor.
      *
-     * @param array $fields
+     * @param bool   $addCollections
+     * @param string $itemType
+     * @param string $adjustmentType
+     * @param string $currency
      */
-    public function __construct(array $fields)
+    public function __construct($addCollections, $itemType, $adjustmentType, $currency)
     {
-        $this->fields = $fields;
+        $this->addCollections = (bool)$addCollections;
+        $this->itemType = $itemType;
+        $this->adjustmentType = $adjustmentType;
+        $this->currency = $currency;
     }
 
     /**
@@ -41,37 +67,91 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
         $form = $event->getForm();
         $item = $event->getData();
 
-        foreach ($this->fields as $field) {
-            list ($name, $type, $options) = $field;
-            if (null !== $item) {
-                $options = array_replace($options, $this->getFormOptions($item, $name));
-            }
-            $form->add($name, $type, $options);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    private function getFormOptions(SaleItemInterface $item, $property)
-    {
-        $options = [];
-
-        if ($property === 'netPrice') {
-            if (null === $sale = $item->getSale()) {
-                throw new LogicException("Item's sale must be set at this point.");
-            }
-            if (null === $currency = $sale->getCurrency()) {
-                throw new LogicException("Supplier's currency must be set at this point.");
-            }
-            $options['currency'] = $currency->getCode();
+        $hasParent = false;
+        $hasChildren = false;
+        $hasSubject = false;
+        if ($item instanceof SaleItemInterface) {
+            $hasParent = null !== $item->getParent();
+            $hasChildren = $item->hasChildren();
+            $hasSubject = $item->hasSubjectIdentity();
         }
 
-        if ($item->hasChildren() && in_array($property, ['netPrice', 'weight', 'taxGroup'])) {
-            $options['disabled'] = true;
-        }
+        $form
+            ->add('designation', Type\TextType::class, [
+                'label' => 'ekyna_core.field.designation',
+                'disabled' => $hasSubject,
+                'attr'  => [
+                    'placeholder' => 'ekyna_core.field.designation',
+                ],
+            ])
+            ->add('reference', Type\TextType::class, [
+                'label' => 'ekyna_core.field.reference',
+                'disabled' => $hasSubject,
+                'attr'  => [
+                    'placeholder' => 'ekyna_core.field.reference',
+                ],
+            ])
+            ->add('weight', Type\NumberType::class, [
+                'label'    => 'ekyna_core.field.weight', // TODO unit weight ?
+                'scale'    => 3,
+                'required' => false,
+                'disabled' => $hasChildren,
+                'attr'     => [
+                    'placeholder' => 'ekyna_core.field.weight',
+                    'input_group' => ['append' => 'kg'],
+                    'min'         => 0,
+                ],
+            ])
+            ->add('netPrice', MoneyType::class, [
+                'label'    => 'ekyna_commerce.sale.field.net_unit',
+                'currency' => $this->currency,
+                'required' => false,
+                'disabled' => $hasChildren,
+                'attr'     => [
+                    'placeholder' => 'ekyna_commerce.sale.field.net_unit',
+                    //'input_group' => ['append' => '€'],  // TODO sale currency
+                ],
+            ])
+            ->add('taxGroup', TaxGroupChoiceType::class, [
+                'label'    => 'ekyna_commerce.sale_item.field.tax_group',
+                'required' => false,
+                'disabled' => $hasChildren || $hasParent || $hasSubject,
+                'select2'  => false,
+                'attr'     => [
+                    'placeholder' => 'ekyna_commerce.sale_item.field.tax_group',
+                ],
+            ])
+            ->add('quantity', Type\IntegerType::class, [
+                'label'    => 'ekyna_core.field.quantity',
+                'disabled' => $hasParent,
+                'attr'     => [
+                    'placeholder' => 'ekyna_core.field.quantity',
+                    'min'         => 1,
+                ],
+            ])
+            ->add('position', CollectionPositionType::class, []);
 
-        return $options;
+        /* TODO Remove if (!$hasSubject) {
+            if ($this->addCollections) {
+                $form->add('items', SaleItemsType::class, [
+                    'property_path' => 'children',
+                    'children_mode' => true,
+                    'entry_type'    => $this->itemType,
+                    'entry_options' => [
+                        'label'            => false,
+                        'with_collections' => false,
+                        'currency'         => $this->currency,
+                    ],
+                ]);
+            }
+
+            $form->add('adjustments', AdjustmentsType::class, [
+                'prototype_name'        => '__item_adjustment__',
+                'entry_type'            => $this->adjustmentType,
+                'add_button_text'       => 'ekyna_commerce.sale.form.add_item_adjustment',
+                'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_item_adjustment',
+            ]);
+        }*/
     }
 
     /**

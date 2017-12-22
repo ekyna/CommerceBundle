@@ -196,20 +196,22 @@ class OrderViewType extends AbstractViewType
                     'class'           => 'text-primary',
                 ]);
             }
+        }
 
-            // Edit action
-            if (!$item->hasSubjectIdentity()) {
-                $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
-                    'orderId'     => $item->getSale()->getId(),
-                    'orderItemId' => $item->getId(),
-                ]);
-                $actions[] = new View\Action($editPath, 'fa fa-pencil', [
-                    'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
-                    'data-sale-modal' => null,
-                    'class'           => 'text-warning',
-                ]);
-            }
+        // Edit action
+        if (!$item->isCompound()) {
+            $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $actions[] = new View\Action($editPath, 'fa fa-pencil', [
+                'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
+                'data-sale-modal' => null,
+                'class'           => 'text-warning',
+            ]);
+        }
 
+        if (!$item->isImmutable() && !$item->getParent()) {
             // Remove action
             $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
                 'orderId'     => $item->getSale()->getId(),

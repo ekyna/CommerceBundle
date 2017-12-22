@@ -163,6 +163,7 @@ class SaleItemController extends AbstractSaleController
         $this->getOperator()->initialize($item);
 
         $form = $this->createNewResourceForm($context, !$isXhr, [
+            'currency' => $sale->getCurrency()->getCode(),
             'attr' => [
                 'class' => 'form-horizontal',
             ],
@@ -331,6 +332,7 @@ class SaleItemController extends AbstractSaleController
         ]);
 
         $form = $this->createEditResourceForm($context, !$isXhr, [
+            'currency' => $sale->getCurrency()->getCode(),
             'attr'   => [
                 'class' => 'form-horizontal',
             ],
