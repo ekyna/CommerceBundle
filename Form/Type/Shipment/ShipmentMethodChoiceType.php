@@ -8,6 +8,8 @@ use Ekyna\Component\Commerce\Shipment\Repository\ShipmentMethodRepositoryInterfa
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -54,12 +56,15 @@ class ShipmentMethodChoiceType extends AbstractType
     }
 
     /**
+     * Builds the choices.
+     *
      * @param SaleInterface|null $sale
      * @param bool               $availableOnly
+     * @param bool               $withPrice
      *
      * @return array|\Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface[]
      */
-    private function buildChoices(SaleInterface $sale = null, $availableOnly = true)
+    private function buildChoices(SaleInterface $sale = null, $withPrice = true, $availableOnly = true)
     {
         if (null !== $this->availableMethods) {
             return $this->availableMethods;
@@ -67,6 +72,16 @@ class ShipmentMethodChoiceType extends AbstractType
 
         if (null !== $sale) {
             $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale);
+
+            if ($withPrice) {
+                $this->availableMethods = [];
+
+                foreach ($this->availablePrices as $price) {
+                    $this->availableMethods[] = $price->getMethod();
+                }
+
+                return $this->availableMethods;
+            }
         }
 
         $sorting = ['position' => 'ASC'];
@@ -137,24 +152,38 @@ class ShipmentMethodChoiceType extends AbstractType
     }
 
     /**
+     * @inheritDoc
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        /** @var SaleInterface $sale */
+        if (null !== $sale = $options['sale']) {
+            $view->vars['country'] = $sale->getDeliveryCountry();
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $choices = function (Options $options) {
-            return $this->buildChoices($options['sale'], $options['available']);
+            return $this->buildChoices($options['sale'], $options['with_price'], $options['available']);
         };
 
         $resolver
             ->setDefaults([
                 'label'        => 'ekyna_commerce.shipment_method.label.singular',
                 'sale'         => null,
+                'with_price'   => true,
                 'available'    => true,
                 'choices'      => $choices,
                 'choice_attr'  => [$this, 'buildChoiceAttr'],
                 'choice_label' => [$this, 'buildChoiceLabel'],
             ])
-            ->setAllowedTypes('sale', ['null', SaleInterface::class]);
+            ->setAllowedTypes('sale', ['null', SaleInterface::class])
+            ->setAllowedTypes('with_price', 'bool')
+            ->setAllowedTypes('available', 'bool');
     }
 
     /**

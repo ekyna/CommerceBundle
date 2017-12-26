@@ -38,6 +38,11 @@ class SupplierOrderSubmit
     private $sendEmail = true;
 
     /**
+     * @var bool
+     */
+    private $sendLabels = false;
+
+    /**
      * Constructor.
      *
      * @param SupplierOrderInterface $order
@@ -154,6 +159,30 @@ class SupplierOrderSubmit
     public function setSendEmail($send)
     {
         $this->sendEmail = (bool)$send;
+
+        return $this;
+    }
+
+    /**
+     * Returns whether to send the labels.
+     *
+     * @return bool
+     */
+    public function isSendLabels()
+    {
+        return $this->sendLabels;
+    }
+
+    /**
+     * Sets whether to send the labels.
+     *
+     * @param bool $send
+     *
+     * @return SupplierOrderSubmit
+     */
+    public function setSendLabels($send)
+    {
+        $this->sendLabels = (bool)$send;
 
         return $this;
     }

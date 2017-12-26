@@ -75,6 +75,13 @@ class SupplierOrderSubmitType extends Form\AbstractType
                     'align_with_widget' => true,
                 ],
             ])
+            ->add('sendLabels', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.supplier_order.field.send_labels',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add($builder
                 ->create('order', Type\FormType::class, [
                     'data_class' => $this->orderClass,

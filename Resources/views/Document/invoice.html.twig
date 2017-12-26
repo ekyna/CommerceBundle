@@ -7,8 +7,11 @@
         {{ subject.number -}}
     </h1>
     <p>
-        Le {{ subject.createdAt|localizeddate('long', 'none') }},
-        commande <strong>{{ subject.sale.number }}</strong>.
+        Le {{ subject.createdAt|localizeddate('long', 'none') }}, commande <strong>{{ subject.sale.number }}</strong>.
+        {% if subject.sale.voucherNumber is not empty -%}
+            {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ subject.sale.voucherNumber }}</strong>.
+        {%- endif %}
     </p>
+
     {# TODO trans #}
 {%- endblock doc_title %}

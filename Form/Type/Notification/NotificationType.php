@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Service\Notification\NotificationBuilder;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
+use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
 use Ekyna\Component\Commerce\Order\Entity\OrderAttachment;
 use Ekyna\Component\Commerce\Order\Entity\OrderInvoice;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -167,7 +168,15 @@ class NotificationType extends AbstractType
 
                     return $qb
                         ->andWhere($qb->expr()->eq('a.' . $saleProperty, ':sale'))
+                        ->addOrderBy('a.createdAt', 'DESC')
                         ->setParameter('sale', $sale);
+                },
+                'choice_label' => function(AttachmentInterface $attachment) {
+                    if (!empty($title = $attachment->getTitle())) {
+                        return $attachment->getFilename() . ' :  <em>' . $title . '</em>';
+                    }
+
+                    return $attachment->getFilename();
                 },
                 'multiple'      => true,
                 'expanded'      => true,

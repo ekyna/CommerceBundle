@@ -12,11 +12,13 @@
         {{ subject.number -}}
     </h1>
     <p>
-        Le {{ subject.createdAt|localizeddate('long', 'none') }},
-        commande <strong>{{ subject.sale.number }}</strong>
-        {% if subject.sale.customer is not null %}
+        Le {{ subject.createdAt|localizeddate('long', 'none') }}, commande <strong>{{ subject.sale.number }}</strong>
+        {% if subject.sale.customer is not null -%}
             , client <strong>{{ subject.sale.customer.number }}</strong>
-        {% endif %}.
+        {%- endif %}.
+        {% if subject.sale.voucherNumber is not empty -%}
+            {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ subject.sale.voucherNumber }}</strong>.
+        {%- endif %}
     </p>{# TODO trans #}
     {% endspaceless %}
 {%- endblock doc_title %}

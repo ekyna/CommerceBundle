@@ -209,6 +209,8 @@ class CheckoutController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->updateShipmentAmount($cart);
 
+            // TODO save cart ?
+
             // New quote
             $quote = $this->quoteRepository->createNew();
             // Initialize transformation
@@ -287,11 +289,7 @@ class CheckoutController extends AbstractController
      */
     private function updateShipmentAmount(SaleInterface $sale)
     {
-        $deliveryAddress = $sale->isSameAddress()
-            ? $sale->getInvoiceAddress()
-            : $sale->getDeliveryAddress();
-
-        $country = $deliveryAddress ? $deliveryAddress->getCountry() : null;
+        $country = $sale->getDeliveryCountry();
         $method = $sale->getShipmentMethod();
         $weight = $sale->getWeightTotal();
 

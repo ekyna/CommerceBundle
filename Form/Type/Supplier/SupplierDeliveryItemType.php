@@ -35,6 +35,9 @@ class SupplierDeliveryItemType extends ResourceFormType
             ->add('geocode', TextType::class, [
                 'label'          => 'ekyna_commerce.stock_unit.field.geocode',
                 'error_bubbling' => true,
+                'attr' => [
+                    'class' => 'geocode',
+                ]
             ]);
     }
 
@@ -45,10 +48,8 @@ class SupplierDeliveryItemType extends ResourceFormType
     {
         /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface $deliveryItem */
         $deliveryItem = $form->getData();
-        $orderItem = $deliveryItem->getOrderItem();
 
-        $view->vars['designation'] = $orderItem->getDesignation();
-        $view->vars['reference'] = $orderItem->getReference();
+        $view->vars['order_item'] = $deliveryItem->getOrderItem();
         $view->vars['remaining_quantity'] = SupplierUtil::calculateDeliveryRemainingQuantity($deliveryItem);
     }
 

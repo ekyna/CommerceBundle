@@ -316,6 +316,7 @@
 {% block ekyna_commerce_method_choice_widget %}
 {% spaceless %}
     {% if compound %}
+        {% if 0 < form.children|length %}
         <div class="commerce-method-choice">
             {% for child in form %}
                 {% set method = form.vars.choices[child.vars.value].data %}
@@ -344,6 +345,19 @@
                 </div>
             {% endfor %}
         </div>
+        {% else %}
+            <div class="alert alert-warning">
+                <p>
+                    {% if form.vars.country is defined -%}
+                        {{ 'ekyna_commerce.shipment_method.alert.none_available_for_country'|trans({
+                            '%country%': form.vars.country
+                        })|raw }}
+                    {%- else -%}
+                        {{ 'ekyna_commerce.shipment_method.alert.none_available'|trans }}
+                    {%- endif %}
+                </p>
+            </div>
+        {% endif %}
     {% else %}
         {{ block('choice_widget') }}
     {% endif %}
@@ -789,6 +803,7 @@
                     <th width="12%">{{ 'ekyna_core.field.quantity'|trans }}</th>
                     <th width="12%">{{ 'ekyna_commerce.supplier_delivery_item.field.remaining'|trans }}</th>
                     <th width="12%">{{ 'ekyna_commerce.stock_unit.field.geocode'|trans }}</th>
+                    <th>&nbsp;</th>
                 </tr>
             </thead>
 
@@ -816,11 +831,19 @@
     {% endif %}
     <tbody {{ block('widget_container_attributes') }}>
         <tr>
-            <td>{{ form.vars.designation }}</td>
-            <td>{{ form.vars.reference }}</td>
+            <td>{{ form.vars.order_item.designation }}</td>
+            <td>{{ form.vars.order_item.reference }}</td>
             <td class="text-right">{{ form_widget(form.quantity) }}</td>
             <td class="text-right">{{ form.vars.remaining_quantity|localizednumber }}</td>{# TODO packaging format #}
             <td class="text-right">{{ form_widget(form.geocode) }}</td>
+            <td>
+                <a href="javascript: void(0)"
+                   data-order-id="{{ form.vars.order_item.order.id }}"
+                   data-item-id="{{ form.vars.order_item.id }}"
+                    class="btn btn-xs btn-primary print-label">
+                    <i class="glyphicon glyphicon-barcode"></i>
+                </a>
+            </td>
         </tr>
         {% if errors|length > 0 %}
             <tr>

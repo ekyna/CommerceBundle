@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style type="text/css">
+        .label {
+            box-sizing: border-box;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            page-break-after: always;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .label:last-child {
+            page-break-after: avoid;
+        }
+
+        .label > .barcode-image {
+            width: 100%;
+            height: auto;
+        }
+
+        .label > p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ------------ LABEL SMALL ------------ */
+
+        .label-small {
+            padding: 1mm;
+            font-size: 12pt;
+            text-align: center;
+            overflow: hidden;
+            height: 33mm;
+        }
+
+        .label-small > .designation {
+            line-height: 16pt;
+            height: 32pt;
+            overflow: hidden;
+        }
+
+        .label-small > .barcode-image {
+            position: absolute;
+            top: 42pt;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .label-small > .barcode-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            line-height: 16pt;
+            text-align: left;
+        }
+
+        .label-small > .reference {
+            position: absolute;
+            bottom:0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            line-height: 16pt;
+            text-align: right;
+        }
+
+        /* ------------ LABEL LARGE ------------ */
+
+        .label-large {
+            padding: 3mm;
+            font-size: 18pt;
+            text-align: center;
+        }
+
+        .label-large > p {
+            margin-bottom: 30px;
+        }
+
+        .label-large > p:last-child {
+            margin-bottom: 0;
+        }
+
+        .label-large > .designation {
+            font-size: 18pt;
+            line-height: 28pt;
+            height: 112pt;
+            overflow: hidden;
+        }
+
+        .label-large > .designation > strong {
+            font-size: 22pt;
+        }
+
+        .label-large > .reference,
+        .label-large > .geocode {
+            font-size: 24pt;
+        }
+    </style>
+</head>
+<body>
+    {% for label in labels -%}
+    {% if format == 'small' -%}
+        <div class="label label-small">
+            <p class="designation">{{ label.designation|default('&nbsp')|raw }}</p>
+            {% if label.barcode is not empty -%}
+                <p class="barcode-image">
+                    <img src="data:image/png;base64,{{ label.barcode|barcode_128(256, 36) }}">
+                </p>
+                <p class="barcode-text">{{ label.barcode }}</p>
+            {%- endif %}
+            <p class="reference">{{ label.reference|default('&nbsp')|raw }}</p>
+        </div>
+    {%- else -%}
+        <div class="label label-large">
+            <p class="designation">{{ label.designation|default('&nbsp')|raw }}</p>
+            <p class="reference">{{ label.reference|default('&nbsp')|raw }}</p>
+            <p class="geocode">{{ label.geocode|default('&nbsp')|raw }}</p>
+            {% if label.barcode is not empty -%}
+                <p class="barcode-image">
+                    <img src="data:image/png;base64,{{ label.barcode|barcode_128(256, 60) }}">
+                </p>
+                <p class="barcode-text">{{ label.barcode }}</p>
+            {%- endif %}
+        </div>
+    {%- endif %}
+    {%- endfor %}
+</body>
+</html>

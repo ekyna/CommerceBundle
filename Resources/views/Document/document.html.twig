@@ -9,7 +9,15 @@
         {{- ('ekyna_commerce.document.type.' ~ subject.type)|trans }}
         {{ subject.sale.number -}}
     </h1>
-    <p>Le {{ date|localizeddate('long', 'none') }}.</p>{# TODO trans #}
+    <p>
+        Le {{ date|localizeddate('long', 'none') }}{# TODO trans #}
+        {% if subject.sale.customer is not null -%}
+            , client <strong>{{ subject.sale.customer.number }}</strong>
+        {%- endif %}.
+        {% if subject.sale.voucherNumber is not empty -%}
+            {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ subject.sale.voucherNumber }}</strong>.
+        {%- endif %}
+    </p>
 {%- endblock doc_title -%}
 
 

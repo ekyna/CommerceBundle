@@ -11,8 +11,10 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -93,9 +95,6 @@ class SaleType extends ResourceFormType
                 ]
             ])
             ->add('shipmentMethod', ShipmentMethodChoiceType::class)
-            ->add('paymentTerm', PaymentTermChoiceType::class, [
-                'disabled' => true,
-            ])
             ->add('voucherNumber', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'required' => false,
@@ -109,9 +108,31 @@ class SaleType extends ResourceFormType
                 'required' => false,
             ])
             ->add('description', Type\TextareaType::class, [
-                'label'    => 'ekyna_commerce.sale.description',
+                'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
             ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+            /** @var SaleInterface $sale */
+            $sale = $event->getData();
+            $form = $event->getForm();
+
+            $disabled = true;
+
+            if (null !== $customer = $sale->getCustomer()) {
+                if ($customer->hasParent()) {
+                    $customer = $customer->getParent();
+                }
+
+                if (null !== $customer->getPaymentTerm()) {
+                    $disabled = false;
+                }
+            }
+
+            $form->add('paymentTerm', PaymentTermChoiceType::class, [
+                'disabled' => $disabled,
+            ]);
+        });
 
         FormUtil::bindFormEventsToChildren(
             $builder,

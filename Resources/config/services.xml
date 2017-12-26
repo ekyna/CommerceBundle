@@ -160,6 +160,14 @@
             <argument>%ekyna_commerce.default.currency%</argument>
         </service>
 
+        <!-- Subject label renderer -->
+        <service id="ekyna_commerce.subject.label_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="templating"/>
+            <argument>%knp_snappy.pdf.binary%</argument>
+        </service>
+
         <!-- Sale item event listener -->
         <service id="ekyna_commerce.sale_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SaleItemEventSubscriber">

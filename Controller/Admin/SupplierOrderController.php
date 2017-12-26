@@ -5,12 +5,14 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
+use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -235,11 +237,43 @@ class SupplierOrderController extends ResourceController
 
         $message->attach(\Swift_Attachment::newInstance(
             $renderer->render(RendererInterface::FORMAT_PDF),
-            $order->getNumber(),
+            $order->getNumber() . '.pdf',
             'application/pdf'
         ));
 
+        if ($submit->isSendLabels()) {
+            $message->attach(\Swift_Attachment::newInstance(
+                $this->renderLabels($order),
+                'labels.pdf',
+                'application/pdf'
+            ));
+        }
+
         return 0 < $this->get('mailer')->send($message);
+    }
+
+    /**
+     * Renders the supplier order's items subjects labels.
+     *
+     * @param SupplierOrderInterface $order
+     *
+     * @return string
+     */
+    private function renderLabels(SupplierOrderInterface $order)
+    {
+        $helper = $this->get('ekyna_commerce.subject_helper');
+
+        $subjects = [];
+
+        foreach ($order->getItems() as $item) {
+            $subjects[] = $helper->resolve($item);
+        }
+
+        $renderer = $this->get('ekyna_commerce.subject.label_renderer');
+
+        $labels = $renderer->buildLabels($subjects);
+
+        return $renderer->render($labels, SubjectLabel::FORMAT_SMALL);
     }
 
     /**
@@ -263,5 +297,53 @@ class SupplierOrderController extends ResourceController
             ->createRenderer($order);
 
         return $renderer->respond($request);
+    }
+
+    /**
+     * Label action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function labelAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var SupplierOrderInterface $order */
+        $order = $context->getResource();
+
+        $this->isGranted('VIEW', $order);
+
+        $ids = (array)$request->query->get('id', []);
+        $ids = array_map(function ($id) { return intval($id); }, $ids);
+        $ids = array_filter($ids, function ($id) { return 0 < $id; });
+
+        $helper = $this->get('ekyna_commerce.subject_helper');
+        $subjects = [];
+
+        foreach ($order->getItems() as $item) {
+            if (in_array(intval($item->getId()), $ids, true)) {
+                $subjects[] = $helper->resolve($item);
+            }
+        }
+
+        if (empty($subjects)) {
+            return new Response('', Response::HTTP_NO_CONTENT);
+        }
+
+        $renderer = $this->get('ekyna_commerce.subject.label_renderer');
+
+        $labels = $renderer->buildLabels($subjects);
+
+        if (1 === count($labels) && !empty($geocode = $request->query->get('geocode'))) {
+            $labels[0]->setGeocode($geocode);
+        }
+
+        $pdf = $renderer->render($labels, SubjectLabel::FORMAT_LARGE);
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 }

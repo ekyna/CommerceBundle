@@ -7,6 +7,10 @@ ekyna_commerce:
         sample: Échantillon
         description: Note interne
 
+    # TODO group common buttons
+    button:
+        print_label: Étiquette
+
     account:
         address:
             title: Mes adresses
@@ -427,9 +431,10 @@ ekyna_commerce:
             after: Après le message
             before: Avant le message
         message:
+            attachment_list: Liste des pièces jointes à cet email
             customer_area: >
                 Retrouvez toutes les informations concernant vos
-                devis et commandes dans votre <a href="{{url}}">espace client</a>.
+                devis et commandes dans votre <a href="%url%">espace client</a>.
             sent: '{0} Aucun e-mail envoyé|{1} Un e-mail envoyé|]1,Inf[ %count% e-mails envoyés'
 
     message:
@@ -922,6 +927,9 @@ ekyna_commerce:
             platform_name: Plateforme
             available: Partie publique
         alert:
+            none_available_for_country: >
+                Aucun mode de livraison disponible pour le pays &laquo;%country%&raquo;.
+            none_available: Aucun mode de livraison disponible.
             empty_list: Aucun mode de livraison configuré
 
     shipment_price:
@@ -1115,6 +1123,7 @@ ekyna_commerce:
 #            items: Lignes
             state: Statut
             send_email: Envoyer l'email au fournisseur
+            send_labels: Envoyer les étiquettes
         alert:
             no_item: Aucune commande fournisseur configuré
             empty: Aucun article configuré

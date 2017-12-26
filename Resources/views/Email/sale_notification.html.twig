@@ -25,13 +25,23 @@
 
     {{ notification.shipmentMessage|raw }}
 
+    {# TODO attachment list #}
+    {% if 0 < notification.attachments|length %}
+    <p>{{ 'ekyna_commerce.notification.message.attachment_list'|trans }}:</p>
+    <ul>
+        {% for attachment in notification.attachments %}
+        <li>{{ attachment.filename }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     {% if notification.includeView == 'after' %}
         {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
     {% endif %}
 
     <p style="text-align: center;">
         {{ 'ekyna_commerce.notification.message.customer_area'|trans({
-            '{{url}}': url('ekyna_user_account_index')
+            '%url%': url('ekyna_user_account_index')
         })|raw }}
     </p>
 {% endblock body %}
