@@ -88,6 +88,11 @@ class QuoteType extends ResourceTableType
                 'label'    => 'ekyna_commerce.sale.table.payment_state',
                 'position' => 70,
             ])
+            ->addColumn('createdAt', CType\Column\DateTimeType::class, [
+                'label'       => 'ekyna_core.field.created_at',
+                'position'    => 80,
+                'time_format' => 'none',
+            ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
@@ -161,6 +166,11 @@ class QuoteType extends ResourceTableType
                     'label'    => 'ekyna_commerce.sale.field.payment_state',
                     'choices'  => Model\PaymentStates::getChoices(),
                     'position' => 70,
+                ])
+                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                    'label'    => 'ekyna_core.field.created_at',
+                    'position' => 80,
+                    'time'     => false,
                 ]);
         }
     }

@@ -20,6 +20,15 @@ ekyna_commerce_order_admin_show:
     requirements:
         orderId: \d+
 
+ekyna_commerce_order_admin_summary:
+    path: /{orderId}/summary
+    defaults: { _controller: "ekyna_commerce.order.controller:summaryAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+    options:
+        expose: true
+
 #ekyna_commerce_order_admin_invoice:
 #    path: /{orderId}/invoice.{_format}
 #    defaults:

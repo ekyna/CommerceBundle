@@ -6,24 +6,45 @@
     <services>
 
         <!-- Address normalizer -->
-        <service id="ekyna_commerce.customer_address.normalizer"
+        <service id="ekyna_commerce.address.normalizer"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\AddressNormalizer"
-                 parent="ekyna_resource.serializer.resource_normalizer">
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>
 
         <!-- Customer normalizer -->
-        <service id="ekyna_commerce.customer_customer.normalizer"
+        <service id="ekyna_commerce.customer.normalizer"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\CustomerNormalizer"
-                 parent="ekyna_resource.serializer.resource_normalizer">
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Sale normalizer -->
+        <service id="ekyna_commerce.sale.normalizer"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Customer normalizer -->
+        <service id="ekyna_commerce.sale_item.normalizer"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleItemNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>
 
         <!-- Supplier product -->
-        <service id="ekyna_commerce.serializer.normalizer.supplier_product"
+        <service id="ekyna_commerce.supplier_product.normalizer"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierProductNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
             <tag name="serializer.normalizer" />
             <tag name="serializer.denormalizer"/>

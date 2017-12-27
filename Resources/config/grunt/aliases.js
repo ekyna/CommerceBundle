@@ -6,6 +6,7 @@ module.exports = {
     ],
     'build:commerce_js': [
         'ts:commerce',
+        'twig:commerce',
         'uglify:commerce_ts',
         'uglify:commerce_js',
         'clean:commerce_ts'

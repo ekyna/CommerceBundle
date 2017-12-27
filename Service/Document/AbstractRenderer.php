@@ -288,10 +288,10 @@ abstract class AbstractRenderer implements RendererInterface
             return 'document';
         }
 
-        /** @var NumberSubjectInterface $shipment */
-        $shipment = reset($this->subjects);
+        /** @var NumberSubjectInterface $subject */
+        $subject = reset($this->subjects);
 
-        return $shipment->getNumber();
+        return $subject->getNumber();
     }
 
     /**

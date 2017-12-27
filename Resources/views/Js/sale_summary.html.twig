@@ -1,0 +1,21 @@
+{% import _self as macros %}
+{% macro item_line(item) %}
+    <tr>
+        <td>{{ item.designation }}</td>
+        <td>{{ item.reference }}</td>
+        <td>{{ item.quantity }}</td>
+    </tr>
+    {% import _self as macros %}
+    {% for child in item.children %}
+        {{ macros.item_line(child) }}
+    {% endfor %}
+{% endmacro %}
+<table class="table table-condensed">
+    {% for item in items %}
+        {{ macros.item_line(item) }}
+    {% endfor %}
+    <tr>
+        <td colspan="2" class="text-right">Total</td>
+        <td>{{ total }}</td>
+    </tr>
+</table>

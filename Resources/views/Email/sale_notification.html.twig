@@ -25,10 +25,12 @@
 
     {{ notification.shipmentMessage|raw }}
 
-    {# TODO attachment list #}
-    {% if 0 < notification.attachments|length %}
+    {% if 0 < notification.attachments|length or 0 < notification.invoices|length %}
     <p>{{ 'ekyna_commerce.notification.message.attachment_list'|trans }}:</p>
     <ul>
+        {% for invoice in notification.invoices %}
+        <li>{{ invoice.number }}.pdf</li>
+        {% endfor %}
         {% for attachment in notification.attachments %}
         <li>{{ attachment.filename }}</li>
         {% endfor %}

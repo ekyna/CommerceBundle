@@ -173,6 +173,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html'  => 'EkynaCommerceBundle:Admin/Cart:_form.html',
+                                    'list.html'   => 'EkynaCommerceBundle:Admin/Cart:list.html',
                                     'show.html'   => 'EkynaCommerceBundle:Admin/Cart:show.html',
                                     'edit.html'   => 'EkynaCommerceBundle:Admin/Cart:edit.html',
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Cart:remove.html',
@@ -372,6 +373,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html'     => 'EkynaCommerceBundle:Admin/Order:_form.html',
+                                    'list.html'      => 'EkynaCommerceBundle:Admin/Order:list.html',
                                     'show.html'      => 'EkynaCommerceBundle:Admin/Order:show.html',
                                     'edit.html'      => 'EkynaCommerceBundle:Admin/Order:edit.html',
                                     'remove.html'    => 'EkynaCommerceBundle:Admin/Order:remove.html',
@@ -793,6 +795,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html'     => 'EkynaCommerceBundle:Admin/Quote:_form.html',
+                                    'list.html'      => 'EkynaCommerceBundle:Admin/Quote:list.html',
                                     'show.html'      => 'EkynaCommerceBundle:Admin/Quote:show.html',
                                     'edit.html'      => 'EkynaCommerceBundle:Admin/Quote:edit.html',
                                     'remove.html'    => 'EkynaCommerceBundle:Admin/Quote:remove.html',

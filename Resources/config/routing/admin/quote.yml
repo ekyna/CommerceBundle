@@ -20,6 +20,15 @@ ekyna_commerce_quote_admin_show:
     requirements:
         quoteId: \d+
 
+ekyna_commerce_quote_admin_summary:
+    path: /{quoteId}/summary
+    defaults: { _controller: "ekyna_commerce.quote.controller:summaryAction" }
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+    options:
+        expose: true
+
 ekyna_commerce_quote_admin_edit:
     path: /{quoteId}/edit
     defaults: { _controller: "ekyna_commerce.quote.controller:editAction" }

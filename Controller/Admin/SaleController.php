@@ -22,7 +22,6 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class SaleController
@@ -84,6 +83,42 @@ class SaleController extends AbstractSaleController
         $data['sale_view'] = $this->buildSaleView($sale);
 
         return null;
+    }
+
+    /**
+     * Sale summary action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function summaryAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException();
+        }
+
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource();
+
+        $this->isGranted('VIEW', $sale);
+
+        $response = new Response('', Response::HTTP_OK, [
+            'Content-Type' => 'application/json',
+        ]);
+        $response->setLastModified($sale->getCreatedAt());
+        $response->setPublic();
+
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
+        $response->setContent(
+            $this->get('serializer')->serialize($sale, 'json', ['groups' => ['Summary']])
+        );
+
+        return $response;
     }
 
     /**
@@ -222,7 +257,7 @@ class SaleController extends AbstractSaleController
     public function refreshAction(Request $request)
     {
         if (!($request->isXmlHttpRequest() && $request->getMethod() === 'GET')) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $context = $this->loadContext($request);
@@ -242,7 +277,7 @@ class SaleController extends AbstractSaleController
     public function recalculateAction(Request $request)
     {
         if (!($request->isXmlHttpRequest() && $request->getMethod() === 'POST')) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $context = $this->loadContext($request);
@@ -281,7 +316,7 @@ class SaleController extends AbstractSaleController
     public function transformAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException('Not yet supported.');
+            throw $this->createNotFoundException('Not yet supported.');
         }
 
         $context = $this->loadContext($request);
@@ -343,7 +378,7 @@ class SaleController extends AbstractSaleController
     public function notifyAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException('Not yet supported.');
+            throw $this->createNotFoundException('Not yet supported.');
         }
 
         $context = $this->loadContext($request);
@@ -395,7 +430,7 @@ class SaleController extends AbstractSaleController
     public function documentGenerateAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException('Not supported.');
+            throw $this->createNotFoundException('Not supported.');
         }
 
         $context = $this->loadContext($request);
@@ -440,7 +475,7 @@ class SaleController extends AbstractSaleController
     public function documentRenderAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException('Not supported.');
+            throw $this->createNotFoundException('Not supported.');
         }
 
         $context = $this->loadContext($request);

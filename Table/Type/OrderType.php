@@ -149,6 +149,11 @@ class OrderType extends ResourceTableType
                 'property_path' => 'allTags',
                 'position'      => 130,
             ])
+            ->addColumn('createdAt', CType\Column\DateTimeType::class, [
+                'label'       => 'ekyna_core.field.created_at',
+                'position'    => 140,
+                'time_format' => 'none',
+            ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
@@ -249,6 +254,11 @@ class OrderType extends ResourceTableType
                 ->addFilter('tags', Type\Filter\OrderTagsType::class, [
                     'label'    => 'ekyna_cms.tag.label.plural',
                     'position' => 130,
+                ])
+                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                    'label'    => 'ekyna_core.field.created_at',
+                    'position' => 140,
+                    'time'     => false,
                 ]);
         }
     }
