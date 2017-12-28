@@ -22,29 +22,29 @@
     {% elseif 0 < quote.remainingAmount %}
         {% if customer.parent is null %}
             {# Voucher required message #}
-            {% if not quote.hasVoucher() %}
+            {#{% if not quote.hasVoucher() %}
             <div class="alert alert-info">
                 {{ 'ekyna_commerce.account.quote.message.voucher_required'|trans }}
             </div>
-            {% endif %}
+            {% endif %}#}
 
             <div class="text-center" style="margin-bottom: 40px;">
+                {# Payment button #}
+                {#{% if quote.hasVoucher() %}#}
+                <a href="{{ path('ekyna_commerce_account_quote_payment_create', {'number': quote.number}) }}"
+                   class="btn btn-primary"
+                   style="margin-right: 12px">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
+                    ({{ quote.remainingAmount|localizedcurrency(quote.currency.code) }})
+                </a>
+                {#{% endif %}#}
                 {# Voucher button #}
                 <a href="{{ path('ekyna_commerce_account_quote_voucher', {'number': quote.number}) }}"
-                   class="btn btn-lg {% if quote.hasVoucher() %}btn-default{% else %}btn-primary{% endif %}"
-                   style="margin-right: 12px">
+                   class="btn btn-default">
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     {{ 'ekyna_commerce.account.quote.button.voucher'|trans }}
                 </a>
-                {# Payment button #}
-                {% if quote.hasVoucher() %}
-                    <a href="{{ path('ekyna_commerce_account_quote_payment_create', {'number': quote.number}) }}"
-                       class="btn btn-primary btn-lg">
-                        <span class="glyphicon glyphicon-chevron-right"></span>
-                        {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
-                        ({{ quote.remainingAmount|localizedcurrency(quote.currency.code) }})
-                    </a>
-                {% endif %}
             </div>
         {% else %}
         <div class="alert alert-info">

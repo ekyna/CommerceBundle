@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class QuoteVoucherType
@@ -23,11 +24,17 @@ class QuoteVoucherType extends AbstractType
     {
         $builder
             ->add('number', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'required' => true,
+                'label'       => 'ekyna_commerce.sale.field.voucher_number',
+                'required'    => true,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('attachment', QuoteAttachmentType::class, [
                 'required' => true,
+                'constraints' => [
+                    new Assert\Valid(),
+                ]
             ]);
     }
 

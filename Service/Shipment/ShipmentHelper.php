@@ -342,6 +342,8 @@ class ShipmentHelper implements
                 return Action\Import::class;
             case 'print_label' :
                 return Action\PrintLabel::class;
+            case 'clear_label' :
+                return Action\ClearLabel::class;
             case 'ship' :
                 return Action\Ship::class;
         }
@@ -378,17 +380,69 @@ class ShipmentHelper implements
      *
      * @param string $name
      *
-     * @return string|string
+     * @return string|null
      */
     public function getActionIcon($name)
     {
         switch ($name) {
+            case Action\ClearLabel::NAME :
             case Action\PrintLabel::NAME :
                 return 'barcode';
             case Action\Cancel::NAME :
                 return 'remove';
             case Action\Ship::NAME :
                 return 'road';
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the action theme.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getActionTheme($name)
+    {
+        switch ($name) {
+            case Action\ClearLabel::NAME :
+                return 'danger';
+        }
+
+        return 'primary';
+    }
+
+    /**
+     * Returns the action confirmation message.
+     *
+     * @param string $name
+     *
+     * @return string|null
+     */
+    public function getActionConfirm($name)
+    {
+        switch ($name) {
+            case Action\ClearLabel::NAME :
+                return 'Êtes-vous sûr de vouloir supprimer étiquette et numéro de suivi ?';
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the action target.
+     *
+     * @param string $name
+     *
+     * @return string|null
+     */
+    public function getActionTarget($name)
+    {
+        switch ($name) {
+            case Action\PrintLabel::NAME :
+                return '_blank';
         }
 
         return null;

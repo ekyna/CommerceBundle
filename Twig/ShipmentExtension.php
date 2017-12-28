@@ -51,7 +51,7 @@ class ShipmentExtension extends \Twig_Extension
     public function __construct(
         ConstantsHelper $constantHelper,
         PriceListBuilder $priceListBuilder,
-        ShipmentHelper   $shipmentHelper,
+        ShipmentHelper $shipmentHelper,
         $template = 'EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig'
     ) {
         $this->constantHelper = $constantHelper;
@@ -140,7 +140,7 @@ class ShipmentExtension extends \Twig_Extension
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest('shipment_subject', function($subject) {
+            new \Twig_SimpleTest('shipment_subject', function ($subject) {
                 return $subject instanceof ShipmentSubjectInterface;
             }),
         ];
@@ -181,7 +181,9 @@ class ShipmentExtension extends \Twig_Extension
             $buttons[] = [
                 'label'      => $this->shipmentHelper->getActionLabel($name),
                 'icon'       => $this->shipmentHelper->getActionIcon($name),
-                'class'      => 'primary',
+                'theme'      => $this->shipmentHelper->getActionTheme($name),
+                'confirm'    => $this->shipmentHelper->getActionConfirm($name),
+                'target'     => $this->shipmentHelper->getActionTarget($name),
                 'route'      => 'ekyna_commerce_order_shipment_admin_gateway_action',
                 'parameters' => [
                     'orderId'         => $shipment->getSale()->getId(),

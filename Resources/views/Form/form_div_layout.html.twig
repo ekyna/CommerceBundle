@@ -218,26 +218,30 @@
 {% spaceless %}
     <div class="row">
         <div class="col-sm-3 hidden-xs">
-            {{ block('ekyna_commerce_checkout_payment_image') }}
+            {{- block('ekyna_commerce_checkout_payment_image') -}}
         </div>
         <div class="col-sm-9 commerce-payment-method">
             <p>{{ payment.method.title }}</p>
-            {{ payment.method.description|raw }}
+            {{- payment.method.description|raw -}}
 
-            {% if 0 >= available_amount %}
+            {%- if 0 >= available_amount -%}
                 <div class="alert alert-danger">
-                    {{ 'ekyna_commerce.checkout.payment.insuffisant_fund'|trans|raw }}
+                    {{- 'ekyna_commerce.checkout.payment.insuffisant_fund'|trans|raw -}}
                 </div>
-            {% else %}
+            {%- else -%}
                 <p>
-                    {{ 'ekyna_commerce.checkout.payment.available_fund'|trans({
+                    {{- 'ekyna_commerce.checkout.payment.available_fund'|trans({
                         '%amount%': available_amount|localizedcurrency(currency_code)
-                    })|raw }}
+                    })|raw -}}
                 </p>
-                {{ form_row(form.amount) }}
-            {% endif %}
+                {{- form_row(form.amount) -}}
+            {%- endif -%}
 
-            {{ form_row(form.submit) }}
+            {{- form_row(form.submit) -}}
+
+            {% if lock_message is not empty -%}
+            <div class="alert alert-warning">{{ lock_message|raw }}</div>
+            {%- endif %}
         </div>
     </div>
 {% endspaceless %}

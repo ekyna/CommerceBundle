@@ -98,6 +98,8 @@
         <service id="ekyna_commerce.checkout.payment_event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\CheckoutPaymentEventSubscriber">
             <argument type="service" id="form.factory"/>
+            <argument type="service" id="translator"/>
+            <argument type="service" id="router"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

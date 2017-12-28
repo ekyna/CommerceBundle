@@ -35,6 +35,7 @@ class BalancePaymentType extends AbstractType
                 $form->add('amount', MoneyType::class, [
                     'label'       => 'ekyna_core.field.amount',
                     'currency'    => $payment->getCurrency()->getCode(),
+                    'disabled'    => !empty($options['lock_message']),
                     'constraints' => [
                         new LessThanOrEqual($max),
                     ],

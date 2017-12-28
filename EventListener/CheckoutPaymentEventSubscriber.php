@@ -5,12 +5,15 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
+use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class CheckoutPaymentEventSubscriber
@@ -24,15 +27,32 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
      */
     private $formFactory;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
 
     /**
      * Constructor.
      *
-     * @param FormFactoryInterface $formFactory
+     * @param FormFactoryInterface  $formFactory
+     * @param TranslatorInterface   $translator
+     * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(FormFactoryInterface $formFactory)
-    {
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        TranslatorInterface $translator,
+        UrlGeneratorInterface $urlGenerator
+    ) {
         $this->formFactory = $formFactory;
+        $this->translator = $translator;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -138,6 +158,7 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
 
             return;
         }
+        // Abort if no payment term
         if (null === $sale->getPaymentTerm()) {
             $event->stopPropagation();
 
@@ -168,6 +189,15 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
 
         $options = $event->getFormOptions();
         $options['available_amount'] = (float)$available;
+
+        if ($sale instanceof QuoteInterface && !$sale->hasVoucher()) {
+            $options['lock_message'] = $this->translator->trans('ekyna_commerce.checkout.payment.voucher_mandatory', [
+                '%url%' => $this->urlGenerator->generate('ekyna_commerce_account_quote_voucher', [
+                    'number' => $sale->getNumber(),
+                ])
+            ]);
+            $options['disabled'] = true;
+        }
 
         $form = $this
             ->formFactory

@@ -214,6 +214,8 @@ ekyna_commerce:
             insuffisant_fund: |
                 Vous avez utilisé la totalité de cotre encours client.<br> Rendez-vous
                 dans votre espace client pour régler les factures échues ou non réglées.
+            voucher_mandatory: |
+                Veuillez <a href="%url%">ajouter votre bon d'achat</a> si vous souhaitez utiliser votre encours.
     country:
         label:
             singular: Pays
@@ -888,13 +890,14 @@ ekyna_commerce:
             export: Exporter vers logiciel
             import: Importer les numéros de suivi
             print_label: Imprimer étiquette
+            clear_label: Supprimer étiquette
             ship: Expédier
             bills: Afficher les bons de livraison
             forms: Afficher les bons de préparation
         field:
             return: Retour
             items: Éléments
-            tracking_number: Numéro de suivi
+            tracking_number: N° de suivi
             auto_invoice: Facturation automatique
             sender_address: Addresse expéditeur
             receiver_address: Addresse destinataire

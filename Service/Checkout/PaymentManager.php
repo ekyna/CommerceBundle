@@ -10,7 +10,6 @@ use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentMethodRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -96,10 +95,6 @@ class PaymentManager
             $this->eventDispatcher->dispatch(CheckoutPaymentEvent::BUILD_FORM, $event);
 
             if (null !== $form = $event->getForm()) {
-                $form->add('submit', Type\SubmitType::class, [
-                    'label' => $method->getTitle(),
-                ]);
-
                 if (isset($this->forms[$form->getName()])) {
                     throw new InvalidArgumentException("Form with name '{$form->getName()}' is already registered.");
                 }
@@ -130,7 +125,8 @@ class PaymentManager
         foreach ($this->forms as $form) {
             $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            if ($form->isSubmitted() && $form->isValid() && $form->get('submit')->isClicked()) {
                 return $form->getData();
             }
         }

@@ -25,14 +25,15 @@ class PaymentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             /** @var PaymentInterface $payment */
             $payment = $event->getData();
             $form = $event->getForm();
 
             if (0 < $payment->getAmount()) {
                 $form->add('submit', SubmitType::class, [
-                    'label' => $payment->getMethod()->getTitle(),
+                    'label'    => $payment->getMethod()->getTitle(),
+                    'disabled' => !empty($options['lock_message']),
                 ]);
             }
         });
@@ -49,6 +50,7 @@ class PaymentType extends AbstractType
         }
 
         $view->vars['payment'] = $payment;
+        $view->vars['lock_message'] = $options['lock_message'];
     }
 
     /**
@@ -56,7 +58,12 @@ class PaymentType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('data_class', PaymentInterface::class);
+        $resolver
+            ->setDefaults([
+                'data_class'   => PaymentInterface::class,
+                'lock_message' => null,
+            ])
+            ->setAllowedTypes('lock_message', ['null', 'string']);
     }
 
     /**

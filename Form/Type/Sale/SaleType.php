@@ -31,11 +31,6 @@ class SaleType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('number', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'required' => false,
-                'disabled' => true,
-            ])
             ->add('currency', CurrencyChoiceType::class)
             /*->add('state', Type\ChoiceType::class, [
                 'label'    => 'ekyna_core.field.status',
@@ -76,23 +71,23 @@ class SaleType extends ResourceFormType
             ->add('vatValid', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.pricing.field.vat_valid',
                 'required' => false,
-                'attr' => [
+                'attr'     => [
                     'align_with_widget' => true,
-                ]
+                ],
             ])
             ->add('autoDiscount', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.sale.field.auto_discount',
                 'required' => false,
-                'attr' => [
+                'attr'     => [
                     'align_with_widget' => true,
-                ]
+                ],
             ])
             ->add('taxExempt', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.sale.field.tax_exempt',
                 'required' => false,
-                'attr' => [
+                'attr'     => [
                     'align_with_widget' => true,
-                ]
+                ],
             ])
             ->add('shipmentMethod', ShipmentMethodChoiceType::class)
             ->add('voucherNumber', Type\TextType::class, [
@@ -112,25 +107,29 @@ class SaleType extends ResourceFormType
                 'required' => false,
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var SaleInterface $sale */
             $sale = $event->getData();
             $form = $event->getForm();
 
-            $disabled = true;
+            $form->add('number', Type\TextType::class, [
+                'label'    => 'ekyna_core.field.number',
+                'required' => false,
+                'disabled' => null !== $sale->getId(),
+            ]);
 
+            $disabledTerm = true;
             if (null !== $customer = $sale->getCustomer()) {
                 if ($customer->hasParent()) {
                     $customer = $customer->getParent();
                 }
-
                 if (null !== $customer->getPaymentTerm()) {
-                    $disabled = false;
+                    $disabledTerm = false;
                 }
             }
 
             $form->add('paymentTerm', PaymentTermChoiceType::class, [
-                'disabled' => $disabled,
+                'disabled' => $disabledTerm,
             ]);
         });
 
