@@ -13,14 +13,6 @@
             <tag name="table.type"/>
         </service>
 
-        <!-- Order table type -->
-        <service id="ekyna_commerce.order.table_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderType"><!-- TODO use parameter defined by config builder -->
-            <argument>%ekyna_commerce.order.class%</argument>
-            <argument>%ekyna_cms.tag.class%</argument>
-            <tag name="table.type"/>
-        </service>
-
         <!-- Order payment table type -->
         <service id="ekyna_commerce.order_payment.table_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderPaymentType"><!-- TODO use parameter defined by config builder -->

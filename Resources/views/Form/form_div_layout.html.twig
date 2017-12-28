@@ -553,6 +553,7 @@
                     <th>{{ 'ekyna_commerce.shipment_item.field.expected'|trans }}</th>
                     <th>{{ 'ekyna_commerce.shipment_item.field.available'|trans }}</th>
                 {% endif %}
+                <th>{{ 'ekyna_commerce.stock_unit.field.geocode'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -593,6 +594,7 @@
             <td>{{ form.vars.item.expected }}</td>{# TODO packaging format #}
             <td>{{ form.vars.item.available }}</td>{# TODO packaging format #}
         {% endif %}
+        <td>{{ form.vars.geocodes|join(', ') }}</td>
     </tr>
     {% if errors|length > 0 -%}
     <tr>

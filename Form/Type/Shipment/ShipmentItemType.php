@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockAssignmentsInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -61,6 +62,18 @@ class ShipmentItemType extends ResourceFormType
                 FormUtil::addClass($view, 'danger');
             }
         }
+
+        // Geocode
+        $geocodes = [];
+        $saleItem = $item->getSaleItem();
+        if ($saleItem instanceof StockAssignmentsInterface) {
+            foreach ($saleItem->getStockAssignments() as $assignment) {
+                $geocodes = array_merge($geocodes, $assignment->getStockUnit()->getGeocodes());
+            }
+        }
+        $geocodes = array_unique($geocodes);
+
+        $view->vars['geocodes'] = $geocodes;
     }
 
     /**

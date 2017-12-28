@@ -102,57 +102,57 @@ class OrderType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
+            ->addColumn('createdAt', CType\Column\DateTimeType::class, [
+                'label'       => 'ekyna_core.field.created_at',
+                'position'    => 30,
+                'time_format' => 'none',
+            ])
             ->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'position' => 30,
+                'position' => 40,
             ])
             ->addColumn('originNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.origin_number',
-                'position' => 40,
+                'position' => 50,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.grand_total',
                 'currency_path' => 'currency.code',
-                'position'      => 50,
+                'position'      => 60,
             ])
             ->addColumn('paidTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.paid_total',
                 'currency_path' => 'currency.code',
-                'position'      => 60,
+                'position'      => 70,
             ])
             ->addColumn('state', Type\Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
-                'position' => 70,
+                'position' => 80,
             ])
             ->addColumn('paymentState', Type\Column\PaymentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.table.payment_state',
-                'position' => 80,
+                'position' => 90,
             ])
             ->addColumn('shipmentState', Type\Column\ShipmentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.table.shipment_state',
-                'position' => 90,
+                'position' => 100,
             ])
             ->addColumn('invoiceState', Type\Column\InvoiceStateType::class, [
                 'label'    => 'ekyna_commerce.sale.table.invoice_state',
-                'position' => 100,
+                'position' => 110,
             ])
             ->addColumn('inCharge', Type\Column\InChargeType::class, [
-                'position' => 110,
+                'position' => 120,
             ])
             ->addColumn('sample', CType\Column\BooleanType::class, [
                 'label'       => 'ekyna_commerce.field.sample',
                 'true_class'  => 'label-warning',
                 'false_class' => 'label-default',
-                'position'    => 120,
+                'position'    => 130,
             ])
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
-                'position'      => 130,
-            ])
-            ->addColumn('createdAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.created_at',
-                'position'    => 140,
-                'time_format' => 'none',
+                'position'      => 140,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -182,7 +182,7 @@ class OrderType extends ResourceTableType
         if (null === $customer) {
             $builder->addColumn('customer', Type\Column\SaleCustomerType::class, [
                 'label'    => 'ekyna_commerce.customer.label.singular',
-                'position' => 20,
+                'position' => 30,
             ]);
         }
 
@@ -192,73 +192,73 @@ class OrderType extends ResourceTableType
                     'label'    => 'ekyna_core.field.number',
                     'position' => 10,
                 ])
+                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                    'label'    => 'ekyna_core.field.created_at',
+                    'position' => 20,
+                    'time'     => false,
+                ])
                 ->addFilter('email', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.email',
-                    'position' => 20,
+                    'position' => 30,
                 ])
                 ->addFilter('company', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.company',
-                    'position' => 21,
+                    'position' => 31,
                 ])
                 ->addFilter('firstName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.first_name',
-                    'position' => 22,
+                    'position' => 32,
                 ])
                 ->addFilter('lastName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.last_name',
-                    'position' => 23,
+                    'position' => 33,
                 ])
                 ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                    'position' => 30,
+                    'position' => 40,
                 ])
                 ->addFilter('originNumber', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.origin_number',
-                    'position' => 40,
+                    'position' => 50,
                 ])
                 ->addFilter('granTotal', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.sale.field.grand_total',
-                    'position' => 50,
+                    'position' => 60,
                 ])
                 ->addFilter('paidTotal', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.sale.field.paid_total',
-                    'position' => 60,
+                    'position' => 70,
                 ])
                 ->addFilter('state', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.state',
                     'choices'  => Model\OrderStates::getChoices(),
-                    'position' => 70,
+                    'position' => 80,
                 ])
                 ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.payment_state',
                     'choices'  => Model\PaymentStates::getChoices(),
-                    'position' => 80,
+                    'position' => 90,
                 ])
                 ->addFilter('shipmentState', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.shipment_state',
                     'choices'  => Model\ShipmentStates::getChoices(),
-                    'position' => 90,
+                    'position' => 100,
                 ])
                 ->addFilter('invoiceState', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.invoice_state',
                     'choices'  => Model\InvoiceStates::getChoices(),
-                    'position' => 100,
+                    'position' => 110,
                 ])
                 ->addFilter('inCharge', Type\Filter\InChargeType::class, [
-                    'position' => 110,
+                    'position' => 120,
                 ])
                 ->addFilter('sample', CType\Filter\BooleanType::class, [
                     'label'    => 'ekyna_commerce.field.sample',
-                    'position' => 120,
+                    'position' => 130,
                 ])
                 ->addFilter('tags', Type\Filter\OrderTagsType::class, [
                     'label'    => 'ekyna_cms.tag.label.plural',
-                    'position' => 130,
-                ])
-                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                    'label'    => 'ekyna_core.field.created_at',
                     'position' => 140,
-                    'time'     => false,
                 ]);
         }
     }

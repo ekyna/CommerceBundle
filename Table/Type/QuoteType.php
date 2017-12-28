@@ -66,32 +66,32 @@ class QuoteType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
+            ->addColumn('createdAt', CType\Column\DateTimeType::class, [
+                'label'       => 'ekyna_core.field.created_at',
+                'position'    => 20,
+                'time_format' => 'none',
+            ])
             ->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'position' => 30,
+                'position' => 40,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.grand_total',
                 'currency_path' => 'currency.code',
-                'position'      => 40,
+                'position'      => 50,
             ])
             ->addColumn('paidTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.paid_total',
                 'currency_path' => 'currency.code',
-                'position'      => 50,
+                'position'      => 60,
             ])
             ->addColumn('state', Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
-                'position' => 60,
+                'position' => 70,
             ])
             ->addColumn('paymentState', Column\PaymentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.table.payment_state',
-                'position' => 70,
-            ])
-            ->addColumn('createdAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.created_at',
-                'position'    => 80,
-                'time_format' => 'none',
+                'position' => 80,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -119,7 +119,7 @@ class QuoteType extends ResourceTableType
         if (null === $customer || $customer->hasChildren()) {
             $builder->addColumn('customer', Column\SaleCustomerType::class, [
                 'label'    => 'ekyna_commerce.customer.label.singular',
-                'position' => 20,
+                'position' => 30,
             ]);
         }
 
@@ -129,48 +129,48 @@ class QuoteType extends ResourceTableType
                     'label'    => 'ekyna_core.field.number',
                     'position' => 10,
                 ])
+                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                    'label'    => 'ekyna_core.field.created_at',
+                    'position' => 20,
+                    'time'     => false,
+                ])
                 ->addFilter('email', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.email',
-                    'position' => 20,
+                    'position' => 30,
                 ])
                 ->addFilter('company', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.company',
-                    'position' => 21,
+                    'position' => 31,
                 ])
                 ->addFilter('firstName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.first_name',
-                    'position' => 22,
+                    'position' => 32,
                 ])
                 ->addFilter('lastName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.last_name',
-                    'position' => 23,
+                    'position' => 33,
                 ])
                 ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                    'position' => 30,
+                    'position' => 40,
                 ])
                 ->addFilter('granTotal', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.sale.field.grand_total',
-                    'position' => 40,
+                    'position' => 50,
                 ])
                 ->addFilter('paidTotal', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.sale.field.paid_total',
-                    'position' => 50,
+                    'position' => 60,
                 ])
                 ->addFilter('state', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.state',
                     'choices'  => Model\OrderStates::getChoices(),
-                    'position' => 60,
+                    'position' => 70,
                 ])
                 ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.payment_state',
                     'choices'  => Model\PaymentStates::getChoices(),
-                    'position' => 70,
-                ])
-                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                    'label'    => 'ekyna_core.field.created_at',
                     'position' => 80,
-                    'time'     => false,
                 ]);
         }
     }
