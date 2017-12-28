@@ -61,6 +61,7 @@ class SaleShipmentType extends AbstractType
                     'label'      => 'ekyna_commerce.shipment_method.label.singular',
                     'sale'       => $sale,
                     'with_price' => false,
+                    'available'  => false,
                     'attr'       => [
                         'class' => 'sale-shipment-method',
                     ],

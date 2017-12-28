@@ -71,7 +71,7 @@ class ShipmentMethodChoiceType extends AbstractType
         }
 
         if (null !== $sale) {
-            $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale);
+            $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale, $availableOnly);
 
             if ($withPrice) {
                 $this->availableMethods = [];
