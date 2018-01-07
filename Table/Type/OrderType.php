@@ -259,6 +259,10 @@ class OrderType extends ResourceTableType
                 ->addFilter('tags', Type\Filter\OrderTagsType::class, [
                     'label'    => 'ekyna_cms.tag.label.plural',
                     'position' => 140,
+                ])
+                ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
+                    'label'    => 'Article',
+                    'position' => 150,
                 ]);
         }
     }

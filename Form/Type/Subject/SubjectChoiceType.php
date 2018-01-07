@@ -69,10 +69,11 @@ class SubjectChoiceType extends AbstractType
             /** @var SubjectIdentity $identity */
             $identity = $event->getData();
 
+            $hasIdentity = false;
             $subjectChoices = [];
             $subjectRequired = $options['required'];
 
-            if ($identity->hasIdentity()) {
+            if (null !== $identity && $identity->hasIdentity()) {
                 $subject = $this->registry
                     ->getProviderByName($identity->getProvider())
                     ->reverseTransform($identity);
@@ -81,7 +82,7 @@ class SubjectChoiceType extends AbstractType
                 $subjectRequired = true;
             }
 
-            $disabled = $options['lock_mode'] && $identity->hasIdentity();
+            $disabled = $options['lock_mode'] && $hasIdentity;
 
             $form
                 ->add('provider', ChoiceType::class, [

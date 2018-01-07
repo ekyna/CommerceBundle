@@ -157,6 +157,13 @@
             <tag name="table.filter_type"/>
         </service>
 
+        <!-- Order tags filter type -->
+        <service id="ekyna_commerce.sale.subject.filter_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\SaleSubjectType">
+            <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <tag name="table.filter_type"/>
+        </service>
+
     </services>
 
 </container>
