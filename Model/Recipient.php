@@ -32,7 +32,7 @@ class Recipient
      * @param string $name
      * @param string $type
      */
-    public function __construct($email, $name = null, $type = null)
+    public function __construct($email = null, $name = null, $type = null)
     {
         $this->email = $email;
         $this->name = $name;
@@ -72,6 +72,20 @@ class Recipient
     }
 
     /**
+     * Sets the email.
+     *
+     * @param string $email
+     *
+     * @return Recipient
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
      * Returns the email.
      *
      * @return string
@@ -82,6 +96,20 @@ class Recipient
     }
 
     /**
+     * Sets the name.
+     *
+     * @param string $name
+     *
+     * @return Recipient
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
      * Returns the name.
      *
      * @return string
@@ -89,6 +117,20 @@ class Recipient
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Sets the type.
+     *
+     * @param string $type
+     *
+     * @return Recipient
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
     }
 
     /**

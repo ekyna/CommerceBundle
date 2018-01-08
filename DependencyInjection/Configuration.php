@@ -519,6 +519,7 @@ class Configuration implements ConfigurationInterface
                                     'remove.html' => 'EkynaCommerceBundle:Admin/Common/Invoice:remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderInvoice')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderInvoiceRepository')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleInvoiceController')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType')->end()

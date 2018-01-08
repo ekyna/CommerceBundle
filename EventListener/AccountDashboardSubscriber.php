@@ -2,10 +2,12 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository;
 use Ekyna\Bundle\UserBundle\Event\DashboardEvent;
 use Ekyna\Bundle\UserBundle\Model\DashboardWidget;
+use Ekyna\Bundle\UserBundle\Model\DashboardWidgetButton;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
+use Ekyna\Component\Commerce\Invoice\Repository\InvoiceRepositoryInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
@@ -20,9 +22,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class AccountDashboardSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var CustomerRepository
+     * @var CustomerProviderInterface
      */
-    private $customerRepository;
+    private $customerProvider;
+
+    /**
+     * @var QuoteRepositoryInterface
+     */
+    private $quoteRepository;
 
     /**
      * @var OrderRepositoryInterface
@@ -30,26 +37,29 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
     private $orderRepository;
 
     /**
-     * @var QuoteRepositoryInterface
+     * @var InvoiceRepositoryInterface
      */
-    private $quoteRepository;
+    private $invoiceRepository;
 
 
     /**
      * Constructor.
      *
-     * @param CustomerRepository       $customerRepository
-     * @param OrderRepositoryInterface $orderRepository
-     * @param QuoteRepositoryInterface $quoteRepository
+     * @param CustomerProviderInterface  $customerProvider
+     * @param QuoteRepositoryInterface   $quoteRepository
+     * @param OrderRepositoryInterface   $orderRepository
+     * @param InvoiceRepositoryInterface $invoiceRepository
      */
     public function __construct(
-        CustomerRepository $customerRepository,
+        CustomerProviderInterface $customerProvider,
+        QuoteRepositoryInterface $quoteRepository,
         OrderRepositoryInterface $orderRepository,
-        QuoteRepositoryInterface $quoteRepository
+        InvoiceRepositoryInterface $invoiceRepository
     ) {
-        $this->customerRepository = $customerRepository;
-        $this->orderRepository = $orderRepository;
+        $this->customerProvider = $customerProvider;
         $this->quoteRepository = $quoteRepository;
+        $this->orderRepository = $orderRepository;
+        $this->invoiceRepository = $invoiceRepository;
     }
 
     /**
@@ -59,41 +69,106 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
      */
     public function onDashboard(DashboardEvent $event)
     {
-        $customer = $this->customerRepository->findOneByUser($event->getUser());
+        $customer = $this->customerProvider->getCustomer();
 
         if (null !== $customer) {
-            // Orders widget
-            if (!empty($orders = $this->getOrders($customer))) {
+            /*if (null !== $customer->getPaymentTerm()) {
                 $widget = new DashboardWidget(
-                    'ekyna_commerce.account.order.title',
-                    'EkynaCommerceBundle:Account/Order:_list.html.twig'
+                    'ekyna_commerce.account.state.title',
+                    'EkynaCommerceBundle:Account/Dashboard:state.html.twig',
+                    'default'
                 );
                 $widget
                     ->setParameters([
                         'customer' => $customer,
-                        'orders'   => $orders,
                     ])
                     ->setPriority(1000);
 
                 $event->addWidget($widget);
-            }
+            }*/
 
             // Quotes widget
             if (!empty($quotes = $this->getQuotes($customer))) {
                 $widget = new DashboardWidget(
-                    'ekyna_commerce.account.quote.title',
-                    'EkynaCommerceBundle:Account/Quote:_list.html.twig'
+                    'ekyna_commerce.account.quote.latest',
+                    'EkynaCommerceBundle:Account/Quote:_list.html.twig',
+                    'default'
                 );
                 $widget
                     ->setParameters([
                         'customer' => $customer,
                         'quotes'   => $quotes,
                     ])
-                    ->setPriority(900);
+                    ->setPriority(1000)
+                    ->addButton(new DashboardWidgetButton(
+                        'ekyna_commerce.account.quote.all',
+                        'ekyna_commerce_account_quote_index',
+                        [],
+                        'primary'
+                    ));
+
+                $event->addWidget($widget);
+            }
+
+            // Orders widget
+            if (!empty($orders = $this->getOrders($customer))) {
+                $widget = new DashboardWidget(
+                    'ekyna_commerce.account.order.latest',
+                    'EkynaCommerceBundle:Account/Order:_list.html.twig',
+                    'default'
+                );
+                $widget
+                    ->setParameters([
+                        'customer' => $customer,
+                        'orders'   => $orders,
+                    ])
+                    ->setPriority(900)
+                    ->addButton(new DashboardWidgetButton(
+                        'ekyna_commerce.account.order.all',
+                        'ekyna_commerce_account_order_index',
+                        [],
+                        'primary'
+                    ));
+
+                $event->addWidget($widget);
+            }
+
+            // Orders widget
+            if (!$customer->hasParent() && !empty($invoices = $this->getInvoices($customer))) {
+                $widget = new DashboardWidget(
+                    'ekyna_commerce.account.invoice.latest',
+                    'EkynaCommerceBundle:Account/Invoice:_list.html.twig',
+                    'default'
+                );
+                $widget
+                    ->setParameters([
+                        'invoices' => $invoices,
+                    ])
+                    ->setPriority(800)
+                    ->addButton(new DashboardWidgetButton(
+                        'ekyna_commerce.account.invoice.all',
+                        'ekyna_commerce_account_invoice_index',
+                        [],
+                        'primary'
+                    ));
 
                 $event->addWidget($widget);
             }
         }
+    }
+
+    /**
+     * Returns the customer's new, pending or accepted quotes.
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return array|\Ekyna\Component\Commerce\Common\Model\SaleInterface[]
+     */
+    private function getQuotes(CustomerInterface $customer)
+    {
+        $states = [QuoteStates::STATE_NEW, QuoteStates::STATE_PENDING, QuoteStates::STATE_ACCEPTED];
+
+        return $this->quoteRepository->findByCustomer($customer, $states);
     }
 
     /**
@@ -111,17 +186,15 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Returns the customer's new, pending or accepted quotes.
+     * Returns the customer's invoices.
      *
      * @param CustomerInterface $customer
      *
-     * @return array|\Ekyna\Component\Commerce\Common\Model\SaleInterface[]
+     * @return array|\Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface[]
      */
-    private function getQuotes(CustomerInterface $customer)
+    private function getInvoices(CustomerInterface $customer)
     {
-        $states = [QuoteStates::STATE_NEW, QuoteStates::STATE_PENDING, QuoteStates::STATE_ACCEPTED];
-
-        return $this->quoteRepository->findByCustomer($customer, $states);
+        return $this->invoiceRepository->findByCustomer($customer, 10);
     }
 
     /**

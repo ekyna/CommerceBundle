@@ -21,7 +21,7 @@
         })|raw }}.
     </p>
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': quote} -%}
+    {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'forms': forms} only -%}
 
     <div class="text-center">
         <a href="{{ path('ekyna_commerce_account_quote_show', {'number': quote.number}) }}" class="btn btn-default btn-lg">

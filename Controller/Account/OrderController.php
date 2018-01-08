@@ -121,7 +121,7 @@ class OrderController extends AbstractController
 
         $orders = $this->findOrdersByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Order:payment.html.twig', [
+        return $this->render('EkynaCommerceBundle:Account/Order:payment_create.html.twig', [
             'customer' => $customer,
             'order'    => $order,
             'forms'    => $checkout->getFormsViews(),

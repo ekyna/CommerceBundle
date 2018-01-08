@@ -14,8 +14,23 @@ ekyna_commerce_account_address_remove: /mon-compte/adresses/supprimer/{addressId
 
 ekyna_commerce_account_quote_index: /mon-compte/devis
 ekyna_commerce_account_quote_show: /mon-compte/devis/{number}
-ekyna_commerce_account_quote_attachment_download: /mon-compte/devis/{number}/documents/{id}
+ekyna_commerce_account_quote_voucher: /mon-compte/devis/{number}/bon-achat
+ekyna_commerce_account_quote_payment_create: /mon-compte/devis/{number}/paiements/ajouter
+ekyna_commerce_account_quote_payment_cancel: /mon-compte/devis/{number}/paiements/{key}/annuler
+ekyna_commerce_account_quote_attachment_create: /mon-compte/devis/{number}/documents/ajouter
+ekyna_commerce_account_quote_attachment_download: /mon-compte/devis/{number}/documents/{id}/telecharger
+ekyna_commerce_account_quote_shipment_download: /mon-compte/devis/{number}/expeditions/{id}/telecharger.{_format}
+ekyna_commerce_account_quote_invoice_download: /mon-compte/devis/{number}/factures/{id}/telecharger.{_format}
 
 ekyna_commerce_account_order_index: /mon-compte/commandes
 ekyna_commerce_account_order_show: /mon-compte/commandes/{number}
-ekyna_commerce_account_order_attachment_download: /mon-compte/commandes/{number}/documents/{id}
+ekyna_commerce_account_order_payment_create: /mon-compte/commandes/{number}/paiements/ajouter
+ekyna_commerce_account_order_payment_cancel: /mon-compte/commandes/{number}/paiements/{key}/annuler
+ekyna_commerce_account_order_attachment_create: /mon-compte/commandes/{number}/documents/ajouter
+ekyna_commerce_account_order_attachment_download: /mon-compte/commandes/{number}/documents/{id}/telecharger
+ekyna_commerce_account_order_shipment_download: /mon-compte/commandes/{number}/expeditions/{id}/telecharger.{_format}
+ekyna_commerce_account_order_invoice_download: /mon-compte/commandes/{number}/factures/{id}/telecharger.{_format}
+
+ekyna_commerce_account_invoice_index: /mon-compte/factures
+ekyna_commerce_account_invoice_show: /mon-compte/factures/{number}
+ekyna_commerce_account_invoice_download: /mon-compte/factures/{number}/telecharger.{_format}

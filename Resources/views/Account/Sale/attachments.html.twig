@@ -7,7 +7,7 @@
         </a>
         {{ 'ekyna_commerce.account.attachment.title'|trans|raw }}
     </div>
-    <table class="table table-stripped">
+    <table class="table">
         <tbody>
         {%- for attachment in sale|sale_attachments -%}
             {%- set path = path(route_prefix ~ '_attachment_download', {'number': sale.number, 'id': attachment.id}) -%}

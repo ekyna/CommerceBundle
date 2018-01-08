@@ -56,19 +56,21 @@
         <!-- Account menu event subscriber -->
         <service id="ekyna_commerce.account.menu_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\AccountMenuSubscriber">
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
         <!-- Account dashboard event subscriber -->
         <service id="ekyna_commerce.account.dashboard_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\AccountDashboardSubscriber">
-            <argument type="service" id="ekyna_commerce.customer.repository"/>
-            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_commerce.quote.repository"/>
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <!-- Account event subscriber -->
+        <!-- Registration event subscriber -->
         <service id="ekyna_commerce.registration_event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\RegistrationEventSubscriber">
             <argument type="service" id="ekyna_commerce.mailer"/>
@@ -77,6 +79,13 @@
             <argument type="service" id="router"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="session"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Resetting event subscriber -->
+        <service id="ekyna_commerce.resetting_event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\ResettingEventSubscriber">
+            <argument type="service" id="router"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

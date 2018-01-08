@@ -221,7 +221,7 @@ class OrderType extends ResourceTableType
                     'label'    => 'ekyna_commerce.sale.field.origin_number',
                     'position' => 50,
                 ])
-                ->addFilter('granTotal', CType\Filter\NumberType::class, [
+                ->addFilter('grandTotal', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.sale.field.grand_total',
                     'position' => 60,
                 ])

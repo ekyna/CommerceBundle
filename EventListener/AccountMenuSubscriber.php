@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\UserBundle\Event\MenuEvent;
+use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -13,6 +14,21 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class AccountMenuSubscriber implements EventSubscriberInterface
 {
     /**
+     * @var CustomerProviderInterface
+     */
+    protected $customerProvider;
+
+    /**
+     * Constructor.
+     *
+     * @param CustomerProviderInterface $customerProvider
+     */
+    public function __construct(CustomerProviderInterface $customerProvider)
+    {
+        $this->customerProvider = $customerProvider;
+    }
+
+    /**
      * Menu configure event handler.
      *
      * @param MenuEvent $event
@@ -21,14 +37,16 @@ class AccountMenuSubscriber implements EventSubscriberInterface
     {
         $menu = $event->getMenu();
 
+        $customer = $this->customerProvider->getCustomer();
+
         // Information
         $menu->addChild('ekyna_commerce.account.information.title', [
             'route' => 'ekyna_commerce_account_information_index',
         ]);
 
-        // Addresses
-        $menu->addChild('ekyna_commerce.account.address.title', [
-            'route' => 'ekyna_commerce_account_address_index',
+        // Quotes
+        $menu->addChild('ekyna_commerce.account.quote.title', [
+            'route' => 'ekyna_commerce_account_quote_index',
         ]);
 
         // Orders
@@ -36,9 +54,16 @@ class AccountMenuSubscriber implements EventSubscriberInterface
             'route' => 'ekyna_commerce_account_order_index',
         ]);
 
-        // Quotes
-        $menu->addChild('ekyna_commerce.account.quote.title', [
-            'route' => 'ekyna_commerce_account_quote_index',
+        // Invoices
+        if (!$customer->hasParent()) {
+            $menu->addChild('ekyna_commerce.account.invoice.title', [
+                'route' => 'ekyna_commerce_account_invoice_index',
+            ]);
+        }
+
+        // Addresses
+        $menu->addChild('ekyna_commerce.account.address.title', [
+            'route' => 'ekyna_commerce_account_address_index',
         ]);
     }
 

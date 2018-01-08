@@ -200,7 +200,7 @@ class QuoteController extends AbstractController
 
         $quotes = $this->findQuotesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Quote:payment.html.twig', [
+        return $this->render('EkynaCommerceBundle:Account/Quote:payment_create.html.twig', [
             'customer' => $customer,
             'quote'    => $quote,
             'forms'    => $checkout->getFormsViews(),

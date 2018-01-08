@@ -7,7 +7,7 @@ ekyna_commerce_account_quote_index:
         _cms:
             name: Mes devis
             parent: ekyna_user_account_index
-            position: 40
+            position: 20
             locked: true
             advanced: false
             seo:

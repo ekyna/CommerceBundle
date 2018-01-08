@@ -18,6 +18,10 @@ ekyna_commerce_account_order:
     resource: "account/order.yml"
     prefix:   /orders
 
+ekyna_commerce_account_invoice:
+    resource: "account/invoice.yml"
+    prefix:   /invoices
+
 ekyna_commerce_account_payment_status:
     path: /payment/status
     defaults: { _controller: "ekyna_commerce.controller.account.payment:statusAction" }

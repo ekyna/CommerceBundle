@@ -9,7 +9,7 @@
             {{- 'ekyna_commerce.account.shipment.title'|trans|raw -}}
         {%- endif -%}
     </div>
-    <table class="table table-striped table-hover">
+    <table class="table">
         <tbody>
         {%- for shipment in shipments -%}
             {%- set shipmentId = 'shipment_' ~ shipment.id -%}

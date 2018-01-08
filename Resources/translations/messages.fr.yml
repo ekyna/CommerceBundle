@@ -30,8 +30,12 @@ ekyna_commerce:
             edit:
                 title: Modifier mes informations
                 success: Vos informations ont bien été enregistrées.
+        state:
+            title: Situation de mon compte
         order:
             title: Mes commandes
+            latest: Commandes récentes
+            all: Toutes mes commandes
             show: Détail de la commande <em>%number%</em>
             payment: Paiement de la commande <em>%number%</em>
             attachment: Ajouter une pièce jointe à la commande <em>%number%</em>
@@ -42,6 +46,8 @@ ekyna_commerce:
                 payment_denied: Contactez votre service d'achat pour le réglement de cette commande.
         quote:
             title: Mes devis
+            latest: Devis récents
+            all: Tous mes devis
             show: Détail du devis <em>%number%</em>
             voucher: Bon d'achat du devis <em>%number%</em>
             payment: Paiement du devis <em>%number%</em>
@@ -57,6 +63,12 @@ ekyna_commerce:
                     de bien vouloir ajouter votre bon d'achat.
                 voucher_denied: Contactez votre service d'achat pour la gestion du bon d'achat.
                 payment_denied: Contactez votre service d'achat pour le réglement de ce devis.
+        invoice:
+            title: Mes factures
+            latest: Factures récentes
+            all: Toutes mes factures
+            show: Détail de la facture <em>%number%</em>
+            empty_list: Aucune facture enregistré
         payment:
             title: Paiements
             confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment %number% ?

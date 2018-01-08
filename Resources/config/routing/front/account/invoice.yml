@@ -1,0 +1,33 @@
+ekyna_commerce_account_invoice_index:
+    path: ""
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Invoice:index
+    methods: [GET]
+    options:
+        _cms:
+            name: Mes factures
+            parent: ekyna_user_account_index
+            position: 40
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_invoice_show:
+    path: /{number}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Invoice:show
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [GET]
+
+ekyna_commerce_account_invoice_download:
+    path: /{number}/download.{_format}
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Invoice:download
+        _format: pdf
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        _format: pdf|html|jpg
+    methods: [GET]
