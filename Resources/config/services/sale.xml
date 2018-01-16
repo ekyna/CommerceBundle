@@ -14,7 +14,15 @@
             <argument type="collection"/><!-- Replaced by DI extension -->
         </service>
 
-        <!-- Sale factory -->
+        <!-- Sale prioritizer -->
+        <!--<service id="ekyna_commerce.sale_prioritizer"
+                 class="Ekyna\Component\Commerce\Common\Prioritizer\SalePrioritizer"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.dispatcher"/>
+        </service>-->
+
+        <!-- Sale copier -->
         <service id="ekyna_commerce.sale_copier"
                  class="Ekyna\Component\Commerce\Common\Transformer\SaleCopier"
                  lazy="true">

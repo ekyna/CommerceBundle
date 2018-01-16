@@ -20,6 +20,14 @@
             </call>
         </service>
 
+        <!-- Stock adjustment listener -->
+        <service id="ekyna_commerce.stock_adjustment.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\StockAdjustmentEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Stock unit cache -->
         <service id="ekyna_commerce.stock_unit.cache"
                  class="Ekyna\Component\Commerce\Stock\Cache\StockUnitCache">
@@ -28,22 +36,32 @@
 
         <!-- Stock unit resolver -->
         <service id="ekyna_commerce.stock_unit.resolver"
-                 class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver">
+                 class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver"
+                 lazy="true">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
         </service>
 
         <!-- Stock unit state resolver -->
         <service id="ekyna_commerce.stock_unit.state_resolver"
                  class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitStateResolver"/>
 
+        <!-- Stock unit manager -->
+        <service id="ekyna_commerce.stock_unit.manager"
+                 class="Ekyna\Component\Commerce\Stock\Manager\StockUnitManager">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
+        </service>
+
         <!-- Stock unit updater -->
         <service id="ekyna_commerce.stock_unit.updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockUnitUpdater">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.manager"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.dispatcher"/>
         </service>
 
         <!-- Stock assignment updater -->
@@ -51,6 +69,15 @@
                  class="Ekyna\Component\Commerce\Stock\Updater\StockAssignmentUpdater">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+        </service>
+
+        <!-- Stock assignment dispatcher -->
+        <service id="ekyna_commerce.stock_assignment.dispatcher"
+                 class="Ekyna\Component\Commerce\Stock\Dispatcher\StockAssignmentDispatcher"
+                 lazy="true">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.manager"/>
         </service>
 
         <!-- Stock unit assigner -->
@@ -68,9 +95,8 @@
         <service id="ekyna_commerce.stock_unit.linker"
                  class="Ekyna\Component\Commerce\Stock\Linker\StockUnitLinker">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
-            <argument type="service" id="ekyna_commerce.stock_unit.state_resolver"/>
-            <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.currency.converter"/>
         </service>
 
@@ -86,8 +112,10 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="serializer"/>
             <argument type="service" id="templating"/>
             <argument>%ekyna_commerce.stock_unit.list_template%</argument>
+            <argument>%ekyna_commerce.stock_assignment.list_template%</argument>
             <argument>%ekyna_commerce.subject_stock.list_template%</argument>
         </service>
 

@@ -1,5 +1,7 @@
+{% spaceless %}
 {% import _self as macros %}
 {% macro item_line(item) %}
+    {% if not item.private %}
     <tr>
         <td>{{ item.designation }}</td>
         <td>{{ item.reference }}</td>
@@ -9,9 +11,11 @@
     {% for child in item.children %}
         {{ macros.item_line(child) }}
     {% endfor %}
+    {% endif %}
 {% endmacro %}
 <table class="table table-condensed">
-    {% for item in items %}
-        {{ macros.item_line(item) }}
-    {% endfor %}
+{% for item in items %}
+    {{ macros.item_line(item) }}
+{% endfor %}
 </table>
+{% endspaceless %}

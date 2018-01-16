@@ -196,7 +196,7 @@
             <p>{{ payment.method.title }}</p>
             {{ payment.method.description|raw }}
 
-            {{ form_row(form.submit) }}
+            {%- if form.submit is defined %}{{ form_row(form.submit) }}{% endif -%}
         </div>
     </div>
 {% endspaceless %}
@@ -237,7 +237,7 @@
                 {{- form_row(form.amount) -}}
             {%- endif -%}
 
-            {{- form_row(form.submit) -}}
+            {%- if form.submit is defined %}{{ form_row(form.submit) }}{% endif -%}
 
             {% if lock_message is not empty -%}
             <div class="alert alert-warning">{{ lock_message|raw }}</div>

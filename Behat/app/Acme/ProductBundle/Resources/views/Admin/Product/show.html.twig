@@ -17,31 +17,34 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="product-general">
-                    {{ show_row(product.designation, 'text', 'ekyna_core.field.designation', {
+                    {{- show_row(product.designation, 'text', 'ekyna_core.field.designation', {
                         'id': 'product_designation'
-                    }) }}
-                    {{ show_row(product.reference, 'text', 'ekyna_core.field.reference', {
+                    }) -}}
+                    {{- show_row(product.reference, 'text', 'ekyna_core.field.reference', {
                         'id': 'product_reference'
-                    }) }}
-                    {{ show_row(product.netPrice, 'number', 'ekyna_core.field.price', {
+                    }) -}}
+                    {{- show_row(product.netPrice, 'number', 'ekyna_core.field.price', {
                         'id': 'product_netPrice'
-                    }) }}
-                    {{ show_row(product.weight, 'number', 'ekyna_core.field.weight', {
+                    }) -}}
+                    {{- show_row(product.weight, 'number', 'ekyna_core.field.weight', {
                         'id': 'product_weight'
-                    }) }}
+                    }) -}}
                     <hr>
-                    {{ stock_macros.show_stock_view(product, 'product') }}
+                    {{- stock_macros.show_stock_view(product, 'product') -}}
                     <hr>
                     <div class="actions">
-                        {{ admin_resource_btn('acme_product.stock_unit', 'new', {
+                        {{- admin_resource_btn('acme_product.stock_unit', 'new', {
                             'label': 'ekyna_commerce.stock_unit.button.new',
                             'size': 'xs',
                             'path': path('acme_product_stock_unit_admin_new', {
                                 'productId': product.id,
                             })
-                        }) }}
+                        }) -}}
                     </div>
-                    {{ render_subject_stock_units(product, {'id': 'product_stockUnit'}) }}
+                    {{- render_subject_stock_units(product, {
+                        'prefix': 'product_stockUnit',
+                        'id': 'stock-units-view'
+                    }) -}}
                 </div>
             </div>
         </div>

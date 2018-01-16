@@ -17,9 +17,8 @@
         <service id="ekyna_commerce.availability_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"
                  lazy="true">
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
             <argument type="service" id="translator"/>
-            <argument type="service" id="ekyna_resource.locale.request_provider"/>
-            <argument>%ekyna_commerce.default.currency%</argument>
         </service>
 
         <!-- Constants helper -->

@@ -18,6 +18,7 @@ use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -418,6 +419,27 @@ class SaleController extends AbstractSaleController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    /**
+     * Prioritize action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function prioritizeAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        if ($sale instanceof ShipmentSubjectInterface) {
+            // TODO Use sale prioritizer
+        }
+
+        return $this->redirect($this->generateResourcePath($sale));
     }
 
     /**

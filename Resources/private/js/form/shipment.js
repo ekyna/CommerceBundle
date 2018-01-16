@@ -37,7 +37,8 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                         var $input = $(this);
                         $input.val(quantity * $input.data('quantity')).trigger('change');
                     });
-                });
+                })
+                .find('input').not(':disabled').trigger('change');
         });
 
         return this;

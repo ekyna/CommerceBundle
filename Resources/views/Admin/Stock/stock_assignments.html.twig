@@ -1,5 +1,5 @@
 {% spaceless %}
-<div id="{{ id }}" data-prefix="{{ prefix }}" class="stock-units table-responsive">
+<div id="{{ id }}" data-prefix="{{ prefix }}" class="stock-assignments table-responsive">
     <table class="{{ classes }}">
         <thead>
         <tr>
@@ -16,18 +16,18 @@
         </tr>
         </thead>
         <tbody>
-        {% include "EkynaCommerceBundle:Js:stock_unit_rows.html.twig" with {
+        {% include "EkynaCommerceBundle:Js:stock_assignment_rows.html.twig" with {
             'prefix': prefix,
-            'stock_units': stockUnits,
+            'stock_assignments': stockAssignments,
         } only %}
         </tbody>
     </table>
 </div>
-{% if script -%}
+{#{% if script -%}
 <script type="text/javascript">
     require(['ekyna-commerce/stock-units'], function(StockUnits) {
         new StockUnits('{{ id }}');
     });
 </script>
-{%- endif %}
+{%- endif %}#}
 {% endspaceless %}

@@ -72,7 +72,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
         $customer = $this->customerProvider->getCustomer();
 
         if (null !== $customer) {
-            /*if (null !== $customer->getPaymentTerm()) {
+            if (null !== $customer->getPaymentTerm()) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.state.title',
                     'EkynaCommerceBundle:Account/Dashboard:state.html.twig',
@@ -85,7 +85,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                     ->setPriority(1000);
 
                 $event->addWidget($widget);
-            }*/
+            }
 
             // Quotes widget
             if (!empty($quotes = $this->getQuotes($customer))) {

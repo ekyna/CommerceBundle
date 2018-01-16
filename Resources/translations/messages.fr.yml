@@ -292,6 +292,7 @@ ekyna_commerce:
                 label: Avoir
         state:
             new: Création
+            canceled: Annulé
             pending: En attente
             partial: Partielle
             invoiced: Facturée
@@ -757,6 +758,7 @@ ekyna_commerce:
             refresh: Rafraîchir
             recalculate: Recalculer
             notify: Notifier
+            prioritize: Prioriser
             adjustment:
                 new: Ajouter une remise
                 edit: Modifier la remise
@@ -768,6 +770,7 @@ ekyna_commerce:
                 edit: Modifier la ligne
                 remove: Supprimer la ligne
                 information: Afficher les information
+                detail: Afficher le détail
             item_adjustment:
                 new: Ajouter une remise de ligne
                 edit: Modifier la remise de ligne
@@ -996,6 +999,7 @@ ekyna_commerce:
             estimated_date_of_arrival: Date de livraison estimée
             ordered_quantity: Qte commandée
             received_quantity: Qte reçue
+            adjusted_quantity: Qte ajustée
             sold_quantity: Qte vendue
             shipped_quantity: Qte expediée
             net_price: Prix d'achat HT
@@ -1004,6 +1008,29 @@ ekyna_commerce:
             new: Créer une unité de stock
         alert:
             empty_list: Aucune unité de stock disponible
+
+    stock_adjustment:
+        label:
+            singular: Ajustement de stock
+            plural: Ajustement de stock
+        header:
+            list: Liste des ajustement de stock
+            show: Détail de l'ajustement
+            new: Créer un nouvel ajustement
+            edit: Modifier l'ajustement
+            remove: Supprimer l'ajustement
+        field:
+            debit: Débit
+            credit: Crédit
+            reason: Raison
+        reason:
+            faulty: Défectueux (débit)
+            improper: Non conforme (débit)
+            found: Retrouvé (crédit)
+        confirm:
+            remove: Êtes-vous sûr de vouloir supprimer cet ajustement de stock ?
+        alert:
+            empty_list: Aucun ajustment de stock disponible
 
     stock_subject:
         field:

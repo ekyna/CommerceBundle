@@ -24,32 +24,28 @@ class CartViewType extends AbstractViewType
             return;
         }
 
-        $actions = [];
-
         // Configure action
         if ($item->isConfigurable()) {
             $configurePath = $this->generateUrl('ekyna_commerce_cart_item_configure', [
                 'itemId' => $item->getId(),
             ]);
-            $actions[] = new View\Action($configurePath, 'fa fa-cog', [
+            $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
                 'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',
-            ]);
+            ]));
         }
 
         // Remove action
         $removePath = $this->generateUrl('ekyna_commerce_cart_item_remove', [
             'itemId' => $item->getId(),
         ]);
-        $actions[] = new View\Action($removePath, 'fa fa-remove', [
+        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
             'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
             'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
             'data-sale-xhr' => null,
             'class'         => 'text-danger',
-        ]);
-
-        $view->vars['actions'] = $actions;
+        ]));
     }
 
     /**
@@ -60,8 +56,6 @@ class CartViewType extends AbstractViewType
         if ($adjustment->isImmutable() || !$options['editable']) {
             return;
         }
-
-        $actions = [];
 
         $adjustable = $adjustment->getAdjustable();
         if ($adjustable instanceof Cart\CartAdjustmentInterface) {
@@ -77,14 +71,12 @@ class CartViewType extends AbstractViewType
             throw new InvalidArgumentException('Unexpected adjustable.');
         }
 
-        $actions[] = new View\Action($removePath, 'fa fa-remove', [
+        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
             'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),
             'confirm'       => $this->trans('ekyna_commerce.sale.confirm.adjustment.remove'),
             'data-sale-xhr' => null,
             'class'         => 'text-danger',
-        ]);
-
-        $view->vars['actions'] = $actions;
+        ]));
     }
 
     /**

@@ -15,6 +15,8 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentSubjectInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
+use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentReasons;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
@@ -457,6 +459,52 @@ class ConstantsHelper extends AbstractConstantsHelper
         }
 
         return $this->renderBadge($this->renderStockUnitStateLabel($stateOrStockUnit), $theme);
+    }
+
+    /**
+     * Renders the stock adjustment reason label.
+     *
+     * @param StockAdjustmentInterface|string $adjustmentOrReason
+     *
+     * @return string
+     */
+    public function renderStockAdjustmentReasonLabel($adjustmentOrReason)
+    {
+        if ($adjustmentOrReason instanceof StockAdjustmentInterface) {
+            $adjustmentOrReason = $adjustmentOrReason->getReason();
+        }
+
+        return $this->renderLabel(Model\StockAdjustmentReasons::getLabel($adjustmentOrReason));
+    }
+
+    /**
+     * Renders the stock adjustment type label.
+     *
+     * @param StockAdjustmentInterface $adjustment
+     *
+     * @return string
+     */
+    public function renderStockAdjustmentTypeLabel(StockAdjustmentInterface $adjustment)
+    {
+        $debit = StockAdjustmentReasons::isDebitReason($adjustment->getReason());
+
+        return $this->renderLabel('ekyna_commerce.stock_adjustment.field.' . ($debit ? 'debit' : 'credit'));
+    }
+
+    /**
+     * Renders the stock adjustment type badge.
+     *
+     * @param StockAdjustmentInterface $adjustment
+     *
+     * @return string
+     */
+    public function renderStockAdjustmentTypeBadge(StockAdjustmentInterface $adjustment)
+    {
+        $debit = StockAdjustmentReasons::isDebitReason($adjustment->getReason());
+
+        $theme = $debit ? 'danger' : 'success';
+
+        return $this->renderBadge($this->renderStockAdjustmentTypeLabel($adjustment), $theme);
     }
 
     /**

@@ -161,11 +161,15 @@
                     }
                 }
 
-                &.private > td {
-                    color: lighten(@text-color, 30%);
+                &.private {
+                    display: none;
 
-                    a {
-                        color: lighten(@text-color, 15%);
+                    > td {
+                        color: lighten(@text-color, 30%);
+
+                        a {
+                            color: lighten(@text-color, 15%);
+                        }
                     }
                 }
 

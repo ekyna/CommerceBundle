@@ -32,6 +32,53 @@
             <tag name="serializer.denormalizer"/>
         </service>
 
+        <!-- Stock unit normalizer -->
+        <service id="ekyna_commerce.stock_unit.normalizer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Serializer\StockUnitNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_admin.helper.resource_helper"/>
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Stock adjustment normalizer -->
+        <service id="ekyna_commerce.stock_adjustment.normalizer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Serializer\StockAdjustmentNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_admin.helper.resource_helper"/>
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Stock assignment normalizer -->
+        <service id="ekyna_commerce.stock_assignment.normalizer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Serializer\StockAssignmentNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Subject adjustment normalizer -->
+        <service id="ekyna_commerce.subject.normalizer_helper"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Helper\SubjectNormalizerHelper"
+                 public="false" lazy="true">
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_admin.helper.resource_helper"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <call method="setNormalizer">
+                <argument type="service" id="serializer"/>
+            </call>
+        </service>
+
         <!-- Customer normalizer -->
         <service id="ekyna_commerce.sale_item.normalizer"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleItemNormalizer"

@@ -1,0 +1,61 @@
+{% spaceless %}
+{% for stock_unit in stock_units %}
+    {% set stock_unit_id = prefix ~ '_' ~ loop.index0 -%}
+    <tr id="{{ stock_unit_id }}">
+        <td id="{{ stock_unit_id ~ '_state' }}">{{ stock_unit.state_badge|raw }}</td>
+        <td id="{{ stock_unit_id ~ '_geocodes' }}">{{ stock_unit.geocodes }}</td>
+        <td id="{{ stock_unit_id ~ '_orderedQuantity' }}" class="text-right">{{ stock_unit.ordered }}</td>
+        <td id="{{ stock_unit_id ~ '_receivedQuantity' }}" class="text-right">{{ stock_unit.received }}</td>
+        <td id="{{ stock_unit_id ~ '_adjustedQuantity' }}" class="text-right">{{ stock_unit.adjusted }}</td>
+        <td id="{{ stock_unit_id ~ '_soldQuantity' }}" class="text-right">{{ stock_unit.sold }}</td>
+        <td id="{{ stock_unit_id ~ '_shippedQuantity' }}" class="text-right">{{ stock_unit.shipped }}</td>
+        <td id="{{ stock_unit_id ~ '_estimatedDateOfArrival' }}">{{ stock_unit.eda|raw }}</td>
+        <td id="{{ stock_unit_id ~ '_netPrice' }}" class="text-right">{{ stock_unit.net_price }}</td>
+        <td class="actions">
+        {% for action in stock_unit.actions %}
+            <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
+                {{ action.label|raw }}
+            </a>
+        {% endfor %}
+        {% if stock_unit.adjustments is not empty %}
+            <a href="javascript: void(0)"
+               class="btn btn-xs btn-default"
+               data-toggle-details="{{ stock_unit_id ~ '_adjustments' }}">
+                <i class="fa fa-info-circle"></i>
+            </a>
+        {% endif %}
+        </td>
+    </tr>
+    {% if stock_unit.adjustments is not empty %}
+    <tr id="{{ stock_unit_id ~ '_adjustments' }}" style="display: none">
+        <td>&nbsp;</td>
+        <td colspan="9">
+            <table class="table" style="border: 1px solid #ddd;">
+                {% for adjustment in stock_unit.adjustments %}
+                    <tr>
+                        <td>{{ adjustment.type_badge|raw }}</td>
+                        <td>{{ adjustment.quantity }}</td>
+                        <td>{{ adjustment.reason_label }}</td>
+                        <td>{{ adjustment.note }}</td>
+                        <td class="actions">
+                        {% for action in adjustment.actions %}
+                            <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
+                                {{ action.label|raw }}
+                            </a>
+                        {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </td>
+    </tr>
+    {% endif %}
+{% else %}
+    <tr>
+        <td colspan="10" class="text-center">
+            {#<em>{{ 'ekyna_commerce.stock_unit.alert.empty_list'|trans }}</em>#}
+            <em>No stock unit available</em>
+        </td>
+    </tr>
+{% endfor %}
+{% endspaceless %}

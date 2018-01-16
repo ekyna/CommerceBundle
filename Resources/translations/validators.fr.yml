@@ -72,6 +72,9 @@ ekyna_commerce:
             La quantité expédiée doit être inférieure ou égale à la quantité réceptionnée.
         shipped_must_be_lower_than_sold: |
             La quantité expédiée doit être inférieure ou égale à la quantité vendue.
+    stock_adjustment:
+        negative_stock: |
+            Le stock résultant
     shipment:
         shipped_state_denied: |
             Le statut de la vente ne permet pas de sélectionner ce statut d'expédition.

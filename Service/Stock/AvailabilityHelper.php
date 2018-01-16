@@ -2,9 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
-use Ekyna\Component\Commerce\Common\View\Formatter;
+use Ekyna\Component\Commerce\Common\Util\Formatter;
 use Ekyna\Component\Commerce\Stock\Helper\AbstractAvailabilityHelper;
-use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -20,16 +19,6 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
     protected $translator;
 
     /**
-     * @var LocaleProviderInterface
-     */
-    protected $localeProvider;
-
-    /**
-     * @var string
-     */
-    protected $defaultCurrency;
-
-    /**
      * @var string
      */
     protected $prefix;
@@ -38,36 +27,19 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
     /**
      * Constructor.
      *
-     * @param TranslatorInterface     $translator
-     * @param LocaleProviderInterface $localeProvider
-     * @param string                  $defaultCurrency
-     * @param string                  $prefix
+     * @param Formatter           $formatter
+     * @param TranslatorInterface $translator
+     * @param string              $prefix
      */
     public function __construct(
+        Formatter $formatter,
         TranslatorInterface $translator,
-        LocaleProviderInterface $localeProvider,
-        $defaultCurrency,
         $prefix = 'ekyna_commerce.stock_subject.availability.'
     ) {
+        parent::__construct($formatter);
+
         $this->translator = $translator;
-        $this->localeProvider = $localeProvider;
-        $this->defaultCurrency = $defaultCurrency;
         $this->prefix = $prefix;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getFormatter()
-    {
-        if (null !== $this->formatter) {
-            return $this->formatter;
-        }
-
-        return $this->formatter = new Formatter(
-            $this->localeProvider->getCurrentLocale(),
-            $this->defaultCurrency
-        );
     }
 
     /**

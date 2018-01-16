@@ -22,7 +22,6 @@ class ProductEventSubscriber extends BaseSubscriber implements EventSubscriberIn
             ProductEvents::INSERT            => ['onInsert', 0],
             ProductEvents::UPDATE            => ['onUpdate', 0],
             ProductEvents::STOCK_UNIT_CHANGE => ['onStockUnitChange', 0],
-            ProductEvents::STOCK_UNIT_REMOVE => ['onStockUnitRemoval', 0],
         ];
     }
 }

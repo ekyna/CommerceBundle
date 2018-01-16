@@ -57,6 +57,8 @@ class SalePaymentController extends AbstractSaleController
         /** @var SaleInterface $sale */
         $sale = $this->getParentResource($context);
 
+        // TODO redirect (+ flash) if remaining amount <= 0
+
         $stepValidator = $this->get('ekyna_commerce.sale_step_validator');
 
         if (!$stepValidator->validate($sale, SaleStepValidatorInterface::PAYMENT_STEP)) {

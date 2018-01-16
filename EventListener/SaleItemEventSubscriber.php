@@ -31,8 +31,8 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
      */
     public function fixItemPrivacy(SaleItemInterface $item)
     {
-        // Parent items can't be private.
-        if ($item->isPrivate() && $item->hasChildren()) {
+        // Parent items with public children can't be private.
+        if ($item->isPrivate() && $item->hasPublicChildren()) {
             $item->setPrivate(false);
         }
 

@@ -1,0 +1,34 @@
+<div class="form-horizontal" style="padding:15px 15px 0 15px;">
+    {% if customer.inCharge is not null %}
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                {{- 'ekyna_commerce.customer.field.in_charge'|trans -}}
+            </label>
+            <div class="col-md-9">
+                <p class="form-control">
+                    {{ customer.inCharge.username }}
+                    &lt;<em><a href="mailto:{{ customer.inCharge.email }}">{{ customer.inCharge.email }}</a></em>&gt;
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-6">Limite d'encours</label>
+                <div class="col-md-6">
+                    <p class="form-control"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label col-md-6">Solde d'encours</label>
+                <div class="col-md-6">
+                    <p class="form-control"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

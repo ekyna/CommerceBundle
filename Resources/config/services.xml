@@ -30,6 +30,7 @@
 
         <parameter key="ekyna_commerce.shipment_price.list_template">EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig</parameter>
         <parameter key="ekyna_commerce.stock_unit.list_template">EkynaCommerceBundle:Admin/Stock:stock_units.html.twig</parameter>
+        <parameter key="ekyna_commerce.stock_assignment.list_template">EkynaCommerceBundle:Admin/Stock:stock_assignments.html.twig</parameter>
         <parameter key="ekyna_commerce.subject_stock.list_template">EkynaCommerceBundle:Admin/Stock:subjects_stock.html.twig</parameter>
         <parameter key="ekyna_commerce.supplier_address.class">Ekyna\Component\Commerce\Supplier\Entity\SupplierAddress</parameter>
     </parameters>
@@ -78,6 +79,19 @@
                  class="Ekyna\Component\Commerce\Bridge\Swap\SwapCurrencyConverter">
             <argument type="service" id="florianv_swap.swap"/>
             <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+
+        <!-- Formatter factory -->
+        <service id="ekyna_commerce.util.formatter_factory"
+                 class="Ekyna\Component\Commerce\Common\Util\FormatterFactory">
+            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+
+        <!-- Default formatter -->
+        <service id="ekyna_commerce.util.formatter.default"
+                 class="Ekyna\Component\Commerce\Common\Util\Formatter">
+            <factory service="ekyna_commerce.util.formatter_factory" method="create"/>
         </service>
 
         <!-- Security listener -->

@@ -1,0 +1,29 @@
+{% spaceless %}
+{% for assignment in stock_assignments %}
+    {% set assignment_id = prefix ~ '_' ~ loop.index0 %}
+    <tr id="{{ assignment_id }}">
+        <td id="{{ assignment_id ~ '_state' }}">{{ assignment.unit.state_badge|raw }}</td>
+        <td id="{{ assignment_id ~ '_geocodes' }}">{{ assignment.unit.geocodes }}</td>
+        <td id="{{ assignment_id ~ '_orderedQuantity' }}" class="text-right">{{ assignment.unit.ordered }}</td>
+        <td id="{{ assignment_id ~ '_receivedQuantity' }}" class="text-right">{{ assignment.unit.received }}</td>
+        <td id="{{ assignment_id ~ '_adjustedQuantity' }}" class="text-right">{{ assignment.unit.adjusted }}</td>
+        <td id="{{ assignment_id ~ '_soldQuantity' }}" class="text-right">
+            {{ assignment.unit.sold }}
+            <strong{% if not assignment.ready %} class="text-danger"{% endif %}>[{{ assignment.sold }}]</strong>
+        </td>
+        <td id="{{ assignment_id ~ '_shippedQuantity' }}" class="text-right">
+            {{ assignment.unit.shipped }}
+            <strong{% if not assignment.ready %} class="text-danger"{% endif %}>[{{ assignment.shipped }}]</strong>
+        </td>
+        <td id="{{ assignment_id ~ '_estimatedDateOfArrival' }}">{{ assignment.unit.eda|raw }}</td>
+        <td id="{{ assignment_id ~ '_netPrice' }}" class="text-right">{{ assignment.unit.net_price }}</td>
+        <td class="actions">
+            {% for action in assignment.actions %}
+            <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal{% endif %}>
+                {{ action.label|raw }}
+            </a>
+            {% endfor %}
+        </td>
+    </tr>
+{% endfor %}
+{% endspaceless %}
