@@ -7,8 +7,9 @@ use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
-use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates as BStates;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as CStates;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
@@ -97,6 +98,8 @@ class SupplierOrderType extends ResourceFormType
                 throw new LogicException("Supplier order's currency must be set at this point.");
             }
 
+            $requiredEda = $supplierOrder->getState() !== CStates::STATE_NEW;
+
             // Step 2: Supplier is selected
             $form
                 ->add('supplier', ResourceType::class, [
@@ -120,7 +123,7 @@ class SupplierOrderType extends ResourceFormType
                 ])
                 ->add('state', Symfony\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
-                    'choices'  => SupplierOrderStates::getChoices(),
+                    'choices'  => BStates::getChoices(),
                     'required' => false,
                     'disabled' => true,
                 ])
@@ -146,10 +149,18 @@ class SupplierOrderType extends ResourceFormType
                     'label'    => 'ekyna_commerce.supplier_order.field.administrative_fee',
                     'currency' => $this->defaultCurrency,
                 ])
+                ->add('discountTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.discount_total',
+                    'currency' => $this->defaultCurrency,
+                ])
+                ->add('trackingUrl', Symfony\UrlType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.tracking_url',
+                    'required' => false,
+                ])
                 ->add('estimatedDateOfArrival', Symfony\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
-                    'required' => false,
+                    'required' => $requiredEda,
                 ])
                 ->add('paymentDate', Symfony\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_date',

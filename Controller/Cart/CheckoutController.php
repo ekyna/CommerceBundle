@@ -289,20 +289,22 @@ class CheckoutController extends AbstractController
      */
     private function updateShipmentAmount(SaleInterface $sale)
     {
-        $country = $sale->getDeliveryCountry();
-        $method = $sale->getShipmentMethod();
-        $weight = $sale->getWeightTotal();
+        if (!$this->shipmentPriceResolver->hasFreeShipping($sale)) {
+            $country = $sale->getDeliveryCountry();
+            $method = $sale->getShipmentMethod();
+            $weight = $sale->getWeightTotal();
 
-        if ($country && $method) {
-            $price = $this
-                ->shipmentPriceResolver
-                ->getPriceByCountryAndMethodAndWeight($country, $method, $weight);
+            if ($country && $method) {
+                $price = $this
+                    ->shipmentPriceResolver
+                    ->getPriceByCountryAndMethodAndWeight($country, $method, $weight);
 
-            if (null !== $price) {
-                $sale->setShipmentAmount($price->getNetPrice());
+                if (null !== $price) {
+                    $sale->setShipmentAmount($price->getNetPrice());
+                }
+
+                return;
             }
-
-            return;
         }
 
         $sale->setShipmentAmount(0);

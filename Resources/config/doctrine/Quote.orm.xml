@@ -13,6 +13,17 @@
             <join-column name="in_charge_id" referenced-column-name="id" on-delete="RESTRICT" nullable="true"/>
         </many-to-one>
 
+        <many-to-many target-entity="Ekyna\Bundle\CmsBundle\Model\TagInterface" field="itemsTags">
+            <join-table name="commerce_quote_items_tags">
+                <join-columns>
+                    <join-column name="quote_id" referenced-column-name="id" on-delete="CASCADE"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="tag_id" referenced-column-name="id" on-delete="CASCADE"/>
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+
     </mapped-superclass>
 
 </doctrine-mapping>

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Bundle\CommerceBundle\Model\TaggedSaleInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformer as BaseTransformer;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
@@ -49,7 +50,22 @@ class SaleTransformer extends BaseTransformer
         $this->entityManager = $manager;
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function postCopy()
+    {
+        parent::postCopy();
 
+        if ($this->source instanceof TaggedSaleInterface && $this->target instanceof TaggedSaleInterface) {
+            foreach ($this->source->getTags() as $tag) {
+                $this->target->addTag($tag);
+            }
+            foreach ($this->source->getItemsTags() as $tag) {
+                $this->target->addItemsTag($tag);
+            }
+        }
+    }
 
     /**
      * @inheritDoc

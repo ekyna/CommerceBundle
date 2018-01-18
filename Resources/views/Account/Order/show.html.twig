@@ -9,6 +9,8 @@
     </p>
     <hr>
 
+    {% include 'EkynaCommerceBundle:Account/Sale:addresses.html.twig' with {'sale': order} only %}
+
     {{- render_sale_view(view) -}}
 
     {% if 0 < order.remainingAmount %}

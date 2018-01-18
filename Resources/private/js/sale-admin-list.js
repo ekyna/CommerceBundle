@@ -6,7 +6,12 @@ define(['jquery', 'routing', 'ekyna-commerce/templates'], function ($, Router, T
         return;
     }
 
-    var $table = $('.ekyna-table > form > div > table');
+    var $table = $('.ekyna-table > form > div > table'),
+        summaryRoute = $table.data('summary-route');
+
+    if (!summaryRoute) {
+        return;
+    }
 
     function loadSummary($tr) {
         if ($tr.data('summary-xhr')) {
@@ -14,7 +19,7 @@ define(['jquery', 'routing', 'ekyna-commerce/templates'], function ($, Router, T
         }
 
         var xhr = $.ajax({
-            url: Router.generate('ekyna_commerce_order_admin_summary', {'orderId': $tr.data('id')}),
+            url: Router.generate(summaryRoute, $tr.data('summary-parameters')),
             dataType: 'json'
         });
 

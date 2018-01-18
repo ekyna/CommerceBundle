@@ -4,15 +4,20 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
-use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\TableInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
+use Ekyna\Component\Table\View;
+use Ekyna\Component\Table\View\TableView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -85,13 +90,20 @@ class QuoteType extends ResourceTableType
                 'currency_path' => 'currency.code',
                 'position'      => 60,
             ])
-            ->addColumn('state', Column\SaleStateType::class, [
+            ->addColumn('state', Type\Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.sale.field.state',
                 'position' => 70,
             ])
-            ->addColumn('paymentState', Column\PaymentStateType::class, [
+            ->addColumn('paymentState', Type\Column\PaymentStateType::class, [
                 'label'    => 'ekyna_commerce.sale.table.payment_state',
                 'position' => 80,
+            ])
+            ->addColumn('inCharge', Type\Column\InChargeType::class, [
+                'position' => 90,
+            ])
+            ->addColumn('tags', TagsType::class, [
+                'property_path' => 'allTags',
+                'position'      => 100,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -117,7 +129,7 @@ class QuoteType extends ResourceTableType
             ]);
 
         if (null === $customer || $customer->hasChildren()) {
-            $builder->addColumn('customer', Column\SaleCustomerType::class, [
+            $builder->addColumn('customer', Type\Column\SaleCustomerType::class, [
                 'label'    => 'ekyna_commerce.customer.label.singular',
                 'position' => 30,
             ]);
@@ -171,8 +183,31 @@ class QuoteType extends ResourceTableType
                     'label'    => 'ekyna_commerce.sale.field.payment_state',
                     'choices'  => Model\PaymentStates::getChoices(),
                     'position' => 80,
+                ])
+                ->addFilter('inCharge', Type\Filter\InChargeType::class, [
+                    'position' => 90,
+                ])
+                ->addFilter('tags', Type\Filter\SaleTagsType::class, [
+                    'label'    => 'ekyna_cms.tag.label.plural',
+                    'position' => 100,
                 ]);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildView(TableView $view, TableInterface $table, array $options)
+    {
+        $view->vars['attr']['data-summary-route'] = 'ekyna_commerce_quote_admin_summary';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildRowView(View\RowView $view, RowInterface $row, array $options)
+    {
+        $view->vars['attr']['data-summary-parameters'] = json_encode(['quoteId' => $row->getData('id')]);
     }
 
     /**

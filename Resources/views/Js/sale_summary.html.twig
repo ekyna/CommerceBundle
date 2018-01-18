@@ -18,4 +18,7 @@
     {{ macros.item_line(item) }}
 {% endfor %}
 </table>
+{# TODO Translations #}
+{% if description is not empty %}<p><strong>Note interne:</strong> {{ description|raw }}</p>{% endif %}
+{% if comment is not empty %}<p><strong>Commentaire:</strong> {{ comment|raw }}</p>{% endif %}
 {% endspaceless %}

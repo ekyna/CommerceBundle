@@ -118,6 +118,14 @@ class SupplierOrderSubmitType extends Form\AbstractType
                     'label'    => 'ekyna_commerce.supplier_order.field.administrative_fee',
                     'currency' => $this->defaultCurrency,
                 ])
+                ->add('discountTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.discount_total',
+                    'currency' => $this->defaultCurrency,
+                ])
+                ->add('trackingUrl', Type\UrlType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.tracking_url',
+                    'required' => false,
+                ])
                 ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format

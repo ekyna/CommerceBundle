@@ -13,6 +13,8 @@
     </p>
     <hr>
 
+    {% include 'EkynaCommerceBundle:Account/Sale:addresses.html.twig' with {'sale': quote} only %}
+
     {{- render_sale_view(view) -}}
 
     {% if quote.expired %}

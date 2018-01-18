@@ -133,6 +133,8 @@ class OrderEventSubscriber extends BaseSubscriber
 
         $tags = $sale->getItemsTags();
 
+        // TODO Remove unexpected tags
+
         foreach ($sale->getItems() as $item) {
             $changed |= $this->mergeItemTags($item, $tags);
         }

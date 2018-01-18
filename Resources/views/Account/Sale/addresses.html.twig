@@ -1,0 +1,32 @@
+{% spaceless %}
+<div class="row">
+    <div class="col-md-6">
+        <p>
+            <strong>
+                {{- 'ekyna_commerce.sale.field.invoice_address'|trans -}}
+            </strong>
+        </p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                {{- sale.invoiceAddress|address -}}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <p>
+            <strong>
+                {{- 'ekyna_commerce.sale.field.delivery_address'|trans -}}
+            </strong>
+        </p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+            {%- if sale.sameAddress -%}
+                <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
+            {%- else -%}
+                {{- sale.deliveryAddress|address -}}
+            {%- endif -%}
+            </div>
+        </div>
+    </div>
+</div>
+{% endspaceless %}

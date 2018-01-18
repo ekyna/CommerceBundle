@@ -3,10 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ekyna\Bundle\CmsBundle\Model\TagInterface;
-use Ekyna\Bundle\CmsBundle\Model\TagsSubjectTrait;
-use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectTrait;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\CmsBundle\Model as Cms;
+use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
 
 /**
@@ -14,13 +12,13 @@ use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
  * @package Ekyna\Bundle\CommerceBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class Order extends BaseOrder implements OrderInterface
+class Order extends BaseOrder implements Model\OrderInterface
 {
-    use InChargeSubjectTrait,
-        TagsSubjectTrait;
+    use Model\InChargeSubjectTrait,
+        Cms\TagsSubjectTrait;
 
     /**
-     * @var ArrayCollection|TagInterface[]
+     * @var ArrayCollection|Cms\TagInterface[]
      */
     protected $itemsTags;
 
@@ -39,7 +37,7 @@ class Order extends BaseOrder implements OrderInterface
     /**
      * @inheritdoc
      */
-    public function hasItemsTag(TagInterface $tag)
+    public function hasItemsTag(Cms\TagInterface $tag)
     {
         return $this->itemsTags->contains($tag);
     }
@@ -47,7 +45,7 @@ class Order extends BaseOrder implements OrderInterface
     /**
      * @inheritdoc
      */
-    public function addItemsTag(TagInterface $tag)
+    public function addItemsTag(Cms\TagInterface $tag)
     {
         if (!$this->itemsTags->contains($tag)) {
             $this->itemsTags->add($tag);
@@ -59,7 +57,7 @@ class Order extends BaseOrder implements OrderInterface
     /**
      * @inheritdoc
      */
-    public function removeItemsTag(TagInterface $tag)
+    public function removeItemsTag(Cms\TagInterface $tag)
     {
         if ($this->itemsTags->contains($tag)) {
             $this->itemsTags->removeElement($tag);

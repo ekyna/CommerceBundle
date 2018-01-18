@@ -2,11 +2,15 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
+use Doctrine\Common\Collections\Collection;
+use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\QuoteEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
+use Ekyna\Component\Commerce\Quote\Model\QuoteItemInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
 
@@ -18,10 +22,25 @@ use Ekyna\Component\Resource\Event\ResourceMessage;
 class QuoteEventSubscriber extends BaseSubscriber
 {
     /**
+     * @var SubjectHelper
+     */
+    protected $subjectHelper;
+
+    /**
      * @var InChargeResolver
      */
     protected $inChargeResolver;
 
+
+    /**
+     * Sets the subject helper.
+     *
+     * @param SubjectHelper $subjectHelper
+     */
+    public function setSubjectHelper(SubjectHelper $subjectHelper)
+    {
+        $this->subjectHelper = $subjectHelper;
+    }
 
     /**
      * Sets the 'in charge' resolver.
@@ -87,6 +106,61 @@ class QuoteEventSubscriber extends BaseSubscriber
         $changed = parent::handleUpdate($sale);
 
         $changed |= $this->inChargeResolver->update($sale);
+
+        return $changed;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param QuoteInterface $sale
+     */
+    protected function handleContentChange(SaleInterface $sale)
+    {
+        $changed = parent::handleContentChange($sale);
+
+        $tags = $sale->getItemsTags();
+
+        // TODO Remove unexpected tags
+
+        foreach ($sale->getItems() as $item) {
+            $changed |= $this->mergeItemTags($item, $tags);
+        }
+
+        return $changed;
+    }
+
+    /**
+     * Resolves the item tags.
+     *
+     * @param QuoteItemInterface $item
+     * @param Collection    $tags
+     *
+     * @return bool Whether the order items tags has change.
+     */
+    private function mergeItemTags(QuoteItemInterface $item, Collection $tags)
+    {
+        $changed = false;
+        if ($item->hasChildren()) {
+            foreach ($item->getChildren() as $child) {
+                $changed |= $this->mergeItemTags($child, $tags);
+            }
+        }
+
+        if (null === $subject = $this->subjectHelper->resolve($item, false)) {
+            return $changed;
+        }
+
+        if (!$subject instanceof TagsSubjectInterface) {
+            return $changed;
+        }
+
+        foreach ($subject->getTags() as $tag) {
+            if (!$tags->contains($tag)) {
+                $tags->add($tag);
+                $changed = true;
+            }
+        }
 
         return $changed;
     }

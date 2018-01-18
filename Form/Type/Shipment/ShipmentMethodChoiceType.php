@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Common\Util\Formatter;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
 use Ekyna\Component\Commerce\Shipment\Repository\ShipmentMethodRepositoryInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
@@ -12,6 +13,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class ShipmentMethodChoiceType
@@ -31,6 +33,16 @@ class ShipmentMethodChoiceType extends AbstractType
     private $methodRepository;
 
     /**
+     * @var Formatter
+     */
+    private $formatter;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * @var array|\Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface[]
      */
     private $availableMethods;
@@ -40,19 +52,30 @@ class ShipmentMethodChoiceType extends AbstractType
      */
     private $availablePrices;
 
+    /**
+     * @var bool
+     */
+    private $freeShipping = false;
+
 
     /**
      * Constructor.
      *
      * @param ShipmentPriceResolverInterface    $priceResolver
      * @param ShipmentMethodRepositoryInterface $methodRepository
+     * @param Formatter                         $formatter
+     * @param TranslatorInterface               $translator
      */
     public function __construct(
         ShipmentPriceResolverInterface $priceResolver,
-        ShipmentMethodRepositoryInterface $methodRepository
+        ShipmentMethodRepositoryInterface $methodRepository,
+        Formatter $formatter,
+        TranslatorInterface $translator
     ) {
         $this->priceResolver = $priceResolver;
         $this->methodRepository = $methodRepository;
+        $this->formatter = $formatter;
+        $this->translator = $translator;
     }
 
     /**
@@ -71,6 +94,8 @@ class ShipmentMethodChoiceType extends AbstractType
         }
 
         if (null !== $sale) {
+            $this->freeShipping = $this->priceResolver->hasFreeShipping($sale);
+
             $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale, $availableOnly);
 
             if ($withPrice) {
@@ -141,11 +166,11 @@ class ShipmentMethodChoiceType extends AbstractType
     {
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface $price */
         if (null !== $price = $this->findPriceByMethod($method)) {
-            return sprintf(
-                '%s (%s)',
-                $method->getTitle(),
-                number_format($price->getNetPrice(), 2, ',', '') . ' €' // TODO localized currency
-            );
+            $price = $this->freeShipping
+                ? $this->translator->trans('ekyna_commerce.checkout.shipment.free_shipping')
+                : $this->formatter->currency($price->getNetPrice());
+
+            return sprintf('%s (%s)', $method->getTitle(), $price);
         }
 
         return $method->getTitle();

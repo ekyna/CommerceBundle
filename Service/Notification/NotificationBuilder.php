@@ -7,10 +7,10 @@ use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Recipient;
+use Ekyna\Bundle\CommerceBundle\Model\RecipientList;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
-use Ekyna\Bundle\UserBundle\Repository\GroupRepository;
-use Ekyna\Bundle\UserBundle\Repository\UserRepository;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
+use Ekyna\Bundle\UserBundle\Repository\UserRepositoryInterface;
 use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -33,34 +33,26 @@ class NotificationBuilder
     private $userProvider;
 
     /**
-     * @var UserRepository
+     * @var UserRepositoryInterface
      */
     private $userRepository;
-
-    /**
-     * @var GroupRepository
-     */
-    private $groupRepository;
 
 
     /**
      * Constructor.
      *
-     * @param SettingsManager       $settings
-     * @param UserProviderInterface $userProvider
-     * @param UserRepository        $userRepository
-     * @param GroupRepository       $groupRepository
+     * @param SettingsManager          $settings
+     * @param UserProviderInterface    $userProvider
+     * @param UserRepositoryInterface  $userRepository
      */
     public function __construct(
         SettingsManager $settings,
         UserProviderInterface $userProvider,
-        UserRepository $userRepository,
-        GroupRepository $groupRepository
+        UserRepositoryInterface $userRepository
     ) {
         $this->settings = $settings;
         $this->userProvider = $userProvider;
         $this->userRepository = $userRepository;
-        $this->groupRepository = $groupRepository;
     }
 
     /**
@@ -106,17 +98,25 @@ class NotificationBuilder
      */
     public function createFromListFromSale(SaleInterface $sale)
     {
-        $froms = [$this->createWebsiteRecipient()];
+        $from = new RecipientList();
+
+        /** @var UserInterface[] $administrators */
+        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
+        foreach ($administrators as $administrator) {
+            $from->add($this->createRecipient($administrator, 'Administrateur'));
+        }
+
+        $from->add($this->createWebsiteRecipient());
 
         if ($sale instanceof OrderInterface/* || $sale instanceof QuoteInterface*/) {
             if ($inCharge = $sale->getInCharge()) {
-                array_unshift($froms, $this->createRecipient($inCharge, 'Responsable'));
+                $from->add($this->createRecipient($inCharge, 'Responsable'));
             } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
-                array_unshift($froms, $recipient);
+                $from->add($recipient);
             }
         }
 
-        return $froms;
+        return $from->all();
     }
 
     /**
@@ -128,31 +128,31 @@ class NotificationBuilder
      */
     public function createRecipientListFromSale(SaleInterface $sale)
     {
-        $recipients = [];
+        $list = new RecipientList();
 
         if ($customer = $sale->getCustomer()) {
-            $recipients[] = $this->createRecipient($customer, 'Client'); // TODO constant / translation
+            $list->add($this->createRecipient($customer, 'Client')); // TODO constant / translation
             if ($parent = $customer->getParent()) {
-                $recipients[] = $this->createRecipient($parent, 'Facturation');
+                $list->add($this->createRecipient($parent, 'Facturation'));
             }
         } else {
-            $recipients[] = $this->createRecipient($sale, 'Client');
+            $list->add($this->createRecipient($sale, 'Client'));
         }
 
         if ($sale instanceof OrderInterface) {
             if (null !== $customer = $sale->getOriginCustomer()) {
-                $recipients[] = $this->createRecipient($customer, 'Client d\'origine');
+                $list->add($this->createRecipient($customer, 'Client d\'origine'));
             }
         }
         if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
             if ($inCharge = $sale->getInCharge()) {
-                $recipients[] = $this->createRecipient($inCharge, 'Responsable');
+                $list->add($this->createRecipient($inCharge, 'Responsable'));
             } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
-                $recipients[] = $recipient;
+                $list->add($recipient);
             }
         }
 
-        return $recipients;
+        return $list->all();
     }
 
     /**
@@ -164,23 +164,23 @@ class NotificationBuilder
      */
     public function createCopyListFromSale(SaleInterface $sale)
     {
-        $copies = [$this->createWebsiteRecipient()];
+        $copies = new RecipientList();
 
         if ($customer = $sale->getCustomer()) {
             if ($parent = $customer->getParent()) {
-                $copies[] = $this->createRecipient($parent, 'Facturation'); // TODO constant / translation
+                $copies->add($this->createRecipient($parent, 'Facturation')); // TODO constant / translation
             }
         }
 
         /** @var UserInterface[] $administrators */
-        $administrators = $this->userRepository->findBy([
-            'group' => $this->groupRepository->findOneByRole('ROLE_ADMIN'),
-        ]);
+        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
         foreach ($administrators as $administrator) {
-            $copies[] = $this->createRecipient($administrator, 'Administrateur');
+            $copies->add($this->createRecipient($administrator, 'Administrateur'));
         }
 
-        return $copies;
+        $copies->add($this->createWebsiteRecipient());
+
+        return $copies->all();
     }
 
     /**
@@ -226,7 +226,7 @@ class NotificationBuilder
     public function createRecipient($element, $type = null)
     {
         if ($element instanceof UserInterface) {
-            return new Recipient($element->getEmail(), null, $type);
+            return new Recipient($element->getEmail(), $element->getUsername(), $type);
         }
 
         if ($element instanceof SaleInterface || $element instanceof CustomerInterface) {

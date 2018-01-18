@@ -9,7 +9,7 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface as BaseInterface;
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-interface QuoteInterface extends BaseInterface, InChargeSubjectInterface
+interface QuoteInterface extends BaseInterface, InChargeSubjectInterface, TaggedSaleInterface
 {
 
 }

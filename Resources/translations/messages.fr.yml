@@ -228,6 +228,8 @@ ekyna_commerce:
                 dans votre espace client pour régler les factures échues ou non réglées.
             voucher_mandatory: |
                 Veuillez <a href="%url%">ajouter votre bon d'achat</a> si vous souhaitez utiliser votre encours.
+        shipment:
+            free_shipping: Offert
     country:
         label:
             singular: Pays
@@ -414,6 +416,7 @@ ekyna_commerce:
             business: Entreprise
             registration: Dispo à l'inscription
             quote_allowed: Création de devis
+            free_shipping: Frais de port offerts
         message:
             cant_be_deleted: Le groupe de client par défaut ne peut être supprimé.
         alert:
@@ -1159,8 +1162,10 @@ ekyna_commerce:
             customs_duty: Frais de douane
             customs_vat: TVA en douane
             administrative_fee: Frais administratifs
+            discount_total: Total remise
             payment_total: Total réglement
             payment_date: Date réglement
+            tracking_url: Tracking URL
             estimated_date_of_arrival: Date de livraison estimée
 #            items: Lignes
             state: Statut

@@ -28,6 +28,9 @@
             <call method="setStateResolver">
                 <argument type="service" id="ekyna_commerce.quote.state_resolver"/>
             </call>
+            <call method="setSubjectHelper">
+                <argument type="service" id="ekyna_commerce.subject_helper"/>
+            </call>
             <call method="setInChargeResolver">
                 <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
             </call>

@@ -6,7 +6,7 @@
             </label>
             <div class="col-md-9">
                 <p class="form-control">
-                    {{ customer.inCharge.username }}
+                    {{- customer.inCharge.username }}
                     &lt;<em><a href="mailto:{{ customer.inCharge.email }}">{{ customer.inCharge.email }}</a></em>&gt;
                 </p>
             </div>
@@ -18,7 +18,9 @@
             <div class="form-group">
                 <label class="control-label col-md-6">Limite d'encours</label>
                 <div class="col-md-6">
-                    <p class="form-control"></p>
+                    <p class="form-control">
+                        {{- customer.outstandingLimit|localizedcurrency(commerce_default_currency) -}}
+                    </p>
                 </div>
             </div>
         </div>
@@ -26,7 +28,9 @@
             <div class="form-group">
                 <label class="control-label col-md-6">Solde d'encours</label>
                 <div class="col-md-6">
-                    <p class="form-control"></p>
+                    <p class="form-control">
+                        {{- customer.outstandingBalance|localizedcurrency(commerce_default_currency) -}}
+                    </p>
                 </div>
             </div>
         </div>

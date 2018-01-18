@@ -14,11 +14,11 @@ use Ekyna\Component\Table\Source\AdapterInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class OrderTagsType
+ * Class SaleTagsType
  * @package Ekyna\Bundle\CommerceBundle\Table\Filter
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderTagsType extends AbstractFilterType
+class SaleTagsType extends AbstractFilterType
 {
     /**
      * @var EntityManagerInterface

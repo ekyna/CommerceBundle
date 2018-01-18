@@ -36,10 +36,18 @@
         </div>
         <div class="row">
             <div class="col-md-6">
+                {{ form_row(form.order.paymentDate, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.order.discountTotal, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
                 {{ form_row(form.order.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
             </div>
             <div class="col-md-6">
-                {{ form_row(form.order.paymentDate, {'label_col': 4, 'widget_col': 8}) }}
+                {{ form_row(form.order.trackingUrl, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
         <hr>

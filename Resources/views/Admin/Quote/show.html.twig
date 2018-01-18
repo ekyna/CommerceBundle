@@ -1,5 +1,9 @@
 {% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
 
+
+{% import "EkynaCmsBundle:Admin:show_macros.html.twig" as _cms %}
+
+
 {% block title %}
     {{ admin_resource_pin(resource) }}
     <h1>{{ 'ekyna_commerce.quote.header.show'|trans({'%number%': quote.number})|raw }}</h1>
@@ -9,6 +13,7 @@
 <div class="main-header">
     <div class="infos">
         <span class="sale-state">{{ quote|sale_state_badge }}</span>
+        {{ quote.allTags|cms_tags({'text': false}) }}
     </div>
     <div class="actions">
         {# TODO permission ? #}
@@ -77,6 +82,7 @@
                         }) }}
                     </div>
                 </div>
+                {{ _cms.show_tags(quote) }}
             </div>
             <div class="tab-pane" id="quote-addresses">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': quote} %}

@@ -64,7 +64,9 @@ class PaymentWatchCommand extends ContainerAwareCommand
 
         $this->getContainer()->get('doctrine.orm.entity_manager')->flush();
 
-        $report = $this->watcher->getReport();
+        if (empty($report = $this->watcher->getReport())) {
+            return;
+        }
 
         $settings = $this->getContainer()->get('ekyna_setting.manager');
         $fromName = $settings->getParameter('notification.from_name');

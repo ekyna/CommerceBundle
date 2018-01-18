@@ -51,7 +51,16 @@
                     </div>
                     <div class="col-md-6">
                         {{ show_row(customerGroup.quoteAllowed, 'checkbox', 'ekyna_commerce.customer_group.field.quote_allowed', {
-                            'id': 'customerGroup_registration',
+                            'id': 'customerGroup_quoteAllowed',
+                            'label_nb_col': 4,
+                            'widget_nb_col': 8
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customerGroup.freeShipping, 'checkbox', 'ekyna_commerce.customer_group.field.free_shipping', {
+                            'id': 'customerGroup_freeShipping',
                             'label_nb_col': 4,
                             'widget_nb_col': 8
                         }) }}

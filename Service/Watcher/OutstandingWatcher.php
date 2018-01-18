@@ -82,7 +82,7 @@ class OutstandingWatcher extends BaseWatcher
 
         $this->report .= sprintf(
             '<a href="%s">%s</a> payment state set to <em>outstanding</em>.<br>',
-            $this->resourceHelper->generateResourcePath($sale),
+            $this->resourceHelper->generateResourcePath($sale, 'show', [], true),
             $payment->getNumber()
         );
     }

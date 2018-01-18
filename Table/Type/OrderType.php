@@ -13,8 +13,12 @@ use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\TableInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
+use Ekyna\Component\Table\View;
+use Ekyna\Component\Table\View\TableView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -256,7 +260,7 @@ class OrderType extends ResourceTableType
                     'label'    => 'ekyna_commerce.field.sample',
                     'position' => 130,
                 ])
-                ->addFilter('tags', Type\Filter\OrderTagsType::class, [
+                ->addFilter('tags', Type\Filter\SaleTagsType::class, [
                     'label'    => 'ekyna_cms.tag.label.plural',
                     'position' => 140,
                 ])
@@ -265,6 +269,22 @@ class OrderType extends ResourceTableType
                     'position' => 150,
                 ]);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildView(TableView $view, TableInterface $table, array $options)
+    {
+        $view->vars['attr']['data-summary-route'] = 'ekyna_commerce_order_admin_summary';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildRowView(View\RowView $view, RowInterface $row, array $options)
+    {
+        $view->vars['attr']['data-summary-parameters'] = json_encode(['orderId' => $row->getData('id')]);
     }
 
     /**

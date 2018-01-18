@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Quote;
 
+use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -31,6 +32,10 @@ class QuoteType extends SaleType
             ->add('expiresAt', DateTimeType::class, [
                 'label'    => 'ekyna_commerce.quote.field.expires_at',
                 'format'   => 'dd/MM/yyyy',
+            ])
+            ->add('tags', TagChoiceType::class, [
+                'required' => false,
+                'multiple' => true,
             ]);
     }
 

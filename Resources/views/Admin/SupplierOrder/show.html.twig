@@ -50,43 +50,11 @@
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.supplier, 'entity', 'ekyna_commerce.supplier.label.singular', {
-                            'id': 'order_supplier',
-                            'route': 'ekyna_commerce_supplier_admin_show',
-                            'route_params_map': {'supplierId': 'id'},
-                            'label_nb_col': 6, 'widget_nb_col': 6
-                        }) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ show_row(supplierOrder.carrier, 'entity', 'ekyna_commerce.supplier_carrier.label.singular', {
-                            'id': 'order_carrier',
-                            'route': 'ekyna_commerce_supplier_carrier_admin_show',
-                            'route_params_map': {'supplierCarrierId': 'id'},
-                            'label_nb_col': 6, 'widget_nb_col': 6
-                        }) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
                         {{ show_row(supplierOrder.state|supplier_order_state_badge, 'text', 'ekyna_commerce.supplier_order.field.state', {
                             'id': 'order_state',
                             'label_nb_col': 6, 'widget_nb_col': 6
                         }) }}
                     </div>
-                    <div class="col-md-4">
-                        {{ show_row(supplierOrder.paymentDate, 'date', 'ekyna_commerce.supplier_order.field.payment_date', {
-                            'id': 'order_paymentDate',
-                            'label_nb_col': 6, 'widget_nb_col': 6
-                        }) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ show_row(supplierOrder.estimatedDateOfArrival, 'date', 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival', {
-                            'id': 'order_estimatedDateOfArrival',
-                            'label_nb_col': 6, 'widget_nb_col': 6
-                        }) }}
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4">
                         {{ show_row(supplierOrder.currency, 'entity', 'ekyna_commerce.currency.label.singular', {
                             'id': 'order_currency',
@@ -95,9 +63,17 @@
                             'label_nb_col': 6, 'widget_nb_col': 6
                         }) }}
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.shippingCost|localizedcurrency(currency), 'text', 'ekyna_commerce.supplier_order.field.shipping_cost', {
-                            'id': 'order_shippingCost',
+                        {{ show_row(supplierOrder.paymentDate, 'date', 'ekyna_commerce.supplier_order.field.payment_date', {
+                            'id': 'order_paymentDate',
+                            'label_nb_col': 6, 'widget_nb_col': 6
+                        }) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder.discountTotal|localizedcurrency(currency), 'text', 'ekyna_commerce.supplier_order.field.discount_total', {
+                            'id': 'order_discountTotal',
                             'label_nb_col': 6, 'widget_nb_col': 6
                         }) }}
                     </div>
@@ -108,11 +84,36 @@
                         }) }}
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.customsDuty|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.supplier_order.field.customs_duty', {
-                            'id': 'order_customsDuty',
+                        {{ show_row(supplierOrder.supplier, 'entity', 'ekyna_commerce.supplier.label.singular', {
+                            'id': 'order_supplier',
+                            'route': 'ekyna_commerce_supplier_admin_show',
+                            'route_params_map': {'supplierId': 'id'},
+                            'label_nb_col': 6, 'widget_nb_col': 6
+                        }) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder.administrativeFee|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.supplier_order.field.administrative_fee', {
+                            'id': 'order_administrativeFee',
                             'label_nb_col': 6, 'widget_nb_col': 6,
+                        }) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder.shippingCost|localizedcurrency(currency), 'text', 'ekyna_commerce.supplier_order.field.shipping_cost', {
+                            'id': 'order_shippingCost',
+                            'label_nb_col': 6, 'widget_nb_col': 6
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder.carrier, 'entity', 'ekyna_commerce.supplier_carrier.label.singular', {
+                            'id': 'order_carrier',
+                            'route': 'ekyna_commerce_supplier_carrier_admin_show',
+                            'route_params_map': {'supplierCarrierId': 'id'},
+                            'label_nb_col': 6, 'widget_nb_col': 6
                         }) }}
                     </div>
                     <div class="col-md-4">
@@ -122,9 +123,27 @@
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.administrativeFee|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.supplier_order.field.administrative_fee', {
-                            'id': 'order_administrativeFee',
+                        {{ show_row(supplierOrder.customsDuty|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.supplier_order.field.customs_duty', {
+                            'id': 'order_customsDuty',
                             'label_nb_col': 6, 'widget_nb_col': 6,
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder.estimatedDateOfArrival, 'date', 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival', {
+                            'id': 'order_estimatedDateOfArrival',
+                            'label_nb_col': 6, 'widget_nb_col': 6
+                        }) }}
+                    </div>
+                    <div class="col-md-8">
+                        {% set trackingUrl = '' %}
+                        {% if supplierOrder.trackingUrl is not empty %}
+                            {% set trackingUrl = '<a href="' ~ supplierOrder.trackingUrl ~ '" target="_blank">' ~ supplierOrder.trackingUrl ~ '</a>' %}
+                        {% endif %}
+                        {{ show_row(trackingUrl, 'text', 'ekyna_commerce.supplier_order.field.tracking_url', {
+                            'id': 'order_trackingUrl',
+                            'label_nb_col': 3, 'widget_nb_col': 9,
                         }) }}
                     </div>
                 </div>

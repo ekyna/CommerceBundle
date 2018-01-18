@@ -46,6 +46,26 @@ class CustomerGroupType extends ResourceTableType
                 //'disable_property_path' => 'default',
                 'position'             => 30,
             ])
+            ->addColumn('quoteAllowed', CType\Column\BooleanType::class, [
+                'label'                 => 'ekyna_commerce.customer_group.field.quote_allowed',
+                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
+                'route_parameters'      => ['field' => 'quoteAllowed'],
+                'route_parameters_map'  => ['customerGroupId' => 'id'],
+                'true_class'            => 'label-warning',
+                'false_class'           => 'label-default',
+                'disable_property_path' => 'default',
+                'position'              => 40,
+            ])
+            ->addColumn('freeShipping', CType\Column\BooleanType::class, [
+                'label'                 => 'ekyna_commerce.customer_group.field.free_shipping',
+                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
+                'route_parameters'      => ['field' => 'freeShipping'],
+                'route_parameters_map'  => ['customerGroupId' => 'id'],
+                'true_class'            => 'label-warning',
+                'false_class'           => 'label-default',
+                'disable_property_path' => 'default',
+                'position'              => 50,
+            ])
             ->addColumn('default', CType\Column\BooleanType::class, [
                 'label'                 => 'ekyna_core.field.default',
                 'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
@@ -54,7 +74,7 @@ class CustomerGroupType extends ResourceTableType
                 'true_class'            => 'label-primary',
                 'false_class'           => 'label-default',
                 'disable_property_path' => 'default',
-                'position'              => 40,
+                'position'              => 60,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

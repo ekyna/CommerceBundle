@@ -9,6 +9,7 @@ use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\Util\ColumnSort;
 
 /**
  * Class SupplierOrderType
@@ -42,6 +43,7 @@ class SupplierOrderType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
+            ->addDefaultSort('number', ColumnSort::DESC)
             ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.number',
                 'sortable'             => true,

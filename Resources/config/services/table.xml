@@ -142,7 +142,7 @@
         </service>
 
         <!-- In charge filter type -->
-        <service id="ekyna_commerce.order.in_charge.filter_type"
+        <service id="ekyna_commerce.sale.in_charge.filter_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Filter\InChargeType">
             <argument type="service" id="ekyna_user.group.repository"/>
             <argument>%ekyna_user.user.class%</argument>
@@ -150,8 +150,8 @@
         </service>
 
         <!-- Order tags filter type -->
-        <service id="ekyna_commerce.order.tags.filter_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\OrderTagsType">
+        <service id="ekyna_commerce.sale.tags.filter_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\SaleTagsType">
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument>%ekyna_cms.tag.class%</argument>
             <tag name="table.filter_type"/>

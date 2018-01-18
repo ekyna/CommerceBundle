@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
 use Doctrine\ORM\EntityRepository;
-use Ekyna\Bundle\UserBundle\Model\GroupRepositoryInterface;
+use Ekyna\Bundle\UserBundle\Repository\GroupRepositoryInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Filter\AbstractFilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
