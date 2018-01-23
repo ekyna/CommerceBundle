@@ -5,6 +5,13 @@
 
     <services>
 
+        <!-- Stock logger -->
+        <service id="ekyna_commerce.stock.logger"
+                 class="Ekyna\Component\Commerce\Stock\Logger\StockLogger">
+            <argument type="service" id="logger"/>
+            <tag name="monolog.logger" channel="stock"/>
+        </service>
+
         <!-- Abstract stock unit listener -->
         <service id="ekyna_commerce.stock_unit.abstract_listener"
                  class="Ekyna\Component\Commerce\Stock\EventListener\AbstractStockUnitListener"
@@ -105,6 +112,16 @@
                  class="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater">
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
+        </service>
+
+        <!-- Stock prioritizer -->
+        <service id="ekyna_commerce.stock_prioritizer"
+                 class="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="ekyna_commerce.stock.logger"/>
         </service>
 
         <!-- Stock renderer -->

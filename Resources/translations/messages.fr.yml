@@ -787,6 +787,9 @@ ekyna_commerce:
                 remove: Souhaitez-vous réellement supprimer cette article ?
             adjustment:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
+        prioritize:
+            success: Certaines ont pu être réassignées pour expédition.
+            failure: Aucune ligne n'a pu être réassignée pour expédition.
         message:
             provide_customer_or_data: >
                 Si vous sélectionnez un client, les champs suivant seront remplis automatiquement

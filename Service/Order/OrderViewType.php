@@ -5,11 +5,11 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Common\Model as Common;
-//use Ekyna\Component\Commerce\Common\Prioritizer\SalePrioritizerInterface;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model as Order;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
+use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
 
 /**
  * Class OrderViewType
@@ -19,9 +19,9 @@ use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 class OrderViewType extends AbstractViewType
 {
     /**
-     * @var SalePrioritizerInterface
+     * @var StockPrioritizerInterface
      */
-    //private $salePrioritizer;
+    private $stockPrioritizer;
 
     /**
      * @var StockRenderer
@@ -30,14 +30,14 @@ class OrderViewType extends AbstractViewType
 
 
     /**
-     * Sets the sale prioritizer.
+     * Sets the stock prioritizer.
      *
-     * @param SalePrioritizerInterface $salePrioritizer
+     * @param StockPrioritizerInterface $prioritizer
      */
-    /*public function setSalePrioritizer(SalePrioritizerInterface $salePrioritizer)
+    public function setStockPrioritizer(StockPrioritizerInterface $prioritizer)
     {
-        $this->salePrioritizer = $salePrioritizer;
-    }*/
+        $this->stockPrioritizer = $prioritizer;
+    }
 
     /**
      * Sets the stock renderer.
@@ -58,7 +58,7 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
-        /*if ($this->salePrioritizer->canPrioritizeSale($sale)) {
+        if ($this->stockPrioritizer->canPrioritizeSale($sale)) {
             // Prioritize button
             $prioritizePath = $this->generateUrl('ekyna_commerce_order_admin_prioritize', [
                 'orderId' => $sale->getId(),
@@ -70,11 +70,11 @@ class OrderViewType extends AbstractViewType
                     'id'              => 'order_prioritize',
                     'title'           => $this->trans('ekyna_commerce.sale.button.prioritize'),
                     'class'           => 'btn btn-sm btn-warning',
-                    'data-sale-modal' => null,
+                    //'data-sale-modal' => null,
                     //'data-sale-xhr' => 'get',
                 ]
             ));
-        }*/
+        }
 
         // Refresh button
         $refreshPath = $this->generateUrl('ekyna_commerce_order_admin_refresh', [

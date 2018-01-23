@@ -436,7 +436,17 @@ class SaleController extends AbstractSaleController
         $sale = $context->getResource($resourceName);
 
         if ($sale instanceof ShipmentSubjectInterface) {
-            // TODO Use sale prioritizer
+            $changed = $this
+                ->get('ekyna_commerce.stock_prioritizer')
+                ->prioritizeSale($sale);
+
+            if ($changed) {
+                $this->getManager()->flush();
+
+                $this->addFlash('ekyna_commerce.sale.prioritize.success', 'success');
+            } else {
+                $this->addFlash('ekyna_commerce.sale.prioritize.failure', 'warning');
+            }
         }
 
         return $this->redirect($this->generateResourcePath($sale));

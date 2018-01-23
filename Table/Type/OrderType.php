@@ -33,19 +33,15 @@ class OrderType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        $filters = [];
+
         /** @var SubjectInterface $subject */
         $subject = $options['subject'];
         /** @var CustomerInterface $customer */
         $customer = $options['customer'];
 
-        $filters = false;
         if (null !== $subject) {
-            $source = $builder->getSource();
-            if (!$source instanceof EntitySource) {
-                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
-            }
-
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($subject) {
+            $filters[] = function (QueryBuilder $qb, $alias) use ($subject) {
                 $qb
                     ->join($alias . '.items', 'i')
                     ->leftJoin('i.children', 'c')
@@ -66,16 +62,14 @@ class OrderType extends ResourceTableType
                     ))
                     ->setParameter('provider', $subject::getProviderName())
                     ->setParameter('identifier', $subject->getId());
-            });
-
-            $builder->setFilterable(false);
+            };
         } elseif (null !== $customer) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
                 throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
             }
 
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($customer) {
+            $filters[] = function (QueryBuilder $qb, $alias) use ($customer) {
                 if ($customer->hasParent()) {
                     $qb->andWhere($qb->expr()->orX(
                         $qb->expr()->in($alias . '.customer', ':customer'),
@@ -85,11 +79,34 @@ class OrderType extends ResourceTableType
                     $qb->andWhere($qb->expr()->eq($alias . '.customer', ':customer'));
                 }
                 $qb->setParameter('customer', $customer);
-            });
+            };
+        }
 
+        if (!empty($states = $options['states'])) {
+            $source = $builder->getSource();
+            if (!$source instanceof EntitySource) {
+                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+            }
+
+            $filters[] = function(QueryBuilder $qb, $alias) use ($states) {
+                $qb->andWhere($qb->expr()->in($alias . '.state', $states));
+            };
+        }
+
+        if (!empty($filters)) {
             $builder->setFilterable(false);
+
+            $source = $builder->getSource();
+            if (!$source instanceof EntitySource) {
+                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+            }
+
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($filters) {
+                foreach ($filters as $filter) {
+                    $filter($qb, $alias);
+                }
+            });
         } else {
-            $filters = true;
             $builder
                 ->setExportable(true)
                 ->setConfigurable(true)
@@ -190,7 +207,7 @@ class OrderType extends ResourceTableType
             ]);
         }
 
-        if ($filters) {
+        if (empty($filters)) {
             $builder
                 ->addFilter('number', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
