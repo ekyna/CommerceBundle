@@ -79,6 +79,12 @@
             <call method="setStockRenderer">
                 <argument type="service" id="ekyna_commerce.stock.stock_renderer"/>
             </call>
+            <call method="setInvoiceCalculator">
+                <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            </call>
+            <call method="setShipmentCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            </call>
             <tag name="ekyna_commerce.view_type"/>
         </service>
 

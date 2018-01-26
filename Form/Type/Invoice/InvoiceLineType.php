@@ -3,7 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -32,24 +34,12 @@ class InvoiceLineType extends ResourceFormType
                 'error_bubbling' => true,
             ])
             ->add('children', InvoiceLinesType::class, [
-                'headers'       => false,
                 'entry_type'    => static::class,
                 'entry_options' => [
-                    'level' => $options['level'] + 1,
+                    'level'   => $options['level'] + 1,
+                    'invoice' => $options['invoice'],
                 ],
             ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        /** @var InvoiceLineInterface $line */
-        $line = $form->getData();
-
-        $view->vars['line'] = $line;
-        $view->vars['level'] = $options['level'];
     }
 
     /**
@@ -58,7 +48,11 @@ class InvoiceLineType extends ResourceFormType
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         /** @var InvoiceLineInterface $line */
-        $line = $view->vars['line'];
+        $line = $form->getData();
+
+        $view->vars['line'] = $line;
+        $view->vars['level'] = $options['level'];
+        $view->vars['credit_mode'] = InvoiceTypes::isCredit($options['invoice']->getType());
 
         $view->children['quantity']->vars['attr']['data-max'] = $line->getAvailable();
 
@@ -74,9 +68,13 @@ class InvoiceLineType extends ResourceFormType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefault('level', 0)
-            ->setDefault('data_class', $this->dataClass)
-            ->setAllowedTypes('level', 'int');
+            ->setDefaults([
+                'level'      => 0,
+                'data_class' => $this->dataClass,
+                'invoice'    => null,
+            ])
+            ->setAllowedTypes('level', 'int')
+            ->setAllowedTypes('invoice', InvoiceInterface::class);
     }
 
     /**

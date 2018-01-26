@@ -9,15 +9,15 @@
 <div class="panel-body form-body commerce-shipment-zone">
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
-        {{ form_errors(form) }}
         <div class="tab-pane active" id="shipment-shipment-zone-general">
             {{ form_row(form.name) }}
             {{ form_row(form.countries) }}
             <hr>
             {{ form_row(form.pricing) }}
         </div>
-        {{ form_rest(form) }}
     </div>
+    {{ form_rest(form) }}
 </div>
 {% endspaceless %}

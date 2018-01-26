@@ -9,7 +9,7 @@
     {{ bootstrap_set_style('horizontal') }}
     {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
     <div class="form-body">
-        {{ form_errors(form) }}
+        {{ form_errors(form, {'global_errors': true}) }}
         {{ form_row(form.title) }}
         <div class="upload-widget">
             {{ form_row(form.file) }}

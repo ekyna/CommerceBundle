@@ -5,6 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
+use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
+use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -46,16 +48,29 @@ class PaymentMethodChoiceType extends AbstractType
                     ->createQueryBuilder('m')
                     ->orderBy('m.position', 'ASC');
 
+                $e = $qb->expr();
+
                 if ($options['disabled']) {
-                    $qb
-                        ->andWhere('m.factoryName = :factoryName')
-                        ->setParameter('factoryName', Offline::FACTORY_NAME);
+                    $qb->andWhere($e->eq('m.factoryName', $e->literal(Offline::FACTORY_NAME)));
                 } else {
                     if ($options['enabled']) {
-                        $qb->andWhere($qb->expr()->eq('m.enabled', true));
+                        $qb->andWhere($e->eq('m.enabled', true));
                     }
                     if ($options['available']) {
-                        $qb->andWhere($qb->expr()->eq('m.available', true));
+                        $qb->andWhere($e->eq('m.available', true));
+                    }
+                    $exclude = [];
+                    if (!$options['offline']) {
+                        $exclude[] = $e->literal(Offline::FACTORY_NAME);
+                    }
+                    if (!$options['credit']) {
+                        $exclude[] = $e->literal(Credit::FACTORY_NAME);
+                    }
+                    if (!$options['outstanding']) {
+                        $exclude[] = $e->literal(Outstanding::FACTORY_NAME);
+                    }
+                    if (!empty($exclude)) {
+                        $qb->andWhere($e->notIn('m.factoryName', $exclude));
                     }
                 }
 
@@ -66,17 +81,23 @@ class PaymentMethodChoiceType extends AbstractType
         $resolver
             ->setDefaults([
                 'label'             => 'ekyna_commerce.payment_method.label.singular',
-                'enabled'           => false,
-                'available'         => false,
+                'enabled'           => false, // Whether to exclude disabled factories
+                'available'         => false, // Whether to exclude unavailable factories
+                'offline'           => true,  // Whether to exclude offline factories
+                'credit'            => true,  // Whether to exclude credit factory
+                'outstanding'       => true,  // Whether to exclude outstanding factory
                 'class'             => $this->dataClass,
                 'query_builder'     => $queryBuilder,
                 'invoice'           => null,
-                'preferred_choices' => function(Options $options, $value) {
+                'preferred_choices' => function (Options $options, $value) {
                     return $this->getPreferredChoices($options, $value);
                 },
             ])
             ->setAllowedTypes('enabled', 'bool')
             ->setAllowedTypes('available', 'bool')
+            ->setAllowedTypes('offline', 'bool')
+            ->setAllowedTypes('credit', 'bool')
+            ->setAllowedTypes('outstanding', 'bool')
             ->setAllowedTypes('invoice', ['null', InvoiceInterface::class])
             ->setNormalizer('enabled', function (Options $options, $value) {
                 if ($options['disabled'] || $options['available']) {

@@ -20,7 +20,7 @@ class ShipmentItemsType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['headers'] = $options['headers'];
+        $view->vars['headers'] = false;
     }
 
     /**
@@ -32,9 +32,7 @@ class ShipmentItemsType extends AbstractType
             ->setDefaults([
                 'label'      => 'ekyna_commerce.shipment.field.items',
                 'entry_type' => ShipmentItemType::class,
-                'headers'    => true,
-            ])
-            ->setAllowedTypes('headers', 'bool');
+            ]);
     }
 
     /**

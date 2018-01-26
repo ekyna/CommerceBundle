@@ -4,7 +4,7 @@
     {{ bootstrap_set_col_size('md') }}
     {{ bootstrap_set_label_col(3) }}
     {{ bootstrap_set_widget_col(9) }}
-    {{ form_errors(form) }}
+    {{ form_errors(form, {'global_errors': true}) }}
 
     <div class="row">
         <div class="col-md-6">

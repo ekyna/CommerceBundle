@@ -10,6 +10,7 @@
             <th>{{ 'ekyna_core.field.weight'|trans }}</th>
             <th>{{ 'ekyna_commerce.shipment.field.tracking_number'|trans }}</th>
             <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
+            <th>{{ 'ekyna_commerce.invoice.label.singular'|trans }}</th>
             <th></th>
         </tr>
         </thead>
@@ -40,6 +41,9 @@
                 </td>
                 <td id="{{ shipmentId }}_trackingNumber">{{ shipment.trackingNumber }}</td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
+                <td id="{{ shipmentId }}_invoice">
+                    {%- if shipment.invoice is not null %}{{ shipment.invoice.number }}{% endif -%}
+                </td>
                 <td class="actions">
                     {# Gateway actions #}
                     {%- for button in shipment_gateway_buttons(shipment) -%}
@@ -100,7 +104,7 @@
             </tr>
             <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
                 <td>&nbsp;</td>
-                <td colspan="5">
+                <td colspan="7">
                     <table class="table table-alt table-striped table-condensed">
                         <thead>
                             <tr>
@@ -134,7 +138,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="9" class="text-center">
                     <em>{{ 'ekyna_commerce.shipment.alert.no_item'|trans }}</em>
                 </td>
             </tr>

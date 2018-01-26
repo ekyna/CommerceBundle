@@ -2,7 +2,7 @@
 <div class="form-body">
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form) }}
+    {{ form_errors(form, {'global_errors': true}) }}
 
     {% if form.customer is defined %}
         {{ form_row(form.customer) }}

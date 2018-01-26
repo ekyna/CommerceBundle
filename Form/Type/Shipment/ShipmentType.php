@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\ShipmentItemsDataTransformer;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates as BShipStates;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
@@ -77,9 +76,6 @@ class ShipmentType extends ResourceFormType
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
             ])
-            ->add('items', ShipmentItemsType::class, [
-                'entry_type' => $options['item_type'],
-            ])
             ->add('receiverAddress', ShipmentAddressType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.receiver_address',
                 'required' => false,
@@ -88,8 +84,7 @@ class ShipmentType extends ResourceFormType
                 'label'    => 'ekyna_commerce.shipment.field.sender_address',
                 'required' => false,
             ])
-            ->addModelTransformer(new ShipmentItemsDataTransformer($this->builder))
-            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                 $form = $event->getForm();
                 /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
                 $shipment = $event->getData();
@@ -106,38 +101,45 @@ class ShipmentType extends ResourceFormType
                     !OrderStates::isStockableState($sale->getState())
                 );
 
+                $this->builder->build($shipment);
+
+                if ($shipment->isReturn()) {
+                    $autoInvoiceLabel = 'ekyna_commerce.shipment.field.auto_credit';
+
+                    if (null === $shipment->getInvoice()) {
+                        $shipment->setAutoInvoice(false);
+
+                        $form->add('creditMethod', PaymentMethodChoiceType::class, [
+                            'label'       => 'ekyna_commerce.invoice.field.payment_method',
+                            'outstanding' => false,
+                            'invoice'     => $shipment->getInvoice(),
+                            'attr'        => [
+                                'help_text' => 'ekyna_commerce.shipment.message.credit_method',
+                            ],
+                        ]);
+                    }
+                } else {
+                    $autoInvoiceLabel = 'ekyna_commerce.shipment.field.auto_invoice';
+                }
+
                 $form
+                    ->add('items', ShipmentTreeType::class, [
+                        'entry_type' => $options['item_type'],
+                        'shipment'   => $shipment,
+                    ])
                     ->add('state', Type\ChoiceType::class, [
                         'label'   => 'ekyna_core.field.status',
                         'choices' => $availableStateChoices,
                     ])
                     ->add('autoInvoice', Type\CheckboxType::class, [
-                        'label'    => 'ekyna_commerce.shipment.field.auto_invoice',
+                        'label'    => $autoInvoiceLabel,
+                        'disabled' => null !== $shipment->getInvoice(),
                         'required' => false,
                         'attr'     => [
                             'align_with_widget' => true,
                         ],
                     ]);
-
-                if ($shipment->isReturn() && null === $shipment->getInvoice()->getId()) {
-                    $form->add('paymentMethod', PaymentMethodChoiceType::class, [
-                        'label'             => 'ekyna_commerce.invoice.field.payment_method',
-                        'property_path'     => 'invoice.paymentMethod',
-                        'invoice' => $shipment->getInvoice()
-                    ]);
-                }
             });
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-        $shipment = $form->getData();
-
-        $view->vars['return_mode'] = $shipment->isReturn();
     }
 
     /**
@@ -145,6 +147,11 @@ class ShipmentType extends ResourceFormType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+        $shipment = $form->getData();
+
+        $view->vars['return_mode'] = $shipment->isReturn();
+
         FormUtil::addClass($view, 'shipment');
     }
 

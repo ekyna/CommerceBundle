@@ -7,7 +7,9 @@ use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Order\Model as Order;
+use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculatorInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
 
@@ -28,6 +30,16 @@ class OrderViewType extends AbstractViewType
      */
     private $stockRenderer;
 
+    /**
+     * @var InvoiceCalculatorInterface
+     */
+    private $invoiceCalculator;
+
+    /**
+     * @var ShipmentCalculatorInterface
+     */
+    private $shipmentCalculator;
+
 
     /**
      * Sets the stock prioritizer.
@@ -42,11 +54,31 @@ class OrderViewType extends AbstractViewType
     /**
      * Sets the stock renderer.
      *
-     * @param StockRenderer $stockRenderer
+     * @param StockRenderer $renderer
      */
-    public function setStockRenderer(StockRenderer $stockRenderer)
+    public function setStockRenderer(StockRenderer $renderer)
     {
-        $this->stockRenderer = $stockRenderer;
+        $this->stockRenderer = $renderer;
+    }
+
+    /**
+     * Sets the invoice calculator.
+     *
+     * @param InvoiceCalculatorInterface $calculator
+     */
+    public function setInvoiceCalculator($calculator)
+    {
+        $this->invoiceCalculator = $calculator;
+    }
+
+    /**
+     * Sets the shipment calculator.
+     *
+     * @param ShipmentCalculatorInterface $calculator
+     */
+    public function setShipmentCalculator($calculator)
+    {
+        $this->shipmentCalculator = $calculator;
     }
 
     /**
@@ -243,8 +275,17 @@ class OrderViewType extends AbstractViewType
             ]));
         }
 
+        // Remove action
         if (!$item->isImmutable() && !$item->getParent()) {
-            // Remove action
+            // Not if invoiced
+            if ($this->invoiceCalculator->isInvoiced($item)) {
+                return;
+            }
+            // Not if shipped
+            if ($this->shipmentCalculator->isShipped($item)) {
+                return;
+            }
+
             $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
                 'orderId'     => $item->getSale()->getId(),
                 'orderItemId' => $item->getId(),
@@ -278,6 +319,7 @@ class OrderViewType extends AbstractViewType
             throw new InvalidArgumentException("Unexpected adjustable.");
         }
 
+        // Edit action
         $editPath = $this->generateUrl($routePrefix . 'edit', $parameters);
         $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('ekyna_commerce.sale.button.adjustment.edit'),
@@ -285,6 +327,13 @@ class OrderViewType extends AbstractViewType
             'class'           => 'text-warning',
         ]));
 
+        // Remove action
+        if ($adjustment instanceof Common\SaleAdjustmentInterface) {
+            // Not if invoiced
+            if ($this->invoiceCalculator->isInvoiced($adjustment)) {
+                return;
+            }
+        }
         $removePath = $this->generateUrl($routePrefix . 'remove', $parameters);
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
             'title'         => $this->trans('ekyna_commerce.sale.button.adjustment.remove'),

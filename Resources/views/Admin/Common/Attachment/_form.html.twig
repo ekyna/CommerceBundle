@@ -1,8 +1,8 @@
 <div class="form-body">
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form, {'global_errors': true}) }}
 
-    {{ form_errors(form) }}
     {{ form_row(form.title) }}
     {% if form.type is defined %}
         {{ form_row(form.type) }}

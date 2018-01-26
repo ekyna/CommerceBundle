@@ -3,12 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
-use Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilderInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * Class ShipmentItemsDataTransformer
@@ -18,58 +17,68 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class ShipmentItemsDataTransformer implements DataTransformerInterface
 {
     /**
-     * @var ShipmentBuilderInterface
+     * @var ShipmentInterface
      */
-    private $builder;
+    private $shipment;
 
 
     /**
      * Constructor.
      *
-     * @param ShipmentBuilderInterface $builder
+     * @param ShipmentInterface $shipment
      */
-    public function __construct(ShipmentBuilderInterface $builder)
+    public function __construct(ShipmentInterface $shipment)
     {
-        $this->builder = $builder;
+        $this->shipment = $shipment;
     }
 
     /**
      * Transforms the flat shipment items collection into a tree shipment items collection.
      *
-     * @param ShipmentInterface $shipment
+     * @param Collection|ShipmentItemInterface[] $flat
      *
-     * @return ShipmentInterface
+     * @return Collection
      */
-    public function transform($shipment)
+    public function transform($flat)
     {
-        if (!$shipment instanceof ShipmentInterface) {
-            throw new TransformationFailedException("Expected instance of " . ShipmentInterface::class);
-        }
+        $sale = $this->shipment->getSale();
 
-        $this->builder->build($shipment);
-
-        $flat = new ArrayCollection($shipment->getItems()->toArray());
         $tree = new ArrayCollection();
 
         // Move shipment items from flat to tree for each sale items
-        foreach ($shipment->getSale()->getItems() as $saleItem) {
+        foreach ($sale->getItems() as $saleItem) {
             $this->buildTreeShipmentItem($saleItem, $flat, $tree);
         }
 
-        // Replace shipment items
-        $shipment->setItems($tree);
+        return $tree;
+    }
 
-        return $shipment;
+    /**
+     * Transforms the tree shipment items collection into a flat shipment items collection.
+     *
+     * @param Collection|ShipmentItemInterface[] $tree
+     *
+     * @return Collection
+     */
+    public function reverseTransform($tree)
+    {
+        $flat = new ArrayCollection();
+
+        foreach ($tree as $item) {
+            $this->flattenShipmentItem($item, $flat);
+        }
+
+        return $flat;
     }
 
     /**
      * Builds the tree shipment item.
      *
      * @param SaleItemInterface $saleItem
-     * @param ArrayCollection   $flat
-     * @param ArrayCollection   $parent
+     * @param Collection        $flat
+     * @param Collection        $parent
      */
-    private function buildTreeShipmentItem(SaleItemInterface $saleItem, ArrayCollection $flat, ArrayCollection $parent)
+    private function buildTreeShipmentItem(SaleItemInterface $saleItem, Collection $flat, Collection $parent)
     {
         $shipmentItem = null;
 
@@ -97,37 +106,12 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms the tree shipment items collection into a flat shipment items collection.
-     *
-     * @param ShipmentInterface $shipment
-     *
-     * @return ShipmentInterface
-     */
-    public function reverseTransform($shipment)
-    {
-        if (!$shipment instanceof ShipmentInterface) {
-            throw new TransformationFailedException("Expected instance of " . ShipmentInterface::class);
-        }
-
-        $tree = new ArrayCollection($shipment->getItems()->toArray());
-        $flat = new ArrayCollection();
-
-        foreach ($tree as $item) {
-            $this->flattenShipmentItem($item, $flat);
-        }
-
-        $shipment->setItems($flat);
-
-        return $shipment;
-    }
-
-    /**
      * Adds item and his children to the flat collection.
      *
      * @param ShipmentItemInterface $item
-     * @param ArrayCollection       $flat
+     * @param Collection            $flat
      */
-    private function flattenShipmentItem(ShipmentItemInterface $item, ArrayCollection $flat)
+    private function flattenShipmentItem(ShipmentItemInterface $item, Collection $flat)
     {
         if (0 < $item->getQuantity()) {
             $flat->add($item);
@@ -135,9 +119,7 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
             foreach ($item->getChildren() as $child) {
                 $saleItem = $child->getSaleItem();
 
-                //if ($saleItem->isPrivate()) {
-                    $child->setQuantity($item->getQuantity() * $saleItem->getQuantity());
-                //}
+                $child->setQuantity($item->getQuantity() * $saleItem->getQuantity());
 
                 $this->flattenShipmentItem($child, $flat);
             }

@@ -169,6 +169,10 @@
 
                         a {
                             color: lighten(@text-color, 15%);
+
+                            &.text-danger {
+                                color: @danger-color;
+                            }
                         }
                     }
                 }
@@ -178,6 +182,10 @@
 
                     a {
                         color: @warning-color;
+
+                        &.text-danger {
+                            color: @danger-color;
+                        }
                     }
 
                     .sale-detail-availability {

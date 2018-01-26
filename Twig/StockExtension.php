@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
+use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
 
 /**
  * Class StockExtension
@@ -29,6 +30,11 @@ class StockExtension extends \Twig_Extension
      */
     private $availabilityHelper;
 
+    /**
+     * @var StockPrioritizerInterface
+     */
+    private $stockPrioritizer;
+
 
     /**
      * Constructor.
@@ -36,15 +42,18 @@ class StockExtension extends \Twig_Extension
      * @param ConstantsHelper             $constantHelper
      * @param StockRenderer               $stockRenderer
      * @param AvailabilityHelperInterface $availabilityHelper
+     * @param StockPrioritizerInterface $stockPrioritizer
      */
     public function __construct(
         ConstantsHelper $constantHelper,
         StockRenderer $stockRenderer,
-        AvailabilityHelperInterface $availabilityHelper
+        AvailabilityHelperInterface $availabilityHelper,
+        StockPrioritizerInterface $stockPrioritizer
     ) {
         $this->constantHelper = $constantHelper;
         $this->stockRenderer = $stockRenderer;
         $this->availabilityHelper = $availabilityHelper;
+        $this->stockPrioritizer = $stockPrioritizer;
     }
 
     /**
@@ -87,6 +96,10 @@ class StockExtension extends \Twig_Extension
                 'stock_subject_availability',
                 [$this->availabilityHelper, 'getAvailabilityMessage'],
                 ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'stock_can_prioritize',
+                [$this->stockPrioritizer, 'canPrioritizeSale']
             ),
         ];
     }

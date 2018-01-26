@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormInterface;
@@ -20,7 +21,7 @@ class InvoiceLinesType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['headers'] = $options['headers'];
+        $view->vars['headers'] = false;
     }
 
     /**
@@ -28,12 +29,9 @@ class InvoiceLinesType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'label'      => 'ekyna_commerce.invoice.field.lines',
-                'headers'    => true,
-            ])
-            ->setAllowedTypes('headers', 'bool');
+        $resolver->setDefaults([
+            'label' => 'ekyna_commerce.invoice.field.lines',
+        ]);
     }
 
     /**

@@ -550,8 +550,8 @@
                 {% if form.parent.vars.return_mode %}
                     <th>{{ 'ekyna_commerce.shipment_item.field.shipped'|trans }}</th>
                 {% else %}
-                    <th>{{ 'ekyna_commerce.shipment_item.field.expected'|trans }}</th>
                     <th>{{ 'ekyna_commerce.shipment_item.field.available'|trans }}</th>
+                    <th>{{ 'ekyna_commerce.shipment_item.field.expected'|trans }}</th>
                 {% endif %}
                 <th>{{ 'ekyna_commerce.stock_unit.field.geocode'|trans }}</th>
             </tr>
@@ -591,8 +591,8 @@
         {% if return_mode %}
             <td>{{ form.vars.item.available }}</td>{# TODO packaging format #}
         {% else %}
-            <td>{{ form.vars.item.expected }}</td>{# TODO packaging format #}
             <td>{{ form.vars.item.available }}</td>{# TODO packaging format #}
+            <td>{{ form.vars.item.expected }}</td>{# TODO packaging format #}
         {% endif %}
         <td>{{ form.vars.geocodes|join(', ') }}</td>
     </tr>
@@ -618,8 +618,12 @@
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                 <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                {% if form.parent.vars.credit_mode %}
                 <th>{{ 'ekyna_commerce.invoice_line.field.max_quantity'|trans }}</th>
-                <th>{{ 'ekyna_commerce.shipment_item.field.shipped'|trans }}</th>
+                {% else %}
+                <th>{{ 'ekyna_commerce.invoice_line.field.max_quantity'|trans }}</th>
+                <th>{{ 'ekyna_commerce.invoice_line.field.expected'|trans }}</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -658,8 +662,12 @@
         </td>
         <td>{{ form.vars.line.reference }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
+        {% if credit_mode %}
+        <td>{{ form.vars.line.available }}</td>{# TODO packaging format #}
+        {% else %}
         <td>{{ form.vars.line.available }}</td>{# TODO packaging format #}
         <td>{{ form.vars.line.expected }}</td>{# TODO packaging format #}
+        {% endif %}
     </tr>
     {% if errors|length > 0 -%}
         <tr>

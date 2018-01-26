@@ -17,5 +17,16 @@
         {{ 'ekyna_commerce.shipment.message.sale_is_not_stackable'|trans|raw }}
     </div>
     {% endif %}
+    {% if shipment.sale|stock_can_prioritize %}
+    <div class="alert alert-info">
+        <p>{{ 'ekyna_commerce.sale.prioritize.info'|trans|raw }}</p>
+        <p>
+            <a href="{{ admin_resource_path(shipment.sale, 'prioritize') }}?_redirect={{ admin_resource_path(shipment, 'new') }}"
+               class="btn btn-sm btn-primary">
+                {{ 'ekyna_commerce.sale.button.prioritize'|trans }}
+            </a>
+        </p>
+    </div>
+    {% endif %}
     {{ parent() }}
 {% endblock side %}

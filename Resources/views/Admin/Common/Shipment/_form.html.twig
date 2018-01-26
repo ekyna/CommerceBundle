@@ -20,7 +20,7 @@
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
     {{ bootstrap_set_sizing('sm') }}
-    {{ form_errors(form) }}
+    {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
         <div class="tab-pane active" id="shipment-general">
             <div class="row">
@@ -47,8 +47,8 @@
                     {{ form_row(form.autoInvoice, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {% if form.paymentMethod is defined -%}
-                {{ form_row(form.paymentMethod) }}
+            {% if form.creditMethod is defined -%}
+                {{ form_row(form.creditMethod) }}
             {%- endif %}
             {{ form_row(form.items) }}
             {{ form_row(form.description) }}

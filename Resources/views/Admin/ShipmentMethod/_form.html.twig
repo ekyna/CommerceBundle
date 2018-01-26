@@ -24,8 +24,8 @@
 <div class="panel-body form-body">
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
-        {{ form_errors(form) }}
         <div class="tab-pane active" id="shipment-method-general">
             {{ form_row(form.name) }}
             {{ form_row(form.taxGroup) }}
@@ -53,7 +53,7 @@
         <div class="tab-pane" id="shipment-method-messages">
             {{ form_widget(form.messages) }}
         </div>
-        {{ form_rest(form) }}
     </div>
+    {{ form_rest(form) }}
 </div>
 {% endspaceless %}

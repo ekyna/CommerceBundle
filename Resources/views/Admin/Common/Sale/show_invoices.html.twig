@@ -13,6 +13,7 @@
             <th>{{ 'ekyna_commerce.invoice.field.taxes_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.invoice.field.grand_total'|trans }}</th>
             <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
+            <th>{{ 'ekyna_commerce.shipment.label.singular'|trans }}</th>
             <th></th>
         </tr>
         </thead>
@@ -44,6 +45,9 @@
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
+                <td id="{{ invoiceId }}_shipment">
+                    {%- if invoice.shipment is not null %}{{ invoice.shipment.number }}{% endif -%}
+                </td>
                 <td class="actions">
                     <a href="javascript:void(0)"
                        id="{{ invoiceId }}_toggle_details"
@@ -65,12 +69,14 @@
                        onclick="return confirm('{{ 'ekyna_commerce.invoice.message.recalculate_confirm'|trans }}');">
                         <span class="fa fa-refresh"></span>
                     </a>
+                    {% if invoice.shipment is null -%}
                     <a href="{{ admin_resource_path(invoice, 'edit') }}"
                        id="{{ invoiceId }}_edit"
                        class="btn btn-warning btn-xs"
                        title="{{ 'ekyna_core.button.edit'|trans }}">
                         <span class="fa fa-pencil"></span>
                     </a>
+                    {%- endif %}
                     <a href="{{ admin_resource_path(invoice, 'remove') }}"
                        id="{{ invoiceId }}_remove"
                        class="btn btn-danger btn-xs"
@@ -81,7 +87,7 @@
             </tr>
             <tr style="display:none;" id="{{ invoiceId ~ '_details' }}">
                 <td>&nbsp;</td>
-                <td colspan="{{ prefix == 'credit' ? 7 : 6 }}">
+                <td colspan="{{ prefix == 'credit' ? 8 : 7 }}">
                     <table class="table table-condensed table-alt table-striped">
                         <thead>
                             <tr>
@@ -128,7 +134,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="{{ prefix == 'credit' ? 9 : 8 }}" class="text-center">
+                <td colspan="{{ prefix == 'credit' ? 10 : 9 }}" class="text-center">
                     <em>{{ 'ekyna_commerce.invoice.alert.no_item'|trans }}</em>
                 </td>
             </tr>

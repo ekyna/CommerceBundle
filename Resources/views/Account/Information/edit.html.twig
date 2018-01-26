@@ -14,7 +14,7 @@
         {{ bootstrap_set_label_col(2) }}
         {{ bootstrap_set_widget_col(10) }}
 
-        {{ form_errors(form) }}
+        {{ form_errors(form, {'global_errors': true}) }}
 
         {{ form_row(form.email) }}
         {{ form_row(form.identity) }}

@@ -296,9 +296,10 @@ ekyna_commerce:
             new: Création
             canceled: Annulé
             pending: En attente
-            partial: Partielle
-            invoiced: Facturée
-            credited: Remboursée
+            partial: Partiel
+            invoiced: Facturé
+            credited: Remboursé
+            completed: Complété
         field:
             lines: Lignes
             goods_base: Marchandises HT
@@ -312,10 +313,13 @@ ekyna_commerce:
             cant_be_deleted: Cet facture ne peut être supprimée.
         alert:
             no_item: Aucune facture configuré
+            invoice_edit_prevented: Cette facture est liée à une expedition et ne peut être modifiée directement.
+            credit_edit_prevented: Cet avoir est lié à un retour et ne peut être modifié directement.
 
     invoice_line:
         field:
             max_quantity: Quantité max
+            expected: Attendu
             net_price: Prix unit. HT
 
     currency:
@@ -761,7 +765,7 @@ ekyna_commerce:
             refresh: Rafraîchir
             recalculate: Recalculer
             notify: Notifier
-            prioritize: Prioriser
+            prioritize: Réassigner le stock
             adjustment:
                 new: Ajouter une remise
                 edit: Modifier la remise
@@ -788,8 +792,11 @@ ekyna_commerce:
             adjustment:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
         prioritize:
-            success: Certaines ont pu être réassignées pour expédition.
-            failure: Aucune ligne n'a pu être réassignée pour expédition.
+            info: >
+                Certaines lignes de cette commande peuvent être réassignées pour
+                tenter d'obtenir du stock disponible pour l'expédition.
+            success: Certains articles ont pu être réassignés pour expédition.
+            failure: Aucun article n'a pu être réassigné pour expédition.
         message:
             provide_customer_or_data: >
                 Si vous sélectionnez un client, les champs suivant seront remplis automatiquement
@@ -883,17 +890,15 @@ ekyna_commerce:
             new: Nouvelle expédition
             edit: Modifier l'expédition
             remove: Supprimer l'expédition
-        message:
-            remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
-            cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
-            sale_is_not_stackable: |
-                Le statut de la vente n'étant pas accepté, les statuts
-                disponibles pour l'expédition ont été restreints.
-            unsupported_action: Cette action n'est pas prise en charge par la plateforme.
-        alert:
-            no_item: Aucune expédition configuré
+        field:
+            return: Retour
+            items: Éléments
+            tracking_number: N° de suivi
+            auto_invoice: Générer la facture
+            auto_credit: Générer l'avoir
+            sender_address: Addresse expéditeur
+            receiver_address: Addresse destinataire
         state:
-            none: Aucun
             new: Création
 #            checkout: Vérification
 #            onhold: En cours d'envoi
@@ -902,9 +907,10 @@ ekyna_commerce:
             ready: Prêt
             partial: Partiel
             shipped: Expédié
-            completed: Complété
             returned: Retourné
             canceled: Annulé
+            none: Aucun
+            completed: Complété
         action:
             cancel: Annuler
             capture: Capturer
@@ -915,13 +921,16 @@ ekyna_commerce:
             ship: Expédier
             bills: Afficher les bons de livraison
             forms: Afficher les bons de préparation
-        field:
-            return: Retour
-            items: Éléments
-            tracking_number: N° de suivi
-            auto_invoice: Facturation automatique
-            sender_address: Addresse expéditeur
-            receiver_address: Addresse destinataire
+        message:
+            remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
+            cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
+            sale_is_not_stackable: |
+                Le statut de la vente n'étant pas accepté, les statuts
+                disponibles pour l'expédition ont été restreints.
+            credit_method: Mode remboursement qui sera associé à l'avoir généré.
+            unsupported_action: Cette action n'est pas prise en charge par la plateforme.
+        alert:
+            no_item: Aucune expédition configuré
         platforms: Plateformes
 
     shipment_item:

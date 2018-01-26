@@ -449,7 +449,11 @@ class SaleController extends AbstractSaleController
             }
         }
 
-        return $this->redirect($this->generateResourcePath($sale));
+        if (null === $redirect = $request->query->get('_redirect')) {
+            $redirect = $this->generateResourcePath($sale);
+        }
+
+        return $this->redirect($redirect);
     }
 
     /**

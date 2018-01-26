@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\DataTransformer\InvoiceLinesDataTransformer;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
@@ -59,11 +58,7 @@ class InvoiceType extends ResourceFormType
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
             ])
-            ->add('lines', InvoiceLinesType::class, [
-                'entry_type' => $options['line_type'],
-            ])
-            ->addModelTransformer(new InvoiceLinesDataTransformer($this->builder))
-            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                 $form = $event->getForm();
                 /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
                 $invoice = $event->getData();
@@ -75,10 +70,18 @@ class InvoiceType extends ResourceFormType
                     throw new RuntimeException("Not yet supported.");
                 };
 
+                $this->builder->build($invoice);
+
+                $form->add('lines', InvoiceTreeType::class, [
+                    'invoice'    => $invoice,
+                    'entry_type' => $options['line_type'],
+                ]);
+
                 if (InvoiceTypes::isCredit($invoice)) {
                     $form->add('paymentMethod', PaymentMethodChoiceType::class, [
-                        'label'   => 'ekyna_commerce.invoice.field.payment_method',
-                        'invoice' => $invoice,
+                        'label'       => 'ekyna_commerce.invoice.field.payment_method',
+                        'invoice'     => $invoice,
+                        'outstanding' => false,
                     ]);
                 }
             });
@@ -89,6 +92,11 @@ class InvoiceType extends ResourceFormType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $form->getData();
+
+        $view->vars['credit_mode'] = InvoiceTypes::isCredit($invoice->getType());
+
         FormUtil::addClass($view, 'invoice');
     }
 
