@@ -105,19 +105,37 @@ class SaleController extends AbstractSaleController
 
         $this->isGranted('VIEW', $sale);
 
-        $response = new Response('', Response::HTTP_OK, [
-            'Content-Type' => 'application/json',
-        ]);
+        $html = false;
+        $headers = [];
+
+        $accept = $request->getAcceptableContentTypes();
+        if (in_array('application/json', $accept, true)) {
+            $headers = ['Content-Type' => 'application/json'];
+        } elseif (in_array('text/html', $accept, true)) {
+            $html = true;
+        } else {
+            throw $this->createNotFoundException("Unsupported conten type.");
+        }
+
+        $response = new Response('', Response::HTTP_OK, $headers);
         $response->setLastModified($sale->getCreatedAt());
         $response->setPublic();
+        $response->setVary(array('Accept-Encoding', 'Accept'));
 
         if ($response->isNotModified($request)) {
             return $response;
         }
 
-        $response->setContent(
-            $this->get('serializer')->serialize($sale, 'json', ['groups' => ['Summary']])
-        );
+        if ($html) {
+            $content = $this->renderView(
+                'EkynaCommerceBundle:Common:sale_summary.html.twig',
+                $this->get('serializer')->normalize($sale, 'json', ['groups' => ['Summary']])
+            );
+        } else {
+            $this->get('serializer')->serialize($sale, 'json', ['groups' => ['Summary']]);
+        }
+
+        $response->setContent($content);
 
         return $response;
     }

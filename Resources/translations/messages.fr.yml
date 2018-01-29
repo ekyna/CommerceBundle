@@ -893,6 +893,7 @@ ekyna_commerce:
         field:
             return: Retour
             items: Éléments
+            shipped_at: Date d'expédition
             tracking_number: N° de suivi
             auto_invoice: Générer la facture
             auto_credit: Générer l'avoir

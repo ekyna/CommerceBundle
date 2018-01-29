@@ -15,10 +15,8 @@ use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Ekyna\Component\Table\TableInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
 use Ekyna\Component\Table\View;
-use Ekyna\Component\Table\View\TableView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -88,7 +86,7 @@ class OrderType extends ResourceTableType
                 throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
             }
 
-            $filters[] = function(QueryBuilder $qb, $alias) use ($states) {
+            $filters[] = function (QueryBuilder $qb, $alias) use ($states) {
                 $qb->andWhere($qb->expr()->in($alias . '.state', $states));
             };
         }
@@ -291,17 +289,12 @@ class OrderType extends ResourceTableType
     /**
      * @inheritDoc
      */
-    public function buildView(TableView $view, TableInterface $table, array $options)
-    {
-        $view->vars['attr']['data-summary-route'] = 'ekyna_commerce_order_admin_summary';
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function buildRowView(View\RowView $view, RowInterface $row, array $options)
     {
-        $view->vars['attr']['data-summary-parameters'] = json_encode(['orderId' => $row->getData('id')]);
+        $view->vars['attr']['data-summary'] = json_encode([
+            'route'      => 'ekyna_commerce_order_admin_summary',
+            'parameters' => ['orderId' => $row->getData('id')],
+        ]);
     }
 
     /**

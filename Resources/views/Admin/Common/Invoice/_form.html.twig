@@ -3,7 +3,14 @@
     {{ bootstrap_set_col_size('md') }}
     {{ form_errors(form, {'global_errors': true}) }}
 
-    {{ form_row(form.number) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.createdAt, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
     {% if form.paymentMethod is defined -%}
         {{ form_row(form.paymentMethod) }}
     {%- endif %}

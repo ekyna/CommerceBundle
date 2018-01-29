@@ -54,6 +54,10 @@ class InvoiceType extends ResourceFormType
                 'required' => false,
                 'disabled' => true,
             ])
+            ->add('createdAt', Type\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.date',
+                'required' => false,
+            ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
@@ -70,11 +74,16 @@ class InvoiceType extends ResourceFormType
                     throw new RuntimeException("Not yet supported.");
                 };
 
-                $this->builder->build($invoice);
+                $disabledLines = true;
+                if (null === $invoice->getShipment()) {
+                    $this->builder->build($invoice);
+                    $disabledLines = false;
+                }
 
                 $form->add('lines', InvoiceTreeType::class, [
                     'invoice'    => $invoice,
                     'entry_type' => $options['line_type'],
+                    'disabled'   => $disabledLines,
                 ]);
 
                 if (InvoiceTypes::isCredit($invoice)) {

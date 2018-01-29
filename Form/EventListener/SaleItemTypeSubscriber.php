@@ -73,6 +73,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
         if ($item instanceof SaleItemInterface) {
             $hasParent = null !== $item->getParent();
             $hasChildren = $item->hasChildren();
+            $hasPublicChildren = !$item->hasPrivateChildren();
             $hasSubject = $item->hasSubjectIdentity();
         }
 
@@ -95,7 +96,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'label'    => 'ekyna_core.field.weight', // TODO unit weight ?
                 'scale'    => 3,
                 'required' => false,
-                'disabled' => $hasChildren,
+                'disabled' => $hasChildren && !$hasPublicChildren,
                 'attr'     => [
                     'placeholder' => 'ekyna_core.field.weight',
                     'input_group' => ['append' => 'kg'],
@@ -106,7 +107,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'label'    => 'ekyna_commerce.sale.field.net_unit',
                 'currency' => $this->currency,
                 'required' => false,
-                'disabled' => $hasChildren,
+                'disabled' => $hasChildren && !$hasPublicChildren,
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
                     //'input_group' => ['append' => '€'],  // TODO sale currency

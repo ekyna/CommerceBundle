@@ -33,23 +33,30 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.method, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.shippedAt, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
+                    {{ form_row(form.method, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
                     {{ form_row(form.trackingNumber, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                {% if form.creditMethod is defined -%}
+                    {{ form_row(form.creditMethod, {'label_col': 4, 'widget_col': 8}) }}
+                {%- endif %}
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.autoInvoice, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {% if form.creditMethod is defined -%}
-                {{ form_row(form.creditMethod) }}
-            {%- endif %}
             {{ form_row(form.items) }}
             {{ form_row(form.description) }}
         </div>

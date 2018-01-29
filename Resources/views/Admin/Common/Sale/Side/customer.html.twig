@@ -1,88 +1,80 @@
 {% spaceless %}
-<h3>{{ 'ekyna_commerce.customer.label.singular'|trans }}</h3>
-<div class="show">
-    <div class="show-body">
-        <div class="row">
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customer.number, 'text', 'ekyna_core.field.number', {
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customer.company, 'text', 'ekyna_core.field.company', {
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customer|identity, 'entity', 'ekyna_commerce.customer.label.singular', {
-                    'route': 'ekyna_commerce_customer_admin_show',
-                    'route_params': {'customerId': customer.id},
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customer.email, 'text', 'ekyna_core.field.email', {
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-lg-12">
-                {% if customer.description is not empty %}
-                    {{ show_row(customer.description, 'textarea', 'ekyna_commerce.field.description', {
-                        'label_nb_col': 4,
-                        'widget_nb_col': 8
-                    }) }}
-                {% endif %}
-            </div>
-            <div class="col-md-6 col-lg-12">
-                {% if customer.hasParent() %}
-                    {{ show_row(customer.parent, 'entity', 'ekyna_commerce.customer.field.parent', {
-                        'route': 'ekyna_commerce_customer_admin_show',
-                        'route_params_map': {'customerId': 'id'},
-                        'label_nb_col': 4,
-                        'widget_nb_col': 8
-                    }) }}
-                {% endif %}
-            </div>
-        </div>
-        {% set customerSource = customer.hasParent() ? customer.parent : customer %}
-        <div class="row">
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customerSource.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
-                    'route': 'ekyna_commerce_payment_term_admin_show',
-                    'route_params_map': {'paymentTermId': 'id'},
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customerSource.outstandingLimit|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.customer.field.outstanding_limit', {
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customerSource.outstandingBalance|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.customer.field.outstanding_balance', {
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-            <div class="col-md-6 col-lg-12">
-                {{ show_row(customerSource.creditBalance|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.customer.field.credit_balance', {
-                    'label_nb_col': 4,
-                    'widget_nb_col': 8
-                }) }}
-            </div>
-        </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {{ 'ekyna_commerce.customer.label.singular'|trans }}
+    </div>
+    <div class="panel-body">
+        <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <th>{{ 'ekyna_core.field.number'|trans }}</th>
+                <td>{{ customer.number }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_core.field.company'|trans }}</th>
+                <td>{{ customer.company }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.customer.label.singular'|trans }}</th>
+                <td>
+                    <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}">
+                        {{ customer|identity|raw }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_core.field.email'|trans }}</th>
+                <td>{{ customer.email }}</td>
+            </tr>
+            {% if customer.description is not empty %}
+            <tr>
+                <th>{{ 'ekyna_commerce.field.description'|trans }}</th>
+                <td>{{ customer.description|nl2br }}</td>
+            </tr>
+            {% endif %}
+            {% if customer.hasParent() %}
+            <tr>
+                <th>{{ 'ekyna_commerce.customer.field.parent'|trans }}</th>
+                <td>
+                    <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.parent.id}) }}">
+                        {{ customer.parent|raw }}
+                    </a>
+                </td>
+            </tr>
+            {% endif %}
+            {% set customerSource = customer.hasParent() ? customer.parent : customer %}
+            <tr>
+                <th>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</th>
+                <td>
+                    {% if customerSource.paymentTerm is not null %}
+                    <a href="{{ path('ekyna_commerce_payment_term_admin_show', {'paymentTermId': customerSource.paymentTerm.id}) }}">
+                        {{ customerSource.paymentTerm|raw }}
+                    </a>
+                    {% else %}
+                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.customer.field.outstanding_limit'|trans }}</th>
+                <td>
+                    {{ customerSource.outstandingLimit|localizedcurrency(commerce_default_currency) }}
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.customer.field.outstanding_balance'|trans }}</th>
+                <td>
+                    {{ customerSource.outstandingBalance|localizedcurrency(commerce_default_currency) }}
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.customer.field.credit_balance'|trans }}</th>
+                <td>
+                    {{ customerSource.creditBalance|localizedcurrency(commerce_default_currency) }}
+                </td>
+            </tr>
+        </tbody>
+        </table>
     </div>
 </div>
 {% endspaceless %}

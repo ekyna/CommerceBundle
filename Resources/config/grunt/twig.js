@@ -12,7 +12,6 @@ module.exports = function (grunt, options) {
             },
             files: {
                 'src/Ekyna/Bundle/CommerceBundle/Resources/public/js/templates.js': [
-                    'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/sale_summary.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/stock_unit_rows.html.twig'
                 ]
             }

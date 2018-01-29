@@ -10,10 +10,19 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
         this.each(function() {
 
-            var $items = $(this).find('.shipment-items');
+            var $form = $(this),
+                name = $form.attr('name'),
+                $items = $form.find('.shipment-items'),
+                $state = $form.find('[name="' + name + '[state]"]'),
+                $shippedAt = $form.find('[name="' + name + '[shippedAt]"]');
 
-            console.log('shipmentWidget', $items.length);
+            console.log('shipmentWidget', $items.length, $state.length, $shippedAt.length);
 
+            $state.on('change', function() {
+                $shippedAt.prop('disabled', !($state.val() === 'shipped' || $state.val() === 'completed'));
+            }).trigger('change');
+
+            // TODO Packaging format
             $items
                 .on('blur', 'input', function() {
                     var $input = $(this),

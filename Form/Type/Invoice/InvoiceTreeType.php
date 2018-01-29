@@ -77,6 +77,7 @@ class InvoiceTreeType extends AbstractType
             ->setAllowedTypes('invoice', InvoiceInterface::class)
             ->setNormalizer('entry_options', function(Options $options, $value) {
                 $value['invoice'] = $options['invoice'];
+                $value['disabled'] = $options['disabled'];
 
                 return $value;
             });

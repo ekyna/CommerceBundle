@@ -8,17 +8,20 @@
         <td>{{ item.quantity }}</td>
     </tr>
     {% import _self as macros %}
-    {% for child in item.children %}
+    {% for child in item.children -%}
         {{ macros.item_line(child) }}
-    {% endfor %}
+    {%- endfor %}
     {% endif %}
 {% endmacro %}
 <table class="table table-condensed">
-{% for item in items %}
+{% for item in items -%}
     {{ macros.item_line(item) }}
-{% endfor %}
+{%- endfor %}
 </table>
-{# TODO Translations #}
-{% if description is not empty %}<p><strong>Note interne:</strong> {{ description|raw }}</p>{% endif %}
-{% if comment is not empty %}<p><strong>Commentaire:</strong> {{ comment|raw }}</p>{% endif %}
+{% if description is not empty -%}
+    <p><strong>{{ 'ekyna_commerce.field.description'|trans }}</strong> {{ description|raw }}</p>
+{%- endif %}
+{% if comment is not empty -%}
+    <p><strong>{{ 'ekyna_core.field.comment'|trans }}</strong> {{ comment|raw }}</p>
+{%- endif %}
 {% endspaceless %}

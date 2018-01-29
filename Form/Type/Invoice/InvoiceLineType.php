@@ -27,7 +27,7 @@ class InvoiceLineType extends ResourceFormType
         $builder
             ->add('quantity', Type\NumberType::class, [
                 'label'          => 'ekyna_core.field.quantity',
-                'disabled'       => 0 < $options['level'],
+                'disabled'       => $options['disabled'] || 0 < $options['level'],
                 'attr'           => [
                     'class' => 'input-sm',
                 ],
@@ -36,8 +36,9 @@ class InvoiceLineType extends ResourceFormType
             ->add('children', InvoiceLinesType::class, [
                 'entry_type'    => static::class,
                 'entry_options' => [
-                    'level'   => $options['level'] + 1,
-                    'invoice' => $options['invoice'],
+                    'level'    => $options['level'] + 1,
+                    'invoice'  => $options['invoice'],
+                    'disabled' => $options['disabled'],
                 ],
             ]);
     }

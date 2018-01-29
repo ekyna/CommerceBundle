@@ -68,6 +68,10 @@ class ShipmentType extends ResourceFormType
                     'min'         => 0,
                 ],
             ])
+            ->add('shippedAt', Type\DateTimeType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.shipped_at',
+                'required' => false,
+            ])
             ->add('trackingNumber', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.tracking_number',
                 'required' => false,
