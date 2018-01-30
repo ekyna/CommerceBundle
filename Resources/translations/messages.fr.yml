@@ -785,6 +785,8 @@ ekyna_commerce:
             shipment:
                 edit: Modifier les frais de port
         confirm:
+            prioritize: >
+                Confirmer la réassignation du stock ?
             transform: >
                 Confirmer la transformation en <strong>%target%</strong> ?
             item:
@@ -861,6 +863,8 @@ ekyna_commerce:
     sale_item:
         field:
             tax_group: Groupe
+            shipped: Expédié
+            invoiced: Facturé
 
     setting:
         invoice_footer: Pied de page facture
@@ -1019,7 +1023,6 @@ ekyna_commerce:
             sold_quantity: Qte vendue
             shipped_quantity: Qte expediée
             net_price: Prix d'achat HT
-            supplier_order: Cde. Four.
         button:
             new: Créer une unité de stock
         alert:

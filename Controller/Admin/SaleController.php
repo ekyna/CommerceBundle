@@ -132,7 +132,7 @@ class SaleController extends AbstractSaleController
                 $this->get('serializer')->normalize($sale, 'json', ['groups' => ['Summary']])
             );
         } else {
-            $this->get('serializer')->serialize($sale, 'json', ['groups' => ['Summary']]);
+            $content = $this->get('serializer')->serialize($sale, 'json', ['groups' => ['Summary']]);
         }
 
         $response->setContent($content);

@@ -75,41 +75,6 @@ class StockRenderer
     }
 
     /**
-     * Renders the stock units list.
-     *
-     * @param StockUnitInterface[] $units
-     * @param array                $options
-     *
-     * @return string
-     * @deprecated
-     * @todo remove
-     */
-    public function renderStockUnits(array $units, array $options = [])
-    {
-        $template = isset($options['template']) ? $options['template'] : $this->unitTemplate;
-        $prefix = isset($options['prefix']) ? $options['prefix'] : 'stockUnits';
-        $id = isset($options['id']) ? $options['id'] : $prefix . '_' . uniqid();
-        $manual = isset($options['manual']) ? (bool)$options['manual'] : false;
-        $script = isset($options['script']) ? (bool)$options['script'] : false;
-
-        $classes = ['table', 'table-striped', 'table-hover'];
-        if (isset($options['class'])) {
-            $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
-        }
-
-        $normalized = $this->normalizer->normalize($units, 'json', ['groups' => ['StockView']]);
-
-        return $this->templating->render($template, [
-            'stockUnits' => $normalized,
-            'prefix'     => $prefix,
-            'id'         => $id,
-            'classes'    => implode(' ', $classes),
-            'manual'     => $manual,
-            'script'     => $script,
-        ]);
-    }
-
-    /**
      * Renders the stock assignments list.
      *
      * @param StockAssignmentInterface[] $assignments
@@ -128,7 +93,7 @@ class StockRenderer
             $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
         }
 
-        $normalized = $this->normalizer->normalize($assignments, 'json', ['groups' => ['StockView']]);
+        $normalized = $this->normalizer->normalize($assignments, 'json', ['groups' => ['StockAssignment']]);
 
         return $this->templating->render($template, [
             'stockAssignments' => $normalized,

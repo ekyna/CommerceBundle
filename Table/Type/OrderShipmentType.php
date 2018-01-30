@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
+use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\CommerceBundle\Table\Action;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
@@ -128,7 +128,7 @@ class OrderShipmentType extends AbstractOrderListType
                 ])
                 ->addFilter('state', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
-                    'choices'  => PaymentStates::getChoices(),
+                    'choices'  => ShipmentStates::getChoices(),
                     'position' => 40,
                 ])
                 ->addFilter('weight', CType\Filter\NumberType::class, [

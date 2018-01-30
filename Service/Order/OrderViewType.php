@@ -99,11 +99,10 @@ class OrderViewType extends AbstractViewType
                 $prioritizePath,
                 $this->trans('ekyna_commerce.sale.button.prioritize'),
                 'fa fa-level-up', [
-                    'id'              => 'order_prioritize',
-                    'title'           => $this->trans('ekyna_commerce.sale.button.prioritize'),
-                    'class'           => 'btn btn-sm btn-warning',
-                    //'data-sale-modal' => null,
-                    //'data-sale-xhr' => 'get',
+                    'id'      => 'order_prioritize',
+                    'title'   => $this->trans('ekyna_commerce.sale.button.prioritize'),
+                    'class'   => 'btn btn-sm btn-warning',
+                    'confirm' => $this->trans('ekyna_commerce.sale.confirm.prioritize'),
                 ]
             ));
         }

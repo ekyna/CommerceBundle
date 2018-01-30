@@ -8,8 +8,10 @@ use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
+use Ekyna\Component\Table\View\RowView;
 
 /**
  * Class SupplierOrderType
@@ -112,5 +114,16 @@ class SupplierOrderType extends ResourceTableType
                 'choices'  => SupplierOrderStates::getChoices(),
                 'position' => 20,
             ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildRowView(RowView $view, RowInterface $row, array $options)
+    {
+        $view->vars['attr']['data-summary'] = json_encode([
+            'route'      => 'ekyna_commerce_supplier_order_admin_summary',
+            'parameters' => ['supplierOrderId' => $row->getData('id')],
+        ]);
     }
 }

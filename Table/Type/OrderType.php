@@ -31,6 +31,11 @@ class OrderType extends ResourceTableType
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
+        $source = $builder->getSource();
+        if (!$source instanceof EntitySource) {
+            throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+        }
+
         $filters = [];
 
         /** @var SubjectInterface $subject */
@@ -62,11 +67,6 @@ class OrderType extends ResourceTableType
                     ->setParameter('identifier', $subject->getId());
             };
         } elseif (null !== $customer) {
-            $source = $builder->getSource();
-            if (!$source instanceof EntitySource) {
-                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
-            }
-
             $filters[] = function (QueryBuilder $qb, $alias) use ($customer) {
                 if ($customer->hasParent()) {
                     $qb->andWhere($qb->expr()->orX(
@@ -80,24 +80,18 @@ class OrderType extends ResourceTableType
             };
         }
 
-        if (!empty($states = $options['states'])) {
-            $source = $builder->getSource();
-            if (!$source instanceof EntitySource) {
-                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
+        foreach (['state', 'paymentState', 'shipmentState', 'invoiceState'] as $property) {
+            if (!empty($states = $options[$property])) {
+                $filters[] = function (QueryBuilder $qb, $alias) use ($property, $states) {
+                    $qb->andWhere($qb->expr()->in($alias . '.' . $property, $states));
+                };
             }
-
-            $filters[] = function (QueryBuilder $qb, $alias) use ($states) {
-                $qb->andWhere($qb->expr()->in($alias . '.state', $states));
-            };
         }
 
         if (!empty($filters)) {
-            $builder->setFilterable(false);
-
-            $source = $builder->getSource();
-            if (!$source instanceof EntitySource) {
-                throw new InvalidArgumentException("Expected instance of " . EntitySource::class);
-            }
+            $builder
+                ->setFilterable(false)
+                ->setPerPageChoices([100]);
 
             $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($filters) {
                 foreach ($filters as $filter) {
@@ -307,9 +301,15 @@ class OrderType extends ResourceTableType
         $resolver
             ->setDefault('customer', null)
             ->setDefault('subject', null)
-            ->setDefault('states', [])
+            ->setDefault('state', [])
+            ->setDefault('shipmentState', [])
+            ->setDefault('paymentState', [])
+            ->setDefault('invoiceState', [])
             ->setAllowedTypes('subject', ['null', SubjectInterface::class])
             ->setAllowedTypes('customer', ['null', CustomerInterface::class])
-            ->setAllowedTypes('states', 'array');
+            ->setAllowedTypes('state', 'array')
+            ->setAllowedTypes('shipmentState', 'array')
+            ->setAllowedTypes('paymentState', 'array')
+            ->setAllowedTypes('invoiceState', 'array');
     }
 }

@@ -5,7 +5,9 @@
     <tr>
         <td>{{ item.designation }}</td>
         <td>{{ item.reference }}</td>
-        <td>{{ item.quantity }}</td>
+        <td class="text-right">{{ item.quantity }}</td>
+        <td class="text-right">{{ item.shipped }}{% if 0 < item.returned %} (-{{ item.returned }}){% endif %}</td>
+        <td class="text-right">{{ item.invoiced }}{% if 0 < item.credited %} (-{{ item.credited }}){% endif %}</td>
     </tr>
     {% import _self as macros %}
     {% for child in item.children -%}
@@ -14,9 +16,20 @@
     {% endif %}
 {% endmacro %}
 <table class="table table-condensed">
+<thead>
+<tr>
+    <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+    <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+    <th>{{ 'ekyna_commerce.sale_item.field.shipped'|trans }}</th>
+    <th>{{ 'ekyna_commerce.sale_item.field.invoiced'|trans }}</th>
+</tr>
+</thead>
+<tbody>
 {% for item in items -%}
     {{ macros.item_line(item) }}
 {%- endfor %}
+</tbody>
 </table>
 {% if description is not empty -%}
     <p><strong>{{ 'ekyna_commerce.field.description'|trans }}</strong> {{ description|raw }}</p>

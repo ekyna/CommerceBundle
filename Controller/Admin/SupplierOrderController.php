@@ -210,70 +210,57 @@ class SupplierOrderController extends ResourceController
     }
 
     /**
-     * Sends the supplier order submit message.
+     * Sale summary action.
      *
-     * @param SupplierOrderSubmit $submit
+     * @param Request $request
      *
-     * @return bool
+     * @return Response
      */
-    private function sendSubmitMessage(SupplierOrderSubmit $submit)
+    public function summaryAction(Request $request)
     {
-        $order = $submit->getOrder();
-
-        $settings = $this->container->get('ekyna_setting.manager');
-        $fromEmail = $settings->getParameter('notification.from_email');
-        $fromName = $settings->getParameter('notification.from_name');
-
-        $message = new \Swift_Message();
-        $message
-            ->setSubject('Bon de commande ' . $order->getNumber())
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($submit->getEmails())
-            ->setBody($submit->getMessage(), 'text/html');
-
-        $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
-            ->createRenderer($order);
-
-        $message->attach(\Swift_Attachment::newInstance(
-            $renderer->render(RendererInterface::FORMAT_PDF),
-            $order->getNumber() . '.pdf',
-            'application/pdf'
-        ));
-
-        if ($submit->isSendLabels()) {
-            $message->attach(\Swift_Attachment::newInstance(
-                $this->renderLabels($order),
-                'labels.pdf',
-                'application/pdf'
-            ));
+        if (!$request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException();
         }
 
-        return 0 < $this->get('mailer')->send($message);
-    }
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
+        $supplierOrder = $context->getResource();
 
-    /**
-     * Renders the supplier order's items subjects labels.
-     *
-     * @param SupplierOrderInterface $order
-     *
-     * @return string
-     */
-    private function renderLabels(SupplierOrderInterface $order)
-    {
-        $helper = $this->get('ekyna_commerce.subject_helper');
+        $this->isGranted('VIEW', $supplierOrder);
 
-        $subjects = [];
+        $html = false;
+        $headers = [];
 
-        foreach ($order->getItems() as $item) {
-            $subjects[] = $helper->resolve($item);
+        $accept = $request->getAcceptableContentTypes();
+        if (in_array('application/json', $accept, true)) {
+            $headers = ['Content-Type' => 'application/json'];
+        } elseif (in_array('text/html', $accept, true)) {
+            $html = true;
+        } else {
+            throw $this->createNotFoundException("Unsupported conten type.");
         }
 
-        $renderer = $this->get('ekyna_commerce.subject.label_renderer');
+        $response = new Response('', Response::HTTP_OK, $headers);
+        $response->setLastModified($supplierOrder->getCreatedAt());
+        $response->setPublic();
+        $response->setVary(array('Accept-Encoding', 'Accept'));
 
-        $labels = $renderer->buildLabels($subjects);
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
 
-        return $renderer->render($labels, SubjectLabel::FORMAT_SMALL);
+        if ($html) {
+            $content = $this->renderView(
+                'EkynaCommerceBundle:Common:supplier_order_summary.html.twig',
+                $this->get('serializer')->normalize($supplierOrder, 'json', ['groups' => ['Summary']])
+            );
+        } else {
+            $content = $this->get('serializer')->serialize($supplierOrder, 'json', ['groups' => ['Summary']]);
+        }
+
+        $response->setContent($content);
+
+        return $response;
     }
 
     /**
@@ -345,5 +332,72 @@ class SupplierOrderController extends ResourceController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
         ]);
+    }
+
+    /**
+     * Sends the supplier order submit message.
+     *
+     * @param SupplierOrderSubmit $submit
+     *
+     * @return bool
+     */
+    private function sendSubmitMessage(SupplierOrderSubmit $submit)
+    {
+        $order = $submit->getOrder();
+
+        $settings = $this->container->get('ekyna_setting.manager');
+        $fromEmail = $settings->getParameter('notification.from_email');
+        $fromName = $settings->getParameter('notification.from_name');
+
+        $message = new \Swift_Message();
+        $message
+            ->setSubject('Bon de commande ' . $order->getNumber())
+            ->setFrom($fromEmail, $fromName)
+            ->setTo($submit->getEmails())
+            ->setBody($submit->getMessage(), 'text/html');
+
+        $renderer = $this
+            ->get('ekyna_commerce.document.renderer_factory')
+            ->createRenderer($order);
+
+        $message->attach(\Swift_Attachment::newInstance(
+            $renderer->render(RendererInterface::FORMAT_PDF),
+            $order->getNumber() . '.pdf',
+            'application/pdf'
+        ));
+
+        if ($submit->isSendLabels()) {
+            $message->attach(\Swift_Attachment::newInstance(
+                $this->renderLabels($order),
+                'labels.pdf',
+                'application/pdf'
+            ));
+        }
+
+        return 0 < $this->get('mailer')->send($message);
+    }
+
+    /**
+     * Renders the supplier order's items subjects labels.
+     *
+     * @param SupplierOrderInterface $order
+     *
+     * @return string
+     */
+    private function renderLabels(SupplierOrderInterface $order)
+    {
+        $helper = $this->get('ekyna_commerce.subject_helper');
+
+        $subjects = [];
+
+        foreach ($order->getItems() as $item) {
+            $subjects[] = $helper->resolve($item);
+        }
+
+        $renderer = $this->get('ekyna_commerce.subject.label_renderer');
+
+        $labels = $renderer->buildLabels($subjects);
+
+        return $renderer->render($labels, SubjectLabel::FORMAT_SMALL);
     }
 }

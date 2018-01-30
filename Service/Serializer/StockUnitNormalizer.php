@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
 use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockUnitNormalizer as BaseNormalizer;
 use Ekyna\Component\Commerce\Common\Util\Formatter;
@@ -52,7 +53,7 @@ class StockUnitNormalizer extends BaseNormalizer
 
         $groups = isset($context['groups']) ? (array)$context['groups'] : [];
 
-        if (in_array('StockView', $groups)) {
+        if (in_array('StockView', $groups) || in_array('StockAssignment', $groups)) {
             $translator = $this->constantHelper->getTranslator();
 
             if (null === $eda = $data['eda']) {
@@ -61,24 +62,28 @@ class StockUnitNormalizer extends BaseNormalizer
 
             $actions = [];
 
-            if (null !== $supplierOrderItem = $unit->getSupplierOrderItem()) {
-                $supplierOrder = $supplierOrderItem->getOrder();
+            if (in_array('StockView', $groups)) {
+                if (null !== $supplierOrderItem = $unit->getSupplierOrderItem()) {
+                    $supplierOrder = $supplierOrderItem->getOrder();
+
+                    $actions[] = [
+                        'label' => sprintf('%s (%s)',
+                            $supplierOrder->getNumber(),
+                            $this->constantHelper->renderSupplierOrderStateLabel($supplierOrder)
+                        ),
+                        'href'  => $this->resourceHelper->generateResourcePath($supplierOrder),
+                        'theme' => SupplierOrderStates::getTheme($supplierOrder->getState()),
+                        'modal' => false,
+                    ];
+                }
 
                 $actions[] = [
-                    'label' => $translator->trans('ekyna_commerce.stock_unit.field.supplier_order') .
-                        ' ' . $supplierOrder->getNumber(),
-                    'href'  => $this->resourceHelper->generateResourcePath($supplierOrder),
-                    'theme' => 'default',
-                    'modal' => false,
+                    'label' => '<i class="fa fa-pencil"></i>',
+                    'href'  => $this->resourceHelper->generateResourcePath($unit, 'adjustment_new'),
+                    'theme' => 'success',
+                    'modal' => true,
                 ];
             }
-
-            $actions[] = [
-                'label' => '<i class="fa fa-pencil"></i>',
-                'href'  => $this->resourceHelper->generateResourcePath($unit, 'adjustment_new'),
-                'theme' => 'success',
-                'modal' => true,
-            ];
 
             $data = array_replace($data, [
                 'state_label' => $this->constantHelper->renderStockUnitStateLabel($unit),
