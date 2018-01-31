@@ -4,7 +4,7 @@ define(['jquery', 'ekyna-dispatcher', 'ekyna-modal', 'ekyna-commerce/templates',
         this.$element = $('#' + id);
 
         this.prefix = this.$element.data('prefix');
-        this.$tbody = this.$element.find('> table > tbody');
+        this.$table = this.$element.find('> table');
 
         var that = this;
         this.$element.on('click', '[data-stock-unit-modal]', function (e) {
@@ -44,9 +44,11 @@ define(['jquery', 'ekyna-dispatcher', 'ekyna-modal', 'ekyna-commerce/templates',
             'stock_units': data.stock_units
         });
 
-        this.$tbody.html(content);
+        this.$table.find('> tbody').remove();
 
-        this.$tbody.find('tr#' + id + '_adjustments').show();
+        this.$table.append($(content));
+
+        this.$table.find('tbody#' + id + '_adjustments').show();
     };
 
     return StockUnits;

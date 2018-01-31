@@ -1,6 +1,6 @@
 {% spaceless %}
 {% for stock_unit in stock_units %}
-    {% set stock_unit_id = prefix ~ '_' ~ loop.index0 -%}
+    {% set stock_unit_id = prefix ~ '_' ~ loop.index0 %}
     <tbody>
     <tr id="{{ stock_unit_id }}">
         <td id="{{ stock_unit_id ~ '_state' }}">{{ stock_unit.state_badge|raw }}</td>
