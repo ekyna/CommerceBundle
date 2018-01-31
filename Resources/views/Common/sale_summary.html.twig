@@ -1,17 +1,19 @@
 {% spaceless %}
+{% set shipment = shipment|default(false) %}
+{% set invoice = invoice|default(false) %}
 {% import _self as macros %}
-{% macro item_line(item) %}
+{% macro item_line(item, shipment, invoice) %}
     {% if not item.private %}
     <tr>
         <td>{{ item.designation }}</td>
         <td>{{ item.reference }}</td>
         <td class="text-right">{{ item.quantity }}</td>
-        <td class="text-right">{{ item.shipped }}{% if 0 < item.returned %} (-{{ item.returned }}){% endif %}</td>
-        <td class="text-right">{{ item.invoiced }}{% if 0 < item.credited %} (-{{ item.credited }}){% endif %}</td>
+        {% if shipment %}<td class="text-right">{{ item.shipped }}{% if 0 < item.returned %} (-{{ item.returned }}){% endif %}</td>{% endif %}
+        {% if invoice %}<td class="text-right">{{ item.invoiced }}{% if 0 < item.credited %} (-{{ item.credited }}){% endif %}</td>{% endif %}
     </tr>
     {% import _self as macros %}
     {% for child in item.children -%}
-        {{ macros.item_line(child) }}
+        {{ macros.item_line(child, shipment, invoice) }}
     {%- endfor %}
     {% endif %}
 {% endmacro %}
@@ -21,13 +23,13 @@
     <th>{{ 'ekyna_core.field.designation'|trans }}</th>
     <th>{{ 'ekyna_core.field.reference'|trans }}</th>
     <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-    <th>{{ 'ekyna_commerce.sale_item.field.shipped'|trans }}</th>
-    <th>{{ 'ekyna_commerce.sale_item.field.invoiced'|trans }}</th>
+    {% if shipment %}<th>{{ 'ekyna_commerce.sale_item.field.shipped'|trans }}</th>{% endif %}
+    {% if invoice %}<th>{{ 'ekyna_commerce.sale_item.field.invoiced'|trans }}</th>{% endif %}
 </tr>
 </thead>
 <tbody>
 {% for item in items -%}
-    {{ macros.item_line(item) }}
+    {{ macros.item_line(item, shipment, invoice) }}
 {%- endfor %}
 </tbody>
 </table>

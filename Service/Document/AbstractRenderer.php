@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
-use Ekyna\Component\Commerce\Common\Model\NumberSubjectInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Resource\Model\TimestampableInterface;
@@ -192,6 +191,14 @@ abstract class AbstractRenderer implements RendererInterface
         $download = !!$request->query->get('_download', false);
 
         $response = new Response();
+
+        $filename = sprintf('%s.%s', $this->getFilename(), $format);
+        $disposition = $download
+            ? ResponseHeaderBag::DISPOSITION_ATTACHMENT
+            : ResponseHeaderBag::DISPOSITION_INLINE;
+        $header = $response->headers->makeDisposition($disposition, $filename);
+        $response->headers->set('Content-Disposition', $header);
+
         if (!$this->debug) {
             $response->setLastModified($this->getLastModified());
             if ($response->isNotModified($request)) {
@@ -205,14 +212,6 @@ abstract class AbstractRenderer implements RendererInterface
             $response->headers->add(['Content-Type' => 'application/pdf']);
         } elseif ($format === RendererInterface::FORMAT_JPG) {
             $response->headers->add(['Content-Type' => 'image/jpeg']);
-        }
-
-        if ($download) {
-            $filename = sprintf('%s.%s', $this->getFilename(), $format);
-            $contentDisposition = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename
-            );
-            $response->headers->set('Content-Disposition', $contentDisposition);
         }
 
         return $response;
@@ -278,21 +277,7 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * @inheritdoc
      */
-    public function getFilename()
-    {
-        if (empty($this->subjects)) {
-            throw new LogicException("Please add subject(s) first.");
-        }
-
-        if (1 < count($this->subjects)) {
-            return 'document';
-        }
-
-        /** @var NumberSubjectInterface $subject */
-        $subject = reset($this->subjects);
-
-        return $subject->getNumber();
-    }
+    abstract function getFilename();
 
     /**
      * Returns whether the render supports the given subject.

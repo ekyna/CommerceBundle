@@ -46,7 +46,7 @@ class DocumentRenderer extends AbstractRenderer
     public function getFilename()
     {
         if (empty($this->subjects)) {
-            throw new LogicException("Please add subject(s) first.");
+            throw new LogicException("Please add document(s) first.");
         }
 
         if (1 < count($this->subjects)) {

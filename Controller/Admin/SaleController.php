@@ -16,6 +16,7 @@ use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
@@ -120,16 +121,20 @@ class SaleController extends AbstractSaleController
         $response = new Response('', Response::HTTP_OK, $headers);
         $response->setLastModified($sale->getCreatedAt());
         $response->setPublic();
-        $response->setVary(array('Accept-Encoding', 'Accept'));
+        $response->setVary(['Accept-Encoding', 'Accept']);
 
         if ($response->isNotModified($request)) {
             return $response;
         }
 
         if ($html) {
+            $content = $this->get('serializer')->normalize($sale, 'json', ['groups' => ['Summary']]);
             $content = $this->renderView(
                 'EkynaCommerceBundle:Common:sale_summary.html.twig',
-                $this->get('serializer')->normalize($sale, 'json', ['groups' => ['Summary']])
+                array_replace($content, [
+                    'shipment' => $sale instanceof ShipmentSubjectInterface,
+                    'invoice'  => $sale instanceof InvoiceSubjectInterface,
+                ])
             );
         } else {
             $content = $this->get('serializer')->serialize($sale, 'json', ['groups' => ['Summary']]);

@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 
 /**
@@ -11,6 +12,25 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
  */
 class SupplierOrderRenderer extends AbstractRenderer
 {
+    /**
+     * @inheritdoc
+     */
+    public function getFilename()
+    {
+        if (empty($this->subjects)) {
+            throw new LogicException("Please add supplier order(s) first.");
+        }
+
+        if (1 < count($this->subjects)) {
+            return 'supplier_orders';
+        }
+
+        /** @var SupplierOrderInterface $subject */
+        $subject = reset($this->subjects);
+
+        return 'supplier_order_' . $subject->getNumber();
+    }
+
     /**
      * @inheritDoc
      */

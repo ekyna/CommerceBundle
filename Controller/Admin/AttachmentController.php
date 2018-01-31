@@ -66,10 +66,11 @@ class AttachmentController extends ResourceController
         $response->setPrivate();
 
         $response->headers->set('Content-Type', $file->getMimetype());
-        $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+        $header = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
             $resource->guessFilename()
         );
+        $response->headers->set('Content-Disposition', $header);
 
         return $response;
     }

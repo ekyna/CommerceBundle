@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 
 /**
@@ -11,6 +12,25 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
  */
 class InvoiceRenderer extends AbstractRenderer
 {
+    /**
+     * @inheritdoc
+     */
+    public function getFilename()
+    {
+        if (empty($this->subjects)) {
+            throw new LogicException("Please add invoice(s) first.");
+        }
+
+        if (1 < count($this->subjects)) {
+            return 'invoices';
+        }
+
+        /** @var InvoiceInterface $subject */
+        $subject = reset($this->subjects);
+
+        return 'invoice_' . $subject->getNumber();
+    }
+
     /**
      * @inheritdoc
      */

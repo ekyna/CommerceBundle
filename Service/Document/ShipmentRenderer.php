@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 
 /**
@@ -40,6 +41,25 @@ class ShipmentRenderer extends AbstractRenderer
 
 
         $this->type = $type;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFilename()
+    {
+        if (empty($this->subjects)) {
+            throw new LogicException("Please add shipment(s) first.");
+        }
+
+        if (1 < count($this->subjects)) {
+            return 'shipments';
+        }
+
+        /** @var ShipmentInterface $subject */
+        $subject = reset($this->subjects);
+
+        return 'shipment_' . $this->type . '_' . $subject->getNumber();
     }
 
     /**
