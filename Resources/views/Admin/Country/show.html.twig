@@ -18,13 +18,21 @@
             <div class="tab-pane active" id="country-general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(country.name, 'text', 'ekyna_core.field.name', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                        {{ show_row(country.name, 'text', {
+                            'label': 'ekyna_core.field.name',
+                            'label_col': 4
+                        }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(country.code, 'text', 'ekyna_core.field.code', {'label_nb_col': 4, 'widget_nb_col': 8}) }}
+                        {{ show_row(country.code, 'text', {
+                            'label': 'ekyna_core.field.code',
+                            'label_col': 4
+                        }) }}
                     </div>
                 </div>
-                {{ show_row(country.enabled, 'checkbox', 'ekyna_core.field.enabled') }}
+                {{ show_row(country.enabled, 'boolean', {
+                    'label': 'ekyna_core.field.enabled'
+                }) }}
             </div>
         </div>
     </div>

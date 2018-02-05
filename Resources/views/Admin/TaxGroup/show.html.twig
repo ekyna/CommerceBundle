@@ -18,22 +18,23 @@
             <div class="tab-pane active" id="tax-group-general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(taxGroup.name, 'text', 'ekyna_core.field.name', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                        {{ show_row(taxGroup.name, 'text', {
+                            'label': 'ekyna_core.field.name',
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(taxGroup.default, 'checkbox', 'ekyna_core.field.default', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                        {{ show_row(taxGroup.default, 'boolean', {
+                            'label': 'ekyna_core.field.default',
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>
-                {{ show_row(taxGroup.taxes, 'entity', 'ekyna_commerce.tax.label.plural', {
+                {{ show_row(taxGroup.taxes, 'entity', {
+                    'label': 'ekyna_commerce.tax.label.plural',
                     'id': 'tax_group_taxes',
                     'route': 'ekyna_commerce_tax_admin_show',
-                    'route_params_map': {'taxId': 'id'}
+                    'route_parameters_map': {'taxId': 'id'}
                 }) }}
             </div>
         </div>

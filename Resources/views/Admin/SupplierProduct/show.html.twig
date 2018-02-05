@@ -28,49 +28,50 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="supplier-product-general">
-                {{ show_row(supplierProduct.designation, 'text', 'ekyna_core.field.designation') }}
+                {{ show_row(supplierProduct.designation, 'text', {
+                    'label': 'ekyna_core.field.designation'
+                }) }}
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(supplierProduct.reference, 'text', 'ekyna_core.field.reference', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                        {{ show_row(supplierProduct.reference, 'text', {
+                            'label': 'ekyna_core.field.reference',
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(supplierProduct.netPrice|localizedcurrency(currency), 'text', 'ekyna_commerce.supplier_product.field.net_price', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                        {{ show_row(supplierProduct.netPrice|localizedcurrency(currency), 'text', {
+                            'label': 'ekyna_commerce.supplier_product.field.net_price',
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(supplierProduct.availableStock, 'number', 'ekyna_commerce.supplier_product.field.available_stock', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8,
-                            'precision': 0,
+                        {{ show_row(supplierProduct.availableStock, 'number', {
+                            'label': 'ekyna_commerce.supplier_product.field.available_stock',
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(supplierProduct.weight, 'number', 'ekyna_core.field.weight', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8,
+                        {{ show_row(supplierProduct.weight, 'number', {
+                            'label': 'ekyna_core.field.weight',
+                            'label_col': 4,
                             'append': ' Kg'
                         }) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(supplierProduct.orderedStock, 'number', 'ekyna_commerce.supplier_product.field.ordered_stock', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8,
-                            'precision': 0,
+                        {{ show_row(supplierProduct.orderedStock, 'number', {
+                            'label': 'ekyna_commerce.supplier_product.field.ordered_stock',
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(supplierProduct.estimatedDateOfArrival, 'date', 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival', {
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                        {{ show_row(supplierProduct.estimatedDateOfArrival, 'datetime', {
+                            'label': 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',
+                            'time': false,
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>

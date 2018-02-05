@@ -187,6 +187,12 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <!-- Show types -->
+        <service id="ekyna_commerce.show.phone_type"
+                 class="Ekyna\Bundle\CommerceBundle\Show\Type\PhoneType">
+            <tag name="ekyna_admin.show.type" alias="phone"/>
+        </service>
+
     </services>
 
 </container>

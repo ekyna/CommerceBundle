@@ -26,17 +26,23 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="payment-method-general">
-                    {{ show_row(paymentMethod.name, 'text', 'ekyna_core.field.name') }}
-                    {{ show_row(paymentMethod.factoryName, 'text', 'ekyna_commerce.payment_method.field.factory_name') }}
+                    {{ show_row(paymentMethod.name, 'text', {
+                        'label': 'ekyna_core.field.name'
+                    }) }}
+                    {{ show_row(paymentMethod.factoryName, 'text', {
+                        'label': 'ekyna_commerce.payment_method.field.factory_name'
+                    }) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(paymentMethod.enabled, 'checkbox', 'ekyna_core.field.enabled', {
-                                'label_nb_col': 4
+                            {{ show_row(paymentMethod.enabled, 'boolean', {
+                                'label': 'ekyna_core.field.enabled',
+                                'label_col': 4
                             }) }}
                         </div>
                         <div class="col-md-6">
-                            {{ show_row(paymentMethod.available, 'checkbox', 'ekyna_commerce.payment_method.field.available', {
-                                'label_nb_col': 4
+                            {{ show_row(paymentMethod.available, 'boolean', {
+                                'label': 'ekyna_commerce.payment_method.field.available',
+                                'label_col': 4
                             }) }}
                         </div>
                     </div>
@@ -52,7 +58,9 @@
                     {% endif %}
                 </div>
                 <div class="tab-pane" id="payment-method-content">
-                    {{ show_row(paymentMethod.media, 'media', 'ekyna_core.field.image') }}
+                    {{ show_row(paymentMethod.media, 'media', {
+                        'label': 'ekyna_core.field.image'
+                    }) }}
                     <div class="row show-row">
                         <div class="col-md-2 show-label">
                             {{ 'ekyna_core.field.translations'|trans }}

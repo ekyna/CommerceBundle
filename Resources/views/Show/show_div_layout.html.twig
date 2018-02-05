@@ -1,0 +1,14 @@
+{% block widget_attributes -%}{% for key, value in attr %} {{ key }}="{{ value }}"{% endfor -%}{% endblock widget_attributes %}
+
+{% block phone_widget %}
+{% spaceless %}
+    {% set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) %}
+    <div{{ block('widget_attributes') }}>
+        {%- if value is not empty -%}
+            {{ value|phone_number_format }}
+        {%- else -%}
+            &nbsp;&nbsp;
+        {%- endif -%}
+    </div>
+{% endspaceless %}
+{% endblock phone_widget %}

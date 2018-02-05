@@ -66,19 +66,17 @@
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': quote} %}
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(quote.weightTotal, 'number', 'ekyna_commerce.sale.field.weight_total', {
-                            'precision': 3,
+                        {{ show_row(quote.weightTotal, 'number', {
+                            'label': 'ekyna_commerce.sale.field.weight_total',
                             'append': 'kg',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(quote.expiresAt, 'datetime', 'ekyna_commerce.quote.field.expires_at', {
-                            'date_format': 'short',
-                            'time_format': 'none',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                        {{ show_row(quote.expiresAt, 'datetime', {
+                            'label': 'ekyna_commerce.quote.field.expires_at',
+                            'time': false,
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>

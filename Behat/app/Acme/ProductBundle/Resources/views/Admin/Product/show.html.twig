@@ -17,16 +17,20 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="product-general">
-                    {{- show_row(product.designation, 'text', 'ekyna_core.field.designation', {
+                    {{- show_row(product.designation, 'text', {
+                        'label': 'ekyna_core.field.designation',
                         'id': 'product_designation'
                     }) -}}
-                    {{- show_row(product.reference, 'text', 'ekyna_core.field.reference', {
+                    {{- show_row(product.reference, 'text', {
+                        'label': 'ekyna_core.field.reference',
                         'id': 'product_reference'
                     }) -}}
-                    {{- show_row(product.netPrice, 'number', 'ekyna_core.field.price', {
+                    {{- show_row(product.netPrice, 'number', {
+                        'label': 'ekyna_core.field.price',
                         'id': 'product_netPrice'
                     }) -}}
-                    {{- show_row(product.weight, 'number', 'ekyna_core.field.weight', {
+                    {{- show_row(product.weight, 'number', {
+                        'label': 'ekyna_core.field.weight',
                         'id': 'product_weight'
                     }) -}}
                     <hr>

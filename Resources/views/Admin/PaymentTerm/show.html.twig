@@ -16,25 +16,27 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="payment-term-general">
-                    {{ show_row(paymentTerm.name, 'text', 'ekyna_core.field.name', {
+                    {{ show_row(paymentTerm.name, 'text', {
+                        'label': 'ekyna_core.field.name',
                         'id': 'payment_term_name'
                     }) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(paymentTerm.days, 'number', 'ekyna_commerce.payment_term.field.days', {
+                            {{ show_row(paymentTerm.days, 'number', {
+                                'label': 'ekyna_commerce.payment_term.field.days',
                                 'id': 'payment_term_days',
-                                'label_nb_col': 4,
-                                'precision': 0
+                                'label_col': 4
                             }) }}
                         </div>
                         <div class="col-md-6">
-                            {{ show_row(paymentTerm.endOfMonth, 'checkbox', 'ekyna_commerce.payment_term.field.end_of_month', {
+                            {{ show_row(paymentTerm.endOfMonth, 'boolean', {
+                                'label': 'ekyna_commerce.payment_term.field.end_of_month',
                                 'id': 'payment_term_endOfMonth',
-                                'label_nb_col': 4
+                                'label_col': 4
                             }) }}
                         </div>
                     </div>
-                    {{ show_translations_row(paymentTerm.translations, {
+                    {{ show_row(paymentTerm.translations, 'translations', {
                         'id': 'payment_term_translations',
                         'fields': {
                             'title': {'label': 'ekyna_core.field.title'},

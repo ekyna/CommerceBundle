@@ -31,40 +31,51 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="shipment-method-general">
-                    {{ show_row(shipmentMethod.name, 'text', 'ekyna_core.field.name', {
-                        'id': 'shipment_method_name',
+                    {{ show_row(shipmentMethod.name, 'text', {
+                        'label': 'ekyna_core.field.name',
+                        'id': 'shipment_method_name'
                     }) }}
-                    {{ show_row(shipmentMethod.taxGroup, 'entity', 'ekyna_commerce.tax_group.label.singular', {
+                    {{ show_row(shipmentMethod.taxGroup, 'entity', {
+                        'label': 'ekyna_commerce.tax_group.label.singular',
                         'id': 'shipment_method_taxGroup',
                         'route': 'ekyna_commerce_tax_group_admin_show',
-                        'route_params_map': {'taxGroupId': 'id'}
+                        'route_parameters_map': {'taxGroupId': 'id'}
                     }) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(shipmentMethod.available, 'checkbox', 'ekyna_commerce.shipment_method.field.available', {
+                            {{ show_row(shipmentMethod.available, 'boolean', {
+                                'label': 'ekyna_commerce.shipment_method.field.available',
                                 'id': 'shipment_method_available',
-                                'label_nb_col': 4
+                                'label_col': 4
                             }) }}
                         </div>
                         <div class="col-md-6">
-                            {{ show_row(shipmentMethod.enabled, 'checkbox', 'ekyna_core.field.enabled', {
+                            {{ show_row(shipmentMethod.enabled, 'boolean', {
+                                'label': 'ekyna_core.field.enabled',
                                 'id': 'shipment_method_enabled',
-                                'label_nb_col': 4
+                                'label_col': 4
                             }) }}
                         </div>
                     </div>
-                    {{ show_row(shipmentMethod.platformName, 'text', 'ekyna_commerce.shipment_method.field.platform_name') }}
+                    {{ show_row(shipmentMethod.platformName, 'text', {
+                        'label': 'ekyna_commerce.shipment_method.field.platform_name'
+                    }) }}
                     {# TODO gatewayConfig #}
                 </div>
                 <div class="tab-pane" id="shipment-method-content">
-                    {{ show_row(shipmentMethod.media, 'media', 'ekyna_core.field.image', {
+                    {{ show_row(shipmentMethod.media, 'media', {
+                        'label': 'ekyna_core.field.image',
                         'id': 'shipment_method_image',
                     }) }}
-                    {{ show_translations_row(shipmentMethod.translations, {
+                    {{ show_row(shipmentMethod.translations, 'translations', {
                         'id': 'shipmentMethod_translations',
                         'fields': {
                             'title': {'label': 'ekyna_core.field.title'},
-                            'description': {'label': 'ekyna_core.field.description', 'style': 'block'},
+                            'description': {
+                                'label': 'ekyna_core.field.description',
+                                'type': 'textarea',
+                                'options': {'html': true}
+                            },
                         }
                     }) }}
                 </div>
@@ -72,7 +83,6 @@
                     {{ display_shipment_prices(shipmentMethod) }}
                 </div>
                 <div class="tab-pane" id="shipment-method-messages">
-
                     <ul class="nav nav-tabs">
                         {% for message in shipmentMethod.messages %}
                             <li{% if loop.first %} class="active"{% endif %}>

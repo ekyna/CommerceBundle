@@ -1,6 +1,7 @@
 {% macro show_stock_mode(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject|stock_subject_mode_badge, 'text', 'ekyna_core.field.mode', {
+    {{ show_row(subject|stock_subject_mode_badge, 'text', {
+        'label': 'ekyna_core.field.mode',
         'id': 'subject_stockMode'
     }|merge(options)) }}
 {% endspaceless %}
@@ -9,7 +10,8 @@
 
 {% macro show_stock_state(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject|stock_subject_state_badge, 'text', 'ekyna_core.field.status', {
+    {{ show_row(subject|stock_subject_state_badge, 'text', {
+        'label': 'ekyna_core.field.status',
         'id': 'subject_stockState'
     }|merge(options)) }}
 {% endspaceless %}
@@ -18,9 +20,9 @@
 
 {% macro show_in_stock(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.inStock, 'number', 'ekyna_commerce.stock_subject.field.in_stock', {
-        'id': 'subject_inStock',
-        'precision': 0
+    {{ show_row(subject.inStock, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.in_stock',
+        'id': 'subject_inStock'
     }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_in_stock %}
@@ -28,9 +30,9 @@
 
 {% macro show_available_stock(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.availableStock, 'number', 'ekyna_commerce.stock_subject.field.available_stock', {
-        'id': 'subject_availableStock',
-        'precision': 0
+    {{ show_row(subject.availableStock, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.available_stock',
+        'id': 'subject_availableStock'
     }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_available_stock %}
@@ -38,9 +40,9 @@
 
 {% macro show_virtual_stock(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.virtualStock, 'number', 'ekyna_commerce.stock_subject.field.virtual_stock', {
-        'id': 'subject_virtualStock',
-        'precision': 0
+    {{ show_row(subject.virtualStock, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.virtual_stock',
+        'id': 'subject_virtualStock'
     }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_virtual_stock %}
@@ -48,9 +50,9 @@
 
 {% macro show_stock_floor(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.stockFloor, 'number', 'ekyna_commerce.stock_subject.field.floor', {
-        'id': 'subject_stockFloor',
-        'precision': 0
+    {{ show_row(subject.stockFloor, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.floor',
+        'id': 'subject_stockFloor'
     }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_stock_floor %}
@@ -58,9 +60,9 @@
 
 {% macro show_minimum_order_quantity(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.minimumOrderQuantity, 'number', 'ekyna_commerce.stock_subject.field.minimum_order_quantity', {
-        'id': 'subject_minimumOrderQuantity',
-        'precision': 0
+    {{ show_row(subject.minimumOrderQuantity, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.minimum_order_quantity',
+        'id': 'subject_minimumOrderQuantity'
     }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_minimum_order_quantity %}
@@ -68,7 +70,8 @@
 
 {% macro show_eda(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.estimatedDateOfArrival, 'datetime', 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival', {
+    {{ show_row(subject.estimatedDateOfArrival, 'datetime', {
+        'label': 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival',
         'id': 'subject_estimatedDateOfArrival',
         'time': false
     }|merge(options)) }}
@@ -78,9 +81,9 @@
 
 {% macro show_replenishment_time(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.replenishmentTime, 'number', 'ekyna_commerce.stock_subject.field.replenishment_time', {
-        'id': 'subject_replenishmentTime',
-        'precision': 0
+    {{ show_row(subject.replenishmentTime, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.replenishment_time',
+        'id': 'subject_replenishmentTime'
     }|merge(options)) }}
 {% endspaceless %}
 {% endmacro show_replenishment_time %}
@@ -88,7 +91,8 @@
 
 {% macro show_geocode(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.geocode, 'text', 'ekyna_commerce.stock_subject.field.geocode', {
+    {{ show_row(subject.geocode, 'text', {
+        'label': 'ekyna_commerce.stock_subject.field.geocode',
         'id': 'subject_geocode'
     }|merge(options)) }}
 {% endspaceless %}
@@ -97,7 +101,8 @@
 
 {% macro show_quote_only(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.quoteOnly, 'checkbox', 'ekyna_commerce.stock_subject.field.quote_only', {
+    {{ show_row(subject.quoteOnly, 'boolean', {
+        'label': 'ekyna_commerce.stock_subject.field.quote_only',
         'id': 'subject_quoteOnly'
     }|merge(options)) }}
 {% endspaceless %}
@@ -106,7 +111,8 @@
 
 {% macro show_end_of_life(subject, options = {}) %}
 {% spaceless %}
-    {{ show_row(subject.endOfLife, 'checkbox', 'ekyna_commerce.stock_subject.field.end_of_life', {
+    {{ show_row(subject.endOfLife, 'boolean', {
+        'label': 'ekyna_commerce.stock_subject.field.end_of_life',
         'id': 'subject_endOfLife'
     }|merge(options)) }}
 {% endspaceless %}
@@ -120,22 +126,19 @@
         <div class="col-md-4">
             {{ _self.show_stock_mode(subject, {
                 'id': prefix ~'_stockMode',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_stock_state(subject, {
                 'id': prefix ~'_stockState',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_geocode(subject, {
                 'id': prefix ~'_geocode',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
     </div>
@@ -143,22 +146,19 @@
         <div class="col-md-4">
             {{ _self.show_in_stock(subject, {
                 'id': prefix ~'_inStock',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_available_stock(subject, {
                 'id': prefix ~'_availableStock',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_virtual_stock(subject, {
                 'id': prefix ~'_virtualStock',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
     </div>
@@ -166,22 +166,19 @@
         <div class="col-md-4">
             {{ _self.show_stock_floor(subject, {
                 'id': prefix ~'_stockFloor',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_replenishment_time(subject, {
                 'id': prefix ~'_replenishmentTime',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_eda(subject, {
                 'id': prefix ~'_estimatedDateOfArrival',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
     </div>
@@ -189,22 +186,19 @@
         <div class="col-md-4">
             {{ _self.show_minimum_order_quantity(subject, {
                 'id': prefix ~'_minimumOrderQuantity',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_quote_only(subject, {
                 'id': prefix ~'_quoteOnly',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
             {{ _self.show_end_of_life(subject, {
                 'id': prefix ~'_endOfLife',
-                'label_nb_col': 6,
-                'widget_nb_col': 6
+                'label_col': 6
             }) }}
         </div>
     </div>

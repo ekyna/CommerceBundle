@@ -18,25 +18,26 @@
             <div class="tab-pane active" id="tax-general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(tax.name, 'text', 'ekyna_core.field.name', {
+                        {{ show_row(tax.name, 'text', {
+                            'label': 'ekyna_core.field.name',
                             'id': 'tax_name',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4,
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(tax.rate, 'number', 'ekyna_core.field.rate', {
+                        {{ show_row(tax.rate, 'number', {
+                            'label': 'ekyna_core.field.rate',
                             'id': 'tax_rate',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8,
+                            'label_col': 4,
                             'append': '%'
                         }) }}
                     </div>
                 </div>
-                {{ show_row(tax.country, 'entity', 'ekyna_commerce.country.label.singular', {
+                {{ show_row(tax.country, 'entity', {
+                    'label': 'ekyna_commerce.country.label.singular',
                     'id': 'tax_country',
                     'route': 'ekyna_commerce_country_admin_show',
-                    'route_params_map': {'countryId': 'id'}
+                    'route_parameters_map': {'countryId': 'id'}
                 }) }}
             </div>
         </div>

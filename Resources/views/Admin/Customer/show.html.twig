@@ -40,26 +40,26 @@
             <div class="tab-pane active" id="customer-general">
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customer.number, 'text', 'ekyna_core.field.number', {
+                        {{ show_row(customer.number, 'text', {
+                            'label': 'ekyna_core.field.number',
                             'id': 'customer_number',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customer.email, 'text', 'ekyna_core.field.email', {
+                        {{ show_row(customer.email, 'text', {
+                            'label': 'ekyna_core.field.email',
                             'id': 'customer_email',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customer.company, 'text', 'ekyna_core.field.company', {
+                        {{ show_row(customer.company, 'text', {
+                            'label': 'ekyna_core.field.company',
                             'id': 'customer_company',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
@@ -77,89 +77,92 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customer.phone, 'tel', 'ekyna_core.field.phone', {
+                        {{ show_row(customer.phone, 'phone', {
+                            'label': 'ekyna_core.field.phone',
                             'id': 'customer_phone',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customer.mobile, 'tel', 'ekyna_core.field.mobile', {
+                        {{ show_row(customer.mobile, 'phone', {
+                            'label': 'ekyna_core.field.mobile',
                             'id': 'customer_mobile',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>
-                {{ show_row(customer.description, 'textarea', 'ekyna_commerce.field.description', {
+                {{ show_row(customer.description, 'textarea', {
+                    'label': 'ekyna_commerce.field.description',
                     'id': 'customer_description'
                 }) }}
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customer.user, 'entity', 'ekyna_user.user.label.singular', {
+                        {{ show_row(customer.user, 'entity', {
+                            'label': 'ekyna_user.user.label.singular',
                             'id': 'customer_user',
                             'route': 'ekyna_user_user_admin_show',
-                            'route_params_map': {'userId': 'id'},
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'route_parameters_map': {'userId': 'id'},
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customer.inCharge, 'entity', 'ekyna_commerce.customer.field.in_charge', {
+                        {{ show_row(customer.inCharge, 'entity', {
+                            'label': 'ekyna_commerce.customer.field.in_charge',
                             'id': 'customer_user',
                             'route': 'ekyna_user_user_admin_show',
-                            'route_params_map': {'userId': 'id'},
+                            'route_parameters_map': {'userId': 'id'},
                             'field': 'username',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>
                 <hr>
-                {{ show_row(customer.parent, 'entity', 'ekyna_commerce.customer.field.parent', {
+                {{ show_row(customer.parent, 'entity', {
+                    'label': 'ekyna_commerce.customer.field.parent',
                     'id': 'customer_parent',
                     'route': 'ekyna_commerce_customer_admin_show',
-                    'route_params_map': {'customerId': 'id'}
+                    'route_parameters_map': {'customerId': 'id'}
                 }) }}
-                {{ show_row(customer.customerGroup, 'entity', 'ekyna_commerce.customer_group.label.singular', {
+                {{ show_row(customer.customerGroup, 'entity', {
+                    'label': 'ekyna_commerce.customer_group.label.singular',
                     'id': 'customer_group',
                     'route': 'ekyna_commerce_customer_group_admin_show',
-                    'route_params_map': {'customerGroupId': 'id'}
+                    'route_parameters_map': {'customerGroupId': 'id'}
                 }) }}
                 {% set customerSource = customer.hasParent() ? customer.parent : customer %}
                 {% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': customerSource, 'prefix': 'customer'} %}
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customerSource.paymentTerm, 'entity', 'ekyna_commerce.payment_term.label.singular', {
+                        {{ show_row(customerSource.paymentTerm, 'entity', {
+                            'label': 'ekyna_commerce.payment_term.label.singular',
                             'id': 'customer_payment_term',
                             'route': 'ekyna_commerce_payment_term_admin_show',
-                            'route_params_map': {'paymentTermId': 'id'},
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'route_parameters_map': {'paymentTermId': 'id'},
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customerSource.outstandingLimit|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.customer.field.outstanding_limit', {
+                        {{ show_row(customerSource.outstandingLimit|localizedcurrency(commerce_default_currency), 'text', {
+                            'label': 'ekyna_commerce.customer.field.outstanding_limit',
                             'id': 'customer_outstanding_limit',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customerSource.creditBalance|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.customer.field.credit_balance', {
+                        {{ show_row(customerSource.creditBalance|localizedcurrency(commerce_default_currency), 'text', {
+                            'label': 'ekyna_commerce.customer.field.credit_balance',
                             'id': 'customer_credit_balance',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customerSource.outstandingBalance|localizedcurrency(commerce_default_currency), 'text', 'ekyna_commerce.customer.field.outstanding_balance', {
+                        {{ show_row(customerSource.outstandingBalance|localizedcurrency(commerce_default_currency), 'text', {
+                            'label': 'ekyna_commerce.customer.field.outstanding_balance',
                             'id': 'customer_outstanding_balance',
-                            'label_nb_col': 4,
-                            'widget_nb_col': 8
+                            'label_col': 4
                         }) }}
                     </div>
                 </div>
