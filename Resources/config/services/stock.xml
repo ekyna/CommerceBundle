@@ -85,6 +85,7 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.stock_unit.manager"/>
+            <argument type="service" id="ekyna_commerce.stock.logger"/>
         </service>
 
         <!-- Stock unit assigner -->

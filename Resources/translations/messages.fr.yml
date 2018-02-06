@@ -1045,6 +1045,8 @@ ekyna_commerce:
         reason:
             faulty: Défectueux (débit)
             improper: Non conforme (débit)
+            debit: Inventaire (débit)
+            credit: Inventaire (crédit)
             found: Retrouvé (crédit)
         confirm:
             remove: Êtes-vous sûr de vouloir supprimer cet ajustement de stock ?
