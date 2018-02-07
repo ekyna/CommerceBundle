@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Document\ShipmentRenderer;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
@@ -139,6 +140,15 @@ class Mailer
         // Invoices
         foreach ($notification->getInvoices() as $invoice) {
             $renderer = $this->rendererFactory->createRenderer($invoice);
+            $content = $renderer->render(RendererInterface::FORMAT_PDF);
+
+            $attach = new \Swift_Attachment($content, $renderer->getFilename() . '.pdf', 'application/pdf');
+            $message->attach($attach);
+        }
+
+        // Shipments
+        foreach ($notification->getShipments() as $shipment) {
+            $renderer = $this->rendererFactory->createRenderer($shipment, ShipmentRenderer::TYPE_BILL);
             $content = $renderer->render(RendererInterface::FORMAT_PDF);
 
             $attach = new \Swift_Attachment($content, $renderer->getFilename() . '.pdf', 'application/pdf');

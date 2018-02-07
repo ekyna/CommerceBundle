@@ -10,8 +10,10 @@ use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Service\Notification\NotificationBuilder;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Entity\OrderAttachment;
 use Ekyna\Component\Commerce\Order\Entity\OrderInvoice;
+use Ekyna\Component\Commerce\Order\Entity\OrderShipment;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Entity\QuoteAttachment;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
@@ -23,7 +25,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Validator\Constraints\Count;
 
 /**
  * Class NotificationType
@@ -98,10 +99,7 @@ class NotificationType extends AbstractType
                         'choice_value' => 'email',
                         'multiple'     => true,
                         'expanded'     => true,
-                        'required'     => true,
-                        'constraints'  => [
-                            new Count(['min' => 1]),
-                        ],
+                        'required'     => false,
                     ])
                     ->addModelTransformer($collectionToArrayTransformer)
             )
@@ -131,11 +129,14 @@ class NotificationType extends AbstractType
         //->add('shipmentMessage')
 
         // TODO use SaleFactory to get classes
-        $saleProperty = 'order';
-        $attachmentClass = OrderAttachment::class;
-        if ($sale instanceof QuoteInterface) {
+        if ($sale instanceof OrderInterface) {
+            $saleProperty = 'order';
+            $attachmentClass = OrderAttachment::class;
+        } elseif ($sale instanceof QuoteInterface) {
             $saleProperty = 'quote';
             $attachmentClass = QuoteAttachment::class;
+        } else {
+            throw new InvalidArgumentException("Unsupported sale.");
         }
 
         if ($sale instanceof OrderInterface) {
@@ -149,9 +150,32 @@ class NotificationType extends AbstractType
                         ->andWhere($qb->expr()->eq('i.' . $saleProperty, ':sale'))
                         ->setParameter('sale', $sale);
                 },
-                'choice_label' => function ($value) {
+                'choice_label'  => function ($value) {
                     /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $value */
                     return $this->translator->trans(InvoiceTypes::getLabel($value->getType())) . ' ' . $value->getNumber();
+                },
+                'multiple'      => true,
+                'expanded'      => true,
+                'required'      => false,
+            ]);
+        }
+
+        if ($sale instanceof OrderInterface) {
+            $builder->add('shipments', EntityType::class, [
+                'label'         => 'ekyna_commerce.notification.field.shipments',
+                'class'         => OrderShipment::class,
+                'query_builder' => function (EntityRepository $repository) use ($saleProperty, $sale) {
+                    $qb = $repository->createQueryBuilder('i');
+
+                    return $qb
+                        ->andWhere($qb->expr()->eq('i.' . $saleProperty, ':sale'))
+                        ->setParameter('sale', $sale);
+                },
+                'choice_label'  => function ($value) {
+                    /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $value */
+                    $type = 'ekyna_commerce.' . ($value->isReturn() ? 'return' : 'shipment') . '.label.singular';
+
+                    return $this->translator->trans($type) . ' ' . $value->getNumber();
                 },
                 'multiple'      => true,
                 'expanded'      => true,
@@ -171,7 +195,7 @@ class NotificationType extends AbstractType
                         ->addOrderBy('a.createdAt', 'DESC')
                         ->setParameter('sale', $sale);
                 },
-                'choice_label' => function(AttachmentInterface $attachment) {
+                'choice_label'  => function (AttachmentInterface $attachment) {
                     if (!empty($title = $attachment->getTitle())) {
                         return $attachment->getFilename() . ' :  <em>' . $title . '</em>';
                     }

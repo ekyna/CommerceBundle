@@ -51,6 +51,7 @@
             <argument type="service" id="ekyna_setting.manager"/>
             <argument type="service" id="ekyna_user.user.provider"/>
             <argument type="service" id="ekyna_user.user.repository"/>
+            <argument type="service" id="translator"/>
         </service>
 
         <!-- Country repository -->

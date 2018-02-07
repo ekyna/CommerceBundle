@@ -44,6 +44,8 @@ ekyna_commerce:
         creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
         returned_miss_match: La quantité doit correspondre à la quantité retournée (%qty%).
         creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
+    notification:
+        pick_at_least_one_recipient: Veuillez choisir ou saisir au moins un destinataire.
     sale:
         no_customer:
             customer_group_is_required: Le groupe de client est requis si aucun client n'est sélectionné.

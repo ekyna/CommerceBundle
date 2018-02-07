@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,6 +33,11 @@ class StockIntegrityCommand extends ContainerAwareCommand
     private $fix = false;
 
     /**
+     * @var array
+     */
+    private $unitIds;
+
+    /**
      * @var \Doctrine\DBAL\Connection
      */
     private $connection;
@@ -58,6 +64,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
         $this->fix = $input->getOption('fix');
 
         $this->connection = $this->getContainer()->get('doctrine.dbal.default_connection');
+
+        $this->unitIds = [];
 
         $assignmentMap = [
             'id'         => 'ID',
@@ -244,7 +252,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
                 return new Fix(
                     sprintf("Product #%d Unit #%d sold: %f => %f", $result['product_id'], $result['id'], $result['qty'], $result['sum']),
                     'UPDATE commerce_stock_unit SET sold_quantity=? WHERE id=? LIMIT 1',
-                    [$result['sum'], $result['id']]
+                    [$result['sum'], $result['id']],
+                    $result['id']
                 );
             }
         );
@@ -274,7 +283,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
                 return new Fix(
                     sprintf("Unit #%s shipped: %f => %f", $result['id'], $result['qty'], $result['sum']),
                     'UPDATE commerce_stock_unit SET shipped_quantity=? WHERE id=? LIMIT 1',
-                    [$result['sum'], $result['id']]
+                    [$result['sum'], $result['id']],
+                    $result['id']
                 );
             }
         );
@@ -340,6 +350,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
                 'shipped'    => 'Shipped',
             ]
         );
+
+        $this->updateSubjects();
     }
 
     /**
@@ -423,6 +435,11 @@ class StockIntegrityCommand extends ContainerAwareCommand
 
                 if (1 === $this->connection->executeUpdate($action->getQuery(), $action->getParameters())) {
                     $this->output->writeln('<info>ok</info>');
+
+                    if ((0 < $id = $action->getUnitId()) && !in_array($id, $this->unitIds)) {
+                        $this->unitIds[] = $id;
+                    }
+
                 } else {
                     $this->output->writeln('<info>error</info>');
                 }
@@ -432,6 +449,41 @@ class StockIntegrityCommand extends ContainerAwareCommand
             $this->connection->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Updates the fixed unit's subjects.
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function updateSubjects()
+    {
+        if (empty($this->unitIds)) {
+            return;
+        }
+
+        $updater = $this->getContainer()->get('ekyna_commerce.stock_subject_updater');
+        $manager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        /** @var AbstractStockUnit[] $units */
+        $units = $manager
+            ->getRepository(AbstractStockUnit::class)
+            ->findBy(['id' => $this->unitIds]);
+
+        foreach ($units as $unit) {
+            $subject = $unit->getSubject();
+
+            $this->output->write((string) $subject . ' ... ');
+
+            if ($updater->update($subject)) {
+                $manager->persist($subject);
+                $this->output->writeln('<info>updated</info>');
+            } else {
+                $this->output->writeln('ok');
+            }
+        }
+
+        $manager->flush();
     }
 }
 
@@ -460,20 +512,22 @@ class Fix extends Action
 {
     private $query;
     private $parameters;
+    private $unitId;
 
     /**
      * @param string $label
      * @param string $query
      * @param array  $parameters
+     * @param int    $unitId
      */
-    public function __construct($label, $query, array $parameters)
+    public function __construct($label, $query, array $parameters, $unitId = null)
     {
         parent::__construct($label);
 
         $this->query = $query;
         $this->parameters = $parameters;
+        $this->unitId = $unitId;
     }
-
 
     /**
      * @return string
@@ -489,5 +543,13 @@ class Fix extends Action
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUnitId()
+    {
+        return $this->unitId;
     }
 }

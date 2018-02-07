@@ -39,7 +39,6 @@
     <!-- Registration -->
 
     <class name="Ekyna\Bundle\CommerceBundle\Model\Registration">
-        <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\Registration"/>
         <property name="customer">
             <constraint name="Valid"/>
         </property>
@@ -52,6 +51,7 @@
         <property name="applyGroup">
             <constraint name="NotNull"/>
         </property>
+        <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\Registration"/>
     </class>
 
     <!-- Contact -->
@@ -82,9 +82,6 @@
             <constraint name="Valid"/>
         </property>
         <property name="recipients">
-            <constraint name="Count">
-                <option name="min">1</option>
-            </constraint>
             <constraint name="Valid"/>
         </property>
         <property name="extraRecipients">
@@ -99,6 +96,7 @@
         <property name="subject">
             <constraint name="NotBlank"/>
         </property>
+        <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\Notification"/>
     </class>
 
     <!-- Recipient -->

@@ -7,6 +7,7 @@ use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Entity\PaymentMessage;
 use Ekyna\Component\Commerce\Shipment\Entity\ShipmentMessage;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 
 /**
  * Class Notification
@@ -50,6 +51,11 @@ class Notification
     private $invoices;
 
     /**
+     * @var ArrayCollection|ShipmentInterface[]
+     */
+    private $shipments;
+
+    /**
      * @var ArrayCollection|AttachmentInterface[]
      */
     private $attachments;
@@ -90,6 +96,7 @@ class Notification
         $this->copies = new ArrayCollection();
         $this->extraCopies = new ArrayCollection();
         $this->invoices = new ArrayCollection();
+        $this->shipments = new ArrayCollection();
         $this->attachments = new ArrayCollection();
 
         $this->includeView = static::VIEW_NONE;
@@ -320,6 +327,48 @@ class Notification
     {
         if ($this->invoices->contains($invoice)) {
             $this->invoices->removeElement($invoice);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the shipments.
+     *
+     * @return array|ShipmentInterface[]
+     */
+    public function getShipments()
+    {
+        return $this->shipments;
+    }
+
+    /**
+     * Adds the shipment.
+     *
+     * @param ShipmentInterface $shipment
+     *
+     * @return Notification
+     */
+    public function addShipment(ShipmentInterface $shipment)
+    {
+        if (!$this->shipments->contains($shipment)) {
+            $this->shipments->add($shipment);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes the shipment.
+     *
+     * @param ShipmentInterface $shipment
+     *
+     * @return Notification
+     */
+    public function removeShipment(ShipmentInterface $shipment)
+    {
+        if ($this->shipments->contains($shipment)) {
+            $this->shipments->removeElement($shipment);
         }
 
         return $this;

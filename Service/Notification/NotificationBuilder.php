@@ -14,6 +14,7 @@ use Ekyna\Bundle\UserBundle\Repository\UserRepositoryInterface;
 use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class NotificationBuilder
@@ -37,22 +38,30 @@ class NotificationBuilder
      */
     private $userRepository;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
 
     /**
      * Constructor.
      *
-     * @param SettingsManager          $settings
-     * @param UserProviderInterface    $userProvider
-     * @param UserRepositoryInterface  $userRepository
+     * @param SettingsManager         $settings
+     * @param UserProviderInterface   $userProvider
+     * @param UserRepositoryInterface $userRepository
+     * @param TranslatorInterface     $translator
      */
     public function __construct(
         SettingsManager $settings,
         UserProviderInterface $userProvider,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        TranslatorInterface $translator
     ) {
         $this->settings = $settings;
         $this->userProvider = $userProvider;
         $this->userRepository = $userRepository;
+        $this->translator = $translator;
     }
 
     /**
@@ -65,6 +74,21 @@ class NotificationBuilder
     public function createNotificationFromSale(SaleInterface $sale)
     {
         $notification = new Notification();
+
+        if ($sale instanceof OrderInterface) {
+            $type = 'ekyna_commerce.order.label.singular';
+        } elseif ($sale instanceof QuoteInterface) {
+            $type = 'ekyna_commerce.quote.label.singular';
+        } else {
+            throw new InvalidArgumentException("Unsupported sale type.");
+        }
+
+        $defaultSubject = $this->translator->trans('ekyna_commerce.notification.build.subject', [
+            '{type}' => mb_strtolower($this->translator->trans($type)),
+            '{number}' => $sale->getNumber(),
+        ]);
+
+        $notification->setSubject($defaultSubject);
 
         $from = $this->createWebsiteRecipient();
         if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {

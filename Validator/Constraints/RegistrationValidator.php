@@ -27,8 +27,6 @@ class RegistrationValidator extends ConstraintValidator
             throw new InvalidArgumentException("Expected instance of " . Registration::class);
         }
 
-        /** @var Registration $registration */
-
         $applyGroup = $registration->getApplyGroup();
         $customer = $registration->getCustomer();
 

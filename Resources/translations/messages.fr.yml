@@ -437,11 +437,14 @@ ekyna_commerce:
             miss: Mademoiselle
 
     notification:
+        build:
+            subject: Votre {type} numéro {number}
         field:
             from: Expéditeur
             recipients: Destinataires
             copies: Copies
             invoices: Factures et avoirs
+            shipments: Bons de livraison/retour
             attachments: Pièces jointes
             subject: Sujet
             payment_message: Message paiement
