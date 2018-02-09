@@ -1080,15 +1080,26 @@ ekyna_commerce:
             pre_order: Pré-commande
             out_of_stock: En rupture
         availability:
-            quote_only: Sur devis uniquement
-            available: Disponible
-            in_stock: Disponible (%qty%)
-            pre_order: Dispo. le %eda% (%qty%)
-            replenishment: Réassort ~%days% jours
-            end_of_life: Fin de vie
-            out_of_stock: En rupture
-            min_quantity: La quantité minimum d'achat est de %min%.
-            max_quantity: La quantité maximum disponible est de %max%.
+            short:
+                quote_only: Sur devis
+                available: Dispo
+                in_stock: Dispo (%qty%)
+                pre_order: "%eda% (%qty%)"
+                replenishment: ~%days% jours
+                end_of_life: Fin de vie
+                out_of_stock: Rupture
+                min_quantity: Min %min%
+                max_quantity: Max %max%
+            long:
+                quote_only: Sur devis uniquement
+                available: Disponible
+                in_stock: Disponible (%qty%)
+                pre_order: Réassort le %eda% (%qty%)
+                replenishment: Réassort ~%days% jours
+                end_of_life: En fin de vie
+                out_of_stock: En rupture
+                min_quantity: La quantité minimum d'achat est de %min%.
+                max_quantity: La quantité maximum disponible est de %max%.
 
     subject:
         label: Article
@@ -1180,16 +1191,20 @@ ekyna_commerce:
 
         field:
             shipping_cost: Frais transport
-            customs_duty: Frais de douane
-            customs_vat: TVA en douane
-            administrative_fee: Frais administratifs
             discount_total: Total remise
-            payment_total: Total réglement
-            payment_date: Date réglement
-            tracking_url: Tracking URL
-            estimated_date_of_arrival: Date de livraison estimée
-#            items: Lignes
+            tax_total: Total TVA
+            payment_total: Total fournisseur
+            payment_due_date: Échéance fournisseur
+            payment_date: Réglement fournisseur
+            customs_tax: Taxe douane
+            customs_vat: TVA en douane
+            forwarder_fee: Frais transitaire
+            forwarder_total: Total transitaire
+            forwarder_due_date: Échéance transitaire
+            forwarder_date: Réglement transitaire
             state: Statut
+            estimated_date_of_arrival: Date de livraison estimée
+            tracking_urls: Tracking
             send_email: Envoyer l'email au fournisseur
             send_labels: Envoyer les étiquettes
         alert:
@@ -1199,6 +1214,7 @@ ekyna_commerce:
             new: Création
             ordered: En attente
             partial: Partiellement réceptionnée
+            received: Réceptionnée
             completed: Complétée
             canceled: Annulée
         dashboard:
@@ -1249,22 +1265,22 @@ ekyna_commerce:
 
     supplier_carrier:
         label:
-            singular: Transporteur
-            plural: Transporteurs
+            singular: Transitaire
+            plural: Transitaires
         header:
-            list: Transporteurs <small>Liste des transporteurs</small>
-            show: Détail du transporteur<small>%name%</small>
-            new: Créer un nouveau transporteur
-            edit: Modifier le transporteur <small>%name%</small>
-            remove: Supprimer le transporteur <small>%name%</small>
+            list: Transitaires <small>Liste des transitaires</small>
+            show: Détail du transitaire<small>%name%</small>
+            new: Créer un nouveau transitaire
+            edit: Modifier le transitaire <small>%name%</small>
+            remove: Supprimer le transitaire <small>%name%</small>
         button:
-            list: Liste des transporteurs
-            show: Détail du transporteur
-            new: Nouveau transporteur
-            edit: Modifier le transporteur
-            remove: Supprimer le transporteur
+            list: Liste des transitaires
+            show: Détail du transitaire
+            new: Nouveau transitaire
+            edit: Modifier le transitaire
+            remove: Supprimer le transitaire
         alert:
-            no_item: Aucun transporteur configuré
+            no_item: Aucun transitaire configuré
 
     state:
         label:

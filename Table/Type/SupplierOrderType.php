@@ -4,7 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
+use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderPaymentType;
 use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType;
+use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderTrackingType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -25,18 +27,25 @@ class SupplierOrderType extends ResourceTableType
      */
     private $supplierClass;
 
+    /**
+     * @var string
+     */
+    private $carrierClass;
+
 
     /**
      * Constructor.
      *
      * @param string $supplierOrderClass
      * @param string $supplierClass
+     * @param string $carrierClass
      */
-    public function __construct($supplierOrderClass, $supplierClass)
+    public function __construct($supplierOrderClass, $supplierClass, $carrierClass)
     {
         parent::__construct($supplierOrderClass);
 
         $this->supplierClass = $supplierClass;
+        $this->carrierClass = $carrierClass;
     }
 
     /**
@@ -77,6 +86,25 @@ class SupplierOrderType extends ResourceTableType
                 'label'    => 'ekyna_commerce.supplier_order.field.state',
                 'position' => 30,
             ])
+            ->addColumn('estimatedDateOfArrival', CType\Column\DateTimeType::class, [
+                'label'       => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
+                'time_format' => 'none',
+                'position'    => 40,
+            ])
+            ->addColumn('trackingUrls', SupplierOrderTrackingType::class, [
+                'label'    => 'ekyna_commerce.supplier_order.field.tracking_urls',
+                'position' => 50,
+            ])
+            ->addColumn('paymentDate', SupplierOrderPaymentType::class, [
+                'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
+                'prefix'   => 'payment',
+                'position' => 60,
+            ])
+            ->addColumn('forwarderDate', SupplierOrderPaymentType::class, [
+                'label'    => 'ekyna_commerce.supplier_order.field.forwarder_date',
+                'prefix'   => 'forwarder',
+                'position' => 70,
+            ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
@@ -107,12 +135,18 @@ class SupplierOrderType extends ResourceTableType
                 'label'        => 'ekyna_commerce.supplier.label.singular',
                 'class'        => $this->supplierClass,
                 'entity_label' => 'name',
-                'position'     => 10,
+                'position'     => 20,
+            ])
+            ->addFilter('carrier', DType\Filter\EntityType::class, [
+                'label'        => 'ekyna_commerce.supplier_carrier.label.singular',
+                'class'        => $this->carrierClass,
+                'entity_label' => 'name',
+                'position'     => 30,
             ])
             ->addFilter('state', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.state',
                 'choices'  => SupplierOrderStates::getChoices(),
-                'position' => 20,
+                'position' => 40,
             ]);
     }
 

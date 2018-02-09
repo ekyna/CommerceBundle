@@ -120,7 +120,15 @@
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\SupplierOrderType"><!-- TODO use parameter defined by config builder -->
             <argument>%ekyna_commerce.supplier_order.class%</argument>
             <argument>%ekyna_commerce.supplier.class%</argument>
+            <argument>%ekyna_commerce.supplier_carrier.class%</argument>
             <tag name="table.type"/>
+        </service>
+
+        <!-- Supplier order payment column type -->
+        <service id="ekyna_commerce.supplier_order_payment.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderPaymentType">
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <tag name="table.column_type"/>
         </service>
 
         <!-- Supplier order state column type -->

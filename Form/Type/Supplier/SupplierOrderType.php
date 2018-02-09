@@ -8,6 +8,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates as BStates;
+use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as CStates;
 use Ekyna\Component\Commerce\Exception\LogicException;
@@ -127,8 +128,17 @@ class SupplierOrderType extends ResourceFormType
                     'required' => false,
                     'disabled' => true,
                 ])
+                // Supplier fields
                 ->add('shippingCost', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
+                    'currency' => $currency->getCode(),
+                ])
+                ->add('discountTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.discount_total',
+                    'currency' => $currency->getCode(),
+                ])
+                ->add('taxTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.tax_total',
                     'currency' => $currency->getCode(),
                 ])
                 ->add('paymentTotal', MoneyType::class, [
@@ -137,35 +147,58 @@ class SupplierOrderType extends ResourceFormType
                     'disabled' => true,
                     'required' => false,
                 ])
-                ->add('customsDuty', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.customs_duty',
+                ->add('paymentDate', Symfony\DateType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
+                    'required' => false,
+                ])
+                ->add('paymentDueDate', Symfony\DateType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.payment_due_date',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
+                    'required' => false,
+                ])
+                // Forwarder
+                ->add('forwarderFee', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.forwarder_fee',
+                    'currency' => $this->defaultCurrency,
+                ])
+                ->add('customsTax', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.customs_tax',
                     'currency' => $this->defaultCurrency,
                 ])
                 ->add('customsVat', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
                     'currency' => $this->defaultCurrency,
                 ])
-                ->add('administrativeFee', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.administrative_fee',
+                ->add('forwarderTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.forwarder_total',
                     'currency' => $this->defaultCurrency,
-                ])
-                ->add('discountTotal', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.discount_total',
-                    'currency' => $this->defaultCurrency,
-                ])
-                ->add('trackingUrl', Symfony\UrlType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.tracking_url',
+                    'disabled' => true,
                     'required' => false,
                 ])
-                ->add('estimatedDateOfArrival', Symfony\DateTimeType::class, [
+                ->add('forwarderDate', Symfony\DateType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.forwarder_date',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
+                    'required' => false,
+                ])
+                ->add('forwarderDueDate', Symfony\DateType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.forwarder_due_date',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
+                    'required' => false,
+                ])
+                // EDA / Tracking
+                ->add('estimatedDateOfArrival', Symfony\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => $requiredEda,
                 ])
-                ->add('paymentDate', Symfony\DateTimeType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
-                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
-                    'required' => false,
+                ->add('trackingUrls', CollectionType::class, [
+                    'label'         => 'ekyna_commerce.supplier_order.field.tracking_urls',
+                    'entry_type'    => Symfony\UrlType::class,
+                    'entry_options' => ['required' => true],
+                    'required'      => false,
+                    'allow_add'     => true,
+                    'allow_delete'  => true,
                 ]);
 
             /* ----------- Supplier order compose ----------- */

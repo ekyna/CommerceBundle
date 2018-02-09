@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
+use Ekyna\Bundle\CommerceBundle\Event\SaleItemModalEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,10 +117,14 @@ class SaleItemController extends AbstractSaleController
                 ->setButtons([])
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars([
-                    //'form'          => $form->createView(),
                     'flow'          => $flow,
                     'form_template' => 'EkynaCommerceBundle:Admin/Common/Item:_flow.html.twig',
                 ]));
+
+            $this->get('event_dispatcher')->dispatch(
+                SaleItemModalEvent::EVENT_ADD,
+                new SaleItemModalEvent($modal, $item)
+            );
 
             return $this->get('ekyna_core.modal')->render($modal);
         }
@@ -286,6 +291,11 @@ class SaleItemController extends AbstractSaleController
             $modal
                 ->setContent($form->createView())
                 ->setCondensed(true);
+
+            $this->get('event_dispatcher')->dispatch(
+                SaleItemModalEvent::EVENT_CONFIGURE,
+                new SaleItemModalEvent($modal, $item)
+            );
 
             return $this->get('ekyna_core.modal')->render($modal);
         }

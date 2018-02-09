@@ -140,6 +140,28 @@
 
                 .sale-detail-availability {
                     text-align: right;
+                    line-height: 11px;
+                    padding: 0;
+
+                    > span {
+                        display: inline-block;
+
+                        &.availability-1 {
+                            padding: 8px @base-cell-padding;
+                            line-height: 16px;
+                        }
+
+                        &.availability-2 {
+                            padding: 3px @base-cell-padding;
+                            font-size: 11px;
+                            line-height: 13px;
+                        }
+
+                        &.availability-3 {
+                            padding: 0 @base-cell-padding;
+                            font-size: 9px;
+                        }
+                    }
                 }
 
                 .sale-detail-quantity {

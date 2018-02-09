@@ -45,8 +45,8 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
     /**
      * @inheritdoc
      */
-    public function translate($id, array $parameters = [])
+    public function translate($id, array $parameters = [], $short = false)
     {
-        return $this->translator->trans($this->prefix . $id, $parameters);
+        return $this->translator->trans($this->prefix . ($short ? 'short.' : 'long.') . $id, $parameters);
     }
 }

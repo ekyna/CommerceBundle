@@ -20,11 +20,12 @@ final class SupplierOrderStates extends AbstractConstants
         $prefix = 'ekyna_commerce.supplier_order.state.';
 
         return [
-            States::STATE_NEW       => [$prefix . States::STATE_NEW,       'default', false],
-            States::STATE_ORDERED   => [$prefix . States::STATE_ORDERED,   'primary', true],
-            States::STATE_PARTIAL   => [$prefix . States::STATE_PARTIAL,   'warning', false],
-            States::STATE_COMPLETED => [$prefix . States::STATE_COMPLETED, 'success', true],
-            States::STATE_CANCELED  => [$prefix . States::STATE_CANCELED,  'default', false],
+            States::STATE_NEW       => [$prefix . States::STATE_NEW,       'default'],
+            States::STATE_ORDERED   => [$prefix . States::STATE_ORDERED,   'primary'],
+            States::STATE_PARTIAL   => [$prefix . States::STATE_PARTIAL,   'warning'],
+            States::STATE_RECEIVED  => [$prefix . States::STATE_RECEIVED,  'success'],
+            States::STATE_COMPLETED => [$prefix . States::STATE_COMPLETED, 'success'],
+            States::STATE_CANCELED  => [$prefix . States::STATE_CANCELED,  'default'],
         ];
     }
 
