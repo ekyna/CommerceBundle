@@ -339,6 +339,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
             FROM commerce_stock_unit AS u
             WHERE u.ordered_quantity<u.received_quantity 
                OR (u.supplier_order_item_id IS NOT NULL AND (u.adjusted_quantity+u.ordered_quantity)<u.sold_quantity)
+               OR (u.supplier_order_item_id IS NULL AND 0<u.adjusted_quantity AND u.adjusted_quantity<u.sold_quantity)
                OR (u.adjusted_quantity+u.received_quantity)<u.shipped_quantity
                OR u.sold_quantity<u.shipped_quantity;',
             [
@@ -346,6 +347,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
                 'product_id' => 'Product',
                 'ordered'    => 'Ordered',
                 'received'   => 'Received',
+                'adjusted'   => 'Adjusted',
                 'sold'       => 'Sold',
                 'shipped'    => 'Shipped',
             ]
