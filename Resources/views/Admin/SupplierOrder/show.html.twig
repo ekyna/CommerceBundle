@@ -132,6 +132,7 @@
                         </div>
                     </div>
                 </div>
+                {% if supplierOrder.carrier is not null -%}
                 <div class="panel panel-default">
                     <div class="panel-heading" style="padding:0 15px">
                         <div class="row show-row show-row" style="margin-bottom:0;">
@@ -198,6 +199,7 @@
                         </div>
                     </div>
                 </div>
+                {%- endif %}
                 <div class="row">
                     <div class="col-md-4">
                         {{ show_row(supplierOrder.estimatedDateOfArrival, 'datetime', {
@@ -228,15 +230,7 @@
                 {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:deliveries.html.twig" %}
             </div>
             <div class="tab-pane" id="supplier-order-attachments">
-                <h4 class="sub-header">
-                    {# TODO Permission #}
-                    <a href="{{ admin_resource_path('ekyna_commerce.supplier_order_attachment', 'new', {'supplierOrderId': supplierOrder.id}) }}"
-                       class="btn btn-primary btn-xs pull-right">
-                        {{ 'ekyna_commerce.attachment.button.new'|trans }}
-                    </a>
-                    {{ 'ekyna_commerce.attachment.label.plural'|trans }}
-                </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'attachments': supplierOrder.attachments} %}
+                {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:attachments.html.twig" %}
             </div>
         </div>
     </div>

@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
@@ -40,6 +41,19 @@ class SupplierExtension extends \Twig_Extension
     /**
      * @inheritdoc
      */
+    public function getFunctions()
+    {
+        return [
+            new \Twig_SimpleFunction(
+                'supplier_order_attachment_types',
+                [SupplierOrderAttachmentTypes::class, 'getChoices']
+            )
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getFilters()
     {
         return [
@@ -56,6 +70,15 @@ class SupplierExtension extends \Twig_Extension
             new \Twig_SimpleFilter(
                 'supplier_order_weight_total',
                 [$this->calculator, 'calculateWeightTotal']
+            ),
+            new \Twig_SimpleFilter(
+                'supplier_order_items_total',
+                [$this->calculator, 'calculateItemsTotal']
+            ),
+            new \Twig_SimpleFilter(
+                'supplier_order_attachment_type_label',
+                [$this->constantHelper, 'renderSupplierOrderAttachmentType'],
+                ['is_safe' => ['html']]
             ),
         ];
     }

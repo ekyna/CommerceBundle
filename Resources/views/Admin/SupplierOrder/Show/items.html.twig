@@ -50,10 +50,10 @@
     {%- endfor %}
     <tr>
         <td colspan="3" class="text-right">
-            <strong>{{ 'ekyna_commerce.supplier_order.field.payment_total'|trans }}</strong>
+            <strong>{{ 'ekyna_commerce.supplier_order.field.items_total'|trans }}</strong>
         </td>
         <td class="text-right">
-            <strong>{{ supplierOrder.paymentTotal|localizedcurrency(supplierOrder.currency.code) }}</strong>
+            <strong>{{ supplierOrder|supplier_order_items_total|localizedcurrency(supplierOrder.currency.code) }}</strong>
         </td>
         <td colspan="2"></td>
     </tr>

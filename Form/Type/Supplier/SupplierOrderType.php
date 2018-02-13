@@ -71,11 +71,11 @@ class SupplierOrderType extends ResourceFormType
         $builder->addEventListener(Form\FormEvents::PRE_SET_DATA, function (Form\FormEvent $event) use ($options) {
             $form = $event->getForm();
 
-            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
-            $supplierOrder = $event->getData();
+            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $order */
+            $order = $event->getData();
 
             // Step 1: Supplier is not selected
-            if (null === $supplier = $supplierOrder->getSupplier()) {
+            if (null === $supplier = $order->getSupplier()) {
                 $form
                     ->add('supplier', ResourceType::class, [
                         'label' => 'ekyna_commerce.supplier.label.singular',
@@ -85,21 +85,13 @@ class SupplierOrderType extends ResourceFormType
                 return;
             }
 
-            if ($supplierOrder->getCurrency() !== $supplier->getCurrency()) {
-                $supplierOrder->setCurrency($supplier->getCurrency());
-            }
-            if (null === $supplierOrder->getCarrier()) {
-                $supplierOrder->setCarrier($supplier->getCarrier());
-            }
-
-            $event->setData($supplierOrder);
-
             /** @var \Ekyna\Component\Commerce\Common\Model\CurrencyInterface $currency */
-            if (null === $currency = $supplierOrder->getCurrency()) {
+            if (null === $currency = $order->getCurrency()) {
                 throw new LogicException("Supplier order's currency must be set at this point.");
             }
 
-            $requiredEda = $supplierOrder->getState() !== CStates::STATE_NEW;
+            $requiredEda = $order->getState() !== CStates::STATE_NEW;
+            $hasCarrier = null !== $order->getCarrier();
 
             // Step 2: Supplier is selected
             $form
@@ -111,7 +103,11 @@ class SupplierOrderType extends ResourceFormType
                 ->add('carrier', ResourceType::class, [
                     'label'     => 'ekyna_commerce.supplier_carrier.label.singular',
                     'class'     => $this->carrierClass,
+                    'required'  => false,
                     'allow_new' => true,
+                    'attr'      => [
+                        'class' => 'order-carrier',
+                    ],
                 ])
                 ->add('number', Symfony\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
@@ -140,6 +136,8 @@ class SupplierOrderType extends ResourceFormType
                 ->add('taxTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.tax_total',
                     'currency' => $currency->getCode(),
+                    'disabled' => true,
+                    'required' => false,
                 ])
                 ->add('paymentTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_total',
@@ -161,14 +159,17 @@ class SupplierOrderType extends ResourceFormType
                 ->add('forwarderFee', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_fee',
                     'currency' => $this->defaultCurrency,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('customsTax', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_tax',
                     'currency' => $this->defaultCurrency,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('customsVat', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
                     'currency' => $this->defaultCurrency,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('forwarderTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_total',
@@ -180,11 +181,13 @@ class SupplierOrderType extends ResourceFormType
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('forwarderDueDate', Symfony\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_due_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
+                    'disabled' => !$hasCarrier,
                 ])
                 // EDA / Tracking
                 ->add('estimatedDateOfArrival', Symfony\DateType::class, [

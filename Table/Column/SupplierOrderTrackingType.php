@@ -2,13 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnBuilderInterface;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class SupplierOrderTrackingType
@@ -17,6 +17,22 @@ use Ekyna\Component\Table\View\CellView;
  */
 class SupplierOrderTrackingType extends AbstractColumnType
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+
+    /**
+     * Constructor.
+     *
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @inheritDoc
      */
@@ -30,17 +46,22 @@ class SupplierOrderTrackingType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $text = '<span class="label label-danger">No</span>';
-
         if (!empty($urls = $row->getData('trackingUrls'))) {
             if (false !== $url = end($urls)) {
-                $text = '<a href="' . $url . '" target="_blank" class="label label-success">' .
-                    'Yes&nbsp;<span class="fa fa-map-marker"></span>' .
+                $label = $this->translator->trans('ekyna_core.value.yes');
+
+                $view->vars['value'] = '<a href="' . $url . '" target="_blank" class="label label-success">' .
+                    $label . '&nbsp;<span class="fa fa-map-marker"></span>' .
                 '</a>';
+
+                return;
             }
         }
 
-        $view->vars['value'] = $text;
+        $view->vars['value'] = sprintf(
+            '<span class="label label-danger">%s</span>',
+            $this->translator->trans('ekyna_core.value.no')
+        );
     }
 
     /**

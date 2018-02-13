@@ -57,9 +57,13 @@ class SupplierType extends ResourceFormType
                 'label'    => 'ekyna_commerce.supplier.field.customer_code',
                 'required' => false,
             ])
+            ->add('tax', Commerce\Pricing\TaxChoiceType::class, [
+                'required' => false,
+            ])
             ->add('carrier', ResourceType::class, [
                 'label'     => 'ekyna_commerce.supplier_carrier.label.singular',
                 'class'     => $this->carrierClass,
+                'required'  => false,
                 'allow_new' => true,
             ])
             ->add('identity', Commerce\Common\IdentityType::class, [

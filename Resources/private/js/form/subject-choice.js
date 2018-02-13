@@ -90,8 +90,9 @@ define(['jquery', 'routing', 'select2'], function($, router) {
                         }
                     })
                     .on('change', function() {
-                        $identifier.val($(this).val());
-                    });
+                        $identifier.val($subject.val());
+                    })
+                    .trigger('change');
 
                 select2initialized = true;
             };

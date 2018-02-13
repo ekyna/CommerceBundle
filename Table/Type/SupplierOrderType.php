@@ -95,15 +95,25 @@ class SupplierOrderType extends ResourceTableType
                 'label'    => 'ekyna_commerce.supplier_order.field.tracking_urls',
                 'position' => 50,
             ])
+            ->addColumn('paymentTotal', BType\Column\PriceType::class, [
+                'label'         => 'ekyna_commerce.supplier_order.field.payment_total',
+                'currency_path' => 'currency.code',
+                'position'      => 60,
+            ])
             ->addColumn('paymentDate', SupplierOrderPaymentType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
                 'prefix'   => 'payment',
-                'position' => 60,
+                'position' => 70,
+            ])
+            ->addColumn('forwarderTotal', BType\Column\PriceType::class, [
+                'label'         => 'ekyna_commerce.supplier_order.field.forwarder_total',
+                'currency_path' => 'currency.code',
+                'position'      => 80,
             ])
             ->addColumn('forwarderDate', SupplierOrderPaymentType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.forwarder_date',
                 'prefix'   => 'forwarder',
-                'position' => 70,
+                'position' => 90,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

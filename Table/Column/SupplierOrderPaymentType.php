@@ -10,6 +10,7 @@ use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class SupplierOrderPaymentType
@@ -23,15 +24,22 @@ class SupplierOrderPaymentType extends AbstractColumnType
      */
     private $formatter;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
 
     /**
      * Constructor.
      *
-     * @param Formatter $formatter
+     * @param Formatter           $formatter
+     * @param TranslatorInterface $translator
      */
-    public function __construct(Formatter $formatter)
+    public function __construct(Formatter $formatter, TranslatorInterface $translator)
     {
         $this->formatter = $formatter;
+        $this->translator = $translator;
     }
 
     /**
@@ -51,19 +59,20 @@ class SupplierOrderPaymentType extends AbstractColumnType
 
         if (null !== $date) {
             $label = $this->formatter->date($date);
-            $class = 'label-success';
+            $class = 'success';
+        } elseif ($options['prefix'] === 'forwarder' && null === $row->getData('carrier')) {
+            $label = $this->translator->trans('ekyna_core.value.none');
+            $class = 'default';
         } else {
-            $label = 'No';
-            $class = 'label-danger';
+            $label = $this->translator->trans('ekyna_core.value.no');
+            $class = 'danger';
 
             if (null !== $due = $row->getData($options['prefix'] . 'DueDate')) {
-                $label.= $this->formatter->date($due);
+                $label .= '&nbsp;' . $this->formatter->date($due);
             }
         }
 
-        $view->vars['label'] = $label;
-        $view->vars['class'] = $class;
-        $view->vars['route'] = null;
+        $view->vars['value'] = sprintf('<span class="label label-%s">%s</span>', $class, $label);
     }
 
     /**
@@ -81,7 +90,7 @@ class SupplierOrderPaymentType extends AbstractColumnType
      */
     public function getBlockPrefix()
     {
-        return 'boolean';
+        return 'text';
     }
 
     /**

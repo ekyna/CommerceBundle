@@ -1005,7 +1005,7 @@ ekyna_commerce:
     stock_unit:
         label:
             singular: Unité de stock
-            plural: Unitée de stock
+            plural: Unité de stock
         header:
             list: Liste des unité de stock
             show: Détail de l'unité
@@ -1188,17 +1188,17 @@ ekyna_commerce:
                     <p>Bonjour,</p>
                     <p>Veuillez trouver en pièce jointe le bon de commande %number%.</p>
                     <p>Cordialement, </p>
-
         field:
-            shipping_cost: Frais transport
+            shipping_cost: Frais transport HT
             discount_total: Total remise
             tax_total: Total TVA
+            items_total: Total articles
             payment_total: Total fournisseur
             payment_due_date: Échéance fournisseur
             payment_date: Réglement fournisseur
             customs_tax: Taxe douane
             customs_vat: TVA en douane
-            forwarder_fee: Frais transitaire
+            forwarder_fee: Frais transitaire HT
             forwarder_total: Total transitaire
             forwarder_due_date: Échéance transitaire
             forwarder_date: Réglement transitaire
@@ -1234,6 +1234,12 @@ ekyna_commerce:
         label:
             singular: Pièce jointe
             plural: Pièce jointes
+        type:
+            proforma: Facture proforma
+            payment: Justificatif payment
+            forwarder: Factture transitaire
+            import: Justificatif d'import
+            delivery: Bon de livraison
 
     supplier_product:
         label:

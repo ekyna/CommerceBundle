@@ -128,6 +128,14 @@
         <service id="ekyna_commerce.supplier_order_payment.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderPaymentType">
             <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="translator"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Supplier order tracking column type -->
+        <service id="ekyna_commerce.supplier_order_tracking.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderTrackingType">
+            <argument type="service" id="translator"/>
             <tag name="table.column_type"/>
         </service>
 

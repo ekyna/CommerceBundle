@@ -19,6 +19,7 @@ use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentReasons;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderAttachmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -548,6 +549,25 @@ class ConstantsHelper extends AbstractConstantsHelper
         return $this->renderBadge($this->renderSupplierOrderStateLabel($stateOrSupplierOrder), $theme);
     }
 
+    /**
+     * Renders the supplier order attachment type label.
+     *
+     * @param SupplierOrderAttachmentInterface|string $typeOrAttachment
+     *
+     * @return string
+     */
+    public function renderSupplierOrderAttachmentType($typeOrAttachment)
+    {
+        if ($typeOrAttachment instanceof SupplierOrderAttachmentInterface) {
+            $typeOrAttachment = $typeOrAttachment->getType();
+        }
+
+        if (Model\SupplierOrderAttachmentTypes::isValid($typeOrAttachment)) {
+            return $this->renderLabel(Model\SupplierOrderAttachmentTypes::getLabel($typeOrAttachment));
+        }
+
+        return $this->renderLabel();
+    }
 
     /**
      * Renders the identity.

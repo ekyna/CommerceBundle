@@ -12,12 +12,13 @@
     {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
         <div class="tab-pane active" id="supplier-general">
+            {{ form_row(form.name) }}
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.name, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.tax, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">

@@ -87,15 +87,6 @@ class AdminMenuPass implements CompilerPassInterface
             'position' => 11,
         ]]);
 
-        // Suppliers
-        $pool->addMethodCall('createEntry', ['suppliers', [
-            'name'     => 'suppliers',
-            'route'    => 'ekyna_commerce_supplier_admin_home',
-            'label'    => 'ekyna_commerce.supplier.label.plural',
-            'resource' => 'ekyna_commerce_supplier',
-            'position' => 1,
-        ]]);
-
         // Supplier orders
         $pool->addMethodCall('createEntry', ['suppliers', [
             'name'     => 'supplier_orders',
@@ -105,13 +96,22 @@ class AdminMenuPass implements CompilerPassInterface
             'position' => 1,
         ]]);
 
+        // Suppliers
+        $pool->addMethodCall('createEntry', ['suppliers', [
+            'name'     => 'suppliers',
+            'route'    => 'ekyna_commerce_supplier_admin_home',
+            'label'    => 'ekyna_commerce.supplier.label.plural',
+            'resource' => 'ekyna_commerce_supplier',
+            'position' => 2,
+        ]]);
+
         // Supplier carriers
         $pool->addMethodCall('createEntry', ['suppliers', [
             'name'     => 'supplier_carriers',
             'route'    => 'ekyna_commerce_supplier_carrier_admin_home',
             'label'    => 'ekyna_commerce.supplier_carrier.label.plural',
             'resource' => 'ekyna_commerce_supplier_carrier',
-            'position' => 1,
+            'position' => 3,
         ]]);
 
         // ------------------------------------------------------------

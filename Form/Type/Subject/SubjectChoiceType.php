@@ -78,7 +78,7 @@ class SubjectChoiceType extends AbstractType
                     ->getProviderByName($identity->getProvider())
                     ->reverseTransform($identity);
 
-                $subjectChoices[(string)$subject] = $subject;
+                $subjectChoices[(string)$subject] = $subject->getId();
                 $subjectRequired = true;
             }
 

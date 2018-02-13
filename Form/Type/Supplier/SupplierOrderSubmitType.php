@@ -3,12 +3,16 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
+use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Symfony\Component\Form;
 use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -26,6 +30,11 @@ class SupplierOrderSubmitType extends Form\AbstractType
     /**
      * @var string
      */
+    private $carrierClass;
+
+    /**
+     * @var string
+     */
     protected $defaultCurrency;
 
 
@@ -33,11 +42,13 @@ class SupplierOrderSubmitType extends Form\AbstractType
      * Constructor.
      *
      * @param string $orderClass
+     * @param string $carrierClass
      * @param string $defaultCurrency
      */
-    public function __construct($orderClass, $defaultCurrency)
+    public function __construct($orderClass, $carrierClass, $defaultCurrency)
     {
         $this->orderClass = $orderClass;
+        $this->carrierClass = $carrierClass;
         $this->defaultCurrency = $defaultCurrency;
     }
 
@@ -63,8 +74,8 @@ class SupplierOrderSubmitType extends Form\AbstractType
                 'required' => false,
             ])
             ->add('confirm', Type\CheckboxType::class, [
-                'label'       => 'ekyna_core.message.action_confirm',
-                'attr'        => [
+                'label' => 'ekyna_core.message.action_confirm',
+                'attr'  => [
                     'align_with_widget' => true,
                 ],
             ])
@@ -100,8 +111,24 @@ class SupplierOrderSubmitType extends Form\AbstractType
 
             $currency = $order->getCurrency();
 
+            $hasCarrier = null !== $order->getCarrier();
+
             $form
                 ->get('order')
+                ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
+                    'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
+                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
+                    'required' => true,
+                ])
+                ->add('carrier', ResourceType::class, [
+                    'label'     => 'ekyna_commerce.supplier_carrier.label.singular',
+                    'class'     => $this->carrierClass,
+                    'required'  => false,
+                    'allow_new' => true,
+                    'attr'      => [
+                        'class' => 'order-carrier',
+                    ],
+                ])
                 // Supplier fields
                 ->add('shippingCost', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
@@ -114,6 +141,8 @@ class SupplierOrderSubmitType extends Form\AbstractType
                 ->add('taxTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.tax_total',
                     'currency' => $currency->getCode(),
+                    'disabled' => true,
+                    'required' => false,
                 ])
                 ->add('paymentTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_total',
@@ -135,14 +164,17 @@ class SupplierOrderSubmitType extends Form\AbstractType
                 ->add('forwarderFee', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_fee',
                     'currency' => $this->defaultCurrency,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('customsTax', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_tax',
                     'currency' => $this->defaultCurrency,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('customsVat', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
                     'currency' => $this->defaultCurrency,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('forwarderTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_total',
@@ -154,18 +186,15 @@ class SupplierOrderSubmitType extends Form\AbstractType
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
+                    'disabled' => !$hasCarrier,
                 ])
                 ->add('forwarderDueDate', Type\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_due_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
+                    'disabled' => !$hasCarrier,
                 ])
-                // EDA / Tracking
-                ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
-                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
-                    'required' => true,
-                ])
+                // Tracking
                 ->add('trackingUrls', CollectionType::class, [
                     'label'         => 'ekyna_commerce.supplier_order.field.tracking_urls',
                     'entry_type'    => Type\UrlType::class,
@@ -174,37 +203,15 @@ class SupplierOrderSubmitType extends Form\AbstractType
                     'allow_add'     => true,
                     'allow_delete'  => true,
                 ]);
-
-                /*->add('shippingCost', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
-                    'currency' => $currency->getCode(),
-                ])
-                ->add('customsDuty', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.customs_duty',
-                    'currency' => $this->defaultCurrency,
-                ])
-                ->add('customsVat', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
-                    'currency' => $this->defaultCurrency,
-                ])
-                ->add('administrativeFee', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.administrative_fee',
-                    'currency' => $this->defaultCurrency,
-                ])
-                ->add('discountTotal', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.discount_total',
-                    'currency' => $this->defaultCurrency,
-                ])
-                ->add('trackingUrl', Type\UrlType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.tracking_url',
-                    'required' => false,
-                ])
-                ->add('paymentDate', Type\DateTimeType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
-                    'format'   => 'dd/MM/yyyy', // TODO localised configurable format
-                    'required' => false,
-                ])*/
         });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'commerce-supplier-submit');
     }
 
     /**
