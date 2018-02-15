@@ -307,6 +307,7 @@ ekyna_commerce:
             taxes_total: Taxes
             grand_total: Total TTC
             payment_method: Mode de remboursement
+            invoiced_at: Date de facturation
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
             recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
@@ -867,7 +868,9 @@ ekyna_commerce:
         field:
             tax_group: Groupe
             shipped: Expédié
+            available: Disponible
             invoiced: Facturé
+            private: Masqué
 
     setting:
         invoice_footer: Pied de page facture

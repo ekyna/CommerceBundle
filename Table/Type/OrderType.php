@@ -9,6 +9,9 @@ use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates;
+use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
@@ -249,17 +252,29 @@ class OrderType extends ResourceTableType
                 ])
                 ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.payment_state',
-                    'choices'  => Model\PaymentStates::getChoices(),
+                    'choices'  => Model\PaymentStates::getChoices([
+                        PaymentStates::STATE_AUTHORIZED,
+                        PaymentStates::STATE_EXPIRED,
+                        PaymentStates::STATE_SUSPENDED,
+                        PaymentStates::STATE_UNKNOWN,
+                    ]),
                     'position' => 90,
                 ])
                 ->addFilter('shipmentState', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.shipment_state',
-                    'choices'  => Model\ShipmentStates::getChoices(),
+                    'choices'  => Model\ShipmentStates::getChoices([
+                        ShipmentStates::STATE_NEW,
+                        ShipmentStates::STATE_SHIPPED,
+                        ShipmentStates::STATE_NONE,
+                    ]),
                     'position' => 100,
                 ])
                 ->addFilter('invoiceState', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_commerce.sale.field.invoice_state',
-                    'choices'  => Model\InvoiceStates::getChoices(),
+                    'choices'  => Model\InvoiceStates::getChoices([
+                        InvoiceStates::STATE_NEW,
+                        InvoiceStates::STATE_INVOICED,
+                    ]),
                     'position' => 110,
                 ])
                 ->addFilter('inCharge', Type\Filter\InChargeType::class, [

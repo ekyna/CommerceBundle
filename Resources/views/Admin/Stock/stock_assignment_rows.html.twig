@@ -1,7 +1,7 @@
 {% spaceless %}
 {% for assignment in stock_assignments %}
     {% set assignment_id = prefix ~ '_' ~ loop.index0 %}
-    <tr id="{{ assignment_id }}">
+    <tr id="{{ assignment_id }}" data-summary="{{ {'route': 'ekyna_commerce_order_admin_summary', 'parameters': {'orderId': assignment.order_id}}|json_encode }}">
         <td id="{{ assignment_id ~ '_state' }}">{{ assignment.unit.state_badge|raw }}</td>
         <td id="{{ assignment_id ~ '_geocodes' }}">{{ assignment.unit.geocodes }}</td>
         <td id="{{ assignment_id ~ '_orderedQuantity' }}" class="text-right">{{ assignment.unit.ordered }}</td>

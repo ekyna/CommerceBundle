@@ -11,6 +11,7 @@ use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Filter\AbstractFilterType;
 use Ekyna\Component\Table\Filter\FilterInterface;
 use Ekyna\Component\Table\Source\AdapterInterface;
+use Ekyna\Component\Table\Util\FilterOperator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -54,14 +55,16 @@ class SaleTagsType extends AbstractFilterType
         $value = FilterUtil::buildParameterValue($operator, $activeFilter->getValue());
 
         $qb = $adapter->getQueryBuilder();
-        $orExpr = $qb->expr()->orX();
+
+        $clause = $operator === FilterOperator::IN || $operator === FilterOperator::MEMBER
+            ? $qb->expr()->orX() : $qb->expr()->andX();
 
         foreach (['tags', 'itemsTags'] as $path) {
             $property = $adapter->getQueryBuilderPath($path);
-            $orExpr->add(FilterUtil::buildExpression($property, $operator, $parameter));
+            $clause->add(FilterUtil::buildExpression($property, $operator, $parameter));
         }
 
-        $qb->andWhere($orExpr)->setParameter($parameter, $value);
+        $qb->andWhere($clause)->setParameter($parameter, $value);
 
         return true;
     }

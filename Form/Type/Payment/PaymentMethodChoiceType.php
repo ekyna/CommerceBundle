@@ -105,6 +105,13 @@ class PaymentMethodChoiceType extends AbstractType
                 }
 
                 return $value;
+            })
+            ->setNormalizer('placeholder', function (Options $options, $value) {
+                if (empty($value) && !$options['required']) {
+                    $value = 'ekyna_core.value.none';
+                }
+
+                return $value;
             });
     }
 
@@ -134,9 +141,10 @@ class PaymentMethodChoiceType extends AbstractType
 
         $methodIds = [];
         $preferredChoices = [];
+        $states = [PaymentStates::STATE_CAPTURED, PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_REFUNDED];
         foreach ($sale->getPayments() as $payment) {
             $method = $payment->getMethod();
-            if (PaymentStates::isPaidState($payment->getState())) {
+            if (in_array($payment->getState(), $states, true)) {
                 $preferredChoices[] = $method;
                 break;
             } elseif ($method->isManual() && $payment->getState() === PaymentStates::STATE_PENDING) {

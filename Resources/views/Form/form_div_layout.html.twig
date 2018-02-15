@@ -442,6 +442,9 @@
                     <th>
                         {{ 'ekyna_core.field.quantity'|trans }}
                     </th>
+                    <th>
+                        {{ 'ekyna_commerce.sale_item.field.private'|trans }}
+                    </th>
                     <th></th>
                 </tr>
                 </thead>
@@ -497,6 +500,7 @@
         <td>{{ form_widget(form.netPrice) }}</td>
         <td>{{ form_widget(form.taxGroup) }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
+        <td>{{ form_widget(form.private) }}</td>
         <td rowspan="{{ form.vars.with_collections ? 3 : 2 }}" class="ekyna-collection-controls">
             {{ form_widget(form.position) }}
             <div class="btn-group-vertical">__controls__</div>
@@ -511,14 +515,14 @@
     {% endif %}
     {% if form.items is defined %}
         <tr>
-            <td colspan="6" class="commerce-sale-item-children">
+            <td colspan="7" class="commerce-sale-item-children">
                 {{ form_widget(form.items) }}
             </td>
         </tr>
     {% endif %}
     {% if form.adjustments is defined %}
     <tr>
-        <td colspan="6" class="commerce-sale-item-children">
+        <td colspan="7" class="commerce-sale-item-children">
             {{ form_widget(form.adjustments) }}
         </td>
     </tr>

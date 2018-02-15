@@ -14,9 +14,8 @@
         {% if subject.sale.customer is not null -%}
             , client <strong>{{ subject.sale.customer.number }}</strong>
         {%- endif %}.
-        {% if subject.sale.voucherNumber is not empty -%}
-            {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ subject.sale.voucherNumber }}</strong>.
-        {%- endif %}
+        {{ macro.render_voucher_number(subject.sale) }}
+        {{ macro.render_payment_term(subject.sale) }}
     </p>
 {%- endblock doc_title -%}
 

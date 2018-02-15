@@ -121,6 +121,7 @@ class SupplierOrderController extends ResourceController
         // TODO Use Symfony WorkFlow Component ? (can 'transition') (Sf 3.2)
         if ($resource->getState() !== SupplierOrderStates::STATE_NEW) {
             $this->addFlash('ekyna_commerce.supplier_order.message.cant_be_submitted', 'warning');
+
             return $this->redirect($this->generateResourcePath($resource));
         }
 
@@ -138,7 +139,7 @@ class SupplierOrderController extends ResourceController
         $form = $this->createForm(SupplierOrderSubmitType::class, $submit, [
             'attr' => [
                 'class' => 'form-horizontal',
-            ]
+            ],
         ]);
 
         $cancelPath = $this->generateUrl(
@@ -228,22 +229,21 @@ class SupplierOrderController extends ResourceController
 
         $this->isGranted('VIEW', $supplierOrder);
 
+        $response = new Response();
+        $response->setVary(['Accept-Encoding', 'Accept']);
+        $response->setLastModified($supplierOrder->getCreatedAt());
+        $response->setMaxAge(60);
+
         $html = false;
-        $headers = [];
 
         $accept = $request->getAcceptableContentTypes();
         if (in_array('application/json', $accept, true)) {
-            $headers = ['Content-Type' => 'application/json'];
+            $response->headers->add(['Content-Type' => 'application/json']);
         } elseif (in_array('text/html', $accept, true)) {
             $html = true;
         } else {
             throw $this->createNotFoundException("Unsupported conten type.");
         }
-
-        $response = new Response('', Response::HTTP_OK, $headers);
-        $response->setLastModified($supplierOrder->getCreatedAt());
-        $response->setPublic();
-        $response->setVary(array('Accept-Encoding', 'Accept'));
 
         if ($response->isNotModified($request)) {
             return $response;
@@ -303,8 +303,12 @@ class SupplierOrderController extends ResourceController
         $this->isGranted('VIEW', $order);
 
         $ids = (array)$request->query->get('id', []);
-        $ids = array_map(function ($id) { return intval($id); }, $ids);
-        $ids = array_filter($ids, function ($id) { return 0 < $id; });
+        $ids = array_map(function ($id) {
+            return intval($id);
+        }, $ids);
+        $ids = array_filter($ids, function ($id) {
+            return 0 < $id;
+        });
 
         $helper = $this->get('ekyna_commerce.subject_helper');
         $subjects = [];

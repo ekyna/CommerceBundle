@@ -106,22 +106,21 @@ class SaleController extends AbstractSaleController
 
         $this->isGranted('VIEW', $sale);
 
-        $html = false;
-        $headers = [];
+        $response = new Response();
+        $response->setVary(['Accept', 'Accept-Encoding']);
+        $response->setLastModified($sale->getCreatedAt());
+        $response->setMaxAge(60);
 
+        $html = false;
         $accept = $request->getAcceptableContentTypes();
+
         if (in_array('application/json', $accept, true)) {
-            $headers = ['Content-Type' => 'application/json'];
+            $response->headers->add(['Content-Type' => 'application/json']);
         } elseif (in_array('text/html', $accept, true)) {
             $html = true;
         } else {
-            throw $this->createNotFoundException("Unsupported conten type.");
+            throw $this->createNotFoundException("Unsupported content type.");
         }
-
-        $response = new Response('', Response::HTTP_OK, $headers);
-        $response->setLastModified($sale->getCreatedAt());
-        $response->setPublic();
-        $response->setVary(['Accept-Encoding', 'Accept']);
 
         if ($response->isNotModified($request)) {
             return $response;
@@ -289,6 +288,42 @@ class SaleController extends AbstractSaleController
         $sale = $context->getResource();
 
         return $this->buildXhrSaleViewResponse($sale);
+    }
+
+    /**
+     * Updates the sale's state.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateStateAction(Request $request)
+    {
+        if (!$this->getParameter('kernel.debug')) {
+            throw $this->createNotFoundException();
+        }
+
+        /* TODO if (!($request->isXmlHttpRequest() && $request->getMethod() === 'GET')) {
+            throw $this->createNotFoundException();
+        }*/
+
+        $context = $this->loadContext($request);
+
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource();
+
+        /** @var \Ekyna\Component\Commerce\Common\Resolver\StateResolverInterface $resolver */
+        $resolver = $this->get($this->config->getServiceKey('state_resolver'));
+
+        //$sale->setState('new');
+
+        if ($resolver->resolve($sale)) {
+            $event = $this->getOperator()->update($sale);
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        return $this->redirect($this->generateResourcePath($sale));
+        // TODO return $this->buildXhrSaleViewResponse($sale);
     }
 
     /**

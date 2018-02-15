@@ -75,6 +75,13 @@ ekyna_commerce_order_admin_refresh:
     requirements:
         orderId: \d+
 
+ekyna_commerce_order_admin_update_state:
+    path: /{orderId}/update-state
+    defaults: { _controller: "ekyna_commerce.order.controller:updateStateAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+
 ekyna_commerce_order_admin_recalculate:
     path: /{orderId}/recalculate
     defaults: { _controller: "ekyna_commerce.order.controller:recalculateAction" }

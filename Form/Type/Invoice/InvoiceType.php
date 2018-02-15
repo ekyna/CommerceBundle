@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -57,6 +58,7 @@ class InvoiceType extends ResourceFormType
             ->add('createdAt', Type\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.date',
                 'required' => false,
+                'empty_data' => (new \DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
             ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
@@ -87,8 +89,26 @@ class InvoiceType extends ResourceFormType
                 ]);
 
                 if (InvoiceTypes::isCredit($invoice)) {
+                    $required = false;
+                    $states = [
+                        PaymentStates::STATE_CAPTURED,
+                        PaymentStates::STATE_AUTHORIZED,
+                        PaymentStates::STATE_REFUNDED,
+                    ];
+                    foreach ($sale->getPayments() as $payment) {
+                        // Ignore outstanding payments
+                        if ($payment->getMethod()->isOutstanding()) {
+                            continue;
+                        }
+                        if (in_array($payment->getState(), $states, true)) {
+                            $required = true;
+                            break;
+                        }
+                    }
+
                     $form->add('paymentMethod', PaymentMethodChoiceType::class, [
                         'label'       => 'ekyna_commerce.invoice.field.payment_method',
+                        'required'    => $required,
                         'invoice'     => $invoice,
                         'outstanding' => false,
                     ]);

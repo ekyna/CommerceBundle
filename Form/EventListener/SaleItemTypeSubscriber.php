@@ -73,7 +73,6 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
         if ($item instanceof SaleItemInterface) {
             $hasParent = null !== $item->getParent();
             $hasChildren = $item->hasChildren();
-            $hasPublicChildren = !$item->hasPrivateChildren();
             $hasSubject = $item->hasSubjectIdentity();
         }
 
@@ -96,7 +95,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'label'    => 'ekyna_core.field.weight', // TODO unit weight ?
                 'scale'    => 3,
                 'required' => false,
-                'disabled' => $hasChildren && !$hasPublicChildren,
+                'disabled' => $item->isCompound(),
                 'attr'     => [
                     'placeholder' => 'ekyna_core.field.weight',
                     'input_group' => ['append' => 'kg'],
@@ -107,7 +106,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'label'    => 'ekyna_commerce.sale.field.net_unit',
                 'currency' => $this->currency,
                 'required' => false,
-                'disabled' => $hasChildren && !$hasPublicChildren,
+                'disabled' => $item->isCompound(),
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
                     //'input_group' => ['append' => '€'],  // TODO sale currency
@@ -129,6 +128,11 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                     'placeholder' => 'ekyna_core.field.quantity',
                     'min'         => 1,
                 ],
+            ])
+            ->add('private', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.sale_item.field.private',
+                'disabled' => $item->hasPublicChildren(),
+                'required' => false,
             ])
             ->add('position', CollectionPositionType::class, []);
 

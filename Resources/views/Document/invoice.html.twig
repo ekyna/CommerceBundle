@@ -1,5 +1,8 @@
 {% extends "EkynaCommerceBundle:Document:document.html.twig" %}
 
+
+{%- import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
+
 {# --- DOC TITLE --- #}
 {% block doc_title -%}
     <h1>
@@ -8,10 +11,8 @@
     </h1>
     <p>
         Le {{ subject.createdAt|localizeddate('long', 'none') }}, commande <strong>{{ subject.sale.number }}</strong>.
-        {% if subject.sale.voucherNumber is not empty -%}
-            {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ subject.sale.voucherNumber }}</strong>.
-        {%- endif %}
+        {{ macro.render_voucher_number(subject.sale) }}
+        {{ macro.render_payment_term(subject.sale) }}
     </p>
-
     {# TODO trans #}
 {%- endblock doc_title %}

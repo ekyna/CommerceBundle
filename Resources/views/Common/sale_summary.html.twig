@@ -2,18 +2,31 @@
 {% set shipment = shipment|default(false) %}
 {% set invoice = invoice|default(false) %}
 {% import _self as macros %}
-{% macro item_line(item, shipment, invoice) %}
+{% macro item_line(item, shipment, invoice, level) %}
     {% if not item.private %}
     <tr>
-        <td>{{ item.designation }}</td>
+        <td style="padding-left:{{ 16 * level }}px">{{ item.designation }}</td>
         <td>{{ item.reference }}</td>
-        <td class="text-right">{{ item.quantity }}</td>
-        {% if shipment %}<td class="text-right">{{ item.shipped }}{% if 0 < item.returned %} (-{{ item.returned }}){% endif %}</td>{% endif %}
-        {% if invoice %}<td class="text-right">{{ item.invoiced }}{% if 0 < item.credited %} (-{{ item.credited }}){% endif %}</td>{% endif %}
+        <td class="text-right">{{ item.total_quantity|localizednumber }}</td>
+        {% if shipment -%}
+        <td class="text-right">
+            {{ item.shipped|localizednumber }}
+            {% if 0 < item.returned %} (-{{ item.returned|localizednumber }}){% endif -%}
+        </td>
+        <td class="text-right">
+            {{ item.available|localizednumber }}
+            {% if 0 < item.in_stock %} ({{ item.in_stock|localizednumber }}){% endif -%}
+        </td>
+        {%- endif %}
+        {% if invoice -%}
+        <td class="text-right">{{ item.invoiced|localizednumber }}
+            {% if 0 < item.credited %} (-{{ item.credited|localizednumber }}){% endif -%}
+        </td>
+        {%- endif %}
     </tr>
     {% import _self as macros %}
     {% for child in item.children -%}
-        {{ macros.item_line(child, shipment, invoice) }}
+        {{ macros.item_line(child, shipment, invoice, level + 1) }}
     {%- endfor %}
     {% endif %}
 {% endmacro %}
@@ -23,20 +36,47 @@
     <th>{{ 'ekyna_core.field.designation'|trans }}</th>
     <th>{{ 'ekyna_core.field.reference'|trans }}</th>
     <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-    {% if shipment %}<th>{{ 'ekyna_commerce.sale_item.field.shipped'|trans }}</th>{% endif %}
+    {% if shipment %}
+        <th>{{ 'ekyna_commerce.sale_item.field.shipped'|trans }}</th>
+        <th>{{ 'ekyna_commerce.sale_item.field.available'|trans }}</th>
+    {% endif %}
     {% if invoice %}<th>{{ 'ekyna_commerce.sale_item.field.invoiced'|trans }}</th>{% endif %}
 </tr>
 </thead>
 <tbody>
 {% for item in items -%}
-    {{ macros.item_line(item, shipment, invoice) }}
+    {{ macros.item_line(item, shipment, invoice, 0) }}
 {%- endfor %}
 </tbody>
 </table>
-{% if description is not empty -%}
-    <p><strong>{{ 'ekyna_commerce.field.description'|trans }}</strong> {{ description|raw }}</p>
-{%- endif %}
-{% if comment is not empty -%}
-    <p><strong>{{ 'ekyna_core.field.comment'|trans }}</strong> {{ comment|raw }}</p>
-{%- endif %}
+{% if payment_term or outstanding_date or shipped_at or invoiced_at or description or comment  %}
+<div>
+    <dl class="dl-horizontal">
+    {% if payment_term is not empty %}
+        <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
+        <dd>{{ payment_term }}</dd>
+    {% endif %}
+    {% if outstanding_date is not empty %}
+        <dt>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</dt>
+        <dd>{{ outstanding_date|localizeddate('short', 'none') }}</dd>
+    {% endif %}
+    {% if shipped_at is not empty %}
+        <dt>{{ 'ekyna_commerce.shipment.field.shipped_at'|trans }}</dt>
+        <dd>{{ shipped_at|localizeddate('short', 'none') }}</dd>
+    {% endif %}
+    {% if invoiced_at is not empty %}
+        <dt>{{ 'ekyna_commerce.invoice.field.invoiced_at'|trans }}</dt>
+        <dd>{{ invoiced_at|localizeddate('short', 'none') }}</dd>
+    {% endif %}
+    {% if description is not empty %}
+        <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+        <dd>{{ description|raw }}</dd>
+    {% endif %}
+    {% if comment is not empty %}
+        <dt>{{ 'ekyna_core.field.comment'|trans }}</dt>
+        <dd>{{ comment|raw }}</dd>
+    {% endif %}
+    </dl>
+</div>
+{% endif %}
 {% endspaceless %}

@@ -77,3 +77,24 @@
     </p>
 {% endspaceless %}
 {% endmacro %}
+
+
+{% macro render_voucher_number(sale) %}
+{% spaceless %}
+    {% if sale.voucherNumber is not empty -%}
+        {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ sale.voucherNumber }}</strong>.
+    {%- endif %}
+{% endspaceless %}
+{% endmacro %}
+
+
+{% macro render_payment_term(sale) %}
+{% spaceless %}
+    {% if sale.paymentTerm is not null -%}
+        {{ 'ekyna_commerce.payment_term.label.singular'|trans }}: <strong>{{ sale.paymentTerm }}</strong>.
+        {% if sale.outstandingDate is not null %}
+            {{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}: <strong>{{ sale.outstandingDate|localizeddate('long', 'none') }}</strong>.
+        {% endif %}
+    {%- endif %}
+{% endspaceless %}
+{% endmacro %}

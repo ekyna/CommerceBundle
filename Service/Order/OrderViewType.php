@@ -262,7 +262,7 @@ class OrderViewType extends AbstractViewType
         }
 
         // Edit action
-        if (!$item->isCompound()) {
+        //if (!$item->isCompound()) {
             $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
                 'orderId'     => $item->getSale()->getId(),
                 'orderItemId' => $item->getId(),
@@ -272,7 +272,7 @@ class OrderViewType extends AbstractViewType
                 'data-sale-modal' => null,
                 'class'           => 'text-warning',
             ]));
-        }
+        //}
 
         // Remove action
         if (!$item->isImmutable() && !$item->getParent()) {
