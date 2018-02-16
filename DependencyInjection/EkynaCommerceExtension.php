@@ -34,6 +34,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.expiration.quote', $config['default']['expiration']['quote']);
 
         $this->configurePricing($config['pricing'], $container);
+        $this->configureStock($config['stock'], $container);
         $this->configureSaleFactory($container);
     }
 
@@ -72,6 +73,22 @@ class EkynaCommerceExtension extends AbstractExtension
                 ->addArgument($configs['vat_api']['access_key'])
                 ->addArgument('%kernel.debug%');
         }
+    }
+
+
+    /**
+     * Configures the stock.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureStock(array $config, ContainerBuilder $container)
+    {
+        $availability = $config['availability'];
+
+        $container
+            ->getDefinition('ekyna_commerce.availability_helper')
+            ->replaceArgument(2, $availability['in_stock_limit']);
     }
 
     /**

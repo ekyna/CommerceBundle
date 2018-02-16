@@ -52,7 +52,18 @@
                 <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ invoiceId }}_shipment">
-                    {%- if invoice.shipment is not null %}{{ invoice.shipment.number }}{% endif -%}
+                    {%- if invoice.shipment is not null %}
+                        {{ invoice.shipment.number }}
+                        <a href="{{ admin_resource_path(invoice, 'unlink') }}"
+                           id="{{ invoiceId }}_recalculate"
+                           class="btn btn-link btn-xs"
+                           title="{{ 'ekyna_commerce.invoice.button.unlink'|trans }}"
+                           onclick="return confirm('{{ 'ekyna_commerce.invoice.message.unlink_confirm'|trans({
+                               '%number%': invoice.shipment.number
+                           }) }}');">
+                            <span class="fa fa-unlink"></span>
+                        </a>
+                    {% endif -%}
                 </td>
                 <td class="actions">
                     <a href="javascript:void(0)"

@@ -177,6 +177,8 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
+        $sale = $item->getSale();
+
         // Information
         if (!$item instanceof Order\OrderItemInterface) {
             throw new \Exception("Unexpected sale item type.");
@@ -202,7 +204,51 @@ class OrderViewType extends AbstractViewType
             ]));
         }
 
-        $sale = $item->getSale();
+        // Popover
+        $popover = '';
+        if (!($item->isCompound() && !$item->hasPrivateChildren())) {
+            $lines = [];
+
+            $shipped = $this->shipmentCalculator->calculateShippedQuantity($item);
+            $returned = $this->shipmentCalculator->calculateReturnedQuantity($item);
+
+            if (0 < $returned) {
+                $shipped = sprintf('%s (-%s)', $this->formatter->number($shipped), $this->formatter->number($returned));
+            } else {
+                $shipped = $this->formatter->number($shipped);
+            }
+
+            $lines['ekyna_commerce.sale_item.field.shipped'] = $shipped;
+
+            $lines['ekyna_commerce.sale_item.field.available'] = $this->formatter->number(
+                $this->shipmentCalculator->calculateAvailableQuantity($item)
+            );
+
+            if (!$sale->isSample()) {
+                $invoiced = $this->invoiceCalculator->calculateInvoicedQuantity($item);
+                $credited = $this->invoiceCalculator->calculateCreditedQuantity($item);
+
+                if (0 < $credited) {
+                    $invoiced = sprintf('%s (-%s)', $this->formatter->number($invoiced), $this->formatter->number($credited));
+                } else {
+                    $invoiced = $this->formatter->number($invoiced);
+                }
+
+                $lines['ekyna_commerce.sale_item.field.invoiced'] = $invoiced;
+            }
+
+            $popover = '<dl class="dl-horizontal" style="font-size:13px">';
+            foreach ($lines as $label => $value) {
+                $popover .= sprintf('<dt>%s</dt><dd>%s</dd>', $this->trans($label), $value);
+            }
+            $popover .= '</dl>';
+        }
+        if (!empty($popover)) {
+            $view->vars['attr'] = array_replace($view->vars['attr'], [
+                'data-toggle'    => 'popover',
+                'data-content'   => $popover,
+            ]);
+        }
 
         // Manual adjustments
         if (
@@ -263,15 +309,15 @@ class OrderViewType extends AbstractViewType
 
         // Edit action
         //if (!$item->isCompound()) {
-            $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
-                'orderId'     => $item->getSale()->getId(),
-                'orderItemId' => $item->getId(),
-            ]);
-            $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
-                'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
-                'data-sale-modal' => null,
-                'class'           => 'text-warning',
-            ]));
+        $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
+            'orderId'     => $item->getSale()->getId(),
+            'orderItemId' => $item->getId(),
+        ]);
+        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+            'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
+            'data-sale-modal' => null,
+            'class'           => 'text-warning',
+        ]));
         //}
 
         // Remove action

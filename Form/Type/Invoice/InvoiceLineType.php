@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
@@ -27,7 +28,7 @@ class InvoiceLineType extends ResourceFormType
         $builder
             ->add('quantity', Type\NumberType::class, [
                 'label'          => 'ekyna_core.field.quantity',
-                'disabled'       => $options['disabled'] || 0 < $options['level'],
+                'disabled'       => $options['disabled'],
                 'attr'           => [
                     'class' => 'input-sm',
                 ],
@@ -57,7 +58,18 @@ class InvoiceLineType extends ResourceFormType
 
         $view->children['quantity']->vars['attr']['data-max'] = $line->getAvailable();
 
-        if (0 < $options['level']) {
+        // Don't lock Shipment / discount line
+        if ($line->getType() !== DocumentLineTypes::TYPE_GOOD) {
+            return;
+        }
+
+        $saleItem = $line->getSaleItem();
+        if (null === $parent = $saleItem->getParent()) {
+            return;
+        }
+
+        if ($parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren())) {
+            $view->children['quantity']->vars['attr']['disabled'] = true;
             $view->children['quantity']->vars['attr']['data-quantity'] = $line->getSaleItem()->getQuantity();
             $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }

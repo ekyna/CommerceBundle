@@ -24,6 +24,7 @@ class Configuration implements ConfigurationInterface
 
         $this->addDefaultSection($rootNode);
         $this->addPricingSection($rootNode);
+        $this->addStockSection($rootNode);
         $this->addPoolsSection($rootNode);
 
         return $treeBuilder;
@@ -98,7 +99,6 @@ class Configuration implements ConfigurationInterface
         $apiDefaults = ['enabled' => false, 'access_key' => null];
         $wsDefaults  = ['enabled' => false];
 
-        /** @noinspection PhpUndefinedMethodInspection */
         $node
             ->children()
                 ->arrayNode('pricing')
@@ -147,6 +147,29 @@ class Configuration implements ConfigurationInterface
                                         ->end()
                                     ->end()
                                 ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `stock` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addStockSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('stock')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('availability')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->integerNode('in_stock_limit')->defaultValue(100)->isRequired()->end()
                             ->end()
                         ->end()
                     ->end()

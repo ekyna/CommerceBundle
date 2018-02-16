@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormInterface;

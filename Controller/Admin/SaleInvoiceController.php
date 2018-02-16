@@ -285,7 +285,9 @@ class SaleInvoiceController extends AbstractSaleController
 
         $this->isGranted('EDIT', $invoice);
 
-        $isXhr = $request->isXmlHttpRequest();
+        if ($isXhr = $request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException('Not yet supported.');
+        }
 
         $this->get('ekyna_commerce.document.calculator')->calculate($invoice);
 
@@ -296,6 +298,45 @@ class SaleInvoiceController extends AbstractSaleController
             return $this->buildXhrSaleViewResponse($sale);
         } else {
             $event->toFlashes($this->getFlashBag());
+        }
+
+        return $this->redirect($this->generateResourcePath($sale));
+    }
+
+    /**
+     * Unlink (from shipment) action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function unlinkAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $context->getResource();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+
+        $this->isGranted('EDIT', $invoice);
+
+        if ($isXhr = $request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException('Not yet supported.');
+        }
+
+        if (null !== $shipment = $invoice->getShipment()) {
+            $shipment
+                ->setAutoInvoice(false)
+                ->setInvoice(null);
+
+            $em = $this->get('doctrine.orm.default_entity_manager');
+            $em->persist($shipment);
+            $em->flush($shipment);
+        }
+
+        if ($isXhr) {
+            return $this->buildXhrSaleViewResponse($sale);
         }
 
         return $this->redirect($this->generateResourcePath($sale));

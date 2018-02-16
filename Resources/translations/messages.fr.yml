@@ -287,6 +287,7 @@ ekyna_commerce:
             edit: Modifier la facture
             remove: Supprimer la facture
             recalculate: Recalculer
+            unlink: Délier
         type:
             invoice:
                 label: Facture
@@ -311,6 +312,7 @@ ekyna_commerce:
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
             recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
+            unlink_confirm: Êtes-vous sûr de vouloir supprimer le lien avec l\'expédition %number% ? (Opération non réversible).
             cant_be_deleted: Cet facture ne peut être supprimée.
         alert:
             no_item: Aucune facture configuré

@@ -107,7 +107,7 @@ class ShipmentType extends ResourceFormType
 
                 $this->builder->build($shipment);
 
-                if ($shipment->isReturn()) {
+                if (!$sale->isSample() && $shipment->isReturn()) {
                     $autoInvoiceLabel = 'ekyna_commerce.shipment.field.auto_credit';
 
                     if (null === $shipment->getInvoice()) {
@@ -134,8 +134,10 @@ class ShipmentType extends ResourceFormType
                     ->add('state', Type\ChoiceType::class, [
                         'label'   => 'ekyna_core.field.status',
                         'choices' => $availableStateChoices,
-                    ])
-                    ->add('autoInvoice', Type\CheckboxType::class, [
+                    ]);
+
+                if (!$sale->isSample()) {
+                    $form->add('autoInvoice', Type\CheckboxType::class, [
                         'label'    => $autoInvoiceLabel,
                         'disabled' => null !== $shipment->getInvoice(),
                         'required' => false,
@@ -143,6 +145,7 @@ class ShipmentType extends ResourceFormType
                             'align_with_widget' => true,
                         ],
                     ]);
+                }
             });
     }
 

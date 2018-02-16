@@ -31,6 +31,15 @@ ekyna_commerce_order_invoice_admin_recalculate:
         orderId: \d+
         orderInvoiceId: \d+
 
+ekyna_commerce_order_invoice_admin_unlink:
+    path: /{orderInvoiceId}/unlink
+    defaults:
+        _controller: "ekyna_commerce.order_invoice.controller:unlinkAction"
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderInvoiceId: \d+
+
 ekyna_commerce_order_invoice_admin_render:
     path: /{orderInvoiceId}/render.{_format}
     defaults:

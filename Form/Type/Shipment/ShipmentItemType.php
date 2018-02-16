@@ -27,7 +27,6 @@ class ShipmentItemType extends ResourceFormType
         $builder
             ->add('quantity', Type\NumberType::class, [
                 'label'          => 'ekyna_core.field.quantity',
-                'disabled'       => 0 < $options['level'],
                 'attr'           => [
                     'class' => 'input-sm',
                 ],
@@ -49,6 +48,14 @@ class ShipmentItemType extends ResourceFormType
     {
         /** @var ShipmentItemInterface $item */
         $item = $form->getData();
+        $saleItem = $item->getSaleItem();
+
+        $locked = false;
+        if (null !== $parent = $saleItem->getParent()) {
+            if ($parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren())) {
+                $locked = true;
+            }
+        }
 
         $view->vars['item'] = $item;
         $view->vars['level'] = $options['level'];
@@ -56,14 +63,14 @@ class ShipmentItemType extends ResourceFormType
 
         $view->children['quantity']->vars['attr']['data-max'] = $item->getAvailable();
 
-        if (0 < $options['level']) {
-            $view->children['quantity']->vars['attr']['data-quantity'] = $item->getSaleItem()->getQuantity();
+        if ($locked) {
+            $view->children['quantity']->vars['attr']['disabled'] = true;
+            $view->children['quantity']->vars['attr']['data-quantity'] = $saleItem->getQuantity();
             $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
 
         // Geocode
         $geocodes = [];
-        $saleItem = $item->getSaleItem();
         if ($saleItem instanceof StockAssignmentsInterface) {
             foreach ($saleItem->getStockAssignments() as $assignment) {
                 $geocodes = array_merge($geocodes, $assignment->getStockUnit()->getGeocodes());

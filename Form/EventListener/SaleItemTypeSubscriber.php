@@ -79,7 +79,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
         $form
             ->add('designation', Type\TextType::class, [
                 'label' => 'ekyna_core.field.designation',
-                'disabled' => $hasSubject,
+                'disabled' => $hasSubject && !$item->isCompound(),
                 'attr'  => [
                     'placeholder' => 'ekyna_core.field.designation',
                 ],

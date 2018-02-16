@@ -19,6 +19,7 @@
                  lazy="true">
             <argument type="service" id="ekyna_commerce.util.formatter.default"/>
             <argument type="service" id="translator"/>
+            <argument>100</argument>
         </service>
 
         <!-- Constants helper -->

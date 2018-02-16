@@ -115,14 +115,16 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     {
         if (0 < $item->getQuantity()) {
             $flat->add($item);
+        }
 
-            foreach ($item->getChildren() as $child) {
-                $saleItem = $child->getSaleItem();
+        $override = $item->getSaleItem()->isCompound() && $item->getSaleItem()->hasPrivateChildren();
 
-                $child->setQuantity($item->getQuantity() * $saleItem->getQuantity());
-
-                $this->flattenShipmentItem($child, $flat);
+        foreach ($item->getChildren() as $child) {
+            if ($override) {
+                $child->setQuantity($item->getQuantity() * $child->getSaleItem()->getQuantity());
             }
+
+            $this->flattenShipmentItem($child, $flat);
         }
 
         $item->clearChildren();

@@ -1,7 +1,15 @@
-define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'], function($, Modal, Dispatcher) {
+define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form', 'bootstrap'], function($, Modal, Dispatcher) {
     "use strict";
 
-    var parseResponse = function(response, $saleView) {
+    function initView() {
+        $('.sale-view [data-toggle="popover"]').popover({
+            trigger: 'hover',
+            placement: 'top',
+            html: true
+        })
+    }
+
+    function parseResponse(response, $saleView) {
         var $xml = $(response),
             $view = $xml.find('view');
 
@@ -10,11 +18,13 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
 
             Dispatcher.trigger('ekyna_commerce.sale_view_response', response);
 
+            initView();
+
             return true;
         }
 
         return false;
-    };
+    }
 
     $(document).on('click', '.sale-view [data-sale-modal]', function(e) {
         e.preventDefault();
@@ -45,8 +55,10 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
             return false;
         }
 
-        var $saleView = $this.closest('.sale-view').loadingSpinner(),
+        var $saleView = $this.closest('.sale-view'),
             method = $this.data('sale-xhr');
+
+        $saleView.loadingSpinner();
 
         var xhr = $.ajax({
             url: $(this).attr('href'),
@@ -96,4 +108,5 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         return false;
     });
 
+    initView();
 });

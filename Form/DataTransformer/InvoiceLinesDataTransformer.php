@@ -124,11 +124,15 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
     {
         if (0 < $line->getQuantity()) {
             $flat->add($line);
+        }
 
-            foreach ($line->getChildren() as &$child) {
-                $saleItem = $child->getSaleItem();
+        if ($line->getType() === DocumentLineTypes::TYPE_GOOD) {
+            $override = $line->getSaleItem()->isCompound() && $line->getSaleItem()->hasPrivateChildren();
 
-                $child->setQuantity($line->getQuantity() * $saleItem->getQuantity());
+            foreach ($line->getChildren() as $child) {
+                if ($override) {
+                    $child->setQuantity($line->getQuantity() * $child->getSaleItem()->getQuantity());
+                }
 
                 $this->flattenInvoiceLine($child, $flat);
             }

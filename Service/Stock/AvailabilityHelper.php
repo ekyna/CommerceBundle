@@ -30,13 +30,15 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
      * @param Formatter           $formatter
      * @param TranslatorInterface $translator
      * @param string              $prefix
+     * @param int                 $inStockLimit
      */
     public function __construct(
         Formatter $formatter,
         TranslatorInterface $translator,
+        $inStockLimit = 100,
         $prefix = 'ekyna_commerce.stock_subject.availability.'
     ) {
-        parent::__construct($formatter);
+        parent::__construct($formatter, $inStockLimit);
 
         $this->translator = $translator;
         $this->prefix = $prefix;
