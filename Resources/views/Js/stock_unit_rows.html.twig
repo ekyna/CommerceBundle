@@ -57,11 +57,9 @@
     {% if stock_unit.assignments is not empty %}
     <tbody id="{{ stock_unit_id ~ '_assignments' }}" style="display: none">
     {% for assignment in stock_unit.assignments %}
-        <tr {% if assignment.order_id is defined -%}
-            data-summary="{{ {'route': 'ekyna_commerce_order_admin_summary', 'parameters': {
+        <tr {% if assignment.order_id is defined %}data-summary="{{ {'route': 'ekyna_commerce_order_admin_summary', 'parameters': {
                 'orderId': assignment.order_id
-            }}|json_encode }}"
-            {%- endif %}>
+            }}|json_encode }}"{% endif %}>
             <td colspan="5"></td>
             <td class="text-right">{{ assignment.sold }}</td>
             <td class="text-right">{{ assignment.shipped }}</td>
