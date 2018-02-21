@@ -1,0 +1,71 @@
+{% import "EkynaCommerceBundle:Admin/Dashboard:_macro.html.twig" as macros %}
+
+{% spaceless %}
+<div class="row">
+    <div class="col-md-4 commerce-debt-customer">
+        <div class="commerce-panel">
+            <h3>Créances clients</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Échus</th>
+                    <td>{{ customer_expired|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                <tr>
+                    <th>À échoir</th>
+                    <td>{{ customer_fall|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td>{{ (customer_expired+customer_fall)|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-4 commerce-debt-supplier">
+        <div class="commerce-panel">
+            <h3>Créances fournisseurs</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Échus</th>
+                    <td>{{ supplier_expired|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                <tr>
+                    <th>À échoir</th>
+                    <td>{{ supplier_fall|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td>{{ (supplier_expired+supplier_fall)|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-4 commerce-debt-carrier">
+        <div class="commerce-panel">
+            <h3>Créances transitaires</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Échus</th>
+                    <td>{{ carrier_expired|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                <tr>
+                    <th>À échoir</th>
+                    <td>{{ carrier_fall|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td>{{ (carrier_expired+carrier_fall)|localizedcurrency(commerce_default_currency) }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endspaceless %}

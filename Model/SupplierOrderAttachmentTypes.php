@@ -20,6 +20,7 @@ final class SupplierOrderAttachmentTypes extends AbstractConstants
         $prefix = 'ekyna_commerce.supplier_order_attachment.type.';
 
         return [
+            Types::TYPE_FORM      => [$prefix . Types::TYPE_FORM],
             Types::TYPE_PROFORMA  => [$prefix . Types::TYPE_PROFORMA],
             Types::TYPE_PAYMENT   => [$prefix . Types::TYPE_PAYMENT],
             Types::TYPE_FORWARDER => [$prefix . Types::TYPE_FORWARDER],
@@ -27,7 +28,6 @@ final class SupplierOrderAttachmentTypes extends AbstractConstants
             Types::TYPE_DELIVERY  => [$prefix . Types::TYPE_DELIVERY],
         ];
     }
-
 
     /**
      * Disabled constructor.

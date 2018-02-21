@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Commerce\Common\Entity\Country;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
@@ -29,6 +28,15 @@ class SupplierCarrierType extends ResourceTableType
                     'supplierCarrierId' => 'id',
                 ],
                 'position'             => 10,
+            ])
+            ->addColumn('tax', DType\Column\EntityType::class, [
+                'label'                => 'ekyna_commerce.tax.label.singular',
+                'entity_label'         => 'name',
+                'route_name'           => 'ekyna_commerce_tax_admin_show',
+                'route_parameters_map' => [
+                    'taxId' => 'id',
+                ],
+                'position'             => 20,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

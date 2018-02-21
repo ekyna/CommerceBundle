@@ -478,6 +478,7 @@ ekyna_commerce:
             singular: Commande
             plural: Commandes
         header:
+            dues: Créances clients
             list: Commandes <small>Liste des commandes</small>
             show: Détail de la commande<small>%number%</small>
             new: Créer une nouvelle commande
@@ -1218,7 +1219,7 @@ ekyna_commerce:
         state:
             new: Création
             ordered: En attente
-            partial: Partiellement réceptionnée
+            partial: Partielle
             received: Réceptionnée
             completed: Complétée
             canceled: Annulée
@@ -1240,6 +1241,7 @@ ekyna_commerce:
             singular: Pièce jointe
             plural: Pièce jointes
         type:
+            form: Bon de commande
             proforma: Facture proforma
             payment: Justificatif payment
             forwarder: Factture transitaire

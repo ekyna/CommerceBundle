@@ -1,0 +1,145 @@
+.commerce-panel {
+    box-sizing: border-box;
+    border-radius: 4px 4px 0 0;
+    padding: 10px;
+    color: #fff;
+
+    h3 {
+        color: #fff;
+        font-weight: 300;
+
+        > span {
+            float: right;
+            font-weight: 500;
+        }
+    }
+
+    table {
+        width: 100%;
+        border-top: 1px solid #fff;
+        margin-top: 10px;
+
+        tr {
+            th, td {
+                box-sizing: border-box;
+                padding: 3px 6px;
+                border-collapse: collapse;
+                border-left: 1px dotted #fff;
+                border-top: 1px dotted #fff;
+                font-size: 12px;
+
+                &:first-child {
+                    border-left: none;
+                }
+            }
+
+            th {
+                text-align: center;
+            }
+
+            td {
+                text-align: right;
+            }
+
+            &:first-child {
+                th, td {
+                    border-top: none;
+                }
+            }
+        }
+    }
+
+    &:last-child {
+        border-radius: 4px;
+        margin-bottom: 30px;
+    }
+}
+
+.commerce-chart {
+    border-radius: 0 0 4px 4px;
+    border: 1px solid transparent;
+    padding: 4px;
+    margin-bottom: 30px;
+}
+
+.commerce-stat-day {
+    .commerce-panel {
+        background-color: #00838f;
+
+        table, th, td {
+            border-color: #00acc1;
+        }
+    }
+    .commerce-chart {
+        border-color: #00838f;
+    }
+}
+
+.commerce-stat-month {
+    .commerce-panel {
+        background-color: #0277bd;
+
+        table, th, td {
+            border-color: #039be5;
+        }
+    }
+    .commerce-chart {
+        border-color: #0277bd;
+    }
+}
+
+.commerce-stat-year {
+    .commerce-panel {
+        background-color: #1565c0;
+
+        table, th, td {
+            border-color: #1e88e5;
+        }
+    }
+    .commerce-chart {
+        border-color: #1565c0;
+    }
+}
+
+.commerce-stock {
+    .commerce-panel {
+        background-color: #e65100;
+
+        table, th, td {
+            border-color: #fb8c00;
+        }
+    }
+    .commerce-chart {
+        border-color: #e65100;
+    }
+}
+
+.commerce-debt-customer {
+    .commerce-panel {
+        background-color: #b71c1c;
+
+        table, th, td {
+            border-color: #e53935;
+        }
+    }
+}
+
+.commerce-debt-supplier {
+    .commerce-panel {
+        background-color: #880e4f;
+
+        table, th, td {
+            border-color: #d81b60;
+        }
+    }
+}
+
+.commerce-debt-carrier {
+    .commerce-panel {
+        background-color: #4a148c;
+
+        table, th, td {
+            border-color: #8e24aa;
+        }
+    }
+}

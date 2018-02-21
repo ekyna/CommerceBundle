@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
-use Ekyna\Bundle\CommerceBundle\Table\Type;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,9 +24,9 @@ class OrderListController extends Controller
     {
         $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_invoice.class'));
 
-        $table = $this
-            ->get('table.factory')
-            ->createTable('invoices', Type\OrderInvoiceType::class);
+        $type = $this->get('ekyna_commerce.order_invoice.configuration')->getTableType();
+
+        $table = $this->get('table.factory')->createTable('invoices', $type);
 
         if (null !== $response = $table->handleRequest($request)) {
             return $response;
@@ -57,7 +56,7 @@ class OrderListController extends Controller
     {
         $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_invoice.class'));
 
-        $ids = (array) $request->query->get('id');
+        $ids = (array)$request->query->get('id');
         $repository = $this->get('ekyna_commerce.order_invoice.repository');
 
         $invoices = [];
@@ -90,9 +89,9 @@ class OrderListController extends Controller
     {
         $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_payment.class'));
 
-        $table = $this
-            ->get('table.factory')
-            ->createTable('payments', Type\OrderPaymentType::class);
+        $type = $this->get('ekyna_commerce.order_payment.configuration')->getTableType();
+
+        $table = $this->get('table.factory')->createTable('payments', $type);
 
         if (null !== $response = $table->handleRequest($request)) {
             return $response;
@@ -122,9 +121,9 @@ class OrderListController extends Controller
     {
         $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_shipment.class'));
 
-        $table = $this
-            ->get('table.factory')
-            ->createTable('shipments', Type\OrderShipmentType::class);
+        $type = $this->get('ekyna_commerce.order_shipment.configuration')->getTableType();
+
+        $table = $this->get('table.factory')->createTable('shipments', $type);
 
         if (null !== $response = $table->handleRequest($request)) {
             return $response;
@@ -156,7 +155,7 @@ class OrderListController extends Controller
 
         $shipments = $this
             ->get('ekyna_commerce.order_shipment.repository')
-            ->findBy(['id' => (array) $request->query->get('id')]);
+            ->findBy(['id' => (array)$request->query->get('id')]);
 
         if (empty($shipments)) {
             return $this->redirectToRoute('ekyna_commerce_admin_order_list_shipment');
@@ -178,7 +177,7 @@ class OrderListController extends Controller
      */
     public function platformActionAction(Request $request)
     {
-        $platformName   = $request->attributes->get('name');
+        $platformName = $request->attributes->get('name');
         $actionName = $request->attributes->get('action');
 
         $shipments = []; // TODO
@@ -203,4 +202,38 @@ class OrderListController extends Controller
 
         return $this->redirectToRoute('ekyna_commerce_admin_order_list_shipment');
     }
+
+//    /**
+//     * Export dues action action.
+//     *
+//     * @param Request $request
+//     *
+//     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+//     */
+//    public function exportDuesOrdersAction(Request $request)
+//    {
+//        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order.class'));
+//
+//        $orders = $this->get('ekyna_commerce.order.repository')->findDueOrders();
+//
+//        $type = $this->get('ekyna_commerce.order.configuration')->getTableType();
+//
+//        $table = $this->get('table.factory')->createTable('orders', $type);
+//
+//        if (null !== $response = $table->handleRequest($request)) {
+//            return $response;
+//        }
+//
+//        $this->container
+//            ->get('ekyna_admin.menu.builder')
+//            ->breadcrumbAppend(
+//                'ekyna_commerce.order_shipments_list',
+//                'ekyna_commerce.order_shipment.label.plural',
+//                'ekyna_commerce_admin_order_list_shipment'
+//            );
+//
+//        return $this->render('EkynaCommerceBundle:Admin/OrderList:shipment.html.twig', [
+//            'shipments' => $table->createView(),
+//        ]);
+//    }
 }

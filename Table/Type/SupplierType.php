@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Column\EntityType;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
@@ -42,14 +42,23 @@ class SupplierType extends ResourceTableType
                 'property_path' => 'currency.code',
                 'position'      => 40,
             ])
-            ->addColumn('carrier', EntityType::class, [
+            ->addColumn('tax', DType\Column\EntityType::class, [
+                'label'                => 'ekyna_commerce.tax.label.singular',
+                'entity_label'         => 'name',
+                'route_name'           => 'ekyna_commerce_tax_admin_show',
+                'route_parameters_map' => [
+                    'taxId' => 'id',
+                ],
+                'position'             => 50,
+            ])
+            ->addColumn('carrier', DType\Column\EntityType::class, [
                 'label'                => 'ekyna_commerce.supplier_carrier.label.singular',
                 'entity_label'         => 'name',
                 'route_name'           => 'ekyna_commerce_supplier_carrier_admin_show',
                 'route_parameters_map' => [
                     'supplierCarrierId' => 'id',
                 ],
-                'position'             => 50,
+                'position'             => 60,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

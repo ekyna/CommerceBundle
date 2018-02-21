@@ -17,6 +17,7 @@
         <import resource="services/sale.xml"/>
         <import resource="services/serializer.xml"/>
         <import resource="services/shipment.xml"/>
+        <import resource="services/stat.xml"/>
         <import resource="services/stock.xml"/>
         <import resource="services/supplier.xml"/>
         <import resource="services/table.xml"/>

@@ -1,0 +1,76 @@
+{% macro render_stat_line(stat) %}
+{% spaceless %}
+{% if stat is null %}
+<tr>
+    <td><em>{{ 'ekyna_core.value.none'|trans }}</em></td>
+    <td>&dash;</td>
+    <td>&dash;</td>
+    <td>&dash;</td>
+    <td>&dash;%</td>
+    <td>&dash;</td>
+    <td>&dash;</td>
+</tr>
+{% else %}
+<tr>
+    <td>{{ stat.date }}</td>{# TODO localize #}
+    <td>{{ stat.revenue|localizedcurrency(commerce_default_currency) }}</td>
+    <td>{{ stat.shipping|localizedcurrency(commerce_default_currency) }}</td>
+    <td>{{ stat.margin|localizedcurrency(commerce_default_currency) }}</td>
+    <td>{{ stat.marginPercent|localizednumber }}%</td>
+    <td>{{ stat.orders }}</td>
+    <td>{{ stat.average|localizedcurrency(commerce_default_currency) }}</td>
+</tr>
+{% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+
+{% macro render_stat_panel(title, current, compare) %}
+{% spaceless %}
+{% import _self as macros %}
+<div class="commerce-panel">
+    <h3>
+        {{ title }}
+        <span>
+            {%- if current is null -%}
+                (?)
+            {%- else -%}
+                {{ current.revenue|localizedcurrency(commerce_default_currency) }}
+                {% if compare is not null %}
+                    {% set evolution = (current.revenue - compare.revenue) * 100 / compare.revenue %}
+                    &nbsp;({{ evolution|round(1)|localizednumber }}%)
+                {% endif %}
+            {%- endif -%}
+        </span>
+    </h3>
+    <table>
+        <tbody>
+        <tr>
+            <th>&nbsp;</th>
+            <th>CA</th>
+            <th>Port</th>
+            <th colspan="2">Marge</th>
+            <th>Cdes</th>
+            <th>Panier</th>
+        </tr>
+        {{ macros.render_stat_line(current) }}
+        {{ macros.render_stat_line(compare) }}
+        </tbody>
+    </table>
+</div>
+{% endspaceless %}
+{% endmacro %}
+
+
+{% macro render_stat_chart(id, config) %}
+{% spaceless %}
+<div class="commerce-chart">
+    <canvas id="{{ id }}" width="400" height="120"></canvas>
+    <script type="application/javascript">
+    require(['chart'], function(Chart) {
+        new Chart(document.getElementById("{{ id }}"), {{ config|json_encode|raw }});
+    });
+    </script>
+</div>
+{% endspaceless %}
+{% endmacro %}
