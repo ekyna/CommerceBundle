@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Craue\FormFlowBundle\Event\PostBindRequestEvent;
+use Craue\FormFlowBundle\Event\PostBindSavedDataEvent;
 use Craue\FormFlowBundle\Form\FormFlow;
 use Craue\FormFlowBundle\Form\FormFlowEvents;
 use Craue\FormFlowBundle\Form\FormFlowInterface;
@@ -51,9 +52,9 @@ class SupplierOrderCreateFlow extends FormFlow implements EventSubscriberInterfa
     {
         return [
             [
-                'label'        => 'supplier',
-                'form_type'    => SupplierOrderType::class,
-                'skip'         => function ($estimatedCurrentStepNumber, FormFlowInterface $flow) {
+                'label'     => 'supplier',
+                'form_type' => SupplierOrderType::class,
+                'skip'      => function ($estimatedCurrentStepNumber, FormFlowInterface $flow) {
                     /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $supplierOrder */
                     $supplierOrder = $flow->getFormData();
 
@@ -61,8 +62,8 @@ class SupplierOrderCreateFlow extends FormFlow implements EventSubscriberInterfa
                 },
             ],
             [
-                'label'     => 'configuration',
-                'form_type' => SupplierOrderType::class,
+                'label'        => 'configuration',
+                'form_type'    => SupplierOrderType::class,
                 'form_options' => [
                     'validation_groups' => ['Default'],
                 ],
@@ -83,12 +84,25 @@ class SupplierOrderCreateFlow extends FormFlow implements EventSubscriberInterfa
     }
 
     /**
+     * Post bind saved data event handler.
+     *
+     * @param PostBindSavedDataEvent $event
+     */
+    public function onPostBindSavedData(PostBindSavedDataEvent $event)
+    {
+        $order = $event->getFormData();
+
+        $this->operator->initialize($order);
+    }
+
+    /**
      * @inheritdoc
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            FormFlowEvents::POST_BIND_REQUEST => 'onPostBindRequest',
-        );
+        return [
+            FormFlowEvents::POST_BIND_REQUEST    => 'onPostBindRequest',
+            FormFlowEvents::POST_BIND_SAVED_DATA => 'onPostBindSavedData',
+        ];
     }
 }
