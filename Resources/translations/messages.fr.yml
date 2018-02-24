@@ -11,6 +11,29 @@ ekyna_commerce:
     button:
         print_label: Étiquette
 
+    unit:
+        label: Unité
+        piece:
+            label: Pièces
+        kilogram:
+            label: Kilogramme
+        gram:
+            label: Gramme
+        cubic_meter:
+            label: Mètre cube
+        liter:
+            label: Littre
+        milliliter:
+            label: Millilittre
+        day:
+            label: Jour
+        hour:
+            label: Heure
+        minute:
+            label: Minute
+        seconde:
+            label: Seconde
+
     account:
         address:
             title: Mes adresses
