@@ -3,12 +3,13 @@
 {% block main %}
 {% spaceless %}
 <div class="actions">
-    {% if supplierOrder is new_supplier_order -%}
+    {#{% if supplierOrder is new_supplier_order -%}#}
         {{- ui_button('ekyna_commerce.supplier_order.button.submit', {
             'path': path('ekyna_commerce_supplier_order_admin_submit', {'supplierOrderId': supplierOrder.id}),
-            'type': 'link'
+            'type': 'link',
+            'theme': (supplierOrder is new_supplier_order ? 'primary' : 'default')
         }) -}}
-    {% endif -%}
+    {#{% endif -%}#}
     {{- ui_button('ekyna_commerce.supplier_order.button.render', {
         'path': path('ekyna_commerce_supplier_order_admin_render', {'supplierOrderId': supplierOrder.id, '_format': 'pdf'}),
         'type': 'link',
@@ -223,6 +224,10 @@
                         }) }}
                     </div>
                 </div>
+                {{ show_row(supplierOrder.description, 'textarea', {
+                    'label': 'ekyna_commerce.field.description',
+                    'id': 'order_description',
+                }) }}
                 <hr>
                 {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:items.html.twig" %}
             </div>

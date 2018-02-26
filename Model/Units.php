@@ -12,7 +12,11 @@ use Ekyna\Component\Commerce\Common\Model\Units as Constants;
  */
 final class Units extends AbstractConstants
 {
+    /**
+     * @var array
+     */
     static private $config;
+
 
     /**
      * @inheritDoc
@@ -23,7 +27,7 @@ final class Units extends AbstractConstants
             return static::$config;
         }
 
-        $label = 'ekyna_commerce.unit.%s.label';
+        $label = 'ekyna_commerce.unit.%s.plural';
 
         static::$config = [];
 
@@ -45,7 +49,7 @@ final class Units extends AbstractConstants
      *
      * @see Constants::getSymbol()
      */
-    static function getSymbol($unit)
+    public static function getSymbol($unit)
     {
         return Constants::getSymbol($unit);
     }
@@ -59,9 +63,47 @@ final class Units extends AbstractConstants
      *
      * @see Constants::getPrecision()
      */
-    static function getPrecision($unit)
+    public static function getPrecision($unit)
     {
         return Constants::getPrecision($unit);
+    }
+
+    /**
+     * Returns the (translation) format for the given unit.
+     *
+     * @param string $unit
+     *
+     * @return string
+     *
+     * @see Constants::getPrecision()
+     */
+    public static function getFormat($unit)
+    {
+        Constants::isValid($unit, true);
+
+        if (static::hasTranslatableFormat($unit)) {
+            return sprintf('ekyna_commerce.unit.%s.format', $unit);
+        }
+
+        return "%s " . Constants::getSymbol($unit);
+    }
+
+    /**
+     * Returns the units with a translatable display format.
+     *
+     * @return string[]
+     */
+    public static function hasTranslatableFormat($unit)
+    {
+        Constants::isValid($unit, true);
+
+        return in_array($unit, [
+            Constants::INCH,
+            Constants::FOOT,
+            Constants::DAY,
+            Constants::HOUR,
+            Constants::MINUTE
+        ]);
     }
 
     /**

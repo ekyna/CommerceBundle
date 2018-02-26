@@ -42,6 +42,7 @@ class SupplierOrderSubmit
      */
     private $sendLabels = false;
 
+
     /**
      * Constructor.
      *
@@ -52,9 +53,11 @@ class SupplierOrderSubmit
         $this->order = $order;
 
         // For validation
-        $this->order
-            ->setState(SupplierOrderStates::STATE_ORDERED)
-            ->setOrderedAt(new \DateTime());
+        if (in_array($this->order->getState(), [SupplierOrderStates::STATE_NEW, SupplierOrderStates::STATE_CANCELED], true)) {
+            $this->order
+                ->setState(SupplierOrderStates::STATE_ORDERED)
+                ->setOrderedAt(new \DateTime());
+        }
     }
 
     /**

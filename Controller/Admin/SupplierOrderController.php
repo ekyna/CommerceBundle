@@ -118,13 +118,6 @@ class SupplierOrderController extends ResourceController
         /** @var SupplierOrderInterface $resource */
         $resource = $context->getResource($resourceName);
 
-        // TODO Use Symfony WorkFlow Component ? (can 'transition') (Sf 3.2)
-        if ($resource->getState() !== SupplierOrderStates::STATE_NEW) {
-            $this->addFlash('ekyna_commerce.supplier_order.message.cant_be_submitted', 'warning');
-
-            return $this->redirect($this->generateResourcePath($resource));
-        }
-
         $submit = new SupplierOrderSubmit($resource);
         $submit
             ->setEmails([$resource->getSupplier()->getEmail()])
@@ -231,8 +224,7 @@ class SupplierOrderController extends ResourceController
 
         $response = new Response();
         $response->setVary(['Accept-Encoding', 'Accept']);
-        $response->setLastModified($supplierOrder->getCreatedAt());
-        $response->setMaxAge(60);
+        $response->setLastModified($supplierOrder->getUpdatedAt());
 
         $html = false;
 

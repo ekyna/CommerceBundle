@@ -13,7 +13,7 @@ use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as CStates;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type as Symfony;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form;
 
 /**
@@ -109,7 +109,7 @@ class SupplierOrderType extends ResourceFormType
                         'class' => 'order-carrier',
                     ],
                 ])
-                ->add('number', Symfony\TextType::class, [
+                ->add('number', Type\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
                     'required' => false,
                     'disabled' => true,
@@ -118,7 +118,7 @@ class SupplierOrderType extends ResourceFormType
                     'required' => false,
                     'disabled' => true,
                 ])
-                ->add('state', Symfony\ChoiceType::class, [
+                ->add('state', Type\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'choices'  => BStates::getChoices(),
                     'required' => false,
@@ -145,12 +145,12 @@ class SupplierOrderType extends ResourceFormType
                     'disabled' => true,
                     'required' => false,
                 ])
-                ->add('paymentDate', Symfony\DateType::class, [
+                ->add('paymentDate', Type\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                 ])
-                ->add('paymentDueDate', Symfony\DateType::class, [
+                ->add('paymentDueDate', Type\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_due_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
@@ -177,31 +177,35 @@ class SupplierOrderType extends ResourceFormType
                     'disabled' => true,
                     'required' => false,
                 ])
-                ->add('forwarderDate', Symfony\DateType::class, [
+                ->add('forwarderDate', Type\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                     'disabled' => !$hasCarrier,
                 ])
-                ->add('forwarderDueDate', Symfony\DateType::class, [
+                ->add('forwarderDueDate', Type\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_due_date',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => false,
                     'disabled' => !$hasCarrier,
                 ])
                 // EDA / Tracking
-                ->add('estimatedDateOfArrival', Symfony\DateType::class, [
+                ->add('estimatedDateOfArrival', Type\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => $requiredEda,
                 ])
                 ->add('trackingUrls', CollectionType::class, [
                     'label'         => 'ekyna_commerce.supplier_order.field.tracking_urls',
-                    'entry_type'    => Symfony\UrlType::class,
+                    'entry_type'    => Type\UrlType::class,
                     'entry_options' => ['required' => true],
                     'required'      => false,
                     'allow_add'     => true,
                     'allow_delete'  => true,
+                ])
+                ->add('description', Type\TextareaType::class, [
+                    'label'    => 'ekyna_commerce.field.description',
+                    'required' => false,
                 ]);
 
             /* ----------- Supplier order compose ----------- */
@@ -269,7 +273,7 @@ class SupplierOrderType extends ResourceFormType
                         'class' => 'order-compose-quick-add-select',
                     ],
                 ])
-                ->add('quickAddButton', Symfony\ButtonType::class, [
+                ->add('quickAddButton', Type\ButtonType::class, [
                     'label' => 'ekyna_core.button.add',
                     'attr'  => [
                         'class' => 'order-compose-quick-add-button',

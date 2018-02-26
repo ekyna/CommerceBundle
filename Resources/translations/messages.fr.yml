@@ -14,25 +14,55 @@ ekyna_commerce:
     unit:
         label: Unité
         piece:
-            label: Pièces
+            singular: Pièce
+            plural: Pièces
+        metre:
+            singular: Mètre
+            plural: Mètres
+        centimetre:
+            singular: Centimètre
+            plural: Centimètres
+        millimetre:
+            singular: Millimètre
+            plural: Millimètres
+        inch:
+            singular: Pouce
+            plural: Pouces
+            format: "%s pouces"
+        foot:
+            singular: Pied
+            plural: Pieds
+            format: "%s pieds"
         kilogram:
-            label: Kilogramme
+            singular: Kilogramme
+            plural: Kilogrammes
         gram:
-            label: Gramme
-        cubic_meter:
-            label: Mètre cube
-        liter:
-            label: Littre
-        milliliter:
-            label: Millilittre
+            singular: Gramme
+            plural: Grammes
+        cubic_metre:
+            singular: Mètre cube
+            plural: Mètres cube
+        litre:
+            singular: Litre
+            plural: Litres
+        millilitre:
+            singular: Millilitre
+            plural: Millilitres
         day:
-            label: Jour
+            singular: Jour
+            plural: Jours
+            format: "%s jours"
         hour:
-            label: Heure
+            singular: Heure
+            plural: Heures
+            format: "%s heures"
         minute:
-            label: Minute
+            singular: Minute
+            plural: Minutes
+            format: "%s minutes"
         seconde:
-            label: Seconde
+            singular: Seconde
+            plural: Secondes
 
     account:
         address:
@@ -534,7 +564,9 @@ ekyna_commerce:
             canceled: Annulée
         message:
             already_paid: Cette commande est déjà réglée en totalité
-            cant_be_deleted: Cette commande a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
+            cant_be_deleted: >
+                Cette commande a des paiement(s) valide(s), des livraison(s)
+                et/ou des facture(s) et ne peut être supprimée.
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter

@@ -202,6 +202,10 @@ class SupplierOrderSubmitType extends Form\AbstractType
                     'required'      => false,
                     'allow_add'     => true,
                     'allow_delete'  => true,
+                ])
+                ->add('description', Type\TextareaType::class, [
+                    'label'    => 'ekyna_commerce.field.description',
+                    'required' => false,
                 ]);
         });
     }

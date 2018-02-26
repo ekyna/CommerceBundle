@@ -28,6 +28,7 @@
         </div>
         {% include "EkynaCommerceBundle:Admin/SupplierOrder/Form:fields.html.twig" with {'form': form.order} only %}
         {{ form_row(form.order.trackingUrls) }}
+        {{ form_row(form.order.description) }}
         <hr>
         {{ form_row(form.emails) }}
         {{ form_row(form.message) }}

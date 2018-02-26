@@ -108,8 +108,7 @@ class SaleController extends AbstractSaleController
 
         $response = new Response();
         $response->setVary(['Accept', 'Accept-Encoding']);
-        $response->setLastModified($sale->getCreatedAt());
-        $response->setMaxAge(60);
+        $response->setLastModified($sale->getUpdatedAt());
 
         $html = false;
         $accept = $request->getAcceptableContentTypes();

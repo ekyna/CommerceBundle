@@ -70,11 +70,11 @@
     {% endif %}
     {% if description is not empty %}
         <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
-        <dd>{{ description|raw }}</dd>
+        <dd>{{ description|nl2br|raw }}</dd>
     {% endif %}
     {% if comment is not empty %}
         <dt>{{ 'ekyna_core.field.comment'|trans }}</dt>
-        <dd>{{ comment|raw }}</dd>
+        <dd>{{ comment|nl2br|raw }}</dd>
     {% endif %}
     </dl>
 </div>
