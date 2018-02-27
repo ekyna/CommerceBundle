@@ -5,7 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Component\Commerce\Common\Model\CountryInterface;
+use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Intl\Intl;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,6 +18,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CountryChoiceType extends AbstractType
 {
+    /**
+     * @var LocaleProviderInterface
+     */
+    private $localeProvider;
+
     /**
      * @var string
      */
@@ -30,11 +37,13 @@ class CountryChoiceType extends AbstractType
     /**
      * Constructor.
      *
-     * @param string $countryClass
-     * @param string $defaultCode
+     * @param LocaleProviderInterface $localeProvider
+     * @param string                  $countryClass
+     * @param string                  $defaultCode
      */
-    public function __construct($countryClass, $defaultCode)
+    public function __construct(LocaleProviderInterface $localeProvider, $countryClass, $defaultCode)
     {
+        $this->localeProvider = $localeProvider;
         $this->countryClass = $countryClass;
         $this->defaultCode = $defaultCode;
     }
@@ -60,25 +69,30 @@ class CountryChoiceType extends AbstractType
             return null;
         };
 
+        $currentLocale = $this->localeProvider->getCurrentLocale();
+
         $resolver
             ->setDefaults([
-                'label' => function(Options $options, $value) {
+                'label'             => function (Options $options, $value) {
                     if (false === $value || !empty($value)) {
                         return $value;
                     }
 
                     return 'ekyna_commerce.country.label.' . ($options['multiple'] ? 'plural' : 'singular');
                 },
-                'class'         => $this->countryClass,
-                'enabled'       => true,
-                'query_builder' => $queryBuilderDefault,
+                'class'             => $this->countryClass,
+                'enabled'           => true,
+                'query_builder'     => $queryBuilderDefault,
                 'preferred_choices' => function (CountryInterface $country) {
                     return $country->getCode() === $this->defaultCode;
                 },
+                'choice_label'      => function (CountryInterface $country) use ($currentLocale) {
+                    return Intl::getRegionBundle()->getCountryName($country->getCode(), $currentLocale);
+                },
             ])
             ->setAllowedTypes('enabled', 'bool')
-            ->setNormalizer('attr', function(Options $options, $value) {
-                $value = (array) $value;
+            ->setNormalizer('attr', function (Options $options, $value) {
+                $value = (array)$value;
 
                 if (!isset($value['placeholder'])) {
                     $value['placeholder'] = 'ekyna_commerce.country.label.' . ($options['multiple'] ? 'plural' : 'singular');

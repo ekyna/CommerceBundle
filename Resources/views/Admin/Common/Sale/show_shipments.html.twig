@@ -39,7 +39,16 @@
                         {{ shipment|shipment_weight|localizednumber }}&nbsp;kg (auto)
                     {%- endif -%}
                 </td>
-                <td id="{{ shipmentId }}_trackingNumber">{{ shipment.trackingNumber }}</td>
+                <td id="{{ shipmentId }}_trackingNumber">
+                    {% set tracking_url = shipment|shipment_tracking_link -%}
+                    {% if tracking_url is not null -%}
+                        <a href="{{ tracking_url }}" target="_blank">
+                            <i class="fa fa-map-marker"></i> {{ shipment.trackingNumber }}
+                        </a>
+                    {%- else -%}
+                        {{ shipment.trackingNumber }}
+                    {% endif -%}
+                </td>
                 <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ shipmentId }}_invoice">
                     {%- if shipment.invoice is not null %}{{ shipment.invoice.number }}{% endif -%}

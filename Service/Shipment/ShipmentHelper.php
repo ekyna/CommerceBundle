@@ -105,6 +105,18 @@ class ShipmentHelper implements
     }
 
     /**
+     * @param ShipmentInterface $shipment
+     *
+     * @return null|string
+     */
+    public function getTrackingUrl(ShipmentInterface $shipment)
+    {
+        $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
+
+        return $gateway->getTrackingUrl($shipment);
+    }
+
+    /**
      * Returns whether or not the given shipment can be deleted.
      *
      * @param Shipment\ShipmentInterface $shipment

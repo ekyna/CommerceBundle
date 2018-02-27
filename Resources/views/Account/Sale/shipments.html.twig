@@ -21,6 +21,16 @@
                     {#</a>#}
                 </td>
                 <td>{{ shipment.method }}</td>
+                <td>
+                    {% set tracking_url = shipment|shipment_tracking_link -%}
+                    {% if tracking_url is not null -%}
+                        <a href="{{ tracking_url }}" target="_blank">
+                            <i class="fa fa-map-marker"></i> {{ shipment.trackingNumber }}
+                        </a>
+                    {%- else -%}
+                        {{ shipment.trackingNumber }}
+                    {% endif -%}
+                </td>
                 <td>{{ shipment|shipment_state_badge }}</td>
                 <td>{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
                 <td class="actions text-right">
@@ -38,7 +48,7 @@
             </tr>
             <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
                 <td>&nbsp;</td>
-                <td colspan="4">
+                <td colspan="5">
                     <table class="table table-alt table-striped table-condensed">
                         <thead>
                             <tr>

@@ -2,11 +2,16 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
+use Ekyna\Component\Commerce\Common\Model\AddressInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -96,24 +101,39 @@ class AddressType extends AbstractType
 
         if ($options['phones']) {
             $builder
-                ->add('phone', PhoneNumberType::class, [
-                    'label'          => 'ekyna_core.field.phone',
-                    'required'       => $options['phone_required'],
-                    'default_region' => 'FR', // TODO get user locale
-                    'format'         => PhoneNumberFormat::NATIONAL,
-                    'attr'           => [
-                        'class' => 'address-phone',
-                    ],
-                ])
-                ->add('mobile', PhoneNumberType::class, [
-                    'label'          => 'ekyna_core.field.mobile',
-                    'required'       => $options['mobile_required'],
-                    'default_region' => 'FR', // TODO get user locale
-                    'format'         => PhoneNumberFormat::NATIONAL,
-                    'attr'           => [
-                        'class' => 'address-mobile',
-                    ],
-                ]);
+                ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($options) {
+                    $address = $event->getData();
+                    if ($address && !$address instanceof AddressInterface) {
+                        throw new InvalidArgumentException("Expected instance of " . AddressInterface::class);
+                    }
+
+                    $region = PhoneNumberUtil::UNKNOWN_REGION;
+                    if ($address && null !== $country = $address->getCountry()) {
+                        $region = $country->getCode();
+                    }
+
+                    $form = $event->getForm();
+
+                    $form
+                        ->add('phone', PhoneNumberType::class, [
+                            'label'          => 'ekyna_core.field.phone',
+                            'required'       => $options['phone_required'],
+                            'default_region' => $region,
+                            'format'         => PhoneNumberFormat::NATIONAL,
+                            'attr'           => [
+                                'class' => 'address-phone',
+                            ],
+                        ])
+                        ->add('mobile', PhoneNumberType::class, [
+                            'label'          => 'ekyna_core.field.mobile',
+                            'required'       => $options['mobile_required'],
+                            'default_region' => $region,
+                            'format'         => PhoneNumberFormat::NATIONAL,
+                            'attr'           => [
+                                'class' => 'address-mobile',
+                            ],
+                        ]);
+                });
         }
     }
 

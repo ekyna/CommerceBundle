@@ -105,6 +105,10 @@ class ShipmentExtension extends \Twig_Extension
                 'shipment_receiver_address',
                 [$this->shipmentHelper, 'resolveReceiverAddress']
             ),
+            new \Twig_SimpleFilter(
+                'shipment_tracking_link',
+                [$this->shipmentHelper, 'getTrackingUrl']
+            ),
         ];
     }
 
