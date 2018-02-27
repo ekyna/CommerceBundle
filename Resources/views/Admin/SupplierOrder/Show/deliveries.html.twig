@@ -33,12 +33,16 @@
         <tr>
             {% set itemId = deliveryId ~ 'item_' ~ loop.index0 ~ '_' %}
             <td id="{{ itemId ~ 'designation' }}">
+                {% if item.orderItem.product is not null -%}
                 <a href="{{ path('ekyna_commerce_supplier_product_admin_show', {
                     'supplierId': item.orderItem.product.supplier.id,
                     'supplierProductId': item.orderItem.product.id,
                 }) }}">
                     {{ item.orderItem.designation }}
                 </a>
+                {%- else -%}
+                    {{ item.orderItem.designation }}
+                {%- endif %}
             </td>
             <td id="{{ itemId ~ 'reference' }}">
                 {{ item.orderItem.reference }}

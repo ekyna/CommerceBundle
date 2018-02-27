@@ -80,7 +80,7 @@
                 <tr>
                     <td colspan="4">
                         {{ 'ekyna_commerce.supplier_order.field.shipping_cost'|trans }}
-                        {{ subject|supplier_order_weight_total|localizednumber }}&nbsp;kg
+                        {#{{ subject|supplier_order_weight_total|localizednumber }}&nbsp;kg#}
                     </td>
                     <td class="text-right">{{ subject.shippingCost|localizedcurrency(currency) }}</td>
                 </tr>
