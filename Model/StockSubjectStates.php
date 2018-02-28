@@ -20,9 +20,9 @@ final class StockSubjectStates extends AbstractConstants
         $prefix = 'ekyna_commerce.stock_subject.state.';
 
         return [
-            States::STATE_IN_STOCK     => [$prefix . States::STATE_IN_STOCK,     'success'],
-            States::STATE_PRE_ORDER    => [$prefix . States::STATE_PRE_ORDER,    'warning'],
-            States::STATE_OUT_OF_STOCK => [$prefix . States::STATE_OUT_OF_STOCK, 'danger'],
+            States::STATE_IN_STOCK     => [$prefix . States::STATE_IN_STOCK,     'teal'],
+            States::STATE_PRE_ORDER    => [$prefix . States::STATE_PRE_ORDER,    'orange'],
+            States::STATE_OUT_OF_STOCK => [$prefix . States::STATE_OUT_OF_STOCK, 'red'],
         ];
     }
 
