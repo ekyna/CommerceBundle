@@ -101,8 +101,8 @@ class AddressType extends AbstractType
 
         if ($options['phones']) {
             $builder
-                ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($options) {
-                    $address = $event->getData();
+                ->addEventListener(FormEvents::POST_SET_DATA, function(FormEvent $event) use ($options) {
+                    $address = $event->getForm()->getNormData();
                     if ($address && !$address instanceof AddressInterface) {
                         throw new InvalidArgumentException("Expected instance of " . AddressInterface::class);
                     }
@@ -119,7 +119,7 @@ class AddressType extends AbstractType
                             'label'          => 'ekyna_core.field.phone',
                             'required'       => $options['phone_required'],
                             'default_region' => $region,
-                            'format'         => PhoneNumberFormat::NATIONAL,
+                            'format'         => PhoneNumberFormat::INTERNATIONAL,
                             'attr'           => [
                                 'class' => 'address-phone',
                             ],
@@ -128,7 +128,7 @@ class AddressType extends AbstractType
                             'label'          => 'ekyna_core.field.mobile',
                             'required'       => $options['mobile_required'],
                             'default_region' => $region,
-                            'format'         => PhoneNumberFormat::NATIONAL,
+                            'format'         => PhoneNumberFormat::INTERNATIONAL,
                             'attr'           => [
                                 'class' => 'address-mobile',
                             ],

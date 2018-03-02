@@ -11,6 +11,7 @@
             <argument>%kernel.data_dir%/invoice_number</argument>
             <argument>I</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Credit number generator -->
@@ -19,6 +20,7 @@
             <argument>%kernel.data_dir%/credit_number</argument>
             <argument>C</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Invoice calculator -->

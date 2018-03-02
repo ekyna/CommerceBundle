@@ -36,6 +36,7 @@
             <argument>%kernel.data_dir%/cart_number</argument>
             <argument>\Cym</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Cart state resolver -->

@@ -11,6 +11,7 @@
             <argument>%kernel.data_dir%/customer_number</argument>
             <argument>\C\Uym</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Customer updater -->

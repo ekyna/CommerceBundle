@@ -17,6 +17,7 @@
             <argument>%kernel.data_dir%/shipment_number</argument>
             <argument>ym</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Shipment calculator -->

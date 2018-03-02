@@ -16,6 +16,7 @@
             <argument>%kernel.data_dir%/order_number</argument>
             <argument>\Oym</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Order event listener -->

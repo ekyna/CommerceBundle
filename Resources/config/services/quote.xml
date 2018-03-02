@@ -16,6 +16,7 @@
             <argument>%kernel.data_dir%/quote_number</argument>
             <argument>\Qym</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Quote event listener -->

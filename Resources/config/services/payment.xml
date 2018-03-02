@@ -40,6 +40,7 @@
             <argument>%kernel.data_dir%/payment_number</argument>
             <argument>ym</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Payment subject calculator -->

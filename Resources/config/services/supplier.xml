@@ -21,6 +21,7 @@
             <argument>%kernel.data_dir%/supplier_order_number</argument>
             <argument>\Sym</argument>
             <argument>10</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Supplier* abstract event listener -->
