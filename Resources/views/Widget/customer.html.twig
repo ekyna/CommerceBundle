@@ -1,0 +1,17 @@
+{% if user is not null %}
+    {{ knp_menu_render('user_widget', {
+        'template': 'EkynaUserBundle::menu.html.twig',
+        'style': 'stacked-pills'
+    }) }}
+{% else %}
+    <p>
+        <a href="{{ path('fos_user_security_login') }}" class="btn btn-primary" data-user-modal>
+            {{ 'ekyna_core.button.login'|trans }}
+        </a>
+    </p>
+    <p>
+        <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">
+            {{ 'ekyna_user.account.registration.button'|trans }}
+        </a>
+    </p>
+{% endif %}

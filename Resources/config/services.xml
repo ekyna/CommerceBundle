@@ -19,6 +19,7 @@
         <import resource="services/shipment.xml"/>
         <import resource="services/stat.xml"/>
         <import resource="services/stock.xml"/>
+        <import resource="services/subject.xml"/>
         <import resource="services/supplier.xml"/>
         <import resource="services/table.xml"/>
         <import resource="services/twig.xml"/>
@@ -158,29 +159,6 @@
             <argument type="service" id="ekyna_setting.manager"/>
             <argument type="service" id="ekyna_commerce.document.renderer_factory"/>
             <argument type="service" id="local_commerce_filesystem"/>
-        </service>
-
-        <!-- Subject providers registry-->
-        <service id="ekyna_commerce.subject.provider_registry"
-                 class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>
-
-        <!-- Subject purchase cost guesser -->
-        <service id="ekyna_commerce.subject.purchase_cost_guesser"
-                 class="Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesser"
-                 lazy="true">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="ekyna_commerce.supplier_order_item.repository"/>
-            <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
-            <argument>%ekyna_commerce.default.currency%</argument>
-        </service>
-
-        <!-- Subject label renderer -->
-        <service id="ekyna_commerce.subject.label_renderer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer">
-            <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="templating"/>
-            <argument>%knp_snappy.pdf.binary%</argument>
         </service>
 
         <!-- Sale item event listener -->

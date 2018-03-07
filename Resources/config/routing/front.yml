@@ -13,3 +13,11 @@ ekyna_commerce_cart_checkout:
 ekyna_commerce_account:
     resource: "front/account.yml"
     prefix:   /my-account
+
+ekyna_commerce_widget:
+    resource: "front/widget.yml"
+    prefix:   /widget
+
+ekyna_commerce_subject:
+    resource: "front/subject.yml"
+    prefix:   /subject

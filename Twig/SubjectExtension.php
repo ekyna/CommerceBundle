@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 
 /**
  * Class SubjectExtension
@@ -13,7 +13,7 @@ use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 class SubjectExtension extends \Twig_Extension
 {
     /**
-     * @var SubjectHelper
+     * @var SubjectHelperInterface
      */
     private $subjectHelper;
 
@@ -21,9 +21,9 @@ class SubjectExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param SubjectHelper $subjectHelper
+     * @param SubjectHelperInterface $subjectHelper
      */
-    public function __construct(SubjectHelper $subjectHelper)
+    public function __construct(SubjectHelperInterface $subjectHelper)
     {
         $this->subjectHelper = $subjectHelper;
     }
@@ -35,9 +35,24 @@ class SubjectExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFilter(
-                'subject_admin_link',
-                [$this, 'renderSubjectAdminLink'],
-                ['is_safe' => ['html']]
+                'subject_get',
+                [$this, 'getSubject']
+            ),
+            new \Twig_SimpleFilter(
+                'subject_add_to_cart_url',
+                [$this->subjectHelper, 'generateAddToCartUrl']
+            ),
+            new \Twig_SimpleFilter(
+                'subject_add_to_cart_url',
+                [$this->subjectHelper, 'generateAddToCartUrl']
+            ),
+            new \Twig_SimpleFilter(
+                'subject_public_url',
+                [$this->subjectHelper, 'generatePublicUrl']
+            ),
+            new \Twig_SimpleFilter(
+                'subject_private_url',
+                [$this->subjectHelper, 'generatePrivateUrl']
             ),
         ];
     }
@@ -56,26 +71,14 @@ class SubjectExtension extends \Twig_Extension
     }
 
     /**
-     * Renders the subject relative's subject admin link.
+     * Returns the given relative's subject.
      *
      * @param SubjectRelativeInterface $relative
      *
-     * @return string
+     * @return \Ekyna\Component\Commerce\Subject\Model\SubjectInterface
      */
-    public function renderSubjectAdminLink(SubjectRelativeInterface $relative)
+    public function getSubject(SubjectRelativeInterface $relative)
     {
-        if (null !== $subject = $this->subjectHelper->resolve($relative, false)) {
-            if (null !== $url = $this->subjectHelper->generateSubjectAdminUrl($relative)) {
-                return sprintf(
-                    '<a href="%s" class="show-entity">%s</a>',
-                    $url,
-                    (string) $subject
-                );
-            }
-
-            return (string) $subject;
-        }
-
-        return 'Undefined'; // TODO translation
+        return $this->subjectHelper->resolve($relative, false);
     }
 }

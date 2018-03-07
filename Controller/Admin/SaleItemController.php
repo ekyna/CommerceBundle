@@ -53,21 +53,22 @@ class SaleItemController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
+        $parentConfig = $this->getParentConfiguration();
 
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+        $sale = $context->getResource($parentConfig->getResourceName());
 
         $isXhr = $request->isXmlHttpRequest();
 
         $item = $this
             ->get('ekyna_commerce.sale_factory')
             ->createItemForSale($sale);
-        $sale->addItem($item); // So that we can access to the sale from the item.
+
         $context->addResource($resourceName, $item);
 
         $flow = $this->get('ekyna_commerce.sale_item_create.form_flow');
         $flow->setGenericFormOptions([
-            'action'            => $this->generateResourcePath($item, 'add'),
+            'action'            => $this->generateResourcePath($item, 'add', $context->getIdentifiers()),
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal'],
             'admin_mode'        => true,
@@ -84,9 +85,13 @@ class SaleItemController extends AbstractSaleController
                 $form = $flow->createForm();
             } else {
                 // TODO validation
+                $this->getSaleHelper()->addItem($sale, $item);
 
                 // TODO use ResourceManager
-                $event = $this->getOperator()->create($item);
+                /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $saleOperator */
+                $saleOperator = $this->get($parentConfig->getServiceKey('operator'));
+                $event = $saleOperator->update($sale);
+
                 if (!$isXhr) {
                     $event->toFlashes($this->getFlashBag());
                 }
@@ -152,24 +157,25 @@ class SaleItemController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
+        $parentConfig = $this->getParentConfiguration();
 
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
-        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+        $sale = $context->getResource($parentConfig->getResourceName());
 
         $isXhr = $request->isXmlHttpRequest();
 
         $item = $this
             ->get('ekyna_commerce.sale_factory')
             ->createItemForSale($sale);
-        $sale->addItem($item); // So that we can access to the sale from the item.
 
         $context->addResource($resourceName, $item);
 
         $this->getOperator()->initialize($item);
 
         $form = $this->createNewResourceForm($context, !$isXhr, [
+            'action'   => $this->generateResourcePath($item, 'new', $context->getIdentifiers()),
             'currency' => $sale->getCurrency()->getCode(),
-            'attr' => [
+            'attr'     => [
                 'class' => 'form-horizontal',
             ],
         ]);
@@ -178,7 +184,10 @@ class SaleItemController extends AbstractSaleController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // TODO use ResourceManager
-            $event = $this->getOperator()->create($item);
+            /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $saleOperator */
+            $saleOperator = $this->get($parentConfig->getServiceKey('operator'));
+            $event = $saleOperator->update($sale);
+
             if (!$isXhr) {
                 $event->toFlashes($this->getFlashBag());
             }
@@ -343,10 +352,10 @@ class SaleItemController extends AbstractSaleController
 
         $form = $this->createEditResourceForm($context, !$isXhr, [
             'currency' => $sale->getCurrency()->getCode(),
-            'attr'   => [
+            'attr'     => [
                 'class' => 'form-horizontal',
             ],
-            'action' => $action,
+            'action'   => $action,
         ]);
 
         $form->handleRequest($request);

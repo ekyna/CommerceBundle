@@ -128,7 +128,12 @@
                             <tr>
                                 <td id="{{ itemId ~ '_designation' }}">
                                 {%- if item.saleItem is subject_set -%}
-                                    {{- item.saleItem|subject_admin_link -}}
+                                    {% set url = item.saleItem|subject_private_url %}
+                                    {% if url is not null %}
+                                        <a href="{{ url }}">{{ item.saleItem.designation }}</a>
+                                    {% else %}
+                                        {{ item.saleItem.designation }}
+                                    {% endif %}
                                 {%- else -%}
                                     {{ item.saleItem.designation }}
                                 {%- endif -%}

@@ -1,4 +1,4 @@
-{% macro show_subject(relative, label) %}
+{% macro show_subject(relative, label) %}{# TODO show 'commerce_subject' type #}
 {% spaceless %}
     <div class="row show-row">
         <div class="col-md-2 show-label">
@@ -6,7 +6,17 @@
         </div>
         <div class="col-md-10">
             <div class="show-widget show-widget-inline">
-                {{ relative|subject_admin_link }}
+                {% set subject = relative|subject_get %}
+                {% if subject is null %}
+                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                {% else %}
+                    {% set url = subject|subject_private_url %}
+                    {% if url is not null %}
+                        <a href="{{ url }}" class="show-entity">{{ subject }}</a>
+                    {% else %}
+                        {{ subject }}
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>

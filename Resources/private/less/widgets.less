@@ -1,0 +1,64 @@
+.commerce-widget {
+    .dropdown-menu {
+        min-width: 260px;
+        padding: 10px;
+
+        p {
+            text-align: center;
+            margin-bottom: 10px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .btn {
+                display: block;
+            }
+        }
+
+        .nav-pills > li > span {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+        }
+    }
+}
+
+#cart-widget {
+    p.empty-cart {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    table {
+        width: 300px;
+        margin-bottom: 15px;
+
+        td, th {
+            font-size: 12px;
+            line-height: 16px;
+            border-collapse: collapse;
+            padding: 2px 4px;
+            border-bottom: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+
+            &:first-child {
+                border-left: none;
+
+                > span {
+                    display: inline-block;
+                    width: 265px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+        tr:last-child {
+            td {
+                border-bottom: none;
+            }
+        }
+    }
+}

@@ -48,8 +48,20 @@
             {% endif %}
         </td>
         <td id="{{ itemId ~ 'subject' }}">
-            {% if item.product is not null -%}
-            {{ item|subject_admin_link }}
+            {% if item.product is null -%}
+                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+            {% else %}
+                {% set subject = item.product|subject_get %}
+                {% if subject is null %}
+                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                {% else %}
+                    {% set url = subject|subject_private_url %}
+                    {% if url is not null %}
+                        <a href="{{ url }}" class="show-entity">{{ subject }}</a>
+                    {% else %}
+                        {{ subject }}
+                    {% endif %}
+                {% endif %}
             {%- endif %}
         </td>
     </tr>

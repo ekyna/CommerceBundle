@@ -1,6 +1,20 @@
 ekyna_commerce:
     label: Commerce
 
+    add_to_cart:
+        button:
+            add: Ajouter au panier
+            continue: Continuer mes achats
+            cart: Voir mon panier
+        message:
+            success: >
+                <p>L'article <strong><a href="%subject_url%">%designation%</a></strong>
+                 a bien été ajouté à <a href="%cart_url%">votre panier</a>.</p>
+            failure: >
+                <p>L'application a rencontré une erreur lors de l'ajout à votre panier de
+                l'article <strong><a href="%subject_url%">%designation%</a></strong>.<br>
+                Nous vous invitons à réessayer ultérieurement</p>
+
     # TODO group common fields
     field:
         eta: ETA
@@ -151,6 +165,8 @@ ekyna_commerce:
             notify:
                 subject: Création de compte client
                 admin_link: Voir la fiche client dans l'administration
+        widget:
+            title: Espace client
 
     address:
         label:
@@ -199,7 +215,9 @@ ekyna_commerce:
             singular: Panier
             plural: Paniers
         widget:
+            title: Mon panier
             items: "{1} Un article|]1,Inf[ %count% articles"
+            # TODO remove
             total: pour un total de
             show_cart: Voir votre panier
             empty: Votre panier est vide.

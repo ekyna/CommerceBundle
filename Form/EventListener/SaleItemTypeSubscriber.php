@@ -83,6 +83,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'attr'  => [
                     'placeholder' => 'ekyna_core.field.designation',
                 ],
+                'error_bubbling' => true,
             ])
             ->add('reference', Type\TextType::class, [
                 'label' => 'ekyna_core.field.reference',
@@ -90,6 +91,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'attr'  => [
                     'placeholder' => 'ekyna_core.field.reference',
                 ],
+                'error_bubbling' => true,
             ])
             ->add('weight', Type\NumberType::class, [
                 'label'    => 'ekyna_core.field.weight', // TODO unit weight ?
@@ -101,6 +103,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                     'input_group' => ['append' => 'kg'],
                     'min'         => 0,
                 ],
+                'error_bubbling' => true,
             ])
             ->add('netPrice', MoneyType::class, [
                 'label'    => 'ekyna_commerce.sale.field.net_unit',
@@ -111,6 +114,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
                     //'input_group' => ['append' => '€'],  // TODO sale currency
                 ],
+                'error_bubbling' => true,
             ])
             ->add('taxGroup', TaxGroupChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale_item.field.tax_group',
@@ -120,6 +124,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale_item.field.tax_group',
                 ],
+                'error_bubbling' => true,
             ])
             ->add('quantity', Type\IntegerType::class, [
                 'label'    => 'ekyna_core.field.quantity',
@@ -128,6 +133,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                     'placeholder' => 'ekyna_core.field.quantity',
                     'min'         => 1,
                 ],
+                'error_bubbling' => true,
             ])
             ->add('private', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.sale_item.field.private',

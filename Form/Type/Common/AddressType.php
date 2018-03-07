@@ -119,7 +119,7 @@ class AddressType extends AbstractType
                             'label'          => 'ekyna_core.field.phone',
                             'required'       => $options['phone_required'],
                             'default_region' => $region,
-                            'format'         => PhoneNumberFormat::INTERNATIONAL,
+                            'format'         => PhoneNumberFormat::NATIONAL,
                             'attr'           => [
                                 'class' => 'address-phone',
                             ],
@@ -128,7 +128,7 @@ class AddressType extends AbstractType
                             'label'          => 'ekyna_core.field.mobile',
                             'required'       => $options['mobile_required'],
                             'default_region' => $region,
-                            'format'         => PhoneNumberFormat::INTERNATIONAL,
+                            'format'         => PhoneNumberFormat::NATIONAL,
                             'attr'           => [
                                 'class' => 'address-mobile',
                             ],

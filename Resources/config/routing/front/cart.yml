@@ -1,9 +1,3 @@
-ekyna_commerce_cart_widget:
-    path: /widget
-    defaults:
-        _controller: "ekyna_commerce.controller.cart:widgetAction"
-    methods: [GET]
-
 ekyna_commerce_cart_item_configure:
     path: /items/{itemId}/configure
     defaults: { _controller: "ekyna_commerce.controller.cart:itemConfigureAction" }

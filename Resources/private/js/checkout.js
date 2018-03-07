@@ -119,7 +119,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher','jquery/form'], function($, 
         updateElementsDisplay(response);
     });
 
-    Dispatcher.on('ekyna_user.user_status', function() {
+    Dispatcher.on('ekyna_user.authentication', function() {
         refreshCheckout();
     });
 

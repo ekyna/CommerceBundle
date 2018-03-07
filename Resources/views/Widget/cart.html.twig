@@ -1,0 +1,24 @@
+{% if cart is not null and cart.hasItems() %}
+<table class="">
+    <tr>
+        <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+        <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+    </tr>
+    {% for item in cart.items %}
+    <tr>
+        <td><span title="{{ item.designation }}">{{ item.designation }}</span></td>
+        <td class="text-right">{{ item.quantity|localizednumber }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<p>
+    <a href="{{ path('ekyna_commerce_cart_checkout_index') }}" class="btn btn-primary">
+        {{ 'ekyna_commerce.cart.widget.show_cart'|trans }}
+        (<strong>{{ cart.grandTotal|localizedcurrency(cart.currency.code) }}</strong>)
+    </a>
+</p>
+{% else %}
+<p class="empty-cart">
+    {{ 'ekyna_commerce.cart.widget.empty'|trans }}
+</p>
+{% endif %}

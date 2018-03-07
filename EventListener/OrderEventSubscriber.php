@@ -6,11 +6,11 @@ use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderEventSubscriber as BaseSubscriber;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
 
@@ -22,7 +22,7 @@ use Ekyna\Component\Resource\Event\ResourceMessage;
 class OrderEventSubscriber extends BaseSubscriber
 {
     /**
-     * @var SubjectHelper
+     * @var SubjectHelperInterface
      */
     protected $subjectHelper;
 
@@ -35,9 +35,9 @@ class OrderEventSubscriber extends BaseSubscriber
     /**
      * Sets the subject helper.
      *
-     * @param SubjectHelper $subjectHelper
+     * @param SubjectHelperInterface $subjectHelper
      */
-    public function setSubjectHelper(SubjectHelper $subjectHelper)
+    public function setSubjectHelper(SubjectHelperInterface $subjectHelper)
     {
         $this->subjectHelper = $subjectHelper;
     }

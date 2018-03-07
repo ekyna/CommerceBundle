@@ -5,11 +5,30 @@
 
     <services>
 
+        <!-- Widget controller -->
+        <service id="ekyna_commerce.controller.widget"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\WidgetController">
+            <argument type="service" id="ekyna_commerce.widget_helper"/>
+            <argument type="service" id="templating"/>
+        </service>
+
+        <!-- Widget helper -->
+        <service id="ekyna_commerce.widget_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper">
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            <argument type="service" id="ekyna_user.user.provider"/>
+            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="translator"/>
+        </service>
+
         <!-- Subject helper -->
         <service id="ekyna_commerce.subject_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
         </service>
 
@@ -47,8 +66,10 @@
                  lazy="true">
             <argument type="service" id="ekyna_commerce.sale_helper"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_core.modal"/>
+            <argument type="service" id="event_dispatcher"/>
             <argument>%ekyna_commerce.cart_item.class%</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Sale step validator -->

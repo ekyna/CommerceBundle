@@ -7,7 +7,6 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout as CheckoutType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale as SaleType;
 use Ekyna\Bundle\CoreBundle\Modal;
 use League\Flysystem\Filesystem;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -41,28 +40,6 @@ class CartController extends AbstractController
     {
         $this->modalRenderer = $modalRenderer;
         $this->fileSystem = $fileSystem;
-    }
-
-    /**
-     * Cart widget action.
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function widgetAction(Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            return new RedirectResponse($this->generateUrl('ekyna_commerce_cart_checkout_index'));
-        }
-
-        $response = $this->render('EkynaCommerceBundle:Cart:widget.xml.twig', [
-            'cart' => $this->getCart(),
-        ]);
-
-        $response->headers->set('Content-Type', 'application/xml');
-
-        return $response->setPrivate();
     }
 
     /**

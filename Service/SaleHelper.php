@@ -70,6 +70,16 @@ class SaleHelper
     }
 
     /**
+     * Returns the subject helper.
+     *
+     * @return SubjectHelperInterface
+     */
+    public function getSubjectHelper()
+    {
+        return $this->subjectHelper;
+    }
+
+    /**
      * Returns the view builder.
      *
      * @return ViewBuilder
@@ -140,6 +150,32 @@ class SaleHelper
             ->add('submit', Type\SubmitType::class, [
                 'label' => 'ekyna_commerce.sale.button.recalculate',
             ]);
+    }
+
+    /**
+     * Adds the given item to the given sale (or merges with same item).
+     *
+     * @param Model\SaleInterface     $sale
+     * @param Model\SaleItemInterface $item
+     *
+     * @return Model\SaleItemInterface The resulting item (eventually the 'merged in' one)
+     */
+    public function addItem(Model\SaleInterface $sale, Model\SaleItemInterface $item)
+    {
+        $hash = $item->getHash();
+
+        foreach ($sale->getItems() as $i) {
+            $ih = $i->getHash();
+            if ($hash === $ih) {
+                $i->setQuantity($i->getQuantity() + $item->getQuantity());
+
+                return $i;
+            }
+        }
+
+        $sale->addItem($item);
+
+        return $item;
     }
 
     /**

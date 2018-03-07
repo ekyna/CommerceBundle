@@ -52,6 +52,7 @@ class SaleItemType extends ResourceFormType
                 'item_type'            => null,
                 'item_adjustment_type' => null,
                 'currency'             => null,
+                'error_bubbling'       => false,
             ])
             ->setAllowedTypes('with_collections', 'bool')
             ->setAllowedTypes('item_type', 'string')
