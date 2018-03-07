@@ -19,7 +19,7 @@
                     <a href="{{ downloadPath }}" target="_blank">{{ attachment }}</a>
                 </td>
                 <td id="{{ attachmentId }}_title">{{ attachment.title }}</td>
-                <td id="{{ attachmentId }}_updatedAt">{{ attachment.updatedAt|localizeddate('short', 'none') }}</td>
+                <td id="{{ attachmentId }}_createdAt">{{ attachment.createdAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ attachmentId }}_internal">
                     {% if attachment.internal %}
                         <span class="label label-success">
@@ -43,6 +43,14 @@
                        title="{{ 'ekyna_commerce.attachment.button.archive'|trans }}">
                         <span class="fa fa-archive"></span>
                     </a>
+                    {% if sale|sale_support_document_type(attachment.type) -%}
+                        <a href="{{ admin_resource_path(attachment, 'update') }}"
+                           class="btn btn-warning btn-xs"
+                           onclick="return confirm('{{ 'ekyna_commerce.attachment.message.update_confirm'|trans }}')"
+                           title="{{ 'ekyna_commerce.attachment.button.update'|trans }}">
+                            <span class="fa fa-refresh"></span>
+                        </a>
+                    {%- endif %}
                     {%- endif -%}
                     <a href="{{ admin_resource_path(attachment, 'edit') }}"
                        class="btn btn-warning btn-xs"
@@ -65,5 +73,13 @@
         {% endfor %}
         </tbody>
     </table>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {{ show_row(sale.documentComment, 'textarea', {
+            'label': 'ekyna_commerce.sale.field.document_comment',
+            'id': 'sale_documentComment',
+        }) }}
+    </div>
 </div>
 {% endspaceless %}

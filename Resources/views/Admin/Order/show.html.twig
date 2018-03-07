@@ -233,6 +233,7 @@
                     {{- 'ekyna_commerce.attachment.label.plural'|trans -}}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {
+                    'sale': order,
                     'attachments': order.attachments
                 } %}
             </div>

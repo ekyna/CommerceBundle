@@ -150,6 +150,10 @@ class SaleExtension extends \Twig_Extension
                 'sale_editable_document_types',
                 [SaleDocumentUtil::class, 'getSaleEditableDocumentTypes']
             ),
+            new \Twig_SimpleFilter(
+                'sale_support_document_type',
+                [SaleDocumentUtil::class, 'isSaleSupportsDocumentType']
+            ),
         ];
     }
 

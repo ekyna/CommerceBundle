@@ -13,6 +13,14 @@ ekyna_commerce_order_attachment_admin_edit:
         orderId: \d+
         orderAttachmentId: \d+
 
+ekyna_commerce_order_attachment_admin_update:
+    path: /{orderAttachmentId}/update
+    defaults: { _controller: "ekyna_commerce.order_attachment.controller:updateAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderAttachmentId: \d+
+
 ekyna_commerce_order_attachment_admin_remove:
     path: /{orderAttachmentId}/remove
     defaults: { _controller: "ekyna_commerce.order_attachment.controller:removeAction" }

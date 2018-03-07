@@ -13,6 +13,14 @@ ekyna_commerce_quote_attachment_admin_edit:
         quoteId: \d+
         quoteAttachmentId: \d+
 
+ekyna_commerce_quote_attachment_admin_update:
+    path: /{quoteAttachmentId}/update
+    defaults: { _controller: "ekyna_commerce.quote_attachment.controller:updateAction" }
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        quoteAttachmentId: \d+
+
 ekyna_commerce_quote_attachment_admin_remove:
     path: /{quoteAttachmentId}/remove
     defaults: { _controller: "ekyna_commerce.quote_attachment.controller:removeAction" }

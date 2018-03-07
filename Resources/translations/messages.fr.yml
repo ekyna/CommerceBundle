@@ -202,11 +202,13 @@ ekyna_commerce:
             edit: Modifier la pièce jointe
             remove: Supprimer la pièce jointe
             archive: Archiver
+            update: Ré-éditer
         field:
             internal: Interne
         alert:
             no_item: Aucune pièce jointe configuré
         message:
+            update_confirm: Souhaitez-vous réellement ré-éditer cette pièce jointe ?
             archive_confirm: Souhaitez-vous réellement archiver cette pièce jointe ?
             remove_confirm: Souhaitez-vous réellement supprimer cette pièce jointe ?
 
@@ -924,13 +926,14 @@ ekyna_commerce:
             outstanding_accepted: Encours accepté
             outstanding_expired: Encours expiré
             outstanding_limit: Limite d'encours
-            outstanding_date: Dale limite
+            outstanding_date: Date limite
             voucher_number: N° bon d'achat
             origin_number: N° d'origine
             gross_totals: Sous-total
             grand_total: Total TTC
             margin: Marge
             weight_total: Poids total
+            document_comment: Commentaire documents
             document_footer: Pied de page des documents
             state: Statut
             payment_state: Statut paiement

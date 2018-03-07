@@ -60,6 +60,10 @@ class InvoiceType extends ResourceFormType
                 'required' => false,
                 'empty_data' => (new \DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
             ])
+            ->add('comment', Type\TextareaType::class, [
+                'label'    => 'ekyna_core.field.comment',
+                'required' => false,
+            ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,

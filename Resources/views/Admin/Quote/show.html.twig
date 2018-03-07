@@ -123,7 +123,10 @@
                 <h4 class="sub-header">
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {'attachments': quote.attachments} %}
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {
+                    'sale': quote,
+                    'attachments': quote.attachments
+                } %}
             </div>
             <div class="tab-pane" id="quote-informations">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': quote} %}

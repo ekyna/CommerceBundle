@@ -3,8 +3,10 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
+use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes as BInvoiceTypes;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes as CInvoiceTypes;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -56,7 +58,7 @@ class SaleInvoiceController extends AbstractSaleController
         $context->addResource('resource', $invoice);
 
         $type = $request->attributes->get('type');
-        if (!InvoiceTypes::isValidType($type)) {
+        if (!CInvoiceTypes::isValidType($type)) {
             throw $this->createNotFoundException("Unexpected type");
         }
 
@@ -280,6 +282,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
         $invoice = $context->getResource();
+
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
@@ -289,6 +292,48 @@ class SaleInvoiceController extends AbstractSaleController
             throw $this->createNotFoundException('Not yet supported.');
         }
 
+        // Create an archived version of this invoice before recalculation
+        $renderer = $this
+            ->get('ekyna_commerce.document.renderer_factory')
+            ->createRenderer($invoice);
+
+        $path = $renderer->create();
+
+        $this->getTranslator()->trans(BInvoiceTypes::getLabel($invoice->getType()));
+
+        /** @var \Ekyna\Component\Resource\Configuration\ConfigurationInterface $config */
+        $config = $this->get(str_replace('invoice', 'attachment', $this->config->getResourceId()) . '.configuration');
+        /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepository $repository */
+        $repository = $this->get($config->getServiceKey('repository'));
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface $attachment */
+        $attachment = $repository->createNew();
+
+        $title = sprintf(
+            '[archived] %s %s',
+            $this->getTranslator()->trans(BInvoiceTypes::getLabel($invoice->getType())),
+            $invoice->getNumber()
+        );
+
+        $filename = sprintf('%s-%s.pdf', $invoice->getType(), $invoice->getNumber());
+
+        $attachment
+            ->setSale($sale)
+            ->setTitle($title)
+            ->setFile(new File($path))
+            ->setRename($filename)
+            ->setInternal(true);
+
+        /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $operator */
+        $operator = $this->get($config->getServiceKey('operator'));
+
+        $event = $operator->create($attachment);
+        if ($event->hasErrors()) {
+            $event->toFlashes($this->getFlashBag());
+
+            return $this->redirect($this->generateResourcePath($sale));
+        }
+
+        // Recalculate
         $this->get('ekyna_commerce.document.calculator')->calculate($invoice);
 
         // TODO use ResourceManager

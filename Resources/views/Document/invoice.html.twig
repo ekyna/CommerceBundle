@@ -14,5 +14,8 @@
         {{ macro.render_voucher_number(subject.sale) }}
         {{ macro.render_payment_term(subject.sale) }}
     </p>
+    {% if subject.comment is not empty -%}
+        <p>{{ subject.comment|nl2br }}</p>
+    {%- endif %}
     {# TODO trans #}
 {%- endblock doc_title %}

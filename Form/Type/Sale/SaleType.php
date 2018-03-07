@@ -102,6 +102,10 @@ class SaleType extends ResourceFormType
                 'label'    => 'ekyna_core.field.comment',
                 'required' => false,
             ])
+            ->add('documentComment', Type\TextareaType::class, [
+                'label'    => 'ekyna_commerce.sale.field.document_comment',
+                'required' => false,
+            ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,

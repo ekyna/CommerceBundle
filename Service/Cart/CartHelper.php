@@ -129,6 +129,10 @@ class CartHelper
 
         $this->eventDispatcher->dispatch(AddToCartEvent::INITIALIZE, $event);
 
+        if ($event->isPropagationStopped()) {
+            $this->createEventResponse($event);
+        }
+
         return $event;
     }
 
