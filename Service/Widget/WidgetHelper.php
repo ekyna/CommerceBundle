@@ -117,11 +117,6 @@ class WidgetHelper
             'href'   => $this->urlGenerator->generate('ekyna_user_account_index'),
             'title'  => $label,
             'label'  => $label,
-            'icon'   => 'glyphicon glyphicon-user',
-            'config' => [
-                'widget'   => 'ekyna_commerce_widget_customer_widget',
-                'dropdown' => 'ekyna_commerce_widget_customer_dropdown',
-            ],
         ];
 
         if (null !== $customer = $this->getCustomer()) {
@@ -145,11 +140,6 @@ class WidgetHelper
             'href'   => $this->urlGenerator->generate('ekyna_commerce_cart_checkout_index'),
             'title'  => $label,
             'label'  => $label,
-            'icon'   => 'glyphicon glyphicon-shopping-cart',
-            'config' => [
-                'widget'   => 'ekyna_commerce_widget_cart_widget',
-                'dropdown' => 'ekyna_commerce_widget_cart_dropdown',
-            ],
         ];
 
         $cart = $this->getCart();

@@ -105,17 +105,13 @@ class WidgetExtension extends \Twig_Extension implements \Twig_Extension_InitRun
      */
     private function renderWidget(array $data, array $options)
     {
-        $options = array_replace([
+        $data = array_replace([
             'template' => $this->config['template'],
             'tag'      => 'li',
-            'class'    => '',
-        ], $options);
+            'class'    => null,
+            'icon'     => null,
+        ], $data, $options);
 
-        $data = array_replace([
-            'tag'   => $options['tag'],
-            'class' => $options['class'],
-        ], $data);
-
-        return $this->environment->render($options['template'], $data);
+        return $this->environment->render($data['template'], $data);
     }
 }

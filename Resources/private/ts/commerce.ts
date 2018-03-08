@@ -110,29 +110,35 @@ export function init() {
 
 interface WidgetConfig {
     selector: string
-    tag: string
-    class: string
-    debug: boolean
+    icon: string
     button: string
     dropdown: string
     widget_route: string
     widget_template: Template
     dropdown_route: string
     event: string
+    debug: boolean
 }
 
 interface WidgetData {
     tag: string
     class: string
+    icon: string
     id: string
     href: string
     title: string
     label: string
+}
+
+interface WidgetDataDefault {
+    tag: string
+    class: string
     icon: string
 }
 
 export class Widget {
     private config: WidgetConfig;
+    private defaultData: WidgetDataDefault;
 
     private $element: JQuery;
     private $button: JQuery;
@@ -146,11 +152,11 @@ export class Widget {
     constructor(options: WidgetConfig) {
         this.config = _.defaults(options, {
             tag: 'li',
-            class: '',
-            debug: false,
+            icon: '> a > span',
             button: '> a.dropdown-toggle',
             dropdown: '> div.dropdown-menu',
-            widget_template: Templates['widget.html.twig']
+            widget_template: Templates['widget.html.twig'],
+            debug: false
         });
 
         this.$element = $(this.config.selector);
@@ -162,6 +168,17 @@ export class Widget {
 
         if (!this.config.debug) {
             $(window).on('focus', _.bind(this.onWindowFocus, this));
+        }
+
+        this.defaultData = {
+            tag: this.$element.prop('tagName').toLowerCase(),
+            class: this.$element.attr('class'),
+            icon: null
+        };
+
+        let $icon = this.$element.find(this.config.icon);
+        if (1 === $icon.length) {
+            this.defaultData.icon = $icon.attr('class');
         }
 
         this.initialize();
@@ -184,7 +201,9 @@ export class Widget {
         xhr.done((data: WidgetData) => {
             this.renderWidget(data);
 
-            Dispatcher.trigger(this.config.event, data);
+            if (this.config.event) {
+                Dispatcher.trigger(this.config.event, data);
+            }
         });
 
         xhr.fail(function () {
@@ -211,10 +230,9 @@ export class Widget {
     }
 
     private renderWidget(data: WidgetData) {
-        data.tag = this.config.tag;
-        data.class = this.config.class;
-
-        this.$element.empty().append($(this.config.widget_template.render(data)).children());
+        let $element = $(this.config.widget_template.render(_.defaults(data, this.defaultData)));
+        this.$element.replaceWith($element);
+        this.$element = $element;
 
         this.initialize();
     }

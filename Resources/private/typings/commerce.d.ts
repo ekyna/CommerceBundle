@@ -1,12 +1,15 @@
-interface Template {
-    render(data: any): string
+interface AddToCartEvent {
+    type: string
+    data: any
+    jqXHR: JQueryXHR
+    success: boolean
 }
 
-let init:() => void;
-
-export class Widget {
+declare class Widget {
     reload(): void
 }
+
+declare let init:() => void;
 
 declare module "ekyna-commerce/commerce" {
     export = {
