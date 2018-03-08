@@ -53,7 +53,7 @@ export function init() {
                 method: 'GET'
             });
             $(modal).on('ekyna.modal.response', (e: Ekyna.ModalResponseEvent) => {
-                dispatchAddToCartEvent(e.data, e.jqXHR);
+                dispatchAddToCartEvent(e.content, e.jqXHR);
             });
 
             return false;
@@ -96,7 +96,7 @@ export function init() {
                     let modal = new Modal();
                     modal.handleResponse(data, textStatus, jqXHR);
                     $(modal).on('ekyna.modal.response', (e: Ekyna.ModalResponseEvent) => {
-                        dispatchAddToCartEvent(e.data, e.jqXHR);
+                        dispatchAddToCartEvent(e.content, e.jqXHR);
                     });
                 },
                 complete: function () {
