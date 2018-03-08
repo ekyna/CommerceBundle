@@ -28,8 +28,8 @@ class SubjectController
     /**
      * Constructor.
      *
-     * @param Modal\Renderer           $modalRenderer
-     * @param CartHelper               $cartHelper
+     * @param Modal\Renderer $modalRenderer
+     * @param CartHelper     $cartHelper
      */
     public function __construct(Modal\Renderer $modalRenderer, CartHelper $cartHelper)
     {
@@ -59,28 +59,6 @@ class SubjectController
             throw new NotFoundHttpException();
         }
 
-//        $pickTabletPath = $this->generateUrl('app_shop_pick_tablet', [
-//            'next' => $this->generateUrl('app_cart_add_product', [
-//                'productSlug' => $product->getSlug(),
-//            ]),
-//        ]);
-//
-//        // Redirect to pick tablet if product is not a tablet and no tablet selected
-//        $context = $this->get('app.shop.user_context');
-//        $tablet = $context->getTablet();
-//        if (!$product->isTablet() && null === $tablet) {
-//            return $this->redirect($pickTabletPath);
-//        }
-//
-//        // Modal title
-//        $title = $product->getFullTitle(true);
-//        if ((null !== $tablet) && (ProductTypes::TYPE_CONFIGURABLE === $product->getType())) {
-//            $title = $this->getTranslator()->trans('web.shop.title.configure', [
-//                '{{product}}' => $product->getTitle(),
-//                '{{tablet}}'  => $tablet->getFullTitle(true),
-//            ]);
-//        }
-
         // Default modal
         $modal = new Modal\Modal();
         $modal->setTitle((string)$subject);
@@ -91,11 +69,9 @@ class SubjectController
             return $response;
         }
 
-        // If compatible
-        //if ($product->isTablet() || $this->get('app.compatibility.checker')->isCompatible($tablet, $product, true)) {
-
         $form = $this->cartHelper->createAddSubjectToCartForm($subject, [
-            'extended' => (bool)$request->query->get('extended', 1),
+            'extended'      => (bool)$request->query->get('ex', 1),
+            'submit_button' => (bool)$request->query->get('sb', 0),
         ]);
 
         if (null !== $event = $this->cartHelper->handleAddSubjectToCartForm($form, $request, $modal)) {
@@ -123,15 +99,6 @@ class SubjectController
                     'cssClass' => 'btn-default',
                 ],
             ]);
-
-        /*} else { // Not compatible
-            $message = $this->getTranslator()->trans('web.shop.message.not_compatible', [
-                '{{title}}' => $tablet->getFullTitle(true),
-                '{{path}}'  => $pickTabletPath,
-            ]);
-            $this->addFlash($message, 'warning');
-            $modal->setType(Modal::TYPE_WARNING);
-        }*/
 
         return $this->modalRenderer->render($modal);
     }

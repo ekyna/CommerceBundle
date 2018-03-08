@@ -16,6 +16,26 @@ let bs = Bootstrap;
 //noinspection JSUnusedLocalSymbols
 let ui = Ui;
 
+interface AddToCartEvent {
+    type: string
+    data: any
+    jqXHR: JQueryXHR
+    success: boolean
+}
+
+function dispatchAddToCartEvent(data: any, jqXHR:JQueryXHR) {
+    let event:AddToCartEvent = {
+        type: Modal.prototype.getContentType(jqXHR),
+        data: data,
+        jqXHR : jqXHR,
+        success: '1' == jqXHR.getResponseHeader('X-Commerce-Success')
+    };
+
+    Dispatcher.trigger('ekyna_commerce.add_to_cart', event);
+
+    return event;
+}
+
 export function init() {
     $(document)
     // Sale item modal
@@ -32,11 +52,8 @@ export function init() {
                 url: $(e.currentTarget).data('add-to-cart'),
                 method: 'GET'
             });
-
             $(modal).on('ekyna.modal.response', (e: Ekyna.ModalResponseEvent) => {
-                if ('1' == e.jqXHR.getResponseHeader('X-Commerce-Success')) {
-                    Dispatcher.trigger('ekyna_commerce.add_to_cart_success');
-                }
+                dispatchAddToCartEvent(e.data, e.jqXHR);
             });
 
             return false;
@@ -54,30 +71,33 @@ export function init() {
                 url: $form.data('add-to-cart'),
                 success: function (data, textStatus, jqXHR) {
                     let type = Modal.prototype.getContentType(jqXHR);
-                    if (type === 'form') {
-                        $form.data('form').destroy();
-
+                    if (type === 'xml') {
                         let $xmlData = $(data),
                             $content = $xmlData.find('content');
 
                         if (1 === $content.length) {
                             $content = $($content.text());
-                            if (!$content.is('form')) {
-                                throw 'Expected form element.';
+                            if ($content.is('form')) {
+                                $form.data('form').destroy();
+
+                                $form.replaceWith($content);
+                                $form = $content;
+
+                                let form = Form.create($form);
+                                form.init();
+
+                                return;
                             }
-                            $form.replaceWith($content);
-                            let form = Form.create($form);
-                            form.init();
                         }
-                        return;
                     }
 
-                    if ('1' == jqXHR.getResponseHeader('X-Commerce-Success')) {
-                        Dispatcher.trigger('ekyna_commerce.add_to_cart_success');
-                    }
+                    dispatchAddToCartEvent(data, jqXHR);
 
                     let modal = new Modal();
                     modal.handleResponse(data, textStatus, jqXHR);
+                    $(modal).on('ekyna.modal.response', (e: Ekyna.ModalResponseEvent) => {
+                        dispatchAddToCartEvent(e.data, e.jqXHR);
+                    });
                 },
                 complete: function () {
                     $form.loadingSpinner('off');
@@ -147,30 +167,7 @@ export class Widget {
         this.initialize();
     }
 
-    private initialize() {
-        this.$button = this.$element.find(this.config.button);
-        if (1 != this.$button.length) {
-            throw 'Widget toggle button not found ! (' + this.config.button + ')';
-        }
-
-        this.$dropdown = this.$element.find(this.config.dropdown);
-        if (1 != this.$dropdown.length) {
-            throw 'Widget content not found ! (' + this.config.dropdown + ')';
-        }
-
-        this.$element.on('show.bs.dropdown', this.dropdownShowHandler);
-    }
-
-    renderWidget(data: WidgetData) {
-        data.tag = this.config.tag;
-        data.class = this.config.class;
-
-        this.$element.empty().append($(this.config.widget_template.render(data)).children());
-
-        this.initialize();
-    }
-
-    loadWidget(): void {
+    reload(): void {
         if (this.busy) {
             return;
         }
@@ -199,7 +196,30 @@ export class Widget {
         });
     }
 
-    loadDropdown(): void {
+    private initialize() {
+        this.$button = this.$element.find(this.config.button);
+        if (1 != this.$button.length) {
+            throw 'Widget toggle button not found ! (' + this.config.button + ')';
+        }
+
+        this.$dropdown = this.$element.find(this.config.dropdown);
+        if (1 != this.$dropdown.length) {
+            throw 'Widget content not found ! (' + this.config.dropdown + ')';
+        }
+
+        this.$element.on('show.bs.dropdown', this.dropdownShowHandler);
+    }
+
+    private renderWidget(data: WidgetData) {
+        data.tag = this.config.tag;
+        data.class = this.config.class;
+
+        this.$element.empty().append($(this.config.widget_template.render(data)).children());
+
+        this.initialize();
+    }
+
+    private loadDropdown(): void {
         if (this.busy) {
             return;
         }
@@ -229,13 +249,13 @@ export class Widget {
         });
     }
 
-    onDropdownShow() {
+    private onDropdownShow() {
         if (this.$dropdown.is(':empty')) {
             this.loadDropdown();
         }
     }
 
-    onWindowFocus() {
+    private onWindowFocus() {
         if (!this.busy && !this.preventReload) {
             this.preventReload = true;
 
@@ -243,7 +263,7 @@ export class Widget {
                 this.preventReload = false;
             }, 10000);
 
-            this.loadWidget();
+            this.reload();
         }
     }
 }

@@ -160,9 +160,7 @@ class CartHelper
         ], $options);
 
         $action = $this->getSaleHelper()->getSubjectHelper()->generateAddToCartUrl($subject);
-        if ($options['extended']) {
-            $action .= '?extended=1';
-        }
+        $action .= '?ex=' . ($options['extended'] ? 1 : 0) . '&sb=' . ($options['submit_button'] ? 1 : 0);
 
         if ($options['submit_button']) {
             $options['attr']['data-add-to-cart'] = $action;
