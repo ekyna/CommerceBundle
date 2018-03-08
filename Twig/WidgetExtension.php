@@ -80,16 +80,7 @@ class WidgetExtension extends \Twig_Extension implements \Twig_Extension_InitRun
      */
     public function renderCustomerWidget(array $options = [])
     {
-        $options = array_replace([
-            'template' => $this->config['template'],
-            'tag'      => 'li',
-        ], $options);
-
-        $data = array_replace([
-            'tag' => $options['tag'],
-        ], $this->widgetHelper->getCustomerWidgetData());
-
-        return $this->environment->render($options['template'], $data);
+        return $this->renderWidget($this->widgetHelper->getCustomerWidgetData(), $options);
     }
 
     /**
@@ -101,14 +92,29 @@ class WidgetExtension extends \Twig_Extension implements \Twig_Extension_InitRun
      */
     public function renderCartWidget(array $options = [])
     {
+        return $this->renderWidget($this->widgetHelper->getCartWidgetData(), $options);
+    }
+
+    /**
+     * Renders the widget.
+     *
+     * @param array $data
+     * @param array $options
+     *
+     * @return string
+     */
+    private function renderWidget(array $data, array $options)
+    {
         $options = array_replace([
             'template' => $this->config['template'],
             'tag'      => 'li',
+            'class'    => '',
         ], $options);
 
         $data = array_replace([
-            'tag' => $options['tag'],
-        ], $this->widgetHelper->getCartWidgetData());
+            'tag'   => $options['tag'],
+            'class' => $options['class'],
+        ], $data);
 
         return $this->environment->render($options['template'], $data);
     }

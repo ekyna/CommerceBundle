@@ -91,6 +91,7 @@ export function init() {
 interface WidgetConfig {
     selector: string
     tag: string
+    class: string
     debug: boolean
     button: string
     dropdown: string
@@ -102,6 +103,7 @@ interface WidgetConfig {
 
 interface WidgetData {
     tag: string
+    class: string
     id: string
     href: string
     title: string
@@ -124,6 +126,7 @@ export class Widget {
     constructor(options: WidgetConfig) {
         this.config = _.defaults(options, {
             tag: 'li',
+            class: '',
             debug: false,
             button: '> a.dropdown-toggle',
             dropdown: '> div.dropdown-menu',
@@ -160,6 +163,7 @@ export class Widget {
 
     renderWidget(data: WidgetData) {
         data.tag = this.config.tag;
+        data.class = this.config.class;
 
         this.$element.empty().append($(this.config.widget_template.render(data)).children());
 

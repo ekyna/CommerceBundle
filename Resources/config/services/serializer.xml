@@ -28,7 +28,6 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>
