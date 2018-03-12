@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Filter;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Subject\SubjectChoiceType;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Context\ActiveFilter;
@@ -46,7 +47,7 @@ class SaleSubjectType extends AbstractFilterType
 
         $subject = $provider->getRepository()->find($identity->getIdentifier());
 
-        $view->vars['value'] = (string) $subject;
+        $view->vars['value'] = (string)$subject;
     }
 
     public function buildForm(FormBuilderInterface $builder, FilterInterface $filter, array $options)
@@ -60,7 +61,8 @@ class SaleSubjectType extends AbstractFilterType
                 ]),
             ])
             ->add('value', SubjectChoiceType::class, [
-                'label' => false,
+                'label'   => false,
+                'context' => SubjectProviderInterface::CONTEXT_SALE,
             ]);
 
         return true;
@@ -77,7 +79,7 @@ class SaleSubjectType extends AbstractFilterType
         $qb = $adapter->getQueryBuilder();
         $alias = $qb->getRootAliases()[0];
         $qb
-            ->join($alias.'.items', 'i1')
+            ->join($alias . '.items', 'i1')
             ->leftJoin('i1.children', 'i2')
             ->leftJoin('i2.children', 'i3')
             ->leftJoin('i3.children', 'i4')

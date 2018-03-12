@@ -74,7 +74,7 @@ ekyna_commerce:
             singular: Minute
             plural: Minutes
             format: "%s minutes"
-        seconde:
+        second:
             singular: Seconde
             plural: Secondes
 

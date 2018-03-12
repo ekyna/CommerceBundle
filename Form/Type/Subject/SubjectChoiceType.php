@@ -175,11 +175,12 @@ class SubjectChoiceType extends AbstractType
                 'lock_mode'      => false,
                 'data_class'     => SubjectIdentity::class,
                 'error_bubbling' => false,
-                'context'        => SubjectProviderInterface::CONTEXT_SALE,
+                'context'        => null,
             ])
             ->setAllowedTypes('lock_mode', 'bool')
             ->setAllowedTypes('context', 'string')
             ->setAllowedValues('context', [
+                SubjectProviderInterface::CONTEXT_ITEM,
                 SubjectProviderInterface::CONTEXT_SALE,
                 SubjectProviderInterface::CONTEXT_SUPPLIER,
             ]);

@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Subject\SubjectChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -24,6 +25,7 @@ class SaleItemSubjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('subjectIdentity', SubjectChoiceType::class, [
+            'context'   => SubjectProviderInterface::CONTEXT_ITEM,
             'lock_mode' => true,
             'required'  => $options['required'],
         ]);
