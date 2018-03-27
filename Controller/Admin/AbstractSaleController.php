@@ -74,7 +74,7 @@ abstract class AbstractSaleController extends ResourceController
         // TODO get the proper operator through resource registry
         $this->getOperator()->refresh($sale);
 
-        $response = $this->render('EkynaCommerceBundle:Common:sale_response.xml.twig', [
+        $response = $this->render('EkynaCommerceBundle:Admin/Common/Sale:response.xml.twig', [
             'sale'          => $sale,
             'sale_view'     => $this->buildSaleView($sale, $form),
         ]);

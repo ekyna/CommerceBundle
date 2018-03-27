@@ -22,6 +22,11 @@
             'type': 'link',
             'path': admin_resource_path(quote, 'notify')
         }) }}
+        {{ ui_button('ekyna_core.button.duplicate', {
+            'theme': 'default',
+            'type': 'link',
+            'path': admin_resource_path(quote, 'duplicate')
+        }) }}
         {{ sale_transform_btn(quote) }}
         {{ admin_resource_btn(quote, 'edit') }}
         {{ admin_resource_btn(quote, 'remove') }}

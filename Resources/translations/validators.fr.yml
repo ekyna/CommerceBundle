@@ -59,6 +59,8 @@ ekyna_commerce:
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
         voucher_must_be_set: Veuillez saisir votre bon d'achat.
+        outstanding_limit_require_term: Veuillez choisir une condition de payment pour définir une limite d'encours.
+        deposit_greater_than_grand_total: L'acompte doit être inférieur au total TTC.
     sale_item:
         root_item_cant_be_private: Cet article ne peut pas être privé.
         privacy_integrity: Les articles privés ne peuvent pas contenir des articles publiques.

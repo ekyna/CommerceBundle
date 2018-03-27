@@ -20,6 +20,15 @@ ekyna_commerce_supplier_admin_show:
     requirements:
         supplierId: \d+
 
+ekyna_commerce_supplier_admin_summary:
+    path: /{supplierId}/summary
+    defaults: { _controller: "ekyna_commerce.supplier.controller:summaryAction" }
+    methods: [GET]
+    requirements:
+        supplierId: \d+
+    options:
+        expose: true
+
 ekyna_commerce_supplier_admin_edit:
     path: /{supplierId}/edit
     defaults: { _controller: "ekyna_commerce.supplier.controller:editAction" }

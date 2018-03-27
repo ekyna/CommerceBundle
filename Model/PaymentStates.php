@@ -33,6 +33,7 @@ final class PaymentStates extends AbstractConstants
             States::STATE_UNKNOWN     => [$prefix.States::STATE_UNKNOWN.$suffix,     'default'],
             // Sale only
             States::STATE_OUTSTANDING => [$prefix.States::STATE_OUTSTANDING.$suffix, 'pink'],
+            States::STATE_DEPOSIT     => [$prefix.States::STATE_DEPOSIT.$suffix,     'purple'],
             States::STATE_COMPLETED   => [$prefix.States::STATE_COMPLETED.$suffix,   'teal'],
         ];
     }
@@ -49,5 +50,14 @@ final class PaymentStates extends AbstractConstants
         static::isValid($state, true);
 
         return static::getConfig()[$state][1];
+    }
+
+    /**
+     * Disabled constructor.
+     *
+     * @codeCoverageIgnore
+     */
+    final private function __construct()
+    {
     }
 }

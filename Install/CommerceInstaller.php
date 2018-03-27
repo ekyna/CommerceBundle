@@ -164,6 +164,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $ccGateways = [
             'payzen'    => 'Ekyna\Bundle\PayumPayzenBundle\EkynaPayumPayzenBundle',
             'atos_sips' => 'Ekyna\Bundle\PayumSipsBundle\EkynaPayumSipsBundle',
+            'monetico'  => 'Ekyna\Bundle\PayumMoneticoBundle\EkynaPayumMoneticoBundle',
         ];
         foreach ($ccGateways as $factory => $class) {
             if (class_exists($class)) {

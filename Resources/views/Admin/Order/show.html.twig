@@ -30,6 +30,11 @@
             'type': 'link',
             'path': admin_resource_path(order, 'notify')
         }) }}
+        {{ ui_button('ekyna_core.button.duplicate', {
+            'theme': 'default',
+            'type': 'link',
+            'path': admin_resource_path(order, 'duplicate')
+        }) }}
         {{ sale_transform_btn(order) }}
         {{ admin_resource_btn(order, 'edit') }}
         {{ admin_resource_btn(order, 'remove') }}

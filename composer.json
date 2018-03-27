@@ -27,14 +27,8 @@
         "zendframework/zend-diactoros": "~1.6",
         "behat/transliterator": "~1.2",
         "knplabs/knp-snappy-bundle": "^1.4",
-        "florianv/swap-bundle": "dev-swap-3"
+        "florianv/swap-bundle": "~3.0"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/ekyna/symfony-swap.git"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Ekyna\\Bundle\\CommerceBundle\\Behat\\Context\\": "Behat/Context/",

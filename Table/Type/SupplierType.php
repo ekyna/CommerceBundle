@@ -6,7 +6,9 @@ use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\View;
 
 /**
  * Class SupplierType
@@ -90,5 +92,16 @@ class SupplierType extends ResourceTableType
                 'label'    => 'ekyna_commerce.supplier.field.customer_code',
                 'position' => 30,
             ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildRowView(View\RowView $view, RowInterface $row, array $options)
+    {
+        $view->vars['attr']['data-summary'] = json_encode([
+            'route'      => 'ekyna_commerce_supplier_admin_summary',
+            'parameters' => ['supplierId' => $row->getData('id')],
+        ]);
     }
 }

@@ -94,6 +94,15 @@
             <tag name="serializer.denormalizer"/>
         </service>
 
+        <!-- Supplier normalizer -->
+        <service id="ekyna_commerce.supplier.normalizer"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <tag name="serializer.normalizer" />
+            <tag name="serializer.denormalizer"/>
+        </service>
+
         <!-- Supplier order normalizer -->
         <service id="ekyna_commerce.supplier_order.normalizer"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierOrderNormalizer"

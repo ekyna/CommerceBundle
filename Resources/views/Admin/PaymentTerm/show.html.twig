@@ -36,6 +36,10 @@
                             }) }}
                         </div>
                     </div>
+                    {{ show_row(paymentTerm|payment_term_trigger_label, 'text', {
+                        'label': 'ekyna_commerce.payment_term.field.trigger',
+                        'id': 'payment_term_trigger'
+                    }) }}
                     {{ show_row(paymentTerm.translations, 'translations', {
                         'id': 'payment_term_translations',
                         'fields': {

@@ -80,6 +80,13 @@ ekyna_commerce_quote_admin_transform:
         quoteId: \d+
         target: "[a-z]+"
 
+ekyna_commerce_quote_admin_duplicate:
+    path: /{quoteId}/duplicate
+    defaults: { _controller: "ekyna_commerce.quote.controller:duplicateAction" }
+    methods: [GET|POST]
+    requirements:
+        quoteId: \d+
+
 ekyna_commerce_quote_admin_notify:
     path: /{quoteId}/notify
     defaults: { _controller: "ekyna_commerce.quote.controller:notifyAction" }

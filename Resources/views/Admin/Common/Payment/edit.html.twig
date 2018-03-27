@@ -12,6 +12,6 @@
 {% block side %}
     {{ parent() }}
     {% if resource.sale is not null %}
-        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale_payment.html.twig" with {'sale': resource.sale} %}
+        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale.html.twig" with {'sale': resource.sale} %}
     {% endif %}
 {% endblock side %}

@@ -9,7 +9,6 @@ use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -243,7 +242,7 @@ class SupplierOrderController extends ResourceController
 
         if ($html) {
             $content = $this->renderView(
-                'EkynaCommerceBundle:Common:supplier_order_summary.html.twig',
+                'EkynaCommerceBundle:Admin/SupplierOrder:summary.html.twig',
                 $this->get('serializer')->normalize($supplierOrder, 'json', ['groups' => ['Summary']])
             );
         } else {

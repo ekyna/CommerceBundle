@@ -1,0 +1,51 @@
+{% spaceless %}
+<div class="panel panel-default">
+    {% if title is defined -%}
+    <div class="panel-heading">
+        {{ title|trans }}
+    </div>
+    {%- endif %}
+    <div class="panel-body">
+        <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+                <td>{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</th>
+                <td>{{ sale.paidTotal|localizedcurrency(sale.currency.code) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
+                <td>{{ sale.paymentState|payment_state_badge }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</th>
+                <td>
+                    {% if sale.paymentTerm is not null %}
+                        <a href="{{ path('ekyna_commerce_payment_term_admin_show', {'paymentTermId': sale.paymentTerm.id}) }}">
+                            {{ sale.paymentTerm|raw }}
+                        </a>
+                    {% else %}
+                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.deposit_total'|trans }}</th>
+                <td>{{ sale.depositTotal|localizedcurrency(sale.currency.code) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.outstanding_limit'|trans }}</th>
+                <td>{{ sale.outstandingLimit|localizedcurrency(sale.currency.code) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</th>
+                <td>{{ sale.outstandingDate|localizeddate('short', 'none') }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endspaceless %}

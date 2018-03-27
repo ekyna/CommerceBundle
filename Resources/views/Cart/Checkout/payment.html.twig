@@ -41,7 +41,7 @@
         </div>
         {% endif %}
 
-        <p>
+        <p style="font-size:18px;">
             {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
                 '%amount%': cart.grandTotal|localizedcurrency(cart.currency.code)
             })|raw }}.<br>

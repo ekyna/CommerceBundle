@@ -37,11 +37,11 @@
                 <div class="show-widget show-widget-inline" id="{{ prefix|default('subject') }}_vat_valid">
                     {% if subject.vatValid -%}
                     <span class="label label-success">
-                         {{ 'ekyna_core.value.yes'|trans }}
+                         {{- 'ekyna_core.value.yes'|trans -}}
                     </span>
                     {%- else -%}
                     <span class="label label-{{ subject.vatNumber is empty ? 'default' : 'danger' }}">
-                         {{ 'ekyna_core.value.no'|trans }}
+                         {{- 'ekyna_core.value.no'|trans -}}
                     </span>
                     {%- endif %}
                 </div>

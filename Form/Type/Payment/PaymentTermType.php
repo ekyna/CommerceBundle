@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Model\PaymentTermTriggers;
 use Ekyna\Component\Commerce\Payment\Entity\PaymentTermTranslation;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,8 +26,8 @@ class PaymentTermType extends ResourceFormType
                 'label' => 'ekyna_core.field.name',
             ])
             ->add('days', Type\IntegerType::class, [
-                'label'    => 'ekyna_commerce.payment_term.field.days',
-                'attr'     => [
+                'label' => 'ekyna_commerce.payment_term.field.days',
+                'attr'  => [
                     'min' => 0,
                 ],
             ])
@@ -36,6 +37,10 @@ class PaymentTermType extends ResourceFormType
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
+            ])
+            ->add('trigger', Type\ChoiceType::class, [
+                'label'   => 'ekyna_commerce.payment_term.field.trigger',
+                'choices' => PaymentTermTriggers::getChoices(),
             ])
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => PaymentTermTranslationType::class,

@@ -12,13 +12,13 @@
 {% block main %}
 {% spaceless %}
 
-    <p>
+    <p style="font-size:18px;">
         {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
             '%amount%': sale.grandTotal|localizedcurrency(sale.currency.code)
-        })|raw }}.<br>
+        })|raw }}<br>
         {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
             '%amount%': sale.remainingAmount|localizedcurrency(sale.currency.code)
-        })|raw }}.
+        })|raw }}
     </p>
 
     <hr>
@@ -43,7 +43,7 @@
 
 {% block side %}
     {{ parent() }}
-    {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale_payment.html.twig" %}
+    {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale.html.twig" %}
 {% endblock side %}
 
 

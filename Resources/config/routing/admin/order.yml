@@ -97,6 +97,13 @@ ekyna_commerce_order_admin_transform:
         orderId: \d+
         target: "[a-z]+"
 
+ekyna_commerce_order_admin_duplicate:
+    path: /{orderId}/duplicate
+    defaults: { _controller: "ekyna_commerce.order.controller:duplicateAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
 ekyna_commerce_order_admin_notify:
     path: /{orderId}/notify
     defaults: { _controller: "ekyna_commerce.order.controller:notifyAction" }

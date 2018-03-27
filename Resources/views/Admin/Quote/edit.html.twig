@@ -3,3 +3,16 @@
 {% block title %}
     <h1>{{ 'ekyna_commerce.quote.header.edit'|trans({'%number%': quote.number})|raw }}</h1>
 {% endblock title %}
+
+{% block side %}
+    {{ parent() }}
+    {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale.html.twig" with {
+        'title': 'ekyna_commerce.quote.label.singular',
+        'sale': quote
+    } only %}
+    {% if quote.customer is not null %}
+        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:customer.html.twig" with {
+            'customer': quote.customer
+        } only %}
+    {% endif %}
+{% endblock side %}

@@ -1,0 +1,12 @@
+{% spaceless %}
+    {% if description %}
+        <div>
+            <dl class="dl-horizontal">
+                {% if description is not empty %}
+                    <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+                    <dd>{{ description|nl2br|raw }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+    {% endif %}
+{% endspaceless %}

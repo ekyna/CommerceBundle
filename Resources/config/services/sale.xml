@@ -14,9 +14,9 @@
             <argument type="collection"/><!-- Replaced by DI extension -->
         </service>
 
-        <!-- Sale copier -->
-        <service id="ekyna_commerce.sale_copier"
-                 class="Ekyna\Component\Commerce\Common\Transformer\SaleCopier"
+        <!-- Sale copier factory -->
+        <service id="ekyna_commerce.sale_copier_factory"
+                 class="Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactory"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
@@ -25,7 +25,7 @@
         <service id="ekyna_commerce.sale_transformer"
                  class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformer"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.sale_copier"/>
+            <argument type="service" id="ekyna_commerce.sale_copier_factory"/>
             <argument type="service" id="ekyna_commerce.cart.operator"/>
             <argument type="service" id="ekyna_commerce.quote.operator"/>
             <argument type="service" id="ekyna_commerce.order.operator"/>

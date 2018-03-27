@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
+use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -151,7 +152,14 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
 
             return;
         }
+        // Abort if deposit is not paid
+        if (0 < $sale->getDepositTotal()) {
+            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $sale->getCurrency()->getCode())) {
+                $event->stopPropagation();
 
+                return;
+            }
+        }
         // Abort if no customer
         if (null === $customer = $sale->getCustomer()) {
             $event->stopPropagation();
@@ -173,7 +181,10 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
         $payment = $event->getPayment();
 
         // Customer available fund
-        $available = $customer->getOutstandingLimit() + $sale->getOutstandingLimit() + $customer->getOutstandingBalance();
+        if (0 == $limit = $sale->getOutstandingLimit()) {
+            $limit = $customer->getOutstandingLimit();
+        }
+        $available = $limit + $customer->getOutstandingBalance();
         // Abort if non available fund
         if (0 >= $available) {
             $event->stopPropagation();

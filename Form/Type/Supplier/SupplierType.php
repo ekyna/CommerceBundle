@@ -75,6 +75,10 @@ class SupplierType extends ResourceFormType
             ->add('address', SupplierAddressType::class, [
                 'label'    => 'ekyna_core.field.address',
                 'required' => false,
+            ])
+            ->add('description', Symfony\TextareaType::class, [
+                'label'    => 'ekyna_core.field.description',
+                'required' => false,
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

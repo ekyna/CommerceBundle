@@ -11,7 +11,13 @@
 
         <!-- TODO remove forms defined by resources di builder -->
 
-        <!-- Cart payment form type -->
+        <!-- Cart form types -->
+        <service id="ekyna_commerce.cart.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType">
+            <argument>%ekyna_commerce.cart.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.cart_payment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType">
             <argument>%ekyna_commerce.cart_payment.class%</argument>
@@ -100,6 +106,12 @@
         </service>
 
         <!-- Order form types -->
+        <service id="ekyna_commerce.order.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType">
+            <argument>%ekyna_commerce.order.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.order_payment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType">
             <argument>%ekyna_commerce.order_payment.class%</argument>
@@ -122,7 +134,13 @@
             <tag name="form.js" selector=".invoice" path="ekyna-commerce/form/invoice"/>
         </service>
 
-        <!-- Quote payment form type -->
+        <!-- Quote form types -->
+        <service id="ekyna_commerce.quote.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType">
+            <argument>%ekyna_commerce.quote.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.quote_payment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuotePaymentType">
             <argument>%ekyna_commerce.quote_payment.class%</argument>

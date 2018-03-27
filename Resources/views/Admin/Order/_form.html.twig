@@ -38,6 +38,7 @@
                     {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            <hr>
             <div class="form-group">
                 <div class="col-md-10 col-md-offset-2">
                     <p><em>{{ 'ekyna_commerce.sale.message.provide_customer_or_data'|trans }}</em></p>
@@ -75,12 +76,21 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
+                    {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.outstandingLimit, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                     {{ form_row(form.shipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.depositTotal, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            <hr>
             {{ form_row(form.tags) }}
         </div>
         <div class="tab-pane" id="order-addresses">

@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
+use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
@@ -26,17 +27,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SaleType extends ResourceFormType
 {
     /**
+     * @var string
+     */
+    protected $defaultCurrency;
+
+
+    /**
+     * Constructor.
+     *
+     * @param string $class
+     * @param string $defaultCurrency
+     */
+    public function __construct(string $class, string $defaultCurrency)
+    {
+        parent::__construct($class);
+
+        $this->defaultCurrency = $defaultCurrency;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('currency', CurrencyChoiceType::class)
-            /*->add('state', Type\ChoiceType::class, [
-                'label'    => 'ekyna_core.field.status',
-                'choices'  => PaymentStates::getChoices(),
-                'disabled' => $lockedMethod,
-            ])*/
             ->add('customer', CustomerSearchType::class, [
                 'required' => false,
             ])
@@ -90,6 +105,9 @@ class SaleType extends ResourceFormType
                 ],
             ])
             ->add('shipmentMethod', ShipmentMethodChoiceType::class)
+            ->add('paymentTerm', PaymentTermChoiceType::class, [
+                'required' => false,
+            ])
             ->add('voucherNumber', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'required' => false,
@@ -116,25 +134,26 @@ class SaleType extends ResourceFormType
             $sale = $event->getData();
             $form = $event->getForm();
 
-            $form->add('number', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'required' => false,
-                'disabled' => null !== $sale->getId(),
-            ]);
-
-            $disabledTerm = true;
-            if (null !== $customer = $sale->getCustomer()) {
-                if ($customer->hasParent()) {
-                    $customer = $customer->getParent();
-                }
-                if (null !== $customer->getPaymentTerm()) {
-                    $disabledTerm = false;
-                }
+            if (null !== $currency = $sale->getCurrency()) {
+                $currency = $currency->getCode();
+            } else {
+                $currency = $this->defaultCurrency;
             }
 
-            $form->add('paymentTerm', PaymentTermChoiceType::class, [
-                'disabled' => $disabledTerm,
-            ]);
+            $form
+                ->add('number', Type\TextType::class, [
+                    'label'    => 'ekyna_core.field.number',
+                    'required' => false,
+                    'disabled' => null !== $sale->getId(),
+                ])
+                ->add('depositTotal', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.deposit_total',
+                    'currency' => $currency,
+                ])
+                ->add('outstandingLimit', MoneyType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
+                    'currency' => $currency,
+                ]);
         });
 
         FormUtil::bindFormEventsToChildren(

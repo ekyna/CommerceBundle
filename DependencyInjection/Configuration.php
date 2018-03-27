@@ -401,6 +401,7 @@ class Configuration implements ConfigurationInterface
                                     'edit.html'      => 'EkynaCommerceBundle:Admin/Order:edit.html',
                                     'remove.html'    => 'EkynaCommerceBundle:Admin/Order:remove.html',
                                     'transform.html' => 'EkynaCommerceBundle:Admin/Order:transform.html',
+                                    'duplicate.html' => 'EkynaCommerceBundle:Admin/Order:duplicate.html',
                                     'notify.html'    => 'EkynaCommerceBundle:Admin/Order:notify.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Order')->end()
@@ -831,6 +832,7 @@ class Configuration implements ConfigurationInterface
                                     'edit.html'      => 'EkynaCommerceBundle:Admin/Quote:edit.html',
                                     'remove.html'    => 'EkynaCommerceBundle:Admin/Quote:remove.html',
                                     'transform.html' => 'EkynaCommerceBundle:Admin/Quote:transform.html',
+                                    'duplicate.html' => 'EkynaCommerceBundle:Admin/Quote:duplicate.html',
                                     'notify.html'    => 'EkynaCommerceBundle:Admin/Quote:notify.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Quote')->end()

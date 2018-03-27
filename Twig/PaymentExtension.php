@@ -91,6 +91,11 @@ class PaymentExtension extends \Twig_Extension
                 ['is_safe' => ['html']]
             ),
             new \Twig_SimpleFilter(
+                'payment_term_trigger_label',
+                [$this->constantHelper, 'renderPaymentTermTriggerLabel'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
                 'payment_state_message',
                 [$this, 'renderPaymentStateMessage'],
                 ['is_safe' => ['html']]

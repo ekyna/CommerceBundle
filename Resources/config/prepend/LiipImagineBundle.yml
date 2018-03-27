@@ -6,6 +6,7 @@ liip_imagine:
             cache: local_media
             data_loader: local_media
             filters:
-                thumbnail: { size: [145, 109], mode: outbound }
+                thumbnail: { size: [145, 109], mode: inset }
+                background: { size: [145, 109], color: '#ffffff' }
             post_processors:
                 jpegoptim: {}

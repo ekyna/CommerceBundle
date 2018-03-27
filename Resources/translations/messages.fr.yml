@@ -291,7 +291,7 @@ ekyna_commerce:
             attachment_remove: Êtes-vous sûr de vouloir supprimer cette pièce jointe ?
         payment:
             grand_total: |
-                Montant total : <strong>%amount%</strong>
+                Montant total de la commande : <strong>%amount%</strong>
             remaining_amount: |
                 Montant du paiement : <strong>%amount%</strong>
             available_fund: |
@@ -558,6 +558,7 @@ ekyna_commerce:
             edit: Modifier la commande <small>%number%</small>
             remove: Supprimer la commande <small>%number%</small>
             transform: Transformer la commande <small>%number%</small>
+            duplicate: Dupliquer la commande <small>%number%</small>
             notify: Notifier la commande <small>%number%</small>
         button:
             list: Liste des commandes
@@ -686,6 +687,9 @@ ekyna_commerce:
             outstanding:
                 label: Impayé
                 message: La date limite d'utilisation de votre encours est passée.
+            deposit:
+                label: Acompte
+                message: Votre acompte est accepté.
             completed:
                 label: Complété
                 message: Le total de la commande est réglé.
@@ -739,6 +743,11 @@ ekyna_commerce:
             new: Créer une nouvelle condition de paiement
             edit: Modifier la condition de paiement <small>%name%</small>
             remove: Supprimer la condition de paiement <small>%name%</small>
+        trigger:
+            shipped: Expédition partielle
+            fully_shipped: Expédition complète
+            invoiced: Facturation partielle
+            fully_invoiced: Facturation complète
         button:
             list: Liste des conditions
             show: Détail de la condition
@@ -748,6 +757,7 @@ ekyna_commerce:
         field:
             days: Nombre de jours
             end_of_month: Fin de mois
+            trigger: Déclencheur
         alert:
             empty_list: Aucune condition de paiement configuré
 
@@ -768,6 +778,7 @@ ekyna_commerce:
             edit: Modifier le devis <small>%number%</small>
             remove: Supprimer le devis <small>%number%</small>
             transform: Transformer le devis <small>%number%</small>
+            duplicate: Dupliquer le devis <small>%number%</small>
             notify: Notifier le devis <small>%number%</small>
         button:
             list: Liste des devis
@@ -867,10 +878,9 @@ ekyna_commerce:
             shipment:
                 edit: Modifier les frais de port
         confirm:
-            prioritize: >
-                Confirmer la réassignation du stock ?
-            transform: >
-                Confirmer la transformation en <strong>%target%</strong> ?
+            prioritize: Confirmer la réassignation du stock ?
+            transform: Confirmer la transformation en <strong>%target%</strong> ?
+            duplicate: Confirmer la duplication ?
             item:
                 remove: Souhaitez-vous réellement supprimer cette article ?
             adjustment:
@@ -930,6 +940,7 @@ ekyna_commerce:
             voucher_number: N° bon d'achat
             origin_number: N° d'origine
             gross_totals: Sous-total
+            deposit_total: Acompte TTC
             grand_total: Total TTC
             margin: Marge
             weight_total: Poids total

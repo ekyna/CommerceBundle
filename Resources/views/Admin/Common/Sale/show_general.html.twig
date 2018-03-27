@@ -115,13 +115,17 @@
     <div class="col-md-{{ col_size }}">
         {{ show_row(sale.taxExempt, 'boolean', {
             'label': 'ekyna_commerce.sale.field.tax_exempt',
-            'id': 'sale_taxExempt'
+            'id': 'sale_taxExempt',
+            'color': true,
+            'true_class': 'label label-danger',
+            'false_class': 'label label-success'
         }|merge(field_sizes)) }}
     </div>
     <div class="col-md-{{ col_size }}">
         {{ show_row(sale.autoDiscount, 'boolean', {
             'label': 'ekyna_commerce.sale.field.auto_discount',
             'id': 'sale_autoDiscount',
+            'color': true
         }|merge(field_sizes)) }}
     </div>
     {% if sale.sample is defined -%}
@@ -129,7 +133,10 @@
             {{ show_row(sale.sample, 'boolean', {
                 'label': 'ekyna_commerce.field.sample',
                 'id': 'sale_sample',
-                'label_col': 6
+                'label_col': 6,
+                'color': true,
+                'true_class': 'label label-indigo',
+                'false_class': 'label label-default'
             }) }}
         </div>
     {%- endif %}

@@ -3,3 +3,16 @@
 {% block title %}
     <h1>{{ 'ekyna_commerce.order.header.edit'|trans({'%number%': order.number})|raw }}</h1>
 {% endblock title %}
+
+{% block side %}
+    {{ parent() }}
+    {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale.html.twig" with {
+        'title': 'ekyna_commerce.order.label.singular',
+        'sale': order
+    } %}
+    {% if order.customer is not null %}
+        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:customer.html.twig" with {
+            'customer': order.customer
+        } %}
+    {% endif %}
+{% endblock side %}

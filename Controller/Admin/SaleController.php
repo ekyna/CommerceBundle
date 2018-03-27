@@ -24,6 +24,7 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SaleController
@@ -128,7 +129,7 @@ class SaleController extends AbstractSaleController
         if ($html) {
             $content = $this->get('serializer')->normalize($sale, 'json', ['groups' => ['Summary']]);
             $content = $this->renderView(
-                'EkynaCommerceBundle:Common:sale_summary.html.twig',
+                'EkynaCommerceBundle:Admin/Common/Sale:summary.html.twig',
                 array_replace($content, [
                     'shipment' => $sale instanceof ShipmentSubjectInterface,
                     'invoice'  => $sale instanceof InvoiceSubjectInterface,
@@ -224,7 +225,7 @@ class SaleController extends AbstractSaleController
      * @param SaleInterface $sale
      * @param bool          $footer
      *
-     * @return \Symfony\Component\Form\Form
+     * @return \Symfony\Component\Form\FormInterface
      */
     protected function createShipmentEditForm(SaleInterface $sale, $footer = true)
     {
@@ -420,6 +421,69 @@ class SaleController extends AbstractSaleController
 
         return $this->render(
             $this->config->getTemplate('transform.html'),
+            $context->getTemplateVars([
+                'form' => $form->createView(),
+            ])
+        );
+    }
+
+    /**
+     * Duplicate action (sale copy).
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function duplicateAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException('Not yet supported.');
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sourceSale */
+        $sourceSale = $context->getResource($resourceName);
+
+        // Create the target sale
+        /** @var SaleInterface $targetSale */
+        $targetSale = $this->getRepository()->createNew();
+
+        // Copies source to target
+        $this
+            ->get('ekyna_commerce.sale_copier_factory')
+            ->create($sourceSale, $targetSale)
+            ->copyData()
+            ->copyAddresses()
+            ->copyItems();
+
+        $this->getOperator()->initialize($targetSale);
+
+        $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale);
+
+        $form->handleRequest($request);
+
+        // If user confirmed
+        if ($form->isSubmitted() && $form->isValid()) {
+            $event = $this->getOperator()->create($targetSale);
+
+            if ($event->hasErrors()) {
+                foreach ($event->getErrors() as $error) {
+                    $form->addError(new FormError($error->getMessage()));
+                }
+            } else {
+                $event->toFlashes($this->getFlashBag());
+                return $this->redirect($this->generateResourcePath($targetSale));
+            }
+        }
+
+        $this->appendBreadcrumb(
+            sprintf('%s_duplicate', $resourceName),
+            'ekyna_core.button.duplicate'
+        );
+
+        return $this->render(
+            $this->config->getTemplate('duplicate.html'),
             $context->getTemplateVars([
                 'form' => $form->createView(),
             ])
@@ -624,11 +688,69 @@ class SaleController extends AbstractSaleController
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
-                    'remove' => [
+                    'transform' => [
                         'type'    => Type\SubmitType::class,
                         'options' => [
                             'button_class' => 'warning',
                             'label'        => 'ekyna_core.button.transform',
+                            'attr'         => ['icon' => 'ok'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\ButtonType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $this->generateResourcePath($sourceSale),
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
+    /**
+     * Creates the duplicate confirm form.
+     *
+     * @param SaleInterface $sourceSale
+     * @param SaleInterface $targetSale
+     *
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    protected function createDuplicateConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale)
+    {
+        $form = $this->createForm($this->config->getFormType(), $targetSale, [
+            'action'            => $this->generateResourcePath($sourceSale, 'duplicate'),
+            'method'            => 'POST',
+            'attr'              => ['class' => 'form-horizontal form-with-tabs'],
+            'admin_mode'        => true,
+            '_redirect_enabled' => true,
+        ]);
+
+        $translator = $this->getTranslator();
+        $message = $translator->trans('ekyna_commerce.sale.confirm.duplicate');
+
+        return $form
+            ->add('confirm', Type\CheckboxType::class, [
+                'label'       => $message,
+                'attr'        => ['align_with_widget' => true],
+                'mapped'      => false,
+                'required'    => true,
+                'constraints' => [
+                    new Assert\IsTrue(),
+                ],
+            ])
+            ->add('actions', FormActionsType::class, [
+                'buttons' => [
+                    'duplicate' => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'button_class' => 'warning',
+                            'label'        => 'ekyna_core.button.duplicate',
                             'attr'         => ['icon' => 'ok'],
                         ],
                     ],
@@ -656,7 +778,7 @@ class SaleController extends AbstractSaleController
      * @param Notification  $notification
      * @param bool          $footer
      *
-     * @return \Symfony\Component\Form\Form
+     * @return \Symfony\Component\Form\FormInterface
      */
     protected function createNotifyForm(SaleInterface $sale, Notification $notification, $footer = true)
     {
