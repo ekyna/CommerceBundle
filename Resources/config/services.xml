@@ -64,6 +64,7 @@
             <call method="setDefaultCode">
                 <argument>%ekyna_commerce.default.country%</argument>
             </call>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
         <!-- Currency repository -->
@@ -74,6 +75,7 @@
             <call method="setDefaultCode">
                 <argument>%ekyna_commerce.default.currency%</argument>
             </call>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
         <!-- Currency converter -->
