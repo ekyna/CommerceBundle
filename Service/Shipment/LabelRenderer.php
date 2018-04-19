@@ -78,7 +78,7 @@ class LabelRenderer
             $layout = $size === LabelRenderer::SIZE_A4;
         } elseif (!empty($config['width']) && !empty($config['height'])) {
             $options['page-width'] = $config['width'] . 'mm';
-            $options['page-height'] = $config['width'] . 'mm';
+            $options['page-height'] = $config['height'] . 'mm';
 
             if (!empty($config['margin'])) {
                 $options['margin-top'] = $config['margin'] . 'mm';
