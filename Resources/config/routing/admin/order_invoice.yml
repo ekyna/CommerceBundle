@@ -50,3 +50,13 @@ ekyna_commerce_order_invoice_admin_render:
         orderId: \d+
         orderInvoiceId: \d+
         _format: html|pdf|jpg
+
+ekyna_commerce_order_invoice_admin_summary:
+    path: /{orderInvoiceId}/summary
+    defaults: { _controller: "ekyna_commerce.order_invoice.controller:summaryAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderInvoiceId: \d+
+    options:
+        expose: true

@@ -1,5 +1,6 @@
 {% spaceless %}
 {% set show_customer = not customer.hasParent() %}
+<div class="table-responsive">
 <table class="table table-stripped">
     <thead>
     <tr>
@@ -67,4 +68,5 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
 {% endspaceless %}

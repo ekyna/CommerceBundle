@@ -71,6 +71,56 @@ class CustomerController extends ResourceController
     }
 
     /**
+     * Sale summary action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function summaryAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException();
+        }
+
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+        $customer = $context->getResource();
+
+        $this->isGranted('VIEW', $customer);
+
+        $response = new Response();
+        $response->setVary(['Accept', 'Accept-Encoding']);
+        $response->setLastModified($customer->getUpdatedAt());
+
+        $html = false;
+        $accept = $request->getAcceptableContentTypes();
+
+        if (in_array('application/json', $accept, true)) {
+            $response->headers->add(['Content-Type' => 'application/json']);
+        } elseif (in_array('text/html', $accept, true)) {
+            $html = true;
+        } else {
+            throw $this->createNotFoundException("Unsupported content type.");
+        }
+
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
+        if ($html) {
+            $content = $this->get('serializer')->normalize($customer, 'json', ['groups' => ['Summary']]);
+            $content = $this->renderView('EkynaCommerceBundle:Admin/Customer:summary.html.twig', $content);
+        } else {
+            $content = $this->get('serializer')->serialize($customer, 'json', ['groups' => ['Summary']]);
+        }
+
+        $response->setContent($content);
+
+        return $response;
+    }
+
+    /**
      * @inheritDoc
      */
     protected function buildShowData(array &$data, Context $context)
@@ -100,6 +150,18 @@ class CustomerController extends ResourceController
             ],
             'orders' => [
                 'type' => $this->get('ekyna_commerce.order.configuration')->getTableType(),
+                'options' => [
+                    'customer' => $customer,
+                ]
+            ],
+            'invoices' => [
+                'type' => $this->get('ekyna_commerce.order_invoice.configuration')->getTableType(),
+                'options' => [
+                    'customer' => $customer,
+                ]
+            ],
+            'shipments' => [
+                'type' => $this->get('ekyna_commerce.order_shipment.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
                 ]

@@ -92,8 +92,6 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="ekyna_commerce.shipment_renderer"/>
             <call method="setWeightCalculator">
                 <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
             </call>
@@ -102,11 +100,12 @@
             </call>
         </service>
 
-        <service id="ekyna_commerce.shipment_renderer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelsRenderer"
+        <service id="ekyna_commerce.shipment.label_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer"
                  lazy="true">
             <argument type="service" id="templating"/>
             <argument type="service" id="knp_snappy.pdf"/>
+            <argument type="service" id="ekyna_setting.manager"/>
         </service>
 
     </services>

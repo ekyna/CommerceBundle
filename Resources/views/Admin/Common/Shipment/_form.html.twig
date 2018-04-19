@@ -6,6 +6,11 @@
         </a>
     </li>
     <li>
+        <a href="#shipment-relay-point" id="toggle-relay-point" data-toggle="tab">
+            {{- 'ekyna_commerce.relay_point.label.singular'|trans -}}
+        </a>
+    </li>
+    <li>
         <a href="#shipment-receiver-address" id="toggle-receiver-address" data-toggle="tab">
             {{- 'ekyna_commerce.shipment.field.receiver_address'|trans -}}
         </a>
@@ -25,10 +30,11 @@
         <div class="tab-pane active" id="shipment-general">
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}
+                    {#{{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}#}
+                    {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.shippedAt, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">
@@ -36,7 +42,7 @@
                     {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.shippedAt, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.valorization, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">
@@ -62,7 +68,14 @@
             </div>
             {%- endif %}
             {{ form_row(form.items) }}
+            <div id="shipment-parcels">
+                {{ form_row(form.parcels) }}
+            </div>
+            {{ form_row(form.gatewayData) }}
             {{ form_row(form.description) }}
+        </div>
+        <div class="tab-pane" id="shipment-relay-point">
+            {{ form_row(form.relayPoint) }}
         </div>
         <div class="tab-pane" id="shipment-receiver-address">
             {{ form_row(form.receiverAddress) }}
@@ -73,5 +86,6 @@
     </div>
     {{ bootstrap_set_sizing('md') }}
     {{ form_rest(form) }}
+    {{ ivory_google_api() }}
 </div>
 {% endspaceless %}

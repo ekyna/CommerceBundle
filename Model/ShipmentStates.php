@@ -20,19 +20,20 @@ final class ShipmentStates extends AbstractConstants
         $prefix = 'ekyna_commerce.shipment.state.';
 
         return [
-            States::STATE_NEW         => [$prefix . States::STATE_NEW,         'brown'],
-            //States::STATE_CHECKOUT    => [$prefix . States::STATE_CHECKOUT,    'default'],
-            //States::STATE_ONHOLD      => [$prefix . States::STATE_ONHOLD,      'warning'],
-            States::STATE_PENDING     => [$prefix . States::STATE_PENDING,     'orange'],
-            //States::STATE_BACKORDERED => [$prefix . States::STATE_BACKORDERED, 'warning'],
-            States::STATE_READY       => [$prefix . States::STATE_READY,       'teal'],
-            States::STATE_SHIPPED     => [$prefix . States::STATE_SHIPPED,     'teal'],
-            States::STATE_RETURNED    => [$prefix . States::STATE_RETURNED,    'indigo'],
-            States::STATE_CANCELED    => [$prefix . States::STATE_CANCELED,    'default'],
+            // Common
+            States::STATE_NEW         => [$prefix . States::STATE_NEW, 'brown'],
+            States::STATE_CANCELED    => [$prefix . States::STATE_CANCELED, 'default'],
+            // Shipment
+            States::STATE_PREPARATION => [$prefix . States::STATE_PREPARATION, 'success'],
+            States::STATE_READY       => [$prefix . States::STATE_READY, 'teal'],
+            States::STATE_SHIPPED     => [$prefix . States::STATE_SHIPPED, 'teal'],
+            // Return
+            States::STATE_PENDING     => [$prefix . States::STATE_PENDING, 'orange'],
+            States::STATE_RETURNED    => [$prefix . States::STATE_RETURNED, 'indigo'],
             // For Sale
-            States::STATE_NONE        => [$prefix . States::STATE_NONE,        'default'],
-            States::STATE_PARTIAL     => [$prefix . States::STATE_PARTIAL,     'purple'],
-            States::STATE_COMPLETED   => [$prefix . States::STATE_COMPLETED,   'teal'],
+            States::STATE_NONE        => [$prefix . States::STATE_NONE, 'default'],
+            States::STATE_PARTIAL     => [$prefix . States::STATE_PARTIAL, 'purple'],
+            States::STATE_COMPLETED   => [$prefix . States::STATE_COMPLETED, 'teal'],
         ];
     }
 
@@ -60,21 +61,21 @@ final class ShipmentStates extends AbstractConstants
      */
     static function getFormChoices($return = false, $restrict = false)
     {
-        $states = [
-            States::STATE_NEW,
-            States::STATE_PENDING,
-        ];
+        $states = [States::STATE_NEW, States::STATE_CANCELED];
+
+        if (!$return) {
+            $states[] = States::STATE_PREPARATION;
+        }
 
         if (!$restrict) {
             if ($return) {
+                $states[] = States::STATE_PENDING;
                 $states[] = States::STATE_RETURNED;
             } else {
-                $states[] = States::STATE_READY;
+                $states[] = States::STATE_READY; // TODO If method is pickup at warehouse
                 $states[] = States::STATE_SHIPPED;
             }
         }
-
-        $states[] = States::STATE_CANCELED;
 
         return static::getChoices($states, 1);
     }

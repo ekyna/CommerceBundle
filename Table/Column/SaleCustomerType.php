@@ -59,6 +59,12 @@ class SaleCustomerType extends AbstractColumnType
                 'value'        => $value,
                 'route'        => 'ekyna_commerce_customer_admin_show',
                 'parameters'   => ['customerId' => $customer->getId()],
+                'attr' => [
+                    'data-summary' => json_encode([
+                        'route'      => 'ekyna_commerce_customer_admin_summary',
+                        'parameters' => ['customerId' => $customer->getId()],
+                    ]),
+                ]
             ]);
         } else {
             $view->vars = array_replace($view->vars, [

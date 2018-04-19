@@ -78,6 +78,7 @@
         <service id="ekyna_commerce.shipment.builder"
                  class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <argument type="service" id="ekyna_commerce.shipment.calculator"/>
         </service>
 
@@ -117,6 +118,12 @@
             <argument type="service" id="ekyna_commerce.shipment.calculator"/>
         </service>
 
+        <!-- Shipment persister (for gateways) -->
+        <service id="ekyna_commerce.shipment.persister"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentPersister">
+            <argument type="service" id="ekyna_commerce.order_shipment.manager"/>
+        </service>
+
         <!-- Shipment gateway registry -->
         <service id="ekyna_commerce.shipment.gateway_registry"
                  class="Ekyna\Component\Commerce\Shipment\Gateway\Registry"
@@ -126,6 +133,9 @@
             </call>
             <call method="setWeightCalculator">
                 <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
+            </call>
+            <call method="setPersister">
+                <argument type="service" id="ekyna_commerce.shipment.persister"/>
             </call>
         </service>
 
@@ -142,6 +152,12 @@
                  class="Ekyna\Component\Commerce\Shipment\Gateway\Noop\NoopPlatform"
                  public="false">
             <tag name="ekyna_commerce.shipment.gateway_platform"/>
+        </service>
+
+        <!-- API Shipment gateway controller -->
+        <service id="ekyna_commerce.controller.api.shipment_gateway"
+                 class="Ekyna\Bundle\CommerceBundle\Controller\Api\ShipmentGatewayController">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
         </service>
 
     </services>

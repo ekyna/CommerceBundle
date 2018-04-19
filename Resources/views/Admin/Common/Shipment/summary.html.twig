@@ -1,0 +1,58 @@
+{% spaceless %}
+{% if parcels is not empty -%}
+    <p>{{ 'ekyna_commerce.order_shipment_item.label.plural'|trans }}</p>
+{%- endif %}
+<table class="table table-condensed">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+        <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+        <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items -%}
+    <tr>
+        <td>{{ item.designation }}</td>
+        <td>{{ item.reference }}</td>
+        <td>{{ item.quantity|localizednumber }} / {{ item.total|localizednumber }}</td>{# TODO Packaging format #}
+    </tr>
+    {%- endfor %}
+    </tbody>
+</table>
+{% if parcels is not empty -%}
+<p>{{ 'ekyna_commerce.shipment.field.parcels'|trans }}</p>
+<table class="table table-condensed">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.weight'|trans }}</th>
+        <th>{{ 'ekyna_commerce.shipment.field.valorization'|trans }}</th>
+        <th>{{ 'ekyna_commerce.shipment.field.tracking_number'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for parcel in parcels -%}
+    <tr>
+        <td>{{ parcel.weight }}</td>
+        <td>{{ parcel.valorization|localizedcurrency(commerce_default_currency) }}</td>
+        <td>{{ parcel.trackingNumber }}</td>
+    </tr>
+    {%- endfor %}
+    </tbody>
+</table>
+{%- endif %}
+{% if description -%}
+<div>
+    <dl class="dl-horizontal">
+    {% if description is not empty %}
+        <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+        <dd>{{ description|nl2br|raw }}</dd>
+    {% endif %}
+    {% if valorization is not empty %}
+        <dt>{{ 'ekyna_commerce.shipment.field.valorization'|trans }}</dt>
+        <dd>{{ valorization|localizedcurrency(commerce_default_currency) }}</dd>
+    {% endif %}
+    </dl>
+</div>
+{%- endif %}
+{% endspaceless %}

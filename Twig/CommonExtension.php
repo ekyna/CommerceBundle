@@ -40,7 +40,7 @@ class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRun
     public function initRuntime(\Twig_Environment $twig)
     {
         /** @var \Twig_TemplateInterface addressTemplate */
-        $this->addressTemplate = $twig->loadTemplate('EkynaCommerceBundle:Address:_render.html.twig'); // TODO config
+        $this->addressTemplate = $twig->loadTemplate('EkynaCommerceBundle:Show:address.html.twig');
     }
 
     /**

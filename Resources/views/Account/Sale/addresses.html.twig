@@ -20,7 +20,10 @@
         </p>
         <div class="panel panel-default">
             <div class="panel-body">
-            {%- if sale.sameAddress -%}
+            {%- if sale.relayPoint is not null -%}
+                <em>({{ 'ekyna_commerce.relay_point.label.singular'|trans }})</em><br>
+                {{- sale.relayPoint|address -}}
+            {%- elseif sale.sameAddress -%}
                 <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
             {%- else -%}
                 {{- sale.deliveryAddress|address -}}

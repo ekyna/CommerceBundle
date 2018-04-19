@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * This class generates and processes the payment forms for every payment methods available.
  *
- * @package Ekyna\Bundle\CommerceBundle\Service\Payment
+ * @package Ekyna\Bundle\CommerceBundle\Service\Checkout
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
 class PaymentManager

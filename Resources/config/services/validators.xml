@@ -19,6 +19,20 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Relay point validator -->
+        <service id="ekyna_commerce.relay_point.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\RelayPointValidator">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
+        <!-- Shipment item validator -->
+        <service id="ekyna_commerce.shipment.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentValidator">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
         <!-- Shipment item validator -->
         <service id="ekyna_commerce.shipment_item.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentItemValidator">

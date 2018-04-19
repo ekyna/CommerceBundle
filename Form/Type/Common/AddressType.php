@@ -2,6 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\GoogleBundle\Form\Type\CoordinateType;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use libphonenumber\PhoneNumberFormat;
@@ -12,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -135,6 +139,20 @@ class AddressType extends AbstractType
                         ]);
                 });
         }
+
+        if ($options['coordinate']) {
+            $builder->add('coordinate', CoordinateType::class, [
+                'map_height' => 260,
+            ]);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'address');
     }
 
     /**
@@ -150,6 +168,7 @@ class AddressType extends AbstractType
                 'identity'          => true,
                 'country'           => true,
                 'phones'            => true,
+                'coordinate'        => true,
                 'company_required'  => false,
                 'identity_required' => false,
                 'phone_required'    => false,
@@ -160,6 +179,7 @@ class AddressType extends AbstractType
             ->setAllowedTypes('identity', 'bool')
             ->setAllowedTypes('country', 'bool')
             ->setAllowedTypes('phones', 'bool')
+            ->setAllowedTypes('coordinate', 'bool')
             ->setAllowedTypes('company_required', 'bool')
             ->setAllowedTypes('identity_required', 'bool')
             ->setAllowedTypes('phone_required', 'bool')

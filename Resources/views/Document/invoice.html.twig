@@ -11,8 +11,10 @@
     </h1>
     <p>
         Le {{ subject.createdAt|localizeddate('long', 'none') }}, commande <strong>{{ subject.sale.number }}</strong>.
+        {% if subject is invoice_invoice -%}
         {{ macro.render_voucher_number(subject.sale) }}
         {{ macro.render_payment_term(subject.sale) }}
+        {%- endif %}
     </p>
     {% if subject.comment is not empty -%}
         <p>{{ subject.comment|nl2br }}</p>

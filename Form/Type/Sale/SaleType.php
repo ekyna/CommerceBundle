@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -153,6 +154,9 @@ class SaleType extends ResourceFormType
                 ->add('outstandingLimit', MoneyType::class, [
                     'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
                     'currency' => $currency,
+                ])
+                ->add('relayPoint', RelayPointType::class, [
+                    'search' => $sale->isSameAddress() ? $sale->getInvoiceAddress() : $sale->getDeliveryAddress(),
                 ]);
         });
 

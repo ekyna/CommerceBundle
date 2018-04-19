@@ -97,6 +97,8 @@
             {{ form_row(form.invoiceAddress) }}
             <hr>
             {{ form_row(form.deliveryAddress) }}
+            <hr>
+            {{ form_row(form.relayPoint) }}
         </div>
         <div class="tab-pane" id="order-informations">
             <div class="row">
@@ -112,6 +114,7 @@
             {{ form_row(form.description) }}
         </div>
     </div>
+    {{ ivory_google_api() }}
     {{ form_rest(form) }}
 </div>
 {% endspaceless %}

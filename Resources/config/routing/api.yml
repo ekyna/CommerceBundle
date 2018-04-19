@@ -1,3 +1,7 @@
 ekyna_commerce_api_pricing:
     resource: "api/pricing.yml"
     prefix: /pricing
+
+ekyna_commerce_api_shippment_gateway:
+    resource: "api/shipment_gateway.yml"
+    prefix: /shipment-gateway

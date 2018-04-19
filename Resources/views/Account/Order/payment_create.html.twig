@@ -8,20 +8,23 @@
     </p>
 
     {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
-        'sale': order,
-        'cancel_route': 'ekyna_commerce_account_order_payment_cancel'
+        'sale': order, 'customer': customer
     } -%}
 
-    <p>
-        {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
-            '%amount%': order.grandTotal|localizedcurrency(order.currency.code)
-        })|raw }}<br>
-        {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
-            '%amount%': order.remainingAmount|localizedcurrency(order.currency.code)
-        })|raw }}
-    </p>
+    <div class="row">
+        <div class="col-md-8">
+            {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {
+                'sale': order, 'forms': forms
+            } only -%}
+        </div>
+        <div class="col-md-4">
+            {% include "EkynaCommerceBundle:Account/Sale:summary.html.twig" with {
+                'title': 'ekyna_commerce.account.order.summary', 'sale': quote, 'delivery': true
+            } %}
+        </div>
+    </div>
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'forms': forms} only -%}
+    <hr>
 
     <div class="text-center">
         <a href="{{ path('ekyna_commerce_account_order_show', {'number': order.number}) }}" class="btn btn-default btn-lg">
@@ -31,16 +34,17 @@
     </div>
 
     <br><br>
+
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
     {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" with {
         'orders': orders, 'customer': customer
     } only %}
-
 {% endspaceless %}
 {% endblock %}
 
-{% block stylesheets %}
-    {{- parent() -}}
-    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
-{% endblock %}
+
+{% block stylesheets -%}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/checkout.css') }}" type="text/css" rel="stylesheet"/>
+{%- endblock stylesheets %}

@@ -1,4 +1,4 @@
-define(['jquery', 'routing'], function($, router) {
+define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router) {
     "use strict";
 
     /**
@@ -15,38 +15,7 @@ define(['jquery', 'routing'], function($, router) {
                 $customerChoice = $('#' + $this.data('customer-field')),
                 $sameCheckbox = $this.find('.sale-address-same'),
                 $choiceSelect = $this.find('.sale-address-choice'),
-                $addressForm = $this.find('.sale-address'),
-                mapping = {
-                    company: '.address-company',
-                    gender: '.identity-gender',
-                    first_name: '.identity-first-name',
-                    last_name: '.identity-last-name',
-                    street: '.address-street',
-                    complement: '.address-complement',
-                    supplement: '.address-supplement',
-                    postal_code: '.address-postal-code',
-                    city: '.address-city',
-                    country: '.address-country',
-                    //state: '.address-state',
-                    phone: '.address-phone',
-                    mobile: '.address-mobile'
-                },
-                clearForm = function() {
-                    for (var key in mapping) {
-                        if (mapping.hasOwnProperty(key)) {
-                            $addressForm.find(mapping[key]).val(null).trigger("change");
-                        }
-                    }
-                },
-                setAddress = function(data) {
-                    clearForm();
-
-                    for (var key in mapping) {
-                        if (mapping.hasOwnProperty(key)) {
-                            $addressForm.find(mapping[key]).val(data[key]).trigger("change");
-                        }
-                    }
-                };
+                $addressForm = $this.find('.sale-address').address();
 
             if (1 === $customerChoice.size()) {
                 $customerChoice.on('change', function() {
@@ -75,7 +44,7 @@ define(['jquery', 'routing'], function($, router) {
                                                 .data('address', addressData)
                                         );
                                         if (mode === 'invoice' && addressData['invoice_default'] === 1) {
-                                            setAddress(addressData);
+                                            $addressForm.address('set', addressData);
                                         } else if (mode === 'delivery' && addressData['delivery_default'] === 1) {
                                             if (addressData['invoice_default'] === 1) {
                                                 if (1 === $sameCheckbox.size()) {
@@ -83,14 +52,14 @@ define(['jquery', 'routing'], function($, router) {
                                                         .prop('checked', true)
                                                         .trigger('change');
                                                 }
-                                                clearForm();
+                                                $addressForm.address('clear');
                                             } else {
                                                 if (1 === $sameCheckbox.size()) {
                                                     $sameCheckbox
                                                         .prop('checked', false)
                                                         .trigger('change');
                                                 }
-                                                setAddress(addressData);
+                                                $addressForm.address('set', addressData);
                                             }
                                         }
                                     }
@@ -116,7 +85,7 @@ define(['jquery', 'routing'], function($, router) {
 
                 var data = $option.data('address');
                 if (data && data.hasOwnProperty('id')) {
-                    setAddress(data);
+                    $addressForm.address('set', data);
                 }
             });
 
@@ -125,10 +94,9 @@ define(['jquery', 'routing'], function($, router) {
                     toggleAddress = function () {
                         if ($sameCheckbox.prop('checked')) {
                             $wrapper.slideUp(function() {
+                                $addressForm.address('clear');
                                 if ($choiceSelect.size()) {
                                     $choiceSelect.val(null).trigger('change');
-                                } else {
-                                    clearForm();
                                 }
                             });
                         } else {

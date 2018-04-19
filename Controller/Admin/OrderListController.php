@@ -175,7 +175,7 @@ class OrderListController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function platformActionAction(Request $request)
+    public function shipmentPlatformAction(Request $request)
     {
         $platformName = $request->attributes->get('name');
         $actionName = $request->attributes->get('action');
@@ -190,13 +190,13 @@ class OrderListController extends Controller
             if (null !== $response) {
                 return $response;
             }
-        } catch (Exception\LogicException $e) {
+        } catch (Exception\ShipmentGatewayException $e) {
             $this->addFlash('ekyna_commerce.shipment.message.unsupported_action', 'danger');
-        } catch (Exception\RuntimeException $e) {
+        } catch (\Exception $e) {
             $this->addFlash($e->getMessage(), 'danger');
         }
 
-        if ($request->server->has('HTTP_REFERER') && !empty($referer = $request->server->get('HTTP_REFERER'))) {
+        if (!empty($referer = $request->headers->get('referer'))) {
             return $this->redirect($referer);
         }
 

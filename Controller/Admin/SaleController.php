@@ -543,6 +543,84 @@ class SaleController extends AbstractSaleController
     }
 
     /**
+     * Prepare shipment action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function prepareAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        if ($sale instanceof ShipmentSubjectInterface) {
+            $shipment = $this
+                ->get('ekyna_commerce.sale_preparer')
+                ->prepare($sale);
+
+            if (null !== $shipment) {
+                $this->getManager()->persist($sale);
+                $this->getManager()->flush();
+
+                $this->addFlash('ekyna_commerce.sale.prepare.success', 'success');
+            } else {
+                $this->addFlash('ekyna_commerce.sale.prepare.failure', 'warning');
+            }
+        }
+
+        if (null !== $path = $request->query->get('_redirect')) {
+            $redirect = $path;
+        } elseif(null !== $referer = $request->headers->get('referer')) {
+            $redirect = $referer;
+        } else {
+            $redirect = $this->generateResourcePath($sale);
+        }
+
+        return $this->redirect($redirect);
+    }
+
+    /**
+     * Abort shipment action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function abortAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        if ($sale instanceof ShipmentSubjectInterface) {
+            $shipment = $this
+                ->get('ekyna_commerce.sale_preparer')
+                ->abort($sale);
+
+            if (null !== $shipment) {
+                $this->getManager()->remove($shipment);
+                $this->getManager()->flush();
+
+                $this->addFlash('ekyna_commerce.sale.abort.success', 'success');
+            }
+        }
+
+        if (null !== $path = $request->query->get('_redirect')) {
+            $redirect = $path;
+        } elseif(null !== $referer = $request->headers->get('referer')) {
+            $redirect = $referer;
+        } else {
+            $redirect = $this->generateResourcePath($sale);
+        }
+
+        return $this->redirect($redirect);
+    }
+
+    /**
      * Prioritize action.
      *
      * @param Request $request

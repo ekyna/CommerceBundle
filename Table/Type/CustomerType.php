@@ -21,25 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CustomerType extends ResourceTableType
 {
     /**
-     * @var string
-     */
-    private $customerGroupClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $customerClass
-     * @param string $customerGroupClass
-     */
-    public function __construct($customerClass, $customerGroupClass)
-    {
-        parent::__construct($customerClass);
-
-        $this->customerGroupClass = $customerGroupClass;
-    }
-
-    /**
      * @inheritdoc
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
@@ -127,7 +108,7 @@ class CustomerType extends ResourceTableType
                     ],
                     [
                         'label'                => 'ekyna_core.button.remove',
-                        'icon'                 => 'remove',
+                        'icon'                 => 'trash',
                         'class'                => 'danger',
                         'route_name'           => 'ekyna_commerce_customer_admin_remove',
                         'route_parameters_map' => ['customerId' => 'id'],
@@ -154,11 +135,8 @@ class CustomerType extends ResourceTableType
                     'label'    => 'ekyna_core.field.email',
                     'position' => 40,
                 ])
-                ->addFilter('customerGroup', DType\Filter\EntityType::class, [
-                    'label'        => 'ekyna_core.field.group',
-                    'class'        => $this->customerGroupClass,
-                    'entity_label' => 'name',
-                    'position'     => 50,
+                ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
+                    'position' => 50,
                 ])
                 ->addFilter('creditBalance', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.customer.field.credit_balance',

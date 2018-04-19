@@ -34,6 +34,16 @@
                 {{ 'ekyna_commerce.order.label.plural'|trans }}
             </a>
         </li>
+        <li>
+            <a href="#customer-invoices" id="toggle-invoices" data-toggle="tab">
+                {{ 'ekyna_commerce.invoice.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#customer-shipments" id="toggle-shipments" data-toggle="tab">
+                {{ 'ekyna_commerce.shipment.label.plural'|trans }}
+            </a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -284,6 +294,18 @@
                     }) }}
                 </div>
                 {{ ekyna_table_render(orders) }}
+            </div>
+            <div class="tab-pane" id="customer-invoices">
+                <div class="sub-header">
+                    <h2>{{ 'ekyna_commerce.customer.header.orders'|trans|raw }}</h2>
+                </div>
+                {{ ekyna_table_render(invoices) }}
+            </div>
+            <div class="tab-pane" id="customer-shipments">
+                <div class="sub-header">
+                    <h2>{{ 'ekyna_commerce.customer.header.orders'|trans|raw }}</h2>
+                </div>
+                {{ ekyna_table_render(shipments) }}
             </div>
         </div>
     </div>

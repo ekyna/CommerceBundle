@@ -1,0 +1,30 @@
+{% spaceless %}
+<table class="table table-condensed">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+        <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+        <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items -%}
+        <tr>
+            <td>{{ item.designation }}</td>
+            <td>{{ item.reference }}</td>
+            <td>{{ item.quantity|localizednumber }}{% if 0 < item.total %} / {{ item.total|localizednumber }}{% endif %}</td>{# TODO Packaging format #}
+        </tr>
+    {%- endfor %}
+    </tbody>
+</table>
+{% if description %}
+<div>
+    <dl class="dl-horizontal">
+    {% if description is not empty %}
+        <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+        <dd>{{ description|nl2br|raw }}</dd>
+    {% endif %}
+    </dl>
+</div>
+{% endif %}
+{% endspaceless %}

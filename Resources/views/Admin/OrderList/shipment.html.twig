@@ -9,7 +9,7 @@
 {% endblock title %}
 
 {% block actions %}
-    {%- set platforms = shipment_global_actions() -%}
+    {%- set platforms = shipment_platform_global_actions() -%}
     {%- if platforms is not empty -%}
     <div class="btn-group">
         <button type="button" class="btn btn-default btn-sm dropdown-toggle"
@@ -20,7 +20,7 @@
         {%- for name, actions in platforms -%}
             {%- for action in actions -%}
             <li>
-                <a href="{{ path('ekyna_commerce_admin_order_list_shipment_platform_action', {
+                <a href="{{ path('ekyna_commerce_admin_order_list_shipment_platform', {
                     'name': name, 'action': action
                 }) }}">
                     <strong>{{ name|capitalize }}</strong> - {{ action|shipment_action_label|trans|raw }}

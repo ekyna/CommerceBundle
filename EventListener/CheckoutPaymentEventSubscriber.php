@@ -6,8 +6,6 @@ use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
-use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
-use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
@@ -69,9 +67,9 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
             throw new RuntimeException("Payment's method must be set at this point.");
         }
 
-        if ($method->getFactoryName() === Credit::FACTORY_NAME) {
+        if ($method->isCredit()) {
             $this->buildCreditForm($event);
-        } elseif ($method->getFactoryName() === Outstanding::FACTORY_NAME) {
+        } elseif ($method->isOutstanding()) {
             $this->buildOutstandingForm($event);
         } else {
             $this->buildDefaultForm($event);
@@ -115,6 +113,7 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
 
             return;
         }
+        // TODO Abort if deposit is not paid
 
         $payment = $event->getPayment();
 
@@ -180,11 +179,17 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
 
         $payment = $event->getPayment();
 
-        // Customer available fund
-        if (0 == $limit = $sale->getOutstandingLimit()) {
+        // If sale has a customer limit
+        if (0 < $limit = $sale->getOutstandingLimit()) {
+            // Use sale's balance
+            $balance = - $sale->getOutstandingAccepted() - $sale->getOutstandingExpired();
+        } else {
+            // Use customer's limit and balance
             $limit = $customer->getOutstandingLimit();
+            $balance = $customer->getOutstandingBalance();
         }
-        $available = $limit + $customer->getOutstandingBalance();
+
+        $available = $limit + $balance;
         // Abort if non available fund
         if (0 >= $available) {
             $event->stopPropagation();

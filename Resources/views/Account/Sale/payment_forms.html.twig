@@ -1,13 +1,21 @@
 {% spaceless %}
-{% for form in forms %}
-    {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                {{ form(form, {'style': 'inline'}) }}
-            </div>
+    <p class="h4">
+        {% set amount = sale.remainingAmount %}
+        {% if 0 < sale.depositTotal and amount == sale.depositTotal %}
+            {{- 'ekyna_commerce.checkout.payment.deposit_amount'|trans({
+                '%amount%': amount|localizedcurrency(sale.currency.code)
+            })|raw -}}
+        {% else %}
+            {{- 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
+                '%amount%': amount|localizedcurrency(sale.currency.code)
+            })|raw -}}
+        {% endif %}
+    </p>
+    {% for form in forms -%}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{- form(form, {'style': 'inline'}) -}}
         </div>
     </div>
-    {% if loop.last or loop.index0 % 2 == 1 %}</div>{% endif %}
-{% endfor %}
+    {%- endfor %}
 {% endspaceless %}

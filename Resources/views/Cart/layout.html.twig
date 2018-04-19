@@ -1,1 +1,6 @@
 {% extends "EkynaUserBundle::layout.html.twig" %}
+
+{% block stylesheets -%}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/checkout.css') }}" type="text/css" rel="stylesheet"/>
+{%- endblock stylesheets %}

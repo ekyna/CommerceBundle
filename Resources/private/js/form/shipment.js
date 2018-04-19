@@ -13,14 +13,45 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             var $form = $(this),
                 name = $form.attr('name'),
                 $items = $form.find('.shipment-items'),
-                $state = $form.find('[name="' + name + '[state]"]'),
-                $shippedAt = $form.find('[name="' + name + '[shippedAt]"]');
+                $method = $form.find('[name="' + name + '[method]"]'),
+                $parcels = $form.find('#shipment-parcels'),
+                $generalTab = $form.find('#toggle-general'),
+                $relayTab = $form.find('#toggle-relay-point');
 
-            console.log('shipmentWidget', $items.length, $state.length, $shippedAt.length);
 
-            $state.on('change', function() {
+            var onMethodChange = function() {
+                var supportParcel = 0,
+                    supportRelay = 0,
+                    $selectedMethod = $method.find('option[value="' + $method.val() + '"]');
+
+                if (1 === $selectedMethod.length) {
+                    supportParcel = $selectedMethod.data('parcel');
+                    supportRelay = $selectedMethod.data('relay');
+                }
+
+                if (supportParcel) {
+                    $parcels.slideDown();
+                } else {
+                    $parcels.slideUp(function() {
+                        // Clears parcels
+                        $parcels.find('.ekyna-collection-child-container').empty();
+                    });
+                }
+
+                if (supportRelay) {
+                    $relayTab.show();
+                } else {
+                    $relayTab.hide();
+                    $generalTab.trigger('click');
+                }
+            };
+
+            $method.on('change', onMethodChange);
+            onMethodChange();
+
+            /*$state.on('change', function() {
                 $shippedAt.prop('disabled', !($state.val() === 'shipped' || $state.val() === 'completed'));
-            }).trigger('change');
+            }).trigger('change');*/
 
             // TODO Packaging format
             $items

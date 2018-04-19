@@ -31,12 +31,14 @@ class ShipmentItemType extends ResourceFormType
                     'class' => 'input-sm',
                 ],
                 'error_bubbling' => true,
+                'disabled'       => $options['disabled'],
             ])
             ->add('children', ShipmentItemsType::class, [
                 'entry_type'    => static::class,
                 'entry_options' => [
                     'shipment' => $options['shipment'],
                     'level'    => $options['level'] + 1,
+                    'disabled' => $options['disabled'],
                 ],
             ]);
     }
@@ -88,9 +90,9 @@ class ShipmentItemType extends ResourceFormType
     {
         $resolver
             ->setDefaults([
-                'level'          => 0,
-                'data_class'     => $this->dataClass,
-                'shipment'       => null,
+                'level'      => 0,
+                'data_class' => $this->dataClass,
+                'shipment'   => null,
             ])
             ->setAllowedTypes('level', 'int')
             ->setAllowedTypes('shipment', ShipmentInterface::class);

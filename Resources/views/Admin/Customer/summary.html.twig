@@ -1,0 +1,60 @@
+{% spaceless %}
+<div>
+    <dl class="dl-horizontal">
+        <dt>{{ 'ekyna_core.field.number'|trans }}</dt>
+        <dd>{{ number }}</dd>
+
+        {% if company is not empty -%}
+        <dt>{{ 'ekyna_core.field.company'|trans }}</dt>
+        <dd>{{ company }}</dd>
+        {%- endif %}
+
+        <dt>{{ 'ekyna_core.field.identity'|trans }}</dt>
+        <dd>{{ first_name|capitalize }} {{ last_name|upper }}</dd>
+        <dt>{{ 'ekyna_core.field.email'|trans }}</dt>
+        <dd>{{ email }}</dd>
+
+        {% if phone is not empty -%}
+        <dt>{{ 'ekyna_core.field.phone'|trans }}</dt>
+        <dd>{{ phone }}</dd>
+        {%- endif %}
+
+        {% if mobile is not empty -%}
+        <dt>{{ 'ekyna_core.field.mobile'|trans }}</dt>
+        <dd>{{ mobile }}</dd>
+        {%- endif %}
+
+        {% if parent is not empty %}
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>{{ 'ekyna_commerce.customer.field.parent'|trans }}</dt>
+        <dd>{{ parent }}</dd>
+        {% endif %}
+
+        <dt>{{ 'ekyna_commerce.customer_group.label.singular'|trans }}</dt>
+        <dd>{{ group }}</dd>
+
+        {% if payment_term is not empty -%}
+        <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
+        <dd>{{ payment_term }}</dd>
+        <dt>{{ 'ekyna_commerce.customer.field.outstanding_limit'|trans }}</dt>
+        <dd>{{ outstanding_limit|localizedcurrency(commerce_default_currency) }}</dd>
+        <dt>{{ 'ekyna_commerce.customer.field.outstanding_balance'|trans }}</dt>
+        <dd>{{ outstanding_balance|localizedcurrency(commerce_default_currency) }}</dd>
+        {%- endif %}
+
+        <dt>{{ 'ekyna_commerce.customer.field.credit_balance'|trans }}</dt>
+        <dd>{{ credit_balance|localizedcurrency(commerce_default_currency) }}</dd>
+
+        <dt>{{ 'ekyna_commerce.pricing.field.vat_number'|trans }}</dt>
+        <dd>{{ vat_number }}</dd>
+        <dt>{{ 'ekyna_commerce.pricing.field.vat_valid'|trans }}</dt>
+        <dd>{{ ('ekyna_core.value.' ~ (vat_valid ? 'yes' : 'no'))|trans }}</dd>
+
+        {% if description is not empty -%}
+        <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+        <dd>{{ description|nl2br|raw }}</dd>
+        {%- endif %}
+    </dl>
+</div>
+{% endspaceless %}

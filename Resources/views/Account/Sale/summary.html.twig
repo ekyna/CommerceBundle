@@ -1,0 +1,53 @@
+<div class="summary-frame">
+    <p class="h4">{{ title|trans }}</p>
+    <table class="table table-condensed">
+        <tbody>
+        <tr>
+            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+        </tr>
+        {% for item in sale.items %}
+            <tr>
+                <td><span title="{{ item.designation }}">{{ item.designation }}</span></td>
+                <td class="text-right">{{ item.quantity|localizednumber }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tbody>
+        {#<tr>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            <td>{{ sale.netTotal|localizedcurrency(sale.currency.code) }}</td>
+        </tr>
+        <tr>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
+            <td>{{ sale.taxTotal|localizedcurrency(sale.currency.code) }}</td>
+        </tr>#}
+        {% if delivery and sale.shipmentMethod is not null -%}
+        <tr>
+            <th class="text-right">{{ sale.shipmentMethod.title }}</th>
+            <td class="text-right">{{ sale.shipmentAmount|localizedcurrency(sale.currency.code) }}</td>
+        </tr>
+        {%- endif %}
+        <tr>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            <td class="text-right">{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% if delivery %}
+    <div class="summary-frame">
+    {% if sale.relayPoint is not null -%}
+        <p class="h4">{{ 'ekyna_commerce.relay_point.label.singular'|trans }}</p>
+        <p>{{ sale.relayPoint|address }}</p>
+    {%- else -%}
+        {% set deliveryAddress = sale.sameAddress ? sale.invoiceAddress : sale.deliveryAddress -%}
+        <p class="h4">{{ 'ekyna_commerce.sale.field.delivery_address'|trans }}</p>
+        <p>{{ deliveryAddress|address }}</p>
+    {%- endif %}
+    </div>
+{% endif %}
+<div class="summary-frame">
+    <p class="h4">{{ 'ekyna_commerce.sale.field.invoice_address'|trans }}</p>
+    <p>{{ sale.invoiceAddress|address }}</p>
+</div>

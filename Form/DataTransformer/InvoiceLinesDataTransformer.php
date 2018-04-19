@@ -127,7 +127,8 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
         }
 
         if ($line->getType() === DocumentLineTypes::TYPE_GOOD) {
-            $override = $line->getSaleItem()->isCompound() && $line->getSaleItem()->hasPrivateChildren();
+            $saleItem = $line->getSaleItem();
+            $override = $saleItem->isPrivate() || ($saleItem->isCompound() && $saleItem->hasPrivateChildren());
 
             foreach ($line->getChildren() as $child) {
                 if ($override) {

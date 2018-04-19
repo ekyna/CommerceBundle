@@ -9,56 +9,58 @@
             {{- 'ekyna_commerce.account.invoice.title'|trans|raw -}}
         {%- endif -%}
     </div>
-    <table class="table">
-        <tbody>
-        {%- for invoice in invoices -%}
-            {%- set invoiceId = 'invoice_' ~ invoice.id -%}
-            {%- set path = path(route_prefix ~ '_invoice_download', {'number': sale.number, 'id': invoice.id}) -%}
-            <tr>
-                <td>
-                    <a href="{{ path }}" target="_blank">
-                        {{- invoice.number -}}
-                    </a>
-                </td>
-                <td>{{ invoice.grandTotal|localizedcurrency(invoice.currency) }}</td>
-                <td>{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
-                <td class="actions text-right">
-                    <a href="javascript:void(0)"
-                       id="{{ invoiceId }}_toggle_details"
-                       class="btn btn-default btn-xs"
-                       data-toggle-details="{{ invoiceId ~ '_details' }}">
-                        <span class="fa fa-info-circle"></span>
-                    </a>&nbsp;
-                    <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
-                        {{- 'ekyna_core.button.download'|trans -}}
-                    </a>
-                </td>
-            </tr>
-            <tr id="{{ invoiceId ~ '_details' }}" style="display:none;">
-                <td>&nbsp;</td>
-                <td colspan="3">
-                    <table class="table table-alt table-striped table-condensed">
-                        <thead>
-                        <tr>
-                            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {%- for line in invoice.lines -%}
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+            {%- for invoice in invoices -%}
+                {%- set invoiceId = 'invoice_' ~ invoice.id -%}
+                {%- set path = path(route_prefix ~ '_invoice_download', {'number': sale.number, 'id': invoice.id}) -%}
+                <tr>
+                    <td>
+                        <a href="{{ path }}" target="_blank">
+                            {{- invoice.number -}}
+                        </a>
+                    </td>
+                    <td>{{ invoice.grandTotal|localizedcurrency(invoice.currency) }}</td>
+                    <td>{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
+                    <td class="actions text-right">
+                        <a href="javascript:void(0)"
+                           id="{{ invoiceId }}_toggle_details"
+                           class="btn btn-default btn-xs"
+                           data-toggle-details="{{ invoiceId ~ '_details' }}">
+                            <span class="fa fa-info-circle"></span>
+                        </a>&nbsp;
+                        <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
+                            {{- 'ekyna_core.button.download'|trans -}}
+                        </a>
+                    </td>
+                </tr>
+                <tr id="{{ invoiceId ~ '_details' }}" style="display:none;">
+                    <td>&nbsp;</td>
+                    <td colspan="3">
+                        <table class="table table-alt table-striped table-condensed">
+                            <thead>
                             <tr>
-                                <td>{{ line.designation }}</td>{# TODO Public link #}
-                                <td>{{ line.reference }}</td>
-                                <td>{{ line.quantity|localizednumber }}</td> {# TODO Packaging format #}
+                                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
                             </tr>
-                        {%- endfor -%}
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        {%- endfor -%}
-        </tbody>
-    </table>
+                            </thead>
+                            <tbody>
+                            {%- for line in invoice.lines -%}
+                                <tr>
+                                    <td>{{ line.designation }}</td>{# TODO Public link #}
+                                    <td>{{ line.reference }}</td>
+                                    <td>{{ line.quantity|localizednumber }}</td> {# TODO Packaging format #}
+                                </tr>
+                            {%- endfor -%}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            {%- endfor -%}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endspaceless %}

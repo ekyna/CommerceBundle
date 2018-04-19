@@ -98,7 +98,7 @@ class CheckoutPaymentEvent extends Event
      *
      * @param FormInterface $form
      */
-    public function setForm(FormInterface $form)
+    public function setForm(FormInterface $form = null)
     {
         $this->form = $form;
     }

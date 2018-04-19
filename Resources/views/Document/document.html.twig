@@ -33,7 +33,9 @@
 {%- endblock doc_invoice_address -%}
 
 {%- block doc_delivery_address -%}
-    {%- if subject.deliveryAddress is not empty -%}
+    {%- if subject.relayPoint is not empty -%}
+        {{ macro.render_address(subject.relayPoint) }}
+    {%- elseif subject.deliveryAddress is not empty -%}
         {{ macro.render_address(subject.deliveryAddress) }}
     {%- else -%}
         {{ macro.render_address(subject.invoiceAddress) }}

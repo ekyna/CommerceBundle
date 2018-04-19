@@ -10,6 +10,9 @@
     {% if form.shipmentMethod is defined %}
         {{ form_row(form.shipmentMethod) }}
     {% endif %}
+    {% if form.relayPoint is defined %}
+        {{ form_row(form.relayPoint) }}
+    {% endif %}
 
     {% if form.originNumber is defined %}
     <div class="row">

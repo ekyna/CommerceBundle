@@ -1,26 +1,31 @@
 {% spaceless %}
+{% set payments = sale|sale_payments %}
+{% if payments is not empty %}
 <div class="panel panel-default">
     <div class="panel-heading">
         {{- 'ekyna_commerce.account.payment.title'|trans|raw -}}
     </div>
-    <table class="table">
-        <tbody>
-        {%- for payment in sale|sale_payments -%}
-            <tr>
-                <td>{{ payment.getNumber() }}</td>
-                <td>{{ payment.getMethod() }}</td>
-                <td>{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
-                {#<td>{{ payment.getCurrency() }}</td>#}
-                <td>{{ payment|payment_state_badge }}</td>
-                <td>{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
-                {% if not customer.hasParent() %}
-                <td class="actions text-right">
-                    {{- payment_account_actions(payment) -}}
-                </td>
-                {% endif %}
-            </tr>
-        {%- endfor -%}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+            {%- for payment in sale|sale_payments -%}
+                <tr>
+                    <td>{{ payment.getNumber() }}</td>
+                    <td>{{ payment.getMethod() }}</td>
+                    <td>{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
+                    {#<td>{{ payment.getCurrency() }}</td>#}
+                    <td>{{ payment|payment_state_badge }}</td>
+                    <td>{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
+                    {% if not customer.hasParent() %}
+                    <td class="actions text-right">
+                        {{- payment_account_actions(payment) -}}
+                    </td>
+                    {% endif %}
+                </tr>
+            {%- endfor -%}
+            </tbody>
+        </table>
+    </div>
 </div>
+{% endif %}
 {% endspaceless %}

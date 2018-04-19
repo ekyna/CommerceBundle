@@ -5,14 +5,6 @@
 
     <services>
 
-        <!-- Customer table type -->
-        <service id="ekyna_commerce.customer.table_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType">
-            <argument>%ekyna_commerce.customer.class%</argument>
-            <argument>%ekyna_commerce.customer_group.class%</argument>
-            <tag name="table.type"/>
-        </service>
-
         <!-- Order payment table type -->
         <service id="ekyna_commerce.order_payment.table_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderPaymentType"><!-- TODO use parameter defined by config builder -->
@@ -52,6 +44,22 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Order prepare action type -->
+        <service id="ekyna_commerce.order_prepare.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\OrderPrepareActionType">
+            <argument type="service" id="ekyna_commerce.sale_preparer"/>
+            <argument type="service" id="ekyna_commerce.order.manager"/>
+            <tag name="table.action_type"/>
+        </service>
+
+        <!-- Order abort action type -->
+        <service id="ekyna_commerce.order_abort.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\OrderAbortActionType">
+            <argument type="service" id="ekyna_commerce.sale_preparer"/>
+            <argument type="service" id="ekyna_commerce.order.manager"/>
+            <tag name="table.action_type"/>
+        </service>
+
         <!-- Payment state column type -->
         <service id="ekyna_commerce.payment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
@@ -63,6 +71,20 @@
         <service id="ekyna_commerce.shipment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Shipment weight column type -->
+        <service id="ekyna_commerce.shipment_weight.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentWeightType">
+            <argument type="service" id="ekyna_commerce.shipment_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Shipment tracking number column type -->
+        <service id="ekyna_commerce.shipment_tracking_number.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentTrackingNumberType">
+            <argument type="service" id="ekyna_commerce.shipment_helper"/>
             <tag name="table.column_type"/>
         </service>
 
@@ -80,15 +102,47 @@
             <tag name="table.column_type"/>
         </service>
 
-        <!-- Shipment platform action action type -->
-        <service id="ekyna_commerce.shipment_platform.action_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentPlatformActionType">
-            <argument type="service" id="ekyna_commerce.shipment_helper"/>
+        <!-- Shipment ship action type -->
+        <service id="ekyna_commerce.shipment_ship.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentShipActionType">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <argument type="service" id="ekyna_commerce.shipment.persister"/>
             <tag name="table.action_type"/>
         </service>
 
-        <!-- Shipment form action type -->
-        <service id="ekyna_commerce.shipment_form.action_type"
+        <!-- Shipment print label action type -->
+        <service id="ekyna_commerce.shipment_print_label.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentPrintLabelActionType">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <argument type="service" id="ekyna_commerce.shipment.persister"/>
+            <argument type="service" id="ekyna_commerce.shipment.label_renderer"/>
+            <tag name="table.action_type"/>
+        </service>
+
+        <!-- Shipment cancel action type -->
+        <service id="ekyna_commerce.shipment_cancel.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentCancelActionType">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <argument type="service" id="ekyna_commerce.shipment.persister"/>
+            <tag name="table.action_type"/>
+        </service>
+
+        <!-- Shipment prepare action type -->
+        <service id="ekyna_commerce.shipment_prepare.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentPrepareActionType">
+            <argument type="service" id="ekyna_commerce.order_shipment.manager"/>
+            <tag name="table.action_type"/>
+        </service>
+
+        <!-- Shipment remove action type -->
+        <service id="ekyna_commerce.shipment_remove.action_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentRemoveActionType">
+            <argument type="service" id="ekyna_commerce.order_shipment.manager"/>
+            <tag name="table.action_type"/>
+        </service>
+
+        <!-- Shipment document action type -->
+        <service id="ekyna_commerce.shipment_document.action_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentDocumentActionType">
             <argument type="service" id="router"/>
             <tag name="table.action_type"/>
@@ -155,6 +209,13 @@
                 <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             </call>
             <tag name="table.type"/>
+        </service>
+
+        <!-- In charge filter type -->
+        <service id="ekyna_commerce.customer_group.filter_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\CustomerGroupType">
+            <argument>%ekyna_commerce.customer_group.class%</argument>
+            <tag name="table.filter_type"/>
         </service>
 
         <!-- In charge filter type -->

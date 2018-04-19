@@ -6,11 +6,13 @@ use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\CommerceBundle\Table\Action;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
-use Ekyna\Component\Commerce\Shipment\Gateway\Action\ActionInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
+use Ekyna\Component\Table\View\RowView;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -64,8 +66,6 @@ class OrderShipmentType extends AbstractOrderListType
     {
         parent::buildTable($builder, $options);
 
-        $filters = null === $options['order'];
-
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', CType\Column\TextType::class, [
@@ -78,11 +78,11 @@ class OrderShipmentType extends AbstractOrderListType
                 'false_class' => 'label-default',
                 'position'    => 20,
             ])
-            ->addColumn('customer', Column\SaleCustomerType::class, [
+            /*->addColumn('customer', Column\SaleCustomerType::class, [
                 'label'         => 'ekyna_commerce.customer.label.singular',
                 'property_path' => 'order',
                 'position'      => 30,
-            ])
+            ])*/
             ->addColumn('method', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.method',
                 'property_path' => 'method.name',
@@ -92,14 +92,10 @@ class OrderShipmentType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.status',
                 'position' => 50,
             ])
-            ->addColumn('weight', CType\Column\NumberType::class, [
-                'label'     => 'ekyna_core.field.weight',
-                'precision' => 3,
-                'append'    => 'kg',
-                'position'  => 60,
+            ->addColumn('weight', Column\ShipmentWeightType::class, [
+                'position' => 60,
             ])
-            ->addColumn('trackingNumber', CType\Column\TextType::class, [
-                'label'    => 'ekyna_commerce.shipment.field.tracking_number',
+            ->addColumn('trackingNumber', Column\ShipmentTrackingNumberType::class, [
                 'position' => 70,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
@@ -111,62 +107,75 @@ class OrderShipmentType extends AbstractOrderListType
                 'position' => 999,
             ]);
 
-        if ($filters) {
-            $builder
-                ->addFilter('number', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.number',
-                    'position' => 10,
-                ])
-                ->addFilter('return', CType\Filter\BooleanType::class, [
-                    'label'    => 'ekyna_commerce.shipment.field.return',
-                    'position' => 20,
-                ])
-                ->addFilter('method', EntityType::class, [
-                    'label'    => 'ekyna_core.field.method',
-                    'class'    => $this->shipmentMethodClass,
-                    'position' => 30,
-                ])
-                ->addFilter('state', CType\Filter\ChoiceType::class, [
-                    'label'    => 'ekyna_core.field.status',
-                    'choices'  => ShipmentStates::getChoices(),
-                    'position' => 40,
-                ])
-                ->addFilter('weight', CType\Filter\NumberType::class, [
-                    'label'    => 'ekyna_core.field.weight',
-                    'position' => 50,
-                ])
-                ->addFilter('trackingNumber', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_commerce.shipment.field.tracking_number',
-                    'position' => 60,
-                ])
-                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                    'label'    => 'ekyna_core.field.created_at',
-                    'position' => 70,
-                ]);
+        if ($options['order'] || $options['customer']) {
+            return;
         }
 
-        $platforms = $this->shipmentHelper->getPlatformsActionsNames(ActionInterface::SCOPE_PLATFORM);
+        $builder
+            ->addFilter('number', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.number',
+                'position' => 10,
+            ])
+            ->addFilter('return', CType\Filter\BooleanType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.return',
+                'position' => 20,
+            ])
+            ->addFilter('method', EntityType::class, [
+                'label'    => 'ekyna_core.field.method',
+                'class'    => $this->shipmentMethodClass,
+                'position' => 30,
+            ])
+            ->addFilter('state', CType\Filter\ChoiceType::class, [
+                'label'    => 'ekyna_core.field.status',
+                'choices'  => ShipmentStates::getChoices(),
+                'position' => 40,
+            ])
+            ->addFilter('weight', CType\Filter\NumberType::class, [
+                'label'    => 'ekyna_core.field.weight',
+                'position' => 50,
+            ])
+            ->addFilter('trackingNumber', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.tracking_number',
+                'position' => 60,
+            ])
+            ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.created_at',
+                'position' => 70,
+            ]);
 
-        foreach ($platforms as $name => $platformActions) {
-            foreach ($platformActions as $action) {
-                $label = $this->translator->trans($this->shipmentHelper->getActionLabel($action));
+        $builder
+            ->addAction('ship', Action\ShipmentShipActionType::class)
+            ->addAction('shipment_label', Action\ShipmentPrintLabelActionType::class)
+            ->addAction('summary_label', Action\ShipmentPrintLabelActionType::class, [
+                'label' => 'ekyna_commerce.shipment.action.summary_labels',
+                'types' => [ShipmentLabelInterface::TYPE_SUMMARY],
+            ])
+            ->addAction('prepare', Action\ShipmentPrepareActionType::class)
+            ->addAction('cancel', Action\ShipmentCancelActionType::class)
+            ->addAction('remove', Action\ShipmentRemoveActionType::class)
+            ->addAction('bills', Action\ShipmentDocumentActionType::class, [
+                'label' => 'ekyna_commerce.shipment.action.bills',
+                'type'  => 'bill',
+            ])->addAction('forms', Action\ShipmentDocumentActionType::class, [
+                'label' => 'ekyna_commerce.shipment.action.forms',
+                'type'  => 'form',
+            ]);
+    }
 
-                $builder->addAction("{$name}_{$action}", Action\ShipmentPlatformActionType::class, [
-                    'label'    => sprintf('[%s] %s', ucfirst($name), $label),
-                    'platform' => $name,
-                    'action'   => $action,
-                ]);
-            }
-        }
+    /**
+     * @inheritDoc
+     */
+    public function buildRowView(RowView $view, RowInterface $row, array $options)
+    {
+        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
+        $shipment = $row->getData();
 
-        $builder->addAction('bills', Action\ShipmentDocumentActionType::class, [
-            'label' => 'ekyna_commerce.shipment.action.bills',
-            'type'  => 'bill',
-        ]);
-
-        $builder->addAction('forms', Action\ShipmentDocumentActionType::class, [
-            'label' => 'ekyna_commerce.shipment.action.forms',
-            'type'  => 'form',
+        $view->vars['attr']['data-summary'] = json_encode([
+            'route'      => 'ekyna_commerce_order_shipment_admin_summary',
+            'parameters' => [
+                'orderId'         => $shipment->getSale()->getId(),
+                'orderShipmentId' => $shipment->getId(),
+            ],
         ]);
     }
 }

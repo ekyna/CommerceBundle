@@ -149,6 +149,9 @@ class EkynaCommerceExtension extends AbstractExtension
         parent::prepend($container);
 
         $container->prependExtensionConfig('doctrine', [
+            'dbal' => [
+                'types' => DoctrineBundleMapping::buildTypesConfiguration(),
+            ],
             'orm' => [
                 'mappings' => [
                     'EkynaCommerce' => DoctrineBundleMapping::buildMappingConfiguration(),

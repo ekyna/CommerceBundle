@@ -3,18 +3,10 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Ekyna\Bundle\ProductBundle\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Exception\LogicException;
-use Ekyna\Component\Commerce\Exception\RuntimeException;
-use Ekyna\Component\Commerce\Shipment\Gateway\Action;
-use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
+use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
+use Ekyna\Component\Commerce\Shipment\Gateway;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentAddressResolverInterface;
-use Psr\Http\Message\ResponseInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class ShipmentHelper
@@ -30,42 +22,25 @@ class ShipmentHelper implements
         Shipment\AddressResolverAwareTrait;
 
     /**
-     * @var RegistryInterface
+     * @var Gateway\RegistryInterface
      */
     private $gatewayRegistry;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var LabelsRenderer
-     */
-    private $renderer;
 
 
     /**
      * Constructor.
      *
-     * @param RegistryInterface  $gatewayRegistry
-     * @param RequestStack       $requestStack
-     * @param LabelsRenderer    $renderer
+     * @param Gateway\RegistryInterface $gatewayRegistry
      */
-    public function __construct(
-        RegistryInterface $gatewayRegistry,
-        RequestStack $requestStack,
-        LabelsRenderer $renderer
-    ) {
+    public function __construct(Gateway\RegistryInterface $gatewayRegistry)
+    {
         $this->gatewayRegistry = $gatewayRegistry;
-        $this->requestStack = $requestStack;
-        $this->renderer = $renderer;
     }
 
     /**
      * Returns the gateway registry.
      *
-     * @return RegistryInterface
+     * @return Gateway\RegistryInterface
      */
     public function getGatewayRegistry()
     {
@@ -89,31 +64,87 @@ class ShipmentHelper implements
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function resolveSenderAddress(ShipmentInterface $shipment)
+    public function getCountryRepository()
     {
-        return $this->addressResolver->resolveSenderAddress($shipment);
+        return $this->addressResolver->getCountryRepository();
     }
 
     /**
      * @inheritdoc
      */
-    public function resolveReceiverAddress(ShipmentInterface $shipment)
+    public function resolveSenderAddress(Shipment\ShipmentInterface $shipment, bool $ignoreRelay = false)
     {
-        return $this->addressResolver->resolveReceiverAddress($shipment);
+        return $this->addressResolver->resolveSenderAddress($shipment, $ignoreRelay);
     }
 
     /**
-     * @param ShipmentInterface $shipment
+     * @inheritdoc
+     */
+    public function resolveReceiverAddress(Shipment\ShipmentInterface $shipment, bool $ignoreRelay = false)
+    {
+        return $this->addressResolver->resolveReceiverAddress($shipment,$ignoreRelay);
+    }
+
+    /**
+     * Returns the tracking url.
+     *
+     * @param Shipment\ShipmentDataInterface $shipmentData
      *
      * @return null|string
      */
-    public function getTrackingUrl(ShipmentInterface $shipment)
+    public function getTrackingUrl(Shipment\ShipmentDataInterface $shipmentData)
     {
-        $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
+        if ($shipmentData instanceof Shipment\ShipmentInterface) {
+            $shipment = $shipmentData;
+        } elseif ($shipmentData instanceof Shipment\ShipmentParcelInterface) {
+            $shipment = $shipmentData->getShipment();
+        } else {
+            throw new InvalidArgumentException(
+                "Expected instance of " . Shipment\ShipmentInterface::class .
+                " or " . Shipment\ShipmentParcelInterface::class
+            );
+        }
 
-        return $gateway->getTrackingUrl($shipment);
+        $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
+        try {
+            $url = $gateway->track($shipmentData);
+        } catch (ShipmentGatewayException $e) {
+            $url = null;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Returns the proof url.
+     *
+     * @param Shipment\ShipmentDataInterface $shipmentData
+     *
+     * @return null|string
+     */
+    public function getProofUrl(Shipment\ShipmentDataInterface $shipmentData)
+    {
+        if ($shipmentData instanceof Shipment\ShipmentInterface) {
+            $shipment = $shipmentData;
+        } elseif ($shipmentData instanceof Shipment\ShipmentParcelInterface) {
+            $shipment = $shipmentData->getShipment();
+        } else {
+            throw new InvalidArgumentException(
+                "Expected instance of " . Shipment\ShipmentInterface::class .
+                " or " . Shipment\ShipmentParcelInterface::class
+            );
+        }
+
+        $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
+        try {
+            $url = $gateway->prove($shipmentData);
+        } catch (ShipmentGatewayException $e) {
+            $url = null;
+        }
+
+        return $url;
     }
 
     /**
@@ -129,154 +160,66 @@ class ShipmentHelper implements
     }
 
     /**
-     * Executes the platform action.
+     * Returns the platforms global actions.
      *
-     * @param string                           $platformName
-     * @param string                           $actionName
-     * @param array|Shipment\ShipmentInterface $shipments
-     * @param Request|null                     $sfRequest
-     *
-     * @return \Symfony\Component\HttpFoundation\Response|null
-     *
-     * @throws LogicException
+     * @return array
      */
-    public function executePlatformAction($platformName, $actionName, $shipments, Request $sfRequest = null)
+    public function getPlatformsGlobalActions()
     {
-        $platform = $this->gatewayRegistry->getPlatform($platformName);
-
-        $action = $this->createAction($actionName, $shipments, $sfRequest);
-
-        if (!$platform->supports($action)) {
-            throw new LogicException("Unsupported action.");
-        }
-
-        try {
-            $response = $platform->execute($action);
-
-            if ($action instanceof Action\PrintLabel) {
-                $response = $this->renderer->render($action);
-            }
-        } catch (\Exception $e) {
-            throw new RuntimeException($e->getMessage());
-        }
-
-        if ($response instanceof ResponseInterface) {
-            return (new HttpFoundationFactory())->createResponse($response);
-        }
-
-        return $response;
+        return $this->getPlatformsActions(Gateway\PlatformActions::getGlobalActions());
     }
 
     /**
-     * Executes the gateway action.
+     * Returns the platforms mass actions.
      *
-     * @param string                           $gatewayName
-     * @param string                           $actionName
-     * @param array|Shipment\ShipmentInterface $shipments
-     * @param Request|null                     $sfRequest
-     *
-     * @return \Symfony\Component\HttpFoundation\Response|null
-     *
-     * @throws LogicException
+     * @return array
      */
-    public function executeGatewayAction($gatewayName, $actionName, $shipments, Request $sfRequest = null)
+    public function getPlatformsMassActions()
     {
-        $gateway = $this->gatewayRegistry->getGateway($gatewayName);
-
-        $action = $this->createAction($actionName, $shipments, $sfRequest);
-
-        if (!$gateway->supports($action)) {
-            throw new LogicException("Unsupported action.");
-        }
-
-        try {
-            $response = $gateway->execute($action);
-
-            if (null === $response && $action instanceof Action\PrintLabel) {
-                $response = $this->renderer->render($action);
-            }
-        } catch (\Exception $e) {
-            throw new RuntimeException($e->getMessage());
-        }
-
-        if ($response instanceof ResponseInterface) {
-            return (new HttpFoundationFactory())->createResponse($response);
-        }
-
-        return $response;
+        return $this->getPlatformsActions(Gateway\PlatformActions::getMassActions());
     }
 
     /**
-     * Creates the shipment action.
+     * Returns the gateway shipment actions.
      *
-     * @param string                           $name
-     * @param array|Shipment\ShipmentInterface $shipments
-     * @param Request                          $sfRequest
+     * @param Shipment\ShipmentInterface $shipment
      *
-     * @return Action\ActionInterface
+     * @return array
      */
-    public function createAction($name, $shipments, Request $sfRequest = null)
+    public function getGatewayShipmentActions(Shipment\ShipmentInterface $shipment)
     {
-        $class = $this->getActionClass($name);
+        return $this->getGatewayActions($shipment, Gateway\GatewayActions::getShipmentActions());
+    }
 
-        if (null === $sfRequest) {
-            $sfRequest = $this->requestStack->getMasterRequest();
-        }
-
-        $psrRequest = (new DiactorosFactory())->createRequest($sfRequest);
-
-        $shipments = is_array($shipments) ? $shipments : [$shipments];
-
-        return new $class($psrRequest, $shipments);
+    /**
+     * Returns the gateway api actions.
+     *
+     * @param Shipment\ShipmentInterface $shipment
+     *
+     * @return array
+     */
+    public function getGatewayApiActions(Shipment\ShipmentInterface $shipment)
+    {
+        return $this->getGatewayActions($shipment, Gateway\GatewayActions::getApiActions());
     }
 
     /**
      * Returns the shipment platforms actions.
      *
-     * @param string $scope
+     * @param array $filter
      *
      * @return array
      */
-    public function getPlatformsActions($scope = null)
+    private function getPlatformsActions(array $filter)
     {
-        $actions = [];
+        $platforms = [];
 
-        $platformNames = $this->gatewayRegistry->getPlatformNames();
-
-        foreach ($platformNames as $name) {
+        foreach ($this->gatewayRegistry->getPlatformNames() as $name) {
             $platform = $this->gatewayRegistry->getPlatform($name);
 
-            $classes = [];
-
-            foreach ($platform->getActions() as $class) {
-                if ($scope && !in_array($scope, $this->getActionScopes($class))) {
-                    continue;
-                }
-
-                $classes[] = $class;
+            if (!empty($actions = array_intersect($platform->getActions(), $filter))) {
+                $platforms[$name] = $actions;
             }
-
-            if (!empty($classes)) {
-                $actions[$name] = $classes;
-            }
-        }
-
-        return $actions;
-    }
-
-    /**
-     * Returns the shipment platforms actions names.
-     *
-     * @param string $scope
-     *
-     * @return array
-     */
-    public function getPlatformsActionsNames($scope = null)
-    {
-        $platforms = $this->getPlatformsActions($scope);
-
-        foreach ($platforms as $name => &$actions) {
-            $actions = array_map([$this, 'getActionName'], $actions);
         }
 
         return $platforms;
@@ -286,177 +229,18 @@ class ShipmentHelper implements
      * Returns the shipment gateway actions.
      *
      * @param Shipment\ShipmentInterface $shipment
-     * @param string                     $scope
+     * @param array                      $filter
      *
      * @return array
      */
-    public function getGatewayActions(Shipment\ShipmentInterface $shipment = null, $scope = null)
+    private function getGatewayActions(Shipment\ShipmentInterface $shipment, array $filter)
     {
         $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 
-        $actions = [];
+        $actions = array_intersect($gateway->getActions(), $filter);
 
-        foreach ($gateway->getActions($shipment) as $class) {
-            if ($scope && !in_array($scope, $this->getActionScopes($class))) {
-                continue;
-            }
-
-            $actions[] = $class;
-        }
-
-        return $actions;
-    }
-
-    /**
-     * Returns the shipment gateway actions names.
-     *
-     * @param Shipment\ShipmentInterface $shipment
-     * @param string                     $scope
-     *
-     * @return array
-     */
-    public function getGatewayActionsNames(Shipment\ShipmentInterface $shipment = null, $scope = null)
-    {
-        return array_map([$this, 'getActionName'], $this->getGatewayActions($shipment, $scope));
-    }
-
-    /**
-     * Returns the action (translation) label.
-     *
-     * @param string $classOrName
-     *
-     * @return string
-     */
-    public function getActionLabel($classOrName)
-    {
-        $name = class_exists($classOrName) ? $this->getActionName($classOrName) : $classOrName;
-
-        return 'ekyna_commerce.shipment.action.' . $name;
-    }
-
-    /**
-     * Returns the action class for the given name.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getActionClass($name)
-    {
-        switch ($name) {
-            case 'cancel' :
-                return Action\Cancel::class;
-            case 'capture' :
-                return Action\Capture::class;
-            case 'export' :
-                return Action\Export::class;
-            case 'import' :
-                return Action\Import::class;
-            case 'print_label' :
-                return Action\PrintLabel::class;
-            case 'clear_label' :
-                return Action\ClearLabel::class;
-            case 'ship' :
-                return Action\Ship::class;
-        }
-
-        throw new InvalidArgumentException(sprintf("Unexpected shipment action name '%s'.", $name));
-    }
-
-    /**
-     * Returns the action scopes.
-     *
-     * @param string $class
-     *
-     * @return array
-     */
-    private function getActionScopes($class)
-    {
-        return call_user_func([$class, 'getScopes']);
-    }
-
-    /**
-     * Returns the action name.
-     *
-     * @param string $class
-     *
-     * @return string
-     */
-    private function getActionName($class)
-    {
-        return call_user_func([$class, 'getName']);
-    }
-
-    /**
-     * Returns the action icon.
-     *
-     * @param string $name
-     *
-     * @return string|null
-     */
-    public function getActionIcon($name)
-    {
-        switch ($name) {
-            case Action\ClearLabel::NAME :
-            case Action\PrintLabel::NAME :
-                return 'barcode';
-            case Action\Cancel::NAME :
-                return 'remove';
-            case Action\Ship::NAME :
-                return 'road';
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the action theme.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getActionTheme($name)
-    {
-        switch ($name) {
-            case Action\ClearLabel::NAME :
-                return 'danger';
-        }
-
-        return 'primary';
-    }
-
-    /**
-     * Returns the action confirmation message.
-     *
-     * @param string $name
-     *
-     * @return string|null
-     */
-    public function getActionConfirm($name)
-    {
-        switch ($name) {
-            case Action\ClearLabel::NAME :
-                return 'Êtes-vous sûr de vouloir supprimer étiquette et numéro de suivi ?';
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the action target.
-     *
-     * @param string $name
-     *
-     * @return string|null
-     */
-    public function getActionTarget($name)
-    {
-        switch ($name) {
-            case Action\PrintLabel::NAME :
-                return '_blank';
-        }
-
-        return null;
+        return array_filter($actions, function ($action) use ($shipment, $gateway) {
+            return $gateway->can($shipment, $action);
+        });
     }
 }

@@ -68,6 +68,21 @@ class OrderEventSubscriber extends BaseSubscriber
     }
 
     /**
+     * @inheritDoc
+     */
+    public function onPrepare(ResourceEventInterface $event)
+    {
+        try {
+            parent::onPreDelete($event);
+        } catch (CommerceExceptionInterface $e) {
+            $event->addMessage(new ResourceMessage(
+                'ekyna_commerce.order.message.cant_be_prepared',
+                ResourceMessage::TYPE_ERROR
+            ));
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function onPreDelete(ResourceEventInterface $event)

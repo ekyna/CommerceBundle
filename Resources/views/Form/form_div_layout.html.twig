@@ -3,6 +3,7 @@
 
 {% block ekyna_commerce_address_widget %}
 {% spaceless %}
+<div {{ block('widget_container_attributes') }}>
     {{- bootstrap_backup_form_settings() -}}
     {{- bootstrap_set_sizing('sm') -}}
 
@@ -54,6 +55,7 @@
     </div>
     {%- endif -%}
 
+    {# Customer address specific #}
     {%- if form.invoiceDefault is defined and form.deliveryDefault is defined -%}
     <div class="row">
         <div class="col-md-6">
@@ -68,6 +70,7 @@
     {{- bootstrap_restore_form_settings() -}}
 
     {{- form_rest(form) -}}
+</div>
 {% endspaceless %}
 {% endblock ekyna_commerce_address_widget %}
 
@@ -613,6 +616,41 @@
 {% endblock ekyna_commerce_shipment_item_widget %}
 
 
+{% block ekyna_commerce_shipment_parcel_widget %}
+{% spaceless %}
+    {{ form_errors(form) }}
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_widget(form.weight, {'sizing': 'sm'}) }}
+            {{ form_errors(form.weight) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_widget(form.valorization, {'sizing': 'sm'}) }}
+            {{ form_errors(form.valorization) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_widget(form.trackingNumber, {'sizing': 'sm'}) }}
+            {{ form_errors(form.trackingNumber) }}
+        </div>
+    </div>
+    {{ form_rest(form) }}
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_parcel_widget %}
+
+
+{% block ekyna_commerce_shipment_gateway_data_widget %}
+{% spaceless %}
+    <div {{ block('widget_container_attributes') }}>
+    {{ form_errors(form) }}
+    {% for child in form -%}
+        {{ form_row(child, {'label_col': 4, 'widget_col': 8}) }}
+    {%- endfor %}
+    {{ form_rest(form) }}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_shipment_gateway_data_widget %}
+
+
 {% block ekyna_commerce_invoice_lines_widget %}
 {% spaceless %}
     {% if form.vars.headers -%}
@@ -983,6 +1021,40 @@
 {% endblock ekyna_commerce_supplier_order_item_widget %}
 
 
+{% block ekyna_commerce_relay_point_row %}
+{% spaceless %}
+<div class="commerce-relay-point" style="display:none">
+    {{ block('form_row') }}
+</div>
+{% endspaceless %}
+{% endblock ekyna_commerce_relay_point_row %}
+
+
+{% block ekyna_commerce_relay_point_widget %}
+{% spaceless %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <p class="relay-point-address"{% if relayPoint is null %} style="display: none;"{% endif %}>
+                {%- if relayPoint is not null %}{{ relayPoint|address }}{% endif -%}
+            </p>
+            <p class="relay-point-none"{% if relayPoint is not null %} style="display: none;"{% endif %}>
+                {{- 'ekyna_commerce.relay_point.message.choose'|trans -}}
+            </p>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-primary btn-sm relay-point-search" type="button">
+                <i class="glyphicon glyphicon-search"></i> {{ 'ekyna_core.button.search'|trans }}
+            </button>
+            <button class="btn btn-default btn-sm relay-point-clear" type="button">
+                <i class="glyphicon glyphicon-remove"></i> {{ 'ekyna_core.button.cancel'|trans }}
+            </button>
+        </div>
+    </div>
+    {{ block('hidden_widget') }}
+{% endspaceless %}
+{% endblock ekyna_commerce_relay_point_widget %}
+
+
 {% block ekyna_commerce_recipients_widget %}
 {% spaceless %}
     {% set class = attr.class|default('') %}
@@ -1009,15 +1081,6 @@
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
         <table class="ekyna-collection-child-container table">
-
-            {# Header #}
-            {#<thead>
-            <tr>
-                <th>{{ 'ekyna_core.field.email'|trans }}</th>
-                <th>{{ 'ekyna_core.field.name'|trans }}</th>
-                <th></th>
-            </tr>
-            </thead>#}
 
             {# Rows #}
             {% set previous_style = bootstrap_get_style() %}

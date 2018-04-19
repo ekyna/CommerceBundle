@@ -7,6 +7,7 @@
 
 
 {% block content %}
+{% spaceless %}
     <div class="container checkout">
         {{ cms_title() }}
         {{ cms_content() }}
@@ -39,20 +40,23 @@
                 </tbody>
             </table>
         </div>
+        <hr>
         {% endif %}
 
-        <p style="font-size:18px;">
-            {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
-                '%amount%': cart.grandTotal|localizedcurrency(cart.currency.code)
-            })|raw }}.<br>
-            {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
-                '%amount%': cart.remainingAmount|localizedcurrency(cart.currency.code)
-            })|raw }}.
-        </p>
+        <div class="row">
+            <div class="col-md-8">
+                {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {
+                    'sale': cart, 'forms': forms
+                } only -%}
+            </div>
+            <div class="col-md-4">
+                {%- include "EkynaCommerceBundle:Account/Sale:summary.html.twig" with {
+                    'title': 'ekyna_commerce.checkout.summary', 'sale': cart, 'delivery': true
+                } -%}
+            </div>
+        </div>
 
         <hr>
-
-        {% include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {'sale': cart} %}
 
         <div class="text-center">
             <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}" class="btn btn-default btn-lg">
@@ -60,6 +64,6 @@
                 {{ 'ekyna_core.button.previous_step'|trans }}
             </a>
         </div>
-
     </div>
+{% endspaceless %}
 {% endblock content %}

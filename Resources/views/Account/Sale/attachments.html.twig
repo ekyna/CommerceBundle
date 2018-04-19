@@ -7,27 +7,29 @@
         </a>
         {{ 'ekyna_commerce.account.attachment.title'|trans|raw }}
     </div>
-    <table class="table">
-        <tbody>
-        {%- for attachment in sale|sale_attachments -%}
-            {%- set path = path(route_prefix ~ '_attachment_download', {'number': sale.number, 'id': attachment.id}) -%}
-            <tr>
-                <td>
-                    <a href="{{ path }}" target="_blank">
-                        {{- attachment -}}
-                    </a>
-                </td>
-                <td>
-                    {{- attachment.title -}}
-                </td>
-                <td class="text-right">
-                    <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
-                        {{- 'ekyna_core.button.download'|trans -}}
-                    </a>
-                </td>
-            </tr>
-        {%- endfor -%}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+            {%- for attachment in sale|sale_attachments -%}
+                {%- set path = path(route_prefix ~ '_attachment_download', {'number': sale.number, 'id': attachment.id}) -%}
+                <tr>
+                    <td>
+                        <a href="{{ path }}" target="_blank">
+                            {{- attachment -}}
+                        </a>
+                    </td>
+                    <td>
+                        {{- attachment.title -}}
+                    </td>
+                    <td class="text-right">
+                        <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
+                            {{- 'ekyna_core.button.download'|trans -}}
+                        </a>
+                    </td>
+                </tr>
+            {%- endfor -%}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endspaceless %}

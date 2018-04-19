@@ -86,6 +86,7 @@ class CountryChoiceType extends AbstractType
                 'preferred_choices' => function (CountryInterface $country) {
                     return $country->getCode() === $this->defaultCode;
                 },
+                'choice_value'      => 'code',
                 'choice_label'      => function (CountryInterface $country) use ($currentLocale) {
                     return Intl::getRegionBundle()->getCountryName($country->getCode(), $currentLocale);
                 },

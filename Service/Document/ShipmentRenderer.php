@@ -32,13 +32,12 @@ class ShipmentRenderer extends AbstractRenderer
         }
 
         if ($type === static::TYPE_FORM) {
-            $subjects = array_filter($subjects, function(ShipmentInterface $shipment) {
+            $subjects = array_filter($subjects, function (ShipmentInterface $shipment) {
                 return !$shipment->isReturn();
             });
         }
 
         parent::__construct($subjects);
-
 
         $this->type = $type;
     }
@@ -60,6 +59,22 @@ class ShipmentRenderer extends AbstractRenderer
         $subject = reset($this->subjects);
 
         return 'shipment_' . $this->type . '_' . $subject->getNumber();
+    }
+
+    /**
+     * Returns the document's content.
+     *
+     * @return string
+     */
+    protected function getContent()
+    {
+        if ($this->type === static::TYPE_FORM) {
+            return $this->templating->render('EkynaCommerceBundle:Document:shipment_form.html.twig', [
+                'subjects' => $this->subjects,
+            ]);
+        }
+
+        return parent::getContent();
     }
 
     /**

@@ -52,6 +52,16 @@
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 
+        <!-- Sale preparer -->
+        <service id="ekyna_commerce.sale_preparer"
+                 class="Ekyna\Component\Commerce\Common\Preparer\SalePreparer"
+                 lazy="true">
+            <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            <argument type="service" id="ekyna_commerce.stock_prioritizer"/>
+            <argument type="service" id="ekyna_commerce.shipment.builder"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+        </service>
+
         <!-- Discount resolver -->
         <service id="ekyna_commerce.common.discount_resolver"
                  class="Ekyna\Component\Commerce\Common\Resolver\DiscountResolver">

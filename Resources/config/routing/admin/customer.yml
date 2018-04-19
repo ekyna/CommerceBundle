@@ -34,6 +34,15 @@ ekyna_commerce_customer_admin_remove:
     requirements:
         customerId: \d+
 
+ekyna_commerce_customer_admin_summary:
+    path: /{customerId}/summary
+    defaults: { _controller: "ekyna_commerce.customer.controller:summaryAction" }
+    methods: [GET]
+    requirements:
+        customerId: \d+
+    options:
+        expose: true
+
 ekyna_commerce_customer_admin_search:
     path: /search
     defaults: { _controller: "ekyna_commerce.customer.controller:searchAction" }

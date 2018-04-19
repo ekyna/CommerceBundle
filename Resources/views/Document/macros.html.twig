@@ -48,6 +48,10 @@
 {% macro render_address(address) %}
 {% spaceless %}
     <p>
+        {% if address['number'] is defined and address['number'] is not empty %}
+            <em>({{ 'ekyna_commerce.relay_point.label.singular'|trans }})</em><br>
+        {% endif %}
+
         {% if address['company'] is not empty %}
             <strong>{{ address['company'] }}</strong><br>
             {% if address['full_name'] is not empty %}

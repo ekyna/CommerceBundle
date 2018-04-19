@@ -45,8 +45,6 @@ class ShipmentDocumentActionType extends AbstractActionType
             $table->getContext()
         );
 
-        //$ids = $table->getContext()->getSelectedIdentifiers();
-
         $shipments = array_map(function (RowInterface $row) {
             return $row->getData();
         }, $rows);

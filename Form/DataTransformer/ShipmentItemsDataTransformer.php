@@ -117,7 +117,8 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
             $flat->add($item);
         }
 
-        $override = $item->getSaleItem()->isCompound() && $item->getSaleItem()->hasPrivateChildren();
+        $saleItem = $item->getSaleItem();
+        $override = $saleItem->isPrivate() || ($saleItem->isCompound() && $saleItem->hasPrivateChildren());
 
         foreach ($item->getChildren() as $child) {
             if ($override) {

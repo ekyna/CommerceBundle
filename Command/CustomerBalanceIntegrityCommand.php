@@ -102,8 +102,7 @@ class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
             'AND p.state IN (\'captured\', \'expired\') ' .
-            'AND m.factory_name=\'outstanding_balance\' '.
-            'GROUP BY p.id'
+            'AND m.factory_name=\'outstanding_balance\''
         );
 
         $fixQuery = $this->connection->prepare(
@@ -181,8 +180,7 @@ class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
             'JOIN commerce_payment_method AS m ON m.id=i.payment_method_id ' .
             'WHERE o.customer_id=:customer_id ' .
             'AND i.type=\'credit\' '.
-            'AND m.factory_name=\'credit_balance\' '.
-            'GROUP BY i.id'
+            'AND m.factory_name=\'credit_balance\''
         );
 
         $paymentQuery = $this->connection->prepare(
@@ -192,8 +190,7 @@ class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
             'AND p.state IN (\'captured\') ' .
-            'AND m.factory_name=\'credit_balance\' '.
-            'GROUP BY p.id'
+            'AND m.factory_name=\'credit_balance\''
         );
 
         $refundQuery = $this->connection->prepare(
@@ -203,8 +200,7 @@ class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
             'AND p.state IN (\'refunded\') ' .
-            'AND m.factory_name=\'credit_balance\' '.
-            'GROUP BY p.id'
+            'AND m.factory_name=\'credit_balance\''
         );
 
         $fixQuery = $this->connection->prepare(

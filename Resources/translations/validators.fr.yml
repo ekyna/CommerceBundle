@@ -46,6 +46,10 @@ ekyna_commerce:
         creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
     notification:
         pick_at_least_one_recipient: Veuillez choisir ou saisir au moins un destinataire.
+    relay_point:
+        is_required: Veuillez choisir un point relais.
+        must_be_null: Ce mode d'expédition ne prend pas en charge les points relais.
+        gateway_miss_match: Ce point relais ne correspond pas au mode d'expédition sélectionné.
     sale:
         no_customer:
             customer_group_is_required: Le groupe de client est requis si aucun client n'est sélectionné.
@@ -80,8 +84,24 @@ ekyna_commerce:
         stock_unit_shipped_quantity_overflow: |
             Le stock résultant doit être supérieur ou égale au stock expédié (max %max%).
     shipment:
+        method_does_not_support_parcel: |
+            Le mode d'expédition sélectionné ne prend en charge le colisage.
+        method_does_not_support_return: |
+            Le mode d'expédition sélectionné ne prend en charge les retours.
+        method_does_not_support_shipment: |
+            Le mode d'expédition sélectionné ne prend en charge que les retours.
         shipped_state_denied: |
             Le statut de la vente ne permet pas de sélectionner ce statut d'expédition.
+        weight_or_parcels_but_not_both: |
+            Veuillez laisser le champ poids vide si vous saisissez un colisage.
+        valorization_or_parcels_but_not_both: |
+            Veuillez laisser le champ valorisation vide si vous saisissez un colisage.
+        at_least_two_parcels_or_none:
+            Veuillez saisir au moins 2 colisages ou aucun.
+        credit_method_is_required:
+            Veuillez sélectionner un mode de remboursement.
+        credit_method_must_be_null:
+            Aucun mode de remboursement ne doit être sélectionné.
     shipment_item:
         returnable_overflow: |
             La quantité retournée doit être inférieure ou égale à %max%.

@@ -7,8 +7,10 @@ use Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
+use Ekyna\Component\Table\View\RowView;
 
 /**
  * Class OrderInvoiceType
@@ -24,8 +26,6 @@ class OrderInvoiceType extends AbstractOrderListType
     {
         parent::buildTable($builder, $options);
 
-        $filters = null === $options['order'];
-
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', CType\Column\TextType::class, [
@@ -35,11 +35,6 @@ class OrderInvoiceType extends AbstractOrderListType
             ->addColumn('type', Column\InvoiceTypeType::class, [
                 'label'    => 'ekyna_core.field.type',
                 'position' => 20,
-            ])
-            ->addColumn('customer', Column\SaleCustomerType::class, [
-                'label'         => 'ekyna_commerce.customer.label.singular',
-                'property_path' => 'order',
-                'position'      => 30,
             ])
             ->addColumn('goodsBase', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.invoice.field.goods_base',
@@ -67,30 +62,49 @@ class OrderInvoiceType extends AbstractOrderListType
                 'position'    => 80,
             ]);
 
-        if ($filters) {
-            $builder
-                ->addFilter('number', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.number',
-                    'position' => 10,
-                ])
-                ->addFilter('type', CType\Filter\ChoiceType::class, [
-                    'label'    => 'ekyna_core.field.type',
-                    'choices'  => InvoiceTypes::getChoices(),
-                    'position' => 20,
-                ])
-                // TODO Customer
-                ->addFilter('grandTotal', CType\Filter\NumberType::class, [
-                    'label'    => 'ekyna_commerce.invoice.field.grand_total',
-                    'position' => 70,
-                ])
-                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                    'label'    => 'ekyna_core.field.created_at',
-                    'position' => 80,
-                ]);
+        if ($options['order'] || $options['customer']) {
+            return;
         }
+
+        $builder
+            ->addFilter('number', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.number',
+                'position' => 10,
+            ])
+            ->addFilter('type', CType\Filter\ChoiceType::class, [
+                'label'    => 'ekyna_core.field.type',
+                'choices'  => InvoiceTypes::getChoices(),
+                'position' => 20,
+            ])
+            // TODO Customer
+            ->addFilter('grandTotal', CType\Filter\NumberType::class, [
+                'label'    => 'ekyna_commerce.invoice.field.grand_total',
+                'position' => 70,
+            ])
+            ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.created_at',
+                'position' => 80,
+            ]);
 
         $builder->addAction('documents', InvoiceDocumentActionType::class, [
             'label' => 'Afficher les factures/avoirs', // TODO trans
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildRowView(RowView $view, RowInterface $row, array $options)
+    {
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $row->getData();
+
+        $view->vars['attr']['data-summary'] = json_encode([
+            'route'      => 'ekyna_commerce_order_invoice_admin_summary',
+            'parameters' => [
+                'orderId'        => $invoice->getSale()->getId(),
+                'orderInvoiceId' => $invoice->getId(),
+            ],
         ]);
     }
 }

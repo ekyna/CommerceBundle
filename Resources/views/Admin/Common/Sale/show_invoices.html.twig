@@ -34,7 +34,13 @@
                 {% set total = total + invoice.grandTotal %}
 
                 {% set invoiceId = prefix ~ '_' ~ loop.index0 %}
-            <tr data-id="{{ invoice.id }}">
+            <tr data-id="{{ invoice.id }}" data-summary='{{ {
+                'route': 'ekyna_commerce_order_invoice_admin_summary',
+                'parameters': {
+                    'orderId':  invoice.sale.id,
+                    'orderInvoiceId': invoice.id
+                }
+            }|json_encode }}'>{# TODO summary instead of details #}
                 <td id="{{ invoiceId }}_number">{{ invoice.number }}</td>
                 <td id="{{ invoiceId }}_type">{{ invoice|invoice_type_badge }}</td>
                 {% if prefix == 'credit' -%}
@@ -66,12 +72,12 @@
                     {% endif -%}
                 </td>
                 <td class="actions">
-                    <a href="javascript:void(0)"
+                    {#<a href="javascript:void(0)"
                        id="{{ invoiceId }}_toggle_details"
                        class="btn btn-default btn-xs"
                        data-toggle-details="{{ invoiceId ~ '_details' }}">
                         <span class="fa fa-info-circle"></span>
-                    </a>
+                    </a>#}
                     <a href="{{ admin_resource_path(invoice, 'render') }}"
                        id="{{ invoiceId }}_render"
                        class="btn btn-primary btn-xs"
@@ -102,7 +108,7 @@
                     </a>
                 </td>
             </tr>
-            <tr style="display:none;" id="{{ invoiceId ~ '_details' }}">
+            {#<tr style="display:none;" id="{{ invoiceId ~ '_details' }}">
                 <td>&nbsp;</td>
                 <td colspan="{{ prefix == 'credit' ? 8 : 7 }}">
                     <table class="table table-condensed table-alt table-striped">
@@ -110,7 +116,7 @@
                             <tr>
                                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
                                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                                {#<th>{{ 'ekyna_commerce.invoice_line.field.net_price'|trans }}</th>#}
+                                #}{#<th>{{ 'ekyna_commerce.invoice_line.field.net_price'|trans }}</th>#}{#
                                 <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
                             </tr>
                         </thead>
@@ -125,7 +131,7 @@
                                     {%- endif -%}
                                 </td>
                                 <td id="{{ lineId ~ '_reference' }}">{{ line.reference }}</td>
-                                {#<td id="{{ lineId ~ '_netPrice' }}">{{ line.netUnit|localizedcurrency(invoice.currency.code) }}</td>#}
+                                #}{#<td id="{{ lineId ~ '_netPrice' }}">{{ line.netUnit|localizedcurrency(invoice.currency.code) }}</td>#}{#
                                 <td id="{{ lineId ~ '_quantity' }}">{{ line.quantity|localizednumber }}</td>
                             </tr>
                             {% endfor %}
@@ -136,7 +142,7 @@
                     {% endif %}
                 </td>
                 <td>&nbsp;</td>
-            </tr>
+            </tr>#}
             {% endfor %}
             <tr>
                 <td>&nbsp;</td>

@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\AbstractType;
@@ -86,13 +87,17 @@ class SaleTransformType extends AbstractType
                     ]);
                 }
             } else {
-                $form->add('shipmentMethod', ShipmentMethodChoiceType::class, [
-                    'sale'     => $sale,
-                    'expanded' => false,
-                    'attr'     => [
-                        'class' => 'sale-shipment-method',
-                    ],
-                ]);
+                $form
+                    ->add('shipmentMethod', ShipmentMethodChoiceType::class, [
+                        'sale'     => $sale,
+                        'expanded' => false,
+                        'attr'     => [
+                            'class' => 'sale-shipment-method',
+                        ],
+                    ])
+                    ->add('relayPoint', RelayPointType::class, [
+                        'search' => $sale->isSameAddress() ? $sale->getInvoiceAddress() : $sale->getDeliveryAddress(),
+                    ]);
             }
         });
     }

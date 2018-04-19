@@ -13,17 +13,32 @@
 {% spaceless %}
 
     <p style="font-size:18px;">
-        {{ 'ekyna_commerce.checkout.payment.grand_total'|trans({
-            '%amount%': sale.grandTotal|localizedcurrency(sale.currency.code)
-        })|raw }}<br>
-        {{ 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
-            '%amount%': sale.remainingAmount|localizedcurrency(sale.currency.code)
-        })|raw }}
+    {% set amount = sale.remainingAmount %}
+    {% if 0 < sale.depositTotal and amount == sale.depositTotal %}
+        {{- 'ekyna_commerce.checkout.payment.deposit_amount'|trans({
+            '%amount%': amount|localizedcurrency(sale.currency.code)
+        })|raw -}}
+    {% else %}
+        {{- 'ekyna_commerce.checkout.payment.remaining_amount'|trans({
+            '%amount%': amount|localizedcurrency(sale.currency.code)
+        })|raw -}}
+    {% endif %}
     </p>
 
     <hr>
 
-    {% include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" %}
+    {% for form in forms -%}
+    {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {{ form(form, {'style': 'inline'}) }}
+                </div>
+            </div>
+        </div>
+    {% if loop.last or loop.index0 % 2 == 1 %}</div>{% endif %}
+    {%- endfor %}
+
 
     <div class="text-center">
         <a href="{{ admin_resource_path(sale) }}" class="btn btn-default">

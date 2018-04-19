@@ -1,0 +1,60 @@
+{% spaceless %}
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Shipment forms</title>
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/shipment-form.css')) }}" rel="stylesheet" type="text/css" />
+    <link href="{{ absolute_url(asset('bundles/ekynacore/css/fontawesome.css')) }}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    {% for subject in subjects %}
+    <div class="wrapper">
+        <div class="bloc">
+            <div class="tags">
+                {{ subject.sale|cms_tags }}
+                {{ subject.sale.itemsTags|cms_tags }}
+            </div>
+            <h1>
+                {{ 'ekyna_commerce.order.label.singular'|trans }} <strong>{{ subject.sale.number }}</strong>
+                <small>{{ 'ekyna_commerce.shipment.label.singular'|trans }} <strong>{{ subject.number }}</strong></small>
+            </h1>
+            <table class="table details">
+                <thead>
+                <tr>
+                    <th colspan="2">{{ 'ekyna_core.field.designation'|trans }}</th>
+                    <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                    <th>{{ 'ekyna_commerce.stock_unit.field.geocode'|trans }}</th>
+                    <th colspan="2">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody class="stripped">
+                {% for item in subject.items %}
+                    {% set private = item.saleItem.private %}
+                    <tr{% if private %} style="color:#666"{% endif %}>
+                        <td{% if private %} style="padding-left:20px;"{% endif %}>
+                            {%- if private %}&bull;&nbsp;{% endif -%}
+                            {{- item.saleItem.designation -}}
+                        </td>
+                        <td class="text-right">
+                            {% set subject = item.saleItem|subject_get %}
+                            {% if subject is not null %}{{ subject|cms_tags({'text': false, 'badge': false}) }}{% endif %}
+                        </td>
+                        <td>{{ item.saleItem.reference }}</td>
+                        <td>
+                            {% for assignment in item.saleItem.stockAssignments %}
+                                {{ assignment.stockUnit.geocodes|join(' ')|raw }}
+                            {% endfor %}
+                        </td>
+                        <td class="text-right">{{ item.quantity|localizednumber }}</td>{# TODO Packing format #}
+                        <td class="text-right"><span class="input">&nbsp;</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>
+{% endspaceless %}

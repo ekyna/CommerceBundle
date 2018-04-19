@@ -183,6 +183,9 @@ class SaleItemController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // TODO validation
+            $this->getSaleHelper()->addItem($sale, $item);
+
             // TODO use ResourceManager
             /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $saleOperator */
             $saleOperator = $this->get($parentConfig->getServiceKey('operator'));

@@ -8,6 +8,7 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes as CInvoiceTypes;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -408,5 +409,55 @@ class SaleInvoiceController extends AbstractSaleController
             ->createRenderer($invoice);
 
         return $renderer->respond($request);
+    }
+
+    /**
+     * Invoice summary action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function summaryAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException();
+        }
+
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        $invoice = $context->getResource();
+
+        $this->isGranted('VIEW', $invoice);
+
+        $response = new Response();
+        $response->setVary(['Accept', 'Accept-Encoding']);
+        $response->setLastModified($invoice->getUpdatedAt());
+
+        $html = false;
+        $accept = $request->getAcceptableContentTypes();
+
+        if (in_array('application/json', $accept, true)) {
+            $response->headers->add(['Content-Type' => 'application/json']);
+        } elseif (in_array('text/html', $accept, true)) {
+            $html = true;
+        } else {
+            throw $this->createNotFoundException("Unsupported content type.");
+        }
+
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
+        if ($html) {
+            $content = $this->get('serializer')->normalize($invoice, 'json', ['groups' => ['Summary']]);
+            $content = $this->renderView('EkynaCommerceBundle:Admin/Common/Invoice:summary.html.twig', $content);
+        } else {
+            $content = $this->get('serializer')->serialize($invoice, 'json', ['groups' => ['Summary']]);
+        }
+
+        $response->setContent($content);
+
+        return $response;
     }
 }

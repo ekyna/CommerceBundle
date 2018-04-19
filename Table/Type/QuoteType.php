@@ -160,6 +160,9 @@ class QuoteType extends ResourceTableType
                     'label'    => 'ekyna_core.field.last_name',
                     'position' => 33,
                 ])
+                ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
+                    'position' => 35,
+                ])
                 ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.voucher_number',
                     'position' => 40,

@@ -2,10 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
+use Ekyna\Bundle\CommerceBundle\Model\ShipmentGatewayActions;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\TableBundle\Extension\Type\Column\ActionsType;
-use Ekyna\Component\Commerce\Shipment\Gateway\Action;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Source\RowInterface;
@@ -44,25 +45,61 @@ class ShipmentActionsType extends AbstractColumnType
             return;
         }
 
-        $names = $this->shipmentHelper->getGatewayActionsNames($shipment, Action\ActionInterface::SCOPE_GATEWAY);
-        if (empty($names)) {
+        $actions = $this->shipmentHelper->getGatewayShipmentActions($shipment);
+        if (empty($actions)) {
             return;
         }
 
         $buttons = isset($view->vars['buttons']) ? $view->vars['buttons'] : [];
 
-        foreach ($names as $name) {
+        // TODO Refactor
+        /** @see \Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension */
+
+        foreach ($actions as $action) {
             $buttons[] = [
-                'label'      => $this->shipmentHelper->getActionLabel($name),
-                'icon'       => $this->shipmentHelper->getActionIcon($name),
-                'class'      => 'primary',
-                'route'      => 'ekyna_commerce_order_shipment_admin_gateway_action',
+                'label'      => ShipmentGatewayActions::getLabel($action),
+                'icon'       => ShipmentGatewayActions::getIcon($action),
+                'class'      => ShipmentGatewayActions::getTheme($action),
+                'confirm'    => ShipmentGatewayActions::getConfirm($action),
+                'target'     => ShipmentGatewayActions::getTarget($action),
+                'route'      => 'ekyna_commerce_order_shipment_admin_' . $action,
                 'parameters' => [
                     'orderId'         => $shipment->getSale()->getId(),
                     'orderShipmentId' => $shipment->getId(),
-                    'action'          => $name,
                 ],
-                'disabled'   => false, // TODO $gateway->supports(new $class($shipment)) ?
+                'disabled'   => false,
+                //'permission' => 'EDIT', // TODO see admin actions type extension
+            ];
+        }
+
+        if ($shipment->getState() === ShipmentStates::STATE_PREPARATION) {
+            $buttons[] = [
+                'label'      => 'ekyna_core.button.edit',
+                'icon'       => 'pencil',
+                'class'      => 'warning',
+                'confirm'    => null,
+                'target'     => null,
+                'route'      => 'ekyna_commerce_order_shipment_admin_edit',
+                'parameters' => [
+                    'orderId'         => $shipment->getSale()->getId(),
+                    'orderShipmentId' => $shipment->getId(),
+                ],
+                'disabled'   => false,
+                //'permission' => 'EDIT', // TODO see admin actions type extension
+            ];
+        } elseif (!ShipmentStates::isStockableState($shipment->getState())) {
+            $buttons[] = [
+                'label'      => 'ekyna_core.button.remove',
+                'icon'       => 'trash',
+                'class'      => 'danger',
+                'confirm'    => null,
+                'target'     => null,
+                'route'      => 'ekyna_commerce_order_shipment_admin_remove',
+                'parameters' => [
+                    'orderId'         => $shipment->getSale()->getId(),
+                    'orderShipmentId' => $shipment->getId(),
+                ],
+                'disabled'   => false,
                 //'permission' => 'EDIT', // TODO see admin actions type extension
             ];
         }

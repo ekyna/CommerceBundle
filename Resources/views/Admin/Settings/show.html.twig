@@ -3,3 +3,41 @@
     'label_col': 3,
     'html': true
 }) }}
+<div class="row show-row">
+    <div class="col-md-3 show-label">
+        {{ 'ekyna_commerce.setting.shipment_label.label'|trans }}
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(settings.commerce.shipment_label.size, 'text', {
+                    'label': 'ekyna_commerce.setting.shipment_label.size',
+                    'label_col': 6
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(settings.commerce.shipment_label.width, 'number', {
+                    'label': 'ekyna_commerce.setting.shipment_label.width',
+                    'append': 'mm',
+                    'label_col': 6
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(settings.commerce.shipment_label.height, 'number', {
+                    'label': 'ekyna_commerce.setting.shipment_label.height',
+                    'append': 'mm',
+                    'label_col': 6
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(settings.commerce.shipment_label.margin, 'number', {
+                    'label': 'ekyna_commerce.setting.shipment_label.margin',
+                    'append': 'mm',
+                    'label_col': 6
+                }) }}
+            </div>
+        </div>
+    </div>
+</div>

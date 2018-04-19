@@ -73,6 +73,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form', 
     });
 
     $(document).on('click', '.sale-view [data-sale-toggle-children]', function(e) {
+        e.stopPropagation();
         e.preventDefault();
 
         var $link = $(e.currentTarget),
@@ -80,10 +81,25 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form', 
             id = $link.data('sale-toggle-children'),
             shown = !!$link.data('sale-toggle-shown');
 
+        function hideChildren($children) {
+            $children.each(function() {
+                $(this).hide().find('[data-sale-toggle-children]').each(function() {
+                    var $link = $(this),
+                        id = $link.data('sale-toggle-children'),
+                        shown = !!$link.data('sale-toggle-shown');
+
+                    if (id && shown) {
+                        hideChildren($saleView.find('tr[data-parent="' + id + '"]'));
+                        $link.data('sale-toggle-shown', false)
+                    }
+                });
+            })
+        }
+
         if (id) {
             var $children = $saleView.find('tr[data-parent="' + id + '"]');
             if (shown) {
-                $children.hide();
+                hideChildren($children);
             } else {
                 $children.show();
             }

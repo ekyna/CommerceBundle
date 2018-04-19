@@ -40,18 +40,11 @@ class OrderPaymentType extends AbstractOrderListType
     {
         parent::buildTable($builder, $options);
 
-        $filters = null === $options['order'];
-
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', CType\Column\TextType::class, [
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
-            ])
-            ->addColumn('customer', Column\SaleCustomerType::class, [
-                'label'         => 'ekyna_commerce.customer.label.singular',
-                'property_path' => 'order',
-                'position'      => 20,
             ])
             ->addColumn('method', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.method',
@@ -72,36 +65,49 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.status',
                 'position' => 60,
             ])
+            ->addColumn('outstandingDate', CType\Column\DateTimeType::class, [
+                'label'         => 'ekyna_commerce.sale.field.outstanding_date',
+                'property_path' => 'order.outstandingDate',
+                'time_format'   => 'none',
+                'position'      => 70,
+            ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',
                 'time_format' => 'none',
-                'position'    => 70,
+                'position'    => 80,
             ]);
 
-        if ($filters) {
-            $builder
-                ->addFilter('number', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.number',
-                    'position' => 10,
-                ])
-                ->addFilter('method', EntityType::class, [
-                    'label'    => 'ekyna_core.field.method',
-                    'class'    => $this->paymentMethodClass,
-                    'position' => 20,
-                ])
-                ->addFilter('amount', CType\Filter\NumberType::class, [
-                    'label'    => 'ekyna_core.field.amount',
-                    'position' => 30,
-                ])
-                ->addFilter('state', CType\Filter\ChoiceType::class, [
-                    'label'    => 'ekyna_core.field.status',
-                    'choices'  => PaymentStates::getChoices(),
-                    'position' => 40,
-                ])
-                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                    'label'    => 'ekyna_core.field.created_at',
-                    'position' => 50,
-                ]);
+        if ($options['order'] || $options['customer']) {
+            return;
         }
+
+        $builder
+            ->addFilter('number', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.number',
+                'position' => 10,
+            ])
+            ->addFilter('method', EntityType::class, [
+                'label'    => 'ekyna_core.field.method',
+                'class'    => $this->paymentMethodClass,
+                'position' => 40,
+            ])
+            ->addFilter('amount', CType\Filter\NumberType::class, [
+                'label'    => 'ekyna_core.field.amount',
+                'position' => 50,
+            ])
+            ->addFilter('state', CType\Filter\ChoiceType::class, [
+                'label'    => 'ekyna_core.field.status',
+                'choices'  => PaymentStates::getChoices(),
+                'position' => 60,
+            ])
+            ->addFilter('outstandingDate', CType\Filter\DateTimeType::class, [
+                'label'         => 'ekyna_commerce.sale.field.outstanding_date',
+                'property_path' => 'order.outstandingDate',
+                'position'      => 70,
+            ])
+            ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.created_at',
+                'position' => 80,
+            ]);
     }
 }

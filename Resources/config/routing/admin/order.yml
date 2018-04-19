@@ -118,6 +118,20 @@ ekyna_commerce_order_admin_prioritize:
     requirements:
         orderId: \d+
 
+ekyna_commerce_order_admin_prepare:
+    path: /{orderId}/prepare
+    defaults: { _controller: "ekyna_commerce.order.controller:prepareAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_admin_abort:
+    path: /{orderId}/abort
+    defaults: { _controller: "ekyna_commerce.order.controller:abortAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
 ekyna_commerce_order_admin_document_generate:
     path: /{orderId}/document/generate/{type}
     defaults:

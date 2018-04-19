@@ -255,6 +255,19 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
         }
 
+        /*$this->shipmentCheckout->initialize($cart, $this->generateUrl('ekyna_commerce_cart_checkout_payment'));
+
+        if ($this->shipmentCheckout->handleRequest($request)) {
+            $this->saveCart();
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
+        }
+
+        return $this->render('EkynaCommerceBundle:Cart/Checkout:shipment.html.twig', [
+            'cart'  => $cart,
+            'forms' => $this->shipmentCheckout->getFormsViews(),
+        ]);*/
+
         $form = $this
             ->getFormFactory()
             ->create(ShipmentType::class, $cart, [

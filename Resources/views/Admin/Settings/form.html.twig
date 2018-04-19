@@ -1,1 +1,22 @@
 {{ form_row(form.commerce.invoice_footer, {'label_col': 3, 'widget_col': 9}) }}
+<div class="form-group">
+    {{ form_label(form.commerce.shipment_label, null, {'label_col': 3}) }}
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.commerce.shipment_label.size, {'label_col': 6, 'widget_col': 6}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.commerce.shipment_label.width, {'label_col': 6, 'widget_col': 6}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.commerce.shipment_label.height, {'label_col': 6, 'widget_col': 6}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.commerce.shipment_label.margin, {'label_col': 6, 'widget_col': 6}) }}
+            </div>
+        </div>
+    </div>
+</div>

@@ -101,6 +101,7 @@ ekyna_commerce:
             title: Situation de mon compte
         order:
             title: Mes commandes
+            summary: Ma commande
             latest: Commandes récentes
             all: Toutes mes commandes
             show: Détail de la commande <em>%number%</em>
@@ -113,6 +114,7 @@ ekyna_commerce:
                 payment_denied: Contactez votre service d'achat pour le réglement de cette commande.
         quote:
             title: Mes devis
+            summary: Mon devis
             latest: Devis récents
             all: Tous mes devis
             show: Détail du devis <em>%number%</em>
@@ -256,6 +258,7 @@ ekyna_commerce:
             plural: Paiements de panier
 
     checkout:
+        summary: Mon panier
         index:
             empty: Votre panier est vide
             information: Informations
@@ -292,6 +295,8 @@ ekyna_commerce:
         payment:
             grand_total: |
                 Montant total de la commande : <strong>%amount%</strong>
+            deposit_amount: |
+                Montant de l'acompte : <strong>%amount%</strong>
             remaining_amount: |
                 Montant du paiement : <strong>%amount%</strong>
             available_fund: |
@@ -588,6 +593,8 @@ ekyna_commerce:
             cant_be_deleted: >
                 Cette commande a des paiement(s) valide(s), des livraison(s)
                 et/ou des facture(s) et ne peut être supprimée.
+            cant_be_prepared: >
+                Le statut de cette commande ne permet pas la préparation d'expédition.
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
@@ -833,6 +840,26 @@ ekyna_commerce:
             singular: Paiement de devis
             plural: Paiements de devis
 
+    relay_point:
+        label:
+            singular: Point relais
+            plural: Points relais
+        message:
+            choose: Veuillez choisir un point relais.
+
+    return:
+        label:
+            singular: Retour
+            plural: Retours
+        header:
+            new: Créer un nouveau retour
+            edit: Modifier le retour
+            remove: Supprimer le retour
+        button:
+            new: Nouveau retour
+            edit: Modifier le retour
+            remove: Supprimer le retour
+
     sale:
         label:
             singular: Vente
@@ -859,6 +886,8 @@ ekyna_commerce:
             recalculate: Recalculer
             notify: Notifier
             prioritize: Réassigner le stock
+            prepare: Préparer l'expédition
+            abort: Annuler la préparation
             adjustment:
                 new: Ajouter une remise
                 edit: Modifier la remise
@@ -877,6 +906,9 @@ ekyna_commerce:
                 remove: Supprimer la remise de ligne
             shipment:
                 edit: Modifier les frais de port
+        action:
+            prepare: Préparer les expéditions
+            abort: Annuler les préparations
         confirm:
             prioritize: Confirmer la réassignation du stock ?
             transform: Confirmer la transformation en <strong>%target%</strong> ?
@@ -885,6 +917,11 @@ ekyna_commerce:
                 remove: Souhaitez-vous réellement supprimer cette article ?
             adjustment:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
+        prepare:
+            success: L'expédition a bien été préparée.
+            failure: Aucune expédition a préparer.
+        abort:
+            success: La préparation a bien été annulée.
         prioritize:
             info: >
                 Certaines lignes de cette commande peuvent être réassignées pour
@@ -964,19 +1001,12 @@ ekyna_commerce:
 
     setting:
         invoice_footer: Pied de page facture
-
-    return:
-        label:
-            singular: Retour
-            plural: Retours
-        header:
-            new: Créer un nouveau retour
-            edit: Modifier le retour
-            remove: Supprimer le retour
-        button:
-            new: Nouveau retour
-            edit: Modifier le retour
-            remove: Supprimer le retour
+        shipment_label:
+            label: Étiquette expédition
+            size: Format
+            width: Largeur
+            height: Hauteur
+            margin: Marges
 
     shipment:
         label:
@@ -992,7 +1022,9 @@ ekyna_commerce:
             remove: Supprimer l'expédition
         field:
             return: Retour
-            items: Éléments
+            items: Articles
+            valorization: Valorisation
+            parcels: Colisage
             shipped_at: Date d'expédition
             tracking_number: N° de suivi
             auto_invoice: Générer la facture
@@ -1001,29 +1033,37 @@ ekyna_commerce:
             receiver_address: Addresse destinataire
         state:
             new: Création
-#            checkout: Vérification
-#            onhold: En cours d'envoi
-            pending: En attente
-#            backordered: En réapprovisionnement
-            ready: Prêt
-            partial: Partiel
-            shipped: Expédié
-            returned: Retourné
             canceled: Annulé
+            preparation: Préparation
+            ready: Prêt
+            shipped: Expédié
+            pending: En attente
+            returned: Retourné
             none: Aucun
+            partial: Partiel
             completed: Complété
         action:
+            ship: Expédier
             cancel: Annuler
-            capture: Capturer
+            complete: Finaliser
+            prepare: Passer en statut &laquo;Préparation&raquo;
+            #capture: Capturer
             export: Exporter vers logiciel
             import: Importer les numéros de suivi
             print_label: Imprimer étiquette
-            clear_label: Supprimer étiquette
-            ship: Expédier
+            shipment_labels: Imprimer étiquettes expéditions
+            summary_labels: Imprimer étiquettes récapitulatives
+            list_relay_points: Rechercher des points relais
+            get_relay_point: Rechercher un point relais
+            #clear_label: Supprimer étiquette
             bills: Afficher les bons de livraison
             forms: Afficher les bons de préparation
+        confirm:
+            cancel: Êtes-vous sûr de vouloir ANNULER cette expédition ou ce retour et supprimer l'étiquette et le numéro de suivi ?
+            complete: Êtes-vous sûr de vouloir FINALISER cette expédition ou ce retour ?
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
+            edit_prevented: Veuillez annuler l'expédition pour pouvoir la modifier.
             cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
             sale_is_not_stackable: |
                 Le statut de la vente n'étant pas accepté, les statuts

@@ -1,4 +1,5 @@
 {% spaceless %}
+{% set map_params = {'label': null, 'map_width': 520, 'map_height': 160, 'map_zoom': 17, 'map_static': false} %}
 <div class="row">
     <div class="col-md-6">
         <div class="row show-row">
@@ -8,15 +9,14 @@
             <div class="col-md-8">
                 <div class="panel panel-default" id="sale_invoiceAddress">
                     <div class="panel-body">
-                        {{ sale.invoiceAddress|address }}
+                        {{- sale.invoiceAddress|address -}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        {# TODO #}
-        [TODO Google map]
+        {{- show_row(sale.invoiceAddress, 'google_map', map_params) -}}
     </div>
 </div>
 <div class="row">
@@ -26,23 +26,46 @@
                 {{ 'ekyna_commerce.sale.field.delivery_address'|trans }}
             </div>
             <div class="col-md-8">
-                {% if not sale.sameAddress %}
+                {% if not sale.sameAddress -%}
                     <div class="panel panel-default">
                         <div class="panel-body" id="sale_deliveryAddress">
                             {{ sale.deliveryAddress|address }}
                         </div>
                     </div>
-                {% else %}
+                {%- else -%}
                     <div class="show-widget show-widget-inline" id="sale_deliveryAddress">
                         <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
                     </div>
-                {% endif %}
+                {%- endif %}
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        {# TODO #}
-        [TODO Google map]
+        {% if not sale.sameAddress -%}
+            {{- show_row(sale.deliveryAddress, 'google_map', map_params) -}}
+        {%- endif %}
     </div>
 </div>
+{% if sale.relayPoint is not null -%}
+<div class="row">
+    <div class="col-md-6">
+        <div class="row show-row">
+            <div class="col-md-4 show-label">
+                {{ 'ekyna_commerce.relay_point.label.singular'|trans }}
+            </div>
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-body" id="sale_relayPoint">
+                        {{- sale.relayPoint|address -}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        {{- show_row(sale.relayPoint, 'google_map', map_params) -}}
+    </div>
+</div>
+{%- endif %}
 {% endspaceless %}
+{{ ivory_google_api() }}

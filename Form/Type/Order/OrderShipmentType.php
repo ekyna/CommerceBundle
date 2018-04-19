@@ -19,6 +19,9 @@ class OrderShipmentType extends ShipmentType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefault('item_type', OrderShipmentItemType::class);
+        $resolver->setDefaults([
+            'item_type'   => OrderShipmentItemType::class,
+            'parcel_type' => OrderShipmentParcelType::class,
+        ]);
     }
 }

@@ -42,6 +42,10 @@ ekyna_commerce_shipment_zone_admin:
     resource: "admin/shipment_zone.yml"
     prefix:   /shipment-zones
 
+ekyna_commerce_shipment_platform_admin:
+    resource: "admin/shipment_platform.yml"
+    prefix:   /shipment-platform
+
 ekyna_commerce_supplier_admin:
     resource: "admin/supplier.yml"
     prefix:   /suppliers
@@ -91,10 +95,10 @@ ekyna_commerce_admin_order_list_shipment_document:
         type: form|bill
         _format: pdf|html|jpg
 
-ekyna_commerce_admin_order_list_shipment_platform_action:
+ekyna_commerce_admin_order_list_shipment_platform:
     path: /order-shipments/platform/{name}/{action}
     methods: [GET|POST]
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:platformAction }
+    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipmentPlatform }
 
 ekyna_commerce_admin_order_list_invoice:
     path: /order-invoices

@@ -49,11 +49,11 @@ class ShipmentTreeType extends AbstractType
                 foreach ($data as $name => $value) {
                     $form->add($name, $options['entry_type'], array_replace([
                         'property_path' => '[' . $name . ']',
+                        'disabled'      => $options['disabled'],
                     ], $options['entry_options']));
                 }
             });
     }
-
 
     /**
      * @inheritDoc

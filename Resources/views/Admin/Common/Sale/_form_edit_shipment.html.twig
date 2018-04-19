@@ -22,14 +22,17 @@
         </div>
     </div>
 
-    {{ form_row(form.shipmentMethod) }}
-
-    <div class="form-group">
-        {{ form_label(form.shipmentAmount) }}
-        <div class="col-md-9">
-            <div class="input-group">
-                {{ form_widget(form.shipmentAmount) }}
-                <span class="input-group-btn">
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.shipmentMethod, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.shipmentAmount, null, {'label_col': 6}) }}
+                <div class="col-md-6">
+                    <div class="input-group">
+                        {{ form_widget(form.shipmentAmount) }}
+                        <span class="input-group-btn">
                     <button class="btn btn-default sale-shipment-amount-apply" type="button">
                         <span class="glyphicon glyphicon-ok"></span>
                     </button>
@@ -37,9 +40,13 @@
                         <span class="glyphicon glyphicon-remove"></span>
                     </button>
                 </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    {{ form_row(form.relayPoint) }}
 
     {{ form_rest(form) }}
 </div>

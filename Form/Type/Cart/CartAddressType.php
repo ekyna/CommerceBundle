@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Cart;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class CartAddressType
@@ -12,6 +13,16 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
  */
 class CartAddressType extends ResourceFormType
 {
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefault('coordinate', false);
+    }
+
     /**
      * @inheritdoc
      */

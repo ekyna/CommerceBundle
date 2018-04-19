@@ -1,3 +1,4 @@
+{% spaceless %}
 <!doctype html>
 <html>
 <head>
@@ -11,26 +12,47 @@
         }
 
         img {
-            width: 100%;
-            height: auto;
+            display: inline-block;
+            max-height: 100%;
+            max-width: 100%;
+            width: auto;
         }
 
-        div.a6 {
+        {% if layout %}
+        div.label {
             box-sizing: border-box;
             float: left;
+            padding: 1cm;
+            overflow: hidden;
+        }
+        div.label-a6 {
             width: 50%;
             height: 50%;
-            padding: 1cm;
         }
+
+        div.label-a5 {
+            width: 100%;
+            height: 50%;
+        }
+        {% else %}
+        div.label {
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            text-align: center;
+        }
+        {% endif %}
     </style>
 </head>
 <body>
 
-    {% for data in labels %}
-        <div class="a6">
-            <img src="data:image/gif;base64,{{ data }}">
-        </div>
-    {% endfor %}
+    {% for label in labels -%}
+    <div class="label label-{{ label.size }}">
+        <img src="{{ label.content|base64_inline_data(label.format) }}">
+    </div>
+    {%- endfor %}
 
 </body>
 </html>
+{% endspaceless %}

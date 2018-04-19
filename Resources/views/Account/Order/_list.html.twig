@@ -1,5 +1,6 @@
 {% spaceless %}
 {% set show_origin_customer = not customer.hasParent() %}
+<div class="table-responsive">
 <table class="table table-stripped">
     <thead>
     <tr>
@@ -69,4 +70,5 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
 {% endspaceless %}

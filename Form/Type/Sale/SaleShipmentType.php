@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
@@ -50,22 +50,24 @@ class SaleShipmentType extends AbstractType
                 'attr'     => [
                     'class' => 'sale-shipment-amount',
                 ],
-            ]);
-
-        $builder
+            ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $sale = $event->getData();
                 $form = $event->getForm();
 
-                $form->add('shipmentMethod', ShipmentMethodChoiceType::class, [
-                    'label'      => 'ekyna_commerce.shipment_method.label.singular',
-                    'sale'       => $sale,
-                    'with_price' => false,
-                    'available'  => false,
-                    'attr'       => [
-                        'class' => 'sale-shipment-method',
-                    ],
-                ]);
+                $form
+                    ->add('shipmentMethod', Shipment\ShipmentMethodChoiceType::class, [
+                        'label'      => 'ekyna_commerce.shipment_method.label.singular',
+                        'sale'       => $sale,
+                        'with_price' => false,
+                        'available'  => false,
+                        'attr'       => [
+                            'class' => 'sale-shipment-method',
+                        ],
+                    ])
+                    ->add('relayPoint', Shipment\RelayPointType::class, [
+                        'search' => $sale->isSameAddress() ? $sale->getInvoiceAddress() : $sale->getDeliveryAddress()
+                    ]);
             });
     }
 
