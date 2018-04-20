@@ -59,12 +59,18 @@
     }
 
     .commerce-method-choice-visual {
+        position: relative;
         vertical-align: middle;
         text-align: center;
         cursor: pointer;
+        padding-left: 15px;
 
         input {
-            display: none;
+            position: absolute;
+            top: 50%;
+            left: 2px;
+            transform: translateY(-50%);
+            margin: 0;
 
             &:checked + label {
                 border-color: #66afe9;
@@ -81,6 +87,7 @@
             max-width: 145px;
             vertical-align: middle;
             border: 1px solid #ddd;
+            margin: 0;
             padding: 5px;
             border-radius: 4px;
 

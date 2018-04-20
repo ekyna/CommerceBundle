@@ -25,6 +25,13 @@
                 {{ form_errors(form, {'global_errors': true}) }}
                 {{ form_row(form.shipmentMethod, {'label_col': 0, 'widget_col': 12}) }}
                 {{ form_row(form.relayPoint, {'label_col': 0, 'widget_col': 12}) }}
+                {% if form.mobile is defined -%}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
+                    </div>
+                </div>
+                {%- endif %}
                 {{ form_rest(form) }}
             </div>
             <div class="col-md-4">
@@ -36,12 +43,18 @@
 
         <hr>
 
+        <div class="alert alert-warning submit-prevented" style="display:none">
+            <p class="text-center">
+                {{- 'ekyna_commerce.checkout.message.shipment_submit_prevented'|trans -}}
+            </p>
+        </div>
+
         <div class="text-center">
             <a href="{{ path('ekyna_commerce_cart_checkout_index') }}" class="btn btn-default btn-lg">
                 <span class="glyphicon glyphicon-chevron-left"></span>
                 {{ 'ekyna_core.button.previous_step'|trans }}
             </a>&nbsp;&nbsp;
-            <button type="submit" class="btn btn-primary btn-lg">
+            <button type="submit" class="btn btn-primary btn-lg cart-checkout-submit disabled">
                 {{ 'ekyna_core.button.next_step'|trans }}
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
@@ -50,3 +63,9 @@
         {{ form_end(form) }}
     </div>
 {% endblock content %}
+
+
+{% block javascripts -%}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/checkout/shipment']);</script>
+{%- endblock javascripts %}

@@ -37,7 +37,7 @@ define([
                 $method = $form.closest('form').find('.shipment-method, input[name="shipment[shipmentMethod]"]'),
                 $modalForm = null, $modalList = null, $modalButton = null,
                 initial = $input.data('initial'), search = $input.data('search'),
-                support = null, gateway = null, platform = null,
+                support = false, gateway = false, platform = false,
                 dialog = null, queryTimeout = null, queryXhr = null;
 
             $searchButton.addClass('disabled');
@@ -211,7 +211,7 @@ define([
                     platform = $selectedMethod.data('platform');
                     gateway = $selectedMethod.data('gateway');
                 } else {
-                    support = platform = gateway = null;
+                    support = platform = gateway = false;
                 }
 
                 if (support && platform && gateway) {

@@ -49,8 +49,14 @@
         }
     }
 
-    .cart-checkout-submit {
+    .cart-checkout-footer {
         margin-bottom: 20px;
+
+        .btn {
+            &.disabled {
+                pointer-events: auto;
+            }
+        }
 
         .cart-checkout-quote {
             margin-left: 20px;
@@ -75,7 +81,7 @@
 }
 
 .summary-frame {
-    background: #e6e6e6;
+    background: #f0f0f0;
     font-size: 12px;
     padding: 10px 15px;
     margin-bottom: 15px;

@@ -5,6 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
+use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -28,6 +31,14 @@ class ShipmentType extends AbstractType
             $sale = $event->getData();
             $form = $event->getForm();
 
+            if ($sale->isSameAddress()) {
+                $addressPath = 'invoiceAddress';
+                $address = $sale->getInvoiceAddress();
+            } else {
+                $addressPath = 'deliveryAddress';
+                $address = $sale->getDeliveryAddress();
+            }
+
             $form
                 ->add('shipmentMethod', ShipmentMethodChoiceType::class, [
                     'label'    => false,
@@ -39,8 +50,29 @@ class ShipmentType extends AbstractType
                 ])
                 ->add('relayPoint', RelayPointType::class, [
                     'label'  => false,
-                    'search' => $sale->isSameAddress() ? $sale->getInvoiceAddress() : $sale->getDeliveryAddress(),
+                    'search' => $address,
                 ]);
+
+            if (is_null($address) || !is_null($address->getMobile())) {
+                return;
+            }
+
+            $region = PhoneNumberUtil::UNKNOWN_REGION;
+            if ($address && null !== $country = $address->getCountry()) {
+                $region = $country->getCode();
+            }
+
+            $form->add('mobile', PhoneNumberType::class, [
+                'label'          => 'ekyna_core.field.mobile',
+                'property_path'  => $addressPath . '.mobile',
+                'required'       => false,
+                'default_region' => $region,
+                'format'         => PhoneNumberFormat::NATIONAL,
+                'attr'           => [
+                    'class'     => 'address-mobile',
+                    'help_text' => 'ekyna_commerce.checkout.shipment.mobile_required',
+                ],
+            ]);
         });
     }
 

@@ -162,13 +162,14 @@ class RegistrationType extends AbstractType
                 },
             ])
             ->add('invoiceAddress', CustomerAddressType::class, [
-                'label'    => false,
-                'required' => true,
-                'identity' => false,
-                'company'  => false,
-                'phones'   => false,
-                'defaults' => false,
-                'select2'  => false,
+                'label'      => false,
+                'required'   => true,
+                'identity'   => false,
+                'company'    => false,
+                'phones'     => false,
+                'defaults'   => false,
+                'select2'    => false,
+                'coordinate' => false,
             ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',

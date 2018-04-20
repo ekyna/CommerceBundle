@@ -62,6 +62,8 @@ ekyna_commerce:
         invoice_address_must_be_set: Veuillez saisir une adresse de facturation.
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
+        shipment_method_require_mobile: >
+            Le mode de livraison sélectionné nécéssite un numéro de téléphone mobile pour l'adresse de livraison.
         voucher_must_be_set: Veuillez saisir votre bon d'achat.
         outstanding_limit_require_term: Veuillez choisir une condition de payment pour définir une limite d'encours.
         deposit_greater_than_grand_total: L'acompte doit être inférieur au total TTC.

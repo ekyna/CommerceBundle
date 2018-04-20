@@ -255,19 +255,6 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
         }
 
-        /*$this->shipmentCheckout->initialize($cart, $this->generateUrl('ekyna_commerce_cart_checkout_payment'));
-
-        if ($this->shipmentCheckout->handleRequest($request)) {
-            $this->saveCart();
-
-            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
-        }
-
-        return $this->render('EkynaCommerceBundle:Cart/Checkout:shipment.html.twig', [
-            'cart'  => $cart,
-            'forms' => $this->shipmentCheckout->getFormsViews(),
-        ]);*/
-
         $form = $this
             ->getFormFactory()
             ->create(ShipmentType::class, $cart, [
@@ -281,8 +268,6 @@ class CheckoutController extends AbstractController
             $this->updateShipmentAmount($cart);
 
             $this->saveCart();
-
-            // TODO If method supports relay point ...
 
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
         }
@@ -339,7 +324,7 @@ class CheckoutController extends AbstractController
         if (!$this->stepValidator->validate($cart, SaleStepValidatorInterface::PAYMENT_STEP)) {
             $this->violationToFlashes($this->stepValidator->getViolationList(), $request);
 
-            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_shipment'));
         }
 
         $this->paymentCheckout->initialize($cart, $this->generateUrl('ekyna_commerce_cart_checkout_payment'));

@@ -163,6 +163,14 @@
             <argument type="service" id="local_commerce_filesystem"/>
         </service>
 
+        <!-- Address event listener -->
+        <service id="ekyna_commerce.address.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\AddressEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ivory.google_map.geocoder"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Sale item event listener -->
         <service id="ekyna_commerce.sale_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SaleItemEventSubscriber">

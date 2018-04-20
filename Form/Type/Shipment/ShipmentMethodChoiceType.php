@@ -104,6 +104,7 @@ class ShipmentMethodChoiceType extends AbstractType
         $this->availableMethods = [];
         $this->availablePrices = [];
 
+        $hasMobile = null;
         if (null !== $sale) {
             $this->freeShipping = $this->priceResolver->hasFreeShipping($sale);
 
@@ -143,14 +144,14 @@ class ShipmentMethodChoiceType extends AbstractType
             return array_filter($methods, function (ShipmentMethodInterface $method) {
                 $gateway = $this->gatewayRegistry->getGateway($method->getGatewayName());
 
-                return $gateway->support(GatewayInterface::CAPABILITY_RETURN);
+                return $gateway->supports(GatewayInterface::CAPABILITY_RETURN);
             });
         }
 
         return array_filter($methods, function (ShipmentMethodInterface $method) {
             $gateway = $this->gatewayRegistry->getGateway($method->getGatewayName());
 
-            return $gateway->support(GatewayInterface::CAPABILITY_SHIPMENT);
+            return $gateway->supports(GatewayInterface::CAPABILITY_SHIPMENT);
         });
     }
 
@@ -188,8 +189,9 @@ class ShipmentMethodChoiceType extends AbstractType
         $attr = [
             'data-platform' => $gateway->getPlatform()->getName(),
             'data-gateway'  => $gateway->getName(),
-            'data-relay'    => $gateway->support(GatewayInterface::CAPABILITY_RELAY) ? 1 : 0,
-            'data-parcel'   => $gateway->support(GatewayInterface::CAPABILITY_PARCEL) ? 1 : 0,
+            'data-relay'    => $gateway->supports(GatewayInterface::CAPABILITY_RELAY) ? 1 : 0,
+            'data-parcel'   => $gateway->supports(GatewayInterface::CAPABILITY_PARCEL) ? 1 : 0,
+            'data-mobile'   => $gateway->requires(GatewayInterface::REQUIREMENT_MOBILE) ? 1 : 0,
         ];
 
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface $price */

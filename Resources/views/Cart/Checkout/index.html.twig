@@ -14,11 +14,11 @@
     </div>
 
     <div class="checkout cart-checkout" data-refresh-url="{{ path('ekyna_commerce_cart_checkout_index') }}">
-    {% if cart is not same as(null) %}
+    {% if cart is not same as(null) -%}
 
         {# Cart view #}
         <div class="container cart-checkout-view">
-            {{ render_sale_view(view) }}
+            {{- render_sale_view(view) -}}
         </div>
 
         {# Login #}
@@ -27,20 +27,20 @@
                 <div class="row">
                     <div class="col-md-8">
                         <p class="user-case"{% if controls.user == 0 %} style="display:none"{% endif %}>
-                            {{- 'ekyna_commerce.checkout.message.register'|trans -}}
+                            {{- 'ekyna_commerce.checkout.message.register'|trans|raw -}}
                         </p>
                         <p class="no-user-case"{% if controls.user == 1 %} style="display:none"{% endif %}>
-                            {{ 'ekyna_commerce.checkout.message.sign_in_or_register'|trans }}
+                            {{- 'ekyna_commerce.checkout.message.sign_in_or_register'|trans|raw -}}
                         </p>
                     </div>
                     <div class="col-md-4">
                         <div class="btn-group btn-group-sm">
                             <a href="{{ path('fos_user_security_login', {'target_path': 'ekyna_commerce_cart_checkout_index'}) }}"
                                class="btn btn-primary no-user-case"{% if controls.user == 1 %} style="display:none"{% endif %} data-user-modal>
-                                {{ 'ekyna_commerce.checkout.index.sign_in'|trans }}
+                                {{- 'ekyna_commerce.checkout.index.sign_in'|trans -}}
                             </a>
-                            <a href="{{ path('fos_user_registration_register', {}) }}" class="btn btn-default">
-                                {{ 'ekyna_commerce.checkout.index.register'|trans }}
+                            <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">
+                                {{- 'ekyna_commerce.checkout.index.register'|trans -}}
                             </a>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                                 {{ 'ekyna_commerce.checkout.index.information'|trans }}<span>*</span>
                             </div>
                             <div class="panel-body cart-checkout-information">
-                                {{ macros.cart_information(cart) }}
+                                {{- macros.cart_information(cart) -}}
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                                 {{ 'ekyna_commerce.checkout.index.invoice'|trans }}<span>*</span>
                             </div>
                             <div class="panel-body cart-checkout-invoice-address">
-                                {{ macros.cart_invoice_address(cart) }}
+                                {{- macros.cart_invoice_address(cart) -}}
                             </div>
                         </div>
                     </div>
@@ -92,10 +92,10 @@
                                    class="btn btn-primary" data-cart-modal>
                                     {{- 'ekyna_core.button.edit'|trans -}}
                                 </a>
-                                {{ 'ekyna_commerce.checkout.index.delivery'|trans }}
+                                {{ 'ekyna_commerce.checkout.index.delivery'|trans -}}
                             </div>
                             <div class="panel-body cart-checkout-delivery-address">
-                                {{ macros.cart_delivery_address(cart) }}
+                                {{- macros.cart_delivery_address(cart) -}}
                             </div>
                         </div>
                     </div>
@@ -112,10 +112,10 @@
                                    class="btn btn-primary" data-cart-modal>
                                     {{- 'ekyna_core.button.edit'|trans -}}
                                 </a>
-                                {{ 'ekyna_commerce.checkout.index.comment'|trans }}
+                                {{ 'ekyna_commerce.checkout.index.comment'|trans -}}
                             </div>
                             <div class="panel-body cart-checkout-comment">
-                                {{ macros.cart_comment(cart) }}
+                                {{- macros.cart_comment(cart) -}}
                             </div>
                         </div>
                     </div>
@@ -127,10 +127,10 @@
                                    class="btn btn-primary" data-cart-modal>
                                     {{- 'ekyna_core.button.add'|trans -}}
                                 </a>
-                                {{ 'ekyna_commerce.checkout.index.attachments'|trans }}
+                                {{ 'ekyna_commerce.checkout.index.attachments'|trans -}}
                             </div>
                             <div class="panel-body cart-checkout-attachments">
-                                {{ macros.cart_attachments(cart) }}
+                                {{- macros.cart_attachments(cart) -}}
                             </div>
                         </div>
                     </div>
@@ -138,18 +138,25 @@
             </div>
         </div>
 
-        {# Submit #}
-        <div class="container cart-checkout-submit"{% if controls.valid == 0 %} style="display:none"{% endif %}>
+        {# Footer #}
+        <div class="container cart-checkout-footer">
             <div class="row">
                 <div class="col-sm-12">
+                    <div class="alert alert-warning submit-prevented" style="display:none">
+                        <p class="text-center">
+                            {{- 'ekyna_commerce.checkout.message.submit_prevented'|trans|raw -}}
+                        </p>
+                    </div>
                     <p class="text-center">
-                        <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}" class="btn btn-primary btn-lg">
-                            {{ 'ekyna_commerce.checkout.index.place_order'|trans }}
+                        <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}"
+                           class="btn btn-primary btn-lg cart-checkout-submit{% if controls.valid == 0 %} disabled{% endif %}">
+                            {{- 'ekyna_commerce.checkout.index.place_order'|trans -}}
                             <span class="glyphicon glyphicon-chevron-right"></span>
                         </a>
                         {% if controls.quote == 1 %}
-                        <a href="{{ path('ekyna_commerce_cart_checkout_quote') }}" class="btn btn-default btn-lg cart-checkout-quote">
-                            {{ 'ekyna_commerce.checkout.index.to_quote'|trans }}
+                        <a href="{{ path('ekyna_commerce_cart_checkout_quote') }}"
+                           class="btn btn-default btn-lg cart-checkout-quote">
+                            {{- 'ekyna_commerce.checkout.index.to_quote'|trans -}}
                             <span class="glyphicon glyphicon-chevron-right"></span>
                         </a>
                         {% endif %}
@@ -158,7 +165,7 @@
             </div>
         </div>
 
-    {% else %}
+    {%- else -%}
 
         {# Empty cart #}
         <div class="container">
@@ -169,7 +176,7 @@
             </div>
         </div>
 
-    {% endif %}
+    {%- endif %}
     </div>
 
 {% endblock content %}
@@ -184,5 +191,5 @@
 {% block javascripts -%}
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
-    <script type="text/javascript">require(['ekyna-commerce/checkout']);</script>
+    <script type="text/javascript">require(['ekyna-commerce/checkout/index']);</script>
 {%- endblock javascripts %}

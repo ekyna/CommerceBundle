@@ -19,6 +19,13 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Checkout payment step validator -->
+        <service id="ekyna_commerce.checkout_payment_step.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SalePaymentStepValidator">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
         <!-- Relay point validator -->
         <service id="ekyna_commerce.relay_point.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\RelayPointValidator">

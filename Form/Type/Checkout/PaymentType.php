@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class PaymentType
@@ -20,6 +21,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PaymentType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+
+    /**
+     * Constructor.
+     *
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @inheritDoc
      */
@@ -32,8 +49,11 @@ class PaymentType extends AbstractType
 
             if (0 < $payment->getAmount()) {
                 $form->add('submit', SubmitType::class, [
-                    'label'    => $payment->getMethod()->getTitle(),
-                    'disabled' => !empty($options['lock_message']),
+                    'label'              => $this->translator->trans('ekyna_commerce.checkout.payment.pay_with', [
+                        '%method%' => $payment->getMethod()->getTitle(),
+                    ]),
+                    'translation_domain' => false,
+                    'disabled'           => !empty($options['lock_message']),
                 ]);
             }
         });

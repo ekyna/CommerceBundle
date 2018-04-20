@@ -14,16 +14,20 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         $forms = $checkout.find('.cart-checkout-forms'),
         $submit = $checkout.find('.cart-checkout-submit'),
         $quote = $checkout.find('.cart-checkout-quote'),
+        $submitPrevented = $checkout.find('.submit-prevented'),
         preventRefresh = false;
 
     var updateElementsDisplay = function(response) {
+        $submitPrevented.slideUp();
+
         // Sale view
         var $view = $(response).find('view');
         if (1 === $view.size()) {
             if (1 === parseInt($view.attr('empty'))) {
                 $forms.slideUp();
                 $customer.slideUp();
-                $submit.slideUp();
+                $submit.addClass('disabled');
+                $quote.addClass('disabled');
             } else {
                 $forms.show().slideDown();
 
@@ -48,15 +52,17 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
                 }
 
                 if (1 === parseInt($view.attr('valid'))) {
-                    $submit.show().slideDown();
+                    $submit.removeClass('disabled');
+                    $quote.removeClass('disabled');
                 } else {
-                    $submit.slideUp();
+                    $submit.addClass('disabled');
+                    $quote.addClass('disabled');
                 }
             }
         }
     };
 
-    var parseResponse = function(response) {
+    function parseResponse(response) {
         var $xml = $(response);
 
         // Information, invoice address and delivery address
@@ -81,7 +87,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         }
 
         return false;
-    };
+    }
 
     function refreshCheckout() {
         if (preventRefresh) {
@@ -123,6 +129,18 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         refreshCheckout();
     });
 
+    $checkout.on('click', '.cart-checkout-footer a.btn', function(e) {
+        e.stopPropagation();
+
+        if ($(e.target).closest('a.btn').hasClass('disabled')) {
+            e.preventDefault();
+
+            $submitPrevented.slideDown();
+
+            return false;
+        }
+    });
+
     $(document).on('click', '.cart-checkout [data-cart-modal]', function(e) {
         e.preventDefault();
 
@@ -162,7 +180,6 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
 
         return false;
     });
-
 
     // Refreshes the checkout on visibility change.
     if (!$('html').data('debug')) {

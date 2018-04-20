@@ -45,6 +45,11 @@
 
         <div class="row">
             <div class="col-md-8">
+                <div class="alert alert-info">
+                    <p class="text-center">
+                        {{- 'ekyna_commerce.checkout.payment.last_step'|trans|raw -}}
+                    </p>
+                </div>
                 {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {
                     'sale': cart, 'forms': forms
                 } only -%}

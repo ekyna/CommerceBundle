@@ -157,6 +157,11 @@
         </service>
 
         <!-- Payment form types -->
+        <service id="ekyna_commerce.checkout_payment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType">
+            <argument type="service" id="translator"/>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.payment_method.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodType">
             <argument>%ekyna_commerce.payment_method.class%</argument>

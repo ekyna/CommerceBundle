@@ -91,9 +91,8 @@ class AddressType extends AbstractType
                 'attr'     => [
                     'class' => 'address-country',
                 ],
-                'select2' => $options['select2']
-            ])
-            /*->add('state', Type\TextType::class, [
+                'select2'  => $options['select2'],
+            ])/*->add('state', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
                 'sizing' => 'sm',
@@ -105,7 +104,7 @@ class AddressType extends AbstractType
 
         if ($options['phones']) {
             $builder
-                ->addEventListener(FormEvents::POST_SET_DATA, function(FormEvent $event) use ($options) {
+                ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options) {
                     $address = $event->getForm()->getNormData();
                     if ($address && !$address instanceof AddressInterface) {
                         throw new InvalidArgumentException("Expected instance of " . AddressInterface::class);
@@ -141,9 +140,9 @@ class AddressType extends AbstractType
         }
 
         if ($options['coordinate']) {
-            $builder->add('coordinate', CoordinateType::class, [
+            $builder->add('coordinate', CoordinateType::class, array_replace([
                 'map_height' => 260,
-            ]);
+            ], $options['coordinate_options']));
         }
     }
 
@@ -164,16 +163,17 @@ class AddressType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'company'           => true,
-                'identity'          => true,
-                'country'           => true,
-                'phones'            => true,
-                'coordinate'        => true,
-                'company_required'  => false,
-                'identity_required' => false,
-                'phone_required'    => false,
-                'mobile_required'   => false,
-                'select2'           => true,
+                'company'            => true,
+                'identity'           => true,
+                'country'            => true,
+                'phones'             => true,
+                'coordinate'         => true,
+                'company_required'   => false,
+                'identity_required'  => false,
+                'phone_required'     => false,
+                'mobile_required'    => false,
+                'coordinate_options' => [],
+                'select2'            => true,
             ])
             ->setAllowedTypes('company', 'bool')
             ->setAllowedTypes('identity', 'bool')
@@ -184,6 +184,7 @@ class AddressType extends AbstractType
             ->setAllowedTypes('identity_required', 'bool')
             ->setAllowedTypes('phone_required', 'bool')
             ->setAllowedTypes('mobile_required', 'bool')
+            ->setAllowedTypes('coordinate_options', 'array')
             ->setAllowedTypes('select2', 'bool');
     }
 
