@@ -15,11 +15,13 @@
                     {{ 'ekyna_core.field.content'|trans }}
                 </a>
             </li>
+            {% if form.pricing is defined -%}
             <li>
                 <a href="#shipment-method-pricing" id="toggle-pricing" data-toggle="tab">
                     {{ 'ekyna_core.field.pricing'|trans }}
                 </a>
             </li>
+            {%- endif %}
             <li>
                 <a href="#shipment-method-messages" id="toggle-messages" data-toggle="tab">
                     {{ 'ekyna_commerce.message.label.plural'|trans }}
@@ -58,9 +60,11 @@
                 {{ form_row(form.media) }}
                 {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
             </div>
+            {% if form.pricing is defined -%}
             <div class="tab-pane" id="shipment-method-pricing">
                 {{ form_row(form.pricing) }}
             </div>
+            {%- endif %}
             <div class="tab-pane" id="shipment-method-messages">
                 {{ form_widget(form.messages) }}
             </div>

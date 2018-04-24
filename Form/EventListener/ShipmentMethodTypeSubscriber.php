@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPricingType;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfigurationType;
 use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
@@ -40,8 +41,15 @@ class ShipmentMethodTypeSubscriber implements EventSubscriberInterface
      */
     public function onPreSetData(FormEvent $event)
     {
+        $form = $event->getForm();
         /** @var ShipmentMethodInterface $method */
         $method = $event->getData();
+
+        if (0 < $method->getId()) {
+            $form->add('pricing', ShipmentPricingType::class, [
+                'filter_by' => 'zone',
+            ]);
+        }
 
         $platform = $this->registry->getPlatform($method->getPlatformName());
 
@@ -54,7 +62,7 @@ class ShipmentMethodTypeSubscriber implements EventSubscriberInterface
             $platform->getConfigDefaults(), (array)$method->getGatewayConfig()
         ));
 
-        $event->getForm()->add('config', ConfigurationType::class, [
+        $form->add('config', ConfigurationType::class, [
             'definition'    => $definition,
             'property_path' => 'gatewayConfig',
         ]);
