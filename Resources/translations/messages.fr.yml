@@ -277,7 +277,7 @@ ekyna_commerce:
             register: |
                 <strong>Créez votre compte client</strong> pour voir vos <em>tarifs préférentiels</em> et accéder
                 <em>à votre carnet d'adresses</em>.<br>Ou saisissez vos <strong>Informations</strong> et addresse
-                de <strong>Facturation</strong> en cliquant sur les boutons Modifier respectifs.
+                de <strong>Facturation</strong> en cliquant sur les boutons &laquo;Modifier&raquo; ci-dessous.
             sign_in_or_register: |
                 <strong>Connectez-vous à votre compte client</strong> pour voir vos <em>tarifs préférentiels</em>
                 et accéder à votre <em>carnet d'adresses</em>.<br>Sinon, veuillez saisir vos <strong>Informations</strong>

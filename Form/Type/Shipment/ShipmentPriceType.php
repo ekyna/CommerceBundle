@@ -91,7 +91,6 @@ class ShipmentPriceType extends ResourceFormType
         if (null !== $filterBy = $options['filter_by']) {
             /** @var \Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice $price */
             if ($price = $form->getData()) {
-                $filterValue = null;
                 if ($filterBy == 'method') {
                     $filterValue = $price->getMethod();
                 } else {
@@ -99,7 +98,7 @@ class ShipmentPriceType extends ResourceFormType
                 }
 
                 $view->vars['attr'] = array_merge($view->vars['attr'], [
-                    'data-'.$filterBy => $filterValue->getId()
+                    'data-'.$filterBy => is_null($filterValue) ? 'null' : $filterValue->getId()
                 ]);
             }
         }

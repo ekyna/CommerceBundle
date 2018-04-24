@@ -13,24 +13,31 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             var $this = $(this),
                 $collection = $this.find('.commerce-shipment-pricing-prices'),
                 $filter = $this.find('.commerce-shipment-pricing-filter'),
+                $addButton = $collection.find('[data-collection-role="add"]'),
                 filterBy = $filter.data('filter-by'),
                 filterValue;
 
 
             // Prices collection children visibility
             function togglePricesVisibility() {
-                filterValue = $filter.val();
-                $collection
-                    .find('tbody > tr')
-                    .hide()
-                    .filter(function() { return $(this).data(filterBy) == filterValue; })
-                    .show();
+                var $prices = $collection.find('tbody > tr').hide();
+
+                filterValue = parseInt($filter.val());
+                if (!filterValue) {
+                    $addButton.hide();
+                    return;
+                }
+
+                $addButton.show();
+
+                $prices.filter(function() {
+                    return $(this).data(filterBy) === filterValue;
+                }).show();
             }
 
             $filter.on('change', togglePricesVisibility);
 
             togglePricesVisibility();
-
 
             // New price form event
             $collection.on('ekyna-collection-field-added', function(e) {
@@ -42,7 +49,6 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     .find('.shipment-price-' + filterBy)
                     .val(filterValue);
             });
-
 
             // TODO ...
             /*$collection.on('invalid', 'input', function(e) {

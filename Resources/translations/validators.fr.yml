@@ -111,6 +111,9 @@ ekyna_commerce:
             La quantité expédiée doit être inférieure ou égale à %max%.
         parent_quantity_integrity: |
             La quantité doit être un multiple de %multiple%.
+    shipment_price:
+        max_weight: |
+            Le poids maximum pris en charge par ce mode d'expédition est de %max% kg.
     supplier_order:
         duplicate_product: |
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.

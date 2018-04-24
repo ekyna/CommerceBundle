@@ -33,7 +33,7 @@
             <tag name="validator.constraint_validator" />
         </service>
 
-        <!-- Shipment item validator -->
+        <!-- Shipment validator -->
         <service id="ekyna_commerce.shipment.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentValidator">
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
@@ -44,6 +44,13 @@
         <service id="ekyna_commerce.shipment_item.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentItemValidator">
             <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
+        <!-- Shipment price validator -->
+        <service id="ekyna_commerce.shipment_price.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentPriceValidator">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <tag name="validator.constraint_validator" />
         </service>
 

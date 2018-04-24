@@ -11,11 +11,17 @@ define(['jquery'], function($) {
 
         // Prices collection children visibility
         function togglePricesVisibility() {
-            filterValue = $filter.val();
-            $list
-                .find('tbody > tr')
-                .hide()
-                .filter(function() { return $(this).data(filterBy) == filterValue; })
+            var $prices = $list.find('tbody > tr').hide();
+
+            filterValue = parseInt($filter.val());
+            if (!filterValue) {
+                return;
+            }
+
+            $prices
+                .filter(function() {
+                    return $(this).data(filterBy) === filterValue;
+                })
                 .show();
         }
 
