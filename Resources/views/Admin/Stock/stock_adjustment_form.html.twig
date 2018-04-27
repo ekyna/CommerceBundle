@@ -1,15 +1,13 @@
-<div class="form-body-unstylled">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form) }}
-    <div class="row">
-        <div class="col-md-6">
-            {{ form_row(form.reason, {'label_col': 4, 'widget_col': 8}) }}
-        </div>
-        <div class="col-md-6">
-            {{ form_row(form.quantity, {'label_col': 4, 'widget_col': 8}) }}
-        </div>
+{{ bootstrap_set_style('horizontal') }}
+{{ bootstrap_set_col_size('md') }}
+{{ form_errors(form) }}
+<div class="row">
+    <div class="col-md-6">
+        {{ form_row(form.reason, {'label_col': 4, 'widget_col': 8}) }}
     </div>
-    {{ form_row(form.note) }}
-    {{ form_rest(form) }}
+    <div class="col-md-6">
+        {{ form_row(form.quantity, {'label_col': 4, 'widget_col': 8}) }}
+    </div>
 </div>
+{{ form_row(form.note) }}
+{{ form_rest(form) }}

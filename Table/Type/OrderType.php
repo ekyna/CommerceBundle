@@ -309,7 +309,7 @@ class OrderType extends ResourceTableType
             ->addFilter('shipmentState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.shipment_state',
                 'choices'  => Model\ShipmentStates::getChoices([
-                    ShipmentStates::STATE_NEW,
+                    //ShipmentStates::STATE_NEW,
                     ShipmentStates::STATE_SHIPPED,
                     ShipmentStates::STATE_NONE,
                 ]),
@@ -318,7 +318,7 @@ class OrderType extends ResourceTableType
             ->addFilter('invoiceState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.invoice_state',
                 'choices'  => Model\InvoiceStates::getChoices([
-                    InvoiceStates::STATE_NEW,
+                    //InvoiceStates::STATE_NEW,
                     InvoiceStates::STATE_INVOICED,
                 ]),
                 'position' => 110,

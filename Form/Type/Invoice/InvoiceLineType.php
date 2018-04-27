@@ -63,12 +63,15 @@ class InvoiceLineType extends ResourceFormType
             return;
         }
 
+        $locked = false;
         $saleItem = $line->getSaleItem();
-        if (null === $parent = $saleItem->getParent()) {
-            return;
+        if (null !== $parent = $saleItem->getParent()) {
+            if ($parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren())) {
+                $locked = true;
+            }
         }
 
-        if ($parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren())) {
+        if ($locked && isset($view->parent->parent->children['quantity'])) {
             $view->children['quantity']->vars['attr']['disabled'] = true;
             $view->children['quantity']->vars['attr']['data-quantity'] = $line->getSaleItem()->getQuantity();
             $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];

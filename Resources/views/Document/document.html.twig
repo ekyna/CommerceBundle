@@ -85,7 +85,15 @@
         {% set baseTotal = baseTotal + line.base %}
         <tr>
             <td>
-                {{- line.designation -}}
+                {%- set url = null -%}
+                {%- if line.saleItem is not null -%}
+                    {%- set url = line.saleItem|subject_public_url(false) -%}
+                {%- endif -%}
+                {%- if url is not empty -%}
+                    <a href="{{ url }}">{{- line.designation -}}</a>
+                {%- else -%}
+                    {{- line.designation -}}
+                {%- endif -%}
                 {%- if line.description is not empty -%}
                     <br><p class="description">{{ line.description|nl2br }}</p>
                 {%- endif -%}

@@ -75,7 +75,7 @@ class SubjectExtension extends \Twig_Extension
      *
      * @param SubjectRelativeInterface $relative
      *
-     * @return \Ekyna\Component\Commerce\Subject\Model\SubjectInterface
+     * @return \Ekyna\Component\Commerce\Subject\Model\SubjectInterface|object
      */
     public function getSubject(SubjectRelativeInterface $relative)
     {

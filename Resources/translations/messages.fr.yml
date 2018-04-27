@@ -941,6 +941,7 @@ ekyna_commerce:
             success: Certains articles ont pu être réassignés pour expédition.
             failure: Aucun article n'a pu être réassigné pour expédition.
         message:
+            transform_prevented: Cette vente ne peut pas être transformée.
             provide_customer_or_data: >
                 Si vous sélectionnez un client, les champs suivant seront remplis automatiquement
                 lors de l'enregistrement. Sinon veuillez saisir ces informations.

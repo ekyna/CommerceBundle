@@ -17,7 +17,10 @@
             </div>
             <h1>
                 {{ 'ekyna_commerce.order.label.singular'|trans }} <strong>{{ subject.sale.number }}</strong>
-                <small>{{ 'ekyna_commerce.shipment.label.singular'|trans }} <strong>{{ subject.number }}</strong></small>
+                <small>
+                    {{- 'ekyna_commerce.shipment.label.singular'|trans }} <strong>{{ subject.number }}</strong>
+                    {% if subject.partial %}&nbsp;<em>({{ 'ekyna_commerce.shipment.state.partial'|trans }})</em>{% endif %}
+                </small>
             </h1>
             <table class="table details">
                 <thead>

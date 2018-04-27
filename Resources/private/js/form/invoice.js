@@ -14,6 +14,8 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
             console.log('invoiceWidget', $items.length);
 
+            // TODO Packaging format
+
             $items
                 .on('blur', 'input', function() {
                     var $input = $(this),

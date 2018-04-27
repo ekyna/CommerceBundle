@@ -49,34 +49,34 @@
 {%- endfor %}
 </tbody>
 </table>
-{% if payment_term or outstanding_date or shipped_at or invoiced_at or description or comment  %}
 <div>
     <dl class="dl-horizontal">
-    {% if payment_term is not empty %}
+        <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>
+        <dd>{{ created_at|localizeddate('short', 'none') }}</dd>
+    {% if payment_term is not empty -%}
         <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
         <dd>{{ payment_term }}</dd>
-    {% endif %}
-    {% if outstanding_date is not empty %}
+    {%- endif %}
+    {% if outstanding_date is not empty -%}
         <dt>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</dt>
         <dd>{{ outstanding_date|localizeddate('short', 'none') }}</dd>
-    {% endif %}
-    {% if shipped_at is not empty %}
+    {%- endif %}
+    {% if shipped_at is not empty -%}
         <dt>{{ 'ekyna_commerce.shipment.field.shipped_at'|trans }}</dt>
         <dd>{{ shipped_at|localizeddate('short', 'none') }}</dd>
-    {% endif %}
-    {% if invoiced_at is not empty %}
+    {%- endif %}
+    {% if invoiced_at is not empty -%}
         <dt>{{ 'ekyna_commerce.invoice.field.invoiced_at'|trans }}</dt>
         <dd>{{ invoiced_at|localizeddate('short', 'none') }}</dd>
-    {% endif %}
-    {% if description is not empty %}
+    {%- endif %}
+    {% if description is not empty -%}
         <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
         <dd>{{ description|nl2br|raw }}</dd>
-    {% endif %}
-    {% if comment is not empty %}
+    {%- endif %}
+    {% if comment is not empty -%}
         <dt>{{ 'ekyna_core.field.comment'|trans }}</dt>
         <dd>{{ comment|nl2br|raw }}</dd>
-    {% endif %}
+    {%- endif %}
     </dl>
 </div>
-{% endif %}
 {% endspaceless %}

@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View;
+use Ekyna\Component\Commerce\Common\View\LineView;
 
 /**
  * Class SaleViewType
@@ -38,6 +39,24 @@ class SaleViewType extends AbstractViewType
             'grand_total'    => $this->trans('ekyna_commerce.sale.field.grand_total'),
             'margin'         => $this->trans('ekyna_commerce.sale.field.margin'),
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildItemView(Model\SaleItemInterface $item, LineView $view, array $options)
+    {
+        if (!$item->hasSubjectIdentity()) {
+            return;
+        }
+
+        $url = $options['private'] ? $this->getPrivateUrl($item) : $this->getPublicUrl($item);
+        if (empty($url)) {
+            return;
+        }
+
+        $view->vars['link_title'] = $item->getDesignation();
+        $view->vars['link_path'] = $url;
     }
 
     /**

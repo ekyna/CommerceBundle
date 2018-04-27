@@ -25,6 +25,11 @@
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
     {{ bootstrap_set_sizing('sm') }}
+    {% if form.vars.privileged -%}
+    <div class="alert alert-warning">
+        <p><i class="fa fa-warning"></i>&nbsp;<strong>Privileged mode</strong></p>
+    </div>
+    {%- endif %}
     {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
         <div class="tab-pane active" id="shipment-general">

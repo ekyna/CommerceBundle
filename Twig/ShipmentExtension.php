@@ -8,7 +8,6 @@ use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentDataInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
@@ -146,6 +145,9 @@ class ShipmentExtension extends \Twig_Extension
             new \Twig_SimpleTest('shipment_subject', function ($subject) {
                 return $subject instanceof ShipmentSubjectInterface;
             }),
+            new \Twig_SimpleTest('shipment_partial', function ($subject) {
+                return $subject instanceof ShipmentSubjectInterface;
+            }),
         ];
     }
 
@@ -165,9 +167,11 @@ class ShipmentExtension extends \Twig_Extension
         $output = $number;
 
         if (null !== $url = $this->shipmentHelper->getTrackingUrl($shipment)) {
+            /** @noinspection HtmlUnknownTarget */
             $output = sprintf('<a href="%s" target="_blank"><i class="fa fa-map-marker"></i> %s</a>', $url, $number);
 
             if (null !== $url = $this->shipmentHelper->getProofUrl($shipment)) {
+                /** @noinspection HtmlUnknownTarget */
                 $output .= sprintf('&nbsp;&nbsp;<a href="%s" target="_blank"><i class="fa fa-check-square-o"></i></a>', $url);
             }
         }

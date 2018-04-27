@@ -17,6 +17,11 @@
     margin: auto;
 }
 
+a {
+    color: @text-color;
+    text-decoration: none;
+}
+
 h1 {
     font-variant: small-caps;
     font-weight: normal;
@@ -172,6 +177,10 @@ table.header {
             td {
                 border-bottom: @border-color;
             }
+        }
+
+        a {
+            border-bottom: 1px dotted @head-color;
         }
 
         p.description {

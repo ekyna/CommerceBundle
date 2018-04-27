@@ -4,6 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View\AbstractViewType as BaseType;
+use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
+use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -60,6 +62,30 @@ abstract class AbstractViewType extends BaseType
     public function setSubjectHelper(SubjectHelperInterface $subjectHelper)
     {
         $this->subjectHelper = $subjectHelper;
+    }
+
+    /**
+     * Returns the subject public url.
+     *
+     * @param SubjectRelativeInterface|SubjectInterface $subject
+     *
+     * @return null|string
+     */
+    public function getPublicUrl($subject)
+    {
+        return $this->subjectHelper->generatePublicUrl($subject, false);
+    }
+
+    /**
+     * Returns the subject public url.
+     *
+     * @param SubjectRelativeInterface|SubjectInterface $subject
+     *
+     * @return null|string
+     */
+    public function getPrivateUrl($subject)
+    {
+        return $this->subjectHelper->generatePrivateUrl($subject, false);
     }
 
     /**

@@ -395,9 +395,17 @@ class SaleController extends AbstractSaleController
         /** @var SaleInterface $targetSale */
         $targetSale = $targetRepository->createNew();
 
-        // Initialize the transformation
         $transformer = $this->get('ekyna_commerce.sale_transformer');
-        $transformer->initialize($sourceSale, $targetSale);
+
+        // Initialize the transformation
+        $event = $transformer->initialize($sourceSale, $targetSale);
+        if ($event->isPropagationStopped()) {
+            if ($event->hasErrors()) {
+                $event->toFlashes($this->getFlashBag());
+            }
+
+            return $this->redirect($this->generateResourcePath($sourceSale));
+        }
 
         $form = $this->createTransformConfirmForm($sourceSale, $targetSale, $target);
 
@@ -602,6 +610,7 @@ class SaleController extends AbstractSaleController
                 ->abort($sale);
 
             if (null !== $shipment) {
+                // TODO use shipment manager
                 $this->getManager()->remove($shipment);
                 $this->getManager()->flush();
 

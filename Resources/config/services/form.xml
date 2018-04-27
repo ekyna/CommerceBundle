@@ -122,6 +122,7 @@
         <service id="ekyna_commerce.order_shipment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType">
             <argument type="service" id="ekyna_commerce.shipment.builder"/>
+            <argument type="service" id="security.authorization_checker"/>
             <argument>%ekyna_commerce.order_shipment.class%</argument>
             <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>

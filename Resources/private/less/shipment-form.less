@@ -27,6 +27,7 @@
 }
 
 .bloc {
+    position: relative;
     padding: @margin;
     border: 1px solid @border-color;
 }
@@ -36,6 +37,7 @@ h1 {
     font-weight: normal;
     color: @head-color;
     font-size: @font-size * 2.2;
+    margin: .5em 0;
 
     > small {
         display: inline-block;
@@ -48,8 +50,15 @@ h1 {
 }
 
 .tags {
-    float: right;
+    position: absolute;
+    top: .1cm;
+    right: .1cm;
     font-size: 18px;
+    text-align: right;
+
+    > span {
+        margin-left: 0.2cm;
+    }
 }
 
 .label {

@@ -65,7 +65,7 @@ class ShipmentItemType extends ResourceFormType
 
         $view->children['quantity']->vars['attr']['data-max'] = $item->getAvailable();
 
-        if ($locked) {
+        if ($locked && isset($view->parent->parent->children['quantity'])) {
             $view->children['quantity']->vars['attr']['disabled'] = true;
             $view->children['quantity']->vars['attr']['data-quantity'] = $saleItem->getQuantity();
             $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];

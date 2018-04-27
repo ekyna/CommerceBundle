@@ -36,8 +36,23 @@
             'path': admin_resource_path(order, 'duplicate')
         }) }}
         {{ sale_transform_btn(order) }}
-        {{ admin_resource_btn(order, 'edit') }}
-        {{ admin_resource_btn(order, 'remove') }}
+        {% if order is sale_preparable %}
+            {{ ui_button('ekyna_commerce.sale.button.prepare', {
+                'theme': 'primary',
+                'type': 'link',
+                'icon': 'list',
+                'path': admin_resource_path(order, 'prepare')
+            }) }}
+        {% elseif order is sale_preparing %}
+            {{ ui_button('ekyna_commerce.sale.button.abort', {
+                'theme': 'danger',
+                'type': 'link',
+                'icon': 'list',
+                'path': admin_resource_path(order, 'abort')
+            }) }}
+        {% endif %}
+        {{ admin_resource_btn(order, 'edit', {'label': 'ekyna_core.button.edit'}) }}
+        {{ admin_resource_btn(order, 'remove', {'label': 'ekyna_core.button.remove'}) }}
     </div>
 </div>
 <div class="show show-with-tabs">

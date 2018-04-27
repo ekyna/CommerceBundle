@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class ShipmentType
@@ -30,7 +31,12 @@ class ShipmentType extends ResourceFormType
     /**
      * @var ShipmentBuilderInterface
      */
-    private $builder;
+    private $shipmentBuilder;
+
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
 
     /**
      * @var string
@@ -41,15 +47,21 @@ class ShipmentType extends ResourceFormType
     /**
      * Constructor.
      *
-     * @param ShipmentBuilderInterface $builder
-     * @param string                   $dataClass
-     * @param string                   $defaultCurrency
+     * @param ShipmentBuilderInterface      $shipmentBuilder
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param string                        $dataClass
+     * @param string                        $defaultCurrency
      */
-    public function __construct(ShipmentBuilderInterface $builder, $dataClass, $defaultCurrency)
-    {
+    public function __construct(
+        ShipmentBuilderInterface $shipmentBuilder,
+        AuthorizationCheckerInterface $authorizationChecker,
+        $dataClass,
+        $defaultCurrency
+    ) {
         parent::__construct($dataClass);
 
-        $this->builder = $builder;
+        $this->shipmentBuilder = $shipmentBuilder;
+        $this->authorizationChecker = $authorizationChecker;
         $this->defaultCurrency = $defaultCurrency;
     }
 
@@ -84,11 +96,11 @@ class ShipmentType extends ResourceFormType
                     throw new RuntimeException("Not yet supported.");
                 }
 
-                if (ShipmentStates::isStockableState($shipment->getState())) {
-                    $locked = true;
-                } else {
-                    $this->builder->build($shipment);
-                    $locked = false;
+                $privileged = $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+                $locked = !$privileged && ShipmentStates::isStockableState($shipment->getState());
+
+                if (!$locked) {
+                    $this->shipmentBuilder->build($shipment);
                 }
 
                 if (!$sale->isSample() && $shipment->isReturn()) {
@@ -112,13 +124,14 @@ class ShipmentType extends ResourceFormType
                 $form
                     ->add('state', Type\ChoiceType::class, [
                         'label'    => 'ekyna_core.field.status',
-                        'choices'  => BShipStates::getFormChoices($shipment->isReturn(), !$locked),
+                        'choices'  => BShipStates::getFormChoices($shipment->isReturn(), !($locked || $privileged)),
                         'disabled' => $locked,
                     ])
                     ->add('weight', Type\NumberType::class, [
                         'label'    => 'ekyna_core.field.weight',
                         'scale'    => 3,
                         'required' => false,
+                        'disabled' => $locked,
                         'attr'     => [
                             'placeholder' => 'ekyna_core.field.weight',
                             'input_group' => ['append' => 'kg'],
@@ -129,6 +142,7 @@ class ShipmentType extends ResourceFormType
                         'label'    => 'ekyna_commerce.shipment.field.valorization',
                         'currency' => $this->defaultCurrency,
                         'required' => false,
+                        'disabled' => $locked,
                         'attr'     => [
                             'placeholder' => 'ekyna_commerce.shipment.field.valorization',
                         ],
@@ -183,7 +197,7 @@ class ShipmentType extends ResourceFormType
                 if (!$sale->isSample()) {
                     $form->add('autoInvoice', Type\CheckboxType::class, [
                         'label'    => $autoInvoiceLabel,
-                        'disabled' => null !== $shipment->getInvoice(),
+                        'disabled' => $locked || null !== $shipment->getInvoice(),
                         'required' => false,
                         'attr'     => [
                             'align_with_widget' => true,
@@ -203,6 +217,8 @@ class ShipmentType extends ResourceFormType
 
         // For items layout
         $view->vars['return_mode'] = $shipment->isReturn();
+        $view->vars['privileged'] = ShipmentStates::isStockableState($shipment->getState())
+            && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
         FormUtil::addClass($view, 'shipment');
 

@@ -75,6 +75,14 @@ class SaleExtension extends \Twig_Extension
                 [$this, 'isSaleStockableSale']
             ),
             new \Twig_SimpleTest(
+                'sale_preparable',
+                [$this, 'isSalePreparable']
+            ),
+            new \Twig_SimpleTest(
+                'sale_preparing',
+                [$this, 'isSalePreparing']
+            ),
+            new \Twig_SimpleTest(
                 'sale_with_payment',
                 [$this, 'isSaleWithPayment']
             ),
@@ -189,6 +197,38 @@ class SaleExtension extends \Twig_Extension
     {
         if ($sale instanceof Order\OrderInterface) {
             return Order\OrderStates::isStockableState($sale->getState());
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether the sale is in a preparable state.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSalePreparable(Common\SaleInterface $sale)
+    {
+        if ($sale instanceof Order\OrderInterface) {
+            return Shipment\ShipmentStates::isPreparableState($sale->getShipmentState());
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether the sale is in a preparation state.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSalePreparing(Common\SaleInterface $sale)
+    {
+        if ($sale instanceof Order\OrderInterface) {
+            return $sale->getShipmentState() === Shipment\ShipmentStates::STATE_PREPARATION;
         }
 
         return false;
@@ -467,7 +507,9 @@ class SaleExtension extends \Twig_Extension
 
         // TODO use constants for target
 
-        $targets = Common\TransformationTargets::getTargetsForSale($sale);
+        if (empty($targets = Common\TransformationTargets::getTargetsForSale($sale))) {
+            return '';
+        }
 
         /*if ($sale instanceof CartInterface) {
             foreach ($targets as $target) {

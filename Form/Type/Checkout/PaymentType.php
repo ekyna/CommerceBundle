@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Symfony\Component\Form\AbstractType;
@@ -71,6 +72,14 @@ class PaymentType extends AbstractType
 
         $view->vars['payment'] = $payment;
         $view->vars['lock_message'] = $options['lock_message'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'checkout-payment');
     }
 
     /**

@@ -92,6 +92,8 @@ ekyna_commerce:
             Le mode d'expédition sélectionné ne prend en charge les retours.
         method_does_not_support_shipment: |
             Le mode d'expédition sélectionné ne prend en charge que les retours.
+        method_requires_mobile:
+            Le mode d'expédition sélectionné nécéssite un numéro de mobile.
         shipped_state_denied: |
             Le statut de la vente ne permet pas de sélectionner ce statut d'expédition.
         weight_or_parcels_but_not_both: |
@@ -111,9 +113,8 @@ ekyna_commerce:
             La quantité expédiée doit être inférieure ou égale à %max%.
         parent_quantity_integrity: |
             La quantité doit être un multiple de %multiple%.
-    shipment_price:
-        max_weight: |
-            Le poids maximum pris en charge par ce mode d'expédition est de %max% kg.
+    shipment_max_weight: |
+            Le poids maximum est de %max% kg.
     supplier_order:
         duplicate_product: |
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.
