@@ -759,7 +759,7 @@
         </div>
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
-        <table class="ekyna-collection-child-container table">
+        <table class="table">
 
             {# Header #}
             <thead>
@@ -771,7 +771,7 @@
             </thead>
 
             {# Body #}
-            <tbody>
+            <tbody class="ekyna-collection-child-container">
             {# Rows #}
             {% set previous_style = bootstrap_get_style() %}
             {{ bootstrap_set_style('') }}
@@ -1087,8 +1087,8 @@
         </div>
     {% endif %}
     <div {{ block('widget_container_attributes') }}>
-        <table class="ekyna-collection-child-container table">
-
+        <table class="table">
+        <tbody class="ekyna-collection-child-container">
             {# Rows #}
             {% set previous_style = bootstrap_get_style() %}
             {{ bootstrap_set_style('') }}
@@ -1103,7 +1103,7 @@
                 {{ form_widget(child)|replace({'__controls__': controls})|raw }}
             {% endfor %}
             {{ bootstrap_set_style(previous_style) }}
-
+        </tbody>
         </table>
         {{ form_errors(form) }}
         {#{{ form_rest(form) }}#}

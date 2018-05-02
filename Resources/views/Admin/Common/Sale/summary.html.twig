@@ -49,6 +49,26 @@
 {%- endfor %}
 </tbody>
 </table>
+{% if invoices is defined and invoices is not empty -%}
+<table class="table table-condensed">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.number'|trans }}</th>
+        <th>{{ 'ekyna_commerce.invoice.field.grand_total'|trans }}</th>
+        <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for invoice in invoices -%}
+        <tr>
+            <td>{{ invoice.number }}</td>
+            <td>{{ invoice.grand_total }}</td>
+            <td>{{ invoice.created_at|localizeddate('short', 'none') }}</td>
+        </tr>
+    {%- endfor %}
+    </tbody>
+</table>
+{%- endif %}
 <div>
     <dl class="dl-horizontal">
         <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>

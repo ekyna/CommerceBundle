@@ -42,15 +42,7 @@ class SubjectHelper extends BaseHelper
      */
     public function generateAddToCartUrl($subject, $path = true)
     {
-        if ($subject instanceof SubjectRelativeInterface) {
-            if (null === $subject = $this->resolve($subject, false)) {
-                return null;
-            }
-        }
-
-        if (!$subject instanceof SubjectInterface) {
-            throw new InvalidArgumentException("Expected instance of " . SubjectInterface::class);
-        }
+        $subject = $this->resolveSubject($subject);
 
         $type = $path ? UrlGeneratorInterface::ABSOLUTE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
@@ -65,6 +57,30 @@ class SubjectHelper extends BaseHelper
      */
     public function generatePrivateUrl($subject, $path = true)
     {
+        $subject = $this->resolveSubject($subject);
+
+        return $this->resourceHelper->generateResourcePath($subject, 'show', [], !$path);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function generatePublicUrl($subject, $path = true)
+    {
+        $subject = $this->resolveSubject($subject);
+
+        return $this->resourceHelper->generatePublicUrl($subject, !$path);
+    }
+
+    /**
+     * Resolves the subject.
+     *
+     * @param SubjectRelativeInterface|SubjectInterface $subject
+     *
+     * @return SubjectInterface
+     */
+    private function resolveSubject($subject)
+    {
         if ($subject instanceof SubjectRelativeInterface) {
             if (null === $subject = $this->resolve($subject, false)) {
                 return null;
@@ -75,6 +91,6 @@ class SubjectHelper extends BaseHelper
             throw new InvalidArgumentException("Expected instance of " . SubjectInterface::class);
         }
 
-        return $this->resourceHelper->generateResourcePath($subject, 'show', [], !$path);
+        return $subject;
     }
 }

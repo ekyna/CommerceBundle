@@ -23,6 +23,15 @@
             <tag name="serializer.denormalizer"/>
         </service>
 
+        <!-- Customer group normalizer -->
+        <service id="ekyna_commerce.customer_group.normalizer"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\CustomerGroupNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
         <!-- Relay point normalizer -->
         <service id="ekyna_commerce.relay_point.normalizer"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\RelayPointNormalizer"
