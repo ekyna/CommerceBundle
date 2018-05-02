@@ -67,7 +67,9 @@ class SubjectHelper extends BaseHelper
      */
     public function generatePublicUrl($subject, $path = true)
     {
-        $subject = $this->resolveSubject($subject);
+        if (null === $subject = $this->resolveSubject($subject)) {
+            return null;
+        }
 
         return $this->resourceHelper->generatePublicUrl($subject, !$path);
     }

@@ -97,7 +97,7 @@ class SaleTransformer extends BaseTransformer
         $confirmedStates = [
             OrderStates::STATE_COMPLETED,
             OrderStates::STATE_ACCEPTED,
-            OrderStates::STATE_PENDING,
+            OrderStates::STATE_PENDING,// TODO remove(?)
         ];
         if (!in_array($order->getState(), $confirmedStates, true)) {
             return;

@@ -191,8 +191,10 @@ class OrderListController extends Controller
                 return $response;
             }
         } catch (Exception\ShipmentGatewayException $e) {
-            $this->addFlash('ekyna_commerce.shipment.message.unsupported_action', 'danger');
-        } catch (\Exception $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
         }
 
