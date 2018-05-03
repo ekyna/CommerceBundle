@@ -113,7 +113,14 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
 
             return;
         }
-        // TODO Abort if deposit is not paid
+        // Abort if deposit is not paid
+        if (0 < $sale->getDepositTotal()) {
+            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $sale->getCurrency()->getCode())) {
+                $event->stopPropagation();
+
+                return;
+            }
+        }
 
         $payment = $event->getPayment();
 
