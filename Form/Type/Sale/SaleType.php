@@ -105,7 +105,9 @@ class SaleType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
-            ->add('shipmentMethod', ShipmentMethodChoiceType::class)
+            ->add('shipmentMethod', ShipmentMethodChoiceType::class, [
+                'available' => !$options['admin_mode'],
+            ])
             ->add('paymentTerm', PaymentTermChoiceType::class, [
                 'required' => false,
             ])
