@@ -3,7 +3,7 @@
 {% block main %}
 <div class="actions">
     {% if customer.user is not null and is_granted('ROLE_ALLOWED_TO_SWITCH') %}
-        {{ ui_button('ekyna_commerce.customer.button.impersonate', {
+        {{ ui_button('ekyna_user.user.button.impersonate', {
             'type': 'link',
             'path': '/?_switch_user=' ~ customer.user.email,
             'theme': 'primary',
