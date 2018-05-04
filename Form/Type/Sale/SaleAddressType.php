@@ -82,6 +82,7 @@ class SaleAddressType extends AbstractType
             'label'         => false,
             'property_path' => $propertyPath,
             'required'      => $required,
+            'section'       => $options['delivery'] ? 'shipping' : 'billing',
             'attr'          => [
                 'widget_col' => 12,
             ],

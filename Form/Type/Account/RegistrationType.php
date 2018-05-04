@@ -83,6 +83,10 @@ class RegistrationType extends AbstractType
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
+                'attr'     => [
+                    'maxlength'    => 35,
+                    'autocomplete' => 'organization',
+                ],
             ])
             ->add('vatNumber', VatNumberType::class)
             ->add('identity', IdentityType::class)
@@ -91,12 +95,18 @@ class RegistrationType extends AbstractType
                 'required'       => false,
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
+                'attr'           => [
+                    'autocomplete' => 'tel-national',
+                ],
             ])
             ->add('mobile', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.mobile',
                 'required'       => false,
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
+                'attr'           => [
+                    'autocomplete' => 'tel-national',
+                ],
             ]);
 
 
@@ -105,6 +115,9 @@ class RegistrationType extends AbstractType
                 'label'    => 'ekyna_core.field.birthday',
                 'required' => false,
                 'format'   => 'dd/MM/yyyy', // TODO localized format
+                'attr'     => [
+                    'autocomplete' => 'bday',
+                ],
             ]);
         }
 
@@ -128,14 +141,21 @@ class RegistrationType extends AbstractType
         $form
             ->add('identity', IdentityType::class, [
                 'required' => true,
+                'section'  => 'billing',
             ])
             ->add('email', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.account.registration.field.invoice_email',
                 'required' => false,
+                'attr'     => [
+                    'autocomplete' => 'billing email',
+                ],
             ])
             ->add('phone', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.account.registration.field.invoice_phone',
                 'required' => false,
+                'attr'     => [
+                    'autocomplete' => 'billing tel-national',
+                ],
             ]);
 
         return $form;
@@ -170,6 +190,7 @@ class RegistrationType extends AbstractType
                 'defaults'   => false,
                 'select2'    => false,
                 'coordinate' => false,
+                'section'    => 'billing',
             ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',
@@ -212,6 +233,9 @@ class RegistrationType extends AbstractType
                         'required'        => true,
                         'first_options'   => [
                             'label' => 'ekyna_core.field.email',
+                            'attr'     => [
+                                'autocomplete' => 'email',
+                            ],
                         ],
                         'second_options'  => [
                             'label' => 'ekyna_commerce.account.registration.field.email_confirm',

@@ -53,6 +53,9 @@ class InformationType extends AbstractType
             ->add('email', Type\EmailType::class, [
                 'label'    => 'ekyna_core.field.email',
                 'disabled' => true,
+                'attr' => [
+                    'autocomplete' => 'email',
+                ],
             ])
             ->add('identity', IdentityType::class)
             ->add('phone', PhoneNumberType::class, [
@@ -60,12 +63,18 @@ class InformationType extends AbstractType
                 'required'       => false,
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
+                'attr' => [
+                    'autocomplete' => 'tel-national',
+                ],
             ])
             ->add('mobile', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.mobile',
                 'required'       => false,
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
+                'attr' => [
+                    'autocomplete' => 'tel-national',
+                ],
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
@@ -98,6 +107,9 @@ class InformationType extends AbstractType
                 'label'    => 'ekyna_core.field.birthday',
                 'required' => false,
                 'format'   => 'dd/MM/yyyy', // TODO localized format
+                'attr' => [
+                    'autocomplete' => 'bday',
+                ],
             ]);
         }
 
@@ -111,6 +123,10 @@ class InformationType extends AbstractType
                     'label'    => 'ekyna_core.field.company',
                     'required' => false,
                     'disabled' => $customer->hasParent(),
+                    'attr'     => [
+                        'maxlength'    => 35,
+                        'autocomplete' => 'organization',
+                    ],
                 ])
                 ->add('vatNumber', VatNumberType::class, [
                     'disabled' => $customer->hasParent(),

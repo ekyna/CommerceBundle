@@ -175,9 +175,19 @@ ekyna_commerce:
             singular: Adresse
             plural: Adresses
         field:
+            company: Raison sociale
             complement: Complément 1
             supplement: Complément 2
-
+            extra: Complément 3
+            digicode1: Code porte 1
+            digicode2: Code porte 2
+            intercom: Interphone
+        help:
+            company: Raison sociale
+            street: Numéro et libellé de voie
+            complement: Entrée, bâtiment, immeuble, résidence
+            supplement: Étage, couloir, escalier, appartement
+            extra: Lieu-dit ou autre mention
     adjustment:
         label:
             singular: Ajustement

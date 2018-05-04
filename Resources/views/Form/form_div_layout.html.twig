@@ -24,6 +24,7 @@
     {{- form_row(form.street) -}}
     {{- form_row(form.complement) -}}
     {{- form_row(form.supplement) -}}
+    {{- form_row(form.extra) -}}
     <div class="row">
         <div class="col-md-6">
             {{- form_row(form.postalCode, {'label_col': 4, 'widget_col': 8}) -}}
@@ -54,6 +55,17 @@
         </div>
     </div>
     {%- endif -%}
+    <div class="row">
+        <div class="col-md-4">
+            {{- form_row(form.digicode1, {'label_col': 6, 'widget_col': 6}) -}}
+        </div>
+        <div class="col-md-4">
+            {{- form_row(form.digicode2, {'label_col': 6, 'widget_col': 6}) -}}
+        </div>
+        <div class="col-md-4">
+            {{- form_row(form.intercom, {'label_col': 6, 'widget_col': 6}) -}}
+        </div>
+    </div>
 
     {# Customer address specific #}
     {%- if form.invoiceDefault is defined and form.deliveryDefault is defined -%}

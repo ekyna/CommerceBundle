@@ -62,13 +62,21 @@ class SaleType extends ResourceFormType
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
+                'attr'     => [
+                    'maxlength'    => 35,
+                    'autocomplete' => 'organization',
+                ],
             ])
             ->add('identity', IdentityType::class, [
                 'required' => false,
+                'section'  => 'sale',
             ])
             ->add('email', Type\EmailType::class, [
                 'label'    => 'ekyna_core.field.email',
                 'required' => false,
+                'attr'     => [
+                    'autocomplete' => 'email',
+                ],
             ])
             ->add('invoiceAddress', SaleAddressType::class, [
                 'label'          => 'ekyna_commerce.sale.field.invoice_address',

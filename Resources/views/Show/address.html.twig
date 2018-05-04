@@ -17,9 +17,25 @@
 {% if address.supplement is not empty -%}
     <br>{{ address.supplement -}}
 {%- endif %}
+{% if address.extra is not empty -%}
+    <br>{{ address.extra -}}
+{%- endif %}
 
 <br>{{ address.postalCode }} {{ address.city -}}
 <br>{{ address.country.code|country -}}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}
+
+{% if address.digicode1 is not empty or address.digicode2 is not empty or address.intercom is not empty %}
+    <br>
+    {% if address.digicode1 is not empty -%}
+    <abbr title="{{ 'ekyna_commerce.address.field.digicode1'|trans }}">C1:</abbr>&nbsp;{{ address.digicode1 }}.&nbsp;
+    {%- endif %}
+    {% if address.digicode2 is not empty -%}
+    <abbr title="{{ 'ekyna_commerce.address.field.digicode2'|trans }}">C2:</abbr>&nbsp;{{ address.digicode2 }}.&nbsp;
+    {%- endif %}
+    {% if address.intercom is not empty -%}
+    <abbr title="{{ 'ekyna_commerce.address.field.intercom'|trans }}">I:</abbr>&nbsp;{{ address.intercom }}
+    {%- endif %}
+{% endif %}
 
 {% if display_phones -%}
     {% if address.phone is not empty -%}

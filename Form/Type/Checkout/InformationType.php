@@ -25,6 +25,11 @@ class InformationType extends AbstractType
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => true,
+                'attr'     => [
+                    'placeholder'  => 'ekyna_commerce.address.help.company',
+                    'maxlength'    => 35,
+                    'autocomplete' => 'organization',
+                ],
             ])
             ->add('identity', IdentityType::class, [
                 'required' => true,
@@ -32,6 +37,9 @@ class InformationType extends AbstractType
             ->add('email', Type\EmailType::class, [
                 'label'    => 'ekyna_core.field.email',
                 'required' => true,
+                'attr' => [
+                    'autocomplete' => 'email',
+                ],
             ]);
     }
 

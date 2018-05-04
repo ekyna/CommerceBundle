@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\GenderType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,6 +35,8 @@ class IdentityType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $section = $options['section'] ? 'section-' . $options['section'] . ' ' : '';
+
         $builder
             ->add('gender', GenderType::class, [
                 'label'          => false,
@@ -52,8 +53,10 @@ class IdentityType extends AbstractType
                 'label'          => false,
                 'required'       => $options['required'],
                 'attr'           => [
-                    'class'       => 'identity-last-name',
-                    'placeholder' => 'ekyna_core.field.last_name',
+                    'class'        => 'identity-last-name',
+                    'placeholder'  => 'ekyna_core.field.last_name',
+                    'maxlength'    => 35,
+                    'autocomplete' => $section . 'given-name',
                 ],
                 'error_bubbling' => true,
             ])
@@ -61,8 +64,10 @@ class IdentityType extends AbstractType
                 'label'          => false,
                 'required'       => $options['required'],
                 'attr'           => [
-                    'class'       => 'identity-first-name',
-                    'placeholder' => 'ekyna_core.field.first_name',
+                    'class'        => 'identity-first-name',
+                    'placeholder'  => 'ekyna_core.field.first_name',
+                    'maxlength'    => 35,
+                    'autocomplete' => $section . 'family-name',
                 ],
                 'error_bubbling' => true,
             ]);
@@ -78,7 +83,10 @@ class IdentityType extends AbstractType
                 'inherit_data'   => true,
                 'required'       => true,
                 'error_bubbling' => false,
-            ]);
+                'section'        => null,
+            ])
+            ->setAllowedTypes('gender_choices', ['callable', 'array'])
+            ->setAllowedTypes('section', ['string', 'null']);
     }
 
     /**

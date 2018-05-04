@@ -72,10 +72,17 @@ class CustomerType extends ResourceFormType
             ])
             ->add('email', Type\EmailType::class, [
                 'label' => 'ekyna_core.field.email',
+                'attr' => [
+                    'autocomplete' => 'email',
+                ],
             ])
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
+                'attr'     => [
+                    'maxlength'    => 35,
+                    'autocomplete' => 'organization',
+                ],
             ])
             ->add('identity', IdentityType::class)
             ->add('phone', PhoneNumberType::class, [
@@ -83,12 +90,18 @@ class CustomerType extends ResourceFormType
                 'required'       => false,
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
+                'attr'           => [
+                    'autocomplete' => 'tel-national',
+                ],
             ])
             ->add('mobile', PhoneNumberType::class, [
                 'label'          => 'ekyna_core.field.mobile',
                 'required'       => false,
                 'default_region' => 'FR', // TODO get user locale
                 'format'         => PhoneNumberFormat::NATIONAL,
+                'attr'           => [
+                    'autocomplete' => 'tel-national',
+                ],
             ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
