@@ -26,7 +26,7 @@ class AdminMenuPass implements CompilerPassInterface
         $pool->addMethodCall('createGroup', [[
             'name'     => 'sales',
             'label'    => 'ekyna_commerce.sale.label.plural',
-            'icon'     => 'file',
+            'icon'     => 'shopping-cart',
             'position' => 10,
         ]]);
 
@@ -83,7 +83,7 @@ class AdminMenuPass implements CompilerPassInterface
         $pool->addMethodCall('createGroup', [[
             'name'     => 'suppliers',
             'label'    => 'ekyna_commerce.supplier.label.plural',
-            'icon'     => 'file',
+            'icon'     => 'truck',
             'position' => 11,
         ]]);
 

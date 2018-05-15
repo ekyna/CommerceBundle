@@ -110,15 +110,11 @@
         <hr>
 
         {{ form_row(form.comment) }}
-
-        {# TODO {% if form.captcha is defined -%}
-        <hr>
-        <div class="form-group row">
-            <div class="col-sm-offset-2 col-sm-10">
-                {{ form_row(form.captcha) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.captcha, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-        {% endif %}#}
 
         {{ bootstrap_set_sizing('md') }}
         {{ form_rest(form) }}

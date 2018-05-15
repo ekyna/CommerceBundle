@@ -12,6 +12,7 @@ use Ekyna\Bundle\CommerceBundle\Model\Contact;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Component\Commerce\Exception\LogicException;
+use Gregwar\CaptchaBundle\Type\CaptchaType;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
@@ -109,7 +110,6 @@ class RegistrationType extends AbstractType
                 ],
             ]);
 
-
         if ($this->config['birthday']) {
             $form->add('birthday', Type\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.birthday',
@@ -196,6 +196,7 @@ class RegistrationType extends AbstractType
                 'label'    => 'ekyna_core.field.comment',
                 'required' => false,
             ])
+            ->add('captcha', CaptchaType::class)
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
                     'save' => [
