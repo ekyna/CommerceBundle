@@ -52,7 +52,7 @@ class OrderInvoiceType extends AbstractOrderListType
                 'position'      => 60,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.invoice.field.grand_total',
+                'label'         => 'ekyna_commerce.sale.field.ati_total',
                 'currency_path' => 'currency',
                 'position'      => 70,
             ])
@@ -78,7 +78,7 @@ class OrderInvoiceType extends AbstractOrderListType
             ])
             // TODO Customer
             ->addFilter('grandTotal', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.invoice.field.grand_total',
+                'label'    => 'ekyna_commerce.sale.field.ati_total',
                 'position' => 70,
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [

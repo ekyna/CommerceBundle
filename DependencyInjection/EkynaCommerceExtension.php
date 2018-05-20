@@ -28,6 +28,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.company_logo', $config['default']['company_logo']);
         $container->setParameter('ekyna_commerce.default.country', $config['default']['country']);
         $container->setParameter('ekyna_commerce.default.currency', $config['default']['currency']);
+        $container->setParameter('ekyna_commerce.default.vat_display_mode', $config['default']['vat_display_mode']);
         $container->setParameter('ekyna_commerce.default.customer', $config['default']['customer']);
 
         $container->setParameter('ekyna_commerce.expiration.cart', $config['default']['expiration']['cart']);

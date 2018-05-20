@@ -1,0 +1,109 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Country repository -->
+        <service id="ekyna_commerce.country.repository"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>%ekyna_commerce.country.class%</argument>
+            <call method="setDefaultCode">
+                <argument>%ekyna_commerce.default.country%</argument>
+            </call>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
+        </service>
+
+        <!-- Currency repository -->
+        <service id="ekyna_commerce.currency.repository"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CurrencyRepository">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>%ekyna_commerce.currency.class%</argument>
+            <call method="setDefaultCode">
+                <argument>%ekyna_commerce.default.currency%</argument>
+            </call>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
+        </service>
+
+        <!-- Customer group repository -->
+        <service id="ekyna_commerce.customer_group.repository"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerGroupRepository">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>%ekyna_commerce.customer_group.class%</argument>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
+        </service>
+
+        <!-- Context provider -->
+        <service id="ekyna_commerce.common.context_provider"
+                 class="Ekyna\Component\Commerce\Common\Context\ContextProvider">
+            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
+            <argument type="service" id="ekyna_commerce.country.repository"/>
+            <argument type="service" id="ekyna_commerce.currency.repository"/>
+            <argument>%ekyna_commerce.default.vat_display_mode%</argument>
+            <argument>%ekyna_commerce.context.class%</argument>
+        </service>
+
+        <!-- Currency converter -->
+        <service id="ekyna_commerce.currency.converter"
+                 class="Ekyna\Component\Commerce\Bridge\Swap\SwapCurrencyConverter">
+            <argument type="service" id="florianv_swap.swap"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+
+        <!-- Formatter factory -->
+        <service id="ekyna_commerce.util.formatter_factory"
+                 class="Ekyna\Component\Commerce\Common\Util\FormatterFactory">
+            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+
+        <!-- Default formatter -->
+        <service id="ekyna_commerce.util.formatter.default"
+                 class="Ekyna\Component\Commerce\Common\Util\Formatter">
+            <factory service="ekyna_commerce.util.formatter_factory" method="create"/>
+        </service>
+
+        <!-- In charge resolver -->
+        <service id="ekyna_commerce.common.in_charge_resolver"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver">
+            <argument type="service" id="ekyna_user.user.provider" />
+            <argument type="service" id="ekyna_user.user.manager" />
+            <argument type="service" id="security.authorization_checker" />
+        </service>
+
+        <!-- Uploader -->
+        <service id="ekyna_commerce.common.uploader"
+                 class="Ekyna\Bundle\CoreBundle\Uploader\Uploader">
+            <argument type="service" id="oneup_flysystem.mount_manager" />
+            <argument>local_commerce</argument>
+        </service>
+
+        <!-- Uploadable listener -->
+        <service id="ekyna_commerce.common.uploadable_listener"
+                 class="Ekyna\Component\Commerce\Common\Listener\UploadableListener">
+            <argument type="service" id="ekyna_commerce.common.uploader" />
+            <tag name="doctrine.orm.entity_listener" />
+        </service>
+
+        <!-- Address event listener -->
+        <service id="ekyna_commerce.address.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\AddressEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ivory.google_map.geocoder"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Sale item event listener -->
+        <service id="ekyna_commerce.sale_item.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SaleItemEventSubscriber">
+            <argument type="service" id="ekyna_commerce.common.context_provider"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+    </services>
+
+</container>

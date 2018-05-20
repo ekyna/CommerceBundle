@@ -58,16 +58,16 @@
     <tr>
         <th>{{ 'ekyna_core.field.designation'|trans }}</th>
         <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.net_unit'|trans }}</th>
+        <th>{{ ('ekyna_commerce.sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_unit')|trans }}</th>
         {% if multiple_taxes -%}
         <th>{{ 'ekyna_commerce.sale.field.tax_rate'|trans }}</th>
         {%- endif %}
         <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
         {% if line_discount -%}
-        <th>{{ 'ekyna_commerce.sale.field.gross'|trans }}</th>
+        <th>{{ ('ekyna_commerce.sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_gross')|trans }}</th>
         <th colspan="2">{{ 'ekyna_commerce.sale.field.discount'|trans }}</th>
         {%- endif %}
-        <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
+        <th>{{ ('ekyna_commerce.sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_total')|trans }}</th>
     </tr>
     </thead>
 
@@ -80,9 +80,9 @@
     <tbody class="stripped">
     {% for line in goodLines %}
         {% if not line.saleItem.private %}
-        {% set grossTotal = grossTotal + line.gross %}
-        {% set discountTotal = discountTotal + line.discount %}
-        {% set baseTotal = baseTotal + line.base %}
+        {% set grossTotal = grossTotal + line.gross(subject.ati) %}
+        {% set discountTotal = discountTotal + line.discount(subject.ati) %}
+        {% set baseTotal = baseTotal + line.base(subject.ati) %}
         <tr>
             <td>
                 {%- set url = null -%}
@@ -99,7 +99,7 @@
                 {%- endif -%}
             </td>
             <td>{{ line.reference }}</td>
-            <td class="text-right">{{ line.unit|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ line.unit(subject.ati)|localizedcurrency(currency) }}</td>
             {% if multiple_taxes %}
             <td class="text-right">
                 {%- for rate in line.taxRates -%}
@@ -113,7 +113,7 @@
             <td class="text-right">{{ line.quantity|localizednumber }}</td>{# TODO Packing format #}
             {% if line_discount %}
             <td class="text-right">
-                {{- line.gross|localizedcurrency(currency) -}}
+                {{- line.gross(subject.ati)|localizedcurrency(currency) -}}
             </td>
             {%- if 0 < line.discount -%}
             <td class="text-right">
@@ -124,13 +124,13 @@
                     &nbsp;
                 {%- endfor -%}
             </td>
-            <td class="text-right">-{{- line.discount|localizedcurrency(currency) -}}</td>
+            <td class="text-right">-{{- line.discount(subject.ati)|localizedcurrency(currency) -}}</td>
             {%- else -%}
             <td class="text-right">&nbsp;</td>
             <td class="text-right">&nbsp;</td>
             {%- endif -%}
             {% endif %}
-            <td class="text-right">{{ line.base|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ line.base(subject.ati)|localizedcurrency(currency) }}</td>
         </tr>
         {% endif %}
     {% endfor %}
@@ -168,7 +168,7 @@
                     {{- line.designation -}}
                 {%- endif -%}
             </th>
-            <td class="total text-right">-{{ line.base|localizedcurrency(currency) }}</td>
+            <td class="total text-right">-{{ line.base(subject.ati)|localizedcurrency(currency) }}</td>
         </tr>
     {%- endfor %}
     </tbody>
@@ -181,8 +181,8 @@
     {% for line in shipmentLines -%}
         <tr>
             <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
-            <th>{{ 'ekyna_commerce.sale.field.shipping_cost'|trans }}</th>
-            <td class="total text-right">{{ line.base|localizedcurrency(currency) }}</td>
+            <th>{{ ('ekyna_commerce.sale.field.shipment_' ~ (subject.ati ? 'ati' : 'net') ~ '_total')|trans }}</th>
+            <td class="total text-right">{{ line.base(subject.ati)|localizedcurrency(currency) }}</td>
         </tr>
     {%- endfor %}
     </tbody>
@@ -192,18 +192,25 @@
     {# TOTALS #}
     <tbody class="totals">
         <tr>
-            <td colspan="{{ columns_count - 2 }}" rowspan="3">&nbsp;</td>
+            <td colspan="{{ columns_count - 2 }}" rowspan="{{ subject.ati ? 2 : 3 }}">&nbsp;</td>
+            {% if subject.ati -%}
+            <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
+            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency) }}</td>
+            {%- else -%}
             <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
             <td class="total text-right">{{ (subject.goodsBase - subject.discountBase + subject.shipmentBase)|localizedcurrency(currency) }}</td>
+            {%- endif %}
         </tr>
         <tr>
             <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
             <td class="total text-right">{{ subject.taxesTotal|localizedcurrency(currency) }}</td>
         </tr>
+        {% if not subject.ati -%}
         <tr>
-            <th>{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
             <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency) }}</td>
         </tr>
+        {%- endif %}
     </tbody>
 </table>
 

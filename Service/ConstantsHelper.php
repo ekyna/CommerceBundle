@@ -582,6 +582,26 @@ class ConstantsHelper extends AbstractConstantsHelper
     }
 
     /**
+     * Renders the VAT display mode badge.
+     *
+     * @param string $vatDisplayMode
+     *
+     * @return string
+     */
+    public function renderVatDisplayModeBadge($vatDisplayMode)
+    {
+        if (null !== $vatDisplayMode) {
+            $label = Model\VatDisplayModes::getLabel($vatDisplayMode);
+            $theme = Model\VatDisplayModes::getTheme($vatDisplayMode);
+        } else {
+            $label = 'ekyna_core.field.default';
+            $theme = 'default';
+        }
+
+        return $this->renderBadge($this->renderLabel($label), $theme);
+    }
+
+    /**
      * Renders the identity.
      *
      * @param Common\IdentityInterface $identity

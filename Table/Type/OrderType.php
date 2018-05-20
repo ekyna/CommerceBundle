@@ -134,7 +134,7 @@ class OrderType extends ResourceTableType
                 'position' => 50,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.sale.field.grand_total',
+                'label'         => 'ekyna_commerce.sale.field.ati_total',
                 'currency_path' => 'currency.code',
                 'position'      => 60,
             ])
@@ -284,7 +284,7 @@ class OrderType extends ResourceTableType
                 'position' => 50,
             ])
             ->addFilter('grandTotal', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.sale.field.grand_total',
+                'label'    => 'ekyna_commerce.sale.field.ati_total',
                 'position' => 60,
             ])
             ->addFilter('paidTotal', CType\Filter\NumberType::class, [

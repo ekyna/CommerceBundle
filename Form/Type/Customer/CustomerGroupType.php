@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatDisplayModeType;
 use Ekyna\Component\Commerce\Customer\Entity\CustomerGroupTranslation;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -55,6 +56,7 @@ class CustomerGroupType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
+            ->add('vatDisplayMode', VatDisplayModeType::class)
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => CustomerGroupTranslationType::class,
                 'form_options'   => [

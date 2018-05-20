@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
+use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -46,7 +47,6 @@ class Configuration implements ConfigurationInterface
                             ->defaultNull()
                         ->end()
                         ->scalarNode('country')
-                            ->isRequired()
                             ->cannotBeEmpty()
                             ->defaultValue('US')
                             ->validate()
@@ -55,12 +55,19 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                         ->scalarNode('currency')
-                            ->isRequired()
                             ->cannotBeEmpty()
                             ->defaultValue('USD')
                             ->validate()
                             ->ifNotInArray(array_keys(Intl::getCurrencyBundle()->getCurrencyNames()))
                                 ->thenInvalid('Invalid default currency %s')
+                            ->end()
+                        ->end()
+                        ->scalarNode('vat_display_mode')
+                            ->cannotBeEmpty()
+                            ->defaultValue(VatDisplayModes::MODE_ATI)
+                            ->validate()
+                            ->ifNotInArray(VatDisplayModes::getModes())
+                                ->thenInvalid('Invalid VAT display mode %s')
                             ->end()
                         ->end()
                         ->arrayNode('customer')

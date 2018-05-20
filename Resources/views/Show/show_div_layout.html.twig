@@ -12,3 +12,13 @@
     </div>
 {% endspaceless %}
 {% endblock phone_widget %}
+
+
+{% block vat_display_mode_widget %}
+{% spaceless %}
+    {% set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) %}
+    <div{{ block('widget_attributes') }}>
+        <span class="label label-{{ theme }}">{{ value|trans }}</span>
+    </div>
+{% endspaceless %}
+{% endblock vat_display_mode_widget %}

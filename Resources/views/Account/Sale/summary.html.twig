@@ -15,7 +15,7 @@
         </tbody>
         <tbody>
         {#<tr>
-            <th class="text-right">{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
             <td>{{ sale.netTotal|localizedcurrency(sale.currency.code) }}</td>
         </tr>
         <tr>
@@ -25,11 +25,11 @@
         {% if delivery and sale.shipmentMethod is not null -%}
         <tr>
             <th class="text-right">{{ sale.shipmentMethod.title }}</th>
-            <td class="text-right">{{ sale.shipmentAmount|localizedcurrency(sale.currency.code) }}</td>
+            <td class="text-right">{{ sale|sale_shipment_amount|localizedcurrency(sale.currency.code) }}</td>
         </tr>
         {%- endif %}
         <tr>
-            <th class="text-right">{{ 'ekyna_commerce.sale.field.grand_total'|trans }}</th>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
             <td class="text-right">{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}</td>
         </tr>
         </tbody>

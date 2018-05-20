@@ -5,11 +5,12 @@
 
     <imports>
         <import resource="services/cart.xml"/>
-        <import resource="services/invoice.xml"/>
+        <import resource="services/common.xml"/>
         <import resource="services/customer.xml"/>
         <import resource="services/document.xml"/>
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
+        <import resource="services/invoice.xml"/>
         <import resource="services/order.xml"/>
         <import resource="services/payment.xml"/>
         <import resource="services/pricing.xml"/>
@@ -28,6 +29,7 @@
     </imports>
 
     <parameters>
+        <parameter key="ekyna_commerce.context.class">Ekyna\Component\Commerce\Common\Context\Context</parameter>
         <parameter key="ekyna_commerce.genders.class">Ekyna\Bundle\CommerceBundle\Model\Genders</parameter>
 
         <parameter key="ekyna_commerce.shipment_price.list_template">EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig</parameter>
@@ -56,48 +58,6 @@
             <argument type="service" id="translator"/>
         </service>
 
-        <!-- Country repository -->
-        <service id="ekyna_commerce.country.repository"
-                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>%ekyna_commerce.country.class%</argument>
-            <call method="setDefaultCode">
-                <argument>%ekyna_commerce.default.country%</argument>
-            </call>
-            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
-        </service>
-
-        <!-- Currency repository -->
-        <service id="ekyna_commerce.currency.repository"
-                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CurrencyRepository">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>%ekyna_commerce.currency.class%</argument>
-            <call method="setDefaultCode">
-                <argument>%ekyna_commerce.default.currency%</argument>
-            </call>
-            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
-        </service>
-
-        <!-- Currency converter -->
-        <service id="ekyna_commerce.currency.converter"
-                 class="Ekyna\Component\Commerce\Bridge\Swap\SwapCurrencyConverter">
-            <argument type="service" id="florianv_swap.swap"/>
-            <argument>%ekyna_commerce.default.currency%</argument>
-        </service>
-
-        <!-- Formatter factory -->
-        <service id="ekyna_commerce.util.formatter_factory"
-                 class="Ekyna\Component\Commerce\Common\Util\FormatterFactory">
-            <argument type="service" id="ekyna_resource.locale.request_provider"/>
-            <argument>%ekyna_commerce.default.currency%</argument>
-        </service>
-
-        <!-- Default formatter -->
-        <service id="ekyna_commerce.util.formatter.default"
-                 class="Ekyna\Component\Commerce\Common\Util\Formatter">
-            <factory service="ekyna_commerce.util.formatter_factory" method="create"/>
-        </service>
-
         <!-- Security listener -->
         <service id="ekyna_commerce.security_listener"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SecurityListener">
@@ -123,28 +83,6 @@
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
         </service>
 
-        <!-- In charge resolver -->
-        <service id="ekyna_commerce.common.in_charge_resolver"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver">
-            <argument type="service" id="ekyna_user.user.provider" />
-            <argument type="service" id="ekyna_user.user.manager" />
-            <argument type="service" id="security.authorization_checker" />
-        </service>
-
-        <!-- Uploader -->
-        <service id="ekyna_commerce.common.uploader"
-                 class="Ekyna\Bundle\CoreBundle\Uploader\Uploader">
-            <argument type="service" id="oneup_flysystem.mount_manager" />
-            <argument>local_commerce</argument>
-        </service>
-
-        <!-- Uploadable listener -->
-        <service id="ekyna_commerce.common.uploadable_listener"
-                 class="Ekyna\Component\Commerce\Common\Listener\UploadableListener">
-            <argument type="service" id="ekyna_commerce.common.uploader" />
-            <tag name="doctrine.orm.entity_listener" />
-        </service>
-
         <!-- Load metadata listener -->
         <service id="ekyna_commerce.doctrine.orm.listener.load_metadata_listener"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Listener\LoadMetadataListener"
@@ -163,20 +101,6 @@
             <argument type="service" id="local_commerce_filesystem"/>
         </service>
 
-        <!-- Address event listener -->
-        <service id="ekyna_commerce.address.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\AddressEventSubscriber">
-            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <argument type="service" id="ivory.google_map.geocoder"/>
-            <tag name="resource.event_subscriber"/>
-        </service>
-
-        <!-- Sale item event listener -->
-        <service id="ekyna_commerce.sale_item.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\SaleItemEventSubscriber">
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
         <!-- Show types -->
         <service id="ekyna_commerce.show.phone_type"
                  class="Ekyna\Bundle\CommerceBundle\Show\Type\PhoneType">
@@ -185,6 +109,10 @@
         <service id="ekyna_commerce.show.unit_type"
                  class="Ekyna\Bundle\CommerceBundle\Show\Type\UnitType">
             <tag name="ekyna_admin.show.type" alias="unit"/>
+        </service>
+        <service id="ekyna_commerce.show.vat_display_mode"
+                 class="Ekyna\Bundle\CommerceBundle\Show\Type\VatDisplayModeType">
+            <tag name="ekyna_admin.show.type" alias="vat_display_mode"/>
         </service>
 
     </services>

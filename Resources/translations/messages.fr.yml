@@ -406,7 +406,6 @@ ekyna_commerce:
             goods_base: Marchandises HT
             shipment_base: Frais de port HT
             taxes_total: Taxes
-            grand_total: Total TTC
             payment_method: Mode de remboursement
             invoiced_at: Date de facturation
         message:
@@ -795,6 +794,10 @@ ekyna_commerce:
             vat_number: Numéro de TVA
             vat_details: Détails N°TVA
             vat_valid: N°TVA valide
+            vat_display_mode: Affichage TVA
+        vat_display_mode:
+            ati: TTC
+            net: HT
 
     quote:
         label:
@@ -979,12 +982,16 @@ ekyna_commerce:
             auto_discount: Remises auto.
             availability: Dispo.
             net_unit: PU HT
-            gross: Base HT
-            base_total: Base HT
-            discount: Remise
+            ati_unit: PU TTC
+            net_gross: Base HT
+            ati_gross: Base TTC
+            base_total: Base HT # TODO Remove
             net_total: Total HT
-            shipment_total: Port HT
+            ati_total: Total TTC
+            shipment_net_total: Port HT
+            shipment_ati_total: Port TTC
             shipping_cost: Frais de port
+            discount: Remise
             tax_name: Taxe
             tax_amount: Montant
             tax_rate: Taux TVA
@@ -1001,7 +1008,6 @@ ekyna_commerce:
             origin_number: N° d'origine
             gross_totals: Sous-total
             deposit_total: Acompte TTC
-            grand_total: Total TTC
             margin: Marge
             weight_total: Poids total
             document_comment: Commentaire documents
@@ -1024,6 +1030,7 @@ ekyna_commerce:
 
     setting:
         invoice_footer: Pied de page facture
+        vat_display_mode: Affichage TVA par défaut
         shipment_label:
             label: Étiquette expédition
             size: Format
@@ -1259,6 +1266,7 @@ ekyna_commerce:
 
     subject:
         label: Article
+        price_from: À partir de
 
     supplier:
         label:

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CoreBundle\Twig\UiExtension;
+use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\SaleView;
@@ -29,6 +30,11 @@ class SaleExtension extends \Twig_Extension
     private $constantHelper;
 
     /**
+     * @var ContextProviderInterface
+     */
+    private $contextProvider;
+
+    /**
      * @var ViewBuilder
      */
     private $viewBuilder;
@@ -47,18 +53,21 @@ class SaleExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantsHelper       $constantHelper
-     * @param ViewBuilder           $viewBuilder
-     * @param UiExtension           $uiExtension
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param ConstantsHelper          $constantHelper
+     * @param ContextProviderInterface $contextProvider
+     * @param ViewBuilder              $viewBuilder
+     * @param UiExtension              $uiExtension
+     * @param UrlGeneratorInterface    $urlGenerator
      */
     public function __construct(
         ConstantsHelper $constantHelper,
+        ContextProviderInterface $contextProvider,
         ViewBuilder $viewBuilder,
         UiExtension $uiExtension,
         UrlGeneratorInterface $urlGenerator
     ) {
         $this->constantHelper = $constantHelper;
+        $this->contextProvider = $contextProvider;
         $this->viewBuilder = $viewBuilder;
         $this->uiExtension = $uiExtension;
         $this->urlGenerator = $urlGenerator;
@@ -148,6 +157,10 @@ class SaleExtension extends \Twig_Extension
             new \Twig_SimpleFilter(
                 'sale_attachments',
                 [$this, 'getSaleAttachments']
+            ),
+            new \Twig_SimpleFilter(
+                'sale_shipment_amount',
+                [$this, 'getSaleShipmentAmount']
             ),
             // Builds the sale view form the sale
             new \Twig_SimpleFilter(
@@ -383,7 +396,7 @@ class SaleExtension extends \Twig_Extension
             return [];
         }
 
-        return $sale->getPayments()->filter(function(Payment\PaymentInterface $payment) {
+        return $sale->getPayments()->filter(function (Payment\PaymentInterface $payment) {
             return $payment->getState() !== Payment\PaymentStates::STATE_NEW;
         })->toArray();
     }
@@ -401,7 +414,7 @@ class SaleExtension extends \Twig_Extension
             return [];
         }
 
-        return $sale->getShipments()->filter(function(Shipment\ShipmentInterface $shipment) {
+        return $sale->getShipments()->filter(function (Shipment\ShipmentInterface $shipment) {
             return !$shipment->isReturn() && $shipment->getState() !== Shipment\ShipmentStates::STATE_NEW;
         })->toArray();
     }
@@ -419,7 +432,7 @@ class SaleExtension extends \Twig_Extension
             return [];
         }
 
-        return $sale->getShipments()->filter(function(Shipment\ShipmentInterface $shipment) {
+        return $sale->getShipments()->filter(function (Shipment\ShipmentInterface $shipment) {
             return $shipment->isReturn() && $shipment->getState() !== Shipment\ShipmentStates::STATE_NEW;
         })->toArray();
     }
@@ -437,7 +450,7 @@ class SaleExtension extends \Twig_Extension
             return [];
         }
 
-        return $sale->getInvoices()->filter(function(Invoice\InvoiceInterface $invoice) {
+        return $sale->getInvoices()->filter(function (Invoice\InvoiceInterface $invoice) {
             return Invoice\InvoiceTypes::isInvoice($invoice);
         })->toArray();
     }
@@ -455,7 +468,7 @@ class SaleExtension extends \Twig_Extension
             return [];
         }
 
-        return $sale->getInvoices()->filter(function(Invoice\InvoiceInterface $invoice) {
+        return $sale->getInvoices()->filter(function (Invoice\InvoiceInterface $invoice) {
             return Invoice\InvoiceTypes::isCredit($invoice);
         })->toArray();
     }
@@ -469,9 +482,29 @@ class SaleExtension extends \Twig_Extension
      */
     public function getSaleAttachments(Common\SaleInterface $sale)
     {
-        return $sale->getAttachments()->filter(function(Common\AttachmentInterface $attachment) {
+        return $sale->getAttachments()->filter(function (Common\AttachmentInterface $attachment) {
             return !$attachment->isInternal();
         })->toArray();
+    }
+
+    /**
+     * Returns the sale shipment (net or ati regarding to the sale's context).
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return float
+     */
+    public function getSaleShipmentAmount(Common\SaleInterface $sale)
+    {
+        $amount = $net = $sale->getShipmentAmount();
+
+        if ($this->contextProvider->getContext($sale)->isAtiDisplayMode()) {
+            foreach ($sale->getAdjustments(Common\AdjustmentTypes::TYPE_TAXATION) as $adjustment) {
+                $amount += $net * $adjustment->getAmount() / 100;
+            }
+        }
+
+        return $amount;
     }
 
     /**

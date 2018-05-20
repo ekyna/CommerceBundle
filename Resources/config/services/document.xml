@@ -9,6 +9,7 @@
         <service id="ekyna_commerce.document.builder"
                  class="Ekyna\Component\Commerce\Document\Builder\DocumentBuilder"
                  lazy="true">
+            <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="libphonenumber.phone_number_util"/>
         </service>
 

@@ -47,7 +47,7 @@ class CommerceSettingsSchema extends AbstractSchema
             ], $this->defaults))
             ->setAllowedTypes('invoice_footer', 'string')
             ->setAllowedTypes('shipment_label', 'array')
-            ->setNormalizer('shipment_label', function(Options $options, $value) use ($labelResolver) {
+            ->setNormalizer('shipment_label', function (Options $options, $value) use ($labelResolver) {
                 return $labelResolver->resolve($value);
             });
     }

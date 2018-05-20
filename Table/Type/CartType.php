@@ -34,7 +34,7 @@ class CartType extends ResourceTableType
                 'sortable' => true,
             ])
             ->addColumn('grandTotal', 'price', [
-                'label'         => 'ekyna_commerce.order.field.grand_total',
+                'label'         => 'ekyna_commerce.sale.field.ati_total',
                 'sortable'      => true,
                 'currency_path' => 'currency.code',
             ])

@@ -24,9 +24,11 @@ class SaleViewType extends AbstractViewType
             'reference'      => $this->trans('ekyna_core.field.reference'),
             'availability'   => $this->trans('ekyna_commerce.sale.field.availability'),
             'unit_net_price' => $this->trans('ekyna_commerce.sale.field.net_unit'),
+            'unit_ati_price' => $this->trans('ekyna_commerce.sale.field.ati_unit'),
             'quantity'       => $this->trans('ekyna_core.field.quantity'),
 
-            'gross'          => $this->trans('ekyna_commerce.sale.field.gross'),
+            'net_gross'      => $this->trans('ekyna_commerce.sale.field.net_gross'),
+            'ati_gross'      => $this->trans('ekyna_commerce.sale.field.ati_gross'),
             'discount'       => $this->trans('ekyna_commerce.sale.field.discount'),
 
             'tax_rate'       => $this->trans('ekyna_commerce.sale.field.tax_rate'),
@@ -36,7 +38,7 @@ class SaleViewType extends AbstractViewType
             'gross_totals'   => $this->trans('ekyna_commerce.sale.field.gross_totals'),
             'net_total'      => $this->trans('ekyna_commerce.sale.field.net_total'),
             'tax_total'      => $this->trans('ekyna_commerce.sale.field.tax_total'),
-            'grand_total'    => $this->trans('ekyna_commerce.sale.field.grand_total'),
+            'ati_total'    => $this->trans('ekyna_commerce.sale.field.ati_total'),
             'margin'         => $this->trans('ekyna_commerce.sale.field.margin'),
         ]);
     }

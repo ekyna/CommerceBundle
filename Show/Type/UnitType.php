@@ -2,12 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
-use Ekyna\Bundle\AdminBundle\Show\Exception\InvalidArgumentException;
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
 use Ekyna\Bundle\AdminBundle\Show\View;
 use Ekyna\Bundle\CommerceBundle\Model\Units;
-use libphonenumber\PhoneNumber;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class UnitType

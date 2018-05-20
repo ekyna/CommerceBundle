@@ -229,6 +229,7 @@
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <argument type="service" id="ekyna_commerce.shipment_method.repository"/>
+            <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="ekyna_commerce.util.formatter.default"/>
             <argument type="service" id="translator"/>
             <tag name="form.type"/>

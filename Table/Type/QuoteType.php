@@ -79,7 +79,7 @@ class QuoteType extends ResourceTableType
                 'position' => 40,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.sale.field.grand_total',
+                'label'         => 'ekyna_commerce.sale.field.ati_total',
                 'currency_path' => 'currency.code',
                 'position'      => 50,
             ])
@@ -168,7 +168,7 @@ class QuoteType extends ResourceTableType
                     'position' => 40,
                 ])
                 ->addFilter('grandTotal', CType\Filter\NumberType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.grand_total',
+                    'label'    => 'ekyna_commerce.sale.field.ati_total',
                     'position' => 50,
                 ])
                 ->addFilter('paidTotal', CType\Filter\NumberType::class, [

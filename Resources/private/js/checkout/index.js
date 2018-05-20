@@ -26,10 +26,11 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
             if (1 === parseInt($view.attr('empty'))) {
                 $forms.slideUp();
                 $customer.slideUp();
-                $submit.addClass('disabled');
-                $quote.addClass('disabled');
+                $submit.addClass('disabled').hide();
+                $quote.addClass('disabled').hide();
             } else {
                 $forms.show().slideDown();
+                $submit.show();
 
                 if (1 === parseInt($view.attr('customer'))) {
                     $customer.slideUp();

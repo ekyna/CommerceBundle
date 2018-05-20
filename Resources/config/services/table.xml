@@ -200,6 +200,13 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Vat display mode column type -->
+        <service id="ekyna_commerce.vat_display_mode.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\VatDisplayModeType">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Supplier product table type -->
         <service id="ekyna_commerce.supplier_product.table_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\SupplierProductType"><!-- TODO use parameter defined by config builder -->

@@ -48,7 +48,7 @@ class SaleShipmentType extends AbstractType
     {
         $builder
             ->add('shipmentAmount', NumberType::class, [
-                'label'    => 'ekyna_commerce.sale.field.shipment_total',
+                'label'    => 'ekyna_commerce.sale.field.shipping_cost',
                 'required' => false,
                 'attr'     => [
                     'class' => 'sale-shipment-amount',

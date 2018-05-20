@@ -102,6 +102,7 @@
         <service id="ekyna_commerce.shipment_price.resolver"
                  class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolver">
             <argument type="service" id="ekyna_commerce.shipment_price.repository"/>
+            <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
         </service>
 
         <!-- Shipment address resolver -->

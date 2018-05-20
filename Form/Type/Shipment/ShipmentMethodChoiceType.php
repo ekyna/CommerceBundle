@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Common\Context\ContextInterface;
+use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Util\Formatter;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayInterface;
@@ -41,6 +43,16 @@ class ShipmentMethodChoiceType extends AbstractType
     private $methodRepository;
 
     /**
+     * @var ContextProviderInterface
+     */
+    private $contextProvider;
+
+    /**
+     * @var ContextInterface
+     */
+    private $context;
+
+    /**
      * @var Formatter
      */
     private $formatter;
@@ -72,6 +84,7 @@ class ShipmentMethodChoiceType extends AbstractType
      * @param ShipmentPriceResolverInterface    $priceResolver
      * @param RegistryInterface                 $gatewayRegistry
      * @param ShipmentMethodRepositoryInterface $methodRepository
+     * @param ContextProviderInterface          $contextProvider
      * @param Formatter                         $formatter
      * @param TranslatorInterface               $translator
      */
@@ -79,12 +92,14 @@ class ShipmentMethodChoiceType extends AbstractType
         ShipmentPriceResolverInterface $priceResolver,
         RegistryInterface $gatewayRegistry,
         ShipmentMethodRepositoryInterface $methodRepository,
+        ContextProviderInterface $contextProvider,
         Formatter $formatter,
         TranslatorInterface $translator
     ) {
         $this->priceResolver = $priceResolver;
         $this->gatewayRegistry = $gatewayRegistry;
         $this->methodRepository = $methodRepository;
+        $this->contextProvider = $contextProvider;
         $this->formatter = $formatter;
         $this->translator = $translator;
     }
@@ -103,11 +118,11 @@ class ShipmentMethodChoiceType extends AbstractType
     {
         $this->availableMethods = [];
         $this->availablePrices = [];
+        $this->context = $this->contextProvider->getContext($sale);
 
         $hasMobile = null;
         if (null !== $sale) {
             $this->freeShipping = $this->priceResolver->hasFreeShipping($sale);
-
             $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale, $availableOnly);
 
             if ($withPrice) {
@@ -213,11 +228,22 @@ class ShipmentMethodChoiceType extends AbstractType
     {
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface $price */
         if (null !== $price = $this->findPriceByMethod($method)) {
-            $price = $this->freeShipping
-                ? $this->translator->trans('ekyna_commerce.checkout.shipment.free_shipping')
-                : $this->formatter->currency($price->getNetPrice());
+            if ($this->freeShipping) {
+                $amount = $this->translator->trans('ekyna_commerce.checkout.shipment.free_shipping');
+            } else {
+                $amount = $net = $price->getNetPrice();
+                if ($this->context->isAtiDisplayMode()) {
+                    $suffix = $this->translator->trans('ekyna_commerce.pricing.vat_display_mode.ati');
+                    foreach ($price->getTaxes() as $tax) {
+                        $amount += $net * $tax->getRate() / 100;
+                    }
+                } else {
+                    $suffix = $this->translator->trans('ekyna_commerce.pricing.vat_display_mode.net');
+                }
+                $amount = $this->formatter->currency($amount);
+            }
 
-            return sprintf('%s (%s)', $method->getTitle(), $price);
+            return sprintf('%s (%s&nbsp;%s)', $method->getTitle(), $amount, $suffix);
         }
 
         return $method->getTitle();
