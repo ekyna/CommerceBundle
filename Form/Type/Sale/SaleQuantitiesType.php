@@ -39,10 +39,6 @@ class SaleQuantitiesType extends AbstractType
                             new Constraints\NotBlank(),
                             new Constraints\GreaterThanOrEqual(['value' => 1]),
                         ];
-                        /*if (!$options['admin_mode']) {
-                            TODO availability constraint on quantity (the form data IS NOT the item)
-                        }*/
-
                         $form->add('item_' . $item->getId(), IntegerType::class, [
                             'label'         => false,
                             'property_path' => $path . '[' . $item->getId() . '].quantity',

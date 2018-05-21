@@ -165,44 +165,55 @@ class AddressType extends AbstractType
         ;
 
         if ($options['phones']) {
+
+            $phonesListener = function (FormEvent $event) use ($options, $section) {
+                $data = $event->getData();
+                $address = $event->getForm()->getNormData();
+                if ($address && !$address instanceof AddressInterface) {
+                    throw new InvalidArgumentException("Expected instance of " . AddressInterface::class);
+                }
+
+                $region = PhoneNumberUtil::UNKNOWN_REGION;
+                if ($data && $data instanceof AddressInterface && null !== $country = $address->getCountry()) {
+                    $region = $country->getCode();
+                } elseif (is_array($data) && isset($data['country'])) {
+                    $region = $data['country'];
+                } elseif ($address && null !== $country = $address->getCountry()) {
+                    $region = $country->getCode();
+                }
+
+                $form = $event->getForm();
+
+                $form
+                    ->remove('phone')
+                    ->remove('mobile')
+                    ->add('phone', PhoneNumberType::class, [
+                        'label'          => 'ekyna_core.field.phone',
+                        'required'       => $options['phone_required'],
+                        'default_region' => $region,
+                        'format'         => PhoneNumberFormat::NATIONAL,
+                        'attr'           => [
+                            'class'        => 'address-phone',
+                            'placeholder'  => 'ekyna_core.field.phone',
+                            'autocomplete' => $section . 'tel-national',
+                        ],
+                    ])
+                    ->add('mobile', PhoneNumberType::class, [
+                        'label'          => 'ekyna_core.field.mobile',
+                        'required'       => $options['mobile_required'],
+                        'default_region' => $region,
+                        'format'         => PhoneNumberFormat::NATIONAL,
+                        'attr'           => [
+                            'class'        => 'address-mobile',
+                            'placeholder'  => 'ekyna_core.field.mobile',
+                            'autocomplete' => $section . 'tel-national',
+                        ],
+                    ]);
+            };
+
             $builder
-                ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options, $section) {
-                    $address = $event->getForm()->getNormData();
-                    if ($address && !$address instanceof AddressInterface) {
-                        throw new InvalidArgumentException("Expected instance of " . AddressInterface::class);
-                    }
-
-                    $region = PhoneNumberUtil::UNKNOWN_REGION;
-                    if ($address && null !== $country = $address->getCountry()) {
-                        $region = $country->getCode();
-                    }
-
-                    $form = $event->getForm();
-
-                    $form
-                        ->add('phone', PhoneNumberType::class, [
-                            'label'          => 'ekyna_core.field.phone',
-                            'required'       => $options['phone_required'],
-                            'default_region' => $region,
-                            'format'         => PhoneNumberFormat::NATIONAL,
-                            'attr'           => [
-                                'class'        => 'address-phone',
-                                'placeholder'  => 'ekyna_core.field.phone',
-                                'autocomplete' => $section . 'tel-national',
-                            ],
-                        ])
-                        ->add('mobile', PhoneNumberType::class, [
-                            'label'          => 'ekyna_core.field.mobile',
-                            'required'       => $options['mobile_required'],
-                            'default_region' => $region,
-                            'format'         => PhoneNumberFormat::NATIONAL,
-                            'attr'           => [
-                                'class'        => 'address-mobile',
-                                'placeholder'  => 'ekyna_core.field.mobile',
-                                'autocomplete' => $section . 'tel-national',
-                            ],
-                        ]);
-                });
+                ->addEventListener(FormEvents::POST_SET_DATA, $phonesListener)
+                ->addEventListener(FormEvents::PRE_SUBMIT, $phonesListener);
         }
 
         if ($options['coordinate']) {

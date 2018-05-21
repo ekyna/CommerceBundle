@@ -446,8 +446,9 @@ class CartController extends AbstractController
             $saleHelper = $this->getSaleHelper();
 
             $form = $saleHelper->createQuantitiesForm($cart, [
-                'method' => 'post',
-                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
+                'method'            => 'post',
+                'action'            => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
+                'validation_groups' => ['Calculation', 'Availability'],
             ]);
 
             $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);

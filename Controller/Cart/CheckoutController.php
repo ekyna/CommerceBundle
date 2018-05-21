@@ -114,8 +114,9 @@ class CheckoutController extends AbstractController
             $saleHelper = $this->getSaleHelper();
 
             $saleForm = $saleHelper->createQuantitiesForm($cart, [
-                'method' => 'post',
-                'action' => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
+                'method'            => 'post',
+                'action'            => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
+                'validation_groups' => ['Calculation', 'Availability'],
             ]);
 
             $saleForm->handleRequest($request);

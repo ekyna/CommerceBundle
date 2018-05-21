@@ -1261,8 +1261,8 @@ ekyna_commerce:
                 replenishment: Réassort ~%days% jours
                 end_of_life: En fin de vie
                 out_of_stock: En rupture
-                min_quantity: La quantité minimum d'achat est de %min%.
-                max_quantity: La quantité maximum disponible est de %max%.
+                min_quantity: "Quantité min. d'achat : %min%"
+                max_quantity: "Quantité max. disponible : %max%"
 
     subject:
         label: Article
