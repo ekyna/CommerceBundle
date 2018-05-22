@@ -18,11 +18,14 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         preventRefresh = false;
 
     var updateElementsDisplay = function(response) {
-        $submitPrevented.slideUp();
+        $submitPrevented.clearQueue().slideUp(function() {
+            $submitPrevented.find('.alert-danger').hide().find('p').empty();
+            $submitPrevented.find('.alert-warning').show();
+        });
 
         // Sale view
         var $view = $(response).find('view');
-        if (1 === $view.size()) {
+        if (1 === $view.length) {
             if (1 === parseInt($view.attr('empty'))) {
                 $forms.slideUp();
                 $customer.slideUp();
@@ -58,10 +61,17 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
                 } else {
                     $submit.addClass('disabled');
                     $quote.addClass('disabled');
+
+                    /*var $errors = $(response).find('errors');
+                    if ($errors.length === 1) {
+                        $submitPrevented.find('.alert-danger').show().find('p').html($errors.text());
+                        $submitPrevented.find('.alert-warning').hide();
+                    }*/
                 }
             }
         }
     };
+
 
     function parseResponse(response) {
         var $xml = $(response);
@@ -136,7 +146,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         if ($(e.target).closest('a.btn').hasClass('disabled')) {
             e.preventDefault();
 
-            $submitPrevented.slideDown();
+            $submitPrevented.clearQueue().slideDown();
 
             return false;
         }

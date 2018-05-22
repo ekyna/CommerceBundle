@@ -142,10 +142,15 @@
         <div class="container cart-checkout-footer">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="alert alert-warning submit-prevented" style="display:none">
-                        <p class="text-center">
-                            {{- 'ekyna_commerce.checkout.message.submit_prevented'|trans|raw -}}
-                        </p>
+                    <div class="submit-prevented" style="display:none">
+                        <div class="alert alert-warning">
+                            <p class="text-center">
+                                {{- 'ekyna_commerce.checkout.message.submit_prevented'|trans|raw -}}
+                            </p>
+                        </div>
+                        <div class="alert alert-danger" style="display:none">
+                            <p class="text-center"></p>
+                        </div>
                     </div>
                     <p class="text-center">
                         <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}"

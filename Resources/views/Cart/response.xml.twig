@@ -11,6 +11,9 @@
     <delivery-address><![CDATA[{{ macros.cart_delivery_address(cart) }}]]></delivery-address>
     <comment><![CDATA[{{ macros.cart_comment(cart) }}]]></comment>
     <attachments><![CDATA[{{ macros.cart_attachments(cart) }}]]></attachments>
+    {#{% if controls.errors|length -%}
+    <errors><![CDATA[{{ controls.errors|join('<br>')|raw }}]]></errors>
+    {%- endif %}#}
 {%- else -%}
     <view{{ macros.view_controls(controls) }}>
         <![CDATA[<p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>]]>

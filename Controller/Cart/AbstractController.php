@@ -203,6 +203,7 @@ class AbstractController
         $controls = [
             'empty'    => 1,
             'valid'    => 0,
+            'errors'   => [],
             'user'     => null !== $this->getUser() ? 1 : 0,
             'customer' => null !== $customer ? 1 : 0,
             'quote'    => null !== $customer && $customer->getCustomerGroup()->isQuoteAllowed() ? 1 : 0,
@@ -212,7 +213,14 @@ class AbstractController
             $controls['empty'] = 0;
 
             $valid = $this->stepValidator->validate($cart, SaleStepValidatorInterface::CHECKOUT_STEP);
-            $controls['valid'] = $valid ? 1 : 0;
+            if ($valid) {
+                $controls['valid'] = 1;
+            } else {
+                /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+                foreach ($this->stepValidator->getViolationList() as $violation) {
+                    $controls['errors'][] = $violation->getMessage();
+                }
+            }
         }
 
         return $controls;

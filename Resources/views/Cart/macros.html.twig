@@ -1,5 +1,5 @@
 {% macro view_controls(controls) %}
-    {%- for key, value in controls %} {{ key }}="{{ value }}"{% endfor -%}
+    {%- for key, value in controls %}{% if key != 'errors' %} {{ key }}="{{ value }}"{% endif %}{% endfor -%}
 {% endmacro view_controls %}
 
 {% macro cart_information(cart) %}

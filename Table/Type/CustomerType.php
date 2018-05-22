@@ -63,6 +63,7 @@ class CustomerType extends ResourceTableType
             ->addColumn('name', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.name',
                 'property_path' => false,
+                'sortable'      => false, // TODO Custom column for sorting
                 'position'      => 20,
             ])
             ->addColumn('email', CType\Column\TextType::class, [
