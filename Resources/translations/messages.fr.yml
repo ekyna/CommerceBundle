@@ -349,6 +349,11 @@ ekyna_commerce:
         alert:
             no_item: Aucun pays configuré
 
+    context:
+        field:
+            delivery_country: Pays de livraison
+            invoice_country: Pays de facturation
+
     credit:
         label:
             singular: Avoir
