@@ -132,12 +132,13 @@ class CheckoutController extends AbstractController
             $view->vars['form'] = $saleForm->createView();
 
             // Default shipment method and price message
-            $view->addMessage($this->translate('ekyna_commerce.checkout.message.shipment_defaults'));
-            $shipmentLine = $view->getShipment();
-            $shipmentLine->setDesignation(
-                $shipmentLine->getDesignation() .
-                '&nbsp;<sup class="text-danger">&starf;</sup>'
-            );
+            if (null !== $shipmentLine = $view->getShipment()) {
+                $shipmentLine->setDesignation(
+                    $shipmentLine->getDesignation() .
+                    '&nbsp;<sup class="text-danger">&starf;</sup>'
+                );
+                $view->addMessage($this->translate('ekyna_commerce.checkout.message.shipment_defaults'));
+            }
 
             $parameters['view'] = $view;
         }
