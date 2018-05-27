@@ -216,7 +216,7 @@
             <tag name="form.type"/>
         </service>
 
-        <!-- Shipment method choice form type -->
+        <!-- Shipment method form type -->
         <service id="ekyna_commerce.shipment_method.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodType">
             <argument>%ekyna_commerce.shipment_method.class%</argument>
@@ -226,6 +226,12 @@
         <!-- Shipment method choice form type -->
         <service id="ekyna_commerce.shipment_method_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType">
+            <argument>%ekyna_commerce.shipment_method.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <!-- Shipment method choice form type -->
+        <service id="ekyna_commerce.shipment_method_pick.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType">
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <argument type="service" id="ekyna_commerce.shipment_method.repository"/>
@@ -250,11 +256,11 @@
             <argument>%ekyna_commerce.shipment_method.class%</argument>
             <tag name="form.type"/>
         </service>
-        <!-- Shipment zone type -->
-        <service id="ekyna_commerce.shipment_zone.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentZoneType">
-            <argument>%ekyna_commerce.shipment_zone.class%</argument>
-            <argument>%ekyna_commerce.country.class%</argument>
+        <!-- Shipment rule type -->
+        <service id="ekyna_commerce.shipment_rule.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentRuleType">
+            <argument>%ekyna_commerce.shipment_rule.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
         </service>
         <!-- Shipment factory choice type -->

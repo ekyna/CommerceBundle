@@ -41,11 +41,7 @@ class SaleItemController extends AbstractSaleController
     }
 
     /**
-     * Creates a sale item based on the subject choice.
-     *
-     * @param Request $request
-     *
-     * @return Response
+     * @inheritdoc
      */
     public function addAction(Request $request)
     {
@@ -325,6 +321,9 @@ class SaleItemController extends AbstractSaleController
         );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function editAction(Request $request)
     {
         $context = $this->loadContext($request);
@@ -406,6 +405,71 @@ class SaleItemController extends AbstractSaleController
         );
     }
 
+    /**
+     * Move up the resource.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function moveUpAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        $item = $context->getResource($this->config->getResourceName());
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+
+        $this->isGranted('EDIT', $item);
+
+        if (0 < $item->getPosition()) {
+            $item->setPosition($item->getPosition() - 1);
+
+            // TODO use ResourceManager
+            $this->getOperator()->update($item);
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->buildXhrSaleViewResponse($sale);
+        }
+
+        return $this->redirectToReferer($this->generateResourcePath($sale, 'show'));
+    }
+
+    /**
+     * Move down the resource.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function moveDownAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        $item = $context->getResource($this->config->getResourceName());
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+
+        $this->isGranted('EDIT', $item);
+
+        if (!$item->isLast()) {
+            $item->setPosition($item->getPosition() + 1);
+
+            // TODO use ResourceManager
+            $this->getOperator()->update($item);
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->buildXhrSaleViewResponse($sale);
+        }
+
+        return $this->redirectToReferer($this->generateResourcePath($sale, 'show'));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function removeAction(Request $request)
     {
         $context = $this->loadContext($request);

@@ -154,7 +154,7 @@ class QuoteViewType extends AbstractViewType
         }
 
         // Edit action
-        if (!$item->isCompound()) {
+        //if (!$item->isCompound()) {
             $editPath = $this->generateUrl('ekyna_commerce_quote_item_admin_edit', [
                 'quoteId'     => $item->getSale()->getId(),
                 'quoteItemId' => $item->getId(),
@@ -164,22 +164,55 @@ class QuoteViewType extends AbstractViewType
                 'data-sale-modal' => null,
                 'class'           => 'text-warning',
             ]));
+        //}
+
+        // Abort if has parent
+        if ($item->getParent()) {
+            return;
         }
 
-        if (!$item->isImmutable() && !$item->getParent()) {
-            // Remove action
-            $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
+        // Move up
+        if (0 < $item->getPosition()) {
+            $moveUpPath = $this->generateUrl('ekyna_commerce_quote_item_admin_move_up', [
                 'quoteId'     => $item->getSale()->getId(),
                 'quoteItemId' => $item->getId(),
             ]);
-            $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-                'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-                'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
-                'data-sale-xhr' => null,
-                'class'         => 'text-danger',
+            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
+                'title'         => $this->trans('ekyna_core.button.move_up'),
+                'data-sale-xhr' => 'get',
+                'class'         => 'text-muted',
             ]));
-
         }
+
+        // Move down
+        if (!$item->isLast()) {
+            $moveUpPath = $this->generateUrl('ekyna_commerce_quote_item_admin_move_down', [
+                'quoteId'     => $item->getSale()->getId(),
+                'quoteItemId' => $item->getId(),
+            ]);
+            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
+                'title'         => $this->trans('ekyna_core.button.move_down'),
+                'data-sale-xhr' => 'get',
+                'class'         => 'text-muted',
+            ]));
+        }
+
+        // Abort if immutable
+        if ($item->isImmutable()) {
+            return;
+        }
+
+        // Remove action
+        $removePath = $this->generateUrl('ekyna_commerce_quote_item_admin_remove', [
+            'quoteId'     => $item->getSale()->getId(),
+            'quoteItemId' => $item->getId(),
+        ]);
+        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+            'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
+            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
+            'data-sale-xhr' => null,
+            'class'         => 'text-danger',
+        ]));
     }
 
     /**

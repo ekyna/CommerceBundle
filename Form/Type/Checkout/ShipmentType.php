@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
@@ -40,7 +40,7 @@ class ShipmentType extends AbstractType
             }
 
             $form
-                ->add('shipmentMethod', ShipmentMethodChoiceType::class, [
+                ->add('shipmentMethod', ShipmentMethodPickType::class, [
                     'label'    => false,
                     'sale'     => $sale,
                     'expanded' => true,

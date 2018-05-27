@@ -147,7 +147,7 @@ class ShipmentType extends ResourceFormType
                             'placeholder' => 'ekyna_commerce.shipment.field.valorization',
                         ],
                     ])
-                    ->add('method', ShipmentMethodChoiceType::class, [
+                    ->add('method', ShipmentMethodPickType::class, [
                         'available' => !$options['admin_mode'],
                         'return'    => $shipment->isReturn(),
                         'disabled'  => $locked,

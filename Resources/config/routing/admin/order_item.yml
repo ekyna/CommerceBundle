@@ -28,6 +28,22 @@ ekyna_commerce_order_item_admin_edit:
         orderId: \d+
         orderItemId: \d+
 
+ekyna_commerce_order_item_admin_move_up:
+    path: /{orderItemId}/move-up
+    defaults: { _controller: "ekyna_commerce.order_item.controller:moveUpAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+
+ekyna_commerce_order_item_admin_move_down:
+    path: /{orderItemId}/move-down
+    defaults: { _controller: "ekyna_commerce.order_item.controller:moveDownAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+
 ekyna_commerce_order_item_admin_remove:
     path: /{orderItemId}/remove
     defaults: { _controller: "ekyna_commerce.order_item.controller:removeAction" }

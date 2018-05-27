@@ -4,6 +4,18 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- Shipment rule repository -->
+        <service id="ekyna_commerce.shipment_rule.repository"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentRuleRepository">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>%ekyna_commerce.shipment_rule.class%</argument>
+            <call method="setContextProvider">
+                <argument type="service" id="ekyna_commerce.common.context_provider"/>
+            </call>
+            <call method="setAmountCalculator">
+                <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            </call>
+        </service>
 
         <!-- Shipment address transformer -->
         <service id="ekyna_commerce.shipment_address.transformer"
@@ -102,6 +114,7 @@
         <service id="ekyna_commerce.shipment_price.resolver"
                  class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolver">
             <argument type="service" id="ekyna_commerce.shipment_price.repository"/>
+            <argument type="service" id="ekyna_commerce.shipment_rule.repository"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
         </service>
 

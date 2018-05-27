@@ -68,7 +68,7 @@ class SaleShipmentType extends AbstractType
                 }
 
                 $form
-                    ->add('shipmentMethod', Shipment\ShipmentMethodChoiceType::class, [
+                    ->add('shipmentMethod', Shipment\ShipmentMethodPickType::class, [
                         'label'      => 'ekyna_commerce.shipment_method.label.singular',
                         'sale'       => $sale,
                         'with_price' => false,
@@ -112,19 +112,13 @@ class SaleShipmentType extends AbstractType
         /** @var SaleInterface $sale */
         $sale = $form->getData();
 
-        $country = $sale->getDeliveryCountry();
-        $method = $sale->getShipmentMethod();
-
         $view->vars['total_weight'] = $sale->getWeightTotal();
-        $view->vars['delivery_country'] = $country;
+        $view->vars['delivery_country'] = $sale->getDeliveryCountry();
+        $view->vars['resolved_price'] = 0;
 
-        $price = null;
-        if ($country && $method) {
-            $price = $this
-                ->shipmentPriceResolver
-                ->getPriceByCountryAndMethodAndWeight($country, $method, $sale->getWeightTotal());
+        if (null !== $price = $this->shipmentPriceResolver->getPriceBySale($sale)) {
+            $view->vars['resolved_price'] = $price->isFree() ? 0 : $price->getNetPrice();
         }
-        $view->vars['resolved_price'] = $price;
     }
 
     /**

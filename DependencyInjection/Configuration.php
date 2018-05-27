@@ -710,6 +710,23 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('event')->end()
                             ->end()
                         ->end()
+                        ->arrayNode('shipment_rule')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => 'EkynaCommerceBundle:Admin/ShipmentRule:_form.html',
+                                    'show.html'  => 'EkynaCommerceBundle:Admin/ShipmentRule:show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Shipment\Entity\ShipmentRule')->end()
+                                ->scalarNode('controller')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentRuleRepository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentRuleType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\ShipmentRuleType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('shipment_price')
                             ->addDefaultsIfNotSet()
                             ->children()

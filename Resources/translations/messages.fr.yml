@@ -301,6 +301,9 @@ ekyna_commerce:
             quote_confirm: |
                 Confirmer la transformation en devis ?<br>
                 <em>Vous serez redirigé vers le détail du devis dans votre espace client</em>.
+            shipment_defaults: |
+                <sup class="text-danger">&starf;</sup> Tarif par défaut,
+                choix du mode de livraion à la prochaine étape.
         button:
             attachment_add: Ajouter une pièce jointe
             attachment_remove: Supprimer cette pièce jointe
@@ -527,7 +530,6 @@ ekyna_commerce:
             business: Entreprise
             registration: Dispo à l'inscription
             quote_allowed: Création de devis
-            free_shipping: Frais de port offerts
         message:
             cant_be_deleted: Le groupe de client par défaut ne peut être supprimé.
         alert:
@@ -1150,6 +1152,36 @@ ekyna_commerce:
             net_price: Prix d'achat HT
         alert:
             empty_list: Aucun mode de livraison configuré
+
+    shipment_rule:
+        label:
+            singular: Gratuité livraison
+            plural: Gratuités livraison
+        header:
+            list: Gratuités livraison <small>Liste des règles</small>
+            show: Détail de la règle <small>%name%</small>
+            new: Créer une nouvelle règle
+            edit: Modifier la règle <small>%name%</small>
+            remove: Supprimer la règle <small>%name%</small>
+        button:
+            list: Liste des règles
+            show: Détail de la règle
+            new: Nouvelle règle
+            edit: Modifier la règle
+            remove: Supprimer la règle
+        field:
+            start_at: Début le
+            end_at: Fin le
+            gross_total: Total articles
+            vat_mode: Mode TVA
+        help:
+            methods: Laisser vide pour tout mode de livraison
+            countries: Laisser vide pour tout pays
+            customer_groups: Laisser vide pour tout groupe de client
+            gross_total: Minimum hors réduction(s) sur la commande
+            vat_mode: Total articles HT ou TTC
+        alert:
+            empty_list: Aucune règle de gratuité configuré
 
     shipment_zone:
         label:

@@ -38,7 +38,7 @@ class SaleViewType extends AbstractViewType
             'gross_totals'   => $this->trans('ekyna_commerce.sale.field.gross_totals'),
             'net_total'      => $this->trans('ekyna_commerce.sale.field.net_total'),
             'tax_total'      => $this->trans('ekyna_commerce.sale.field.tax_total'),
-            'ati_total'    => $this->trans('ekyna_commerce.sale.field.ati_total'),
+            'ati_total'      => $this->trans('ekyna_commerce.sale.field.ati_total'),
             'margin'         => $this->trans('ekyna_commerce.sale.field.margin'),
         ]);
     }
@@ -83,6 +83,12 @@ class SaleViewType extends AbstractViewType
      */
     public function buildShipmentView(Model\SaleInterface $sale, View\LineView $view, array $options)
     {
+        if (0 >= $sale->getShipmentResult()->getTotal()) {
+            $free = $this->trans('ekyna_commerce.checkout.shipment.free_shipping');
+            $view->setBase($free);
+            $view->setTotal($free);
+        }
+
         if (null !== $sale->getShipmentMethod()) {
             return;
         }

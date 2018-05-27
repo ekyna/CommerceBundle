@@ -69,8 +69,8 @@ abstract class AbstractSaleController extends ResourceController
      */
     protected function buildXhrSaleViewResponse(SaleInterface $sale, FormInterface $form = null)
     {
-        // We need to refresh the sale to get proper "id indexed" collections.
-        // TODO move to resource listener : refresh all collections indexed by "id"
+        // We need to refresh the sale to get proper "id/position indexed" collections.
+        // TODO move to resource listener : refresh all collections indexed by "id" or "position"
         // TODO get the proper operator through resource registry
         $this->getOperator()->refresh($sale);
 

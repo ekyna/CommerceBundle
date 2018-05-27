@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -88,7 +88,7 @@ class SaleTransformType extends AbstractType
                 }
             } else {
                 $form
-                    ->add('shipmentMethod', ShipmentMethodChoiceType::class, [
+                    ->add('shipmentMethod', ShipmentMethodPickType::class, [
                         'sale'      => $sale,
                         'available' => !$options['admin_mode'],
                         'expanded'  => false,

@@ -57,16 +57,6 @@ class CustomerGroupType extends ResourceTableType
                 'disable_property_path' => 'default',
                 'position'              => 40,
             ])
-            ->addColumn('freeShipping', CType\Column\BooleanType::class, [
-                'label'                 => 'ekyna_commerce.customer_group.field.free_shipping',
-                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
-                'route_parameters'      => ['field' => 'freeShipping'],
-                'route_parameters_map'  => ['customerGroupId' => 'id'],
-                'true_class'            => 'label-warning',
-                'false_class'           => 'label-default',
-                'disable_property_path' => 'default',
-                'position'              => 50,
-            ])
             ->addColumn('vatDisplayMode', VatDisplayModeType::class, [
                 'position' => 60,
             ])

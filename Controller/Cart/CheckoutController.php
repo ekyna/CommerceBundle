@@ -10,7 +10,6 @@ use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -132,6 +131,14 @@ class CheckoutController extends AbstractController
             $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
             $view->vars['form'] = $saleForm->createView();
 
+            // Default shipment method and price message
+            $view->addMessage($this->translate('ekyna_commerce.checkout.message.shipment_defaults'));
+            $shipmentLine = $view->getShipment();
+            $shipmentLine->setDesignation(
+                $shipmentLine->getDesignation() .
+                '&nbsp;<sup class="text-danger">&starf;</sup>'
+            );
+
             $parameters['view'] = $view;
         }
 
@@ -208,10 +215,6 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->updateShipmentAmount($cart);
-
-            // TODO save cart ?
-
             // New quote
             $quote = $this->quoteRepository->createNew();
             // Initialize transformation
@@ -266,8 +269,6 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->updateShipmentAmount($cart);
-
             $this->saveCart();
 
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
@@ -279,34 +280,6 @@ class CheckoutController extends AbstractController
             'cart' => $cart,
             'form' => $view,
         ]);
-    }
-
-    /**
-     * Updates the sale shipment amount.
-     *
-     * @param SaleInterface $sale
-     */
-    private function updateShipmentAmount(SaleInterface $sale)
-    {
-        if (!$this->shipmentPriceResolver->hasFreeShipping($sale)) {
-            $country = $sale->getDeliveryCountry();
-            $method = $sale->getShipmentMethod();
-            $weight = $sale->getWeightTotal();
-
-            if ($country && $method) {
-                $price = $this
-                    ->shipmentPriceResolver
-                    ->getPriceByCountryAndMethodAndWeight($country, $method, $weight);
-
-                if (null !== $price) {
-                    $sale->setShipmentAmount($price->getNetPrice());
-                }
-
-                return;
-            }
-        }
-
-        $sale->setShipmentAmount(0);
     }
 
     /**

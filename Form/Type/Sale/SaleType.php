@@ -11,7 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -113,7 +113,7 @@ class SaleType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
-            ->add('shipmentMethod', ShipmentMethodChoiceType::class, [
+            ->add('shipmentMethod', ShipmentMethodPickType::class, [
                 'available' => !$options['admin_mode'],
             ])
             ->add('paymentTerm', PaymentTermChoiceType::class, [

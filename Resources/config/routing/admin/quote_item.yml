@@ -28,6 +28,22 @@ ekyna_commerce_quote_item_admin_edit:
         quoteId: \d+
         quoteItemId: \d+
 
+ekyna_commerce_quote_item_admin_move_up:
+    path: /{quoteItemId}/move-up
+    defaults: { _controller: "ekyna_commerce.quote_item.controller:moveUpAction" }
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        quoteItemId: \d+
+
+ekyna_commerce_quote_item_admin_move_down:
+    path: /{quoteItemId}/move-down
+    defaults: { _controller: "ekyna_commerce.quote_item.controller:moveDownAction" }
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        quoteItemId: \d+
+
 ekyna_commerce_quote_item_admin_remove:
     path: /{quoteItemId}/remove
     defaults: { _controller: "ekyna_commerce.quote_item.controller:removeAction" }

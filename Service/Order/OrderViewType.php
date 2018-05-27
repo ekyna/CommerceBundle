@@ -320,28 +320,61 @@ class OrderViewType extends AbstractViewType
         ]));
         //}
 
-        // Remove action
-        if (!$item->isImmutable() && !$item->getParent()) {
-            // Not if invoiced
-            if ($this->invoiceCalculator->isInvoiced($item)) {
-                return;
-            }
-            // Not if shipped
-            if ($this->shipmentCalculator->isShipped($item)) {
-                return;
-            }
+        // Abort if has parent
+        if ($item->getParent()) {
+            return;
+        }
 
-            $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+        // Move up
+        if (0 < $item->getPosition()) {
+            $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_up', [
                 'orderId'     => $item->getSale()->getId(),
                 'orderItemId' => $item->getId(),
             ]);
-            $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-                'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-                'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
-                'data-sale-xhr' => null,
-                'class'         => 'text-danger',
+            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
+                'title'         => $this->trans('ekyna_core.button.move_up'),
+                'data-sale-xhr' => 'get',
+                'class'         => 'text-muted',
             ]));
         }
+
+        // Move down
+        if (!$item->isLast()) {
+            $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_down', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
+                'title'         => $this->trans('ekyna_core.button.move_down'),
+                'data-sale-xhr' => 'get',
+                'class'         => 'text-muted',
+            ]));
+        }
+
+        // Abort if immutable
+        if ($item->isImmutable()) {
+            return;
+        }
+        // Abort if invoiced
+        if ($this->invoiceCalculator->isInvoiced($item)) {
+            return;
+        }
+        // Abort if shipped
+        if ($this->shipmentCalculator->isShipped($item)) {
+            return;
+        }
+
+        // Remove action
+        $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+            'orderId'     => $item->getSale()->getId(),
+            'orderItemId' => $item->getId(),
+        ]);
+        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+            'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
+            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
+            'data-sale-xhr' => null,
+            'class'         => 'text-danger',
+        ]));
     }
 
     /**

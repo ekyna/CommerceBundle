@@ -49,13 +49,6 @@ class CustomerGroupType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
-            ->add('freeShipping', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.customer_group.field.free_shipping',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
             ->add('vatDisplayMode', VatDisplayModeType::class)
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => CustomerGroupTranslationType::class,

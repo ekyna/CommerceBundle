@@ -63,6 +63,9 @@
             <call method="setStateResolver">
                 <argument type="service" id="ekyna_commerce.cart.state_resolver"/>
             </call>
+            <call method="setShipmentPriceResolver">
+                <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
+            </call>
             <call method="setExpirationDelay">
                 <argument>%ekyna_commerce.expiration.cart%</argument>
             </call>

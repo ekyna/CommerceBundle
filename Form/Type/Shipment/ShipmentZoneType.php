@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -15,25 +15,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 class ShipmentZoneType extends ResourceFormType
 {
     /**
-     * @var string
-     */
-    private $countryClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     * @param string $countryClass
-     */
-    public function __construct($dataClass, $countryClass)
-    {
-        parent::__construct($dataClass);
-
-        $this->countryClass = $countryClass;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -42,9 +23,8 @@ class ShipmentZoneType extends ResourceFormType
             ->add('name', Type\TextType::class, [
                 'label' => 'ekyna_core.field.name',
             ])
-            ->add('countries', EntityType::class, [
+            ->add('countries', CountryChoiceType::class, [
                 'label'    => 'ekyna_commerce.country.label.plural',
-                'class'    => $this->countryClass,
                 'multiple' => true,
             ])
             ->add('pricing', ShipmentPricingType::class, [
