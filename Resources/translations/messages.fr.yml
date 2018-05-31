@@ -302,8 +302,18 @@ ekyna_commerce:
                 Confirmer la transformation en devis ?<br>
                 <em>Vous serez redirigé vers le détail du devis dans votre espace client</em>.
             shipment_defaults: |
-                <sup class="text-danger">&starf;</sup> Tarif par défaut,
+                <sup class="text-danger">&starf;</sup> Frais de port par défaut,
                 choix du mode de livraion à la prochaine étape.
+            empty_information:
+                Saisissez vos nom, prénom et adresse email
+            empty_invoice:
+                Saisissez votre adresse de facturation
+            empty_delivery:
+                (Si différente) Saisissez votre adresse de livraison
+            empty_comment:
+                (Optionnel) Ajoutez un commentaire à votre commande
+            empty_attachments:
+                (Optionnel) Ajoutez des pièces jointes à votre commande
         button:
             attachment_add: Ajouter une pièce jointe
             attachment_remove: Supprimer cette pièce jointe

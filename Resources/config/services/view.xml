@@ -14,7 +14,6 @@
                  class="Ekyna\Component\Commerce\Common\View\ViewBuilder"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.common.view_type_registry"/>
-            <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.common.margin_calculator"/>
         </service>

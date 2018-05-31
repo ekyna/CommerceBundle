@@ -393,7 +393,7 @@
         {% if form.sameAddress is defined %}
             {{ form_row(form.sameAddress) }}
         {% endif %}
-        <div class="sale-address-wrap">
+        <div class="sale-address-wrap"{% if wrapped %} style="display:none;"{% endif %}>
             {% if form.choice is defined %}
                 {{ form_row(form.choice, {'sizing': 'sm'}) }}
             {% endif %}
@@ -737,6 +737,29 @@
     {{ form_rest(form) }}
 {% endspaceless %}
 {% endblock ekyna_commerce_invoice_line_widget %}
+
+
+{% block ekyna_commerce_price_widget %}
+{% spaceless %}
+    <div class="commerce-price" data-config="{{ config|json_encode_data }}">
+    {% set sizing = sizing|default(bootstrap_get_sizing()) -%}
+    {% set ig_size_class = sizing in ['sm', 'lg'] ? ' input-group-' ~ sizing : '' -%}
+    <div class="input-group{{ ig_size_class }}">
+        {{ form_widget(input_prototype) }}
+        <span class="input-group-addon">
+            {{- currency -}}
+            <label for="{{ mode_prototype.vars.id }}">
+                {{- form_widget(mode_prototype) -}}
+                {{- 'ekyna_commerce.pricing.vat_display_mode.ati'|trans -}}
+                <span class="commerce-price-rates"></span>
+            </label>
+        </span>
+    </div>
+    {% set type = type|default('hidden') -%}
+    {{ block('form_widget_simple') -}}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_price_widget %}
 
 
 {% block ekyna_commerce_shipment_pricing_widget %}

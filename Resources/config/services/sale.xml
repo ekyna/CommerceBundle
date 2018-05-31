@@ -146,6 +146,9 @@
             <call method="setSaleUpdater">
                 <argument type="service" id="ekyna_commerce.sale_updater"/>
             </call>
+            <call method="setDefaultVatDisplayMode">
+                <argument>%ekyna_commerce.default.vat_display_mode%</argument>
+            </call>
         </service>
 
         <!-- Sale address abstract listener -->

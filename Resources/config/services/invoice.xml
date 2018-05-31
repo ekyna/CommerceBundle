@@ -72,7 +72,6 @@
         <service id="ekyna_commerce.invoice.builder"
                  class="Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.invoice.calculator"/>
             <argument type="service" id="ekyna_commerce.shipment.calculator"/>

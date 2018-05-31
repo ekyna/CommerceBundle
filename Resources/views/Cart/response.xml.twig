@@ -7,8 +7,8 @@
         <![CDATA[{{ render_sale_view(view) }}]]>
     </view>
     <information><![CDATA[{{ macros.cart_information(cart) }}]]></information>
-    <invoice-address><![CDATA[{{ macros.cart_invoice_address(cart) }}]]></invoice-address>
-    <delivery-address><![CDATA[{{ macros.cart_delivery_address(cart) }}]]></delivery-address>
+    <invoice><![CDATA[{{ macros.cart_invoice_address(cart) }}]]></invoice>
+    <delivery><![CDATA[{{ macros.cart_delivery_address(cart) }}]]></delivery>
     <comment><![CDATA[{{ macros.cart_comment(cart) }}]]></comment>
     <attachments><![CDATA[{{ macros.cart_attachments(cart) }}]]></attachments>
     {#{% if controls.errors|length -%}

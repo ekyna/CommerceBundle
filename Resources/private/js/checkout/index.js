@@ -1,12 +1,20 @@
-define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'], function($, Modal, Dispatcher) {
+define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'], function ($, Modal, Dispatcher) {
     "use strict";
 
-    var mapping = {
-        'information': '.cart-checkout-information',
-        'invoice-address': '.cart-checkout-invoice-address',
-        'delivery-address': '.cart-checkout-delivery-address',
-        'comment': '.cart-checkout-comment',
-        'attachments': '.cart-checkout-attachments'
+    var frameMapping = {
+        'information': '#cart-checkout-information',
+        'invoice': '#cart-checkout-invoice',
+        'delivery': '#cart-checkout-delivery',
+        'comment': '#cart-checkout-comment',
+        'attachments': '#cart-checkout-attachments'
+    };
+
+    var buttonMapping = {
+        'information': '#cart-checkout-information-button',
+        'invoice': '#cart-checkout-invoice-button',
+        'delivery': '#cart-checkout-delivery-button',
+        'comment': '#cart-checkout-comment-button',
+        'attachments': '#cart-checkout-attachments-button'
     };
 
     var $checkout = $('.cart-checkout'),
@@ -17,16 +25,22 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         $submitPrevented = $checkout.find('.submit-prevented'),
         preventRefresh = false;
 
-    var updateElementsDisplay = function(response) {
-        $submitPrevented.clearQueue().slideUp(function() {
+    var updateElementsDisplay = function (response) {
+        $submitPrevented.clearQueue().slideUp(function () {
             $submitPrevented.find('.alert-danger').hide().find('p').empty();
             $submitPrevented.find('.alert-warning').show();
         });
 
+        $checkout
+            .find('cart-checkout-button')
+            .removeClass('btn-primary')
+            .addClass('btn-default disabled');
+
         // Sale view
         var $view = $(response).find('view');
         if (1 === $view.length) {
-            if (1 === parseInt($view.attr('empty'))) {
+            var controls = $view.data('controls');
+            if (1 === controls.empty) {
                 $forms.slideUp();
                 $customer.slideUp();
                 $submit.addClass('disabled').hide();
@@ -35,12 +49,22 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
                 $forms.show().slideDown();
                 $submit.show();
 
-                if (1 === parseInt($view.attr('customer'))) {
+                for (var key in buttonMapping) {
+                    if (controls.hasOwnProperty(key)) {
+                        if (controls[key] === 1) {
+                            $(buttonMapping[key])
+                                .removeClass('btn-default disabled')
+                                .addClass('btn-primary');
+                        }
+                    }
+                }
+
+                if (1 === controls.customer) {
                     $customer.slideUp();
                 } else {
                     $customer.show().slideDown();
 
-                    if (1 === parseInt($view.attr('user'))) {
+                    if (1 === controls.user) {
                         $customer.find('.no-user-case').hide();
                         $customer.find('.user-case').show();
                     } else {
@@ -49,13 +73,13 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
                     }
                 }
 
-                if (1 === parseInt($view.attr('quote'))) {
+                if (1 === controls.quote) {
                     $quote.show();
                 } else {
                     $quote.hide();
                 }
 
-                if (1 === parseInt($view.attr('valid'))) {
+                if (1 === controls.valid) {
                     $submit.removeClass('disabled');
                     $quote.removeClass('disabled');
                 } else {
@@ -73,16 +97,16 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
     };
 
 
-    function parseResponse(response) {
+    function parseResponse (response) {
         var $xml = $(response);
 
         // Information, invoice address and delivery address
-        for (var key in mapping) {
-            if (mapping.hasOwnProperty(key)) {
+        for (var key in frameMapping) {
+            if (frameMapping.hasOwnProperty(key)) {
                 var $node = $xml.find(key);
 
                 if (1 === $node.size()) {
-                    $(mapping[key]).html($node.text());
+                    $(frameMapping[key]).html($node.text());
                 }
             }
         }
@@ -100,7 +124,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         return false;
     }
 
-    function refreshCheckout() {
+    function refreshCheckout () {
         if (preventRefresh) {
             return false;
         }
@@ -115,32 +139,32 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
             cache: false
         });
 
-        refreshXHR.done(function(data) {
+        refreshXHR.done(function (data) {
             parseResponse(data);
 
             $checkout.loadingSpinner('off');
         });
 
-        refreshXHR.fail(function() {
+        refreshXHR.fail(function () {
             console.log('Failed to update cart checkout content.');
         });
 
-        refreshXHR.always(function() {
+        refreshXHR.always(function () {
             preventRefresh = false;
         });
 
         return true;
     }
 
-    Dispatcher.on('ekyna_commerce.sale_view_response', function(response) {
+    Dispatcher.on('ekyna_commerce.sale_view_response', function (response) {
         updateElementsDisplay(response);
     });
 
-    Dispatcher.on('ekyna_user.authentication', function() {
+    Dispatcher.on('ekyna_user.authentication', function () {
         refreshCheckout();
     });
 
-    $checkout.on('click', '.cart-checkout-footer a.btn', function(e) {
+    $checkout.on('click', '.cart-checkout-footer a.btn', function (e) {
         e.stopPropagation();
 
         if ($(e.target).closest('a.btn').hasClass('disabled')) {
@@ -152,7 +176,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         }
     });
 
-    $(document).on('click', '.cart-checkout [data-cart-modal]', function(e) {
+    $(document).on('click', '.cart-checkout [data-cart-modal]', function (e) {
         e.preventDefault();
 
         var $this = $(this);
@@ -172,7 +196,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         return false;
     });
 
-    $(document).on('click', '.cart-checkout [data-cart-xhr]', function(e) {
+    $(document).on('click', '.cart-checkout [data-cart-xhr]', function (e) {
         e.preventDefault();
 
         var $this = $(this), confirmation = $this.data('confirm');
@@ -185,7 +209,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
             method: 'post',
             dataType: 'xml'
         });
-        xhr.done(function(response) {
+        xhr.done(function (response) {
             parseResponse(response);
         });
 

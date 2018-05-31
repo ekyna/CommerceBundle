@@ -2,10 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\EventListener;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
-//use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AdjustmentsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\PriceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
-//use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemsType;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -105,7 +103,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 ],
                 'error_bubbling' => true,
             ])
-            ->add('netPrice', MoneyType::class, [
+            ->add('netPrice', PriceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.net_unit',
                 'currency' => $this->currency,
                 'required' => false,
@@ -141,28 +139,6 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'required' => false,
             ])
             ->add('position', CollectionPositionType::class, []);
-
-        /* TODO Remove if (!$hasSubject) {
-            if ($this->addCollections) {
-                $form->add('items', SaleItemsType::class, [
-                    'property_path' => 'children',
-                    'children_mode' => true,
-                    'entry_type'    => $this->itemType,
-                    'entry_options' => [
-                        'label'            => false,
-                        'with_collections' => false,
-                        'currency'         => $this->currency,
-                    ],
-                ]);
-            }
-
-            $form->add('adjustments', AdjustmentsType::class, [
-                'prototype_name'        => '__item_adjustment__',
-                'entry_type'            => $this->adjustmentType,
-                'add_button_text'       => 'ekyna_commerce.sale.form.add_item_adjustment',
-                'delete_button_confirm' => 'ekyna_commerce.sale.form.remove_item_adjustment',
-            ]);
-        }*/
     }
 
     /**

@@ -142,6 +142,15 @@
             <tag name="form.js" selector=".invoice" path="ekyna-commerce/form/invoice"/>
         </service>
 
+        <!-- Price form type -->
+        <service id="ekyna_commerce.price.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\PriceType">
+            <argument>%ekyna_commerce.default.currency%</argument>
+            <argument>%ekyna_commerce.default.vat_display_mode%</argument>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-price" path="ekyna-commerce/form/price"/>
+        </service>
+
         <!-- Quote form types -->
         <service id="ekyna_commerce.quote.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType">
@@ -417,6 +426,7 @@
         </service>
         <service id="ekyna_commerce.tax_group_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType">
+            <argument type="service" id="ekyna_commerce.country.repository"/>
             <argument>%ekyna_commerce.tax_group.class%</argument>
             <tag name="form.type"/>
         </service>

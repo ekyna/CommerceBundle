@@ -202,6 +202,11 @@ class SaleAddressType extends AbstractType
             $view->vars['attr']['data-customer-field'] = $view->parent->vars['id'] . '_' . $options['customer_field'];
             $view->vars['attr']['data-mode'] = $options['delivery'] ? 'delivery' : 'invoice';
         }
+
+        /** @var SaleInterface $sale */
+        $sale = $form->getData();
+
+        $view->vars['wrapped'] = $options['delivery'] && $sale->isSameAddress();
     }
 
     /**

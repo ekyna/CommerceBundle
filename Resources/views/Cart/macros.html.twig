@@ -1,13 +1,11 @@
-{% macro view_controls(controls) %}
-    {%- for key, value in controls %}{% if key != 'errors' %} {{ key }}="{{ value }}"{% endif %}{% endfor -%}
-{% endmacro view_controls %}
+{% macro view_controls(controls) %} data-controls='{{ controls|json_encode }}'{% endmacro view_controls %}
 
 {% macro cart_information(cart) %}
 {% spaceless %}
-    {%- if cart is same as(null) or cart.email is same as(null) -%}
-        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+    {%- if cart is null or cart.email is empty -%}
+        <em>{{ 'ekyna_commerce.checkout.message.empty_information'|trans }}</em>
     {%- else -%}
-        {%- if cart.company is not same as(null) -%}
+        {%- if cart.company is not empty -%}
             <strong>{{ cart.company }}</strong><br>
         {%- endif -%}
         {{- cart|identity }}<br>
@@ -19,8 +17,8 @@
 
 {% macro cart_invoice_address(cart) %}
 {% spaceless %}
-    {%- if cart is same as(null) or cart.invoiceAddress is same as(null) -%}
-        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+    {%- if cart is null or cart.invoiceAddress is null -%}
+        <em>{{ 'ekyna_commerce.checkout.message.empty_invoice'|trans }}</em>
     {%- else -%}
         {{ cart.invoiceAddress|address }}
     {%- endif -%}
@@ -30,12 +28,8 @@
 
 {% macro cart_delivery_address(cart) %}
 {% spaceless %}
-    {%- if cart is same as(null) -%}
-        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-    {%- elseif cart.sameAddress -%}
-        <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
-    {%- elseif cart.deliveryAddress is same as(null) -%}
-        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+    {%- if cart is null or cart.sameAddress or cart.deliveryAddress is null -%}
+        <em>{{ 'ekyna_commerce.checkout.message.empty_delivery'|trans }}</em>
     {%- else -%}
         {{- cart.deliveryAddress|address -}}
     {%- endif -%}
@@ -45,8 +39,8 @@
 
 {% macro cart_comment(cart) %}
 {% spaceless %}
-    {%- if cart is same as(null) or cart.comment is same as(null) -%}
-        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+    {%- if cart is null or cart.comment is null -%}
+        <em>{{ 'ekyna_commerce.checkout.message.empty_comment'|trans }}</em>
     {%- else -%}
         {{ cart.comment|nl2br }}<br>
     {%- endif -%}
@@ -56,8 +50,8 @@
 
 {% macro cart_attachments(cart) %}
 {% spaceless %}
-    {%- if cart is same as(null) or cart.attachments is empty -%}
-        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+    {%- if cart is null or cart.attachments is empty -%}
+        <em>{{ 'ekyna_commerce.checkout.message.empty_attachments'|trans }}</em>
     {%- else -%}
     <table class="table table-hover table-stripped table-condensed">
     <tbody>
