@@ -27,6 +27,16 @@ define(['jquery', 'jquery-ui/widget'], function($) {
                 }
             }
         },
+        isEmpty: function() {
+            for (var key in mapping) {
+                if (mapping.hasOwnProperty(key)) {
+                    if (key !== 'country' && this.element.find(mapping[key]).val()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        },
         clear: function() {
             for (var key in mapping) {
                 if (mapping.hasOwnProperty(key)) {

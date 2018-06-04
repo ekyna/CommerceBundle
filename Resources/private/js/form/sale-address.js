@@ -4,9 +4,7 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
     /**
      * Sale address widget
      */
-    $.fn.saleAddressWidget = function(/*config*/) {
-
-        //config = $.extend({}, config);
+    $.fn.saleAddressWidget = function() {
 
         this.each(function() {
 
@@ -33,6 +31,7 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                             {customerId: customerId}
                         ));
                         xhr.done(function (data) {
+                            var isEmpty = $addressForm.address('isEmpty');
                             if (typeof data.choices !== 'undefined') {
                                 for (var i in data.choices) {
                                     if (data.choices.hasOwnProperty(i)) {
@@ -43,6 +42,11 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                                                 .text(addressData.text)
                                                 .data('address', addressData)
                                         );
+                                        // Skip if address is not empty
+                                        if (!isEmpty) {
+                                            continue;
+                                        }
+                                        // Set default address
                                         if (mode === 'invoice' && addressData['invoice_default'] === 1) {
                                             $addressForm.address('set', addressData);
                                         } else if (mode === 'delivery' && addressData['delivery_default'] === 1) {
