@@ -24,7 +24,7 @@ ekyna_commerce:
     # TODO group common buttons
     button:
         print_label: Étiquette
-
+        toggle_quantities: Tout / Aucun
     unit:
         label: Unité
         piece:

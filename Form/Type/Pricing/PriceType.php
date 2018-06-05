@@ -61,9 +61,10 @@ class PriceType extends AbstractType
 
         $mode = $builder
             ->create('mode', Type\CheckboxType::class, [
-                'label' => 'ekyna_commerce.pricing.vat_display_mode.ati',
-                'data'  => 'ati' === $this->defaultVatMode,
-                'attr'  => [
+                'label'    => 'ekyna_commerce.pricing.vat_display_mode.ati',
+                'data'     => 'ati' === $this->defaultVatMode,
+                'required' => false,
+                'attr'     => [
                     'class' => 'commerce-price-mode',
                 ],
             ])

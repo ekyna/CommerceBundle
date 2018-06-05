@@ -10,22 +10,23 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
         this.each(function() {
 
-            var $items = $(this).find('.invoice-items');
+            var $quantities = $(this).find('.invoice-items > tbody > tr input'),
+                $toggle = $(this).find('#toggle-quantities');
 
-            console.log('invoiceWidget', $items.length);
+            console.log('invoiceWidget', $quantities.length);
 
             // TODO Packaging format
 
-            $items
-                .on('blur', 'input', function() {
+            $quantities
+                .on('blur', function() {
                     var $input = $(this),
                         quantity = parseInt($input.val());
                     if (isNaN(quantity)) $input.val(0).trigger('change');
                 })
-                .on('change keyup', 'input', function() {
+                .on('change keyup', function() {
                     var $input = $(this),
                         quantity = parseInt($input.val()),
-                        $children = $items.find('[data-parent="' + $input.attr('id') + '"]');
+                        $children = $quantities.find('[data-parent="' + $input.attr('id') + '"]');
 
                     if (isNaN(quantity)) quantity = 0;
 
@@ -39,7 +40,27 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                         var $input = $(this);
                         $input.val(quantity * $input.data('quantity')).trigger('change');
                     });
+                })
+                .not(':disabled').trigger('change');
+
+            $toggle.on('click', function() {
+                var sum = 0, total = 0;
+                $quantities.each(function(index, input) {
+                    var $input = $(input);
+                    sum += parseFloat($input.val());
+                    total += $input.data('max');
                 });
+                if (sum / total > 0.5) {
+                    $quantities.not(':disabled').each(function(index, input) {
+                        $(input).val(0);
+                    }).trigger('change');
+                } else {
+                    $quantities.not(':disabled').each(function(index, input) {
+                        var $input = $(input);
+                        $input.val($input.data('max'));
+                    }).trigger('change');
+                }
+            });
         });
 
         return this;

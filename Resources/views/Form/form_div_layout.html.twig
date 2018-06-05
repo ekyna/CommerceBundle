@@ -588,6 +588,17 @@
         {{ bootstrap_set_style(previous_style) }}
     {% if form.vars.headers -%}
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">&nbsp;</td>
+                <td class="text-center">
+                    <a href="javascript:void(0)" id="toggle-quantities">
+                        {{- 'ekyna_commerce.button.toggle_quantities'|trans -}}
+                    </a>
+                </td>
+                <td colspan="{{ form.parent.vars.return_mode ? 2 : 3 }}">&nbsp;</td>
+            </tr>
+        </tfoot>
     </table>
     {{ form_errors(form) }}
     {{ form_rest(form) }}
@@ -693,6 +704,17 @@
         {{ bootstrap_set_style(previous_style) }}
     {% if form.vars.headers -%}
         </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">&nbsp;</td>
+            <td class="text-center">
+                <a href="javascript:void(0)" id="toggle-quantities">
+                    {{- 'ekyna_commerce.button.toggle_quantities'|trans -}}
+                </a>
+            </td>
+            <td colspan="{{ form.parent.vars.credit_mode ? 2 : 3 }}">&nbsp;</td>
+        </tr>
+        </tfoot>
     </table>
     {{ form_errors(form) }}
     {{ form_rest(form) }}

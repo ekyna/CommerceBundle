@@ -109,6 +109,7 @@ class ShipmentType extends ResourceFormType
                     if (null === $shipment->getInvoice()) {
                         $form->add('creditMethod', PaymentMethodChoiceType::class, [
                             'label'       => 'ekyna_commerce.invoice.field.payment_method',
+                            'required'    => false,
                             'outstanding' => false,
                             'invoice'     => $shipment->getInvoice(),
                             // TODO preferred choices

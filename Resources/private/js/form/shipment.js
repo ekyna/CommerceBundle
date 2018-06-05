@@ -12,11 +12,12 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
             var $form = $(this),
                 name = $form.attr('name'),
-                $items = $form.find('.shipment-items'),
+                $quantities = $form.find('.shipment-items > tbody > tr input'),
                 $method = $form.find('[name="' + name + '[method]"]'),
                 $parcels = $form.find('#shipment-parcels'),
                 $generalTab = $form.find('#toggle-general'),
-                $relayTab = $form.find('#toggle-relay-point');
+                $relayTab = $form.find('#toggle-relay-point'),
+                $toggle = $form.find('#toggle-quantities');
 
 
             var onMethodChange = function() {
@@ -54,16 +55,16 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             }).trigger('change');*/
 
             // TODO Packaging format
-            $items
-                .on('blur', 'input', function() {
+            $quantities
+                .on('blur', function() {
                     var $input = $(this),
                         quantity = parseInt($input.val());
                     if (isNaN(quantity)) $input.val(0).trigger('change');
                 })
-                .on('change keyup', 'input', function() {
+                .on('change keyup', function() {
                     var $input = $(this),
                         quantity = parseInt($input.val()),
-                        $children = $items.find('[data-parent="' + $input.attr('id') + '"]');
+                        $children = $quantities.find('[data-parent="' + $input.attr('id') + '"]');
 
                     if (isNaN(quantity)) quantity = 0;
 
@@ -78,7 +79,26 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                         $input.val(quantity * $input.data('quantity')).trigger('change');
                     });
                 })
-                .find('input').not(':disabled').trigger('change');
+                .not(':disabled').trigger('change');
+
+            $toggle.on('click', function() {
+                var sum = 0, total = 0;
+                $quantities.each(function(index, input) {
+                    var $input = $(input);
+                    sum += parseFloat($input.val());
+                    total += $input.data('max');
+                });
+                if (sum / total > 0.5) {
+                    $quantities.not(':disabled').each(function(index, input) {
+                        $(input).val(0);
+                    }).trigger('change');
+                } else {
+                    $quantities.not(':disabled').each(function(index, input) {
+                        var $input = $(input);
+                        $input.val($input.data('max'));
+                    }).trigger('change');
+                }
+            });
         });
 
         return this;
