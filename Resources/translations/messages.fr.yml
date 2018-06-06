@@ -390,6 +390,8 @@ ekyna_commerce:
             shipment_form: Bon de préparation
             shipment_bill: Bon de livraison
             return_bill: Bon de retour
+        mention:
+            deposit: Acompte de <strong>%percent%</strong> d'un montant de <strong>%amount%</strong>
 
     invoice:
         tab: Factures et avoirs

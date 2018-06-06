@@ -7,8 +7,8 @@
     {% if companyAddress.supplement is not empty %}{{ companyAddress.supplement }}<br>{% endif %}
     {{ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}<br>
 
-    {% if companyAddress.phone is not empty %}Tél. {{ companyAddress.phone }}<br>{% endif %}
-    {% if companyAddress.mobile is not empty %}Port. {{ companyAddress.mobile }}<br>{% endif %}
+    {% if companyAddress.phone is not empty %}Tél. {{ companyAddress.phone }}<br>{% endif %}{# TODO Trans #}
+    {% if companyAddress.mobile is not empty %}Port. {{ companyAddress.mobile }}<br>{% endif %}{# TODO Trans #}
 
     {{ get_setting('general.admin_email') }}<br>
     {{ absolute_url('/') }}
@@ -92,13 +92,19 @@
 {% endmacro %}
 
 
-{% macro render_payment_term(sale) %}
+{% macro render_payment_term(sale, currency) %}
 {% spaceless %}
     {% if sale.paymentTerm is not null -%}
         {{ 'ekyna_commerce.payment_term.label.singular'|trans }}: <strong>{{ sale.paymentTerm }}</strong>.
         {% if sale.outstandingDate is not null %}
             {{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}: <strong>{{ sale.outstandingDate|localizeddate('long', 'none') }}</strong>.
         {% endif %}
+    {%- endif %}
+    {% if 0 < sale.depositTotal -%}
+        {{ 'ekyna_commerce.document.mention.deposit'|trans({
+            '%percent%': (sale.depositTotal / sale.grandTotal)|localizednumber('percent'),
+            '%amount%': sale.depositTotal|localizedcurrency(currency ? currency : sale.currency.code)
+        })|raw }}.
     {%- endif %}
 {% endspaceless %}
 {% endmacro %}

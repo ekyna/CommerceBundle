@@ -37,6 +37,7 @@
         <!-- Context provider -->
         <service id="ekyna_commerce.common.context_provider"
                  class="Ekyna\Component\Commerce\Common\Context\ContextProvider">
+            <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_resource.locale.request_provider"/>
@@ -45,6 +46,14 @@
             <argument type="service" id="ekyna_commerce.currency.repository"/>
             <argument>%ekyna_commerce.default.vat_display_mode%</argument>
             <argument>%ekyna_commerce.context.class%</argument>
+        </service>
+
+        <!-- Context event subscriber -->
+        <service id="ekyna_commerce.common.context_event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\ContextEventSubscriber">
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
         <!-- Currency converter -->

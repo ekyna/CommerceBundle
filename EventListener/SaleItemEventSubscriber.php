@@ -42,7 +42,7 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->contextProvider->getContext($sale); // TODO Admin / fallback
+        $this->contextProvider->getContext($sale);
     }
 
     /**
