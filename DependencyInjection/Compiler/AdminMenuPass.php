@@ -168,6 +168,13 @@ class AdminMenuPass implements CompilerPassInterface
             'resource' => 'ekyna_commerce_shipment_rule',
             'position' => 54,
         ]]);
+        $pool->addMethodCall('createEntry', ['setting', [
+            'name'     => 'notify_model',
+            'route'    => 'ekyna_commerce_notify_model_admin_home',
+            'label'    => 'ekyna_commerce.notify_model.label.plural',
+            'resource' => 'ekyna_commerce_notify_model',
+            'position' => 55,
+        ]]);
 
         // Tax groups / Tax rules / Taxes
         $pool->addMethodCall('createEntry', ['setting', [

@@ -1,0 +1,43 @@
+ekyna_commerce_notify_model_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_notify_model_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_notify_model_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:newAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_notify_model_admin_show:
+    path: /{notifyModelId}/show
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:showAction" }
+    methods: [GET]
+    requirements:
+        notifyModelId: \d+
+
+ekyna_commerce_notify_model_admin_edit:
+    path: /{notifyModelId}/edit
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        notifyModelId: \d+
+
+#ekyna_commerce_notify_model_admin_toggle:
+#    path: /{notifyModelId}/toggle/{field}
+#    defaults: { _controller: "ekyna_commerce.notify_model.controller:toggleAction", field: default }
+#    methods: [GET]
+#    requirements:
+#        notifyModelId: \d+
+#        field: \w+
+
+ekyna_commerce_notify_model_admin_remove:
+    path: /{notifyModelId}/remove
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        notifyModelId: \d+

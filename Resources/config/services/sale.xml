@@ -23,19 +23,29 @@
 
         <!-- Sale transformer -->
         <service id="ekyna_commerce.sale_transformer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleTransformer"
+                 class="Ekyna\Component\Commerce\Common\Transformer\SaleTransformer"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.sale_copier_factory"/>
             <argument type="service" id="ekyna_commerce.cart.operator"/>
             <argument type="service" id="ekyna_commerce.quote.operator"/>
             <argument type="service" id="ekyna_commerce.order.operator"/>
             <argument type="service" id="ekyna_commerce.common.uploadable_listener"/>
-            <call method="setDocumentGenerator">
-                <argument type="service" id="ekyna_commerce.document.generator"/>
-            </call>
-            <call method="setEntityManager">
-                <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            </call>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <!-- Sale transform event listeners -->
+        <service id="ekyna_commerce.sale_transform.event_listener"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SaleTransformSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+        <service id="ekyna_commerce.sale_transform.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\SaleTransformSubscriber"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.order.number_generator"/>
+            <argument type="service" id="ekyna_commerce.quote.number_generator"/>
+            <argument type="service" id="ekyna_commerce.document.generator"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
         <!-- Sale updater -->

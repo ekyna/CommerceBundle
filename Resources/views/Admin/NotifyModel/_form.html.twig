@@ -1,0 +1,26 @@
+{% spaceless %}
+<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+    <li class="active">
+        <a href="#notify-model-general" id="toggle-general" data-toggle="tab">
+            {{- 'ekyna_core.field.general'|trans -}}
+        </a>
+    </li>
+</ul>
+<div class="panel-body form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form, {'global_errors': true}) }}
+    <div class="tab-content">
+        <div class="tab-pane active" id="notify-model-general">
+            {{ form_row(form.type) }}
+            {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
+            {#<div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.vatDisplayMode, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>#}
+        </div>
+    </div>
+    {{ form_rest(form) }}
+</div>
+{% endspaceless %}

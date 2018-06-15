@@ -69,11 +69,11 @@ class ShipmentRuleType extends ResourceFormType
                     'help_text' => 'ekyna_commerce.shipment_rule.help.customer_groups',
                 ],
             ])
-            ->add('grossTotal', MoneyType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.gross_total',
+            ->add('baseTotal', MoneyType::class, [
+                'label'    => 'ekyna_commerce.shipment_rule.field.base_total',
                 'currency' => $this->defaultCurrency,
                 'attr'     => [
-                    'help_text' => 'ekyna_commerce.shipment_rule.help.gross_total',
+                    'help_text' => 'ekyna_commerce.shipment_rule.help.base_total',
                 ],
             ])
             ->add('vatMode', VatDisplayModeType::class, [

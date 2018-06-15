@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Notify queue -->
+        <service id="ekyna_commerce.notify.queue"
+                 class="Ekyna\Component\Commerce\Common\Notify\NotifyQueue"/>
+
+        <!-- Notify helper -->
+        <service id="ekyna_commerce.notify.recipient_helper"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper">
+            <argument type="service" id="ekyna_setting.manager"/>
+            <argument type="service" id="ekyna_user.user.provider"/>
+            <argument type="service" id="ekyna_user.user.repository"/>
+        </service>
+
+        <!-- Notify builder -->
+        <service id="ekyna_commerce.notify.builder"
+                 class="Ekyna\Component\Commerce\Common\Notify\NotifyBuilder">
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <!-- Notify helper -->
+        <!--<service id="ekyna_commerce.notify.helper"
+                 class="Ekyna\Component\Commerce\Common\Notify\NotifyHelper">
+            <argument type="service" id="ekyna_commerce.notify.builder"/>
+            <argument type="service" id="ekyna_commerce.notify.queue"/>
+        </service>-->
+
+        <!-- Notify event subscriber -->
+        <service id="ekyna_commerce.notify.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\NotifyEventSubscriber">
+            <argument type="service" id="ekyna_commerce.notify_model.repository"/>
+            <argument type="service" id="ekyna_commerce.notify.recipient_helper"/>
+            <argument type="service" id="translator"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Notification event subscriber -->
+        <service id="ekyna_commerce.notification.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\NotificationEventSubscriber">
+            <argument type="service" id="ekyna_commerce.notify.queue"/>
+            <argument type="service" id="ekyna_commerce.mailer"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Abstract entity listener -->
+        <service id="ekyna_commerce.notify.entity_listener"
+                 class="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
+                 abstract="true">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_tracker"/>
+            <argument type="service" id="ekyna_commerce.notify.queue"/>
+            <argument type="service" id="ekyna_commerce.notify.builder"/>
+        </service>
+
+        <!-- Order listener -->
+        <service id="ekyna_commerce.notify.order_listener"
+                 class="Ekyna\Component\Commerce\Common\Listener\OrderNotifyListener"
+                 parent="ekyna_commerce.notify.entity_listener">
+            <tag name="doctrine.orm.entity_listener" />
+        </service>
+
+        <!-- Order payment listener -->
+        <service id="ekyna_commerce.notify.order_payment_listener"
+                 class="Ekyna\Component\Commerce\Common\Listener\PaymentNotifyListener"
+                 parent="ekyna_commerce.notify.entity_listener">
+            <tag name="doctrine.orm.entity_listener" />
+        </service>
+
+        <!-- Order shipment listener -->
+        <service id="ekyna_commerce.notify.order_shipment_listener"
+                 class="Ekyna\Component\Commerce\Common\Listener\ShipmentNotifyListener"
+                 parent="ekyna_commerce.notify.entity_listener">
+            <tag name="doctrine.orm.entity_listener" />
+        </service>
+
+    </services>
+
+</container>

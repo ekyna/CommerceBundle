@@ -4,10 +4,11 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
-use Ekyna\Bundle\CommerceBundle\Model\Notification;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
+use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -516,23 +517,20 @@ class SaleController extends AbstractSaleController
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
-        $notification = $this
-            ->get('ekyna_commerce.notification.builder')
-            ->createNotificationFromSale($sale);
+        $builder = $this->get('ekyna_commerce.notify.builder');
 
-        $form = $this->createNotifyForm($sale, $notification);
+        $notify = $builder->create(NotificationTypes::MANUAL, $sale);
+
+        $builder->build($notify);
+
+        $form = $this->createNotifyForm($sale, $notify);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $sent = $this
-                ->get('ekyna_commerce.mailer')
-                ->sendNotification($notification, $sale);
+            $this->get('ekyna_commerce.notify.queue')->add($notify);
 
-            $this->addFlash(
-                $this->getTranslator()->transChoice('ekyna_commerce.notification.message.sent', $sent),
-                0 < $sent ? 'success' : 'warning'
-            );
+            $this->addFlash('ekyna_commerce.notify.message.sent', 'success');
 
             return $this->redirect($this->generateResourcePath($sale));
         }
@@ -861,17 +859,17 @@ class SaleController extends AbstractSaleController
     /**
      * Creates the notify form.
      *
-     * @param SaleInterface $sale
-     * @param Notification  $notification
-     * @param bool          $footer
+     * @param SaleInterface                                 $sale
+     * @param \Ekyna\Component\Commerce\Common\Model\Notify $notification
+     * @param bool                                          $footer
      *
      * @return \Symfony\Component\Form\FormInterface
      */
-    protected function createNotifyForm(SaleInterface $sale, Notification $notification, $footer = true)
+    protected function createNotifyForm(SaleInterface $sale, Notify $notification, $footer = true)
     {
         $action = $this->generateResourcePath($sale, 'notify');
 
-        $form = $this->createForm(NotificationType::class, $notification, [
+        $form = $this->createForm(NotifyType::class, $notification, [
             'sale'              => $sale,
             'action'            => $action,
             'attr'              => ['class' => 'form-horizontal'],

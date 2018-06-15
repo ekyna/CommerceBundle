@@ -17,6 +17,7 @@
         <tbody>
         {% for shipment in shipments %}
             {% set shipmentId = prefix ~ '_' ~ loop.index0 %}
+            {% set details = 0 < shipment.parcels|length %}
             <tr data-id="{{ shipment.id }}" data-summary='{{ {
                 'route': 'ekyna_commerce_order_shipment_admin_summary',
                 'parameters': {
@@ -66,12 +67,14 @@
                     </a>
                     {%- endfor %}
                     {# Toggle details #}
-                    {#<a href="javascript:void(0)"
+                    {% if details -%}
+                    <a href="javascript:void(0)"
                        id="{{ shipmentId }}_toggle_details"
                        class="btn btn-default btn-xs"
                        data-toggle-details="{{ shipmentId ~ '_details' }}">
                         <span class="fa fa-info-circle"></span>
-                    </a>#}
+                    </a>
+                    {%- endif %}
                     {# Bill document #}
                     <a href="{{ admin_resource_path(shipment, 'render', {'type': 'bill'}) }}"
                        id="{{ shipmentId }}_render"
@@ -108,44 +111,15 @@
                     {% endif %}
                 </td>
             </tr>
-            {#<tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
+            {% if details %}
+            <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
                 <td>&nbsp;</td>
                 <td colspan="7">
                     <table class="table table-alt table-striped table-condensed">
                         <thead>
                             <tr>
-                                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                                <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in shipment.items %}
-                            {% set itemId = shipmentId ~ '_item_' ~ loop.index0 %}
-                            <tr>
-                                <td id="{{ itemId ~ '_designation' }}">
-                                {%- if item.saleItem is subject_set -%}
-                                    {% set url = item.saleItem|subject_private_url %}
-                                    {% if url is not null %}
-                                        <a href="{{ url }}">{{ item.saleItem.designation }}</a>
-                                    {% else %}
-                                        {{ item.saleItem.designation }}
-                                    {% endif %}
-                                {%- else -%}
-                                    {{ item.saleItem.designation }}
-                                {%- endif -%}
-                                </td>
-                                <td id="{{ itemId ~ '_reference' }}">{{ item.saleItem.reference }}</td>
-                                <td id="{{ itemId ~ '_quantity' }}">{{ item.quantity|localizednumber }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% if 0 < shipment.parcels|length %}
-                    <table class="table table-alt table-striped table-condensed">
-                        <thead>
-                            <tr>
                                 <th>{{ 'ekyna_core.field.weight'|trans }}</th>
+                                <th>{{ 'ekyna_commerce.shipment.field.valorization'|trans }}</th>
                                 <th>{{ 'ekyna_commerce.shipment.field.tracking_number'|trans }}</th>
                             </tr>
                         </thead>
@@ -154,18 +128,20 @@
                             {% set parcelId = shipmentId ~ '_parcel_' ~ loop.index0 %}
                             <tr>
                                 <td id="{{ parcelId ~ '_weight' }}">{{ parcel.weight|localizednumber }} kg</td>
+                                <td id="{{ parcelId ~ '_weight' }}">
+                                    {%- if 0 < parcel.valorization -%}
+                                        {{ parcel.valorization|localizedcurrency(commerce_default_currency) }}
+                                    {%- endif -%}
+                                </td>
                                 <td id="{{ parcelId ~ '_trackingNumber' }}">{{ display_shipment_tracking(parcel) }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                    {% endif %}
-                    {% if shipment.description is not empty  %}
-                        <p>{{ shipment.description|nl2br }}</p>
-                    {% endif %}
                 </td>
                 <td>&nbsp;</td>
-            </tr>#}
+            </tr>
+            {%- endif %}
         {% else %}
             <tr>
                 <td colspan="9" class="text-center">

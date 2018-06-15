@@ -34,9 +34,9 @@
                     }) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(shipmentRule.grossTotal|localizedcurrency(commerce_default_currency), 'text', {
-                                'label': 'ekyna_commerce.shipment_rule.field.gross_total',
-                                'id': 'shipmentRule_grossTotal',
+                            {{ show_row(shipmentRule.baseTotal|localizedcurrency(commerce_default_currency), 'text', {
+                                'label': 'ekyna_commerce.shipment_rule.field.base_total',
+                                'id': 'shipmentRule_baseTotal',
                                 'label_col': 4
                             }) }}
                         </div>

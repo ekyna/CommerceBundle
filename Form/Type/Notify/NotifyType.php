@@ -1,13 +1,13 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notification;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notify;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
-use Ekyna\Bundle\CommerceBundle\Model\Notification;
-use Ekyna\Bundle\CommerceBundle\Service\Notification\NotificationBuilder;
+use Ekyna\Component\Commerce\Common\Model\Notify;
+use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -27,16 +27,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class NotificationType
- * @package Ekyna\Bundle\CommerceBundle\Form\Type
+ * Class NotifyType
+ * @package Ekyna\Bundle\CommerceBundle\Form\Type\Notify
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class NotificationType extends AbstractType
+class NotifyType extends AbstractType
 {
     /**
-     * @var NotificationBuilder
+     * @var RecipientHelper
      */
-    private $notificationBuilder;
+    private $recipientHelper;
 
     /**
      * @var TranslatorInterface
@@ -47,12 +47,12 @@ class NotificationType extends AbstractType
     /**
      * Constructor.
      *
-     * @param NotificationBuilder $notificationBuilder
+     * @param RecipientHelper     $recipientHelper
      * @param TranslatorInterface $translator
      */
-    public function __construct(NotificationBuilder $notificationBuilder, TranslatorInterface $translator)
+    public function __construct(RecipientHelper $recipientHelper, TranslatorInterface $translator)
     {
-        $this->notificationBuilder = $notificationBuilder;
+        $this->recipientHelper = $recipientHelper;
         $this->translator = $translator;
     }
 
@@ -64,9 +64,9 @@ class NotificationType extends AbstractType
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $options['sale'];
 
-        $froms = $this->notificationBuilder->createFromListFromSale($sale);
-        $recipients = $this->notificationBuilder->createRecipientListFromSale($sale);
-        $copies = $this->notificationBuilder->createCopyListFromSale($sale);
+        $froms = $this->recipientHelper->createFromListFromSale($sale);
+        $recipients = $this->recipientHelper->createRecipientListFromSale($sale);
+        $copies = $this->recipientHelper->createCopyListFromSale($sale);
 
         $collectionToArrayTransformer = new CallbackTransformer(
             function ($value) {
@@ -83,7 +83,7 @@ class NotificationType extends AbstractType
 
         $builder
             ->add('from', ChoiceType::class, [
-                'label'        => 'ekyna_commerce.notification.field.from',
+                'label'        => 'ekyna_commerce.notify.field.from',
                 'choices'      => $froms,
                 'choice_label' => 'choiceLabel',
                 'choice_value' => 'email',
@@ -93,7 +93,7 @@ class NotificationType extends AbstractType
             ->add(
                 $builder
                     ->create('recipients', ChoiceType::class, [
-                        'label'        => 'ekyna_commerce.notification.field.recipients',
+                        'label'        => 'ekyna_commerce.notify.field.recipients',
                         'choices'      => $recipients,
                         'choice_label' => 'choiceLabel',
                         'choice_value' => 'email',
@@ -104,13 +104,13 @@ class NotificationType extends AbstractType
                     ->addModelTransformer($collectionToArrayTransformer)
             )
             ->add('extraRecipients', RecipientsType::class, [
-                'label'    => 'ekyna_commerce.notification.field.recipients',
+                'label'    => 'ekyna_commerce.notify.field.recipients',
                 'required' => false,
             ])
             ->add(
                 $builder
                     ->create('copies', ChoiceType::class, [
-                        'label'        => 'ekyna_commerce.notification.field.copies',
+                        'label'        => 'ekyna_commerce.notify.field.copies',
                         'choices'      => $copies,
                         'choice_label' => 'choiceLabel',
                         'choice_value' => 'email',
@@ -121,7 +121,7 @@ class NotificationType extends AbstractType
                     ->addModelTransformer($collectionToArrayTransformer)
             )
             ->add('extraCopies', RecipientsType::class, [
-                'label'    => 'ekyna_commerce.notification.field.copies',
+                'label'    => 'ekyna_commerce.notify.field.copies',
                 'required' => false,
             ]);
 
@@ -141,7 +141,7 @@ class NotificationType extends AbstractType
 
         if ($sale instanceof OrderInterface) {
             $builder->add('invoices', EntityType::class, [
-                'label'         => 'ekyna_commerce.notification.field.invoices',
+                'label'         => 'ekyna_commerce.notify.field.invoices',
                 'class'         => OrderInvoice::class,
                 'query_builder' => function (EntityRepository $repository) use ($saleProperty, $sale) {
                     $qb = $repository->createQueryBuilder('i');
@@ -162,7 +162,7 @@ class NotificationType extends AbstractType
 
         if ($sale instanceof OrderInterface) {
             $builder->add('shipments', EntityType::class, [
-                'label'         => 'ekyna_commerce.notification.field.shipments',
+                'label'         => 'ekyna_commerce.notify.field.shipments',
                 'class'         => OrderShipment::class,
                 'query_builder' => function (EntityRepository $repository) use ($saleProperty, $sale) {
                     $qb = $repository->createQueryBuilder('i');
@@ -185,7 +185,7 @@ class NotificationType extends AbstractType
 
         $builder
             ->add('attachments', EntityType::class, [
-                'label'         => 'ekyna_commerce.notification.field.attachments',
+                'label'         => 'ekyna_commerce.notify.field.attachments',
                 'class'         => $attachmentClass,
                 'query_builder' => function (EntityRepository $repository) use ($saleProperty, $sale) {
                     $qb = $repository->createQueryBuilder('a');
@@ -205,26 +205,57 @@ class NotificationType extends AbstractType
                 'multiple'      => true,
                 'expanded'      => true,
                 'required'      => false,
-            ]);
-
-        //->add('paymentMessage')
-        //->add('shipmentMessage')
-        $builder
+            ])
             ->add('subject', TextType::class, [
-                'label' => 'ekyna_commerce.notification.field.subject',
+                'label' => 'ekyna_commerce.notify.field.subject',
             ])
             ->add('customMessage', TinymceType::class, [
-                'label'    => 'ekyna_commerce.notification.field.custom_message',
+                'label'    => 'ekyna_commerce.notify.field.custom_message',
                 'theme'    => 'front',
                 'required' => false,
             ])
-            ->add('includeView', ChoiceType::class, [
-                'label'   => 'ekyna_commerce.notification.field.include_view',
-                'choices' => [
-                    'ekyna_commerce.notification.include_view.none'   => Notification::VIEW_NONE,
-                    'ekyna_commerce.notification.include_view.before' => Notification::VIEW_BEFORE,
-                    'ekyna_commerce.notification.include_view.after'  => Notification::VIEW_AFTER,
+            /*->add('paymentMessage', ChoiceType::class, [
+                'label'       => 'ekyna_commerce.notify.field.payment_message',
+                'choices'     => [
+                    'ekyna_core.value.no'  => 0,
+                    'ekyna_core.value.yes' => 1,
                 ],
+                'expanded'    => true,
+                'required'    => true,
+                'attr'        => [
+                    'class'             => 'inline',
+                    'align_with_widget' => true,
+                    // TODO 'help_text' => $paymentMessage->getContent(),
+                ],
+            ])
+            ->add('shipmentMessage', ChoiceType::class, [
+                'label'       => 'ekyna_commerce.notify.field.shipment_message',
+                'choices'     => [
+                    'ekyna_core.value.no'  => 0,
+                    'ekyna_core.value.yes' => 1,
+                ],
+                'expanded'    => true,
+                'required'    => true,
+                'attr'        => [
+                    'class'             => 'inline',
+                    'align_with_widget' => true,
+                    // TODO 'help_text' => $shipmentMessage->getContent(),
+                ],
+            ])*/
+            ->add('includeView', ChoiceType::class, [
+                'label'   => 'ekyna_commerce.notify.field.include_view',
+                'choices' => [
+                    'ekyna_commerce.notify.include_view.none'   => Notify::VIEW_NONE,
+                    'ekyna_commerce.notify.include_view.before' => Notify::VIEW_BEFORE,
+                    'ekyna_commerce.notify.include_view.after'  => Notify::VIEW_AFTER,
+                ],
+                'expanded'    => true,
+                'required'    => true,
+                'attr' => [
+                    'class'             => 'inline',
+                    'align_with_widget' => true,
+                    'help_text' => 'ekyna_commerce.notify_model.help.include_view',
+                ]
             ]);
     }
 
@@ -236,7 +267,7 @@ class NotificationType extends AbstractType
         $resolver
             ->setDefaults([
                 'sale'       => null,
-                'data_class' => Notification::class,
+                'data_class' => Notify::class,
             ])
             ->setAllowedTypes('sale', [OrderInterface::class, QuoteInterface::class]);
     }

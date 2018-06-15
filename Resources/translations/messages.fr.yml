@@ -385,7 +385,7 @@ ekyna_commerce:
             form: Bon de commande
             voucher: Bon d'achat
             quote: Devis
-            proforma: Proforma
+            proforma: Facture Proforma
             confirmation: Confirmation de commande
             shipment_form: Bon de préparation
             shipment_bill: Bon de livraison
@@ -557,9 +557,57 @@ ekyna_commerce:
             mrs: Madame
             miss: Mademoiselle
 
-    notification:
-        build:
-            subject: Votre {type} numéro {number}
+    message:
+        label:
+            singular: Message
+            plural: Messages
+        field:
+            flash: Flash
+            email: Email
+
+    notify:
+        type:
+            manual:
+                label: Manuelle
+                subject: Votre %type% numéro %number%
+            cart_remind:
+                label: Rappel panier abandonné
+            order_accepted:
+                label: Confirmation de commande
+                subject: Confirmation de votre commande %number%
+                message: >
+                    Votre commande a bien été enregistrée et sera traitée dans les plus brefs délais.
+            quote_remind:
+                label: Rappel devis proche expiration
+            payment_captured:
+                label: Paiement (hors ligne) accepté
+                subject: Réglement de votre commande %number%
+                message: >
+                    Nous avons bien reçu le réglement de votre commande.
+            payment_expired:
+                label: Encours échu
+            shipment_shipped:
+                label: Expédition complète
+                subject: Expédition de votre commande %number%
+                message: >
+                    Nous venons de procéder à l'expédition de votre commande. Vous trouverez en pièce jointe à ce mail
+                    votre bon de livraison. Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
+            shipment_partial:
+                label: Expédition partielle
+                subject: Expédition partielle de votre commande %number%
+                message: >
+                    Nous venons de procéder à l'expédition <strong>partielle</strong> de votre commande.
+                    Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
+            return_pending:
+                label: Retour en attente
+                subject: Retour de votre commande %number%
+                message: >
+                    Vous pouvez procéder au retour de votre commande, d'après le bon de retour en pièce jointe à ce mail.
+            return_received:
+                label: Retour réceptionné
+                subject: Retour de votre commande %number%
+                message: >
+                    Nous avons bien reçu les articles que vous nous avez retourné.
         field:
             from: Expéditeur
             recipients: Destinataires
@@ -581,15 +629,49 @@ ekyna_commerce:
             customer_area: >
                 Retrouvez toutes les informations concernant vos
                 devis et commandes dans votre <a href="%url%">espace client</a>.
-            sent: '{0} Aucun e-mail envoyé|{1} Un e-mail envoyé|]1,Inf[ %count% e-mails envoyés'
+            sent: L'email a été envoyé.
 
-    message:
+    notification:
         label:
-            singular: Message
-            plural: Messages
+            singular: Notification
+            plural: Notifications
+        alert:
+            no_item: Aucune notification enregistré
+
+    notify_model:
+        label:
+            singular: Notification
+            plural: Notifications
+        header:
+            list: Notification <small>Liste des modèles</small>
+            show: Détail du modèle<small>%name%</small>
+            new: Créer un nouveau modèle
+            edit: Modifier le modèle <small>%name%</small>
+            remove: Supprimer le modèle <small>%name%</small>
+        button:
+            list: Liste des modèles
+            show: Détail du modèle
+            new: Nouveau modèle
+            edit: Modifier le modèle
+            remove: Supprimer le modèle
         field:
-            flash: Flash
-            email: Email
+            document_types: Pièces jointes
+        help:
+            subject: >
+                Insérez l'expression &laquo; <strong>%number%</strong> &raquo; si besoin : elle sera
+                remplacée par le numéro de la commande (ou du devis).
+            payment_message: >
+                Ajouter le message correspondant au statut du payment
+                (si configuré dans les <em>Modes de paiement</em>).
+            shipment_message: >
+                Ajouter le message correspondant au statut d'expédition
+                (si configuré dans les <em>Modes de livraison</em>).
+            include_view: Ajouter le détail de la commande.
+            document_types: >
+                Documents à ajouter en pièces jointes (si disponibles).
+                Ne rien cocher pour utiliser le comportement par défaut.
+        alert:
+            no_item: Aucun modèle configuré
 
     order:
         label:
@@ -694,8 +776,6 @@ ekyna_commerce:
         alert:
             no_item: Aucun paiement configuré
         message:
-            state_confirm: Souhaitez-vous réellement {{action}} ce paiement ?
-            remove_confirm: Souhaitez-vous réellement supprimer ce paiement ?
             cant_be_deleted: Ce paiement est valide et ne peut être supprimé.
         state:
             new:
@@ -1129,6 +1209,11 @@ ekyna_commerce:
             expected: Attendu
             available: Disponible
 
+    shipment_label:
+        label:
+            singular: Étiquette expédition
+            plural: Étiquettes expédition
+
     shipment_method:
         label:
             singular: Mode de livraison
@@ -1184,13 +1269,13 @@ ekyna_commerce:
         field:
             start_at: Début le
             end_at: Fin le
-            gross_total: Total articles
+            base_total: Total articles
             vat_mode: Mode TVA
         help:
             methods: Laisser vide pour tout mode de livraison
             countries: Laisser vide pour tout pays
             customer_groups: Laisser vide pour tout groupe de client
-            gross_total: Minimum hors réduction(s) sur la commande
+            base_total: Minimum hors réduction(s) sur la commande
             vat_mode: Total articles HT ou TTC
         alert:
             empty_list: Aucune règle de gratuité configuré

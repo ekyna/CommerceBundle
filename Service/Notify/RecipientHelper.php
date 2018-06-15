@@ -1,27 +1,25 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Service\Notification;
+namespace Ekyna\Bundle\CommerceBundle\Service\Notify;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Model\Notification;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
-use Ekyna\Bundle\CommerceBundle\Model\Recipient;
-use Ekyna\Bundle\CommerceBundle\Model\RecipientList;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Bundle\UserBundle\Repository\UserRepositoryInterface;
 use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Symfony\Component\Translation\TranslatorInterface;
+use Ekyna\Component\Commerce\Common\Model\Recipient;
+use Ekyna\Component\Commerce\Common\Model\RecipientList;
 
 /**
- * Class NotificationBuilder
- * @package Ekyna\Bundle\CommerceBundle\Service\Notification
+ * Class RecipientHelper
+ * @package Ekyna\Bundle\CommerceBundle\Service\Notify
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class NotificationBuilder
+class RecipientHelper
 {
     /**
      * @var SettingsManager
@@ -38,11 +36,6 @@ class NotificationBuilder
      */
     private $userRepository;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
 
     /**
      * Constructor.
@@ -50,67 +43,15 @@ class NotificationBuilder
      * @param SettingsManager         $settings
      * @param UserProviderInterface   $userProvider
      * @param UserRepositoryInterface $userRepository
-     * @param TranslatorInterface     $translator
      */
     public function __construct(
         SettingsManager $settings,
         UserProviderInterface $userProvider,
-        UserRepositoryInterface $userRepository,
-        TranslatorInterface $translator
+        UserRepositoryInterface $userRepository
     ) {
         $this->settings = $settings;
         $this->userProvider = $userProvider;
         $this->userRepository = $userRepository;
-        $this->translator = $translator;
-    }
-
-    /**
-     * Creates the notification from the given sale.
-     *
-     * @param SaleInterface $sale
-     *
-     * @return Notification
-     */
-    public function createNotificationFromSale(SaleInterface $sale)
-    {
-        $notification = new Notification();
-
-        if ($sale instanceof OrderInterface) {
-            $type = 'ekyna_commerce.order.label.singular';
-        } elseif ($sale instanceof QuoteInterface) {
-            $type = 'ekyna_commerce.quote.label.singular';
-        } else {
-            throw new InvalidArgumentException("Unsupported sale type.");
-        }
-
-        $defaultSubject = $this->translator->trans('ekyna_commerce.notification.build.subject', [
-            '{type}' => mb_strtolower($this->translator->trans($type)),
-            '{number}' => $sale->getNumber(),
-        ]);
-
-        $notification->setSubject($defaultSubject);
-
-        $from = $this->createWebsiteRecipient();
-        if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
-            if ($inCharge = $sale->getInCharge()) {
-                $from = $this->createRecipient($inCharge, 'Responsable');
-            } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
-                $from = $recipient;
-            }
-        }
-        $notification->setFrom($from);
-
-        if ($customer = $sale->getCustomer()) {
-            $notification->addRecipient($this->createRecipient($customer, 'Client')); // TODO constant / translation
-        } else {
-            $notification->addRecipient($this->createRecipient($sale, 'Client'));
-        }
-
-        // TODO Attachments regarding to state
-
-        // TODO Payment and shipment messages
-
-        return $notification;
     }
 
     /**
@@ -212,7 +153,7 @@ class NotificationBuilder
      *
      * @return Recipient
      */
-    protected function createWebsiteRecipient()
+    public function createWebsiteRecipient()
     {
         return new Recipient(
             $this->settings->getParameter('general.admin_email'),
@@ -226,14 +167,10 @@ class NotificationBuilder
      *
      * @return Recipient
      */
-    protected function createCurrentUserRecipient()
+    public function createCurrentUserRecipient()
     {
         if (null !== $user = $this->userProvider->getUser()) {
-            return new Recipient(
-                $user->getEmail(),
-                $user->getUsername(),
-                'You'
-            );
+            return $this->createRecipient($user, 'You');
         }
 
         return null;

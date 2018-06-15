@@ -57,10 +57,11 @@ class LabelRenderer
      * Renders the labels.
      *
      * @param ShipmentLabelInterface[] $labels
+     * @param bool                     $raw
      *
-     * @return Response
+     * @return Response|string
      */
-    public function render(array $labels)
+    public function render(array $labels, $raw = false)
     {
         $layout = false;
         $options = [
@@ -94,6 +95,10 @@ class LabelRenderer
         ]);
 
         $content = $this->generator->getOutputFromHtml($content, $options);
+
+        if ($raw) {
+            return $content;
+        }
 
         return new Response($content, 200, [
             'Content-Type' => 'application/pdf',

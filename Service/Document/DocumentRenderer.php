@@ -56,7 +56,11 @@ class DocumentRenderer extends AbstractRenderer
         /** @var DocumentInterface $subject */
         $subject = reset($this->subjects);
 
-        return $subject->getType() . '_' . $subject->getSale()->getNumber();
+        if (!empty($number = $subject->getSale()->getNumber())) {
+            return $subject->getType() . '_' . $number;
+        }
+
+        return $subject->getType();
     }
 
     /**

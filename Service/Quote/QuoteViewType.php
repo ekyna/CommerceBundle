@@ -97,9 +97,10 @@ class QuoteViewType extends AbstractViewType
         $sale = $item->getSale();
 
         // Manual adjustments
-        if (
-            !$sale->isAutoDiscount() && !$sale->isSample() &&
-            !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
+        if (!$item->getSubjectIdentity()->hasIdentity() || (
+                !$sale->isAutoDiscount() && !$sale->isSample() &&
+                !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
+            )
         ) {
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
             if (false !== $adjustment) {

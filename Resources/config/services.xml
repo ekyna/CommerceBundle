@@ -11,6 +11,7 @@
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
         <import resource="services/invoice.xml"/>
+        <import resource="services/notify.xml"/>
         <import resource="services/order.xml"/>
         <import resource="services/payment.xml"/>
         <import resource="services/pricing.xml"/>
@@ -47,15 +48,6 @@
         <service id="ekyna_commerce.settings"
                  class="Ekyna\Bundle\CommerceBundle\Service\Settings\CommerceSettingsSchema">
             <tag name="ekyna_setting.schema" namespace="commerce" position="5" />
-        </service>
-
-        <!-- Notification builder -->
-        <service id="ekyna_commerce.notification.builder"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Notification\NotificationBuilder">
-            <argument type="service" id="ekyna_setting.manager"/>
-            <argument type="service" id="ekyna_user.user.provider"/>
-            <argument type="service" id="ekyna_user.user.repository"/>
-            <argument type="service" id="translator"/>
         </service>
 
         <!-- Security listener -->
@@ -98,6 +90,9 @@
             <argument type="service" id="translator"/>
             <argument type="service" id="ekyna_setting.manager"/>
             <argument type="service" id="ekyna_commerce.document.renderer_factory"/>
+            <argument type="service" id="ekyna_commerce.shipment.label_renderer"/>
+            <argument type="service" id="ekyna_commerce.subject.label_renderer"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="local_commerce_filesystem"/>
         </service>
 

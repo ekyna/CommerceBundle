@@ -171,9 +171,6 @@ class ShipmentType extends ResourceFormType
                         'required'     => false,
                         'disabled'     => $locked,
                     ])
-                    ->add('gatewayData', GatewayDataType::class, [
-                        'disabled' => $locked,
-                    ])
                     // TODO Test post_submit event
                     ->add('receiverAddress', ShipmentAddressType::class, [
                         'label'    => 'ekyna_commerce.shipment.field.receiver_address',
@@ -193,6 +190,9 @@ class ShipmentType extends ResourceFormType
                     ])
                     ->add('relayPoint', RelayPointType::class, [
                         'search' => $sale->isSameAddress() ? $sale->getInvoiceAddress() : $sale->getDeliveryAddress(),
+                    ])
+                    ->add('gatewayData', GatewayDataType::class, [
+                        'disabled' => $locked,
                     ]);
 
                 if (!$sale->isSample()) {

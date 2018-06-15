@@ -1,0 +1,493 @@
+<?php
+
+namespace Ekyna\Bundle\CommerceBundle\EventListener;
+
+use Ekyna\Bundle\CommerceBundle\Entity\NotifyModel;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Common\Event\NotifyEvent;
+use Ekyna\Component\Commerce\Common\Event\NotifyEvents;
+use Ekyna\Component\Commerce\Common\Model\Notify;
+use Ekyna\Component\Commerce\Order\Model\OrderStates;
+use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Translation\TranslatorInterface;
+
+/**
+ * Class NotifyEventSubscriber
+ * @package Ekyna\Bundle\CommerceBundle\EventListener
+ * @author  Etienne Dauvergne <contact@ekyna.com>
+ */
+class NotifyEventSubscriber implements EventSubscriberInterface
+{
+    /**
+     * @var ResourceRepositoryInterface
+     */
+    private $modelRepository;
+
+    /**
+     * @var RecipientHelper
+     */
+    private $helper;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+
+    /**
+     * Constructor.
+     *
+     * @param ResourceRepositoryInterface $modelRepository
+     * @param RecipientHelper             $helper
+     * @param TranslatorInterface         $translator
+     */
+    public function __construct(
+        ResourceRepositoryInterface $modelRepository,
+        RecipientHelper $helper,
+        TranslatorInterface $translator
+    ) {
+        $this->modelRepository = $modelRepository;
+        $this->helper = $helper;
+        $this->translator = $translator;
+    }
+
+    /**
+     * Notify build recipients event handler.
+     *
+     * @param NotifyEvent $event
+     */
+    public function buildRecipients(NotifyEvent $event)
+    {
+        if (null === $sale = $this->getSaleFromEvent($event)) {
+            return;
+        }
+
+        $notify = $event->getNotify();
+
+        // Sender
+        $from = $this->helper->createWebsiteRecipient();
+        if ($notify->getType() === NotificationTypes::MANUAL) {
+            if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
+                if ($inCharge = $sale->getInCharge()) {
+                    $from = $this->helper->createRecipient($inCharge, 'Responsable');
+                } elseif (null !== $recipient = $this->helper->createCurrentUserRecipient()) {
+                    $from = $recipient;
+                }
+            }
+        }
+        $notify->setFrom($from);
+
+        // Recipient
+        if ($customer = $sale->getCustomer()) {
+            $notify->addRecipient($this->helper->createRecipient($customer, 'Client')); // TODO constant / translation
+        } else {
+            $notify->addRecipient($this->helper->createRecipient($sale, 'Client'));
+        }
+    }
+
+    /**
+     * Notify build subject event handler.
+     *
+     * @param NotifyEvent $event
+     */
+    public function buildSubject(NotifyEvent $event)
+    {
+        if (null === $sale = $this->getSaleFromEvent($event)) {
+            return;
+        }
+
+        $notify = $event->getNotify();
+
+
+        if ($notify->getType() === NotificationTypes::MANUAL) {
+            if ($sale instanceof OrderInterface) {
+                $type = 'order';
+            } elseif ($sale instanceof QuoteInterface) {
+                $type = 'quote';
+            } elseif ($sale instanceof CartInterface) {
+                $type = 'cart';
+            } else {
+                throw new InvalidArgumentException("Unexpected sale class.");
+            }
+
+            $type = $this->translator->trans('ekyna_commerce.' . $type . '.label.singular');
+
+            $notify->setSubject(
+                $this->translator->trans('ekyna_commerce.notify.type.manual.subject', [
+                    '%type%'   => mb_strtolower($type),
+                    '%number%' => $sale->getNumber(),
+                ])
+            );
+
+            return;
+        }
+
+        /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
+        if (null !== $model = $this->modelRepository->findOneBy(['type' => $notify->getType()])) {
+            if (!empty($subject = $model->getSubject())) {
+                $notify->setSubject(str_replace('%number%', $sale->getNumber(), $subject));
+
+                return;
+            }
+        }
+    }
+
+    /**
+     * Notify build content event handler.
+     *
+     * @param NotifyEvent $event
+     */
+    public function buildContent(NotifyEvent $event)
+    {
+        $notify = $event->getNotify();
+
+        if ($notify->getType() === NotificationTypes::MANUAL) {
+            return;
+        }
+
+        if (null === $source = $notify->getSource()) {
+            return;
+        }
+
+        /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
+        $model = $this->modelRepository->findOneBy(['type' => $notify->getType()]);
+
+        switch ($notify->getType()) {
+            case NotificationTypes::CART_REMIND:
+                $notify->setIncludeView(Notify::VIEW_AFTER);
+                break;
+
+            case NotificationTypes::QUOTE_REMIND:
+                $notify->setIncludeView(Notify::VIEW_AFTER);
+                break;
+
+            case NotificationTypes::ORDER_ACCEPTED:
+                $this->buildOrderContent($event, $model);
+                break;
+
+            case NotificationTypes::PAYMENT_CAPTURED:
+            case NotificationTypes::PAYMENT_EXPIRED:
+                $this->buildPaymentContent($event, $model);
+
+                break;
+
+            case NotificationTypes::SHIPMENT_SHIPPED:
+            case NotificationTypes::SHIPMENT_PARTIAL:
+            case NotificationTypes::RETURN_PENDING:
+            case NotificationTypes::RETURN_RECEIVED:
+                $this->buildShipmentContent($event, $model);
+
+                break;
+        }
+    }
+
+    /**
+     * Notify post build event handler.
+     *
+     * @param NotifyEvent $event
+     */
+    public function finalize(NotifyEvent $event)
+    {
+        $notify = $event->getNotify();
+
+        $type = $notify->getType();
+        $sale = $this->getSaleFromEvent($event);
+        $number = $sale ? $sale->getNumber() : '';
+
+        if (empty($notify->getSubject())) {
+            $trans = sprintf('ekyna_commerce.notify.type.%s.subject', $type);
+            if ($trans != $subject = $this->translator->trans($trans, ['%number%' => $number])) {
+                $notify->setSubject($subject);
+            }
+        }
+
+        if (empty($notify->getCustomMessage())) {
+            $trans = sprintf('ekyna_commerce.notify.type.%s.message', $type);
+            if ($trans != $message = $this->translator->trans($trans)) {
+                $notify->setCustomMessage($message);
+            }
+        }
+
+        if ($notify->isEmpty()) {
+            $event->setAbort(true);
+        }
+    }
+
+    /**
+     * Returns the sale from the event.
+     *
+     * @param NotifyEvent $event
+     *
+     * @return SaleInterface|null
+     */
+    protected function getSaleFromEvent(NotifyEvent $event)
+    {
+        $source = $event->getNotify()->getSource();
+
+        if ($source instanceof SaleInterface) {
+            return $source;
+        } elseif ($source instanceof PaymentInterface || $source instanceof ShipmentInterface) {
+            return $source->getSale();
+        }
+
+        return null;
+    }
+
+    /**
+     * Builds sale content.
+     *
+     * @param NotifyEvent $event
+     * @param NotifyModel $model
+     */
+    protected function buildOrderContent(NotifyEvent $event, NotifyModel $model = null)
+    {
+        $notify = $event->getNotify();
+        $sale = $this->getSaleFromEvent($event);
+
+        if (!$sale instanceof OrderInterface) {
+            throw new RuntimeException("Expected instance of " . OrderInterface::class);
+        }
+
+        // Custom message
+        if ($model && !empty($message = $model->getMessage())) {
+            $notify->setCustomMessage($message);
+        }
+
+        // Payment message
+        if ($model && $model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
+            $this->addPaymentMessage($notify, $sale->getPayments()->last());
+        }
+
+        // Shipment message
+        if ($model && $model->isShipmentMessage() && 0 < $sale->getShipments(true)->count()) {
+            $this->addShipmentMessage($notify, $sale->getShipments(true)->last());
+        }
+
+        // Sale view
+        if ($model && !is_null($view = $model->getIncludeView())) {
+            $notify->setIncludeView($view);
+        } else {
+            $notify->setIncludeView(Notify::VIEW_AFTER);
+        }
+
+        // Attachments
+        if (!$model || empty($types = $model->getDocumentTypes())) {
+            $types = [DocumentTypes::TYPE_CONFIRMATION];
+        }
+
+        $this->addAttachments($notify, $sale, $types);
+    }
+
+    /**
+     * Builds payment content.
+     *
+     * @param NotifyEvent $event
+     * @param NotifyModel $model
+     */
+    protected function buildPaymentContent(NotifyEvent $event, NotifyModel $model = null)
+    {
+        $notify = $event->getNotify();
+
+        if (null === $payment = $notify->getSource()) {
+            throw new RuntimeException("Notify source is not set.");
+        }
+
+        if (!$payment instanceof PaymentInterface) {
+            throw new RuntimeException("Expected instance of " . PaymentInterface::class);
+        }
+
+        $sale = $this->getSaleFromEvent($event);
+
+        // Custom message
+        if ($model && !empty($message = $model->getMessage())) {
+            $notify->setCustomMessage($message);
+        }
+
+        // Payment message
+        if (!($model && !$model->isPaymentMessage())) {
+            $this->addPaymentMessage($notify, $payment);
+        }
+
+        if ($sale instanceof OrderInterface) {
+            // Shipment message
+            if ($model && $model->isShipmentMessage() && 0 < $sale->getShipments(true)->count()) {
+                $this->addShipmentMessage($notify, $sale->getShipments(true)->last());
+            }
+            // Invoices attachments
+            foreach ($sale->getInvoices(true) as $invoice) {
+                $notify->addInvoice($invoice);
+            }
+        }
+
+        // Attachments
+        if (!$model || empty($types = $model->getDocumentTypes())) {
+            $types = [DocumentTypes::TYPE_CONFIRMATION];
+        }
+        $this->addAttachments($notify, $sale, $types);
+
+        // TODO Invoice ?
+    }
+
+    /**
+     * Builds shipment content.
+     *
+     * @param NotifyEvent $event
+     * @param NotifyModel $model
+     */
+    protected function buildShipmentContent(NotifyEvent $event, NotifyModel $model = null)
+    {
+        $notify = $event->getNotify();
+
+        if (null === $shipment = $notify->getSource()) {
+            throw new RuntimeException("Notify source is not set.");
+        }
+
+        if (!$shipment instanceof ShipmentInterface) {
+            throw new RuntimeException("Expected instance of " . ShipmentInterface::class);
+        }
+
+        $sale = $this->getSaleFromEvent($event);
+
+        $notify->addShipment($shipment);
+
+        // Invoices
+        if ($sale instanceof OrderInterface) {
+            if ($sale->getState() === OrderStates::STATE_COMPLETED) {
+                foreach ($sale->getInvoices() as $invoice) {
+                    $notify->addInvoice($invoice);
+                }
+            } elseif (null !== $invoice = $shipment->getInvoice()) {
+                $notify->addInvoice($invoice);
+            }
+        }
+
+        // Pending return : add labels as attachments
+        if ($notify->getType() === NotificationTypes::RETURN_PENDING) {
+            foreach ($shipment->getLabels() as $label) {
+                $notify->addLabel($label);
+            }
+        }
+
+        // Custom message
+        if ($model && !empty($message = $model->getMessage())) {
+            $notify->setCustomMessage($message);
+        }
+
+        // Payment message
+        if ($model && $model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
+            $this->addPaymentMessage($notify, $sale->getPayments()->last());
+        }
+
+        // Shipment message
+        if (!($model && !$model->isShipmentMessage())) {
+            $this->addShipmentMessage($notify, $shipment);
+        }
+
+        // Attachments
+        if ($model && !empty($types = $model->getDocumentTypes())) {
+            $this->addAttachments($notify, $sale, $types);
+        }
+    }
+
+    /**
+     * Adds the payment message.
+     *
+     * @param Notify           $notify
+     * @param PaymentInterface $payment
+     *
+     * @return bool Whether the payment message has been added.
+     */
+    protected function addPaymentMessage(Notify $notify, PaymentInterface $payment)
+    {
+        if (null === $message = $payment->getMethod()->getMessageByState($payment->getState())) {
+            return false;
+        }
+
+        if (empty($content = $message->getContent())) { // TODO Locale
+            return false;
+        }
+
+        $notify->setPaymentMessage($content);
+
+        return true;
+    }
+
+    /**
+     * Adds the shipment message.
+     *
+     * @param Notify            $notify
+     * @param ShipmentInterface $shipment
+     *
+     * @return bool Whether the shipment message has been added.
+     */
+    protected function addShipmentMessage(Notify $notify, ShipmentInterface $shipment)
+    {
+        if (null === $message = $shipment->getMethod()->getMessageByState($shipment->getState())) {
+            return false;
+        }
+
+        if (empty($content = $message->getContent())) { // TODO Locale
+            return false;
+        }
+
+        $notify->setShipmentMessage($content);
+
+        return true;
+    }
+
+    /**
+     * Adds the attachments.
+     *
+     * @param Notify        $notify
+     * @param SaleInterface $sale
+     * @param array         $types
+     *
+     * @return bool Whether at last one attachment has been added.
+     */
+    protected function addAttachments(Notify $notify, SaleInterface $sale, array $types)
+    {
+        $added = false;
+
+        foreach ($sale->getAttachments() as $attachment) {
+            if (!in_array($attachment->getType(), $types, true)) {
+                continue;
+            }
+
+            if ($attachment->isInternal()) {
+                continue;
+            }
+
+            $notify->addAttachment($attachment);
+
+            $added = true;
+        }
+
+        return $added;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            NotifyEvents::BUILD => [
+                ['buildSubject', 1],
+                ['buildRecipients', 0],
+                ['buildContent', -1],
+                ['finalize', -2048],
+            ],
+        ];
+    }
+}

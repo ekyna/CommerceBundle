@@ -230,9 +230,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $form = $this
             ->get('form.factory')
-            ->createNamed('shipment', FormType::class, $shipment, [
-                'block_name' => 'shipment',
-            ])
+            ->createNamed('order_shipment', FormType::class, $shipment)
             ->add('gatewayData', GatewayDataType::class);
 
         $response = $this->render('@EkynaCommerce/Admin/Common/Shipment/gateway_form.xml.twig', [

@@ -98,9 +98,9 @@
         </service>
 
         <!-- Notification form type -->
-        <service id="ekyna_commerce.notification.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Notification\NotificationType">
-            <argument type="service" id="ekyna_commerce.notification.builder"/>
+        <service id="ekyna_commerce.notify.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType">
+            <argument type="service" id="ekyna_commerce.notify.recipient_helper"/>
             <argument type="service" id="translator"/>
             <tag name="form.type"/>
         </service>

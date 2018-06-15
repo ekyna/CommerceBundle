@@ -56,6 +56,16 @@ class GatewayDataType extends AbstractType
 
             $this->registry->getGateway($method->getGatewayName())->buildForm($form);
         });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $form = $event->getForm();
+
+            if (null === $method = $form->getParent()->get('method')->getData()) {
+                return;
+            }
+
+            $this->registry->getGateway($method->getGatewayName())->buildForm($form);
+        });
     }
 
     /**

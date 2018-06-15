@@ -1,7 +1,4 @@
 {% spaceless %}
-{% if parcels is not empty -%}
-    <p>{{ 'ekyna_commerce.order_shipment_item.label.plural'|trans }}</p>
-{%- endif %}
 <table class="table table-condensed">
     <thead>
     <tr>
@@ -20,33 +17,16 @@
     {%- endfor %}
     </tbody>
 </table>
-{% if parcels is not empty -%}
-<p>{{ 'ekyna_commerce.shipment.field.parcels'|trans }}</p>
-<table class="table table-condensed">
-    <thead>
-    <tr>
-        <th>{{ 'ekyna_core.field.weight'|trans }}</th>
-        <th>{{ 'ekyna_commerce.shipment.field.valorization'|trans }}</th>
-        <th>{{ 'ekyna_commerce.shipment.field.tracking_number'|trans }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for parcel in parcels -%}
-    <tr>
-        <td>{{ parcel.weight }}</td>
-        <td>{{ parcel.valorization|localizedcurrency(commerce_default_currency) }}</td>
-        <td>{{ parcel.trackingNumber }}</td>
-    </tr>
-    {%- endfor %}
-    </tbody>
-</table>
-{%- endif %}
-{% if description -%}
+{% if description is not empty or valorization is not empty or parcels is not empty -%}
 <div>
     <dl class="dl-horizontal">
     {% if description is not empty %}
         <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
         <dd>{{ description|nl2br|raw }}</dd>
+    {% endif %}
+    {% if parcels is not empty %}
+        <dt>{{ 'ekyna_commerce.shipment.field.parcels'|trans }}</dt>
+        <dd>{{ parcels|length }}</dd>
     {% endif %}
     {% if valorization is not empty %}
         <dt>{{ 'ekyna_commerce.shipment.field.valorization'|trans }}</dt>

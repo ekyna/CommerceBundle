@@ -46,8 +46,8 @@ class ShipmentRuleType extends ResourceTableType
                 'entity_label' => 'name',
                 'position'     => 40,
             ])
-            ->addColumn('grossTotal', BType\Column\PriceType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.gross_total',
+            ->addColumn('baseTotal', BType\Column\PriceType::class, [
+                'label'    => 'ekyna_commerce.shipment_rule.field.base_total',
                 'currency' => 'EUR', // TODO
                 'position' => 50,
             ])

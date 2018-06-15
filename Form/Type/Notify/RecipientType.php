@@ -1,8 +1,8 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notification;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notify;
 
-use Ekyna\Bundle\CommerceBundle\Model\Recipient;
+use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

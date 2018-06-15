@@ -135,6 +135,12 @@
             </div>
             <div class="tab-pane" id="quote-informations">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': quote} %}
+                <h4 class="sub-header">
+                    {{- 'ekyna_commerce.notification.label.plural'|trans -}}
+                </h4>
+                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_notifications.html.twig" with {
+                    'notifications': quote.notifications
+                } %}
             </div>
         </div>
     </div>

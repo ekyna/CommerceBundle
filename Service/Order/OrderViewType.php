@@ -245,15 +245,16 @@ class OrderViewType extends AbstractViewType
         }
         if (!empty($popover)) {
             $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-toggle'    => 'popover',
-                'data-content'   => $popover,
+                'data-toggle'  => 'popover',
+                'data-content' => $popover,
             ]);
         }
 
         // Manual adjustments
-        if (
-            !$sale->isAutoDiscount() && !$sale->isSample() &&
-            !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
+        if (!$item->getSubjectIdentity()->hasIdentity() || (
+                !$sale->isAutoDiscount() && !$sale->isSample() &&
+                !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
+            )
         ) {
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
             if (false !== $adjustment) {

@@ -242,6 +242,22 @@ class ConstantsHelper extends AbstractConstantsHelper
     }
 
     /**
+     * Renders the notification type label.
+     *
+     * @param string $type
+     *
+     * @return string
+     */
+    public function renderNotifyTypeLabel(string $type)
+    {
+        if (Model\NotificationTypes::isValid($type)) {
+            return $this->renderLabel(Model\NotificationTypes::getLabel($type));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
      * Renders the payment state label.
      *
      * @param Payment\PaymentInterface|Payment\PaymentSubjectInterface|string $stateOrPayment

@@ -1,0 +1,58 @@
+{% extends "email.html.twig" %}
+
+{% block stylesheets %}
+{% spaceless %}
+    {{ parent() }}
+    {% if notify.includeView != 'none' %}
+    <style type="text/css">
+        .sale-view th, .sale-view td {
+            font-size: 13px;
+        }
+    </style>
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/sale-view.css')) }}" rel="stylesheet" type="text/css"/>
+    {% endif %}
+{% endspaceless %}
+{% endblock stylesheets %}
+
+{% block subject %}
+    {{- notify.subject -}}
+{% endblock subject %}
+
+{% block body %}
+{% spaceless %}
+    {% if notify.includeView == 'before' -%}
+        {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
+    {%- endif %}
+
+    {% if notify.customMessage is not empty -%}
+        {{ notify.customMessage|raw }}
+    {%- endif %}
+
+    {% if notify.paymentMessage is not empty -%}
+        {{ notify.paymentMessage|raw }}
+    {%- endif %}
+
+    {% if notify.shipmentMessage is not empty -%}
+        {{ notify.shipmentMessage|raw }}
+    {%- endif %}
+
+    {% if 0 < attachments|length -%}
+    <p>{{ 'ekyna_commerce.notify.message.attachment_list'|trans }}:</p>
+    <ul>
+        {% for filename, title in attachments -%}
+        <li>{{ title }} : <em>{{ filename }}</em></li>
+        {%- endfor %}
+    </ul>
+    {%- endif %}
+
+    {% if notify.includeView == 'after' -%}
+        {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
+    {%- endif %}
+
+    <p style="text-align: center;">
+        {{ 'ekyna_commerce.notify.message.customer_area'|trans({
+            '%url%': url('ekyna_user_account_index')
+        })|raw }}
+    </p>
+{% endspaceless %}
+{% endblock body %}

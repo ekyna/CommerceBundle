@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notification;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notify;
 
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;

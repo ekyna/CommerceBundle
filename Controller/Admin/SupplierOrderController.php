@@ -7,7 +7,6 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
-use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
@@ -175,7 +174,7 @@ class SupplierOrderController extends ResourceController
 
             if (!$event->hasErrors()) {
                 if ($submit->isSendEmail()) {
-                    if ($this->sendSubmitMessage($submit)) {
+                    if ($this->get('ekyna_commerce.mailer')->sendSupplierOrderSubmit($submit)) {
                         $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
                     } else {
                         $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
@@ -327,72 +326,5 @@ class SupplierOrderController extends ResourceController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
         ]);
-    }
-
-    /**
-     * Sends the supplier order submit message.
-     *
-     * @param SupplierOrderSubmit $submit
-     *
-     * @return bool
-     */
-    private function sendSubmitMessage(SupplierOrderSubmit $submit)
-    {
-        $order = $submit->getOrder();
-
-        $settings = $this->container->get('ekyna_setting.manager');
-        $fromEmail = $settings->getParameter('notification.from_email');
-        $fromName = $settings->getParameter('notification.from_name');
-
-        $message = new \Swift_Message();
-        $message
-            ->setSubject('Bon de commande ' . $order->getNumber())
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($submit->getEmails())
-            ->setBody($submit->getMessage(), 'text/html');
-
-        $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
-            ->createRenderer($order);
-
-        $message->attach(\Swift_Attachment::newInstance(
-            $renderer->render(RendererInterface::FORMAT_PDF),
-            $order->getNumber() . '.pdf',
-            'application/pdf'
-        ));
-
-        if ($submit->isSendLabels()) {
-            $message->attach(\Swift_Attachment::newInstance(
-                $this->renderLabels($order),
-                'labels.pdf',
-                'application/pdf'
-            ));
-        }
-
-        return 0 < $this->get('mailer')->send($message);
-    }
-
-    /**
-     * Renders the supplier order's items subjects labels.
-     *
-     * @param SupplierOrderInterface $order
-     *
-     * @return string
-     */
-    private function renderLabels(SupplierOrderInterface $order)
-    {
-        $helper = $this->get('ekyna_commerce.subject_helper');
-
-        $subjects = [];
-
-        foreach ($order->getItems() as $item) {
-            $subjects[] = $helper->resolve($item);
-        }
-
-        $renderer = $this->get('ekyna_commerce.subject.label_renderer');
-
-        $labels = $renderer->buildLabels($subjects);
-
-        return $renderer->render($labels, SubjectLabel::FORMAT_SMALL);
     }
 }

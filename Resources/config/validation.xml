@@ -74,37 +74,27 @@
         </property>
     </class>
 
-    <!-- Notification -->
+    <!-- Notify model -->
 
-    <class name="Ekyna\Bundle\CommerceBundle\Model\Notification">
-        <property name="from">
-            <constraint name="NotNull"/>
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\NotifyModel">
+        <property name="type">
+            <constraint name="Choice">
+                <option name="callback">
+                    <value>Ekyna\Component\Commerce\Common\Model\NotificationTypes</value>
+                    <value>getTypes</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="translations">
             <constraint name="Valid"/>
         </property>
-        <property name="recipients">
-            <constraint name="Valid"/>
-        </property>
-        <property name="extraRecipients">
-            <constraint name="Valid"/>
-        </property>
-        <property name="copies">
-            <constraint name="Valid"/>
-        </property>
-        <property name="extraCopies">
-            <constraint name="Valid"/>
-        </property>
-        <property name="subject">
-            <constraint name="NotBlank"/>
-        </property>
-        <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\Notification"/>
     </class>
-
-    <!-- Recipient -->
-
-    <class name="Ekyna\Bundle\CommerceBundle\Model\Recipient">
-        <property name="email">
-            <constraint name="NotBlank"/>
-            <constraint name="Email"/>
+    <class name="Ekyna\Bundle\CommerceBundle\Entity\NotifyModelTranslation">
+        <property name="subject">
+            <constraint name="Length">
+                <option name="min">16</option>
+                <option name="max">255</option>
+            </constraint>
         </property>
     </class>
 

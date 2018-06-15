@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping
+        xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                        http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="Ekyna\Bundle\CommerceBundle\Entity\NotifyModel"
+            table="commerce_notify_model">
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="type" column="type" type="string" length="64"/>
+        <field name="paymentMessage" column="payment_message" type="boolean" nullable="true"/>
+        <field name="shipmentMessage" column="shipment_message" type="boolean" nullable="true"/>
+        <field name="includeView" column="include_view" type="string" length="8" nullable="true"/>
+        <field name="documentTypes" column="document_types" type="simple_array"/>
+
+    </mapped-superclass>
+
+</doctrine-mapping>

@@ -94,12 +94,4 @@ class CustomerGroupType extends ResourceTableType
                 'position' => 10,
             ]);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ekyna_commerce_customer_group';
-    }
 }
