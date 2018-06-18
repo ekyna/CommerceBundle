@@ -647,15 +647,21 @@ ekyna_commerce:
             show: Détail du modèle<small>%name%</small>
             new: Créer un nouveau modèle
             edit: Modifier le modèle <small>%name%</small>
+            test: Tester le modèle <small>%name%</small>
             remove: Supprimer le modèle <small>%name%</small>
         button:
             list: Liste des modèles
             show: Détail du modèle
             new: Nouveau modèle
             edit: Modifier le modèle
+            test: Tester le modèle
             remove: Supprimer le modèle
         field:
             document_types: Pièces jointes
+        message:
+            test_success: L'email de test a été envoyé.
+            test_failure: Erreur lors de l'envoi de l'email de test.
+            source_failure: Impossible de trouver une source pour le test.
         help:
             subject: >
                 Insérez l'expression &laquo; <strong>%number%</strong> &raquo; si besoin : elle sera
@@ -1128,7 +1134,8 @@ ekyna_commerce:
             private: Masqué
 
     setting:
-        invoice_footer: Pied de page facture
+        invoice_footer: Pied de page documents
+        email_signature: Signature email
         vat_display_mode: Affichage TVA par défaut
         shipment_label:
             label: Étiquette expédition

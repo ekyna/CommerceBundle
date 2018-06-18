@@ -36,6 +36,10 @@
         {{ notify.shipmentMessage|raw }}
     {%- endif %}
 
+    {{- get_setting('commerce.email_signature')|raw -}}
+
+    <hr>
+
     {% if 0 < attachments|length -%}
     <p>{{ 'ekyna_commerce.notify.message.attachment_list'|trans }}:</p>
     <ul>

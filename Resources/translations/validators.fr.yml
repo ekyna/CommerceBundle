@@ -46,6 +46,8 @@ ekyna_commerce:
         creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
     notify:
         pick_at_least_one_recipient: Veuillez choisir ou saisir au moins un destinataire.
+    notify_model:
+        duplicate_type: Un modèle existe déjà pour ce type.
     relay_point:
         is_required: Veuillez choisir un point relais.
         must_be_null: Ce mode d'expédition ne prend pas en charge les points relais.

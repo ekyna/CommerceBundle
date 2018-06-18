@@ -2,6 +2,11 @@
 
 {% block main %}
 <div class="actions">
+    {{ ui_button('ekyna_commerce.notify_model.button.test', {
+        'theme': 'primary',
+        'type': 'link',
+        'path': admin_resource_path(notifyModel, 'test')
+    }) }}
     {{ admin_resource_btn(notifyModel, 'edit') }}
     {{ admin_resource_btn(notifyModel, 'remove') }}
 </div>
@@ -79,6 +84,11 @@
                         }) }}
                     </div>
                 </div>
+                {{ show_row(notifyModel.enabled, 'boolean', {
+                    'label': 'ekyna_core.field.enabled',
+                    'id': 'notifyModel_enabled',
+                    'color': true,
+                }) }}
             </div>
         </div>
     </div>

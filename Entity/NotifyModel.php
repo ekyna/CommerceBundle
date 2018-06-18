@@ -43,6 +43,11 @@ class NotifyModel extends AbstractTranslatable
      */
     private $documentTypes;
 
+    /**
+     * @var bool
+     */
+    private $enabled;
+
 
     /**
      * @inheritDoc
@@ -178,6 +183,30 @@ class NotifyModel extends AbstractTranslatable
     public function setDocumentTypes(array $types)
     {
         $this->documentTypes = $types;
+
+        return $this;
+    }
+
+    /**
+     * Returns the enabled.
+     *
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Sets the enabled.
+     *
+     * @param bool $enabled
+     *
+     * @return NotifyModel
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = (bool)$enabled;
 
         return $this;
     }

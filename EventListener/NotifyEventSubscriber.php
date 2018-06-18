@@ -133,13 +133,14 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
-        if (null !== $model = $this->modelRepository->findOneBy(['type' => $notify->getType()])) {
-            if (!empty($subject = $model->getSubject())) {
-                $notify->setSubject(str_replace('%number%', $sale->getNumber(), $subject));
+        if (null === $model = $this->getModel($notify)) {
+            $event->abort();
 
-                return;
-            }
+            return;
+        }
+
+        if (!empty($subject = $model->getSubject())) {
+            $notify->setSubject(str_replace('%number%', $sale->getNumber(), $subject));
         }
     }
 
@@ -160,8 +161,11 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
-        $model = $this->modelRepository->findOneBy(['type' => $notify->getType()]);
+        if (null === $model = $this->getModel($notify)) {
+            $event->abort();
+
+            return;
+        }
 
         switch ($notify->getType()) {
             case NotificationTypes::CART_REMIND:
@@ -220,8 +224,29 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         }
 
         if ($notify->isEmpty()) {
-            $event->setAbort(true);
+            $event->abort();
         }
+    }
+
+    /**
+     * Returns the notify model.
+     *
+     * @param Notify $notify
+     *
+     * @return \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel|null
+     */
+    protected function getModel(Notify $notify)
+    {
+        $criteria = ['type' => $notify->getType()];
+
+        if (!$notify->isTest()) {
+            $criteria['enabled'] = true;
+        }
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this
+            ->modelRepository
+            ->findOneBy($criteria);
     }
 
     /**
@@ -250,7 +275,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      * @param NotifyEvent $event
      * @param NotifyModel $model
      */
-    protected function buildOrderContent(NotifyEvent $event, NotifyModel $model = null)
+    protected function buildOrderContent(NotifyEvent $event, NotifyModel $model)
     {
         $notify = $event->getNotify();
         $sale = $this->getSaleFromEvent($event);
@@ -260,29 +285,29 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         }
 
         // Custom message
-        if ($model && !empty($message = $model->getMessage())) {
+        if (!empty($message = $model->getMessage())) {
             $notify->setCustomMessage($message);
         }
 
         // Payment message
-        if ($model && $model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
+        if ($model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
             $this->addPaymentMessage($notify, $sale->getPayments()->last());
         }
 
         // Shipment message
-        if ($model && $model->isShipmentMessage() && 0 < $sale->getShipments(true)->count()) {
+        if ($model->isShipmentMessage() && 0 < $sale->getShipments(true)->count()) {
             $this->addShipmentMessage($notify, $sale->getShipments(true)->last());
         }
 
         // Sale view
-        if ($model && !is_null($view = $model->getIncludeView())) {
+        if (!is_null($view = $model->getIncludeView())) {
             $notify->setIncludeView($view);
         } else {
             $notify->setIncludeView(Notify::VIEW_AFTER);
         }
 
         // Attachments
-        if (!$model || empty($types = $model->getDocumentTypes())) {
+        if (empty($types = $model->getDocumentTypes())) {
             $types = [DocumentTypes::TYPE_CONFIRMATION];
         }
 
@@ -295,7 +320,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      * @param NotifyEvent $event
      * @param NotifyModel $model
      */
-    protected function buildPaymentContent(NotifyEvent $event, NotifyModel $model = null)
+    protected function buildPaymentContent(NotifyEvent $event, NotifyModel $model)
     {
         $notify = $event->getNotify();
 
@@ -310,18 +335,18 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         $sale = $this->getSaleFromEvent($event);
 
         // Custom message
-        if ($model && !empty($message = $model->getMessage())) {
+        if (!empty($message = $model->getMessage())) {
             $notify->setCustomMessage($message);
         }
 
         // Payment message
-        if (!($model && !$model->isPaymentMessage())) {
+        if ($model->isPaymentMessage()) {
             $this->addPaymentMessage($notify, $payment);
         }
 
         if ($sale instanceof OrderInterface) {
             // Shipment message
-            if ($model && $model->isShipmentMessage() && 0 < $sale->getShipments(true)->count()) {
+            if ($model->isShipmentMessage() && 0 < $sale->getShipments(true)->count()) {
                 $this->addShipmentMessage($notify, $sale->getShipments(true)->last());
             }
             // Invoices attachments
@@ -331,12 +356,10 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         }
 
         // Attachments
-        if (!$model || empty($types = $model->getDocumentTypes())) {
+        if (empty($types = $model->getDocumentTypes())) {
             $types = [DocumentTypes::TYPE_CONFIRMATION];
         }
         $this->addAttachments($notify, $sale, $types);
-
-        // TODO Invoice ?
     }
 
     /**
@@ -345,7 +368,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      * @param NotifyEvent $event
      * @param NotifyModel $model
      */
-    protected function buildShipmentContent(NotifyEvent $event, NotifyModel $model = null)
+    protected function buildShipmentContent(NotifyEvent $event, NotifyModel $model)
     {
         $notify = $event->getNotify();
 
@@ -380,22 +403,22 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         }
 
         // Custom message
-        if ($model && !empty($message = $model->getMessage())) {
+        if (!empty($message = $model->getMessage())) {
             $notify->setCustomMessage($message);
         }
 
         // Payment message
-        if ($model && $model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
+        if ($model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
             $this->addPaymentMessage($notify, $sale->getPayments()->last());
         }
 
         // Shipment message
-        if (!($model && !$model->isShipmentMessage())) {
+        if ($model->isShipmentMessage()) {
             $this->addShipmentMessage($notify, $shipment);
         }
 
         // Attachments
-        if ($model && !empty($types = $model->getDocumentTypes())) {
+        if (!empty($types = $model->getDocumentTypes())) {
             $this->addAttachments($notify, $sale, $types);
         }
     }

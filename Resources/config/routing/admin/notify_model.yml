@@ -27,13 +27,20 @@ ekyna_commerce_notify_model_admin_edit:
     requirements:
         notifyModelId: \d+
 
-#ekyna_commerce_notify_model_admin_toggle:
-#    path: /{notifyModelId}/toggle/{field}
-#    defaults: { _controller: "ekyna_commerce.notify_model.controller:toggleAction", field: default }
-#    methods: [GET]
-#    requirements:
-#        notifyModelId: \d+
-#        field: \w+
+ekyna_commerce_notify_model_admin_test:
+    path: /{notifyModelId}/test
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:testAction" }
+    methods: [GET|POST]
+    requirements:
+        notifyModelId: \d+
+
+ekyna_commerce_notify_model_admin_toggle:
+    path: /{notifyModelId}/toggle/{field}
+    defaults: { _controller: "ekyna_commerce.notify_model.controller:toggleAction", field: enabled }
+    methods: [GET]
+    requirements:
+        notifyModelId: \d+
+        field: \w+
 
 ekyna_commerce_notify_model_admin_remove:
     path: /{notifyModelId}/remove

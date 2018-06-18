@@ -11,6 +11,8 @@ use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CTypes;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Class NotifyModel
@@ -76,14 +78,21 @@ class NotifyModelType extends ResourceFormType
                 ],
             ])
             ->add('documentTypes', Type\ChoiceType::class, [
-                'label'       => 'ekyna_commerce.notify_model.field.document_types',
-                'choices'     => DocumentTypes::getChoices(),
-                'multiple'    => true,
-                'expanded'    => true,
-                'required'    => false,
-                'attr'        => [
+                'label'    => 'ekyna_commerce.notify_model.field.document_types',
+                'choices'  => DocumentTypes::getChoices(),
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+                'attr'     => [
                     'align_with_widget' => true,
                     'help_text'         => 'ekyna_commerce.notify_model.help.document_types',
+                ],
+            ])
+            ->add('enabled', Type\CheckboxType::class, [
+                'label'    => 'ekyna_core.field.enabled',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
                 ],
             ])
             ->add('translations', TranslationsFormsType::class, [
@@ -94,5 +103,18 @@ class NotifyModelType extends ResourceFormType
                 'label'          => false,
                 'error_bubbling' => false,
             ]);
+
+        // Removes empty translations
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+            /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
+            $model = $event->getData();
+
+            /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModelTranslation $translation */
+            foreach ($model->getTranslations() as $translation) {
+                if (empty($translation->getSubject()) && empty($translation->getMessage())) {
+                    $model->removeTranslation($translation);
+                }
+            }
+        }, 1024); // Before validation
     }
 }

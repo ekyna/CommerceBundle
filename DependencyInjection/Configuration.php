@@ -404,9 +404,10 @@ class Configuration implements ConfigurationInterface
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html' => 'EkynaCommerceBundle:Admin/NotifyModel:_form.html',
                                     'show.html'  => 'EkynaCommerceBundle:Admin/NotifyModel:show.html',
+                                    'test.html'  => 'EkynaCommerceBundle:Admin/NotifyModel:test.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\NotifyModel')->end()
-                                ->scalarNode('controller')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\NotifyModelController')->end()
                                 ->scalarNode('operator')->end()
                                 ->scalarNode('repository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyModelType')->end()

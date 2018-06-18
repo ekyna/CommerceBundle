@@ -298,7 +298,9 @@ class Mailer
         $notify->setReport($report);
 
         // Trigger imap copy
-        $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
+        if (!$notify->isTest()) {
+            $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
+        }
 
         return $this->transport->send($message);
     }

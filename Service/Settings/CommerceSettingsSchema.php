@@ -42,10 +42,12 @@ class CommerceSettingsSchema extends AbstractSchema
 
         $builder
             ->setDefaults(array_merge([
-                'invoice_footer' => '<p>Default invoice footer</p>',
-                'shipment_label' => $labelDefaults,
+                'invoice_footer'  => '<p>Default invoice footer</p>',
+                'email_signature' => '<p>Default email signature</p>',
+                'shipment_label'  => $labelDefaults,
             ], $this->defaults))
             ->setAllowedTypes('invoice_footer', 'string')
+            ->setAllowedTypes('email_signature', 'string')
             ->setAllowedTypes('shipment_label', 'array')
             ->setNormalizer('shipment_label', function (Options $options, $value) use ($labelResolver) {
                 return $labelResolver->resolve($value);
@@ -60,6 +62,10 @@ class CommerceSettingsSchema extends AbstractSchema
         $builder
             ->add('invoice_footer', TinymceType::class, [
                 'label' => 'ekyna_commerce.setting.invoice_footer',
+                'theme' => 'simple',
+            ])
+            ->add('email_signature', TinymceType::class, [
+                'label' => 'ekyna_commerce.setting.email_signature',
                 'theme' => 'simple',
             ]);
 

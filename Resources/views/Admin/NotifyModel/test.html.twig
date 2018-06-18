@@ -1,0 +1,17 @@
+{% extends "EkynaAdminBundle:Entity/Default:edit.html.twig" %}
+
+{% block title %}
+    <h1>{{ (resource_id ~ '.header.test')|trans({'%name%': resource})|raw }}</h1>
+{% endblock title %}
+
+{% block main %}
+    {{ form_start(form) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ bootstrap_set_label_col(3) }}
+        {{ bootstrap_set_widget_col(9) }}
+        {{ form_widget(form) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}

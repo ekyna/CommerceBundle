@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\Extension\Core\Type as CType;
 
 /**
  * Class NotifyModelType
@@ -28,16 +29,13 @@ class NotifyModelType extends ResourceTableType
                 'route_parameters_map' => ['notifyModelId' => 'id'],
                 'position'             => 10,
             ])
-            /*->addColumn('default', CType\Column\BooleanType::class, [
-                'label'                 => 'ekyna_core.field.default',
+            ->addColumn('enabled', CType\Column\BooleanType::class, [
+                'label'                 => 'ekyna_core.field.enabled',
                 'route_name'            => 'ekyna_commerce_notify_model_admin_toggle',
-                'route_parameters'      => ['field' => 'default'],
+                'route_parameters'      => ['field' => 'enabled'],
                 'route_parameters_map'  => ['notifyModelId' => 'id'],
-                'true_class'            => 'label-primary',
-                'false_class'           => 'label-default',
-                'disable_property_path' => 'default',
                 'position'              => 70,
-            ])*/
+            ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
@@ -53,7 +51,6 @@ class NotifyModelType extends ResourceTableType
                         'route_name'            => 'ekyna_commerce_notify_model_admin_remove',
                         'route_parameters_map'  => ['notifyModelId' => 'id'],
                         'permission'            => 'delete',
-                        'disable_property_path' => 'default',
                     ],
                 ],
             ]);
