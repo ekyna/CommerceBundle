@@ -121,6 +121,18 @@ class StatWidget extends AbstractWidgetType
                         'data'            => array_values($compare),
                     ],
                 ],
+                'options' => [
+                    'scales' => [
+                        'yAxes' => [
+                            [
+                                'ticks' => [
+                                    'suggestedMin' => 50,
+                                    'suggestedMax' => 100,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }
@@ -159,6 +171,18 @@ class StatWidget extends AbstractWidgetType
                         'label'           => $date->format('Y'),
                         'backgroundColor' => '#0277bd',
                         'data'            => array_values($current),
+                    ],
+                ],
+                'options' => [
+                    'scales' => [
+                        'yAxes' => [
+                            [
+                                'ticks' => [
+                                    'suggestedMin' => 50,
+                                    'suggestedMax' => 100,
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -202,6 +226,16 @@ class StatWidget extends AbstractWidgetType
                 'title'  => ['display' => false],
                 'legend' => ['display' => false],
                 'layout' => ['padding' => ['top' => 16]],
+                'scales' => [
+                    'yAxes' => [
+                        [
+                            'ticks' => [
+                                'suggestedMin' => 50,
+                                'suggestedMax' => 100,
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }

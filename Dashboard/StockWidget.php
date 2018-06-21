@@ -92,6 +92,16 @@ class StockWidget extends AbstractWidgetType
             ],
             'options' => [
                 'title' => ['display' => false],
+                'scales' => [
+                    'yAxes' => [
+                        [
+                            'ticks' => [
+                                'suggestedMin' => 50,
+                                'suggestedMax' => 100,
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }
