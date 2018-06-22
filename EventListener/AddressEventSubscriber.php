@@ -107,7 +107,12 @@ class AddressEventSubscriber implements EventSubscriberInterface
 
         $request = new GeocoderAddressRequest($data);
 
-        $response = $this->geocoder->geocode($request);
+        try {
+            $response = $this->geocoder->geocode($request);
+        } catch (\Http\Client\Exception $e) {
+            return false;
+        }
+
         if ($response->getStatus() !== GeocoderStatus::OK) {
             return false;
         }
