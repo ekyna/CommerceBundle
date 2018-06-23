@@ -46,6 +46,7 @@ ekyna_commerce:
         creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
     notify:
         pick_at_least_one_recipient: Veuillez choisir ou saisir au moins un destinataire.
+        is_empty: Veuillez saisir un message.
     notify_model:
         duplicate_type: Un modèle existe déjà pour ce type.
     relay_point:

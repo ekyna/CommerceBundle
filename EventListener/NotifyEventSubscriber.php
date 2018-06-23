@@ -154,6 +154,8 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         $notify = $event->getNotify();
 
         if ($notify->getType() === NotificationTypes::MANUAL) {
+            $notify->setCustomMessage($this->translator->trans('ekyna_commerce.notify.type.manual.message'));
+
             return;
         }
 

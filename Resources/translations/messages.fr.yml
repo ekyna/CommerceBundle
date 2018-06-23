@@ -570,6 +570,9 @@ ekyna_commerce:
             manual:
                 label: Manuelle
                 subject: Votre %type% numéro %number%
+                message: >
+                    <p>Bonjour,</p>
+                    <p>Veuillez trouver les éléments en pièces jointes.</p>
             cart_remind:
                 label: Rappel panier abandonné
             order_accepted:
