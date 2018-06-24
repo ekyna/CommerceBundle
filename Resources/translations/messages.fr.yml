@@ -862,7 +862,7 @@ ekyna_commerce:
             new: Nouveau mode
             edit: Modifier le mode
             remove: Supprimer le mode
-            choose: Régler par %gateway_name%
+            choose: "Régler par %gateway_name%"
         field:
             factory_name: Passerelle
             available: Partie publique
@@ -1240,7 +1240,7 @@ ekyna_commerce:
             new: Nouveau mode
             edit: Modifier le mode
             remove: Supprimer le mode
-            choose: Je choisi une livraison par %gateway_name%
+            choose: "Je choisi une livraison par %gateway_name%"
         field:
             platform_name: Plateforme
             available: Partie publique

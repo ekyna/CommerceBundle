@@ -153,12 +153,6 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 'description' => '<p>Utilisez votre encours client ...</p>',
                 'enabled'     => true,
             ],
-            /*'Paypal'   => [
-                'factory'     => 'paypal_express_checkout_nvp',
-                'image'       => 'paypal.png',
-                'description' => '<p>Réglez avec votre compte paypal, ou votre carte bancaire.</p>',
-                'enabled'     => false,
-            ],*/
         ];
 
         $ccGateways = [
@@ -176,6 +170,21 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
                 ];
                 break;
             }
+        }
+
+        $paypalFactory = null;
+        if(class_exists('Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory')) {
+            $paypalFactory = 'paypal_express_checkout';
+        } /*elseif (class_exists('Payum\Paypal\Rest\PaypalRestGatewayFactory')) {
+            $paypalFactory = 'paypal_rest';
+        }*/
+        if (!empty($paypalFactory)) {
+            $methods['PayPal'] = [
+                'factory'     => $paypalFactory,
+                'image'       => 'paypal.png',
+                'description' => '<p>Réglez avec votre compte PayPal, ou votre carte bancaire.</p>',
+                'enabled'     => false,
+            ];
         }
 
         $methods = array_merge($methods, [

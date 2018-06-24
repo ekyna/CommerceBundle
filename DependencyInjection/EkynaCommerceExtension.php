@@ -76,7 +76,6 @@ class EkynaCommerceExtension extends AbstractExtension
         }
     }
 
-
     /**
      * Configures the stock.
      *
@@ -153,7 +152,7 @@ class EkynaCommerceExtension extends AbstractExtension
             'dbal' => [
                 'types' => DoctrineBundleMapping::buildTypesConfiguration(),
             ],
-            'orm' => [
+            'orm'  => [
                 'mappings' => [
                     'EkynaCommerce' => DoctrineBundleMapping::buildMappingConfiguration(),
                 ],

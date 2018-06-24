@@ -268,12 +268,12 @@
 
 {% block ekyna_commerce_checkout_payment_image %}
 {% spaceless %}
-    {% if payment.method.media is not same as (null) %}
+    {% if payment.method.media is not null %}
         <img src="{{ payment.method.media.path|imagine_filter('commerce_method') }}"
              alt="{{ payment.method.media.title }}" class="img-responsive">
     {% else %}
-        <img src="{{ asset(default_image_path) }}" alt="{{ default_image_alt|trans }}"
-             class="img-responsive">
+        <img src="{{ asset('bundles/ekynacommerce/img/money.png') }}"
+             alt="{{ payment.method.title }}" class="img-responsive">
     {% endif %}
 {% endspaceless %}
 {% endblock ekyna_commerce_checkout_payment_image %}
@@ -346,7 +346,7 @@
                     <div class="col-sm-3 commerce-method-choice-visual">
                         {{ form_widget(child) }}
                         <label for="{{ child.vars.id }}">
-                            {% if method.media is not same as (null) %}
+                            {% if method.media is not null %}
                                 <img src="{{ method.media.path|imagine_filter('commerce_method') }}"
                                      alt="{{ method.media.title }}" class="img-responsive">
                             {% else %}
