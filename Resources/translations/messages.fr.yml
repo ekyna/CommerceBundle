@@ -1628,7 +1628,7 @@ ekyna_commerce:
             singular: Groupe de taxes
             plural: Groupes de taxes
         header:
-            list: Groupe de taxes <small>Liste des groupes</small>
+            list: Groupes de taxes <small>Liste des groupes</small>
             show: Détail du groupe de taxes<small>%name%</small>
             new: Créer un nouveau groupe de taxes
             edit: Modifier le groupe de taxes <small>%name%</small>

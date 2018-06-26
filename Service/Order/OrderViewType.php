@@ -10,6 +10,7 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Order\Model as Order;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculatorInterface;
+use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
 
@@ -39,6 +40,11 @@ class OrderViewType extends AbstractViewType
      * @var ShipmentCalculatorInterface
      */
     private $shipmentCalculator;
+
+    /**
+     * @var ShipmentPriceResolverInterface
+     */
+    private $shipmentPriceResolver;
 
 
     /**
@@ -79,6 +85,16 @@ class OrderViewType extends AbstractViewType
     public function setShipmentCalculator($calculator)
     {
         $this->shipmentCalculator = $calculator;
+    }
+
+    /**
+     * Sets the shipment price resolver.
+     *
+     * @param ShipmentPriceResolverInterface $resolver
+     */
+    public function setShipmentPriceResolver(ShipmentPriceResolverInterface $resolver)
+    {
+        $this->shipmentPriceResolver = $resolver;
     }
 
     /**
@@ -429,6 +445,11 @@ class OrderViewType extends AbstractViewType
     {
         if (!$options['editable'] || !$options['private']) {
             return;
+        }
+
+        $defaultPrice = $this->shipmentPriceResolver->getPriceBySale($sale);
+        if (0 !== bccomp($defaultPrice->getNetPrice(), $sale->getShipmentAmount(), 3)) {
+            $view->addClass('warning');
         }
 
         $editPath = $this->generateUrl('ekyna_commerce_order_admin_edit_shipment', [

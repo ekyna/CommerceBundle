@@ -66,6 +66,9 @@
         <service id="ekyna_commerce.quote.view_type"
                  class="Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewType"
                  parent="ekyna_commerce.abstract_view_type">
+            <call method="setShipmentPriceResolver">
+                <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
+            </call>
             <tag name="ekyna_commerce.view_type"/>
         </service>
 
@@ -84,6 +87,9 @@
             </call>
             <call method="setShipmentCalculator">
                 <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            </call>
+            <call method="setShipmentPriceResolver">
+                <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             </call>
             <tag name="ekyna_commerce.view_type"/>
         </service>

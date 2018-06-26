@@ -7,6 +7,7 @@ use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Quote\Model as Quote;
+use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 
 /**
  * Class QuoteViewType
@@ -15,6 +16,22 @@ use Ekyna\Component\Commerce\Quote\Model as Quote;
  */
 class QuoteViewType extends AbstractViewType
 {
+    /**
+     * @var ShipmentPriceResolverInterface
+     */
+    private $shipmentPriceResolver;
+
+
+    /**
+     * Sets the shipment price resolver.
+     *
+     * @param ShipmentPriceResolverInterface $resolver
+     */
+    public function setShipmentPriceResolver(ShipmentPriceResolverInterface $resolver)
+    {
+        $this->shipmentPriceResolver = $resolver;
+    }
+
     /**
      * @inheritdoc
      */
@@ -259,6 +276,11 @@ class QuoteViewType extends AbstractViewType
     {
         if (!$options['editable'] || !$options['private']) {
             return;
+        }
+
+        $defaultPrice = $this->shipmentPriceResolver->getPriceBySale($sale);
+        if (0 !== bccomp($defaultPrice->getNetPrice(), $sale->getShipmentAmount(), 3)) {
+            $view->addClass('warning');
         }
 
         $editPath = $this->generateUrl('ekyna_commerce_quote_admin_edit_shipment', [
