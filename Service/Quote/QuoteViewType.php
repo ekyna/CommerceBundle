@@ -278,8 +278,11 @@ class QuoteViewType extends AbstractViewType
             return;
         }
 
-        $defaultPrice = $this->shipmentPriceResolver->getPriceBySale($sale);
-        if (0 !== bccomp($defaultPrice->getNetPrice(), $sale->getShipmentAmount(), 3)) {
+        $default = 0;
+        if ($p = $this->shipmentPriceResolver->getPriceBySale($sale)) {
+            $default = $p->getNetPrice();
+        }
+        if (0 !== bccomp($default, $sale->getShipmentAmount(), 3)) {
             $view->addClass('warning');
         }
 
