@@ -91,6 +91,8 @@ final class Units extends AbstractConstants
     /**
      * Returns the units with a translatable display format.
      *
+     * @param string $unit
+     *
      * @return string[]
      */
     public static function hasTranslatableFormat($unit)

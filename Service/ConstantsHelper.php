@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
+use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
@@ -39,6 +40,22 @@ class ConstantsHelper extends AbstractConstantsHelper
         parent::__construct($translator);
 
         $this->gendersClass = $gendersClass;
+    }
+
+    /**
+     * Renders the accounting type label.
+     *
+     * @param AccountingInterface|string $accountingOrType
+     *
+     * @return string
+     */
+    public function renderAccountingTypeLabel($accountingOrType)
+    {
+        if ($accountingOrType instanceof AccountingInterface) {
+            $accountingOrType = $accountingOrType->getType();
+        }
+
+        return $this->renderLabel(Model\AccountingTypes::getLabel($accountingOrType));
     }
 
     /**

@@ -5,7 +5,6 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
-use Ekyna\Component\Table\Extension\Core\Type\Column\NumberType;
 use Ekyna\Component\Table\Extension\Core\Type\Column\TextType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;

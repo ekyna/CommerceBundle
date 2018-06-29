@@ -199,6 +199,15 @@ class AdminMenuPass implements CompilerPassInterface
             'position' => 72,
         ]]);
 
+        // Accounting
+        $pool->addMethodCall('createEntry', ['setting', [
+            'name'     => 'accounting',
+            'route'    => 'ekyna_commerce_accounting_admin_home',
+            'label'    => 'ekyna_commerce.accounting.label.plural',
+            'resource' => 'ekyna_commerce_accounting',
+            'position' => 80,
+        ]]);
+
         // Countries / Currencies
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'countries',

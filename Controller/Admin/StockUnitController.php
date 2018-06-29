@@ -231,7 +231,7 @@ class StockUnitController extends ResourceController
      * @param StockAdjustmentInterface $stockAdjustment
      * @param array                    $options
      *
-     * @return \Symfony\Component\Form\Form
+     * @return \Symfony\Component\Form\FormInterface
      */
     private function createStockAdjustmentForm(StockAdjustmentInterface $stockAdjustment, array $options = [])
     {

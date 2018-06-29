@@ -1,0 +1,4 @@
+ekyna_commerce_export_admin_accounting:
+    path: /accounting
+    methods: [POST]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:accounting }

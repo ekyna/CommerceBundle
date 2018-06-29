@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
+        <import resource="services/accounting.xml"/>
         <import resource="services/cart.xml"/>
         <import resource="services/common.xml"/>
         <import resource="services/customer.xml"/>

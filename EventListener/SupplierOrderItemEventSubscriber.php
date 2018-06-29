@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierOrderItemEventSubscriber as BaseSubscriber;
-use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\IllegalOperationException;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;

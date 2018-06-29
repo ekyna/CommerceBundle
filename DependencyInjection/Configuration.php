@@ -198,6 +198,23 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('pools')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->arrayNode('accounting')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Accounting:_form.html',
+                                    'show.html'   => 'EkynaCommerceBundle:Admin/Accounting:show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Accounting\Entity\Accounting')->end()
+                                ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AccountingController')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\AccountingType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\AccountingType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('cart')
                             ->addDefaultsIfNotSet()
                             ->children()

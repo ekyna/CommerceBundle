@@ -11,6 +11,13 @@
 
         <!-- TODO remove forms defined by resources di builder -->
 
+        <!-- Accounting form types -->
+        <service id="ekyna_commerce.accounting_export.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType">
+            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <tag name="form.type"/>
+        </service>
+
         <!-- Cart form types -->
         <service id="ekyna_commerce.cart.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType">
@@ -428,6 +435,11 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType">
             <argument type="service" id="ekyna_commerce.country.repository"/>
             <argument>%ekyna_commerce.tax_group.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.tax_rule_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleChoiceType">
+            <argument>%ekyna_commerce.tax_rule.class%</argument>
             <tag name="form.type"/>
         </service>
 

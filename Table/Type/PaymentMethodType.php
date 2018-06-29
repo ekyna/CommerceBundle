@@ -6,7 +6,6 @@ use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class PaymentMethodType

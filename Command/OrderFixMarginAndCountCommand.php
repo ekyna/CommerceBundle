@@ -8,11 +8,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class FixOrderMarginAndCountCommand
+ * Class OrderFixMarginAndCountCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class FixOrderMarginAndCountCommand extends ContainerAwareCommand
+class OrderFixMarginAndCountCommand extends ContainerAwareCommand
 {
     /**
      * @var EntityManagerInterface

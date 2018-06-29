@@ -3,8 +3,10 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
+use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 
 /**
  * Class InvoiceExtension
@@ -18,15 +20,22 @@ class InvoiceExtension extends \Twig_Extension
      */
     private $constantHelper;
 
+    /**
+     * @var TaxResolverInterface
+     */
+    private $taxResolver;
+
 
     /**
      * Constructor.
      *
-     * @param ConstantsHelper $constantHelper
+     * @param ConstantsHelper      $constantHelper
+     * @param TaxResolverInterface $taxResolver
      */
-    public function __construct(ConstantsHelper $constantHelper)
+    public function __construct(ConstantsHelper $constantHelper, TaxResolverInterface $taxResolver)
     {
         $this->constantHelper = $constantHelper;
+        $this->taxResolver = $taxResolver;
     }
 
     /**
@@ -55,6 +64,11 @@ class InvoiceExtension extends \Twig_Extension
                 [$this->constantHelper, 'renderInvoiceStateBadge'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFilter(
+                'invoice_notices',
+                [$this, 'renderInvoiceNotices'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
@@ -64,7 +78,7 @@ class InvoiceExtension extends \Twig_Extension
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest('invoice_subject', function($subject) {
+            new \Twig_SimpleTest('invoice_subject', function ($subject) {
                 return $subject instanceof InvoiceSubjectInterface;
             }),
             new \Twig_SimpleTest(
@@ -76,5 +90,21 @@ class InvoiceExtension extends \Twig_Extension
                 [InvoiceTypes::class, 'isCredit']
             ),
         ];
+    }
+
+    /**
+     * Renders the invoice notices.
+     *
+     * @param InvoiceInterface $invoice
+     *
+     * @return string
+     */
+    public function renderInvoiceNotices(InvoiceInterface $invoice)
+    {
+        if (null !== $rule = $this->taxResolver->resolveSaleTaxRule($invoice->getSale())) {
+            return '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';
+        }
+
+        return '';
     }
 }

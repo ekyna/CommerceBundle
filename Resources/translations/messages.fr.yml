@@ -170,6 +170,46 @@ ekyna_commerce:
         widget:
             title: Espace client
 
+    dashboard:
+        accounting:
+            export: Export comptable
+        stat:
+            title:
+                daily: CA journalier
+                monthly: CA mensuel
+                yearly: CA annuel
+                stock: Stock
+            field:
+                revenue: CA
+                shipping: Port
+                margin: Marge
+                order: Cdes
+                average: Panier
+
+    accounting:
+        label:
+            singular: Compte
+            plural: Comptabilité
+        header:
+            list: Comptabilité <small>Liste des comptes</small>
+            show: Détail du compte <small>%name%</small>
+            new: Créer un nouveau compte
+            edit: Modifier le compte <small>%name%</small>
+            remove: Supprimer le compte <small>%name%</small>
+        button:
+            list: Liste des comptes
+            show: Détail du compte
+            new: Nouveau compte
+            edit: Modifier le compte
+            remove: Supprimer le compte
+        type:
+            good: Marchandises
+            services: Services
+            shipping: Port
+            tax: Taxes
+        alert:
+            no_item: Aucun compte configuré
+
     address:
         label:
             singular: Adresse
@@ -188,6 +228,7 @@ ekyna_commerce:
             complement: Entrée, bâtiment, immeuble, résidence
             supplement: Étage, couloir, escalier, appartement
             extra: Lieu-dit ou autre mention
+
     adjustment:
         label:
             singular: Ajustement
@@ -343,6 +384,7 @@ ekyna_commerce:
         shipment:
             free_shipping: Offert
             mobile_required: Ce mode d'expédition nécéssite un numéro de téléphone mobile.
+
     country:
         label:
             singular: Pays
@@ -1088,6 +1130,7 @@ ekyna_commerce:
             same_address: Même adresse
             tax_exempt: Hors taxe
             auto_discount: Remises auto.
+            notify_enabled: Notifications
             availability: Dispo.
             net_unit: PU HT
             ati_unit: PU TTC

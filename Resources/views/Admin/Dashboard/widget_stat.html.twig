@@ -2,18 +2,18 @@
 
 {% spaceless %}
 <div class="row">
-    <div class="col-md-4 commerce-stat-day">
-        {{ macros.render_stat_panel('CA journalier', current_day, compare_day) }}
+    <div class="col-lg-4 commerce-stat-day">
+        {{ macros.render_stat_panel('ekyna_commerce.dashboard.stat.title.daily', current_day, compare_day) }}
         {{ macros.render_stat_chart('daily_revenues', daily_chart) }}
     </div>
 
-    <div class="col-md-4 commerce-stat-month">
-        {{ macros.render_stat_panel('CA mensuel', current_month, compare_month) }}
+    <div class="col-lg-4 commerce-stat-month">
+        {{ macros.render_stat_panel('ekyna_commerce.dashboard.stat.title.monthly', current_month, compare_month) }}
         {{ macros.render_stat_chart('monthly_revenues', monthly_chart) }}
     </div>
 
-    <div class="col-md-4  commerce-stat-year">
-        {{ macros.render_stat_panel('CA annuel', current_year, compare_year) }}
+    <div class="col-lg-4 commerce-stat-year">
+        {{ macros.render_stat_panel('ekyna_commerce.dashboard.stat.title.yearly', current_year, compare_year) }}
         {{ macros.render_stat_chart('yearly_revenues', yearly_chart) }}
     </div>
 </div>

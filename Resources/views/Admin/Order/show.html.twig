@@ -265,6 +265,7 @@
                     {{- 'ekyna_commerce.notification.label.plural'|trans -}}
                 </h4>
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_notifications.html.twig" with {
+                    'sale': order,
                     'notifications': order.notifications
                 } %}
             </div>

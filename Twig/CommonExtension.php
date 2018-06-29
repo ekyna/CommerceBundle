@@ -71,6 +71,10 @@ class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRun
                 [$this->constantHelper, 'getAdjustmentTypeLabel']
             ),
             new \Twig_SimpleFilter(
+                'accounting_type_label',
+                [$this->constantHelper, 'renderAccountingTypeLabel']
+            ),
+            new \Twig_SimpleFilter(
                 'notify_type_label',
                 [$this->constantHelper, 'renderNotifyTypeLabel']
             ),

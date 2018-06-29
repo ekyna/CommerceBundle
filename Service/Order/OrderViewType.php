@@ -447,13 +447,7 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
-        $default = 0;
-        if ($p = $this->shipmentPriceResolver->getPriceBySale($sale)) {
-            $default = $p->getNetPrice();
-        }
-        if (0 !== bccomp($default, $sale->getShipmentAmount(), 3)) {
-            $view->addClass('warning');
-        }
+        $this->setShipmentViewClass($sale, $view);
 
         $editPath = $this->generateUrl('ekyna_commerce_order_admin_edit_shipment', [
             'orderId' => $sale->getId(),
@@ -463,6 +457,30 @@ class OrderViewType extends AbstractViewType
             'data-sale-modal' => null,
             'class'           => 'text-warning',
         ]));
+    }
+
+    /**
+     * Sets the shipment line view's class.
+     *
+     * @param Common\SaleInterface $sale
+     * @param View\LineView        $view
+     */
+    private function setShipmentViewClass(Common\SaleInterface $sale, View\LineView $view)
+    {
+        $default = 0;
+
+        if (!$this->shipmentPriceResolver->hasFreeShipping($sale)) {
+            if (null === $p = $this->shipmentPriceResolver->getPriceBySale($sale)) {
+                $view->addClass('danger');
+                return;
+            }
+
+            $default = $p->getNetPrice();
+        }
+
+        if (0 !== bccomp($default, $sale->getShipmentAmount(), 3)) {
+            $view->addClass('warning');
+        }
     }
 
     /**

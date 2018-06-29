@@ -34,6 +34,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\InvoiceExtension"
                  public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
             <tag name="twig.extension"/>
         </service>
 

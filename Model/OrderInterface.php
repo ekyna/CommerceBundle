@@ -2,8 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Ekyna\Bundle\CmsBundle\Model as Cms;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface as BaseInterface;
 
 /**

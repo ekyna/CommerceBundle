@@ -138,6 +138,13 @@ class SaleType extends ResourceFormType
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
+            ])
+            ->add('notifyEnabled', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.sale.field.notify_enabled',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

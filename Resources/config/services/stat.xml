@@ -26,7 +26,7 @@
             <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_stat"/>
         </service>
 
-        <!-- Dashboard debt widget -->
+        <!-- Dashboard stock widget -->
         <service id="ekyna_commerce.dashboard.stock_widget"
                  class="Ekyna\Bundle\CommerceBundle\Dashboard\StockWidget">
             <argument type="service" id="doctrine"/>
@@ -39,6 +39,14 @@
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.supplier_order.repository"/>
             <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_debt"/>
+        </service>
+
+        <!-- Dashboard accounting widget -->
+        <service id="ekyna_commerce.dashboard.accounting_widget"
+                 class="Ekyna\Bundle\CommerceBundle\Dashboard\AccountingWidget">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="router"/>
+            <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_accounting"/>
         </service>
 
     </services>

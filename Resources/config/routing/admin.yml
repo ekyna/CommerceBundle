@@ -1,3 +1,7 @@
+ekyna_commerce_accounting_admin:
+    resource: "admin/accounting.yml"
+    prefix:   /accounting
+
 ekyna_commerce_country_admin:
     resource: "admin/country.yml"
     prefix:   /countries
@@ -77,6 +81,10 @@ ekyna_commerce_tax_group_admin:
 ekyna_commerce_tax_rule_admin:
     resource: "admin/tax_rule.yml"
     prefix:   /tax-rules
+
+ekyna_commerce_export_admin:
+    resource: "admin/export.yml"
+    prefix:   /export
 
 ekyna_commerce_payment_admin_status:
     path: /payment/status

@@ -2,9 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
-use Ekyna\Bundle\CommerceBundle\Model\VatDisplayModes as BVat;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
-use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes as CVat;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;

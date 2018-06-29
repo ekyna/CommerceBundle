@@ -21,3 +21,9 @@
     {%- endif %}
     {# TODO trans #}
 {%- endblock doc_title %}
+
+
+{# --- DOC MISC --- #}
+{% block doc_misc -%}
+    {{ subject|invoice_notices }}
+{%- endblock doc_misc %}

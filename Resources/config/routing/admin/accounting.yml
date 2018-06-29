@@ -1,0 +1,57 @@
+ekyna_commerce_accounting_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.accounting.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_accounting_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.accounting.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_accounting_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.accounting.controller:newAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_accounting_admin_show:
+    path: /{accountingId}/show
+    defaults: { _controller: "ekyna_commerce.accounting.controller:showAction" }
+    methods: [GET]
+    requirements:
+        accountingId: \d+
+
+ekyna_commerce_accounting_admin_edit:
+    path: /{accountingId}/edit
+    defaults: { _controller: "ekyna_commerce.accounting.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        accountingId: \d+
+
+ekyna_commerce_accounting_admin_toggle:
+    path: /{accountingId}/toggle/{field}
+    defaults: { _controller: "ekyna_commerce.accounting.controller:toggleAction", field: enabled }
+    methods: [GET]
+    requirements:
+        accountingId: \d+
+        field: \w+
+
+ekyna_commerce_accounting_admin_move_up:
+    path: /{accountingId}/moveup
+    defaults: { _controller: "ekyna_commerce.accounting.controller:moveUpAction" }
+    methods: [GET]
+    requirements:
+        accountingId: \d+
+
+ekyna_commerce_accounting_admin_move_down:
+    path: /{accountingId}/movedown
+    defaults: { _controller: "ekyna_commerce.accounting.controller:moveDownAction" }
+    methods: [GET]
+    requirements:
+        accountingId: \d+
+
+ekyna_commerce_accounting_admin_remove:
+    path: /{accountingId}/remove
+    defaults: { _controller: "ekyna_commerce.accounting.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        accountingId: \d+
