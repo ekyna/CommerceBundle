@@ -36,9 +36,57 @@ function dispatchAddToCartEvent(data: any, jqXHR:JQueryXHR) {
     return event;
 }
 
-export function init() {
+function init(config) {
+    config = $.extend({
+        debug: false,
+        customer: {
+            selector: '#customer-widget',
+            widget_route: 'ekyna_commerce_widget_customer_widget',
+            dropdown_route: 'ekyna_commerce_widget_customer_dropdown',
+            event: 'ekyna_commerce.customer',
+            debug: false
+        },
+        cart: {
+            selector: '#cart-widget',
+            widget_route: 'ekyna_commerce_widget_cart_widget',
+            dropdown_route: 'ekyna_commerce_widget_cart_dropdown',
+            event: 'ekyna_commerce.cart',
+            debug: false,
+        }
+    }, config);
+
+    let customerWidget, cartWidget;
+    if (config.customer) {
+        config.customer.debug = config.debug;
+        customerWidget = new Widget(config.customer);
+    }
+    if (config.cart) {
+        cartWidget = new Widget(config.cart);
+    }
+
+    if (customerWidget || cartWidget) {
+        Dispatcher.on('ekyna_user.authentication', function () {
+            if (customerWidget) {
+                customerWidget.reload();
+            }
+            if (cartWidget) {
+                cartWidget.reload();
+            }
+        });
+        if (cartWidget) {
+            Dispatcher.on('ekyna_commerce.sale_view_response', function () {
+                cartWidget.reload();
+            });
+            Dispatcher.on('ekyna_commerce.add_to_cart', function (e) {
+                if (e.success) {
+                    cartWidget.reload();
+                }
+            });
+        }
+    }
+
     $(document)
-    // Sale item modal
+        // Sale item modal
         .on('click', 'a[data-add-to-cart]:not([data-add-to-cart=""])', function (e: JQueryEventObject) {
             if (e.ctrlKey || e.shiftKey || e.button === 2) {
                 return true;
@@ -136,7 +184,7 @@ interface WidgetDataDefault {
     icon: string
 }
 
-export class Widget {
+class Widget {
     private config: WidgetConfig;
     private defaultData: WidgetDataDefault;
 
@@ -284,4 +332,9 @@ export class Widget {
             this.reload();
         }
     }
+}
+
+export = {
+    init: init,
+    Widget: Widget
 }
