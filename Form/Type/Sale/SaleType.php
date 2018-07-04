@@ -99,8 +99,22 @@ class SaleType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
+            ->add('autoShipping', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.sale.field.auto_shipping',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('autoDiscount', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.sale.field.auto_discount',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
+            ->add('autoNotify', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.sale.field.auto_notify',
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
@@ -138,13 +152,6 @@ class SaleType extends ResourceFormType
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
-            ])
-            ->add('notifyEnabled', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale.field.notify_enabled',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

@@ -65,10 +65,18 @@
             <hr>
             <div class="row">
                 <div class="col-md-4">
-                    {{ form_row(form.taxExempt, {'label_col': 6, 'widget_col': 6}) }}
+                    {{ form_row(form.autoShipping, {'label_col': 6, 'widget_col': 6}) }}
                 </div>
                 <div class="col-md-4">
                     {{ form_row(form.autoDiscount, {'label_col': 6, 'widget_col': 6}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.autoNotify, {'label_col': 6, 'widget_col': 6}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.taxExempt, {'label_col': 6, 'widget_col': 6}) }}
                 </div>
                 <div class="col-md-4">
                     {{ form_row(form.expiresAt, {'label_col': 6, 'widget_col': 6}) }}
@@ -112,7 +120,6 @@
             {{ form_row(form.comment) }}
             {{ form_row(form.documentComment) }}
             {{ form_row(form.description) }}
-            {{ form_row(form.notifyEnabled) }}
         </div>
     </div>
     {{ ivory_google_api() }}

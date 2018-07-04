@@ -56,6 +56,7 @@
             <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
             <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
             <argument type="service" id="ekyna_commerce.invoice.calculator"/>
             <argument type="service" id="ekyna_commerce.payment.outstanding_releaser"/>

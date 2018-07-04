@@ -106,6 +106,7 @@
         <div class="tab-content">
             <div class="tab-pane active" id="order-general">
                 {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {
+                    'sample': true,
                     'sale': order
                 } %}
                 {{ _cms.show_tags(order) }}

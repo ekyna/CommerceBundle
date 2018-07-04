@@ -1130,7 +1130,8 @@ ekyna_commerce:
             same_address: Même adresse
             tax_exempt: Hors taxe
             auto_discount: Remises auto.
-            notify_enabled: Notifications
+            auto_notify: Notifications auto.
+            auto_shipping: Frais de port auto.
             availability: Dispo.
             net_unit: PU HT
             ati_unit: PU TTC
