@@ -3,12 +3,13 @@ ekyna_commerce:
         email:
             mismatch: Les deux adresses email ne sont pas identiques
     accounting:
-        duplicate_number: Un compte existe déjà pour ce numéro.
         duplicate_config: Un compte existe déjà pour cette configuration.
-        tax_is_required: Veuillez sélectonner une taxe.
-        tax_must_be_null: Veuillez ne pas sélectonner de taxe.
-        rule_is_required: Veuillez sélectonner une règle.
-        rule_must_be_null: Veuillez ne pas sélectonner de règle.
+        tax_is_required: Veuillez sélectionner une taxe.
+        tax_must_be_null: Veuillez ne pas sélectionner de taxe.
+        tax_rule_is_required: Veuillez sélectionner une règle.
+        tax_rule_must_be_null: Veuillez ne pas sélectionner de règle.
+        payment_method_is_required: Veuillez sélectionner un mode.
+        payment_method_must_be_null: Veuillez ne pas sélectionner de mode.
     address:
         gender_is_mandatory: Veuillez choisir la civilité.
         first_name_is_mandatory: Veuillez saisir le prénom.

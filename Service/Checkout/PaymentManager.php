@@ -70,14 +70,18 @@ class PaymentManager
      * for each available payment methods.
      *
      * @param SaleInterface $sale
-     * @param string $action
+     * @param string        $action
+     * @param bool          $admin
      */
-    public function initialize(SaleInterface $sale, $action)
+    public function initialize(SaleInterface $sale, $action, $admin = false)
     {
         $this->forms = [];
 
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface[] $methods */
-        $methods = $this->methodRepository->findAvailable();
+        $methods = $admin
+            ? $this->methodRepository->findEnabled()
+            : $this->methodRepository->findAvailable();
+
         if (empty($methods)) {
             throw new RuntimeException("No payment method available.");
         }

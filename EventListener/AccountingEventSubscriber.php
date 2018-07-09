@@ -44,6 +44,9 @@ class AccountingEventSubscriber extends AccountingListener implements EventSubsc
         if (null !== $rule = $accounting->getTaxRule()) {
             $parts[] = $rule->getName();
         }
+        if (null !== $method = $accounting->getPaymentMethod()) {
+            $parts[] = $method->getName();
+        }
         if (null !== $tax = $accounting->getTax()) {
             $parts[] = $tax->getName();
         }

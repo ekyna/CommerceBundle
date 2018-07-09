@@ -20,10 +20,11 @@ final class AccountingTypes extends AbstractConstants
         $prefix = 'ekyna_commerce.accounting.type.';
 
         return [
-            Types::TYPE_GOOD     => [$prefix . Types::TYPE_GOOD],
+            Types::TYPE_GOOD     => [$prefix.Types::TYPE_GOOD],
             //Types::TYPE_SERVICE  => [$prefix . Types::TYPE_SERVICE],
-            Types::TYPE_SHIPPING => [$prefix . Types::TYPE_SHIPPING],
-            Types::TYPE_TAX      => [$prefix . Types::TYPE_TAX],
+            Types::TYPE_SHIPPING => [$prefix.Types::TYPE_SHIPPING],
+            Types::TYPE_TAX      => [$prefix.Types::TYPE_TAX],
+            Types::TYPE_PAYMENT  => [$prefix.Types::TYPE_PAYMENT],
         ];
     }
 

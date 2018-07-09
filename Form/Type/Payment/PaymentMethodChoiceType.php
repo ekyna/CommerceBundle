@@ -83,9 +83,9 @@ class PaymentMethodChoiceType extends AbstractType
                 'label'             => 'ekyna_commerce.payment_method.label.singular',
                 'enabled'           => false, // Whether to exclude disabled factories
                 'available'         => false, // Whether to exclude unavailable factories
-                'offline'           => true,  // Whether to exclude offline factories
-                'credit'            => true,  // Whether to exclude credit factory
-                'outstanding'       => true,  // Whether to exclude outstanding factory
+                'offline'           => true,  // Whether to include offline factories
+                'credit'            => true,  // Whether to include credit factory
+                'outstanding'       => true,  // Whether to include outstanding factory
                 'class'             => $this->dataClass,
                 'query_builder'     => $queryBuilder,
                 'invoice'           => null,

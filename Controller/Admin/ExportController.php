@@ -45,7 +45,7 @@ class ExportController extends Controller
         $response->headers->set('Content-Type', 'text/csv');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'accounting_' . $date . '.csv'
+            'accounting_' . $date . '.zip'
         );
         $response->headers->set('Content-Disposition', $disposition);
 

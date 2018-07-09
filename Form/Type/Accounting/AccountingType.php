@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Accounting;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\AccountingTypes;
@@ -45,6 +46,11 @@ class AccountingType extends ResourceFormType
             ])
             ->add('tax', TaxChoiceType::class, [
                 'required' => false,
+            ])
+            ->add('paymentMethod', PaymentMethodChoiceType::class, [
+                'outstanding' => false,
+                'credit'      => false,
+                'required'    => false,
             ]);
     }
 }

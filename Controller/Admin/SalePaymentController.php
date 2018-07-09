@@ -81,7 +81,7 @@ class SalePaymentController extends AbstractSaleController
 
         $action = $this->generateResourcePath($this->config->getResourceId(), 'new', $context->getIdentifiers());
 
-        $paymentManager->initialize($sale, $action);
+        $paymentManager->initialize($sale, $action, true);
 
         if (null !== $payment = $paymentManager->handleRequest($request)) {
             $sale->addPayment($payment);

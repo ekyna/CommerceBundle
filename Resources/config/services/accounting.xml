@@ -9,6 +9,7 @@
         <service id="ekyna_commerce.accounting.exporter"
                  class="Ekyna\Component\Commerce\Accounting\Export\AccountingExporter">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
+            <argument type="service" id="ekyna_commerce.order_payment.repository"/>
             <argument type="service" id="ekyna_commerce.accounting.repository"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
         </service>

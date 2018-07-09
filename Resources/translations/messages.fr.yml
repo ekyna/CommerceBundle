@@ -207,6 +207,7 @@ ekyna_commerce:
             services: Services
             shipping: Port
             tax: Taxes
+            payment: Paiements
         alert:
             no_item: Aucun compte configuré
 

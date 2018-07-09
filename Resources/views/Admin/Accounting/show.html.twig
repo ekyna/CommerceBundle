@@ -46,6 +46,11 @@
                     'route': 'ekyna_commerce_tax_admin_show',
                     'route_parameters_map': {'taxId': 'id'}
                 }) }}
+                {{ show_row(accounting.paymentMethod, 'entity', {
+                    'label': 'ekyna_commerce.payment_method.label.singular',
+                    'route': 'ekyna_commerce_payment_method_admin_show',
+                    'route_parameters_map': {'paymentMethodId': 'id'}
+                }) }}
             </div>
         </div>
     </div>
