@@ -278,11 +278,11 @@ class QuoteViewType extends AbstractViewType
             return;
         }
 
+        $this->setShipmentViewClass($sale, $view);
+
         if ($sale->isAutoShipping()) {
             return;
         }
-
-        $this->setShipmentViewClass($sale, $view);
 
         $editPath = $this->generateUrl('ekyna_commerce_quote_admin_edit_shipment', [
             'quoteId' => $sale->getId(),

@@ -519,6 +519,8 @@ ekyna_commerce:
             children: Liste des commerciaux
             quotes: Liste des devis
             orders: Liste des commandes
+            invoices: Liste des factures
+            shipments: Liste des expéditions
         button:
             list: Liste des clients
             show: Détail du client

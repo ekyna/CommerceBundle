@@ -458,6 +458,8 @@ class SaleController extends AbstractSaleController
         /** @var SaleInterface $targetSale */
         $targetSale = $this->getRepository()->createNew();
 
+        $this->getOperator()->initialize($targetSale);
+
         // Copies source to target
         $this
             ->get('ekyna_commerce.sale_copier_factory')
@@ -465,8 +467,6 @@ class SaleController extends AbstractSaleController
             ->copyData()
             ->copyAddresses()
             ->copyItems();
-
-        $this->getOperator()->initialize($targetSale);
 
         $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale);
 

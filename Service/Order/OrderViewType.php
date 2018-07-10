@@ -447,11 +447,11 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
+        $this->setShipmentViewClass($sale, $view);
+
         if ($sale->isAutoShipping()) {
             return;
         }
-
-        $this->setShipmentViewClass($sale, $view);
 
         $editPath = $this->generateUrl('ekyna_commerce_order_admin_edit_shipment', [
             'orderId' => $sale->getId(),
