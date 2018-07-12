@@ -70,13 +70,17 @@ class QuoteType extends ResourceTableType
                 'position'             => 10,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.created_at',
+                'label'       => 'ekyna_core.field.date',
                 'position'    => 20,
                 'time_format' => 'none',
             ])
+            ->addColumn('title', CType\Column\TextType::class, [
+                'label'    => 'ekyna_core.field.title',
+                'position' => 40,
+            ])
             ->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'position' => 40,
+                'position' => 45,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.ati_total',
@@ -96,9 +100,9 @@ class QuoteType extends ResourceTableType
                 'label'    => 'ekyna_commerce.sale.table.payment_state',
                 'position' => 80,
             ])
-            ->addColumn('inCharge', Type\Column\InChargeType::class, [
+            /*->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 90,
-            ])
+            ])*/
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
                 'position'      => 100,
@@ -163,9 +167,13 @@ class QuoteType extends ResourceTableType
                 ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
                     'position' => 35,
                 ])
+                ->addFilter('title', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_core.field.title',
+                    'position' => 40,
+                ])
                 ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                    'position' => 40,
+                    'position' => 45,
                 ])
                 ->addFilter('grandTotal', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.sale.field.ati_total',
@@ -185,9 +193,9 @@ class QuoteType extends ResourceTableType
                     'choices'  => Model\PaymentStates::getChoices(),
                     'position' => 80,
                 ])
-                ->addFilter('inCharge', Type\Filter\InChargeType::class, [
+                /*->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 90,
-                ])
+                ])*/
                 ->addFilter('tags', Type\Filter\SaleTagsType::class, [
                     'label'    => 'ekyna_cms.tag.label.plural',
                     'position' => 100,

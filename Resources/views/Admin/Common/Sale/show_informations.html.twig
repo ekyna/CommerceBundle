@@ -15,6 +15,10 @@
         }) }}
     </div>
 </div>
+{{ show_row(sale.title, 'text', {
+    'label': 'ekyna_core.field.title',
+    'id': 'sale_title'
+}) }}
 {% if attribute(sale, 'originCustomer') is defined %}
     {% if sale.originCustomer is not null %}
         {{ show_row(sale.originCustomer|identity, 'entity', {

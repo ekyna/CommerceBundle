@@ -42,9 +42,13 @@ class SaleTransformType extends AbstractType
 
         if ($options['admin_mode']) {
             $builder
+                ->add('title', Type\TextType::class, [
+                    'label'    => 'ekyna_core.field.title',
+                    'required' => false,
+                ])
                 ->add('voucherNumber', Type\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                    'required' => !$options['admin_mode'],
+                    'required' => false,
                 ])
                 ->add('originNumber', Type\TextType::class, [
                     'label'    => 'ekyna_commerce.sale.field.origin_number',
@@ -90,7 +94,7 @@ class SaleTransformType extends AbstractType
                 $form
                     ->add('shipmentMethod', ShipmentMethodPickType::class, [
                         'sale'      => $sale,
-                        'available' => !$options['admin_mode'],
+                        'available' => true,
                         'expanded'  => false,
                         'attr'      => [
                             'class' => 'sale-shipment-method',

@@ -121,13 +121,17 @@ class OrderType extends ResourceTableType
                 'position'             => 10,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_core.field.created_at',
+                'label'       => 'ekyna_core.field.date',
                 'position'    => 30,
                 'time_format' => 'none',
             ])
+            ->addColumn('title', CType\Column\TextType::class, [
+                'label'    => 'ekyna_core.field.title',
+                'position' => 40,
+            ])
             ->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'position' => 40,
+                'position' => 45,
             ])
             ->addColumn('originNumber', CType\Column\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.origin_number',
@@ -159,9 +163,9 @@ class OrderType extends ResourceTableType
                 'label'    => 'ekyna_commerce.sale.table.invoice_state',
                 'position' => 110,
             ])
-            ->addColumn('inCharge', Type\Column\InChargeType::class, [
+            /*->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 120,
-            ])
+            ])*/
             ->addColumn('sample', CType\Column\BooleanType::class, [
                 'label'       => 'ekyna_commerce.field.sample',
                 'true_class'  => 'label-warning',
@@ -275,9 +279,13 @@ class OrderType extends ResourceTableType
             ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
                 'position' => 35,
             ])
+            ->addFilter('title', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.title',
+                'position' => 40,
+            ])
             ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'position' => 40,
+                'position' => 45,
             ])
             ->addFilter('originNumber', CType\Filter\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.origin_number',
@@ -323,9 +331,9 @@ class OrderType extends ResourceTableType
                 ]),
                 'position' => 110,
             ])
-            ->addFilter('inCharge', Type\Filter\InChargeType::class, [
+            /*->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 120,
-            ])
+            ])*/
             ->addFilter('sample', CType\Filter\BooleanType::class, [
                 'label'    => 'ekyna_commerce.field.sample',
                 'position' => 130,

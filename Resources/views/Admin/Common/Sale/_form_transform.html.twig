@@ -14,7 +14,7 @@
         {{ form_row(form.relayPoint) }}
     {% endif %}
 
-    {% if form.originNumber is defined %}
+    {% if form.voucherNumber is defined %}
     <div class="row">
         <div class="col-md-6">
             {{ form_row(form.voucherNumber, {'label_col': 4, 'widget_col': 8}) }}
@@ -23,6 +23,7 @@
             {{ form_row(form.originNumber, {'label_col': 4, 'widget_col': 8}) }}
         </div>
     </div>
+    {{ form_row(form.title) }}
     {% endif %}
 
     {{ form_row(form.comment) }}

@@ -133,6 +133,10 @@ class SaleType extends ResourceFormType
             ->add('paymentTerm', PaymentTermChoiceType::class, [
                 'required' => false,
             ])
+            ->add('title', Type\TextType::class, [
+                'label'    => 'ekyna_core.field.title',
+                'required' => false,
+            ])
             ->add('voucherNumber', Type\TextType::class, [
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'required' => false,
