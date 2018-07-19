@@ -74,7 +74,7 @@ class StatCalculator implements StatCalculatorInterface
         return $qb
             ->select([
                 'SUM((u.receivedQuantity + u.adjustedQuantity - u.shippedQuantity) * u.netPrice) as in_value',
-                'SUM((u.soldQuantity - u.shippedQuantity) * u.netPrice) as sold_value'
+                'SUM((u.soldQuantity - u.shippedQuantity) * u.netPrice) as sold_value',
             ])
             ->andWhere($ex->in('u.state', ':state'))
             ->getQuery()
@@ -89,10 +89,10 @@ class StatCalculator implements StatCalculatorInterface
     public function calculateDayOrderStats(\DateTime $date)
     {
         $from = clone $date;
-        $from->setTime(0,0,0);
+        $from->setTime(0, 0, 0);
 
         $to = clone $date;
-        $to->setTime(23,59,59);
+        $to->setTime(23, 59, 59);
 
         return $this->calculateOrderStats($from, $to);
     }
@@ -105,12 +105,12 @@ class StatCalculator implements StatCalculatorInterface
         $from = clone $date;
         $from
             ->modify('first day of this month')
-            ->setTime(0,0,0);
+            ->setTime(0, 0, 0);
 
         $to = clone $date;
         $to
             ->modify('last day of this month')
-            ->setTime(23,59,59);
+            ->setTime(23, 59, 59);
 
         return $this->calculateOrderStats($from, $to);
     }
@@ -123,12 +123,12 @@ class StatCalculator implements StatCalculatorInterface
         $from = clone $date;
         $from
             ->modify('first day of january ' . $date->format('Y'))
-            ->setTime(0,0,0);
+            ->setTime(0, 0, 0);
 
         $to = clone $date;
         $to
             ->modify('last day of december ' . $date->format('Y'))
-            ->setTime(23,59,59);
+            ->setTime(23, 59, 59);
 
         return $this->calculateOrderStats($from, $to);
     }
@@ -141,9 +141,9 @@ class StatCalculator implements StatCalculatorInterface
         $qb = $this->getOrderRepository()->createQueryBuilder('o');
         $ex = $qb->expr();
 
-        return $qb
+        $result = $qb
             ->select([
-                'SUM(o.netTotal - o.shipmentAmount) as revenue',
+                'SUM(o.netTotal) as net',
                 'SUM(o.shipmentAmount) as shipping',
                 'SUM(o.marginTotal) as margin',
                 'COUNT(o.id) as orders',
@@ -162,6 +162,19 @@ class StatCalculator implements StatCalculatorInterface
                 OrderStates::STATE_PENDING,
             ])
             ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
+
+        if ($result) {
+            return [
+                'revenue'  => (string)round($result['net'] - $result['shipping'], 3),
+                'shipping' => (string)round($result['shipping'], 3),
+                'margin'   => (string)round($result['margin'], 3),
+                'orders'   => (string)$result['orders'],
+                'items'    => (string)$result['items'],
+                'average'  => (string)round($result['average'], 3),
+            ];
+        }
+
+        return null;
     }
 
     /**
