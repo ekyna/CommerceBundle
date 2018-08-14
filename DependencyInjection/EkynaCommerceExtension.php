@@ -34,9 +34,23 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.expiration.cart', $config['default']['expiration']['cart']);
         $container->setParameter('ekyna_commerce.expiration.quote', $config['default']['expiration']['quote']);
 
+        $this->configureAccounting($config['accounting'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
         $this->configureSaleFactory($container);
+    }
+
+    /**
+     * Configures the VAT validator.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureAccounting(array $config, ContainerBuilder $container)
+    {
+        $container
+            ->getDefinition('ekyna_commerce.accounting.exporter')
+            ->replaceArgument(4, $config);
     }
 
     /**

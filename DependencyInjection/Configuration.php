@@ -24,6 +24,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('ekyna_commerce');
 
         $this->addDefaultSection($rootNode);
+        $this->addAccountingSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
         $this->addPoolsSection($rootNode);
@@ -91,6 +92,25 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                         ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `stock` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addAccountingSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('accounting')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('default_customer')->defaultValue('10000000')->end()
+                        ->booleanNode('total_as_payment')->defaultFalse()->end()
                     ->end()
                 ->end()
             ->end();
