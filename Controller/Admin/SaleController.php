@@ -468,6 +468,8 @@ class SaleController extends AbstractSaleController
             ->copyAddresses()
             ->copyItems();
 
+        $targetSale->setSource(null);
+
         $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale);
 
         $form->handleRequest($request);

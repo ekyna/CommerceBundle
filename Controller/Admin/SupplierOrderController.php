@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
+use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
@@ -167,24 +168,32 @@ class SupplierOrderController extends ResourceController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO use ResourceManager
-            $event = $this->getOperator()->update($resource);
-
-            $event->toFlashes($this->getFlashBag());
+            $dispatcher = $this->get('ekyna_resource.event_dispatcher');
+            $event = $dispatcher->createResourceEvent($resource);
+            $dispatcher->dispatch(SupplierOrderEvents::PRE_SUBMIT, $event);
 
             if (!$event->hasErrors()) {
-                if ($submit->isSendEmail()) {
-                    if ($this->get('ekyna_commerce.mailer')->sendSupplierOrderSubmit($submit)) {
-                        $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
-                    } else {
-                        $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
-                    }
-                }
+                // TODO use ResourceManager
+                $event = $this->getOperator()->update($resource);
 
-                return $this->redirect($this->generateUrl(
-                    $this->config->getRoute('show'),
-                    $context->getIdentifiers(true)
-                ));
+                $event->toFlashes($this->getFlashBag());
+
+                if (!$event->hasErrors()) {
+                    if ($submit->isSendEmail()) {
+                        if ($this->get('ekyna_commerce.mailer')->sendSupplierOrderSubmit($submit)) {
+                            $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
+                        } else {
+                            $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
+                        }
+                    }
+
+                    // TODO Post submit event ?
+
+                    return $this->redirect($this->generateUrl(
+                        $this->config->getRoute('show'),
+                        $context->getIdentifiers(true)
+                    ));
+                }
             }
         }
 

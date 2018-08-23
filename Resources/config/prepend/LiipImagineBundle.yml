@@ -2,11 +2,11 @@
 liip_imagine:
     filter_sets:
         commerce_method:
-            quality: 70
             cache: local_media
             data_loader: local_media
             filters:
                 thumbnail: { size: [145, 109], mode: inset }
                 background: { size: [145, 109], color: '#ffffff' }
             post_processors:
-                jpegoptim: {}
+                jpegoptim: {strip_all: true, max: "%image.jpeg_quality%", progressive: true}
+                pngquant: {quality: "%image.png_quality%"}
