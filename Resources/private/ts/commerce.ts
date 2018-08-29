@@ -61,6 +61,7 @@ function init(config) {
         customerWidget = new Widget(config.customer);
     }
     if (config.cart) {
+        config.cart.debug = config.debug;
         cartWidget = new Widget(config.cart);
     }
 

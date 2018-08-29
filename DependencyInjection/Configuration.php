@@ -24,6 +24,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('ekyna_commerce');
 
         $this->addDefaultSection($rootNode);
+        $this->addCacheSection($rootNode);
         $this->addAccountingSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
@@ -33,7 +34,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Adds `pools` section.
+     * Adds `default` section.
      *
      * @param ArrayNodeDefinition $node
      */
@@ -98,7 +99,42 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Adds `stock` section.
+     * Adds `cache` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addCacheSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('cache')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('countries')
+                            //->addDefaultsIfNotSet()
+                            ->defaultValue(['US'])
+                            ->scalarPrototype()->end()
+                            ->validate()
+                                ->ifTrue(function($codes) {
+                                    $valid = array_keys(Intl::getCurrencyBundle()->getCurrencyNames());
+                                    foreach ($codes as $code) {
+                                        if (in_array($code, $valid, true)) {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                })
+                                ->thenInvalid('Invalid default country %s')
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `accounting` section.
      *
      * @param ArrayNodeDefinition $node
      */

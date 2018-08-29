@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -36,7 +37,13 @@ class CustomerGroupChoiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label'             => 'ekyna_commerce.customer_group.label.singular',
+            'label'             => function(Options $options, $value) {
+                if (false === $value || !empty($value)) {
+                    return $value;
+                }
+
+                return 'ekyna_commerce.customer_group.label.' . ($options['multiple'] ? 'plural' : 'singular');
+            },
             'class'             => $this->customerGroupClass,
             'preferred_choices' => function (CustomerGroupInterface $customerGroup) {
                 return $customerGroup->isDefault();

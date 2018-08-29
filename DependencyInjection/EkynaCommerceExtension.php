@@ -25,23 +25,46 @@ class EkynaCommerceExtension extends AbstractExtension
     {
         $config = $this->configure($configs, 'ekyna_commerce', new Configuration(), $container);
 
-        $container->setParameter('ekyna_commerce.company_logo', $config['default']['company_logo']);
-        $container->setParameter('ekyna_commerce.default.country', $config['default']['country']);
-        $container->setParameter('ekyna_commerce.default.currency', $config['default']['currency']);
-        $container->setParameter('ekyna_commerce.default.vat_display_mode', $config['default']['vat_display_mode']);
-        $container->setParameter('ekyna_commerce.default.customer', $config['default']['customer']);
-
-        $container->setParameter('ekyna_commerce.expiration.cart', $config['default']['expiration']['cart']);
-        $container->setParameter('ekyna_commerce.expiration.quote', $config['default']['expiration']['quote']);
-
         $this->configureAccounting($config['accounting'], $container);
+        $this->configureCache($config['cache'], $container);
+        $this->configureDefaults($config['default'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
         $this->configureSaleFactory($container);
     }
 
     /**
-     * Configures the VAT validator.
+     * Configures the defaults.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureDefaults(array $config, ContainerBuilder $container)
+    {
+        // TODO 'ekyna_commerce.default.*' for all
+        $container->setParameter('ekyna_commerce.company_logo', $config['company_logo']);
+        $container->setParameter('ekyna_commerce.default.country', $config['country']);
+        $container->setParameter('ekyna_commerce.default.currency', $config['currency']);
+        $container->setParameter('ekyna_commerce.default.vat_display_mode', $config['vat_display_mode']);
+        $container->setParameter('ekyna_commerce.default.customer', $config['customer']);
+
+        $container->setParameter('ekyna_commerce.expiration.cart', $config['expiration']['cart']);
+        $container->setParameter('ekyna_commerce.expiration.quote', $config['expiration']['quote']);
+    }
+
+    /**
+     * Configures the cache.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureCache(array $config, ContainerBuilder $container)
+    {
+        $container->setParameter('ekyna_commerce.cache.countries', $config['countries']);
+    }
+
+    /**
+     * Configures accounting.
      *
      * @param array            $config
      * @param ContainerBuilder $container
@@ -54,7 +77,7 @@ class EkynaCommerceExtension extends AbstractExtension
     }
 
     /**
-     * Configures the VAT validator.
+     * Configures pricing.
      *
      * @param array            $config
      * @param ContainerBuilder $container

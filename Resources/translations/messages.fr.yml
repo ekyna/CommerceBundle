@@ -402,6 +402,8 @@ ekyna_commerce:
             new: Nouveau pays
             edit: Modifier le pays
             remove: Supprimer le pays
+        message:
+            all: Tout pays
         alert:
             no_item: Aucun pays configuré
 
@@ -589,6 +591,7 @@ ekyna_commerce:
             quote_allowed: Création de devis
         message:
             cant_be_deleted: Le groupe de client par défaut ne peut être supprimé.
+            all: Tout groupes
         alert:
             no_item: Aucun groupe de clients configuré
 

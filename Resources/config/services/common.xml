@@ -12,6 +12,9 @@
             <call method="setDefaultCode">
                 <argument>%ekyna_commerce.default.country%</argument>
             </call>
+            <call method="setCachedCodes">
+                <argument>%ekyna_commerce.cache.countries%</argument>
+            </call>
             <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
