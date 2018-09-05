@@ -34,8 +34,15 @@
                 </div>
             </div>
             <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
             {{ form_row(form.parent) }}
-            {{ form_row(form.customerGroup) }}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}

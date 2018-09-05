@@ -162,9 +162,7 @@ class PaymentHelper
      *
      * @param Request $request
      *
-     * @return PaymentInterface
-     *
-     * @TODO remove
+     * @return PaymentInterface|null
      */
     public function status(Request $request)
     {
@@ -181,7 +179,9 @@ class PaymentHelper
         /** @var PaymentInterface $payment */
         $payment = $done->getFirstModel();
 
-        return $payment;
+        $event = $this->dispatcher->dispatch(PaymentEvents::STATUS, new PaymentEvent($payment));
+
+        return $event->getPayment();
     }
 
     /**

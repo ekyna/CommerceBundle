@@ -126,8 +126,7 @@ class SaleExtension extends \Twig_Extension
         return [
             new \Twig_SimpleFilter(
                 'sale_state_label',
-                [$this->constantHelper, 'renderSaleStateLabel'],
-                ['is_safe' => ['html']]
+                [$this->constantHelper, 'renderSaleStateLabel']
             ),
             new \Twig_SimpleFilter(
                 'sale_state_badge',

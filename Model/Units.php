@@ -75,7 +75,7 @@ final class Units extends AbstractConstants
      *
      * @return string
      *
-     * @see Constants::getPrecision()
+     * @see Constants::getSymbol()
      */
     public static function getFormat($unit)
     {

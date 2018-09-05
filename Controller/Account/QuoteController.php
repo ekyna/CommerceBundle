@@ -172,14 +172,14 @@ class QuoteController extends AbstractController
             return $this->redirect($cancelUrl);
         }
 
-        $checkout = $this->get('ekyna_commerce.checkout.payment_manager');
+        $checkoutManager = $this->get('ekyna_commerce.payment.checkout_manager');
 
-        $checkout->initialize($quote, $this->generateUrl('ekyna_commerce_account_quote_payment_create', [
+        $checkoutManager->initialize($quote, $this->generateUrl('ekyna_commerce_account_quote_payment_create', [
             'number' => $quote->getNumber(),
         ]));
 
         /** @var QuotePaymentInterface $payment */
-        if (null !== $payment = $checkout->handleRequest($request)) {
+        if (null !== $payment = $checkoutManager->handleRequest($request)) {
             $quote->addPayment($payment);
 
             $event = $this->get('ekyna_commerce.quote.operator')->update($quote);
@@ -203,7 +203,7 @@ class QuoteController extends AbstractController
         return $this->render('EkynaCommerceBundle:Account/Quote:payment_create.html.twig', [
             'customer' => $customer,
             'quote'    => $quote,
-            'forms'    => $checkout->getFormsViews(),
+            'forms'    => $checkoutManager->getFormsViews(),
             'quotes'   => $quotes,
         ]);
     }

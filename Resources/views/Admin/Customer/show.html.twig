@@ -138,17 +138,29 @@
                     </div>
                 </div>
                 <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customer.customerGroup, 'entity', {
+                            'label': 'ekyna_commerce.customer_group.label.singular',
+                            'id': 'customer_group',
+                            'route': 'ekyna_commerce_customer_group_admin_show',
+                            'route_parameters_map': {'customerGroupId': 'id'},
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(customer.state|customer_state_badge, 'text', {
+                            'label': 'ekyna_core.field.status',
+                            'id': 'customer_state',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
                 {{ show_row(customer.parent, 'entity', {
                     'label': 'ekyna_commerce.customer.field.parent',
                     'id': 'customer_parent',
                     'route': 'ekyna_commerce_customer_admin_show',
                     'route_parameters_map': {'customerId': 'id'}
-                }) }}
-                {{ show_row(customer.customerGroup, 'entity', {
-                    'label': 'ekyna_commerce.customer_group.label.singular',
-                    'id': 'customer_group',
-                    'route': 'ekyna_commerce_customer_group_admin_show',
-                    'route_parameters_map': {'customerGroupId': 'id'}
                 }) }}
                 {% set customerSource = customer.hasParent() ? customer.parent : customer %}
                 {% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': customerSource, 'prefix': 'customer'} %}

@@ -112,6 +112,24 @@ class Mailer
     }
 
     /**
+     * Notifies the administrator about a potential fraudster.
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return integer
+     */
+    public function sendAdminFraudsterAlert(CustomerInterface $customer)
+    {
+        $body = $this->templating->render('@EkynaCommerce/Email/admin_fraudster_alert.html.twig', [
+            'customer' => $customer,
+        ]);
+
+        $subject = $this->translator->trans('ekyna_commerce.customer.notify.fraudster.subject');
+
+        return $this->sendEmail($body, $subject);
+    }
+
+    /**
      * Notifies the administrator about a customer registration.
      *
      * @param CustomerInterface $customer
@@ -120,11 +138,11 @@ class Mailer
      */
     public function sendAdminCustomerRegistration(CustomerInterface $customer)
     {
-        $body = $this->templating->render('EkynaCommerceBundle:Email:admin_customer_registration.html.twig', [
+        $body = $this->templating->render('@EkynaCommerce/Email/admin_customer_registration.html.twig', [
             'customer' => $customer,
         ]);
 
-        $subject = $this->translator->trans('ekyna_commerce.account.registration.notify.subject');
+        $subject = $this->translator->trans('ekyna_commerce.customer.notify.registration.subject');
 
         return $this->sendEmail($body, $subject);
     }
@@ -288,7 +306,7 @@ class Mailer
         $report .= "Subject: {$notify->getSubject()}\n";
 
         // CONTENT
-        $content = $this->templating->render('EkynaCommerceBundle:Email:sale_notify.html.twig', [
+        $content = $this->templating->render('@EkynaCommerce/Email/sale_notify.html.twig', [
             'notify'      => $notify,
             'sale'        => $this->getNotifySale($notify),
             'attachments' => $attachments,

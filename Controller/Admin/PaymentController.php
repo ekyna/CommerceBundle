@@ -3,9 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
-use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
-use Ekyna\Component\Commerce\Payment\Handler\PaymentDoneHandler;
-use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,9 +16,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class PaymentController
 {
     /**
-     * @var PaymentDoneHandler
+     * @var PaymentHelper
      */
-    private $handler;
+    private $paymentHelper;
 
     /**
      * @var ResourceHelper
@@ -31,12 +29,12 @@ class PaymentController
     /**
      * Constructor.
      *
-     * @param PaymentDoneHandler $handler
-     * @param ResourceHelper     $resourceHelper
+     * @param PaymentHelper  $paymentHelper
+     * @param ResourceHelper $resourceHelper
      */
-    public function __construct(PaymentDoneHandler $handler, ResourceHelper $resourceHelper)
+    public function __construct(PaymentHelper $paymentHelper, ResourceHelper $resourceHelper)
     {
-        $this->handler = $handler;
+        $this->paymentHelper = $paymentHelper;
         $this->resourceHelper = $resourceHelper;
     }
 
@@ -53,23 +51,15 @@ class PaymentController
             throw new NotFoundHttpException("XHR is not supported.");
         }
 
-        $payum = $this->handler->getPayum();
+        if (null === $payment = $this->paymentHelper->status($request)) {
+            // Sale has been deleted (fraud)
+            return new RedirectResponse(
+                $this->resourceHelper->getUrlGenerator()->generate('ekyna_admin_dashboard')
+            );
+        }
 
-        $token = $payum->getHttpRequestVerifier()->verify($request);
+        $sale = $payment->getSale();
 
-        $gateway = $payum->getGateway($token->getGatewayName());
-
-        $gateway->execute($done = new Status($token));
-
-        $payum->getHttpRequestVerifier()->invalidate($token);
-
-        /** @var PaymentInterface $payment */
-        $payment = $done->getFirstModel();
-
-        $sale = $this->handler->handle($payment);
-
-        $path = $this->resourceHelper->generateResourcePath($sale);
-
-        return new RedirectResponse($path);
+        return new RedirectResponse($this->resourceHelper->generateResourcePath($sale));
     }
 }

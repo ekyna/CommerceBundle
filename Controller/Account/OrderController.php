@@ -93,14 +93,14 @@ class OrderController extends AbstractController
             return $this->redirect($cancelUrl);
         }
 
-        $checkout = $this->get('ekyna_commerce.checkout.payment_manager');
+        $checkoutManager = $this->get('ekyna_commerce.payment.checkout_manager');
 
-        $checkout->initialize($order, $this->generateUrl('ekyna_commerce_account_order_payment_create', [
+        $checkoutManager->initialize($order, $this->generateUrl('ekyna_commerce_account_order_payment_create', [
             'number' => $order->getNumber(),
         ]));
 
         /** @var OrderPaymentInterface $payment */
-        if (null !== $payment = $checkout->handleRequest($request)) {
+        if (null !== $payment = $checkoutManager->handleRequest($request)) {
             $order->addPayment($payment);
 
             $event = $this->get('ekyna_commerce.order.operator')->update($order);
@@ -124,7 +124,7 @@ class OrderController extends AbstractController
         return $this->render('EkynaCommerceBundle:Account/Order:payment_create.html.twig', [
             'customer' => $customer,
             'order'    => $order,
-            'forms'    => $checkout->getFormsViews(),
+            'forms'    => $checkoutManager->getFormsViews(),
             'orders'   => $orders,
         ]);
     }

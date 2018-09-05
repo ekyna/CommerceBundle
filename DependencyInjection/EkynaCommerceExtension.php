@@ -47,6 +47,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.default.currency', $config['currency']);
         $container->setParameter('ekyna_commerce.default.vat_display_mode', $config['vat_display_mode']);
         $container->setParameter('ekyna_commerce.default.customer', $config['customer']);
+        $container->setParameter('ekyna_commerce.default.fraud', $config['fraud']);
 
         $container->setParameter('ekyna_commerce.expiration.cart', $config['expiration']['cart']);
         $container->setParameter('ekyna_commerce.expiration.quote', $config['expiration']['quote']);

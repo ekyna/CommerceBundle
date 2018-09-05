@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -56,6 +57,47 @@ class ConstantsHelper extends AbstractConstantsHelper
         }
 
         return $this->renderLabel(Model\AccountingTypes::getLabel($accountingOrType));
+    }
+
+    /**
+     * Renders the customer state label.
+     *
+     * @param CustomerInterface|string $stateOrCustomer
+     *
+     * @return string
+     */
+    public function renderCustomerStateLabel($stateOrCustomer)
+    {
+        if ($stateOrCustomer instanceof CustomerInterface) {
+            $stateOrCustomer = $stateOrCustomer->getState();
+        }
+
+        if (Model\CustomerStates::isValid($stateOrCustomer)) {
+            return $this->renderLabel(Model\CustomerStates::getLabel($stateOrCustomer));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the customer state badge.
+     *
+     * @param CustomerInterface|string $stateOrCustomer
+     *
+     * @return string
+     */
+    public function renderCustomerStateBadge($stateOrCustomer)
+    {
+        if ($stateOrCustomer instanceof CustomerInterface) {
+            $stateOrCustomer = $stateOrCustomer->getState();
+        }
+
+        $theme = 'default';
+        if (Model\CustomerStates::isValid($stateOrCustomer)) {
+            $theme = Model\CustomerStates::getTheme($stateOrCustomer);
+        }
+
+        return $this->renderBadge($this->renderCustomerStateLabel($stateOrCustomer), $theme);
     }
 
     /**

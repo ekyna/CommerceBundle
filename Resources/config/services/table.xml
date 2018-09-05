@@ -23,6 +23,13 @@
             <tag name="table.type"/>
         </service>
 
+        <!-- Customer state column type -->
+        <service id="ekyna_commerce.customer_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\CustomerStateType">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Customer column type -->
         <service id="ekyna_commerce.order_customer.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleCustomerType">

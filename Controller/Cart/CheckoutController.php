@@ -5,17 +5,14 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
-use Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager;
+use Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
-use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
-use Ekyna\Component\Commerce\Payment\Handler\PaymentDoneHandler;
-use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -47,7 +44,7 @@ class CheckoutController extends AbstractController
     protected $shipmentPriceResolver;
 
     /**
-     * @var PaymentManager
+     * @var CheckoutManager
      */
     protected $paymentCheckout;
 
@@ -61,11 +58,6 @@ class CheckoutController extends AbstractController
      */
     protected $saleTransformer;
 
-    /**
-     * @var PaymentDoneHandler
-     */
-    protected $paymentHandler;
-
 
     /**
      * Constructor.
@@ -73,19 +65,17 @@ class CheckoutController extends AbstractController
      * @param OrderRepositoryInterface       $orderRepository
      * @param QuoteRepositoryInterface       $quoteRepository
      * @param ShipmentPriceResolverInterface $shipmentPriceResolver
-     * @param PaymentManager                 $paymentCheckout
+     * @param CheckoutManager                $paymentCheckout
      * @param PaymentHelper                  $paymentHelper
      * @param SaleTransformerInterface       $saleTransformer
-     * @param PaymentDoneHandler             $paymentHandler
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         QuoteRepositoryInterface $quoteRepository,
         ShipmentPriceResolverInterface $shipmentPriceResolver,
-        PaymentManager $paymentCheckout,
+        CheckoutManager $paymentCheckout,
         PaymentHelper $paymentHelper,
-        SaleTransformerInterface $saleTransformer,
-        PaymentDoneHandler $paymentHandler
+        SaleTransformerInterface $saleTransformer
     ) {
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
@@ -93,7 +83,6 @@ class CheckoutController extends AbstractController
         $this->paymentCheckout = $paymentCheckout;
         $this->paymentHelper = $paymentHelper;
         $this->saleTransformer = $saleTransformer;
-        $this->paymentHandler = $paymentHandler;
     }
 
     /**
@@ -336,20 +325,12 @@ class CheckoutController extends AbstractController
             throw new NotFoundHttpException("XHR is not supported.");
         }
 
-        $payum = $this->paymentHandler->getPayum();
+        if (null === $payment = $this->paymentHelper->status($request)) {
+            // Cart has been deleted (fraud)
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
 
-        $token = $payum->getHttpRequestVerifier()->verify($request);
-
-        $gateway = $payum->getGateway($token->getGatewayName());
-
-        $gateway->execute($done = new Status($token));
-
-        $payum->getHttpRequestVerifier()->invalidate($token);
-
-        /** @var PaymentInterface $payment */
-        $payment = $done->getFirstModel();
-
-        $sale = $this->paymentHandler->handle($payment);
+        $sale = $payment->getSale();
 
         if ($sale instanceof OrderInterface) {
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_confirmation', [

@@ -18,13 +18,12 @@ class InChargeType extends AbstractColumnType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-       $resolver
-           ->setDefaults([
-               'label'                => 'ekyna_commerce.customer.field.in_charge',
-               'entity_label'         => 'username',
-               'route_name'           => 'ekyna_user_user_admin_show',
-               'route_parameters_map' => ['userId' => 'id'],
-           ]);
+        $resolver->setDefaults([
+            'label'                => 'ekyna_commerce.customer.field.in_charge',
+            'entity_label'         => 'username',
+            'route_name'           => 'ekyna_user_user_admin_show',
+            'route_parameters_map' => ['userId' => 'id'],
+        ]);
     }
 
     /**

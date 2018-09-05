@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
@@ -11,6 +12,7 @@ use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -54,6 +56,7 @@ class CustomerType extends ResourceTableType
         }
 
         $builder
+            ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.number',
                 'route_name'           => 'ekyna_commerce_customer_admin_show',
@@ -92,9 +95,12 @@ class CustomerType extends ResourceTableType
             ->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 90,
             ])
+            ->addColumn('state', Type\Column\CustomerStateType::class, [
+                'position' => 100,
+            ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',
-                'position'    => 100,
+                'position'    => 110,
                 'time_format' => 'none',
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
@@ -154,9 +160,17 @@ class CustomerType extends ResourceTableType
                 ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 90,
                 ])
+                ->addFilter('state', Type\Filter\InChargeType::class, [
+                    'position' => 90,
+                ])
+                ->addFilter('state', CType\Filter\ChoiceType::class, [
+                    'label'    => 'ekyna_core.field.status',
+                    'choices'  => CustomerStates::getChoices(),
+                    'position' => 100,
+                ])
                 ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                     'label'    => 'ekyna_core.field.created_at',
-                    'position' => 100,
+                    'position' => 110,
                 ]);
         }
     }

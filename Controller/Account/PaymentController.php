@@ -2,11 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
-use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
+use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
-use Ekyna\Component\Commerce\Payment\Handler\PaymentDoneHandler;
-use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,9 +19,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class PaymentController
 {
     /**
-     * @var PaymentDoneHandler
+     * @var PaymentHelper
      */
-    private $handler;
+    private $paymentHelper;
 
     /**
      * @var UrlGeneratorInterface
@@ -34,12 +32,12 @@ class PaymentController
     /**
      * Constructor.
      *
-     * @param PaymentDoneHandler    $handler
+     * @param PaymentHelper         $paymentHelper
      * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(PaymentDoneHandler $handler, UrlGeneratorInterface $urlGenerator)
+    public function __construct(PaymentHelper $paymentHelper, UrlGeneratorInterface $urlGenerator)
     {
-        $this->handler = $handler;
+        $this->paymentHelper = $paymentHelper;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -56,33 +54,26 @@ class PaymentController
             throw new NotFoundHttpException("XHR is not supported.");
         }
 
-        $payum = $this->handler->getPayum();
-
-        $token = $payum->getHttpRequestVerifier()->verify($request);
-
-        $gateway = $payum->getGateway($token->getGatewayName());
-
-        $gateway->execute($done = new Status($token));
-
-        $payum->getHttpRequestVerifier()->invalidate($token);
-
-        /** @var PaymentInterface $payment */
-        $payment = $done->getFirstModel();
-
-        $sale = $this->handler->handle($payment);
-
-        if ($sale instanceof QuoteInterface) {
-            $route = 'ekyna_commerce_account_quote_show';
-            $parameters = [
-                'number' => $sale->getNumber(),
-            ];
-        } elseif ($sale instanceof OrderInterface) {
-            $route = 'ekyna_commerce_account_order_show';
-            $parameters = [
-                'number' => $sale->getNumber(),
-            ];
+        if (null === $payment = $this->paymentHelper->status($request)) {
+            // Sale has been deleted (fraud)
+            $route = 'ekyna_commerce_account_index';
+            $parameters = [];
         } else {
-            throw new RuntimeException("Unexpected payment.");
+            $sale = $payment->getSale();
+
+            if ($sale instanceof QuoteInterface) {
+                $route = 'ekyna_commerce_account_quote_show';
+                $parameters = [
+                    'number' => $sale->getNumber(),
+                ];
+            } elseif ($sale instanceof OrderInterface) {
+                $route = 'ekyna_commerce_account_order_show';
+                $parameters = [
+                    'number' => $sale->getNumber(),
+                ];
+            } else {
+                throw new RuntimeException("Unexpected payment.");
+            }
         }
 
         $path = $this->urlGenerator->generate($route, $parameters);

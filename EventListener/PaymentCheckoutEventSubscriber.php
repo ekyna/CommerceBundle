@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Common\Util\Money;
+use Ekyna\Component\Commerce\Customer\Model\CustomerStates;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -15,11 +16,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class CheckoutPaymentEventSubscriber
+ * Class PaymentCheckoutEventSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
+class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 {
     /**
      * @var FormFactoryInterface
@@ -84,6 +85,21 @@ class CheckoutPaymentEventSubscriber implements EventSubscriberInterface
     protected function buildDefaultForm(CheckoutPaymentEvent $event)
     {
         $payment = $event->getPayment();
+        $sale = $event->getSale();
+
+        // Disallow non offline methods for fraudster
+        $customer = $sale->getCustomer();
+        if ($customer && ($customer->getState() === CustomerStates::STATE_FRAUDSTER)) {
+            /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
+            if (null === $method = $payment->getMethod()) {
+                throw new RuntimeException("Payment's method must be set at this point.");
+            }
+            if (!$method->isManual()) {
+                $event->stopPropagation();
+
+                return;
+            }
+        }
 
         $form = $this
             ->formFactory

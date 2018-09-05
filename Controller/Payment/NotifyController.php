@@ -2,10 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Payment;
 
-use Ekyna\Bundle\CommerceBundle\Entity\PaymentSecurityToken;
-use Ekyna\Component\Commerce\Payment\Handler\PaymentDoneHandler;
-use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
-use Payum\Core\Request\Notify;
+use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,26 +15,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class NotifyController
 {
     /**
-     * @var PaymentDoneHandler
+     * @var PaymentHelper
      */
-    private $handler;
-
-    /**
-     * @var bool
-     */
-    private $debug;
+    private $paymentHelper;
 
 
     /**
      * Constructor.
      *
-     * @param PaymentDoneHandler $handler
-     * @param bool               $debug
+     * @param PaymentHelper $paymentHelper
      */
-    public function __construct(PaymentDoneHandler $handler, $debug = false)
+    public function __construct(PaymentHelper $paymentHelper)
     {
-        $this->handler = $handler;
-        $this->debug = $debug;
+        $this->paymentHelper = $paymentHelper;
     }
 
     /**
@@ -53,25 +43,7 @@ class NotifyController
             throw new NotFoundHttpException("XHR is not supported.");
         }
 
-        $payum = $this->handler->getPayum();
-
-        /** @var PaymentSecurityToken $token */
-        $token = $payum->getHttpRequestVerifier()->verify($request);
-
-        $gateway = $payum->getGateway($token->getGatewayName());
-
-        $gateway->execute($notify = new Notify($token));
-
-        // Invalidate token
-        if (!$this->debug) {
-            $payum->getHttpRequestVerifier()->invalidate($token);
-        }
-
-        /** @var PaymentInterface $payment */
-        $payment = $notify->getFirstModel();
-
-        // Handle done payment
-        $this->handler->handle($payment);
+        $this->paymentHelper->status($request);
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }

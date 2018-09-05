@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
 use libphonenumber\PhoneNumberFormat;
@@ -72,7 +73,7 @@ class CustomerType extends ResourceFormType
             ])
             ->add('email', Type\EmailType::class, [
                 'label' => 'ekyna_core.field.email',
-                'attr' => [
+                'attr'  => [
                     'autocomplete' => 'email',
                 ],
             ])
@@ -102,6 +103,10 @@ class CustomerType extends ResourceFormType
                 'attr'           => [
                     'autocomplete' => 'tel-national',
                 ],
+            ])
+            ->add('state', Type\ChoiceType::class, [
+                'label'   => 'ekyna_core.field.status',
+                'choices' => CustomerStates::getChoices(),
             ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',

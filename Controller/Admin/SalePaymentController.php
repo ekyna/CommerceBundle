@@ -77,13 +77,13 @@ class SalePaymentController extends AbstractSaleController
             return $this->redirect($this->generateResourcePath($sale));
         }
 
-        $paymentManager = $this->get('ekyna_commerce.checkout.payment_manager');
+        $checkoutManager = $this->get('ekyna_commerce.payment.checkout_manager');
 
         $action = $this->generateResourcePath($this->config->getResourceId(), 'new', $context->getIdentifiers());
 
-        $paymentManager->initialize($sale, $action, true);
+        $checkoutManager->initialize($sale, $action, true);
 
-        if (null !== $payment = $paymentManager->handleRequest($request)) {
+        if (null !== $payment = $checkoutManager->handleRequest($request)) {
             $sale->addPayment($payment);
             $context->addResource($resourceName, $payment);
             // TODO use ResourceManager
@@ -110,7 +110,7 @@ class SalePaymentController extends AbstractSaleController
             $this->config->getTemplate('new.html'),
             $context->getTemplateVars([
                 'sale'  => $sale,
-                'forms' => $paymentManager->getFormsViews(),
+                'forms' => $checkoutManager->getFormsViews(),
             ])
         );
     }

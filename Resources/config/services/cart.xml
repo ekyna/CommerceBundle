@@ -139,10 +139,9 @@
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.quote.repository"/>
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
-            <argument type="service" id="ekyna_commerce.checkout.payment_manager"/>
+            <argument type="service" id="ekyna_commerce.payment.checkout_manager"/>
             <argument type="service" id="ekyna_commerce.payment_helper"/>
             <argument type="service" id="ekyna_commerce.sale_transformer"/>
-            <argument type="service" id="ekyna_commerce.payment.done_handler"/>
         </service>
 
     </services>

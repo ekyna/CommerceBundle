@@ -138,6 +138,8 @@ ekyna_commerce:
             all: Toutes mes factures
             show: Détail de la facture <em>%number%</em>
             empty_list: Aucune facture enregistré
+        credit:
+            title: Mes Avoirs
         payment:
             title: Paiements
             confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment %number% ?
@@ -145,10 +147,6 @@ ekyna_commerce:
             title: Expéditions
         return:
             title: Retours
-        invoice:
-            title: Factures
-        credit:
-            title: Avoirs
         attachment:
             title: Documents
         registration:
@@ -164,9 +162,9 @@ ekyna_commerce:
                 invoice_name: Contact facturation
                 invoice_email: Email facturation
                 invoice_phone: Téléphone facturation
-            notify:
-                subject: Création de compte client
-                admin_link: Voir la fiche client dans l'administration
+#            notify:
+#                subject: Création de compte client
+#                admin_link: Voir la fiche client dans l'administration
         widget:
             title: Espace client
 
@@ -536,9 +534,22 @@ ekyna_commerce:
             outstanding_limit: Limite d'encours
             outstanding_balance: Solde d'encours
             credit_balance: Solde avoirs
+        state:
+            new: Nouveau
+            valid: Validé
+            fraudster: Fraudeur
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
+        notify:
+            admin_link: Voir la fiche client dans l'administration
+            registration:
+                subject: Création de compte client
+            fraudster:
+                subject: Potientiel fraudeur détecté
+                message: |
+                    Le client {identity} a été détecté comme fraudeur potentiel lors du paiement de son panier.<br>
+                    Son statut à été défini à "Fraudeur" et il n'a plus accès au réglement en ligne.<br>
         alert:
             no_item: Aucun client configuré
             no_invoice_address: Aucune adresse de facturation configuré.

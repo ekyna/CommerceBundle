@@ -44,7 +44,7 @@ class CheckoutPaymentEvent extends Event
      * @param PaymentInterface $payment
      * @param array            $formOptions
      */
-    public function __construct(SaleInterface $sale, PaymentInterface $payment, array $formOptions)
+    public function __construct(SaleInterface $sale, PaymentInterface $payment, array $formOptions = [])
     {
         $this->sale = $sale;
         $this->payment = $payment;

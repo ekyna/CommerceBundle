@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Service\Checkout;
+namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
@@ -13,14 +13,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class PaymentManager
+ * Class CheckoutManager
  *
  * This class generates and processes the payment forms for every payment methods available.
  *
- * @package Ekyna\Bundle\CommerceBundle\Service\Checkout
+ * @package Ekyna\Bundle\CommerceBundle\Service\Payment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentManager
+class CheckoutManager
 {
     /**
      * @var PaymentMethodRepositoryInterface

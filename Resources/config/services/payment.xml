@@ -8,30 +8,21 @@
         <!-- Payment notify controller -->
         <service id="ekyna_commerce.controller.payment_notify"
                  class="Ekyna\Bundle\CommerceBundle\Controller\Payment\NotifyController">
-            <argument type="service" id="ekyna_commerce.payment.done_handler"/>
-            <argument>%kernel.debug%</argument>
+            <argument type="service" id="ekyna_commerce.payment_helper"/>
         </service>
 
         <!-- Payment account controller -->
         <service id="ekyna_commerce.controller.account.payment"
                  class="Ekyna\Bundle\CommerceBundle\Controller\Account\PaymentController">
-            <argument type="service" id="ekyna_commerce.payment.done_handler"/>
+            <argument type="service" id="ekyna_commerce.payment_helper"/>
             <argument type="service" id="router"/>
         </service>
 
         <!-- Payment admin controller -->
         <service id="ekyna_commerce.controller.admin.payment"
                  class="Ekyna\Bundle\CommerceBundle\Controller\Admin\PaymentController">
-            <argument type="service" id="ekyna_commerce.payment.done_handler"/>
+            <argument type="service" id="ekyna_commerce.payment_helper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
-        </service>
-
-        <!-- Payment done handle -->
-        <service id="ekyna_commerce.payment.done_handler"
-                 class="Ekyna\Component\Commerce\Payment\Handler\PaymentDoneHandler">
-            <argument type="service" id="ekyna_commerce.sale_transformer"/>
-            <argument type="service" id="ekyna_commerce.order.repository"/>
-            <argument type="service" id="payum"/>
         </service>
 
         <!-- Payment number generator -->
@@ -87,20 +78,40 @@
             </call>
         </service>
 
-        <!-- Payment checkout builder -->
-        <service id="ekyna_commerce.checkout.payment_manager"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Checkout\PaymentManager">
+        <!-- Payment checkout manager -->
+        <service id="ekyna_commerce.payment.checkout_manager"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager">
             <argument type="service" id="ekyna_commerce.payment_method.repository"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
 
         <!-- Payment checkout event subscriber -->
-        <service id="ekyna_commerce.checkout.payment_event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\CheckoutPaymentEventSubscriber">
+        <service id="ekyna_commerce.payment.checkout_event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\PaymentCheckoutEventSubscriber">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="router"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Payment done event subscriber -->
+        <service id="ekyna_commerce.payment.done_event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\PaymentDoneEventSubscriber">
+            <argument type="service" id="ekyna_commerce.sale_transformer"/>
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="payum"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Payment anti fraud event subscriber -->
+        <service id="ekyna_commerce.payment.anti_fraud_event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\AntiFraudEventSubscriber">
+            <argument type="service" id="ekyna_commerce.cart.operator"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="payum"/>
+            <argument type="service" id="ekyna_commerce.mailer"/>
+            <argument>%ekyna_commerce.default.fraud%</argument>
             <tag name="kernel.event_subscriber"/>
         </service>
 

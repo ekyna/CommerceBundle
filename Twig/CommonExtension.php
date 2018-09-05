@@ -75,6 +75,15 @@ class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRun
                 [$this->constantHelper, 'renderAccountingTypeLabel']
             ),
             new \Twig_SimpleFilter(
+                'customer_state_label',
+                [$this->constantHelper, 'renderCustomerStateLabel']
+            ),
+            new \Twig_SimpleFilter(
+                'customer_state_badge',
+                [$this->constantHelper, 'renderCustomerStateBadge'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
                 'notify_type_label',
                 [$this->constantHelper, 'renderNotifyTypeLabel']
             ),
