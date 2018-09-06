@@ -93,7 +93,8 @@ class CheckoutManager
             $payment->setMethod($method);
 
             $event = new CheckoutPaymentEvent($sale, $payment, [
-                'action' => $action,
+                'action'     => $action,
+                'admin_mode' => $admin,
             ]);
 
             $this->eventDispatcher->dispatch(CheckoutPaymentEvent::BUILD_FORM, $event);

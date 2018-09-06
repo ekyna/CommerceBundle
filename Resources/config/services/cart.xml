@@ -78,14 +78,21 @@
 
         <!-- Cart item event listener -->
         <service id="ekyna_commerce.cart_item.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartItemEventSubscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartItemEventSubscriber"
                  parent="ekyna_commerce.sale_item.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Cart item adjustment event listener -->
+        <service id="ekyna_commerce.cart_item_adjustment.event_subscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartItemAdjustmentEventSubscriber"
+                 parent="ekyna_commerce.adjustment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Cart adjustment event listener -->
         <service id="ekyna_commerce.cart_adjustment.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartAdjustmentEventSubscriber"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\CartAdjustmentEventSubscriber"
                  parent="ekyna_commerce.adjustment.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>

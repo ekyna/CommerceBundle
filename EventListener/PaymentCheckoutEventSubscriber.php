@@ -168,6 +168,24 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
     {
         $sale = $event->getSale();
 
+        // Abort if no customer
+        if (null === $customer = $sale->getCustomer()) {
+            $event->stopPropagation();
+
+            return;
+        }
+        // Abort if child customer
+        if ($customer->hasParent()) {
+            $event->stopPropagation();
+
+            return;
+        }
+        // Abort if no payment term
+        if (null === $sale->getPaymentTerm()) {
+            $event->stopPropagation();
+
+            return;
+        }
         // Abort if outstanding payment has already been used
         if (0 < $sale->getOutstandingAccepted() || 0 < $sale->getOutstandingExpired()) {
             $event->stopPropagation();
@@ -181,23 +199,6 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
                 return;
             }
-        }
-        // Abort if no customer
-        if (null === $customer = $sale->getCustomer()) {
-            $event->stopPropagation();
-
-            return;
-        }
-        // Abort if no payment term
-        if (null === $sale->getPaymentTerm()) {
-            $event->stopPropagation();
-
-            return;
-        }
-
-        // Switch to parent if available
-        if ($customer->hasParent()) {
-            $customer = $customer->getParent();
         }
 
         $payment = $event->getPayment();
@@ -229,7 +230,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         $options = $event->getFormOptions();
         $options['available_amount'] = (float)$available;
 
-        if ($sale instanceof QuoteInterface && !$sale->hasVoucher()) {
+        if (!$options['admin_mode'] && $sale instanceof QuoteInterface && !$sale->hasVoucher()) {
             $options['lock_message'] = $this->translator->trans('ekyna_commerce.checkout.payment.voucher_mandatory', [
                 '%url%' => $this->urlGenerator->generate('ekyna_commerce_account_quote_voucher', [
                     'number' => $sale->getNumber(),
