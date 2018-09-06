@@ -56,6 +56,11 @@ class SaleItemController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
+        // Set the context using sale
+        $this
+            ->get('ekyna_commerce.common.context_provider')
+            ->setContext($sale);
+
         $item = $this
             ->get('ekyna_commerce.sale_factory')
             ->createItemForSale($sale);
@@ -159,6 +164,11 @@ class SaleItemController extends AbstractSaleController
         $sale = $context->getResource($parentConfig->getResourceName());
 
         $isXhr = $request->isXmlHttpRequest();
+
+        // Set the context using sale
+        $this
+            ->get('ekyna_commerce.common.context_provider')
+            ->setContext($sale);
 
         $item = $this
             ->get('ekyna_commerce.sale_factory')
