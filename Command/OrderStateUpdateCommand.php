@@ -93,6 +93,8 @@ class OrderStateUpdateCommand extends ContainerAwareCommand
         $order = $this->repository->findOneBy(['number' => $number]);
         if (null === $number) {
             $output->writeln("Order not found for number '$number'.");
+
+            return;
         }
 
         $previousState = $order->getState();
