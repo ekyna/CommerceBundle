@@ -1473,7 +1473,8 @@ ekyna_commerce:
 
     subject:
         label: Article
-        price_from: À partir de
+        price_from: >
+            <small>À partir de</small>
 
     supplier:
         label:

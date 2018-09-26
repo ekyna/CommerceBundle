@@ -116,7 +116,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         // Sale view
         var $view = $xml.find('view');
         if (1 === $view.size()) {
-            $('.sale-view').replaceWith($($view.text()));
+            $('.cart-checkout-view').html($($view.text()));
 
             return true;
         }

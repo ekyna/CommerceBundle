@@ -14,11 +14,14 @@
     </div>
 
     <div class="checkout cart-checkout" data-refresh-url="{{ path('ekyna_commerce_cart_checkout_index') }}">
-    {% if cart is not same as(null) -%}
 
         {# Cart view #}
         <div class="container cart-checkout-view">
-            {{- render_sale_view(view) -}}
+            {% if cart is not same as(null) -%}
+                {{ render_sale_view(view) }}
+            {%- else -%}
+                <p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>
+            {%- endif %}
         </div>
 
         {# Login #}
@@ -64,7 +67,9 @@
                                 1.&nbsp;{{ 'ekyna_commerce.checkout.index.information'|trans }}<span>*</span>
                             </div>
                             <div class="panel-body" id="cart-checkout-information">
-                                {{- macros.cart_information(cart) -}}
+                                {% if cart is not same as(null) -%}
+                                    {{ macros.cart_information(cart) }}
+                                {%- endif %}
                             </div>
                         </div>
                     </div>
@@ -81,7 +86,9 @@
                                 2.&nbsp;{{ 'ekyna_commerce.checkout.index.invoice'|trans }}<span>*</span>
                             </div>
                             <div class="panel-body" id="cart-checkout-invoice">
-                                {{- macros.cart_invoice_address(cart) -}}
+                                {% if cart is not same as(null) -%}
+                                    {{ macros.cart_invoice_address(cart) }}
+                                {%- endif %}
                             </div>
                         </div>
                     </div>
@@ -98,7 +105,9 @@
                                 3.&nbsp;{{ 'ekyna_commerce.checkout.index.delivery'|trans -}}
                             </div>
                             <div class="panel-body" id="cart-checkout-delivery">
-                                {{- macros.cart_delivery_address(cart) -}}
+                                {% if cart is not same as(null) -%}
+                                    {{ macros.cart_delivery_address(cart) }}
+                                {%- endif %}
                             </div>
                         </div>
                     </div>
@@ -119,7 +128,9 @@
                                 4.&nbsp;{{ 'ekyna_commerce.checkout.index.comment'|trans -}}
                             </div>
                             <div class="panel-body" id="cart-checkout-comment">
-                                {{- macros.cart_comment(cart) -}}
+                                {% if cart is not same as(null) -%}
+                                    {{ macros.cart_comment(cart) }}
+                                {%- endif %}
                             </div>
                         </div>
                     </div>
@@ -135,7 +146,9 @@
                                 5.&nbsp;{{ 'ekyna_commerce.checkout.index.attachments'|trans -}}
                             </div>
                             <div class="panel-body" id="cart-checkout-attachments">
-                                {{- macros.cart_attachments(cart) -}}
+                                {% if cart is not same as(null) -%}
+                                    {{ macros.cart_attachments(cart) }}
+                                {%- endif %}
                             </div>
                         </div>
                     </div>
@@ -144,50 +157,40 @@
         </div>
 
         {# Footer #}
-        <div class="container cart-checkout-footer">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="submit-prevented" style="display:none">
-                        <div class="alert alert-warning">
-                            <p class="text-center">
-                                {{- 'ekyna_commerce.checkout.message.submit_prevented'|trans|raw -}}
-                            </p>
+        <div class="cart-checkout-footer"{% if controls.empty == 1 %} style="display:none"{% endif %}>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="submit-prevented" style="display:none">
+                            <div class="alert alert-warning">
+                                <p class="text-center">
+                                    {{- 'ekyna_commerce.checkout.message.submit_prevented'|trans|raw -}}
+                                </p>
+                            </div>
+                            <div class="alert alert-danger" style="display:none">
+                                <p class="text-center"></p>
+                            </div>
                         </div>
-                        <div class="alert alert-danger" style="display:none">
-                            <p class="text-center"></p>
-                        </div>
+                        <p class="text-center">
+                            <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}"
+                               class="btn btn-primary btn-lg cart-checkout-submit{% if controls.valid == 0 %} disabled{% endif %}">
+                                {{- 'ekyna_commerce.checkout.index.place_order'|trans -}}
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
+                            {% if controls.quote == 1 %}
+                            <a href="{{ path('ekyna_commerce_cart_checkout_quote') }}"
+                               class="btn btn-default btn-lg cart-checkout-quote{% if controls.valid == 0 or controls.quote == 0 %} disabled{% endif %}"
+                               {%- if controls.quote == 0 %} style="display:none"{% endif %}>
+                                {{- 'ekyna_commerce.checkout.index.to_quote'|trans -}}
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
+                            {% endif %}
+                        </p>
                     </div>
-                    <p class="text-center">
-                        <a href="{{ path('ekyna_commerce_cart_checkout_shipment') }}"
-                           class="btn btn-primary btn-lg cart-checkout-submit{% if controls.valid == 0 %} disabled{% endif %}">
-                            {{- 'ekyna_commerce.checkout.index.place_order'|trans -}}
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                        </a>
-                        {% if controls.quote == 1 %}
-                        <a href="{{ path('ekyna_commerce_cart_checkout_quote') }}"
-                           class="btn btn-default btn-lg cart-checkout-quote{% if controls.valid == 0 or controls.quote == 0 %} disabled{% endif %}"
-                           {%- if controls.quote == 0 %} style="display:none"{% endif %}>
-                            {{- 'ekyna_commerce.checkout.index.to_quote'|trans -}}
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                        </a>
-                        {% endif %}
-                    </p>
                 </div>
             </div>
         </div>
 
-    {%- else -%}
-
-        {# Empty cart #}
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>
-                </div>
-            </div>
-        </div>
-
-    {%- endif %}
     </div>
 
 {% endblock content %}
