@@ -169,8 +169,10 @@ ekyna_commerce:
             title: Espace client
 
     dashboard:
-        accounting:
-            export: Export comptable
+        export:
+            title: Exports
+            accounting: Comptabilité
+            due_orders: Commandes échues
         stat:
             title:
                 daily: CA journalier

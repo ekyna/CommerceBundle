@@ -41,12 +41,12 @@
             <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_debt"/>
         </service>
 
-        <!-- Dashboard accounting widget -->
-        <service id="ekyna_commerce.dashboard.accounting_widget"
-                 class="Ekyna\Bundle\CommerceBundle\Dashboard\AccountingWidget">
+        <!-- Dashboard export widget -->
+        <service id="ekyna_commerce.dashboard.export_widget"
+                 class="Ekyna\Bundle\CommerceBundle\Dashboard\ExportWidget">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
-            <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_accounting"/>
+            <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_export"/>
         </service>
 
     </services>

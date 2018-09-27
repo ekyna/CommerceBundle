@@ -61,7 +61,7 @@ class ExportType extends AbstractType
 
         $builder
             ->add('date', ChoiceType::class, [
-                'label'   => 'ekyna_core.field.date',
+                'label'   => 'ekyna_commerce.dashboard.export.accounting',
                 'choices' => $choices,
                 'select2' => false,
             ])

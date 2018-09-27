@@ -2,3 +2,8 @@ ekyna_commerce_export_admin_accounting:
     path: /accounting
     methods: [POST]
     defaults: { _controller: EkynaCommerceBundle:Admin\Export:accounting }
+
+ekyna_commerce_export_admin_due_orders:
+    path: /due-orders
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:dueOrders }

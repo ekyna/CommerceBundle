@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @package Ekyna\Bundle\CommerceBundle\Dashboard
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class AccountingWidget extends AbstractWidgetType
+class ExportWidget extends AbstractWidgetType
 {
     /**
      * @var FormFactoryInterface
@@ -49,7 +49,7 @@ class AccountingWidget extends AbstractWidgetType
             'method' => 'POST',
         ]);
 
-        return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_accounting.html.twig', [
+        return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_export.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -73,6 +73,6 @@ class AccountingWidget extends AbstractWidgetType
      */
     public function getName()
     {
-        return 'commerce_accounting';
+        return 'commerce_export';
     }
 }

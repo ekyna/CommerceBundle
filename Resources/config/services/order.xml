@@ -110,6 +110,13 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Order exporter -->
+        <service id="ekyna_commerce.order.exporter"
+                 class="Ekyna\Component\Commerce\Order\Export\OrderExporter">
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+        </service>
+
     </services>
 
 </container>

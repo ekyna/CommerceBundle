@@ -51,12 +51,14 @@ ekyna_commerce:
         shipped_miss_match: La quantité doit correspondre à la quantité livrée (%qty%).
         creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
         returned_miss_match: La quantité doit correspondre à la quantité retournée (%qty%).
-        creditable_overflow: La quantité ne peut pas exceder la quantité remboursable (max %max%).
     notify:
         pick_at_least_one_recipient: Veuillez choisir ou saisir au moins un destinataire.
         is_empty: Veuillez saisir un message.
     notify_model:
         duplicate_type: Un modèle existe déjà pour ce type.
+    order:
+        sample_with_payments_or_invoices: Une commande échantillon ne peut avoir de paiement ou de facture.
+        customer_has_parent: Le client ne peut être un commercial.
     relay_point:
         is_required: Veuillez choisir un point relais.
         must_be_null: Ce mode d'expédition ne prend pas en charge les points relais.
@@ -143,7 +145,7 @@ ekyna_commerce:
             La quantité réceptionnée doit être inférieure ou égale à la quantité commandée (%max%).
         order_item_miss_match:
             Cette ligne ne correspond à aucune ligne de la commande fournisseur.
-    supplier_delivery_item:
+    supplier_delivery:
         duplicate_order_item: |
             Chaque ligne de la livraison doit correspondre à une ligne de commande fournisseur unique.
     supplier_product:

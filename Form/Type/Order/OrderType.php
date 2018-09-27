@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Order;
 
 use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -30,6 +31,10 @@ class OrderType extends SaleType
                 'label'    => 'ekyna_commerce.customer.field.in_charge',
                 'required' => false,
                 'roles'    => ['ROLE_ADMIN'],
+            ])
+            ->add('originCustomer', CustomerSearchType::class, [
+                'label'    => 'ekyna_commerce.sale.field.origin_customer',
+                'required' => false,
             ])
             ->add('tags', TagChoiceType::class, [
                 'required' => false,

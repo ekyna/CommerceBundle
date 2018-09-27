@@ -1,0 +1,28 @@
+{% spaceless %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="commerce-export">
+            <div class="commerce-panel">
+                <h3>{{ 'ekyna_commerce.dashboard.export.title'|trans }}</h3>
+                {{ form_start(form) }}
+                <table width="100%">
+                    <tr>
+                        <td>{{ form_label(form.date) }}</td>
+                        <td>{{ form_widget(form.date) }}</td>
+                        <td>{{ form_widget(form.submit) }}</td>
+                    </tr>
+                </table>
+                {{ form_end(form) }}
+
+                {#{{ form(form, { 'style': 'inline' }) }}#}
+                <p>
+                    <a href="{{ path('ekyna_commerce_export_admin_due_orders') }}"
+                       class="btn btn-sm btn-default">
+                        {{- 'ekyna_commerce.dashboard.export.due_orders'|trans -}}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endspaceless %}
