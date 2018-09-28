@@ -133,7 +133,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                 $event->addWidget($widget);
             }
 
-            // Orders widget
+            // Invoices widget
             if (!$customer->hasParent() && !empty($invoices = $this->getInvoices($customer))) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.invoice.latest',
@@ -180,7 +180,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
      */
     private function getOrders(CustomerInterface $customer)
     {
-        $states = [OrderStates::STATE_NEW, OrderStates::STATE_PENDING, OrderStates::STATE_ACCEPTED];
+        $states = [OrderStates::STATE_PENDING, OrderStates::STATE_ACCEPTED];
 
         return $this->orderRepository->findByCustomer($customer, $states);
     }

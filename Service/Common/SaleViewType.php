@@ -57,8 +57,15 @@ class SaleViewType extends AbstractViewType
             return;
         }
 
-        $view->vars['link_title'] = $item->getDesignation();
-        $view->vars['link_path'] = $url;
+        $link = [
+            'href'  => $url,
+            //'title' => $item->getDesignation(),
+        ];
+        if (isset($view->vars['link'])) {
+            $view->vars['link'] = array_replace($view->vars['link'], $link);
+        } else {
+            $view->vars['link'] = $link;
+        }
     }
 
     /**

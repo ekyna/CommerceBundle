@@ -43,8 +43,8 @@ abstract class AbstractSubjectController extends ResourceController
             }
         }
 
-        $response = $this->render('EkynaProductBundle:Admin/Product:response.xml.twig', [
-            'product'    => $subject,
+        $response = $this->render('EkynaCommerceBundle:Admin/Subject:response.xml.twig', [
+            'subject'    => $subject,
             'stock_view' => true,
         ]);
 

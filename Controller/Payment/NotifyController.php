@@ -43,7 +43,7 @@ class NotifyController
             throw new NotFoundHttpException("XHR is not supported.");
         }
 
-        $this->paymentHelper->status($request);
+        $this->paymentHelper->notify($request);
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }

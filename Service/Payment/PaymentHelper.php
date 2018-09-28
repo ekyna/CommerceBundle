@@ -8,6 +8,7 @@ use Ekyna\Component\Commerce\Payment\Event\PaymentEvent;
 use Ekyna\Component\Commerce\Payment\Event\PaymentEvents;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Payum\Core\Payum;
+use Payum\Core\Request\Notify;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -155,6 +156,33 @@ class PaymentHelper
         $token = $this->createToken($payment, 'ekyna_commerce_payment_refund', $afterUrl);
 
         return new RedirectResponse($token->getTargetUrl());
+    }
+
+    /**
+     * Handle payment notify.
+     *
+     * @param Request $request
+     *
+     * @return PaymentInterface|null
+     */
+    public function notify(Request $request)
+    {
+        $token = $this->payum->getHttpRequestVerifier()->verify($request);
+
+        $gateway = $this->payum->getGateway($token->getGatewayName());
+
+        $gateway->execute($notify = new Notify($token));
+
+        if (!$this->debug) {
+            $this->payum->getHttpRequestVerifier()->invalidate($token);
+        }
+
+        /** @var PaymentInterface $payment */
+        $payment = $notify->getFirstModel();
+
+        $event = $this->dispatcher->dispatch(PaymentEvents::STATUS, new PaymentEvent($payment));
+
+        return $event->getPayment();
     }
 
     /**
