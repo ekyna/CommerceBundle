@@ -20,6 +20,9 @@ ekyna_commerce_cart_checkout_quote:
             parent: ekyna_commerce_cart_checkout_index
             locked: true
             advanced: false
+            seo:
+                index: false
+                follow: false
 
 ekyna_commerce_cart_checkout_shipment:
     path: /shipment
@@ -31,6 +34,9 @@ ekyna_commerce_cart_checkout_shipment:
             parent: ekyna_commerce_cart_checkout_index
             locked: true
             advanced: false
+            seo:
+                index: false
+                follow: false
 
 ekyna_commerce_cart_checkout_payment:
     path: /payment
@@ -42,6 +48,9 @@ ekyna_commerce_cart_checkout_payment:
             parent: ekyna_commerce_cart_checkout_index
             locked: true
             advanced: false
+            seo:
+                index: false
+                follow: false
 
 # TODO Payment cancel
 
@@ -63,3 +72,6 @@ ekyna_commerce_cart_checkout_confirmation:
             parent: ekyna_commerce_cart_checkout_index
             locked: true
             advanced: false
+            seo:
+                index: false
+                follow: false
