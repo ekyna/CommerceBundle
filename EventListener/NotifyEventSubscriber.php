@@ -91,16 +91,25 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         // Recipient
         if ($customer = $sale->getCustomer()) {
             $notify->addRecipient($this->helper->createRecipient($customer, 'Client')); // TODO constant / translation
-            if (null !== $origin = $sale->getOriginCustomer()) {
-                $originNotifyTypes = [
-                    NotificationTypes::ORDER_ACCEPTED,
-                    NotificationTypes::SHIPMENT_SHIPPED,
-                    NotificationTypes::SHIPMENT_PARTIAL,
-                ];
-                if (in_array($notify->getType(), $originNotifyTypes, true)) {
-                    $notify->addRecipient($this->helper->createRecipient($origin, 'Commercial'));
-                }
+
+            if (!$sale instanceof OrderInterface) {
+                return;
             }
+
+            if (null === $origin = $sale->getOriginCustomer()) {
+                return;
+            }
+
+            $originNotifyTypes = [
+                NotificationTypes::ORDER_ACCEPTED,
+                NotificationTypes::SHIPMENT_SHIPPED,
+                NotificationTypes::SHIPMENT_PARTIAL,
+            ];
+            if (!in_array($notify->getType(), $originNotifyTypes, true)) {
+                return;
+            }
+
+            $notify->addRecipient($this->helper->createRecipient($origin, 'Commercial'));
         } else {
             $notify->addRecipient($this->helper->createRecipient($sale, 'Client'));
         }

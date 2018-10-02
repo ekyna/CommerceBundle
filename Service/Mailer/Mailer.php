@@ -220,26 +220,26 @@ class Mailer
         $from = $notify->getFrom();
         $message->setFrom($from->getEmail(), $from->getName());
 
-        $report .= "From: {$this->formatRecipient($notify->getFrom())}\n";
+        $report .= "From: {$this->formatRecipient($from)}\n";
 
         // TO
         foreach ($notify->getRecipients() as $recipient) {
             $message->addTo($recipient->getEmail(), $recipient->getName());
-            $report .= "To: {$this->formatRecipient($notify->getFrom())}\n";
+            $report .= "To: {$this->formatRecipient($recipient)}\n";
         }
         foreach ($notify->getExtraRecipients() as $recipient) {
             $message->addTo($recipient->getEmail(), $recipient->getName());
-            $report .= "To: {$this->formatRecipient($notify->getFrom())}\n";
+            $report .= "To: {$this->formatRecipient($recipient)}\n";
         }
 
         // Copy
         foreach ($notify->getCopies() as $recipient) {
             $message->addCc($recipient->getEmail(), $recipient->getName());
-            $report .= "Cc: {$this->formatRecipient($notify->getFrom())}\n";
+            $report .= "Cc: {$this->formatRecipient($recipient)}\n";
         }
         foreach ($notify->getExtraCopies() as $recipient) {
             $message->addCc($recipient->getEmail(), $recipient->getName());
-            $report .= "Cc: {$this->formatRecipient($notify->getFrom())}\n";
+            $report .= "Cc: {$this->formatRecipient($recipient)}\n";
         }
 
         // Invoices

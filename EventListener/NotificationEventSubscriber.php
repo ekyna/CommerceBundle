@@ -75,7 +75,6 @@ class NotificationEventSubscriber implements EventSubscriberInterface
 
         foreach ($notifies as $notify) {
             if (0 < $this->mailer->sendNotify($notify)) {
-
                 $this->logNotification($notify);
             }
         }
