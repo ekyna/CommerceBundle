@@ -17,7 +17,11 @@
                 </tr>
                 <tr>
                     <th>Total</th>
-                    <td>{{ (customer_expired+customer_fall)|localizedcurrency(commerce_default_currency) }}</td>
+                    <td><strong>{{ (customer_expired+customer_fall)|localizedcurrency(commerce_default_currency) }}</strong></td>
+                </tr>
+                <tr>
+                    <th><em>À livrer</em></th>
+                    <td><em>{{ (customer_pending)|localizedcurrency(commerce_default_currency) }}</em></td>
                 </tr>
                 </tbody>
             </table>
@@ -39,7 +43,7 @@
                 </tr>
                 <tr>
                     <th>Total</th>
-                    <td>{{ (supplier_expired+supplier_fall)|localizedcurrency(commerce_default_currency) }}</td>
+                    <td><strong>{{ (supplier_expired+supplier_fall)|localizedcurrency(commerce_default_currency) }}</strong></td>
                 </tr>
                 </tbody>
             </table>
@@ -61,7 +65,7 @@
                 </tr>
                 <tr>
                     <th>Total</th>
-                    <td>{{ (carrier_expired+carrier_fall)|localizedcurrency(commerce_default_currency) }}</td>
+                    <td><strong>{{ (carrier_expired+carrier_fall)|localizedcurrency(commerce_default_currency) }}</strong></td>
                 </tr>
                 </tbody>
             </table>
