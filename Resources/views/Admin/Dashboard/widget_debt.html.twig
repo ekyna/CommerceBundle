@@ -4,24 +4,32 @@
 <div class="row">
     <div class="col-md-4 commerce-debt-customer">
         <div class="commerce-panel">
-            <h3>Créances clients</h3>
+            <h3>{{ 'ekyna_commerce.dashboard.debt.title.customer'|trans }}</h3>
             <table>
                 <tbody>
                 <tr>
-                    <th>Échus</th>
-                    <td>{{ customer_expired|localizedcurrency(commerce_default_currency) }}</td>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.unpaid'|trans }}</th>
+                    <td>{{ regular_due|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>À échoir</th>
-                    <td>{{ customer_fall|localizedcurrency(commerce_default_currency) }}</td>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_expired'|trans }}</th>
+                    <td>{{ outstanding_expired|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>Total</th>
-                    <td><strong>{{ (customer_expired+customer_fall)|localizedcurrency(commerce_default_currency) }}</strong></td>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.total'|trans }}</th>
+                    <td>
+                        <strong>
+                            {{- (regular_due+outstanding_expired)|localizedcurrency(commerce_default_currency) -}}
+                        </strong>
+                    </td>
                 </tr>
                 <tr>
-                    <th><em>À livrer</em></th>
-                    <td><em>{{ (customer_pending)|localizedcurrency(commerce_default_currency) }}</em></td>
+                    <th><em>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_to_go'|trans }}</em></th>
+                    <td><em>{{ outstanding_to_go|localizedcurrency(commerce_default_currency) }}</em></td>
+                </tr>
+                <tr>
+                    <th><em>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_pending'|trans }}</em></th>
+                    <td><em>{{ outstanding_pending|localizedcurrency(commerce_default_currency) }}</em></td>
                 </tr>
                 </tbody>
             </table>
@@ -30,19 +38,19 @@
 
     <div class="col-md-4 commerce-debt-supplier">
         <div class="commerce-panel">
-            <h3>Créances fournisseurs</h3>
+            <h3>{{ 'ekyna_commerce.dashboard.debt.title.supplier'|trans }}</h3>
             <table>
                 <tbody>
                 <tr>
-                    <th>Échus</th>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.expired'|trans }}</th>
                     <td>{{ supplier_expired|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>À échoir</th>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.to_go'|trans }}</th>
                     <td>{{ supplier_fall|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>Total</th>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.total'|trans }}</th>
                     <td><strong>{{ (supplier_expired+supplier_fall)|localizedcurrency(commerce_default_currency) }}</strong></td>
                 </tr>
                 </tbody>
@@ -52,19 +60,19 @@
 
     <div class="col-md-4 commerce-debt-carrier">
         <div class="commerce-panel">
-            <h3>Créances transitaires</h3>
+            <h3>{{ 'ekyna_commerce.dashboard.debt.title.carrier'|trans }}</h3>
             <table>
                 <tbody>
                 <tr>
-                    <th>Échus</th>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.expired'|trans }}</th>
                     <td>{{ carrier_expired|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>À échoir</th>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.to_go'|trans }}</th>
                     <td>{{ carrier_fall|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>Total</th>
+                    <th>{{ 'ekyna_commerce.dashboard.debt.field.total'|trans }}</th>
                     <td><strong>{{ (carrier_expired+carrier_fall)|localizedcurrency(commerce_default_currency) }}</strong></td>
                 </tr>
                 </tbody>

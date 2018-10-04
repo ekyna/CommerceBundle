@@ -19,7 +19,6 @@
         "php": ">=7.0",
         "ekyna/cms-bundle": "0.7.x-dev",
         "ekyna/commerce": "0.7.x-dev",
-        "misd/phone-number-bundle": "^1.2",
         "payum/core": "^1.5.0",
         "payum/payum-bundle": "^2.3.0",
         "php-http/guzzle6-adapter": "^1.1",

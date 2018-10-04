@@ -112,9 +112,12 @@
 
         <!-- Order exporter -->
         <service id="ekyna_commerce.order.exporter"
-                 class="Ekyna\Component\Commerce\Order\Export\OrderExporter">
+                 class="Ekyna\Bundle\CommerceBundle\Service\Order\OrderExporter">
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
         </service>
 
     </services>

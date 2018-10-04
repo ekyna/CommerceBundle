@@ -73,36 +73,37 @@
 
     {# GOODS #}
     {% set grossTotal, discountTotal, baseTotal = 0, 0, 0 %}
-    {% set goodLines = subject.linesByType('good') %}
+    {% set goodRows = subject|document_goods_rows %}
     {% set discountLines = subject.linesByType('discount') -%}
     {% set shipmentLines = subject.linesByType('shipment') -%}
 
     <tbody class="stripped">
-    {% for line in goodLines %}
-        {% if not line.saleItem.private %}
-        {% set grossTotal = grossTotal + line.gross(subject.ati) %}
-        {% set discountTotal = discountTotal + line.discount(subject.ati) %}
-        {% set baseTotal = baseTotal + line.base(subject.ati) %}
-        <tr>
-            <td>
-                {%- set url = null -%}
-                {%- if line.saleItem is not null -%}
-                    {%- set url = line.saleItem|subject_public_url(false) -%}
-                {%- endif -%}
-                {%- if url is not empty -%}
-                    <a href="{{ url }}">{{- line.designation -}}</a>
+    {% for row in goodRows %}
+        {% set grossTotal = grossTotal + row.gross %}
+        {% set discountTotal = discountTotal + row.discount %}
+        {% set baseTotal = baseTotal + row.base %}
+        <tr{% if row.virtual %} class="virtual"{% endif %}>
+            <td style="padding-left:{{ 8 + (16 * row.level) }}px">
+                {%- if row.url is not empty -%}
+                    <a href="{{ row.url }}">{{- row.designation -}}</a>
                 {%- else -%}
-                    {{- line.designation -}}
+                    {{- row.designation -}}
                 {%- endif -%}
-                {%- if line.description is not empty -%}
-                    <br><p class="description">{{ line.description|nl2br }}</p>
+                {%- if row.description is not empty -%}
+                    <br><p class="description">{{ row.description|nl2br }}</p>
                 {%- endif -%}
             </td>
-            <td>{{ line.reference }}</td>
-            <td class="text-right">{{ line.unit(subject.ati)|localizedcurrency(currency) }}</td>
+            <td>{{ row.reference }}</td>
+            <td class="text-right">
+                {%- if not row.virtual -%}
+                    {{ row.unit|localizedcurrency(currency) }}
+                {%- else -%}
+                    &nbsp;
+                {%- endif -%}
+            </td>
             {% if multiple_taxes %}
             <td class="text-right">
-                {%- for rate in line.taxRates -%}
+                {%- for rate in row.taxRates -%}
                     {{- rate|localizednumber }}%
                     {%- if not loop.last %}, {% endif -%}
                 {%- else -%}
@@ -110,36 +111,51 @@
                 {%- endfor -%}
             </td>
             {% endif %}
-            <td class="text-right">{{ line.quantity|localizednumber }}</td>{# TODO Packing format #}
+            <td class="text-right">
+                {%- if not row.virtual -%}
+                    {{ row.quantity|localizednumber }}{# TODO Packing format #}
+                {%- else -%}
+                    &nbsp;
+                {%- endif -%}
+            </td>
             {% if line_discount %}
             <td class="text-right">
-                {{- line.gross(subject.ati)|localizedcurrency(currency) -}}
+                {%- if not row.virtual -%}
+                    {{ row.gross|localizedcurrency(currency) }}
+                {%- else -%}
+                    &nbsp;
+                {%- endif -%}
             </td>
-            {%- if 0 < line.discount -%}
+            {%- if 0 < row.discount -%}
             <td class="text-right">
-                {%- for rate in line.discountRates -%}
+                {%- for rate in row.discountRates -%}
                     {{- rate|localizednumber }}%
                     {%- if not loop.last %}, {% endif -%}
                 {%- else -%}
                     &nbsp;
                 {%- endfor -%}
             </td>
-            <td class="text-right">-{{- line.discount(subject.ati)|localizedcurrency(currency) -}}</td>
+            <td class="text-right">-{{- row.discount|localizedcurrency(currency) -}}</td>
             {%- else -%}
             <td class="text-right">&nbsp;</td>
             <td class="text-right">&nbsp;</td>
             {%- endif -%}
             {% endif %}
-            <td class="text-right">{{ line.base(subject.ati)|localizedcurrency(currency) }}</td>
+            <td class="text-right">
+                {%- if not row.virtual -%}
+                    {{ row.base|localizedcurrency(currency) }}
+                {%- else -%}
+                    &nbsp;
+                {%- endif -%}
+            </td>
         </tr>
-        {% endif %}
     {% endfor %}
     </tbody>
 
 
     <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
 
-    {% if line_discount or (1 < goodLines|length and discountLines is not empty) -%}
+    {% if line_discount or (1 < goodRows|length and discountLines is not empty) -%}
     <tbody class="totals">
         <tr>
             <td colspan="{{ columns_count - (line_discount ? 4 : 1) }}">{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</td>

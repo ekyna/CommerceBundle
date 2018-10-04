@@ -173,6 +173,21 @@ ekyna_commerce:
             title: Exports
             accounting: Comptabilité
             due_orders: Commandes échues
+            field:
+                due_amount: Montant dû
+        debt:
+            title:
+                customer: Créances clients
+                supplier: Créances fournisseurs
+                carrier: Créances transitaires
+            field:
+                unpaid: Non réglé
+                outstanding_expired: Encours échus
+                outstanding_to_go: Encours à échoir
+                outstanding_pending: Encours à livrer
+                expired: Échus
+                to_go: À échoir
+                total: Total
         stat:
             title:
                 daily: CA journalier

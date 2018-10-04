@@ -46,13 +46,14 @@ class DebtWidget extends AbstractWidgetType
     public function render(WidgetInterface $widget, \Twig_Environment $twig)
     {
         return $twig->render('EkynaCommerceBundle:Admin\Dashboard:widget_debt.html.twig', [
-            'customer_expired' => $this->orderRepository->getCustomersExpiredDue(),
-            'customer_fall'    => $this->orderRepository->getCustomersFallDue(),
-            'customer_pending' => $this->orderRepository->getCustomersPendingDue(),
-            'supplier_expired' => $this->supplierOrderRepository->getSuppliersExpiredDue(),
-            'supplier_fall'    => $this->supplierOrderRepository->getSuppliersFallDue(),
-            'carrier_expired'  => $this->supplierOrderRepository->getCarriersExpiredDue(),
-            'carrier_fall'     => $this->supplierOrderRepository->getCarriersFallDue(),
+            'regular_due'         => $this->orderRepository->getRegularDue(),
+            'outstanding_expired' => $this->orderRepository->getOutstandingExpiredDue(),
+            'outstanding_to_go'   => $this->orderRepository->getOutstandingToGoDue(),
+            'outstanding_pending' => $this->orderRepository->getOutstandingPendingDue(),
+            'supplier_expired'    => $this->supplierOrderRepository->getSuppliersExpiredDue(),
+            'supplier_fall'       => $this->supplierOrderRepository->getSuppliersFallDue(),
+            'carrier_expired'     => $this->supplierOrderRepository->getCarriersExpiredDue(),
+            'carrier_fall'        => $this->supplierOrderRepository->getCarriersFallDue(),
         ]);
     }
 

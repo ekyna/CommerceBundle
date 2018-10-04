@@ -30,6 +30,12 @@
             <argument>%kernel.debug%</argument>
         </service>
 
+        <!-- Document rows builder -->
+        <service id="ekyna_commerce.document.rows_builder"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentRowsBuilder">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+        </service>
+
         <!-- Document generator -->
         <service id="ekyna_commerce.document.generator"
                  class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator"

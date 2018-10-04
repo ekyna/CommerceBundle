@@ -173,21 +173,40 @@ table.header {
     }
 
     &.details {
-        tr:last-child {
-            td {
-                border-bottom: @border-color;
+        tr {
+            > td {
+
+                > a {
+                    border-bottom: 1px dotted @head-color;
+                }
+
+                > p.description {
+                    margin: 0;
+                    padding: 0 0 0 12px;
+                    font-size: @font-size - 2;
+                    color: lighten(@text-color, 20%);
+                }
             }
-        }
 
-        a {
-            border-bottom: 1px dotted @head-color;
-        }
+            &.virtual {
+                > td {
+                    color: lighten(@text-color, 25%);
 
-        p.description {
-            margin: 0;
-            padding: 0 0 0 12px;
-            font-size: @font-size - 2;
-            color: lighten(@text-color, 20%);
+                    > a {
+                        color: lighten(@text-color, 25%);
+                    }
+
+                    > p.description {
+                        color: lighten(@text-color, 30%);
+                    }
+                }
+            }
+
+            &:last-child {
+                td {
+                    border-bottom: @border-color;
+                }
+            }
         }
     }
 
