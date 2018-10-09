@@ -31,9 +31,10 @@
         </service>
 
         <!-- Document rows builder -->
-        <service id="ekyna_commerce.document.rows_builder"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentRowsBuilder">
+        <service id="ekyna_commerce.document.page_builder"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
         </service>
 
         <!-- Document generator -->

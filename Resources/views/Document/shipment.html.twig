@@ -55,6 +55,7 @@
 {% block doc_lines %}
 {% spaceless %}
     <table class="bloc table details">
+        {% block doc_lines_header %}
         <thead>
         <tr>
             <th>{{ 'ekyna_core.field.designation'|trans }}</th>
@@ -62,58 +63,103 @@
             <th class="text-right">{{ 'ekyna_core.field.quantity'|trans }}</th>
         </tr>
         </thead>
+        {% endblock doc_lines_header %}
+
+        {% set pages = subject|shipment_pages(type) %}
+
         <tbody class="stripped">
-        {% for item in subject.items %}
-            {% set private = item.saleItem.private %}
-            {% if not (type == 'bill' and private) %}
-            <tr{% if private %} style="color:#666"{% endif %}>
-                <td{% if private %} style="padding-left:20px;"{% endif %}>
-                    {%- if private %}&bull;&nbsp;{% endif -%}
-                    {{- item.saleItem.designation -}}
+        {% for page in pages -%}
+
+        {# Page break#}
+        {% if loop.index0 > 0 -%}
+        </tbody>
+    </table>
+    {{ block('doc_footer') }}
+    {{ '</div><div class="wrapper">' }}
+    {{ block('doc_title') }}
+    <table class="bloc table details">
+        {{ block('doc_lines_header') }}
+        <tbody class="stripped">
+        {%- endif %}
+
+        {% for row in page -%}
+            <tr{% if row.virtual %} class="virtual"{% endif %}{% if row.private %} style="color:#666"{% endif %}>
+                <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
+                    {%- if row.url is not empty -%}
+                        <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
+                    {%- else -%}
+                        <span title="{{ row.designation }}">{{ row.designation -}}</span>
+                    {%- endif -%}
                 </td>
-                <td>{{ item.saleItem.reference }}</td>
-                <td class="text-right">{{ item.quantity|localizednumber }}</td>{# TODO Packing format #}
+                <td>{{ row.reference }}</td>
+                <td class="text-right">
+                    {%- if not row.virtual -%}
+                        {{ row.quantity|localizednumber }}{# TODO Packaging format #}
+                    {%- else -%}
+                        &nbsp;
+                    {%- endif -%}
+                </td>
             </tr>
-            {% endif %}
-        {% endfor %}
+        {%- endfor %}
+
+        {%- endfor %}
         </tbody>
     </table>
 
-    {% if type == 'bill' and not subject.return %}
-        {% set remaining = subject|shipment_remaining_list %}
-        {% if remaining.entries is not empty %}
-        <p style="margin-top:60px;">
-            {%- if remaining.estimatedShippingDate is null -%}
-                {{ 'ekyna_commerce.document.mention.remaining_unknown'|trans }}
-            {%- else -%}
-                {{ 'ekyna_commerce.document.mention.remaining_with_date'|trans({
-                    '%date%': remaining.estimatedShippingDate|localizeddate('long', 'none')
-                }) }}
-            {%- endif -%}
-        </p>
-        <table class="bloc table details">
-            <thead>
-            <tr>
-                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                <th class="text-right">{{ 'ekyna_core.field.quantity'|trans }}</th>
-            </tr>
-            </thead>
-            <tbody class="stripped">
-            {% for entry in remaining.entries %}
-                <tr>
-                    <td>{{ entry.saleItem.designation }}</td>
-                    <td>{{ entry.saleItem.reference }}</td>
-                    <td class="text-right">{{ entry.quantity|localizednumber }}</td>{# TODO Packing format #}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+{% if type == 'bill' and not subject.return %}
+    {% set remaining = subject|shipment_remaining_pages %}
+    {% if remaining is not empty %}
+    <hr>
+    <p>
+    {%- if remaining.eda is null -%}
+        {{ 'ekyna_commerce.document.mention.remaining_unknown'|trans }}
+    {%- else -%}
+        {{ 'ekyna_commerce.document.mention.remaining_with_date'|trans({
+            '%date%': remaining.eda|localizeddate('long', 'none')
+        }) }}
+    {%- endif -%}
+    </p>
+    <table class="bloc table details">
+        {{ block('doc_lines_header') }}
+        <tbody class="stripped">
+        {% for page in remaining.pages -%}
+
+        {# Page break#}
+        {% if loop.index0 > 0 -%}
+        </tbody>
+    </table>
+    {{ block('doc_footer') }}
+    {{ '</div><div class="wrapper">' }}
+    {{ block('doc_title') }}
+    <table class="bloc table details">
+        {{ block('doc_lines_header') }}
+        <tbody class="stripped">
+        {%- endif %}
+
+        {% for row in page -%}
+        <tr{% if row.virtual %} class="virtual"{% endif %}{% if row.private %} style="color:#666"{% endif %}>
+            <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
+                {%- if row.url is not empty -%}
+                    <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
+                {%- else -%}
+                    <span title="{{ row.designation }}">{{ row.designation -}}</span>
+                {%- endif -%}
+            </td>
+            <td>{{ row.reference }}</td>
+            <td class="text-right">
+                {%- if not row.virtual -%}
+                    {{ row.quantity|localizednumber }}{# TODO Packaging format #}
+                {%- else -%}
+                    &nbsp;
+                {%- endif -%}
+            </td>
+        </tr>
+        {%- endfor %}
+
+        {%- endfor %}
+        </tbody>
+    </table>
     {% endif %}
+{% endif %}
 {% endspaceless %}
 {% endblock doc_lines %}
-
-
-{# --- FOOTER --- #}
-{% block doc_footer %}{% endblock doc_footer %}

@@ -33,8 +33,7 @@
         <service id="ekyna_commerce.twig.document_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\DocumentExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.document.rows_builder"/>
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="service" id="ekyna_commerce.document.page_builder"/>
             <tag name="twig.extension"/>
         </service>
 

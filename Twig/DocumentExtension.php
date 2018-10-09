@@ -2,8 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentRowsBuilder;
-use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculator;
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 
 /**
  * Class DocumentExtension
@@ -13,26 +12,19 @@ use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculator;
 class DocumentExtension extends \Twig_Extension
 {
     /**
-     * @var DocumentRowsBuilder
+     * @var DocumentPageBuilder
      */
-    private $documentRowsBuilder;
-
-    /**
-     * @var ShipmentCalculator
-     */
-    private $shipmentCalculator;
+    private $documentPageBuilder;
 
 
     /**
      * Constructor.
      *
-     * @param DocumentRowsBuilder $documentRowsBuilder
-     * @param ShipmentCalculator  $shipmentCalculator
+     * @param DocumentPageBuilder $documentPageBuilder
      */
-    public function __construct(DocumentRowsBuilder $documentRowsBuilder, ShipmentCalculator $shipmentCalculator)
+    public function __construct(DocumentPageBuilder $documentPageBuilder)
     {
-        $this->documentRowsBuilder = $documentRowsBuilder;
-        $this->shipmentCalculator = $shipmentCalculator;
+        $this->documentPageBuilder = $documentPageBuilder;
     }
 
     /**
@@ -42,13 +34,18 @@ class DocumentExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFilter(
-                'document_goods_rows',
-                [$this->documentRowsBuilder, 'buildGoodRows'],
+                'document_pages',
+                [$this->documentPageBuilder, 'buildDocumentPages'],
                 ['is_safe' => ['html']]
             ),
             new \Twig_SimpleFilter(
-                'shipment_remaining_list',
-                [$this->shipmentCalculator, 'buildRemainingList'],
+                'shipment_pages',
+                [$this->documentPageBuilder, 'buildShipmentPages'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFilter(
+                'shipment_remaining_pages',
+                [$this->documentPageBuilder, 'buildShipmentRemainingPages'],
                 ['is_safe' => ['html']]
             ),
         ];

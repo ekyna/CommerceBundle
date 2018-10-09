@@ -74,7 +74,7 @@
     {% endblock doc_lines_header %}
 
     {# GOODS #}
-    {% set pages = subject|document_goods_rows %}
+    {% set pages = subject|document_pages %}
     {% set grossTotal, discountTotal, baseTotal = 0, 0, 0 %}
     {% set discountLines = subject.linesByType('discount') -%}
     {% set shipmentLines = subject.linesByType('shipment') -%}
@@ -82,6 +82,7 @@
     <tbody class="stripped">
     {% for page in pages %}
 
+    {# Page break#}
     {% if loop.index0 > 0 %}
     </tbody>
 </table>
