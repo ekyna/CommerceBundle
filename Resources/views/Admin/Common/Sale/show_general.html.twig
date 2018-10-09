@@ -42,16 +42,25 @@
                 }) }}
             {% endif %}
         </div>
+        {% if attribute(sale, 'originCustomer') is defined %}
         <div class="col-md-6">
-            {{ show_row(sale.inCharge, 'entity', {
-                'label': 'ekyna_commerce.customer.field.in_charge',
-                'id': 'sale_user',
-                'route': 'ekyna_user_user_admin_show',
-                'route_parameters_map': {'userId': 'id'},
-                'field': 'username',
-                'label_col': 4
-            }) }}
+            {% if sale.originCustomer is not null %}
+                {{ show_row(sale.originCustomer|identity, 'entity', {
+                    'label': 'ekyna_commerce.sale.field.origin_customer',
+                    'id': 'sale_originCustomer',
+                    'route': 'ekyna_commerce_customer_admin_show',
+                    'route_parameters': {'customerId': sale.originCustomer.id},
+                    'label_col': 4
+                }) }}
+            {% else %}
+                {{ show_row(null, 'text', {
+                    'label': 'ekyna_commerce.sale.field.origin_customer',
+                    'id': 'sale_customer',
+                    'label_col': 4
+                }) }}
+            {% endif %}
         </div>
+        {% endif %}
     </div>
 {% else %}
     {% if sale.customer is not null %}

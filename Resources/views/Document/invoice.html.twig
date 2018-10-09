@@ -4,7 +4,7 @@
 {%- import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
 {# --- DOC TITLE --- #}
-{% block doc_title -%}
+{% block doc_title_content -%}
     <h1>
         {{- ('ekyna_commerce.' ~ subject.type ~ '.label.singular')|trans }}
         {{ subject.number -}}
@@ -20,7 +20,7 @@
         <p>{{ subject.comment|nl2br }}</p>
     {%- endif %}
     {# TODO trans #}
-{%- endblock doc_title %}
+{%- endblock doc_title_content %}
 
 
 {# --- DOC MISC --- #}

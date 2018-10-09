@@ -451,6 +451,8 @@ ekyna_commerce:
             shipment_bill: Bon de livraison
             return_bill: Bon de retour
         mention:
+            remaining_unknown: Les éléments suivants vous seront livrés ultérieurement.
+            remaining_with_date: Les éléments suivants vous seront livrés à partir du %date%.
             deposit: Acompte de <strong>%percent%</strong> d'un montant de <strong>%amount%</strong>
 
     invoice:

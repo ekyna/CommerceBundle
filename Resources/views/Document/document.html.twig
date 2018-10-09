@@ -4,7 +4,7 @@
 {%- import "EkynaCommerceBundle:Document:macros.html.twig" as macro -%}
 
 {# --- TITLE --- #}
-{%- block doc_title -%}
+{%- block doc_title_content -%}
     <h1>
         {{- ('ekyna_commerce.document.type.' ~ subject.type)|trans }}
         {{ subject.sale.number -}}
@@ -20,7 +20,7 @@
     {% if subject.comment is not empty -%}
     <p>{{ subject.comment|nl2br }}</p>
     {%- endif %}
-{%- endblock doc_title -%}
+{%- endblock doc_title_content -%}
 
 
 {# --- ADDRESSES --- #}
@@ -54,6 +54,7 @@
 {# --- LINES --- #}
 {%- block doc_lines -%}
 <table class="bloc table details">
+    {% block doc_lines_header %}
     <thead>
     <tr>
         <th>{{ 'ekyna_core.field.designation'|trans }}</th>
@@ -70,24 +71,38 @@
         <th>{{ ('ekyna_commerce.sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_total')|trans }}</th>
     </tr>
     </thead>
+    {% endblock doc_lines_header %}
 
     {# GOODS #}
+    {% set pages = subject|document_goods_rows %}
     {% set grossTotal, discountTotal, baseTotal = 0, 0, 0 %}
-    {% set goodRows = subject|document_goods_rows %}
     {% set discountLines = subject.linesByType('discount') -%}
     {% set shipmentLines = subject.linesByType('shipment') -%}
 
     <tbody class="stripped">
-    {% for row in goodRows %}
+    {% for page in pages %}
+
+    {% if loop.index0 > 0 %}
+    </tbody>
+</table>
+{{ block('doc_footer') }}
+{{ '</div><div class="wrapper">' }}
+{{ block('doc_title') }}
+<table class="bloc table details">
+    {{ block('doc_lines_header') }}
+    <tbody class="stripped">
+    {% endif %}
+
+    {% for row in page %}
         {% set grossTotal = grossTotal + row.gross %}
         {% set discountTotal = discountTotal + row.discount %}
         {% set baseTotal = baseTotal + row.base %}
         <tr{% if row.virtual %} class="virtual"{% endif %}>
-            <td style="padding-left:{{ 8 + (16 * row.level) }}px">
+            <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
                 {%- if row.url is not empty -%}
-                    <a href="{{ row.url }}">{{- row.designation -}}</a>
+                    <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
                 {%- else -%}
-                    {{- row.designation -}}
+                    <span title="{{ row.designation }}">{{ row.designation -}}</span>
                 {%- endif -%}
                 {%- if row.description is not empty -%}
                     <br><p class="description">{{ row.description|nl2br }}</p>
@@ -149,6 +164,7 @@
                 {%- endif -%}
             </td>
         </tr>
+    {% endfor %}
     {% endfor %}
     </tbody>
 

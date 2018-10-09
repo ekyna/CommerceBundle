@@ -6,7 +6,7 @@
 
 
 {# --- DOC TITLE --- #}
-{% block doc_title -%}
+{% block doc_title_content -%}
     <h1>
         {{- 'ekyna_commerce.supplier_order.label.singular'|trans }}
         {{ subject.number -}}
@@ -16,7 +16,7 @@
     {%- else -%}
     <p>Le {{ subject.createdAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
     {%- endif -%}
-{%- endblock doc_title %}
+{%- endblock doc_title_content %}
 
 
 {# --- ADDRESSES --- #}

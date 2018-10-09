@@ -26,9 +26,11 @@
 
 
 {# --- TITLE --- #}
+{% block doc_title %}
 <div class="bloc title">
-{% block doc_title %}<h1>Sale document</h1>{% endblock doc_title %}
+{% block doc_title_content %}<h1>Sale document</h1>{% endblock doc_title_content %}
 </div>
+{% endblock doc_title %}
 
 
 {# --- ADDRESSES --- #}
@@ -87,8 +89,10 @@
 
 
 {# --- FOOTER --- #}
+{% block doc_footer %}
 <div class="bloc footer">
-    {% block doc_footer %}
+    {% block doc_footer_content %}
         {{- get_setting('commerce.invoice_footer')|raw -}}
-    {% endblock doc_footer %}
+    {% endblock doc_footer_content %}
 </div>
+{% endblock doc_footer %}

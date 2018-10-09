@@ -18,15 +18,29 @@ class DocumentRowsBuilder
      */
     protected $subjectHelper;
 
+    /**
+     * @var array
+     */
+    protected $config;
+
 
     /**
      * Constructor.
      *
      * @param SubjectHelper $subjectHelper
+     * @param array         $config
      */
-    public function __construct(SubjectHelper $subjectHelper)
+    public function __construct(SubjectHelper $subjectHelper, array $config = [])
     {
         $this->subjectHelper = $subjectHelper;
+
+        $this->config = array_replace([
+            'row_height'      => 20,
+            'row_desc_height' => 31,
+            'page_height'     => 766,
+            'header_height'   => 286,
+            'footer_height'   => 150,
+        ], $config);
     }
 
     /**
@@ -38,10 +52,14 @@ class DocumentRowsBuilder
      */
     public function buildGoodRows(Model\DocumentInterface $document)
     {
-        $result = $parentIds = [];
         $ati = $document->isAti();
 
         $lines = $document->getLinesByType(Model\DocumentLineTypes::TYPE_GOOD);
+
+        $groups = [];
+        $group = ['height' => 0, 'rows' => []];
+        $totalHeight = 0;
+        $parentIds = [];
 
         foreach ($lines as $line) {
             $item = $line->getSaleItem();
@@ -62,15 +80,66 @@ class DocumentRowsBuilder
                     continue;
                 }
 
-                $result[] = $this->buildRowByItem($parent, $level - 1);
+                //  New group
+                if ($level - 1 == 0 && !empty($group['rows'])) {
+                    $groups[] = $group;
+                    $group = ['height' => 0, 'rows' => []];
+                }
+
+                // Add parent row
+                $group['rows'][] = $row = $this->buildRowByItem($parent, $level - 1);
+                $rowHeight = empty($row['description']) ? $this->config['row_height'] : $this->config['row_desc_height'];
+                $group['height'] += $rowHeight;
+                $totalHeight += $rowHeight;
 
                 $parentIds[] = $parent->getId();
             }
 
-            $result[] = $this->buildRowByLine($line, $level, $ati);
+            //  New group
+            if ($level == 0 && !empty($group['rows'])) {
+                $groups[] = $group;
+                $group = ['height' => 0, 'rows' => []];
+            }
+
+            // Add row
+            $group['rows'][] = $row = $this->buildRowByLine($line, $level, $ati);
+            $rowHeight = empty($row['description']) ? $this->config['row_height'] : $this->config['row_desc_height'];
+            $group['height'] += $rowHeight;
+            $totalHeight += $rowHeight;
         }
 
-        return $result;
+        $pages = $page = [];
+        $pageHeight = 0;
+        foreach ($groups as $group) {
+            $max = $this->config['page_height'];
+
+            // If first page : keep space for customer addresses, etc...
+            if (empty($pages)) {
+                $max -= $this->config['header_height'];
+            }
+
+            if (
+                ($totalHeight < $max && $totalHeight + $this->config['footer_height'] > $max) // Last page needs space for totals rows
+                || ($pageHeight + $group['height'] > $max)
+            ) {
+                $pages[] = $page;
+                $page = [];
+
+                $totalHeight -= $pageHeight;
+                $pageHeight = 0;
+            }
+
+            $pageHeight += $group['height'];
+            foreach ($group['rows'] as $row) {
+                $page[] = $row;
+            }
+        }
+
+        if (!empty($page)) {
+            $pages[] = $page;
+        }
+
+        return $pages;
     }
 
     /**

@@ -158,6 +158,8 @@ table.header {
                 color: @head-color;
                 font-size: @font-size - 1;
                 text-align: left;
+                word-break: keep-all;
+                white-space: nowrap;
             }
 
             td.total {
@@ -176,6 +178,20 @@ table.header {
         tr {
             > td {
 
+                &.designation {
+                    max-width: 440px;
+                }
+
+                > a,
+                > span {
+                    display: inline-block;
+                    max-width: 100%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    line-height: 16px;
+                }
+
                 > a {
                     border-bottom: 1px dotted @head-color;
                 }
@@ -185,6 +201,10 @@ table.header {
                     padding: 0 0 0 12px;
                     font-size: @font-size - 2;
                     color: lighten(@text-color, 20%);
+                    max-width: 100%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
 
@@ -229,6 +249,10 @@ table.header {
         text-rendering: optimizeLegibility;
     }
 
+    .page-break {
+        page-break-after: always;
+    }
+
     .wrapper {
         position: relative;
         page-break-after: always;
@@ -242,7 +266,7 @@ table.header {
             position: absolute;
             margin: 0;
             bottom: @margin;
-            left: @margin;
+            left: 0;
             right: @margin;
         }
     }

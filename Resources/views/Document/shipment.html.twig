@@ -5,7 +5,7 @@
 
 
 {# --- TITLE --- #}
-{% block doc_title -%}
+{% block doc_title_content -%}
 {% spaceless %}
     <h1>
         {{- ('ekyna_commerce.document.type.' ~ (subject.return ? 'return' : 'shipment') ~ '_' ~ type)|trans }}
@@ -21,7 +21,7 @@
         {%- endif %}
     </p>{# TODO trans #}
     {% endspaceless %}
-{%- endblock doc_title %}
+{%- endblock doc_title_content %}
 
 
 {# --- ADDRESSES --- #}
@@ -78,6 +78,39 @@
         {% endfor %}
         </tbody>
     </table>
+
+    {% if type == 'bill' and not subject.return %}
+        {% set remaining = subject|shipment_remaining_list %}
+        {% if remaining.entries is not empty %}
+        <p style="margin-top:60px;">
+            {%- if remaining.estimatedShippingDate is null -%}
+                {{ 'ekyna_commerce.document.mention.remaining_unknown'|trans }}
+            {%- else -%}
+                {{ 'ekyna_commerce.document.mention.remaining_with_date'|trans({
+                    '%date%': remaining.estimatedShippingDate|localizeddate('long', 'none')
+                }) }}
+            {%- endif -%}
+        </p>
+        <table class="bloc table details">
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+                <th>{{ 'ekyna_core.field.reference'|trans }}</th>
+                <th class="text-right">{{ 'ekyna_core.field.quantity'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody class="stripped">
+            {% for entry in remaining.entries %}
+                <tr>
+                    <td>{{ entry.saleItem.designation }}</td>
+                    <td>{{ entry.saleItem.reference }}</td>
+                    <td class="text-right">{{ entry.quantity|localizednumber }}</td>{# TODO Packing format #}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    {% endif %}
 {% endspaceless %}
 {% endblock doc_lines %}
 
