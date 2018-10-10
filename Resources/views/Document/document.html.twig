@@ -75,6 +75,7 @@
 
     {# GOODS #}
     {% set pages = subject|document_pages %}
+    {% set linesCount = 0 %}
     {% set grossTotal, discountTotal, baseTotal = 0, 0, 0 %}
     {% set discountLines = subject.linesByType('discount') -%}
     {% set shipmentLines = subject.linesByType('shipment') -%}
@@ -95,6 +96,7 @@
     {% endif %}
 
     {% for row in page %}
+        {% set linesCount = linesCount + 1 %}
         {% set grossTotal = grossTotal + row.gross %}
         {% set discountTotal = discountTotal + row.discount %}
         {% set baseTotal = baseTotal + row.base %}
@@ -172,7 +174,7 @@
 
     <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
 
-    {% if line_discount or (1 < goodRows|length and discountLines is not empty) -%}
+    {% if line_discount or (1 < linesCount and discountLines is not empty) -%}
     <tbody class="totals">
         <tr>
             <td colspan="{{ columns_count - (line_discount ? 4 : 1) }}">{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</td>

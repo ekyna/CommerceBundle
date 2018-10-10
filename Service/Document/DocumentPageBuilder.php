@@ -157,6 +157,11 @@ class DocumentPageBuilder
             $totalHeight += $rowHeight;
         }
 
+        //  Add group if not empty
+        if (!empty($group['rows'])) {
+            $groups[] = $group;
+        }
+
         return $this->buildPages($groups, $totalHeight, spl_object_id($document));
     }
 
@@ -239,6 +244,11 @@ class DocumentPageBuilder
 
             $group['height'] += $this->config['row_height'];
             $totalHeight += $this->config['row_height'];
+        }
+
+        //  Add group if not empty
+        if (!empty($group['rows'])) {
+            $groups[] = $group;
         }
 
         return $this->buildPages($groups, $totalHeight, spl_object_id($shipment));
@@ -327,6 +337,11 @@ class DocumentPageBuilder
             ];
             $group['height'] += $this->config['row_height'];
             $totalHeight += $this->config['row_height'];
+        }
+
+        //  Add group if not empty
+        if (!empty($group['rows'])) {
+            $groups[] = $group;
         }
 
         return [
