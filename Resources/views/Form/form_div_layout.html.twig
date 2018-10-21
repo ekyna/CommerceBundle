@@ -1087,7 +1087,7 @@
 
 {% block ekyna_commerce_relay_point_row %}
 {% spaceless %}
-<div class="commerce-relay-point" style="display:none">
+<div class="commerce-relay-point" style="display:none" data-map-api-key="{{ map_api_key }}">
     {{ block('form_row') }}
 </div>
 {% endspaceless %}
@@ -1098,10 +1098,10 @@
 {% spaceless %}
     <div class="panel panel-default">
         <div class="panel-body">
-            <p class="relay-point-address"{% if relayPoint is null %} style="display: none;"{% endif %}>
-                {%- if relayPoint is not null %}{{ relayPoint|address }}{% endif -%}
+            <p class="relay-point-address"{% if relay_point is null %} style="display: none;"{% endif %}>
+                {%- if relay_point is not null %}{{ relay_point|address }}{% endif -%}
             </p>
-            <p class="relay-point-none"{% if relayPoint is not null %} style="display: none;"{% endif %}>
+            <p class="relay-point-none"{% if relay_point is not null %} style="display: none;"{% endif %}>
                 {{- 'ekyna_commerce.relay_point.message.choose'|trans -}}
             </p>
         </div>

@@ -2,7 +2,8 @@
 {% for rp in relay_points %}
     <div class="rp-point">
         <label for="rp_{{ loop.index0 }}">
-            <input type="radio" name="rp_point" id="rp_{{ loop.index0 }}" value="{{ rp.number }}">
+            <input type="radio" name="rp_point" id="rp_{{ loop.index0 }}" value="{{ rp.number }}" data-point='{{ rp|json_encode }}'>
+            {% if 0 < rp.distance %}({{ rp.distance }} m) {% endif %}
             <strong>{{ rp.company }}</strong><br>
             {{ rp.street }}<br>
             {{ rp.postal_code }} {{ rp.city }}
@@ -12,7 +13,7 @@
             <table>
                 {% for oh in rp.opening_hours %}
                 <tr>
-                    <td>{{ oh.day }}</td>
+                    <td>{{ oh.label|capitalize }}</td>
                     {% for rg in oh.ranges|slice(0, 2) %}
                         <td>{{ rg.from }} - {{ rg.to }}</td>
                     {% endfor %}

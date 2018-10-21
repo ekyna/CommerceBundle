@@ -1,4 +1,5 @@
 {% spaceless %}
+{% if 0 < distance %}({{ distance }} m) {% endif %}
 {% if company is not empty %}<strong><em>{{ company }}</em></strong><br>{% endif %}
 {{ street }}
 {% if complement is not empty %}<br>{{ complement }}{% endif %}

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -24,21 +24,7 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInterface, ContainerAwareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-
-    /**
-     * Sets the container.
-     *
-     * @param ContainerInterface $container
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
+    use ContainerAwareTrait;
 
     /**
      * {@inheritdoc}
@@ -334,6 +320,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
             $position++;
         }
+
         $em->flush();
     }
 

@@ -30,17 +30,23 @@ class RelayPointType extends AbstractType
      */
     private $serializer;
 
+    /**
+     * @var string
+     */
+    private $mapApiKey;
 
     /**
      * Constructor.
      *
      * @param RelayPointRepositoryInterface $repository
      * @param SerializerInterface           $serializer
+     * @param string                        $mapApiKey
      */
-    public function __construct(RelayPointRepositoryInterface $repository, SerializerInterface $serializer)
+    public function __construct(RelayPointRepositoryInterface $repository, SerializerInterface $serializer, $mapApiKey)
     {
         $this->repository = $repository;
         $this->serializer = $serializer;
+        $this->mapApiKey = $mapApiKey;
     }
 
     /**
@@ -56,7 +62,8 @@ class RelayPointType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['relayPoint'] = $relayPoint = $form->getData();
+        $view->vars['map_api_key'] = $this->mapApiKey;
+        $view->vars['relay_point'] = $relayPoint = $form->getData();
 
         // Default search (street / postalCode / city)
         /** @var AddressInterface $init */

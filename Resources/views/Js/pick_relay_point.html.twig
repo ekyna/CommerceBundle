@@ -1,15 +1,15 @@
 <form class="form-horizontal commerce-pick-relay-point" onsubmit="return false;">
     <div class="rp-result">
         <div class="rp-list-wrap">
-            <div class="rp-list"></div>
+            <div class="rp-list" id="relay-point-list"></div>
         </div>
-        <div class="rp-map">
+        <div class="rp-map" id="relay-point-map">
             <span class="fa fa-map-marker"></span>
         </div>
     </div>
     <div class="rp-form">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="form-group form-group-sm">
                     <label for="rp_street" class="col-md-2 control-label required">Rue</label>
                     <div class="col-md-10">
@@ -32,6 +32,11 @@
                         <input name="city" type="text" class="form-control" id="rp_city" placeholder="Ville" required>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-default select-search-point disabled">
+                    <i class="fa fa-map-marker"></i>
+                </button>
             </div>
         </div>
     </div>

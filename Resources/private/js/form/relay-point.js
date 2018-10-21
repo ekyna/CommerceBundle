@@ -35,10 +35,32 @@ define([
                 $searchButton = $form.find('button.relay-point-search'),
                 $clearButton = $form.find('button.relay-point-clear'),
                 $method = $form.closest('form').find('.shipment-method, input[name="shipment[shipmentMethod]"]'),
-                $modalForm = null, $modalList = null, $modalButton = null,
+                $modalForm = null, $modalList = null, $modalButton = null, $selectSearchPoint = null,
                 initial = $input.data('initial'), search = $input.data('search'),
                 support = false, gateway = false, platform = false,
-                dialog = null, queryTimeout = null, queryXhr = null;
+                dialog = null, queryTimeout = null, queryXhr = null,
+                map = null, geocoder = null, searchMarker = null, pointMarkers = [], infoWindow;
+
+            var defaultIcon = {
+                path: 'M14.21,42C14.21,29,26,23.94,26,13.5a12.5,12.5,0,0,0-25,0C1,24,12.79,29,12.79,42Z',
+                size: new google.maps.Size(27, 43),
+                anchor: new google.maps.Point(13, 43),
+                fillColor: 'white',
+                fillOpacity: 0.6,
+                strokeColor: '#337ab7',
+                strokeWeight: 1,
+                strokeOpacity: 0.6
+            };
+            var selectedIcon = {
+                path: 'M14.21,42C14.21,29,26,23.94,26,13.5a12.5,12.5,0,0,0-25,0C1,24,12.79,29,12.79,42Z',
+                size: new google.maps.Size(27, 43),
+                anchor: new google.maps.Point(13, 43),
+                fillColor: '#337ab7',
+                fillOpacity: 1,
+                strokeColor: 'white',
+                strokeWeight: 1,
+                strokeOpacity: 1
+            };
 
             $searchButton.addClass('disabled');
 
@@ -60,12 +82,14 @@ define([
                     }]
                 });
 
+
                 dialog.realize();
 
                 dialog.getModalBody().html(Templates['pick_relay_point.html.twig'].render());
 
                 $modalList = dialog.getModalBody().find('.rp-list');
                 $modalForm = dialog.getModalBody().find('.rp-form');
+                $selectSearchPoint = dialog.getModalBody().find('.select-search-point');
                 $modalButton = dialog.getModalFooter().find('.btn-primary').prop('disabled', true);
 
                 $modalForm.find('input[type="text"][required]').requiredInputWidget();
@@ -81,12 +105,10 @@ define([
                         queryTimeout = null;
                     }
 
-                    var data = {street: '', postalCode: '', city: ''},
-                        formArray = dialog.getModalBody().find('form').serializeArray();
-                    for (var i = 0; i < formArray.length; i++) {
-                        data[formArray[i]['name']] = formArray[i]['value'].trim();
-                    }
-                    if (!(data.street.length && data.postalCode.length && data.city.length)) {
+                    $selectSearchPoint.addClass('disabled');
+
+                    var data = getFormData();
+                    if (!data) {
                         return;
                     }
 
@@ -95,30 +117,19 @@ define([
                     $modalList.empty().loadingSpinner();
 
                     queryTimeout = setTimeout(function () {
-                        queryRelayPoints(data)
+                        updateMapSearchLocation(data);
+                        queryRelayPoints(data);
                     }, 1000);
                 });
 
                 $modalList.on('change', 'input[type="radio"]', function () {
-                    $modalList
-                        .find('.rp-point.active')
-                        .removeClass('active')
-                        .find('.rp-details')
-                        .slideUp();
-
                     var $choice = $modalList.find('input[type="radio"]:checked');
                     if (1 === $choice.length) {
-                        $choice
-                            .closest('.rp-point')
-                            .addClass('active')
-                            .find('.rp-details')
-                            .slideDown();
-
-                        $modalButton.prop('disabled', false);
+                        selectRelayPoint($choice.val());
                     }
                 });
 
-                $modalButton.on('click', function() {
+                $modalButton.on('click', function () {
                     if ($modalButton.prop('disabled')) {
                         return;
                     }
@@ -151,15 +162,200 @@ define([
                     }
                 });
 
-                if (search) {
-                    dialog.onShown(function() {
+                $selectSearchPoint.on('click', function() {
+                    if ($selectSearchPoint.hasClass('disabled')) {
+                        return;
+                    }
+                    if (map && searchMarker) {
+                        new google.maps.event.trigger(searchMarker, 'click');
+                    }
+                });
+
+                dialog.onShown(function () {
+                    if (search) {
                         $modalForm.find('input[name="street"]').val(search.street).trigger('keyup');
                         $modalForm.find('input[name="postalCode"]').val(search.postal_code).trigger('keyup');
                         $modalForm.find('input[name="city"]').val(search.city).trigger('keyup');
-                    });
-                }
+                    }
+
+                    if (typeof google === 'object' && google.hasOwnProperty('maps')) {
+                        initGMap();
+
+                        return;
+                    }
+
+                    window.initRelayPointMap = initGMap;
+
+                    var script = document.createElement('script');
+                    script.src = 'https://maps.googleapis.com/maps/api/js?key=' + $form.data('map-api-key') + '&callback=initRelayPointMap';
+                    document.body.appendChild(script);
+                });
 
                 dialog.open();
+            }
+
+            function getFormData() {
+                var data = {street: '', postalCode: '', city: ''},
+                    formArray = dialog.getModalBody().find('form').serializeArray();
+
+                for (var i = 0; i < formArray.length; i++) {
+                    data[formArray[i]['name']] = formArray[i]['value'].trim();
+                }
+                if (data.street.length && data.postalCode.length && data.city.length) {
+                    return data;
+                }
+
+                return null;
+            }
+
+            function initGMap() {
+                map = new google.maps.Map(document.getElementById('relay-point-map'), {
+                    center: {lat: 46.52863469527167, lng: 2.43896484375},
+                    zoom: 5,
+                    disableDefaultUI: true
+                });
+                geocoder = new google.maps.Geocoder();
+
+                updateMapSearchLocation(getFormData());
+            }
+
+            function updateMapSearchLocation(data) {
+                if (!map) {
+                    return;
+                }
+
+                if (searchMarker) {
+                    searchMarker.setMap(null);
+                    searchMarker = null;
+                }
+
+                if (!data) {
+                    return;
+                }
+
+                geocoder.geocode(
+                    {'address': data.street + ' ' + data.postalCode + ' ' + data.city},
+                    function (results, status) {
+                        if (status === 'OK') {
+                            map.setCenter(results[0].geometry.location);
+
+                            searchMarker = new google.maps.Marker({
+                                map: map,
+                                position: results[0].geometry.location
+                            });
+
+                            searchMarker.addListener('click', function () {
+                                if (infoWindow) {
+                                    infoWindow.setMap(null);
+                                    infoWindow = null;
+                                }
+
+                                infoWindow = new google.maps.InfoWindow({
+                                    content: '<p>' + data.street + '<br>' + data.postalCode + ' ' + data.city + '</p>'
+                                });
+                                infoWindow.open(map, searchMarker);
+
+                                map.setZoom(12);
+                                map.setCenter(searchMarker.getPosition());
+                            });
+
+                            $selectSearchPoint.removeClass('disabled');
+                        } else {
+                            console.log('Geocode was not successful for the following reason: ' + status);
+                        }
+                    }
+                );
+            }
+
+            function updateMapRelayPoints(response) {
+                if (!map) {
+                    return;
+                }
+
+                // Clear markers
+                for (var i = 0; i < pointMarkers.length; i++) {
+                    pointMarkers[i].setMap(null);
+                }
+
+                // Creates markers
+                pointMarkers = [];
+                $(response.relay_points).each(function (index, point) {
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: {lat: parseFloat(point.latitude), lng: parseFloat(point.longitude)},
+                        icon: defaultIcon
+                    });
+                    marker.set('id', point.number);
+
+                    marker.addListener('click', function () {
+                        selectRelayPoint(point.number);
+                    });
+
+                    pointMarkers.push(marker);
+                });
+
+                // Auto zoom
+                var bounds = new google.maps.LatLngBounds();
+                for (i = 0; i < pointMarkers.length; i++) {
+                    //  And increase the bounds to take this point
+                    bounds.extend(pointMarkers[i].getPosition());
+                }
+                map.fitBounds(bounds);
+            }
+
+            function selectRelayPoint(number) {
+                $modalList
+                    .find('.rp-point.active')
+                    .removeClass('active')
+                    .find('.rp-details')
+                    .slideUp();
+
+                $modalList.find('input[type="radio"]').prop('checked', false);
+
+                if (map) {
+                    for (var i = 0; i < pointMarkers.length; i++) {
+                        pointMarkers[i].setIcon(defaultIcon);
+                    }
+                }
+
+                var $choice = $modalList.find('input[type="radio"][value="' + number + '"]');
+
+                if (1 === $choice.length) {
+                    $choice.prop('checked', true);
+                    $choice
+                        .closest('.rp-point')
+                        .addClass('active')
+                        .find('.rp-details')
+                        .slideDown();
+
+                    $modalList.parent().scrollTop($choice.closest('.rp-point').position().top);
+                    $modalButton.prop('disabled', false);
+
+                    if (!map) {
+                        return;
+                    }
+
+                    if (infoWindow) {
+                        infoWindow.setMap(null);
+                        infoWindow = null;
+                    }
+
+                    var point = $choice.data('point');
+                    for (i = 0; i < pointMarkers.length; i++) {
+                        if (pointMarkers[i].get('id') === number) {
+                            pointMarkers[i].setIcon(selectedIcon);
+                            infoWindow = new google.maps.InfoWindow({
+                                content: Templates['relay_point.html.twig'].render(point)
+                            });
+                            infoWindow.open(map, pointMarkers[i]);
+
+                            map.setZoom(15);
+                            map.setCenter(pointMarkers[i].getPosition());
+
+                            break;
+                        }
+                    }
+                }
             }
 
             function setRelayPoint(point) {
@@ -176,6 +372,8 @@ define([
                     $address.empty().hide();
                     $none.show();
                 }
+
+                // TODO Google map
             }
 
             function onClearClick() {
@@ -191,8 +389,10 @@ define([
 
                 queryXhr.done(function (response) {
                     $modalList.html(Templates['relay_point_list.html.twig'].render(response));
+
+                    updateMapRelayPoints(response);
                 });
-                queryXhr.always(function() {
+                queryXhr.always(function () {
                     $modalList.loadingSpinner('off');
                 })
             }
