@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -208,6 +209,38 @@ class SupplierOrderController extends ResourceController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    public function cancelAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException();
+        }
+
+        $this->isGranted('EDIT');
+
+        $context = $this->loadContext($request);
+
+        $resourceName = $this->config->getResourceName();
+        /** @var SupplierOrderInterface $resource */
+        $resource = $context->getResource($resourceName);
+
+        if ($resource->getState() === SupplierOrderStates::STATE_ORDERED) {
+            $resource->setState(SupplierOrderStates::STATE_CANCELED);
+
+            //$dispatcher = $this->get('ekyna_resource.event_dispatcher');
+            //$event = $dispatcher->createResourceEvent($resource);
+            //$dispatcher->dispatch(SupplierOrderEvents::PRE_SUBMIT, $event);
+
+            $event = $this->getOperator()->update($resource);
+
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        return $this->redirect($this->generateUrl(
+            $this->config->getRoute('show'),
+            $context->getIdentifiers(true)
+        ));
     }
 
     /**

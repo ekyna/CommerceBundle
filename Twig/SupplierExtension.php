@@ -101,6 +101,9 @@ class SupplierExtension extends \Twig_Extension
             new \Twig_SimpleTest('canceled_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_CANCELED;
             }),
+            new \Twig_SimpleTest('received_supplier_order', function (SupplierOrderInterface $order) {
+                return $order->getState() === SupplierOrderStates::STATE_RECEIVED;
+            }),
             new \Twig_SimpleTest('completed_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_COMPLETED;
             }),

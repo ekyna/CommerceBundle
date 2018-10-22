@@ -87,7 +87,7 @@ class PaymentChangeStateCommand extends ContainerAwareCommand
         // Find payment
         $payment = null;
         $operator = null;
-        foreach (['order', 'quote'] as $type) {
+        foreach (['order', 'quote', 'cart'] as $type) {
             $id = "ekyna_commerce.{$type}_payment.repository";
             $repository = $this->getContainer()->get($id);
             if (!$repository instanceof PaymentRepositoryInterface) {

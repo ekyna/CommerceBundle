@@ -3,13 +3,23 @@
 {% block main %}
 {% spaceless %}
 <div class="actions">
-    {#{% if supplierOrder is new_supplier_order -%}#}
+    {% if (supplierOrder is not received_supplier_order) or (supplierOrder is not completed_supplier_order) -%}
         {{- ui_button('ekyna_commerce.supplier_order.button.submit', {
             'path': path('ekyna_commerce_supplier_order_admin_submit', {'supplierOrderId': supplierOrder.id}),
             'type': 'link',
             'theme': (supplierOrder is new_supplier_order ? 'primary' : 'default')
         }) -}}
-    {#{% endif -%}#}
+    {% endif -%}
+    {% if supplierOrder is ordered_supplier_order -%}
+        {{- ui_button('ekyna_core.button.cancel', {
+            'path': path('ekyna_commerce_supplier_order_admin_cancel', {'supplierOrderId': supplierOrder.id}),
+            'type': 'link',
+            'theme': 'warning',
+            'icon': 'remove'
+        }, {
+            'onclick': ('return confirm(\'' ~ ('ekyna_commerce.supplier_order.message.confirm_cancel'|trans) ~ '\')')
+        }) -}}
+    {% endif -%}
     {{- ui_button('ekyna_commerce.supplier_order.button.render', {
         'path': path('ekyna_commerce_supplier_order_admin_render', {'supplierOrderId': supplierOrder.id, '_format': 'pdf'}),
         'type': 'link',

@@ -1567,6 +1567,7 @@ ekyna_commerce:
             render: Bon de commande
         message:
             confirm_item_removal: Confirmer la suppression de cette ligne ?
+            confirm_cancel: Êtes-vous sûr de vouloir annuler cette commande ?
             cant_be_deleted: Cette commande fournisseur a été réceptionnée et ne peut être supprimée.
             cant_be_submitted: Cette commande a déjà été soumise au fournisseur.
             relative_stock_unit_is_shipped: >
