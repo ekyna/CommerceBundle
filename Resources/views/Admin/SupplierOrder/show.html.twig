@@ -20,6 +20,11 @@
             'onclick': ('return confirm(\'' ~ ('ekyna_commerce.supplier_order.message.confirm_cancel'|trans) ~ '\')')
         }) -}}
     {% endif -%}
+    {{ ui_button('ekyna_core.button.notify', {
+        'theme': 'default',
+        'type': 'link',
+        'path': admin_resource_path(supplierOrder, 'notify')
+    }) }}
     {{- ui_button('ekyna_commerce.supplier_order.button.render', {
         'path': path('ekyna_commerce_supplier_order_admin_render', {'supplierOrderId': supplierOrder.id, '_format': 'pdf'}),
         'type': 'link',

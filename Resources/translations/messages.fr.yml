@@ -703,6 +703,7 @@ ekyna_commerce:
             shipment_message: Message livraison
             custom_message: Message personnalisé
             include_view: Détail
+            include_form: Joindre le bon de commande
         include_view:
             none: Non
             after: Après le message
@@ -1554,6 +1555,7 @@ ekyna_commerce:
             edit: Modifier la commande <small>%name%</small>
             remove: Supprimer la commande <small>%name%</small>
             submit: Soumettre la commande <small>%name%</small>
+            notify: Notifier la commande <small>%name%</small>
         tab:
             deliveries: Livraisons
         button:
@@ -1609,6 +1611,27 @@ ekyna_commerce:
             received: Réceptionnée
             completed: Complétée
             canceled: Annulée
+        template:
+            label: Modèle
+            placeholder: Choisissez un modèle
+            estimated_date_of_arrival:
+                label: Délai de livraison
+                subject: Demande de délai de livraison pour la commande %number%
+                message: >
+                    <p>Bonjour,</p>
+                    <p>Pourriez-vous s'il vous plait nous fournir un délai de livraison
+                    pour la commande <strong>%number%</strong> en pièce jointe, et
+                    passée le %date% ?</p>
+                    <p>Cordialement,</p>
+            tracking_information:
+                label: Information de suivi
+                subject: Demande d'information de suivi pour la commande %number%
+                message: >
+                    <p>Bonjour,</p>
+                    <p>Pourriez-vous s'il vous plait nous communiquer le numéro de suivi
+                    et le nom du transporteur pour la commande <strong>%number%</strong>
+                    en pièce jointe, et passée le %date% ?</p>
+                    <p>Cordialement,</p>
         dashboard:
             title: Commandes fournisseur à traiter
             none: Aucune commande fournisseur à traiter

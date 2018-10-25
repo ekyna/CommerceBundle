@@ -915,6 +915,7 @@ class Configuration implements ConfigurationInterface
                                     'new.html'    => 'EkynaCommerceBundle:Admin/SupplierOrder:new.html',
                                     'show.html'   => 'EkynaCommerceBundle:Admin/SupplierOrder:show.html',
                                     'submit.html' => 'EkynaCommerceBundle:Admin/SupplierOrder:submit.html',
+                                    'notify.html' => 'EkynaCommerceBundle:Admin/SupplierOrder:notify.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierOrder')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SupplierOrderController')->end()

@@ -1085,6 +1085,20 @@
 {% endblock ekyna_commerce_supplier_order_item_widget %}
 
 
+{% block ekyna_commerce_supplier_order_template_widget %}
+{% spaceless %}
+    <div class="row commerce-supplier-order-template" data-order-id='{{ form.vars.order_id }}'>
+        <div class="col-md-8">
+            {{ form_widget(form.template) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_widget(form.locale) }}
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock ekyna_commerce_supplier_order_template_widget %}
+
+
 {% block ekyna_commerce_relay_point_row %}
 {% spaceless %}
 <div class="commerce-relay-point" style="display:none" data-map-api-key="{{ map_api_key }}">

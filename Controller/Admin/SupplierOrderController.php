@@ -4,13 +4,17 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
+use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -211,6 +215,13 @@ class SupplierOrderController extends ResourceController
         );
     }
 
+    /**
+     * Supplier order cancel action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function cancelAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
@@ -244,7 +255,7 @@ class SupplierOrderController extends ResourceController
     }
 
     /**
-     * Sale summary action.
+     * Supplier order summary action.
      *
      * @param Request $request
      *
@@ -368,5 +379,142 @@ class SupplierOrderController extends ResourceController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
         ]);
+    }
+
+    /**
+     * Supplier order notify action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function notifyAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException('Not yet supported.');
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var SupplierOrderInterface $resource */
+        $resource = $context->getResource($resourceName);
+
+        $builder = $this->get('ekyna_commerce.notify.builder');
+
+        $notify = $builder->create(NotificationTypes::MANUAL, $resource);
+
+        $builder->build($notify);
+
+        $form = $this->createNotifyForm($resource, $notify);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->get('ekyna_commerce.notify.queue')->add($notify);
+
+            $this->addFlash('ekyna_commerce.notify.message.sent', 'success');
+
+            return $this->redirect($this->generateResourcePath($resource));
+        }
+
+        $this->appendBreadcrumb(
+            sprintf('%s_transform', $resourceName),
+            'ekyna_core.button.notify'
+        );
+
+        return $this->render(
+            $this->config->getTemplate('notify.html'),
+            $context->getTemplateVars([
+                'form' => $form->createView(),
+            ])
+        );
+    }
+
+    /**
+     * Supplier order template action.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function templateAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+
+        /** @var SupplierOrderInterface $order */
+        $order = $context->getResource();
+
+        $this->isGranted('VIEW', $order);
+
+        $formatter = $this->get('ekyna_commerce.util.formatter.default');
+        $translator = $this->get('translator');
+
+        $parameters = [
+            '%number%' => $order->getNumber(),
+            '%date%'   => $formatter->date($order->getOrderedAt()),
+        ];
+
+        $name = $request->attributes->get('name');
+        $locale = $request->query->get('_locale', 'en');
+
+        $id = 'ekyna_commerce.supplier_order.template.%s.%s';
+
+        return new JsonResponse([
+            'subject' => $translator->trans(sprintf($id, $name, 'subject'), $parameters, null, $locale),
+            'message' => $translator->trans(sprintf($id, $name, 'message'), $parameters, null, $locale),
+        ]);
+    }
+
+    /**
+     * Creates the notify form.
+     *
+     * @param SupplierOrderInterface $order
+     * @param Notify                 $notification
+     * @param bool                   $footer
+     *
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    protected function createNotifyForm(SupplierOrderInterface $order, Notify $notification, $footer = true)
+    {
+        $action = $this->generateResourcePath($order, 'notify');
+
+        $form = $this->createForm(NotifyType::class, $notification, [
+            'source'            => $order,
+            'action'            => $action,
+            'attr'              => ['class' => 'form-horizontal'],
+            'method'            => 'POST',
+            'admin_mode'        => true,
+            '_redirect_enabled' => true,
+        ]);
+
+        if ($footer) {
+            $form->add('actions', FormActionsType::class, [
+                'buttons' => [
+                    'send'   => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'button_class' => 'primary',
+                            'label'        => 'ekyna_core.button.send',
+                            'attr'         => ['icon' => 'envelope'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\ButtonType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $this->generateResourcePath($order),
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+        }
+
+        return $form;
     }
 }

@@ -1,0 +1,15 @@
+{% extends "email.html.twig" %}
+
+{% block subject %}
+    {{- notify.subject -}}
+{% endblock subject %}
+
+{% block body %}
+{% spaceless %}
+    {% if notify.customMessage is not empty -%}
+        {{ notify.customMessage|raw }}
+    {%- endif %}
+
+    {{- get_setting('commerce.email_signature')|raw -}}
+{% endspaceless %}
+{% endblock body %}

@@ -1,0 +1,21 @@
+ekyna_commerce:
+    supplier_order:
+        template:
+            label: Template
+            placeholder: Pick a template
+            estimated_date_of_arrival:
+                label: Estimated date of arrival
+                subject: EDA request for order %number%
+                message: >
+                    <p>Hi,</p>
+                    <p>Could you please provide us the estimated delivery date
+                    for the order <strong>%number%</strong> attached to this mail, ordered %date% ?</p>
+                    <p>Regards,</p>
+            tracking_information:
+                label: Information de suivi
+                subject: Tracking information request for order %number%
+                message: >
+                    <p>Hi,</p>
+                    <p>Could you please provide us the tracking number and the carrier's name
+                    for the order <strong>%number%</strong> attached to this mail, ordered %date% ?</p>
+                    <p>Regards,</p>

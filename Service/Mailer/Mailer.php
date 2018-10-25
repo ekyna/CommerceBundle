@@ -19,6 +19,7 @@ use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use League\Flysystem\FilesystemInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -306,11 +307,32 @@ class Mailer
         $report .= "Subject: {$notify->getSubject()}\n";
 
         // CONTENT
-        $content = $this->templating->render('@EkynaCommerce/Email/sale_notify.html.twig', [
-            'notify'      => $notify,
-            'sale'        => $this->getNotifySale($notify),
-            'attachments' => $attachments,
-        ]);
+        $source = $notify->getSource();
+        if ($source instanceof SupplierOrderInterface) {
+            // Supplier order form
+            if ($notify->isIncludeForm()) {
+                $renderer = $this->rendererFactory->createRenderer($source);
+                $content = $renderer->render(RendererInterface::FORMAT_PDF);
+                $filename = $renderer->getFilename() . '.pdf';
+
+                $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+
+                $attachments[$filename] = $this->translator->trans('ekyna_commerce.document.type.form');
+                $report .= "Attachment: $filename\n";
+            }
+
+            $content = $this->templating->render('@EkynaCommerce/Email/supplier_order_notify.html.twig', [
+                'notify'      => $notify,
+                'order'       => $source,
+                'attachments' => $attachments,
+            ]);
+        } else {
+            $content = $this->templating->render('@EkynaCommerce/Email/sale_notify.html.twig', [
+                'notify'      => $notify,
+                'sale'        => $this->getNotifySale($notify),
+                'attachments' => $attachments,
+            ]);
+        }
         $message->setBody($content, 'text/html');
 
         $notify->setReport($report);

@@ -484,6 +484,7 @@ class SaleController extends AbstractSaleController
                 }
             } else {
                 $event->toFlashes($this->getFlashBag());
+
                 return $this->redirect($this->generateResourcePath($targetSale));
             }
         }
@@ -581,7 +582,7 @@ class SaleController extends AbstractSaleController
 
         if (null !== $path = $request->query->get('_redirect')) {
             $redirect = $path;
-        } elseif(null !== $referer = $request->headers->get('referer')) {
+        } elseif (null !== $referer = $request->headers->get('referer')) {
             $redirect = $referer;
         } else {
             $redirect = $this->generateResourcePath($sale);
@@ -620,7 +621,7 @@ class SaleController extends AbstractSaleController
 
         if (null !== $path = $request->query->get('_redirect')) {
             $redirect = $path;
-        } elseif(null !== $referer = $request->headers->get('referer')) {
+        } elseif (null !== $referer = $request->headers->get('referer')) {
             $redirect = $referer;
         } else {
             $redirect = $this->generateResourcePath($sale);
@@ -783,7 +784,7 @@ class SaleController extends AbstractSaleController
                             'attr'         => ['icon' => 'ok'],
                         ],
                     ],
-                    'cancel' => [
+                    'cancel'    => [
                         'type'    => Type\ButtonType::class,
                         'options' => [
                             'label'        => 'ekyna_core.button.cancel',
@@ -841,7 +842,7 @@ class SaleController extends AbstractSaleController
                             'attr'         => ['icon' => 'ok'],
                         ],
                     ],
-                    'cancel' => [
+                    'cancel'    => [
                         'type'    => Type\ButtonType::class,
                         'options' => [
                             'label'        => 'ekyna_core.button.cancel',
@@ -872,7 +873,7 @@ class SaleController extends AbstractSaleController
         $action = $this->generateResourcePath($sale, 'notify');
 
         $form = $this->createForm(NotifyType::class, $notification, [
-            'sale'              => $sale,
+            'source'            => $sale,
             'action'            => $action,
             'attr'              => ['class' => 'form-horizontal'],
             'method'            => 'POST',

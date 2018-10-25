@@ -18,6 +18,7 @@ use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -69,11 +70,20 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      */
     public function buildRecipients(NotifyEvent $event)
     {
-        if (null === $sale = $this->getSaleFromEvent($event)) {
+        $notify = $event->getNotify();
+
+        $source = $notify->getSource();
+        if ($source instanceof SupplierOrderInterface) {
+            if (null !== $supplier = $source->getSupplier()) {
+                $notify->addRecipient($this->helper->createRecipient($supplier, 'Fournisseur'));
+            }
+
             return;
         }
 
-        $notify = $event->getNotify();
+        if (null === $sale = $this->getSaleFromEvent($event)) {
+            return;
+        }
 
         // Sender
         $from = $this->helper->createWebsiteRecipient();
@@ -122,12 +132,18 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      */
     public function buildSubject(NotifyEvent $event)
     {
-        if (null === $sale = $this->getSaleFromEvent($event)) {
+        $notify = $event->getNotify();
+
+        $source = $notify->getSource();
+        if ($source instanceof SupplierOrderInterface) {
+            $notify->setSubject(sprintf('Order %s', $source->getNumber()));
+
             return;
         }
 
-        $notify = $event->getNotify();
-
+        if (null === $sale = $this->getSaleFromEvent($event)) {
+            return;
+        }
 
         if ($notify->getType() === NotificationTypes::MANUAL) {
             if ($sale instanceof OrderInterface) {

@@ -389,6 +389,12 @@
             <tag name="form.type"/>
             <tag name="form.js" selector=".commerce-supplier-submit" path="ekyna-commerce/form/supplier-order"/>
         </service>
+        <!-- Supplier order template form type -->
+        <service id="ekyna_product.supplier_order_template.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderTemplateType">
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-supplier-order-template" path="ekyna-commerce/form/supplier-order-template"/>
+        </service>
 
         <!-- Sale add item form flow -->
         <service id="ekyna_commerce.sale_item_create.form_flow"

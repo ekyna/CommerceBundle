@@ -13,6 +13,8 @@ use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\RecipientList;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 
 /**
  * Class RecipientHelper
@@ -149,6 +151,68 @@ class RecipientHelper
     }
 
     /**
+     * Creates the 'from' list from the given supplier order.
+     *
+     * @param SupplierOrderInterface $order
+     *
+     * @return Recipient[]
+     */
+    public function createFromListFromSupplierOrder(SupplierOrderInterface $order)
+    {
+        $from = new RecipientList();
+
+        /** @var UserInterface[] $administrators */
+        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
+        foreach ($administrators as $administrator) {
+            $from->add($this->createRecipient($administrator, 'Administrateur'));
+        }
+
+        $from->add($this->createWebsiteRecipient());
+
+        return $from->all();
+    }
+
+    /**
+     * Creates the recipient list from the given supplier order.
+     *
+     * @param SupplierOrderInterface $order
+     *
+     * @return Recipient[]
+     */
+    public function createRecipientListFromSupplierOrder(SupplierOrderInterface $order)
+    {
+        $list = new RecipientList();
+
+        if ($supplier = $order->getSupplier()) {
+            $list->add($this->createRecipient($supplier, 'Fournisseur')); // TODO constant / translation
+        }
+
+        return $list->all();
+    }
+
+    /**
+     * Creates the copy list from the given supplier order.
+     *
+     * @param SupplierOrderInterface $order
+     *
+     * @return array
+     */
+    public function createCopyListFromSupplierOrder(SupplierOrderInterface $order)
+    {
+        $copies = new RecipientList();
+
+        /** @var UserInterface[] $administrators */
+        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
+        foreach ($administrators as $administrator) {
+            $copies->add($this->createRecipient($administrator, 'Administrateur'));
+        }
+
+        $copies->add($this->createWebsiteRecipient());
+
+        return $copies->all();
+    }
+
+    /**
      * Returns the general website recipient.
      *
      * @return Recipient
@@ -192,6 +256,12 @@ class RecipientHelper
 
         if ($element instanceof SaleInterface || $element instanceof CustomerInterface) {
             return new Recipient($element->getEmail(), $element->getFirstName() . ' ' . $element->getLastName(), $type);
+        }
+
+        if ($element instanceof SupplierInterface) {
+            $name = !$element->isIdentityEmpty() ? $element->getFirstName() . ' ' . $element->getLastName() : null;
+
+            return new Recipient($element->getEmail(), $name, $type);
         }
 
         throw new InvalidArgumentException(sprintf(
