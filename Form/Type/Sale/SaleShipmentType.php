@@ -117,7 +117,7 @@ class SaleShipmentType extends AbstractType
         $view->vars['resolved_price'] = 0;
 
         if (null !== $price = $this->shipmentPriceResolver->getPriceBySale($sale)) {
-            $view->vars['resolved_price'] = $price->isFree() ? 0 : $price->getNetPrice();
+            $view->vars['resolved_price'] = $price->isFree() ? 0 : $price->getPrice();
         }
     }
 

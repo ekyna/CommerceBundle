@@ -1,5 +1,5 @@
 {% spaceless %}
-    <p class="h4">
+    <p class="h4 checkout-heading">
         {% set amount = sale.remainingAmount %}
         {% if 0 < sale.depositTotal and amount == sale.depositTotal %}
             {{- 'ekyna_commerce.checkout.payment.deposit_amount'|trans({

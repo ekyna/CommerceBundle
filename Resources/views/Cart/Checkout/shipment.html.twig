@@ -17,6 +17,11 @@
 
         <div class="row">
             <div class="col-md-8">
+                <p class="checkout-heading">
+                    {{ 'ekyna_commerce.checkout.shipment.total_weight'|trans }} :
+                    <strong>{{ cart.weightTotal|localizednumber }}&nbsp;kg</strong>
+                </p>
+
                 {{ bootstrap_set_style('horizontal') }}
                 {{ bootstrap_set_col_size('md') }}
                 {{ bootstrap_set_label_col(2) }}

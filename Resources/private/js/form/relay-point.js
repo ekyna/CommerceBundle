@@ -39,28 +39,8 @@ define([
                 initial = $input.data('initial'), search = $input.data('search'),
                 support = false, gateway = false, platform = false,
                 dialog = null, queryTimeout = null, queryXhr = null,
-                map = null, geocoder = null, searchMarker = null, pointMarkers = [], infoWindow;
-
-            var defaultIcon = {
-                path: 'M14.21,42C14.21,29,26,23.94,26,13.5a12.5,12.5,0,0,0-25,0C1,24,12.79,29,12.79,42Z',
-                size: new google.maps.Size(27, 43),
-                anchor: new google.maps.Point(13, 43),
-                fillColor: 'white',
-                fillOpacity: 0.6,
-                strokeColor: '#337ab7',
-                strokeWeight: 1,
-                strokeOpacity: 0.6
-            };
-            var selectedIcon = {
-                path: 'M14.21,42C14.21,29,26,23.94,26,13.5a12.5,12.5,0,0,0-25,0C1,24,12.79,29,12.79,42Z',
-                size: new google.maps.Size(27, 43),
-                anchor: new google.maps.Point(13, 43),
-                fillColor: '#337ab7',
-                fillOpacity: 1,
-                strokeColor: 'white',
-                strokeWeight: 1,
-                strokeOpacity: 1
-            };
+                map = null, geocoder = null, searchMarker = null, pointMarkers = [],
+                infoWindow, defaultIcon, selectedIcon;
 
             $searchButton.addClass('disabled');
 
@@ -209,6 +189,27 @@ define([
             }
 
             function initGMap() {
+                defaultIcon = {
+                    path: 'M14.21,42C14.21,29,26,23.94,26,13.5a12.5,12.5,0,0,0-25,0C1,24,12.79,29,12.79,42Z',
+                    size: new google.maps.Size(27, 43),
+                    anchor: new google.maps.Point(13, 43),
+                    fillColor: 'white',
+                    fillOpacity: 0.6,
+                    strokeColor: '#337ab7',
+                    strokeWeight: 1,
+                    strokeOpacity: 0.6
+                };
+                selectedIcon = {
+                    path: 'M14.21,42C14.21,29,26,23.94,26,13.5a12.5,12.5,0,0,0-25,0C1,24,12.79,29,12.79,42Z',
+                    size: new google.maps.Size(27, 43),
+                    anchor: new google.maps.Point(13, 43),
+                    fillColor: '#337ab7',
+                    fillOpacity: 1,
+                    strokeColor: 'white',
+                    strokeWeight: 1,
+                    strokeOpacity: 1
+                };
+
                 map = new google.maps.Map(document.getElementById('relay-point-map'), {
                     center: {lat: 46.52863469527167, lng: 2.43896484375},
                     zoom: 5,

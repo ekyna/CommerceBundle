@@ -31,39 +31,44 @@ class ShipmentRuleType extends ResourceTableType
                 ],
                 'position'             => 10,
             ])
+            ->addColumn('vatMode', VatDisplayModeType::class, [
+                'label'    => 'ekyna_commerce.shipment_rule.field.vat_mode',
+                'position' => 20,
+            ])
             ->addColumn('methods', DType\Column\EntityType::class, [
                 'label'        => 'ekyna_commerce.shipment_method.label.plural',
                 'entity_label' => 'name',
-                'position'     => 20,
+                'position'     => 30,
             ])
             ->addColumn('countries', DType\Column\EntityType::class, [
                 'label'        => 'ekyna_commerce.country.label.plural',
                 'entity_label' => 'name',
-                'position'     => 30,
+                'position'     => 40,
             ])
             ->addColumn('customerGroups', DType\Column\EntityType::class, [
                 'label'        => 'ekyna_commerce.customer_group.label.plural',
                 'entity_label' => 'name',
-                'position'     => 40,
-            ])
-            ->addColumn('baseTotal', BType\Column\PriceType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.base_total',
-                'currency' => 'EUR', // TODO
-                'position' => 50,
-            ])
-            ->addColumn('vatMode', VatDisplayModeType::class, [
-                'label'    => 'ekyna_commerce.shipment_rule.field.vat_mode',
-                'position' => 60,
+                'position'     => 50,
             ])
             ->addColumn('startAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_commerce.shipment_rule.field.start_at',
                 'time_format' => 'none',
-                'position'    => 70,
+                'position'    => 60,
             ])
             ->addColumn('endAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_commerce.shipment_rule.field.end_at',
                 'time_format' => 'none',
-                'position'    => 80,
+                'position'    => 70,
+            ])
+            ->addColumn('baseTotal', BType\Column\PriceType::class, [
+                'label'    => 'ekyna_commerce.shipment_rule.field.base_total',
+                'currency' => 'EUR', // TODO
+                'position' => 80,
+            ])
+            ->addColumn('netPrice', BType\Column\PriceType::class, [
+                'label'    => 'ekyna_commerce.field.net_price',
+                'currency' => 'EUR', // TODO
+                'position' => 90,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

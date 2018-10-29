@@ -19,9 +19,7 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                 $customerChoice.on('change', function() {
                     $choiceSelect
                         .empty()
-                        .append(
-                            $('<option value>Choose</option>')
-                        )
+                        .append($('<option value>Choose</option>'))
                         .prop('disabled', true);
 
                     var customerId = $(this).val();

@@ -68,7 +68,7 @@ class ShipmentMethodPickType extends AbstractType
     private $availableMethods;
 
     /**
-     * @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface[]
+     * @var \Ekyna\Component\Commerce\Shipment\Model\ResolvedShipmentPrice[]
      */
     private $availablePrices;
 
@@ -115,7 +115,6 @@ class ShipmentMethodPickType extends AbstractType
         $this->availablePrices = [];
         $this->context = $this->contextProvider->getContext($sale);
 
-        $hasMobile = null;
         if (null !== $sale) {
             $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale, $availableOnly);
 
@@ -130,11 +129,10 @@ class ShipmentMethodPickType extends AbstractType
             }
         }
 
-        $sorting = ['position' => 'ASC'];
         $criteria = $availableOnly ? ['available' => true, 'enabled' => true] : ['enabled' => true];
 
         return $this->availableMethods = $this->filterMethods(
-            (array)$this->methodRepository->findBy($criteria, $sorting),
+            (array)$this->methodRepository->findBy($criteria, ['position' => 'ASC']),
             $return
         );
     }
@@ -169,7 +167,7 @@ class ShipmentMethodPickType extends AbstractType
      *
      * @param ShipmentMethodInterface $method
      *
-     * @return \Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface|null
+     * @return \Ekyna\Component\Commerce\Shipment\Model\ResolvedShipmentPrice|null
      */
     private function findPriceByMethod(ShipmentMethodInterface $method)
     {
@@ -203,9 +201,8 @@ class ShipmentMethodPickType extends AbstractType
             'data-mobile'   => $gateway->requires(GatewayInterface::REQUIREMENT_MOBILE) ? 1 : 0,
         ];
 
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface $price */
         if (null !== $price = $this->findPriceByMethod($method)) {
-            $attr['data-price'] = $price->getNetPrice();
+            $attr['data-price'] = $price->getPrice();
         }
 
         return $attr;
@@ -220,16 +217,15 @@ class ShipmentMethodPickType extends AbstractType
      */
     public function buildChoiceLabel(ShipmentMethodInterface $method)
     {
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface $price */
         if (null !== $price = $this->findPriceByMethod($method)) {
             if ($price->isFree()) {
                 $amount = $this->translator->trans('ekyna_commerce.checkout.shipment.free_shipping');
             } else {
-                $amount = $net = $price->getNetPrice();
+                $amount = $net = $price->getPrice();
                 if ($this->context->isAtiDisplayMode()) {
                     $suffix = $this->translator->trans('ekyna_commerce.pricing.vat_display_mode.ati');
-                    foreach ($price->getTaxes() as $tax) {
-                        $amount += $net * $tax->getRate() / 100;
+                    foreach ($price->getTaxes() as $rate) {
+                        $amount += $net * $rate / 100;
                     }
                 } else {
                     $suffix = $this->translator->trans('ekyna_commerce.pricing.vat_display_mode.net');

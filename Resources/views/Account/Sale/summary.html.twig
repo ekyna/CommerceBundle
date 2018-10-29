@@ -32,6 +32,12 @@
             <th class="text-right">{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
             <td class="text-right">{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}</td>
         </tr>
+        {% if not delivery or sale.shipmentMethod is null -%}
+        <tr>
+            <th class="text-right">{{ 'ekyna_commerce.sale.field.weight_total'|trans }}</th>
+            <td class="text-right">{{ sale.weightTotal|localizednumber }}&nbsp;kg</td>
+        </tr>
+        {%- endif %}
         </tbody>
     </table>
 </div>

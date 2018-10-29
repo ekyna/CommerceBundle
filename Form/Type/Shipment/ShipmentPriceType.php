@@ -58,10 +58,10 @@ class ShipmentPriceType extends ResourceFormType
                 ],
             ])
             ->add('netPrice', NumberType::class, [
-                'label'  => 'ekyna_core.field.price',
+                'label'  => 'ekyna_commerce.field.net_price',
                 'scale'  => 5,
                 'attr'   => [
-                    'placeholder' => 'ekyna_core.field.price',
+                    'placeholder' => 'ekyna_commerce.field.net_price',
                     'input_group' => ['append' => '€'],  // TODO by currency
                 ],
             ]);

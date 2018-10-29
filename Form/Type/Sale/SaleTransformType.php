@@ -96,6 +96,7 @@ class SaleTransformType extends AbstractType
                         'sale'      => $sale,
                         'available' => true,
                         'expanded'  => false,
+                        'select2'   => false,
                         'attr'      => [
                             'class' => 'sale-shipment-method',
                         ],

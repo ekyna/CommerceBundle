@@ -20,6 +20,7 @@ ekyna_commerce:
         eta: ETA
         sample: Échantillon
         description: Note interne
+        net_price: Prix HT
 
     # TODO group common buttons
     button:
@@ -398,6 +399,7 @@ ekyna_commerce:
             voucher_mandatory: |
                 Veuillez <a href="%url%">ajouter votre bon d'achat</a> si vous souhaitez utiliser votre encours.
         shipment:
+            total_weight: Poids total de votre commande
             free_shipping: Offert
             mobile_required: Ce mode d'expédition nécéssite un numéro de téléphone mobile.
 
@@ -1345,10 +1347,10 @@ ekyna_commerce:
 
     shipment_rule:
         label:
-            singular: Gratuité livraison
-            plural: Gratuités livraison
+            singular: Règle livraison
+            plural: Règles livraison
         header:
-            list: Gratuités livraison <small>Liste des règles</small>
+            list: Règles livraison <small>Liste des règles</small>
             show: Détail de la règle <small>%name%</small>
             new: Créer une nouvelle règle
             edit: Modifier la règle <small>%name%</small>

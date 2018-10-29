@@ -399,6 +399,12 @@ class SupplierOrderController extends ResourceController
         /** @var SupplierOrderInterface $resource */
         $resource = $context->getResource($resourceName);
 
+        if ($resource->getState() === SupplierOrderStates::STATE_NEW) {
+            $this->addFlash("Can't notify non submitted order.", 'warning');
+
+            return $this->redirect($this->generateResourcePath($resource));
+        }
+
         $builder = $this->get('ekyna_commerce.notify.builder');
 
         $notify = $builder->create(NotificationTypes::MANUAL, $resource);

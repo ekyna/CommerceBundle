@@ -471,18 +471,13 @@ class OrderViewType extends AbstractViewType
      */
     private function setShipmentViewClass(Common\SaleInterface $sale, View\LineView $view)
     {
-        $default = 0;
+        if (null === $p = $this->shipmentPriceResolver->getPriceBySale($sale)) {
+            $view->addClass('danger');
 
-        if (!$this->shipmentPriceResolver->hasFreeShipping($sale)) {
-            if (null === $p = $this->shipmentPriceResolver->getPriceBySale($sale)) {
-                $view->addClass('danger');
-                return;
-            }
-
-            $default = $p->getNetPrice();
+            return;
         }
 
-        if (0 !== bccomp($default, $sale->getShipmentAmount(), 3)) {
+        if (0 !== bccomp($p->getPrice(), $sale->getShipmentAmount(), 3)) {
             $view->addClass('warning');
         }
     }

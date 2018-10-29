@@ -115,6 +115,7 @@
                  class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolver">
             <argument type="service" id="ekyna_commerce.shipment_price.repository"/>
             <argument type="service" id="ekyna_commerce.shipment_rule.repository"/>
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
         </service>

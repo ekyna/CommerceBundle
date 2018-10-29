@@ -16,10 +16,22 @@
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="shipment-shipment-rule-general">
-                    {{ show_row(shipmentRule.name, 'text', {
-                        'label': 'ekyna_core.field.name',
-                        'id': 'shipmentRule_name'
-                    }) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(shipmentRule.name, 'text', {
+                                'label': 'ekyna_core.field.name',
+                                'id': 'shipmentRule_name',
+                                'label_col': 4
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(shipmentRule.vatMode, 'vat_display_mode', {
+                                'label': 'ekyna_commerce.shipment_rule.field.vat_mode',
+                                'id': 'shipmentRule_vatMode',
+                                'label_col': 4
+                            }) }}
+                        </div>
+                    </div>
                     {{ show_row(shipmentRule.methods, 'entity', {
                         'label': 'ekyna_commerce.shipment_method.label.plural',
                         'id': 'shipmentRule_methods'
@@ -34,21 +46,6 @@
                     }) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(shipmentRule.baseTotal|localizedcurrency(commerce_default_currency), 'text', {
-                                'label': 'ekyna_commerce.shipment_rule.field.base_total',
-                                'id': 'shipmentRule_baseTotal',
-                                'label_col': 4
-                            }) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ show_row(shipmentRule.vatMode, 'vat_display_mode', {
-                                'id': 'shipmentRule_vatMode',
-                                'label_col': 4
-                            }) }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
                             {{ show_row(shipmentRule.startAt, 'datetime', {
                                 'label': 'ekyna_commerce.shipment_rule.field.start_at',
                                 'id': 'shipmentRule_startAt',
@@ -61,6 +58,22 @@
                                 'label': 'ekyna_commerce.shipment_rule.field.end_at',
                                 'id': 'shipmentRule_endAt',
                                 'time': false,
+                                'label_col': 4
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(shipmentRule.baseTotal|localizedcurrency(commerce_default_currency), 'text', {
+                                'label': 'ekyna_commerce.shipment_rule.field.base_total',
+                                'id': 'shipmentRule_baseTotal',
+                                'label_col': 4
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(shipmentRule.netPrice|localizedcurrency(commerce_default_currency), 'text', {
+                                'label': 'ekyna_commerce.field.net_price',
+                                'id': 'shipmentRule_price',
                                 'label_col': 4
                             }) }}
                         </div>
