@@ -2,7 +2,8 @@ interface AddToCartEvent {
     type: string
     data: any
     jqXHR: JQueryXHR
-    success: boolean
+    success: boolean,
+    modal: Ekyna.Modal
 }
 
 declare class Widget {
