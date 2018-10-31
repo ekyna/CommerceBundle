@@ -20,15 +20,17 @@ interface AddToCartEvent {
     type: string
     data: any
     jqXHR: JQueryXHR
-    success: boolean
+    success: boolean,
+    modal: Ekyna.Modal
 }
 
-function dispatchAddToCartEvent(data: any, jqXHR:JQueryXHR) {
+function dispatchAddToCartEvent(data: any, jqXHR:JQueryXHR, modal: Ekyna.Modal) {
     let event:AddToCartEvent = {
         type: Modal.prototype.getContentType(jqXHR),
         data: data,
         jqXHR : jqXHR,
-        success: '1' == jqXHR.getResponseHeader('X-Commerce-Success')
+        success: '1' == jqXHR.getResponseHeader('X-Commerce-Success'),
+        modal: modal
     };
 
     Dispatcher.trigger('ekyna_commerce.add_to_cart', event);
@@ -102,7 +104,7 @@ function init(config) {
                 method: 'GET'
             });
             $(modal).on('ekyna.modal.response', (e: Ekyna.ModalResponseEvent) => {
-                dispatchAddToCartEvent(e.content, e.jqXHR);
+                dispatchAddToCartEvent(e.content, e.jqXHR, e.modal);
             });
 
             return false;
@@ -140,12 +142,12 @@ function init(config) {
                         }
                     }
 
-                    dispatchAddToCartEvent(data, jqXHR);
+                    dispatchAddToCartEvent(data, jqXHR, null);
 
                     let modal = new Modal();
                     modal.handleResponse(data, textStatus, jqXHR);
                     $(modal).on('ekyna.modal.response', (e: Ekyna.ModalResponseEvent) => {
-                        dispatchAddToCartEvent(e.content, e.jqXHR);
+                        dispatchAddToCartEvent(e.content, e.jqXHR, e.modal);
                     });
                 },
                 complete: function () {
