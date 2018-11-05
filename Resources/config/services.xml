@@ -6,6 +6,7 @@
     <imports>
         <import resource="services/accounting.xml"/>
         <import resource="services/cart.xml"/>
+        <import resource="services/command.xml"/>
         <import resource="services/common.xml"/>
         <import resource="services/customer.xml"/>
         <import resource="services/document.xml"/>
