@@ -220,8 +220,10 @@ class Mailer
         // FROM
         $from = $notify->getFrom();
         $message->setFrom($from->getEmail(), $from->getName());
+        $message->setReplyTo($from->getEmail(), $from->getName());
 
         $report .= "From: {$this->formatRecipient($from)}\n";
+        $report .= "Reply-To: {$this->formatRecipient($from)}\n";
 
         // TO
         foreach ($notify->getRecipients() as $recipient) {
@@ -334,6 +336,10 @@ class Mailer
             ]);
         }
         $message->setBody($content, 'text/html');
+
+        if (!empty($notify->getCustomMessage())) {
+            $report .= "Message: {$notify->getCustomMessage()}\n";
+        }
 
         $notify->setReport($report);
 
