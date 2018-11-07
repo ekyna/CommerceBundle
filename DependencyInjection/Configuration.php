@@ -24,8 +24,9 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('ekyna_commerce');
 
         $this->addDefaultSection($rootNode);
-        $this->addCacheSection($rootNode);
         $this->addAccountingSection($rootNode);
+        $this->addCacheSection($rootNode);
+        $this->addDocumentSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
         $this->addPoolsSection($rootNode);
@@ -156,6 +157,29 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('default_customer')->defaultValue('10000000')->end()
                         ->booleanNode('total_as_payment')->defaultFalse()->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `document` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addDocumentSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('document')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('row_height')->defaultValue(27)->end()
+                        ->integerNode('row_desc_height')->defaultValue(47)->end()
+                        ->integerNode('page_height')->defaultValue(1399)->end()
+                        ->integerNode('header_height')->defaultValue(370)->end()
+                        ->integerNode('title_height')->defaultValue(130)->end()
+                        ->integerNode('footer_height')->defaultValue(91)->end()
                     ->end()
                 ->end()
             ->end();

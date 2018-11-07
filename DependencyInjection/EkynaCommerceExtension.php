@@ -28,6 +28,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureAccounting($config['accounting'], $container);
         $this->configureCache($config['cache'], $container);
         $this->configureDefaults($config['default'], $container);
+        $this->configureDocument($config['document'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
         $this->configureSaleFactory($container);
@@ -75,6 +76,19 @@ class EkynaCommerceExtension extends AbstractExtension
         $container
             ->getDefinition('ekyna_commerce.accounting.exporter')
             ->replaceArgument(4, $config);
+    }
+
+    /**
+     * Configures document.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureDocument(array $config, ContainerBuilder $container)
+    {
+        $container
+            ->getDefinition('ekyna_commerce.document.page_builder')
+            ->replaceArgument(2, $config);
     }
 
     /**

@@ -54,11 +54,12 @@ class DocumentPageBuilder
         $this->shipmentCalculator = $shipmentCalculator;
 
         $this->config = array_replace([
-            'row_height'      => 20,
-            'row_desc_height' => 31,
-            'page_height'     => 800,
-            'header_height'   => 286,
-            'footer_height'   => 150,
+            'row_height'      => 27,
+            'row_desc_height' => 47,
+            'page_height'     => 1399,
+            'header_height'   => 370,
+            'title_height'    => 130,
+            'footer_height'   => 91,
         ], $config);
     }
 
@@ -363,8 +364,9 @@ class DocumentPageBuilder
     {
         $pages = $page = [];
         $pageHeight = 0;
+        $lastPageMaxOffset = 250; // Totals and Taxes rows
         foreach ($groups as $group) {
-            $max = $this->config['page_height'];
+            $max = $this->config['page_height'] - $this->config['title_height'] - $this->config['footer_height'];
 
             // If first page : keep space for customer addresses, etc...
             if (empty($pages)) {
@@ -376,7 +378,8 @@ class DocumentPageBuilder
             }
 
             if (
-                ($totalHeight < $max && $totalHeight + $this->config['footer_height'] > $max) // Last page needs space for totals rows
+                // Last page needs space for totals rows
+                ($totalHeight < $max && $pageHeight + $group['height'] + $lastPageMaxOffset > $max)
                 || ($pageHeight + $group['height'] > $max)
             ) {
                 $pages[] = $page;

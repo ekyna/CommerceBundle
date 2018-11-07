@@ -15,6 +15,7 @@ use Ekyna\Component\Table\Util\FilterOperator;
 use Ekyna\Component\Table\View\ActiveFilterView;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
  * Class SaleSubjectType
@@ -63,6 +64,9 @@ class SaleSubjectType extends AbstractFilterType
             ->add('value', SubjectChoiceType::class, [
                 'label'   => false,
                 'context' => SubjectProviderInterface::CONTEXT_SALE,
+                'constraints' => [
+                    new NotNull(),
+                ],
             ]);
 
         return true;

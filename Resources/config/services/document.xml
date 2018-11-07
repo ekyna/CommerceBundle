@@ -35,6 +35,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="collection"/><!-- Replaced by DI extension -->
         </service>
 
         <!-- Document generator -->
