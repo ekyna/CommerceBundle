@@ -51,10 +51,14 @@ class AccountingEventSubscriber extends AccountingListener implements EventSubsc
         if (null !== $tax = $accounting->getTax()) {
             $parts[] = $tax->getName();
         }
-        if (null !== $groups = $accounting->getCustomerGroups()) {
-            $parts[] = implode('/', array_map(function(CustomerGroupInterface $group) {
-                return $group->getName();
-            }, $groups));
+        if (null !== $groups = $accounting->getCustomerGroups()->toArray()) {
+            if (empty($groups)) {
+                $parts[] = 'All customer groups';
+            }  else {
+                $parts[] = implode('/', array_map(function (CustomerGroupInterface $group) {
+                    return $group->getName();
+                }, $groups));
+            }
         }
 
         $accounting->setName(implode(' - ', $parts));

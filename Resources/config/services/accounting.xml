@@ -11,6 +11,7 @@
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <argument type="service" id="ekyna_commerce.order_payment.repository"/>
             <argument type="service" id="ekyna_commerce.accounting.repository"/>
+            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
             <argument type="collection"/><!-- Replace by DI extension -->
         </service>

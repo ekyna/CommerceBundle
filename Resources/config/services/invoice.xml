@@ -78,6 +78,10 @@
             <argument type="service" id="libphonenumber.phone_number_util"/>
         </service>
 
+        <!-- Invoice payment resolver -->
+        <service id="ekyna_commerce.invoice.payment_resolver"
+                 class="Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolver"/>
+
         <!-- Invoice subject state resolver -->
         <service id="ekyna_commerce.invoice.subject_state_resolver"
                  class="Ekyna\Component\Commerce\Invoice\Resolver\InvoiceSubjectStateResolver">

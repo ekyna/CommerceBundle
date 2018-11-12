@@ -75,7 +75,7 @@ class EkynaCommerceExtension extends AbstractExtension
     {
         $container
             ->getDefinition('ekyna_commerce.accounting.exporter')
-            ->replaceArgument(4, $config);
+            ->replaceArgument(5, $config);
     }
 
     /**
