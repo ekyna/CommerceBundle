@@ -48,12 +48,6 @@ class SaleItemConfigureType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['submit_button']) {
-            $builder->add('submit', SubmitType::class, [
-                'label' => 'ekyna_commerce.cart.button.add_item',
-            ]);
-        }
-
         $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 if (null === $item = $event->getData()) {
@@ -87,6 +81,7 @@ class SaleItemConfigureType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['attr']['id'] = $view->vars['id'];
+        $view->vars['submit_button'] = $options['submit_button'];
         $view->vars['extended'] = $options['extended'];
 
         // Build the form view

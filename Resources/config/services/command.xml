@@ -5,12 +5,19 @@
 
     <services>
 
+        <!-- Invoice recalculate -->
+        <service id="ekyna_commerce.command.invoice.recalculate"
+                 class="Ekyna\Bundle\CommerceBundle\Command\InvoiceRecalculateCommand">
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
+            <argument type="service" id="ekyna_commerce.document.calculator"/>
+            <argument type="service" id="ekyna_commerce.order_invoice.manager"/>
+            <tag name="console.command"/>
+        </service>
+
         <!-- Shipment label purge -->
-        <service id="ekyna_commerce.commad.shipment.purge_label"
+        <service id="ekyna_commerce.command.shipment.purge_label"
                  class="Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand">
-            <call method="setManager">
-                <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            </call>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <tag name="console.command"/>
         </service>
 

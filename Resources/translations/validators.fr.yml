@@ -10,6 +10,8 @@ ekyna_commerce:
         tax_rule_must_be_null: Veuillez ne pas sélectionner de règle.
         payment_method_is_required: Veuillez sélectionner un mode.
         payment_method_must_be_null: Veuillez ne pas sélectionner de mode.
+        customer_groups_is_required: Veuillez sélectionner au moins un groupe de clients.
+        customer_groups_must_be_empty: Veuillez ne pas sélectionner de groupe de clients.
     address:
         gender_is_mandatory: Veuillez choisir la civilité.
         first_name_is_mandatory: Veuillez saisir le prénom.

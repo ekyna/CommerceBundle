@@ -51,6 +51,11 @@
                     'route': 'ekyna_commerce_payment_method_admin_show',
                     'route_parameters_map': {'paymentMethodId': 'id'}
                 }) }}
+                {{ show_row(accounting.customerGroups, 'entity', {
+                    'label': 'ekyna_commerce.customer_group.label.plural',
+                    'route': 'ekyna_commerce_customer_group_admin_show',
+                    'route_parameters_map': {'customerGroupId': 'id'}
+                }) }}
             </div>
         </div>
     </div>

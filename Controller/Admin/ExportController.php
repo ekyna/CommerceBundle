@@ -37,8 +37,12 @@ class ExportController extends Controller
         $date = $form->get('date')->getData();
 
         try {
-            $path = $this->get('ekyna_commerce.accounting.exporter')->export(new \DateTime($date));
+            $path = $this
+                ->get('ekyna_commerce.accounting.exporter')
+                ->export(new \DateTime($date));
         } catch (CommerceExceptionInterface $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+
             return $this->doRedirect();
         }
 
@@ -59,6 +63,8 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.order.exporter')
                 ->exportDueOrders();
         } catch (CommerceExceptionInterface $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+
             return $this->doRedirect();
         }
 

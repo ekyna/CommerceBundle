@@ -224,6 +224,7 @@ ekyna_commerce:
             shipping: Port
             tax: Taxes
             payment: Paiements
+            unpaid: Impayé
         alert:
             no_item: Aucun compte configuré
 

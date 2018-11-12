@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Accounting;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxRuleChoiceType;
@@ -51,6 +52,10 @@ class AccountingType extends ResourceFormType
                 'outstanding' => false,
                 'credit'      => false,
                 'required'    => false,
+            ])
+            ->add('customerGroups', CustomerGroupChoiceType::class, [
+                'multiple' => true,
+                'required' => false,
             ]);
     }
 }

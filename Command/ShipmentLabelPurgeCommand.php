@@ -21,14 +21,17 @@ class ShipmentLabelPurgeCommand extends Command
      */
     private $manager;
 
+
     /**
-     * Sets the manager.
+     * Constructor.
      *
      * @param EntityManagerInterface $manager
      */
-    public function setManager(EntityManagerInterface $manager)
+    public function __construct(EntityManagerInterface $manager)
     {
         $this->manager = $manager;
+
+        parent::__construct();
     }
 
     /**
