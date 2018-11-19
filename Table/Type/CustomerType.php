@@ -89,7 +89,7 @@ class CustomerType extends ResourceTableType
                 'position' => 70,
             ])
             ->addColumn('outstandingLimit', CType\Column\NumberType::class, [
-                'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
                 'position' => 80,
             ])
             ->addColumn('inCharge', Type\Column\InChargeType::class, [
@@ -164,7 +164,7 @@ class CustomerType extends ResourceTableType
                     'position' => 80,
                 ])
                 ->addFilter('outstandingLimit', CType\Filter\NumberType::class, [
-                    'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                    'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
                     'position' => 90,
                 ])
                 ->addFilter('inCharge', Type\Filter\InChargeType::class, [

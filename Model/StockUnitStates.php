@@ -17,7 +17,7 @@ final class StockUnitStates extends AbstractConstants
      */
     static public function getConfig()
     {
-        $prefix = 'ekyna_commerce.stock_unit.state.';
+        $prefix = 'ekyna_commerce.status.';
 
         return [
             States::STATE_NEW     => [$prefix . States::STATE_NEW,     'brown',   false],

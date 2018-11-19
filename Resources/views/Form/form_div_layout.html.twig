@@ -570,12 +570,12 @@
                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                 <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
                 {% if form.parent.vars.return_mode %}
-                    <th>{{ 'ekyna_commerce.shipment_item.field.shipped'|trans }}</th>
+                    <th>{{ 'ekyna_commerce.field.shipped'|trans }}</th>
                 {% else %}
-                    <th>{{ 'ekyna_commerce.shipment_item.field.available'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.shipment_item.field.expected'|trans }}</th>
+                    <th>{{ 'ekyna_commerce.field.available'|trans }}</th>
+                    <th>{{ 'ekyna_commerce.field.expected'|trans }}</th>
                 {% endif %}
-                <th>{{ 'ekyna_commerce.stock_unit.field.geocode'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.geocode'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -687,10 +687,10 @@
                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                 <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
                 {% if form.parent.vars.credit_mode %}
-                <th>{{ 'ekyna_commerce.invoice_line.field.max_quantity'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.max_quantity'|trans }}</th>
                 {% else %}
-                <th>{{ 'ekyna_commerce.invoice_line.field.max_quantity'|trans }}</th>
-                <th>{{ 'ekyna_commerce.invoice_line.field.expected'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.max_quantity'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.expected'|trans }}</th>
                 {% endif %}
             </tr>
         </thead>
@@ -822,7 +822,7 @@
             <thead>
             <tr>
                 <th>{{ 'ekyna_commerce.shipment_price.field.weight'|trans }}</th>
-                <th>{{ 'ekyna_commerce.shipment_price.field.net_price'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
                 <th></th>
             </tr>
             </thead>
@@ -922,7 +922,7 @@
                     <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                     <th width="12%">{{ 'ekyna_core.field.quantity'|trans }}</th>
                     <th width="12%">{{ 'ekyna_commerce.supplier_delivery_item.field.remaining'|trans }}</th>
-                    <th width="12%">{{ 'ekyna_commerce.stock_unit.field.geocode'|trans }}</th>
+                    <th width="12%">{{ 'ekyna_commerce.field.geocode'|trans }}</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -1011,7 +1011,7 @@
                     <th>{{ 'ekyna_core.field.designation'|trans }}</th>
                     <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                     <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
-                    <th width="15%">{{ 'ekyna_commerce.supplier_order_item.field.net_price'|trans }}</th>
+                    <th width="15%">{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
                     <th></th>
                 </tr>
             </thead>

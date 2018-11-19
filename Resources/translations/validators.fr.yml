@@ -131,8 +131,7 @@ ekyna_commerce:
             La quantité doit être un multiple de %multiple%.
     shipment_rule:
         start_at_greater_than_end_at: La date de fin doit être supérieure à la date de début.
-    shipment_max_weight: |
-            Le poids maximum est de %max% kg.
+    shipment_max_weight: Le poids maximum est de %max% kg.
     supplier_order:
         duplicate_product: |
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.

@@ -37,7 +37,7 @@
         {% if payment_term is not empty -%}
         <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
         <dd>{{ payment_term }}</dd>
-        <dt>{{ 'ekyna_commerce.customer.field.outstanding_limit'|trans }}</dt>
+        <dt>{{ 'ekyna_commerce.sale.field.outstanding_limit'|trans }}</dt>
         <dd>{{ outstanding_limit|localizedcurrency(commerce_default_currency) }}</dd>
         <dt>{{ 'ekyna_commerce.customer.field.outstanding_balance'|trans }}</dt>
         <dd>{{ outstanding_balance|localizedcurrency(commerce_default_currency) }}</dd>

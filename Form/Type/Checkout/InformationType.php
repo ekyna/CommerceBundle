@@ -26,7 +26,7 @@ class InformationType extends AbstractType
                 'label'    => 'ekyna_core.field.company',
                 'required' => true,
                 'attr'     => [
-                    'placeholder'  => 'ekyna_commerce.address.help.company',
+                    'placeholder'  => 'ekyna_commerce.address.field.company',
                     'maxlength'    => 35,
                     'autocomplete' => 'organization',
                 ],

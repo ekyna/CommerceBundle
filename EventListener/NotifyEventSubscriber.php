@@ -323,7 +323,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         // Custom message
         if (!empty($message = $model->getMessage())) {
-            $notify->setCustomMessage($message);
+            $notify->setCustomMessage(str_replace('%number%', $sale->getNumber(), $message));
         }
 
         // Payment message

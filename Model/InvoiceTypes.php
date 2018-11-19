@@ -18,11 +18,10 @@ final class InvoiceTypes extends AbstractConstants
     static public function getConfig()
     {
         $prefix = 'ekyna_commerce.invoice.type.';
-        $suffix = '.label';
 
         return [
-            Types::TYPE_INVOICE => [$prefix . Types::TYPE_INVOICE . $suffix, 'success'],
-            Types::TYPE_CREDIT  => [$prefix . Types::TYPE_CREDIT . $suffix,  'warning'],
+            Types::TYPE_INVOICE => [$prefix . Types::TYPE_INVOICE, 'success'],
+            Types::TYPE_CREDIT  => [$prefix . Types::TYPE_CREDIT,  'warning'],
         ];
     }
 

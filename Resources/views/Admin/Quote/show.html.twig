@@ -41,7 +41,7 @@
         </li>
         <li>
             <a href="#quote-addresses" id="toggle-addresses" data-toggle="tab">
-                {{ 'ekyna_commerce.sale.field.addresses'|trans }}
+                {{ 'ekyna_commerce.address.label.plural'|trans }}
             </a>
         </li>
         <li>
@@ -79,7 +79,7 @@
                     </div>
                     <div class="col-md-6">
                         {{ show_row(quote.expiresAt, 'datetime', {
-                            'label': 'ekyna_commerce.quote.field.expires_at',
+                            'label': 'ekyna_core.field.expires_at',
                             'time': false,
                             'label_col': 4
                         }) }}

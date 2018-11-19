@@ -41,7 +41,7 @@ class PaymentMethodType extends ResourceTableType
                 'position' => 20,
             ])
             ->addColumn('available', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_commerce.payment_method.field.available',
+                'label'                => 'ekyna_commerce.field.front_office',
                 'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'available'],
                 'route_parameters_map' => ['paymentMethodId' => 'id'],

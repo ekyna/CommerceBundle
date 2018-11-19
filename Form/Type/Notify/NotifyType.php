@@ -158,7 +158,7 @@ class NotifyType extends AbstractType
 
         $builder
             ->add('subject', TextType::class, [
-                'label' => 'ekyna_commerce.notify.field.subject',
+                'label' => 'ekyna_core.field.subject',
                 'attr'  => [
                     'class' => 'notify-subject',
                 ],
@@ -236,7 +236,7 @@ class NotifyType extends AbstractType
 
         $builder
             ->add('attachments', EntityType::class, [
-                'label'         => 'ekyna_commerce.notify.field.attachments',
+                'label'         => 'ekyna_commerce.attachment.label.plural',
                 'class'         => $attachmentClass,
                 'query_builder' => function (EntityRepository $repository) use ($saleProperty, $sale) {
                     $qb = $repository->createQueryBuilder('a');
@@ -318,7 +318,7 @@ class NotifyType extends AbstractType
                 'order' => $order,
             ])
             ->add('attachments', EntityType::class, [
-                'label'         => 'ekyna_commerce.notify.field.attachments',
+                'label'         => 'ekyna_commerce.attachment.label.plural',
                 'class'         => SupplierOrderAttachment::class,
                 'query_builder' => function (EntityRepository $repository) use ($order) {
                     $qb = $repository->createQueryBuilder('a');

@@ -21,7 +21,7 @@
 {% macro show_in_stock(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.inStock, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.in_stock',
+        'label': 'ekyna_commerce.field.in_stock',
         'id': 'subject_inStock'
     }|merge(options)) }}
 {% endspaceless %}
@@ -31,7 +31,7 @@
 {% macro show_available_stock(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.availableStock, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.available_stock',
+        'label': 'ekyna_commerce.field.available_stock',
         'id': 'subject_availableStock'
     }|merge(options)) }}
 {% endspaceless %}
@@ -41,7 +41,7 @@
 {% macro show_virtual_stock(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.virtualStock, 'number', {
-        'label': 'ekyna_commerce.stock_subject.field.virtual_stock',
+        'label': 'ekyna_commerce.field.virtual_stock',
         'id': 'subject_virtualStock'
     }|merge(options)) }}
 {% endspaceless %}
@@ -71,7 +71,7 @@
 {% macro show_eda(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.estimatedDateOfArrival, 'datetime', {
-        'label': 'ekyna_commerce.stock_subject.field.estimated_date_of_arrival',
+        'label': 'ekyna_commerce.field.replenishment_eda',
         'id': 'subject_estimatedDateOfArrival',
         'time': false
     }|merge(options)) }}
@@ -92,7 +92,7 @@
 {% macro show_geocode(subject, options = {}) %}
 {% spaceless %}
     {{ show_row(subject.geocode, 'text', {
-        'label': 'ekyna_commerce.stock_subject.field.geocode',
+        'label': 'ekyna_commerce.field.geocode',
         'id': 'subject_geocode'
     }|merge(options)) }}
 {% endspaceless %}

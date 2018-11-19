@@ -33,7 +33,7 @@ class ShipmentMethodType extends ResourceTableType
                 'position'             => 10,
             ])
             ->addColumn('available', CType\Column\BooleanType::class, [
-                'label'                => 'ekyna_commerce.shipment_method.field.available',
+                'label'                => 'ekyna_commerce.field.front_office',
                 'route_name'           => 'ekyna_commerce_shipment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'available'],
                 'route_parameters_map' => ['shipmentMethodId' => 'id'],

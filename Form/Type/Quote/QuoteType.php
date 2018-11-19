@@ -30,7 +30,7 @@ class QuoteType extends SaleType
                 'roles'    => ['ROLE_ADMIN'],
             ])
             ->add('expiresAt', DateTimeType::class, [
-                'label'    => 'ekyna_commerce.quote.field.expires_at',
+                'label'    => 'ekyna_core.field.expires_at',
                 'format'   => 'dd/MM/yyyy',
             ])
             ->add('tags', TagChoiceType::class, [

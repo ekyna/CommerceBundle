@@ -67,7 +67,7 @@
             {{ macros.field('ekyna_commerce.payment_term.label.singular', customer.paymentTerm.title, 3, 9) }}
             <div class="row">
                 <div class="col-md-6">
-                    {{ macros.field('ekyna_commerce.customer.field.outstanding_limit', customer.outstandingLimit|localizedcurrency(commerce_default_currency), 6, 6) }}
+                    {{ macros.field('ekyna_commerce.sale.field.outstanding_limit', customer.outstandingLimit|localizedcurrency(commerce_default_currency), 6, 6) }}
                 </div>
                 <div class="col-md-6">
                     {{ macros.field('ekyna_commerce.customer.field.outstanding_balance', customer.outstandingBalance|localizedcurrency(commerce_default_currency), 6, 6) }}

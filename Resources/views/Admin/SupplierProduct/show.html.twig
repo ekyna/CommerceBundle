@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-md-6">
                         {{ show_row(supplierProduct.netPrice|localizedcurrency(currency), 'text', {
-                            'label': 'ekyna_commerce.supplier_product.field.net_price',
+                            'label': 'ekyna_commerce.field.buy_net_price',
                             'label_col': 4
                         }) }}
                     </div>
@@ -48,7 +48,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(supplierProduct.availableStock, 'number', {
-                            'label': 'ekyna_commerce.supplier_product.field.available_stock',
+                            'label': 'ekyna_commerce.field.available_stock',
                             'label_col': 4
                         }) }}
                     </div>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="col-md-6">
                         {{ show_row(supplierProduct.estimatedDateOfArrival, 'datetime', {
-                            'label': 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',
+                            'label': 'ekyna_commerce.field.replenishment_eda',
                             'time': false,
                             'label_col': 4
                         }) }}

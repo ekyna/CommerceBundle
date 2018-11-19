@@ -161,7 +161,7 @@ class SupplierProductType extends ResourceTableType
                 'position' => 20,
             ])
             ->addColumn('netPrice', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.supplier_product.field.net_price',
+                'label'         => 'ekyna_commerce.field.buy_net_price',
                 'currency_path' => 'supplier.currency.code',
                 'sortable'      => true,
                 'position'      => 30,
@@ -220,7 +220,7 @@ class SupplierProductType extends ResourceTableType
                 'position' => 20,
             ])
             ->addFilter('netPrice', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.supplier_product.field.net_price',
+                'label'    => 'ekyna_commerce.field.buy_net_price',
                 'position' => 30,
             ])
             ->addFilter('weight', CType\Filter\NumberType::class, [
@@ -228,7 +228,7 @@ class SupplierProductType extends ResourceTableType
                 'position' => 40,
             ])
             ->addFilter('availableStock', CType\Filter\NumberType::class, [
-                'label'    => 'ekyna_commerce.supplier_product.field.available_stock',
+                'label'    => 'ekyna_commerce.field.available_stock',
                 'position' => 50,
             ])
             ->addFilter('orderedStock', CType\Filter\NumberType::class, [
@@ -236,7 +236,7 @@ class SupplierProductType extends ResourceTableType
                 'position' => 60,
             ])
             ->addFilter('estimatedDateOfArrival', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',
+                'label'    => 'ekyna_commerce.field.replenishment_eda',
                 'position' => 70,
             ]);
     }

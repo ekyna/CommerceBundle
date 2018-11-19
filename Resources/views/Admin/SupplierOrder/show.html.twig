@@ -69,7 +69,7 @@
                     </div>
                     <div class="col-md-4">
                         {{ show_row(supplierOrder.state|supplier_order_state_badge, 'text', {
-                            'label': 'ekyna_commerce.supplier_order.field.state',
+                            'label': 'ekyna_commerce.field.status',
                             'id': 'order_state',
                             'label_col': 6
                         }) }}
@@ -221,7 +221,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         {{ show_row(supplierOrder.estimatedDateOfArrival, 'datetime', {
-                            'label': 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
+                            'label': 'ekyna_commerce.field.estimated_date_of_arrival',
                             'id': 'order_estimatedDateOfArrival',
                             'time': false,
                             'label_col': 6

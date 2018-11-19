@@ -88,11 +88,11 @@ class SupplierOrderType extends ResourceTableType
                 'position'             => 40,
             ])
             ->addColumn('state', SupplierOrderStateType::class, [
-                'label'    => 'ekyna_commerce.supplier_order.field.state',
+                'label'    => 'ekyna_commerce.field.status',
                 'position' => 50,
             ])
             ->addColumn('estimatedDateOfArrival', CType\Column\DateTimeType::class, [
-                'label'       => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
+                'label'       => 'ekyna_commerce.field.estimated_date_of_arrival',
                 'time_format' => 'none',
                 'position'    => 60,
             ])
@@ -164,7 +164,7 @@ class SupplierOrderType extends ResourceTableType
                 'position'     => 40,
             ])
             ->addFilter('state', CType\Filter\ChoiceType::class, [
-                'label'    => 'ekyna_commerce.supplier_order.field.state',
+                'label'    => 'ekyna_commerce.field.status',
                 'choices'  => SupplierOrderStates::getChoices(),
                 'position' => 50,
             ])

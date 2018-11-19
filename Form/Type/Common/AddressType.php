@@ -39,7 +39,7 @@ class AddressType extends AbstractType
                 // todo constraint if required ?
                 'attr'     => [
                     'class'        => 'address-company',
-                    'placeholder'  => 'ekyna_commerce.address.help.company',
+                    'placeholder'  => 'ekyna_commerce.address.field.company',
                     'maxlength'    => 35,
                     'autocomplete' => $section . 'organization',
                 ],

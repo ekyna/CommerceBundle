@@ -116,7 +116,7 @@ class SupplierOrderSubmitType extends Form\AbstractType
             $form
                 ->get('order')
                 ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
+                    'label'    => 'ekyna_commerce.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => true,
                 ])

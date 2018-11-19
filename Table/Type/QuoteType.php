@@ -93,7 +93,7 @@ class QuoteType extends ResourceTableType
                 'position'      => 60,
             ])
             ->addColumn('state', Type\Column\SaleStateType::class, [
-                'label'    => 'ekyna_commerce.sale.field.state',
+                'label'    => 'ekyna_commerce.field.status',
                 'position' => 70,
             ])
             ->addColumn('paymentState', Type\Column\PaymentStateType::class, [
@@ -184,7 +184,7 @@ class QuoteType extends ResourceTableType
                     'position' => 60,
                 ])
                 ->addFilter('state', CType\Filter\ChoiceType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.state',
+                    'label'    => 'ekyna_commerce.field.status',
                     'choices'  => Model\OrderStates::getChoices(),
                     'position' => 70,
                 ])

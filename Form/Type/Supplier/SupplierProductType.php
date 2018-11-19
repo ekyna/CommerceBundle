@@ -39,7 +39,7 @@ class SupplierProductType extends ResourceFormType
                 ],
             ])
             ->add('availableStock', Symfony\NumberType::class, [
-                'label' => 'ekyna_commerce.supplier_product.field.available_stock',
+                'label' => 'ekyna_commerce.field.available_stock',
                 'scale' => 3,
             ])
             ->add('orderedStock', Symfony\NumberType::class, [
@@ -47,7 +47,7 @@ class SupplierProductType extends ResourceFormType
                 'scale' => 3,
             ])
             ->add('estimatedDateOfArrival', Symfony\DateTimeType::class, [
-                'label'    => 'ekyna_commerce.supplier_product.field.estimated_date_of_arrival',
+                'label'    => 'ekyna_commerce.field.replenishment_eda',
                 'required' => false,
             ])
             ->add('subjectIdentity', Commerce\Subject\SubjectChoiceType::class, [

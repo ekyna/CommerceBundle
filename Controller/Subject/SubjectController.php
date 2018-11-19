@@ -87,7 +87,7 @@ class SubjectController
             ->setButtons([
                 [
                     'id'       => 'submit',
-                    'label'    => 'ekyna_commerce.add_to_cart.button.add',
+                    'label'    => 'ekyna_commerce.cart.button.add',
                     'icon'     => 'glyphicon glyphicon-ok',
                     'cssClass' => 'btn-success',
                     'autospin' => true,

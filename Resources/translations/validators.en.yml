@@ -1,0 +1,158 @@
+ekyna_commerce:
+    account:
+        email:
+            mismatch: Email and confirmation missmatch
+    accounting:
+        duplicate_config: An account already exist with this configuration.
+        tax_is_required: Please select a tax.
+        tax_must_be_null: Please leave the tax field empty.
+        tax_rule_is_required: Please select a rule.
+        tax_rule_must_be_null: Please leave the rule field empty.
+        payment_method_is_required: Please select a method.
+        payment_method_must_be_null: Please leave the method field empty.
+        customer_groups_is_required: Please select at least one customer group.
+        customer_groups_must_be_empty: Please leave the customer group field empty.
+    address:
+        gender_is_mandatory: Please select the title.
+        first_name_is_mandatory: Please enter the first name.
+        last_name_is_mandatory: Please enter the last name.
+        company_is_mandatory: Please enter the company name.
+        phone_is_mandatory: Please enter the phone number.
+        mobile_is_mandatory: Please enter the mobile phone number.
+        invalid_zip_code: This postal code is not valid.
+    customer:
+        hierarchy_overflow: This customer is an accountable service and cannot be attached to antoher accountable service.
+        non_zero_balance: This customer has a non zero outstanding or credit balance and cannot be attached to accountable service.
+        parent_company_is_mandatory: The accountable service must have a company name.
+        company_is_mandatory: Please enter your company name.
+        vat_number_is_mandatory: Please enter your VAT umber.
+        phone_or_mobile_is_mandatory: Please enter a phone or mobile phone number.
+        term_required_for_outstanding: You must select payment term if you want to define the outstanding limit.
+        outstanding_required_for_term: You must define the outstanding limit if you want to select a payment term.
+    gender:
+        invalid: This title is not valid
+    identity:
+        mandatory: Please fill in the identity.
+        gender_is_mandatory: Please choose a title.
+        first_name_is_mandatory: Please fill in the first name.
+        last_name_is_mandatory: Please fill in the last name.
+    message:
+        already_exists: A message is already defined for this method an status.
+    payment:
+        method:
+            not_null: Please select a payment method.
+    invoice:
+        hierarchy_integrity: Integrity error between the elements.
+        empty_good_lines: Please pick at least one product.
+        null_credit_method: Please select a refund method.
+    invoice_line:
+        null_sale_item: This line must be linked to a product.
+        empty_designation: The designation must be filled.
+        hierarchy_integrity: Integrity error between the elements.
+        invoiceable_overflow: This quantity cannot exceed the invoicable quantity (max %max%).
+        shipped_miss_match: This quantity cannot exceed the delivered quantity (%qty%).
+        creditable_overflow: This quantity cannot exceed the refundable quantity (max %max%).
+        returned_miss_match: This quantity cannot exceed the returned quantity (%qty%).
+    notify:
+        pick_at_least_one_recipient: Please pick at least one recipient.
+        is_empty: Please fill in the message.
+    notify_model:
+        duplicate_type: A template already exist for this type.
+    order:
+        sample_with_payments_or_invoices: A sample order cannot have payments or invoices.
+        unexpected_origin_customer: Please select a sales manager.
+        customers_integrity: The sales manager is not linked to the selected accountable service.
+    relay_point:
+        is_required: Please select a realy point.
+        must_be_null: This shipment method does not support relay points.
+        gateway_miss_match: This relay point does not belong to the select shipment method.
+    sale:
+        no_customer:
+            customer_group_is_required: The customer group is required if no customer is selected.
+            email_is_required: Email is required if no customer is selected.
+            identity_is_required: Identity is required if no customer is selected.
+        delivery_address:
+            is_required: Please fill in the delivery address.
+            should_be_null: Please leave the delivery address empty.
+        identity_must_be_set: Please fill in your customer information.
+        invoice_address_must_be_set: Please fill in the billing address.
+        delivery_address_must_be_set: Please fill in the delivery address.
+        shipment_method_must_be_set: Please select the shipment method.
+        shipment_method_require_mobile: >
+            The select shipment method requires a mobile phone number.
+        voucher_must_be_set: Please fill in your voucher number.
+        outstanding_limit_require_term: Please select a payment term to define an outstanding limit.
+        deposit_greater_than_grand_total: The deposit amount must be lower the the grand total.
+    sale_item:
+        root_item_cant_be_private: This product cannot be hidden.
+        privacy_integrity: Hidden products cannot contain visible products.
+        tax_group_integrity: Integrity error on tax group.
+        quantity_is_lower_than_shipped: The quantity must be greater than or equal to the shipped quantity (min %min%).
+        quantity_is_lower_than_invoiced: The quantity must be greater than or equal to the invoiced/canceled quantity (min %min%).
+    subject:
+        identity_subject_must_be_selected: Please select a subject.
+    stock_unit:
+        received_must_be_lower_than_ordered: |
+            The received quantity must be lower than or equal to the ordered quantity.
+        shipped_must_be_lower_than_received: |
+            The shipped quantity must be lower than or equal to the received quantity.
+        shipped_must_be_lower_than_sold: |
+            The shipped quantity must be lower than or equal to the sold quantity.
+    stock_adjustment:
+        stock_unit_shipped_quantity_overflow: |
+            The resulting stock mut be greater than or equal to shipped stock (max %max%).
+    shipment:
+        method_does_not_support_parcel: |
+            The selected shipment method does not support parcels.
+        method_does_not_support_return: |
+            The selected shipment method does not support returns.
+        method_does_not_support_shipment: |
+            The selected shipment method supports only returns.
+        method_requires_mobile:
+            The selected shipment method requires a mobile phone number.
+        shipped_state_denied: |
+            This shipment status cannot be select regarding to the sale's status.
+        weight_or_parcels_but_not_both: |
+            Please leave the weight field empty if you wish use parcels.
+        valorization_or_parcels_but_not_both: |
+            Please leave the valorization field empty if you wish to use parcels.
+        at_least_two_parcels_or_none:
+            Please fill in at least 2 parcels or none.
+        credit_method_is_required:
+            Please select a refund method.
+        credit_method_must_be_null:
+            Please leave the refund method field empty.
+    shipment_item:
+        returnable_overflow: |
+            The returned quantity must be lower than ot equal to %max%.
+        shippable_overflow: |
+            The shipped quantity must be lower than ot equal to %max%.
+        parent_quantity_integrity: |
+            The quantity must be a multiple of %multiple%.
+    shipment_rule:
+        start_at_greater_than_end_at: The 'ends at' date must be greater than the 'starts at' date.
+    shipment_max_weight: The maximum weight is %max% kg.
+    supplier_order:
+        duplicate_product: |
+            Each order line must match a unique supplier reference.
+        order_and_delivery_items_miss_match: |
+            At least one order ligne does not match deliveries lines.
+        null_estimated_date_of_arrival:
+            Please fill in the estimated date of arrival.
+    supplier_order_item:
+        quantity_must_be_greater_than_or_equal_received: |
+            The ordered quantity must be greater than or equal to the received quantity (%min%).
+    supplier_delivery_item:
+        quantity_must_be_lower_than_or_equal_ordered: |
+            The received quantity must be lower than or equal to the ordered quantity (%min%).
+        order_item_miss_match:
+            This line does not match any line of the supplier order.
+    supplier_delivery:
+        duplicate_order_item: |
+            Each lines of the delivery must match a unique supplier order line.
+    supplier_product:
+        duplicate_by_subject: |
+            A reference already exists for this subject.
+    tax_rule:
+        at_least_customer_or_business: |
+            Please select at least 'Customer' or 'Business'.

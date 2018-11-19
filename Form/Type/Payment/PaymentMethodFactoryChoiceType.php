@@ -37,7 +37,7 @@ class PaymentMethodFactoryChoiceType extends AbstractType
     {
         $builder
             ->add('factoryName', GatewayFactoriesChoiceType::class, [
-                'label' => 'ekyna_commerce.payment_method.field.factory_name',
+                'label' => 'ekyna_commerce.field.factory_name',
             ])
         ;
     }

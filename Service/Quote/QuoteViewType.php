@@ -47,10 +47,10 @@ class QuoteViewType extends AbstractViewType
         ]);
         $view->addButton(new View\Button(
             $refreshPath,
-            $this->trans('ekyna_commerce.sale.button.refresh'),
+            $this->trans('ekyna_core.button.refresh'),
             'fa fa-refresh',
             [
-                'title'         => $this->trans('ekyna_commerce.sale.button.refresh'),
+                'title'         => $this->trans('ekyna_core.button.refresh'),
                 'class'         => 'btn btn-sm btn-default',
                 'data-sale-xhr' => 'get',
             ]

@@ -29,7 +29,7 @@ class InvoiceLinesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label' => 'ekyna_commerce.invoice.field.lines',
+            'label' => 'ekyna_commerce.sale_item.label.plural',
         ]);
     }
 

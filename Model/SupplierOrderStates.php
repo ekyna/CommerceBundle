@@ -17,7 +17,7 @@ final class SupplierOrderStates extends AbstractConstants
      */
     static public function getConfig()
     {
-        $prefix = 'ekyna_commerce.supplier_order.state.';
+        $prefix = 'ekyna_commerce.status.';
 
         return [
             States::STATE_NEW       => [$prefix . States::STATE_NEW,       'light-blue'],

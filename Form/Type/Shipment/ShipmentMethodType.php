@@ -79,7 +79,7 @@ class ShipmentMethodType extends ResourceFormType
                 ],
             ])
             ->add('available', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.shipment_method.field.available',
+                'label'    => 'ekyna_commerce.field.front_office',
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,

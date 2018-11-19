@@ -33,7 +33,7 @@ class SupplierDeliveryItemType extends ResourceFormType
                 'error_bubbling' => true,
             ])
             ->add('geocode', TextType::class, [
-                'label'          => 'ekyna_commerce.stock_unit.field.geocode',
+                'label'          => 'ekyna_commerce.field.geocode',
                 'error_bubbling' => true,
                 'attr' => [
                     'class' => 'geocode',

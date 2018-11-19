@@ -3,10 +3,10 @@
     <div class="panel-heading">
         {%- if credit -%}
             {%- set invoices = sale|sale_credits -%}
-            {{- 'ekyna_commerce.account.credit.title'|trans|raw -}}
+            {{- 'ekyna_commerce.credit.label.plural'|trans|raw -}}
         {%- else -%}
             {%- set invoices = sale|sale_invoices -%}
-            {{- 'ekyna_commerce.account.invoice.title'|trans|raw -}}
+            {{- 'ekyna_commerce.invoice.label.plural'|trans|raw -}}
         {%- endif -%}
     </div>
     <div class="table-responsive">

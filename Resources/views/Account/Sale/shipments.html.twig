@@ -3,10 +3,10 @@
     <div class="panel-heading">
         {%- if return -%}
             {%- set shipments = sale|sale_returns -%}
-            {{- 'ekyna_commerce.account.return.title'|trans|raw -}}
+            {{- 'ekyna_commerce.return.label.plural'|trans -}}
         {%- else -%}
             {%- set shipments = sale|sale_shipments -%}
-            {{- 'ekyna_commerce.account.shipment.title'|trans|raw -}}
+            {{- 'ekyna_commerce.shipment.label.plural'|trans -}}
         {%- endif -%}
     </div>
     <div class="table-responsive">

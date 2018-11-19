@@ -1,43 +1,65 @@
 ekyna_commerce:
     label: Commerce
 
-    add_to_cart:
-        button:
-            add: Ajouter au panier
-            continue: Continuer mes achats
-            cart: Voir mon panier
-        message:
-            success: >
-                <p>L'article <strong><a href="%subject_url%">%designation%</a></strong>
-                 a bien été ajouté à <a href="%cart_url%">votre panier</a>.</p>
-            failure: >
-                <p>L'application a rencontré une erreur lors de l'ajout à votre panier de
-                l'article <strong><a href="%subject_url%">%designation%</a></strong>.<br>
-                Nous vous invitons à réessayer ultérieurement</p>
-
-    # TODO group common fields
     field:
         eta: ETA
         sample: Échantillon
         description: Note interne
+        taxes_total: Taxes
+        shipped: Expedié
+        expected: Attendu
+        available: Disponible
+        max_quantity: Quantité max
         net_price: Prix HT
+        buy_net_price: Prix d'achat HT
+        geocode: Geocode
+        in_stock: Stock réel
+        available_stock: Stock disponible
+        virtual_stock: Stock prévisionnel
+        replenishment_eda: Date de réappro.
+        estimated_date_of_arrival: Date de livraison estimée
+        state: Statut
+        front_office: Partie publique
+        factory_name: Passerelle
 
-    # TODO group common buttons
     button:
         print_label: Étiquette
         toggle_quantities: Tout / Aucun
+
+    status:
+        accepted: Acceptée
+        canceled: Annulé
+        closed: Fermée
+        completed: Complété
+        credited: Remboursé
+        fraudster: Fraudeur
+        invoiced: Facturé
+        new: Nouveau
+        none: Aucun
+        ordered: Commandé
+        partial: Partiel
+        pending: En attente
+        preparation: Préparation
+        ready: Prêt
+        received: Réceptionnée
+        refunded: Remboursée
+        refused: Refusée
+        returned: Retourné
+        shipped: Expédié
+        valid: Validé
+
     unit:
         label: Unité
         piece:
             singular: Pièce
             plural: Pièces
-        metre:
+        meter:
             singular: Mètre
             plural: Mètres
-        centimetre:
+        centimeter:
             singular: Centimètre
             plural: Centimètres
-        millimetre:
+        millimeter:
             singular: Millimètre
             plural: Millimètres
         inch:
@@ -54,13 +76,13 @@ ekyna_commerce:
         gram:
             singular: Gramme
             plural: Grammes
-        cubic_metre:
+        cubic_meter:
             singular: Mètre cube
             plural: Mètres cube
         litre:
             singular: Litre
             plural: Litres
-        millilitre:
+        milliliter:
             singular: Millilitre
             plural: Millilitres
         day:
@@ -139,15 +161,8 @@ ekyna_commerce:
             all: Toutes mes factures
             show: Détail de la facture <em>%number%</em>
             empty_list: Aucune facture enregistré
-        credit:
-            title: Mes Avoirs
         payment:
-            title: Paiements
             confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment %number% ?
-        shipment:
-            title: Expéditions
-        return:
-            title: Retours
         attachment:
             title: Documents
         registration:
@@ -163,16 +178,12 @@ ekyna_commerce:
                 invoice_name: Contact facturation
                 invoice_email: Email facturation
                 invoice_phone: Téléphone facturation
-#            notify:
-#                subject: Création de compte client
-#                admin_link: Voir la fiche client dans l'administration
         widget:
             title: Espace client
 
     dashboard:
         export:
             title: Exports
-            accounting: Comptabilité
             due_orders: Commandes échues
             field:
                 due_amount: Montant dû
@@ -184,10 +195,10 @@ ekyna_commerce:
             field:
                 unpaid: Non réglé
                 outstanding_expired: Encours échus
-                outstanding_to_go: Encours à échoir
+                outstanding_fall: Encours à échoir
                 outstanding_pending: Encours à livrer
                 expired: Échus
-                to_go: À échoir
+                fall: À échoir
                 total: Total
         stat:
             title:
@@ -197,7 +208,6 @@ ekyna_commerce:
                 stock: Stock
             field:
                 revenue: CA
-                shipping: Port
                 margin: Marge
                 order: Cdes
                 average: Panier
@@ -241,7 +251,6 @@ ekyna_commerce:
             digicode2: Code porte 2
             intercom: Interphone
         help:
-            company: Raison sociale
             street: Numéro et libellé de voie
             complement: Entrée, bâtiment, immeuble, résidence
             supplement: Étage, couloir, escalier, appartement
@@ -290,41 +299,23 @@ ekyna_commerce:
         widget:
             title: Mon panier
             items: "{1} Un article|]1,Inf[ %count% articles"
-            # TODO remove
-            total: pour un total de
             show_cart: Voir votre panier
             empty: Votre panier est vide.
         button:
-            add_item: Ajouter au panier
+            add: Ajouter au panier
+            continue: Continuer mes achats
+            cart: Voir mon panier
         message:
             transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
             already_paid: Ce panier est déjà réglée en totalité
             cant_be_deleted: Ce panier a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.
-
-    cart_address:
-        label:
-            singular: Adresse panier
-            plural: Adresses panier
-
-    cart_attachment:
-        label:
-            singular: Pièce jointe
-            plural: Pièce jointes
-
-    cart_item:
-        label:
-            singular: Ligne de panier
-            plural: Lignes de panier
-
-    cart_adjustment:
-        label:
-            singular: Ajustement de panier
-            plural: Ajustements de panier
-
-    cart_payment:
-        label:
-            singular: Paiement de panier
-            plural: Paiements de panier
+            success: >
+                <p>L'article <strong><a href="%subject_url%">%designation%</a></strong>
+                a bien été ajouté à <a href="%cart_url%">votre panier</a>.</p>
+            failure: >
+                <p>L'application a rencontré une erreur lors de l'ajout à votre panier de
+                l'article <strong><a href="%subject_url%">%designation%</a></strong>.<br>
+                Nous vous invitons à réessayer ultérieurement</p>
 
     checkout:
         summary: Mon panier
@@ -395,7 +386,7 @@ ekyna_commerce:
             available_fund: |
                 Fonds disponibles : <strong>%amount%</strong>
             insuffisant_fund: |
-                Vous avez utilisé la totalité de cotre encours client.<br> Rendez-vous
+                Vous avez utilisé la totalité de votre encours client.<br> Rendez-vous
                 dans votre espace client pour régler les factures échues ou non réglées.
             voucher_mandatory: |
                 Veuillez <a href="%url%">ajouter votre bon d'achat</a> si vous souhaitez utiliser votre encours.
@@ -474,23 +465,12 @@ ekyna_commerce:
             recalculate: Recalculer
             unlink: Délier
         type:
-            invoice:
-                label: Facture
-            credit:
-                label: Avoir
-        state:
-            new: Création
-            canceled: Annulé
-            pending: En attente
-            partial: Partiel
-            invoiced: Facturé
-            credited: Remboursé
-            completed: Complété
+            invoice: Facture
+            credit: Avoir
         field:
             lines: Lignes
             goods_base: Marchandises HT
             shipment_base: Frais de port HT
-            taxes_total: Taxes
             payment_method: Mode de remboursement
             invoiced_at: Date de facturation
             sale_total: Total Cde
@@ -499,17 +479,11 @@ ekyna_commerce:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
             recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
             unlink_confirm: Êtes-vous sûr de vouloir supprimer le lien avec l\'expédition %number% ? (Opération non réversible).
-            cant_be_deleted: Cet facture ne peut être supprimée.
+            cant_be_deleted: Cette facture ne peut pas être supprimée.
         alert:
             no_item: Aucune facture configuré
             invoice_edit_prevented: Cette facture est liée à une expedition et ne peut être modifiée directement.
             credit_edit_prevented: Cet avoir est lié à un retour et ne peut être modifié directement.
-
-    invoice_line:
-        field:
-            max_quantity: Quantité max
-            expected: Attendu
-            net_price: Prix unit. HT
 
     currency:
         label:
@@ -518,7 +492,7 @@ ekyna_commerce:
         header:
             list: Devises <small>Liste des devises</small>
             show: Détail de la devise <small>%name%</small>
-            new: Créer une nouvelles devise
+            new: Créer une nouvelle devise
             edit: Modifier la devise <small>%name%</small>
             remove: Supprimer la devise <small>%name%</small>
         button:
@@ -555,13 +529,8 @@ ekyna_commerce:
             parent: Compte service achat
             in_charge: Responsable
             children: Commerciaux
-            outstanding_limit: Limite d'encours
             outstanding_balance: Solde d'encours
             credit_balance: Solde avoirs
-        state:
-            new: Nouveau
-            valid: Validé
-            fraudster: Fraudeur
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
@@ -700,8 +669,6 @@ ekyna_commerce:
             copies: Copies
             invoices: Factures et avoirs
             shipments: Bons de livraison/retour
-            attachments: Pièces jointes
-            subject: Sujet
             payment_message: Message paiement
             shipment_message: Message livraison
             custom_message: Message personnalisé
@@ -731,7 +698,7 @@ ekyna_commerce:
             plural: Notifications
         header:
             list: Notification <small>Liste des modèles</small>
-            show: Détail du modèle<small>%name%</small>
+            show: Détail du modèle <small>%name%</small>
             new: Créer un nouveau modèle
             edit: Modifier le modèle <small>%name%</small>
             test: Tester le modèle <small>%name%</small>
@@ -771,9 +738,8 @@ ekyna_commerce:
             singular: Commande
             plural: Commandes
         header:
-            dues: Créances clients
             list: Commandes <small>Liste des commandes</small>
-            show: Détail de la commande<small>%number%</small>
+            show: Détail de la commande <small>%number%</small>
             new: Créer une nouvelle commande
             edit: Modifier la commande <small>%number%</small>
             remove: Supprimer la commande <small>%number%</small>
@@ -788,21 +754,8 @@ ekyna_commerce:
             remove: Supprimer la commande
             transform: Transformer la commande
             notify: Notifier la commande
-        field:
-            invoice: Facture
-            invoice_pdf: Facture PDF
-            no_shipment: Sans livraison
-            document_footer: Pied de page des documents
         alert:
             no_item: Aucune commande configuré
-        state:
-            new: Création
-            pending: En attente
-            refused: Refusée
-            accepted: Acceptée
-            completed: Complétée
-            refunded: Remboursée
-            canceled: Annulée
         message:
             already_paid: Cette commande est déjà réglée en totalité
             cant_be_deleted: >
@@ -813,46 +766,6 @@ ekyna_commerce:
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
-
-    order_address:
-        label:
-            singular: Adresse commande
-            plural: Adresses commande
-
-    order_attachment:
-        label:
-            singular: Pièce jointe
-            plural: Pièce jointes
-
-    order_invoice:
-        label:
-            singular: Facture
-            plural: Factures
-
-    order_item:
-        label:
-            singular: Ligne de commande
-            plural: Lignes de commande
-
-    order_adjustment:
-        label:
-            singular: Ajustement
-            plural: Ajustements
-
-    order_payment:
-        label:
-            singular: Paiement
-            plural: Paiements
-
-    order_shipment:
-        label:
-            singular: Expédition
-            plural: Expéditions
-
-    order_shipment_item:
-        label:
-            singular: Ligne d'expédition
-            plural: Lignes d'expédition
 
     payment:
         label:
@@ -947,9 +860,6 @@ ekyna_commerce:
             edit: Modifier le mode
             remove: Supprimer le mode
             choose: "Régler par %gateway_name%"
-        field:
-            factory_name: Passerelle
-            available: Partie publique
         alert:
             empty_list: Aucun mode de paiement configuré
 
@@ -1010,20 +920,10 @@ ekyna_commerce:
             new: Nouveau devis
             edit: Modifier le devis
             remove: Supprimer le devis
-            transform: Transform le devis
+            transform: Transformer le devis
             notify: Notifier le devis
-        field:
-            expires_at: Date d'expiration
         alert:
             no_item: Aucun devis configuré
-        state:
-            new: Création
-            pending: En attente
-            refused: Refusée
-            accepted: Acceptée
-            completed: Complétée
-            refunded: Remboursée
-            canceled: Annulée
         message:
             transformation_to_order_is_ready: Ce devis est prêt à être transformé en commande.
             already_paid: Ce devis est déjà réglée en totalité
@@ -1031,31 +931,6 @@ ekyna_commerce:
         dashboard:
             title: Devis à traiter
             none: Aucun devis à traiter
-
-    quote_address:
-        label:
-            singular: Adresse devis
-            plural: Adresses devis
-
-    quote_attachment:
-        label:
-            singular: Pièce jointe
-            plural: Pièce jointes
-
-    quote_item:
-        label:
-            singular: Ligne de devis
-            plural: Lignes de devis
-
-    quote_adjustment:
-        label:
-            singular: Ajustement de devis
-            plural: Ajustements de devis
-
-    quote_payment:
-        label:
-            singular: Paiement de devis
-            plural: Paiements de devis
 
     relay_point:
         label:
@@ -1099,9 +974,7 @@ ekyna_commerce:
             shipment:
                 edit: Modifier les frais de port
         button:
-            refresh: Rafraîchir
             recalculate: Recalculer
-            notify: Notifier
             prioritize: Réassigner le stock
             prepare: Préparer l'expédition
             abort: Annuler la préparation
@@ -1162,9 +1035,7 @@ ekyna_commerce:
             add_adjustment: Ajouter un ajustement
             remove_adjustment: Supprimer l'ajustement ?
         field:
-            addresses: Adresses
             details: Détail
-            customer: Client
             origin_customer: Commercial
             address_choice: Carnet d'adresses
             invoice_address: Adresse de facturation
@@ -1179,7 +1050,6 @@ ekyna_commerce:
             ati_unit: PU TTC
             net_gross: Base HT
             ati_gross: Base TTC
-            base_total: Base HT # TODO Remove
             net_total: Total HT
             ati_total: Total TTC
             shipment_net_total: Port HT
@@ -1206,7 +1076,6 @@ ekyna_commerce:
             weight_total: Poids total
             document_comment: Commentaire documents
             document_footer: Pied de page des documents
-            state: Statut
             payment_state: Statut paiement
             shipment_state: Statut livraison
             invoice_state: Statut facturation
@@ -1215,6 +1084,9 @@ ekyna_commerce:
             shipment_state: Livraison
             invoice_state: Facturation
     sale_item:
+        label:
+            singular: Ligne
+            plural: Lignes
         field:
             tax_group: Groupe
             shipped: Expédié
@@ -1256,23 +1128,11 @@ ekyna_commerce:
             auto_credit: Générer l'avoir
             sender_address: Addresse expéditeur
             receiver_address: Addresse destinataire
-        state:
-            new: Création
-            canceled: Annulé
-            preparation: Préparation
-            ready: Prêt
-            shipped: Expédié
-            pending: En attente
-            returned: Retourné
-            none: Aucun
-            partial: Partiel
-            completed: Complété
         action:
             ship: Expédier
             cancel: Annuler
             complete: Finaliser
             prepare: Passer en statut &laquo;Préparation&raquo;
-            #capture: Capturer
             export: Exporter vers logiciel
             import: Importer les numéros de suivi
             print_label: Imprimer étiquette
@@ -1280,30 +1140,25 @@ ekyna_commerce:
             summary_labels: Imprimer étiquettes récapitulatives
             list_relay_points: Rechercher des points relais
             get_relay_point: Rechercher un point relais
-            #clear_label: Supprimer étiquette
             bills: Afficher les bons de livraison
             forms: Afficher les bons de préparation
         confirm:
-            cancel: Êtes-vous sûr de vouloir ANNULER cette expédition ou ce retour et supprimer l'étiquette et le numéro de suivi ?
+            cancel: |
+                Êtes-vous sûr de vouloir ANNULER cette expédition ou ce retour
+                et supprimer l'étiquette et le numéro de suivi ?
             complete: Êtes-vous sûr de vouloir FINALISER cette expédition ou ce retour ?
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
             edit_prevented: Veuillez annuler l'expédition pour pouvoir la modifier.
             cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
-            sale_is_not_stackable: |
+            sale_is_not_stockable: |
                 Le statut de la vente n'étant pas accepté, les statuts
                 disponibles pour l'expédition ont été restreints.
-            credit_method: Mode remboursement qui sera associé à l'avoir généré.
+            credit_method: Mode de remboursement qui sera associé à l'avoir généré.
             unsupported_action: Cette action n'est pas prise en charge par la plateforme.
         alert:
             no_item: Aucune expédition configuré
         platforms: Plateformes
-
-    shipment_item:
-        field:
-            shipped: Expedié
-            expected: Attendu
-            available: Disponible
 
     shipment_label:
         label:
@@ -1327,9 +1182,6 @@ ekyna_commerce:
             edit: Modifier le mode
             remove: Supprimer le mode
             choose: "Je choisi une livraison par %gateway_name%"
-        field:
-            platform_name: Plateforme
-            available: Partie publique
         alert:
             none_available_for_country: >
                 Aucun mode de livraison disponible pour le pays &laquo;%country%&raquo;.
@@ -1342,9 +1194,8 @@ ekyna_commerce:
             plural: Frais de port
         field:
             weight: Poids max (kg)
-            net_price: Prix d'achat HT
         alert:
-            empty_list: Aucun mode de livraison configuré
+            empty_list: Aucun frais de port configuré
 
     shipment_rule:
         label:
@@ -1405,29 +1256,21 @@ ekyna_commerce:
             new: Créer une nouvelle unité
             edit: Modifier l'unité
             remove: Supprimer l'unité
-        state:
-            new: Nouveau
-            pending: En attente
-            ready: Prête
-            closed: Fermée
         field:
-            geocode: Geocode
-            estimated_date_of_arrival: Date de livraison estimée
             ordered_quantity: Qte commandée
             received_quantity: Qte reçue
             adjusted_quantity: Qte ajustée
             sold_quantity: Qte vendue
             shipped_quantity: Qte expediée
-            net_price: Prix d'achat HT
         button:
             new: Créer une unité de stock
         alert:
-            empty_list: Aucune unité de stock disponible
+            empty_list: Aucune unité de stock configuré
 
     stock_adjustment:
         label:
             singular: Ajustement de stock
-            plural: Ajustement de stock
+            plural: Ajustements de stock
         header:
             list: Liste des ajustement de stock
             show: Détail de l'ajustement
@@ -1447,19 +1290,14 @@ ekyna_commerce:
         confirm:
             remove: Êtes-vous sûr de vouloir supprimer cet ajustement de stock ?
         alert:
-            empty_list: Aucun ajustment de stock disponible
+            empty_list: Aucun ajustment de stock configuré
 
     stock_subject:
         field:
             mode: Mode stock
             state: État stock
             floor: Stock de rupture
-            in_stock: Stock réel
-            available_stock: Stock disponible
-            virtual_stock: Stock prévisionnel
-            estimated_date_of_arrival: Date de réappro.
             replenishment_time: Délai de réappro.
-            geocode: Geocode
             minimum_order_quantity: Qté Min Com
             end_of_life: Fin de vie
             quote_only: Sur devis uniquement
@@ -1541,9 +1379,6 @@ ekyna_commerce:
             no_item: Aucune livraison fournisseur configuré
 
     supplier_delivery_item:
-        label:
-            singular: Ligne de livraison fournisseur
-            plural: Lignes de livraison fournisseur
         field:
             remaining: Attendu
 
@@ -1553,7 +1388,7 @@ ekyna_commerce:
             plural: Commandes fournisseur
         header:
             list: Commandes fournisseur <small>Liste des commandes</small>
-            show: Détail de la commande<small>%name%</small>
+            show: Détail de la commande <small>%name%</small>
             new: Créer une nouvelle commande
             edit: Modifier la commande <small>%name%</small>
             remove: Supprimer la commande <small>%name%</small>
@@ -1580,11 +1415,11 @@ ekyna_commerce:
                 cette commande et/ou ses lignes ne peuvent donc pas être supprimée(s).
             submit:
                 success: Le bon de commande a bien été envoyé au fournisseur.
-                failure: Erreur lors de l'envoi du bon  de commande au fournisseur.
+                failure: Erreur lors de l'envoi du bon de commande au fournisseur.
                 default: >
                     <p>Bonjour,</p>
                     <p>Veuillez trouver en pièce jointe le bon de commande %number%.</p>
-                    <p>Cordialement, </p>
+                    <p>Cordialement,</p>
         field:
             shipping_cost: Frais transport HT
             discount_total: Total remise
@@ -1599,21 +1434,12 @@ ekyna_commerce:
             forwarder_total: Total transitaire
             forwarder_due_date: Échéance transitaire
             forwarder_date: Réglement transitaire
-            state: Statut
-            estimated_date_of_arrival: Date de livraison estimée
             tracking_urls: Tracking
             send_email: Envoyer l'email au fournisseur
             send_labels: Envoyer les étiquettes
         alert:
             no_item: Aucune commande fournisseur configuré
             empty: Aucun article configuré
-        state:
-            new: Création
-            ordered: En attente
-            partial: Partielle
-            received: Réceptionnée
-            completed: Complétée
-            canceled: Annulée
         template:
             label: Modèle
             placeholder: Choisissez un modèle
@@ -1640,23 +1466,16 @@ ekyna_commerce:
             none: Aucune commande fournisseur à traiter
 
     supplier_order_item:
-        label:
-            singular: Ligne de commande fournisseur
-            plural: Lignes de commande fournisseur
         field:
-            net_price: Prix d'achat HT
             supplier_data: Données Four.
             subject: Article
 
     supplier_order_attachment:
-        label:
-            singular: Pièce jointe
-            plural: Pièce jointes
         type:
             form: Bon de commande
             proforma: Facture proforma
             payment: Justificatif payment
-            forwarder: Factture transitaire
+            forwarder: Facture transitaire
             import: Justificatif d'import
             delivery: Bon de livraison
 
@@ -1666,7 +1485,7 @@ ekyna_commerce:
             plural: Références fournisseur
         header:
             list: Références fournisseur <small>Liste des références</small>
-            show: Détail de la référence<small>%name%</small>
+            show: Détail de la référence <small>%name%</small>
             new: Créer une nouvelle référence
             edit: Modifier la référence <small>%name%</small>
             remove: Supprimer la référence <small>%name%</small>
@@ -1677,12 +1496,9 @@ ekyna_commerce:
             edit: Modifier la référence
             remove: Supprimer la référence
         field:
-            net_price: Prix d'achat HT
-            available_stock: Stock disponible
             available: Dispo.
             ordered_stock: Stock réappro.
             ordered: Réappro.
-            estimated_date_of_arrival: Date réappro.
             eda: E.D.A.
             subject: Article
         alert:
@@ -1694,7 +1510,7 @@ ekyna_commerce:
             plural: Transitaires
         header:
             list: Transitaires <small>Liste des transitaires</small>
-            show: Détail du transitaire<small>%name%</small>
+            show: Détail du transitaire <small>%name%</small>
             new: Créer un nouveau transitaire
             edit: Modifier le transitaire <small>%name%</small>
             remove: Supprimer le transitaire <small>%name%</small>
@@ -1718,7 +1534,7 @@ ekyna_commerce:
             plural: Taxes
         header:
             list: Taxes <small>Liste des taxes</small>
-            show: Détail de la taxe<small>%name%</small>
+            show: Détail de la taxe <small>%name%</small>
             new: Créer une nouvelle taxe
             edit: Modifier la taxe <small>%name%</small>
             remove: Supprimer la taxe <small>%name%</small>
@@ -1739,7 +1555,7 @@ ekyna_commerce:
             plural: Groupes de taxes
         header:
             list: Groupes de taxes <small>Liste des groupes</small>
-            show: Détail du groupe de taxes<small>%name%</small>
+            show: Détail du groupe de taxes <small>%name%</small>
             new: Créer un nouveau groupe de taxes
             edit: Modifier le groupe de taxes <small>%name%</small>
             remove: Supprimer le groupe de taxes <small>%name%</small>
@@ -1760,7 +1576,7 @@ ekyna_commerce:
             plural: Règles de taxes
         header:
             list: Règle de taxes <small>Liste des règles</small>
-            show: Détail de la règle de taxes<small>%name%</small>
+            show: Détail de la règle de taxes <small>%name%</small>
             new: Créer une nouvelle règle de taxes
             edit: Modifier la règle de taxes <small>%name%</small>
             remove: Supprimer la règle de taxes <small>%name%</small>

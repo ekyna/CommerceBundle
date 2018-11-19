@@ -42,7 +42,7 @@ class ShipmentPlatformChoiceType extends AbstractType
         }, $names), $names);
 
         $resolver->setDefaults([
-            'label'   => 'ekyna_commerce.shipment_method.field.platform_name',
+            'label'   => 'ekyna_commerce.field.factory_name',
             'choices' => $choices,
         ]);
     }

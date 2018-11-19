@@ -137,7 +137,7 @@ class CustomerType extends ResourceFormType
                     'disabled' => $hasParent,
                 ])
                 ->add('outstandingLimit', Type\NumberType::class, [
-                    'label'    => 'ekyna_commerce.customer.field.outstanding_limit',
+                    'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
                     'scale'    => 2,
                     'disabled' => $hasParent,
                 ]);

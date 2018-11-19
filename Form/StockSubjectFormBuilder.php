@@ -61,7 +61,7 @@ class StockSubjectFormBuilder
     public function addGeocodeField(array $options = [])
     {
         $options = array_replace([
-            'label'    => 'ekyna_commerce.stock_subject.field.geocode',
+            'label'    => 'ekyna_commerce.field.geocode',
             'required' => false,
         ], $options);
 

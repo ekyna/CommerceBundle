@@ -59,7 +59,7 @@ class AdminMenuPass implements CompilerPassInterface
         $pool->addMethodCall('createEntry', ['sales', [
             'name'     => 'order_invoices',
             'route'    => 'ekyna_commerce_admin_order_list_invoice',
-            'label'    => 'ekyna_commerce.order_invoice.label.plural',
+            'label'    => 'ekyna_commerce.invoice.label.plural',
             'resource' => 'ekyna_commerce_order_invoice',
             'position' => 20,
         ]]);

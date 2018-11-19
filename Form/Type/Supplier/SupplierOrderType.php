@@ -191,7 +191,7 @@ class SupplierOrderType extends ResourceFormType
                 ])
                 // EDA / Tracking
                 ->add('estimatedDateOfArrival', Type\DateType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.estimated_date_of_arrival',
+                    'label'    => 'ekyna_commerce.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
                     'required' => $requiredEda,
                 ])

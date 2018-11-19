@@ -22,7 +22,7 @@ abstract class AbstractStockUnitType extends ResourceFormType
     {
         $builder
             /*->add('geocode', SF\TextType::class, [
-                'label'    => 'ekyna_commerce.stock_unit.field.geocode',
+                'label'    => 'ekyna_commerce.field.geocode',
                 'required' => false,
             ])*/
             ->add('shippedQuantity', SF\NumberType::class, [
@@ -39,11 +39,11 @@ abstract class AbstractStockUnitType extends ResourceFormType
 
             $form
                 ->add('netPrice', SF\NumberType::class, [
-                    'label'    => 'ekyna_commerce.stock_unit.field.net_price',
+                    'label'    => 'ekyna_commerce.field.buy_net_price',
                     'disabled' => $disabled,
                 ])
                 ->add('estimatedDateOfArrival', SF\DateTimeType::class, [
-                    'label'    => 'ekyna_commerce.stock_unit.field.estimated_date_of_arrival',
+                    'label'    => 'ekyna_commerce.field.estimated_date_of_arrival',
 //                'format'         => 'dd/MM/yyyy',
                     'disabled' => $disabled,
                     'required' => false,

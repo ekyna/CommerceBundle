@@ -17,7 +17,7 @@ final class ShipmentStates extends AbstractConstants
      */
     static public function getConfig()
     {
-        $prefix = 'ekyna_commerce.shipment.state.';
+        $prefix = 'ekyna_commerce.status.';
 
         return [
             // Common

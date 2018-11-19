@@ -50,7 +50,7 @@ class PaymentMethodType extends ResourceFormType
                 'label' => 'ekyna_core.field.name',
             ])
             ->add('factoryName', GatewayFactoriesChoiceType::class, [
-                'label'    => 'ekyna_commerce.payment_method.field.factory_name',
+                'label'    => 'ekyna_commerce.field.factory_name',
                 'disabled' => true,
             ])
             ->add('media', MediaChoiceType::class, [
@@ -77,7 +77,7 @@ class PaymentMethodType extends ResourceFormType
                 ],
             ])
             ->add('available', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.payment_method.field.available',
+                'label'    => 'ekyna_commerce.field.front_office',
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
