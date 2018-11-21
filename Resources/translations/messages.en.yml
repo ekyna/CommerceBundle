@@ -333,40 +333,33 @@ ekyna_commerce:
             order_state: Your order is
             see_details: Get all information about this order in your customer area.
         message:
-            register: |
+            register: >
                 <strong>Create your account</strong> to have access to <em>preferential pricing</em> and manage
                 <em>your address book</em>.<br>Or enter your <strong>Information</strong> and <strong>Billing</strong>
                 address by clicking on &laquo;Edit&raquo; below.
             # TODO
-            sign_in_or_register: |
+            sign_in_or_register: >
                 <strong>Log in</strong> to have access to <em>preferential pricing</em> and manage
                 <em>your address book</em>.<br>Otherwise, please fill in your <strong>Information</strong>
                 and <strong>Billing</strong> address (click on the &laquo;Edit&raquo; buttons).
             # TODO
-            submit_prevented: |
+            submit_prevented: >
                 Before proceeding please <strong>Log in</strong> to your account or fill in your
                 <strong>Information</strong> and <strong>Billing</strong> address
                 (click on the &laquo;Edit&raquo; buttons).
-            shipment_submit_prevented:
-                Please select a shipment method.
+            shipment_submit_prevented: Please select a shipment method.
             # TODO
-            quote_confirm: |
+            quote_confirm: >
                 Convert into a quotation ?
                 <em>You will be redirected to your account with the details of the quotation</em>.
-            # TODO
-            shipment_defaults: |
+            shipment_defaults: >
                 <sup class="text-danger">&starf;</sup> Default shipping cost,
                 choose a shipment method on the next step.
-            empty_information:
-                Enter your last name, first name and email address
-            empty_invoice:
-                Enter your billing information
-            empty_delivery:
-                (If different) Enter your billing address
-            empty_comment:
-                (Optional) Add a comment to your order
-            empty_attachments:
-                (Optional) Add attachment(s) to your order
+            empty_information: Enter your last name, first name and email address
+            empty_invoice: Enter your billing information
+            empty_delivery: (If different) Enter your billing address
+            empty_comment: (Optional) Add a comment to your order
+            empty_attachments: (Optional) Add attachment(s) to your order
         button:
             attachment_add: Add attachment
             attachment_remove: Remove attachment
@@ -377,20 +370,20 @@ ekyna_commerce:
         confirm:
             attachment_remove: Are you sure you want to remove this attachmment ?
         payment:
-            last_step: |
+            last_step: >
                 Clicking on the button &laquo;Pay by&hellip;&raquo; <strong>will confirm your order</strong>.
-            pay_with: Pay by %method%
-            grand_total: |
+            pay_with: "Pay by %method%"
+            grand_total: >
                 Order total amount: <strong>%amount%</strong>
-            deposit_amount: |
+            deposit_amount: >
                 Deposit amount: <strong>%amount%</strong>
-            remaining_amount: |
+            remaining_amount: >
                 Payment amount: <strong>%amount%</strong>
-            available_fund: |
+            available_fund: >
                 Available funds: <strong>%amount%</strong>
-            insuffisant_fund: |
-                You have used all your outstaning balance.<br>Please go to your customer area to pay due or unpaid order.
-            voucher_mandatory: |
+            insuffisant_fund: >
+                You have used all your outstanding balance.<br>Please go to your customer area to pay due or unpaid order.
+            voucher_mandatory: >
                 Please <a href="%url%">add your voucher</a> if you want to use outstanding balance.
         shipment:
             total_weight: Your order total weight
@@ -542,7 +535,7 @@ ekyna_commerce:
                 subject: New customer account
             fraudster:
                 subject: Potential fraudster detected
-                message: |
+                message: >
                     Customer {identity} has been detected as a potential fraudster during cart payment.<br>
                     His statut as been set as "Frandster" and he can no longer use online payment methods.<br>
         alert:
@@ -646,31 +639,31 @@ ekyna_commerce:
             shipment_shipped:
                 label: Shipment
                 subject: Your order %number% shipment
+                # TODO
                 message: >
                     Nous venons de procéder à l'expédition de votre commande. Vous trouverez en pièce jointe à ce mail
                     votre bon de livraison. Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
-                # TODO
+            # TODO
             shipment_partial:
                 label: Partial shipment
                 subject: Your order %number% partial shipment
                 message: >
                     Nous venons de procéder à l'expédition <strong>partielle</strong> de votre commande.
                     Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
-                # TODO
+            # TODO
             return_pending:
                 label: Pending return
                 subject: Your order %number% return
                 message: >
                     Vous pouvez procéder au retour de votre commande, d'après le bon de retour en pièce jointe à ce mail.
-                # TODO
+            # TODO
             return_received:
                 label: Received return
                 subject: Your order %number% return
                 message: >
                     Nous avons bien reçu les articles que vous nous avez retourné.
-                # TODO
         field:
-            from: SEnder
+            from: Sender
             recipients: Recipients
             copies: Copies
             invoices: Invoices and credits
@@ -809,9 +802,9 @@ ekyna_commerce:
             suspended:
                 label: Suspended
                 message: Your payment has been suspended.
-            payedout:
-                label: Provided funds             # TODO
-                message: Funds has been provided. # TODO
+            payedout: # TODO
+                label: Provided funds
+                message: Funds has been provided.
             authorized:
                 label: Authorized
                 message: Your payment has been authorized.
@@ -823,7 +816,7 @@ ekyna_commerce:
                 message: The status of the payment is unknown.
             outstanding:
                 label: Outstanding
-                message: The outstanding limit date is past. # TODO
+                message: The outstanding limit date is past.
             deposit:
                 label: Deposit
                 message: Your deposit has been accepted.
@@ -984,8 +977,8 @@ ekyna_commerce:
             abort: Cancel shipment preparation
             adjustment:
                 new: Add a new discount
-                    edit: Edit the discount
-                    remove: Remove the discount
+                edit: Edit the discount
+                remove: Remove the discount
             item:
                 add: Add a product
                 new: Add a new line
@@ -1144,7 +1137,7 @@ ekyna_commerce:
             bills: Print shipment bills
             forms: Print shipment forms
         confirm:
-            cancel: |
+            cancel: >
                 Are you sure you want to CANCEL this shipment or return
                 and remove the associated label and tracking code ?
             complete: Are you sure you want to COMPLETE this shipment or return ?
@@ -1152,11 +1145,11 @@ ekyna_commerce:
             remove_confirm: Are you sure you want to remove this shipment ?
             edit_prevented: Please cancel this shipment prior to change it.
             cant_be_deleted: This shipment is valid ans therefore cannot be deleted.
-            sale_is_not_stockable: |
+            sale_is_not_stockable: >
                 The status of this sale is not 'accepted'.
                 Available statuses for this shipment has been restricted.
             credit_method: Payment method that will be associated to the generated credit.
-            Cette action n'est pas prise en charge par la plateforme.
+            unsupported_action: Cette action n'est pas prise en charge par la plateforme.
         alert:
             no_item: No shipment configured
         platforms: Gateways

@@ -334,11 +334,11 @@ ekyna_commerce:
             order_state: Votre commande est
             see_details: Retrouvez tous les détails de cette commande dans votre espace client
         message:
-            register: |
+            register: >
                 <strong>Créez votre compte client</strong> pour voir vos <em>tarifs préférentiels</em> et accéder
                 <em>à votre carnet d'adresses</em>.<br>Ou saisissez vos <strong>Informations</strong> et addresse
                 de <strong>Facturation</strong> en cliquant sur les boutons &laquo;Modifier&raquo; ci-dessous.
-            sign_in_or_register: |
+            sign_in_or_register: >
                 <strong>Connectez-vous à votre compte client</strong> pour voir vos <em>tarifs préférentiels</em>
                 et accéder à votre <em>carnet d'adresses</em>.<br>Sinon, veuillez saisir vos <strong>Informations</strong>
                 et addresse de <strong>Facturation</strong> en cliquant sur les boutons Modifier respectifs.
@@ -348,22 +348,17 @@ ekyna_commerce:
                 (en cliquant sur les boutons &laquo;Modifier&raquo;) avant de pouvoir continuer.
             shipment_submit_prevented:
                 Veuillez choisir un mode de livraison.
-            quote_confirm: |
+            quote_confirm: >
                 Confirmer la transformation en devis ?<br>
                 <em>Vous serez redirigé vers le détail du devis dans votre espace client</em>.
-            shipment_defaults: |
+            shipment_defaults: >
                 <sup class="text-danger">&starf;</sup> Frais de port par défaut,
                 choix du mode de livraion à la prochaine étape.
-            empty_information:
-                Saisissez vos nom, prénom et adresse email
-            empty_invoice:
-                Saisissez votre adresse de facturation
-            empty_delivery:
-                (Si différente) Saisissez votre adresse de livraison
-            empty_comment:
-                (Optionnel) Ajoutez un commentaire à votre commande
-            empty_attachments:
-                (Optionnel) Ajoutez des pièces jointes à votre commande
+            empty_information: Saisissez vos nom, prénom et adresse email
+            empty_invoice: Saisissez votre adresse de facturation
+            empty_delivery: (Si différente) Saisissez votre adresse de livraison
+            empty_comment: (Optionnel) Ajoutez un commentaire à votre commande
+            empty_attachments: (Optionnel) Ajoutez des pièces jointes à votre commande
         button:
             attachment_add: Ajouter une pièce jointe
             attachment_remove: Supprimer cette pièce jointe
@@ -374,21 +369,21 @@ ekyna_commerce:
         confirm:
             attachment_remove: Êtes-vous sûr de vouloir supprimer cette pièce jointe ?
         payment:
-            last_step: |
+            last_step: >
                 Cliquer sur un bouton &laquo;Régler par&hellip;&raquo; <strong>validera votre commande</strong>.
-            pay_with: Régler par %method%
-            grand_total: |
+            pay_with: "Régler par %method%"
+            grand_total: >
                 Montant total de la commande : <strong>%amount%</strong>
-            deposit_amount: |
+            deposit_amount: >
                 Montant de l'acompte : <strong>%amount%</strong>
-            remaining_amount: |
+            remaining_amount: >
                 Montant du paiement : <strong>%amount%</strong>
-            available_fund: |
+            available_fund: >
                 Fonds disponibles : <strong>%amount%</strong>
-            insuffisant_fund: |
+            insuffisant_fund: >
                 Vous avez utilisé la totalité de votre encours client.<br> Rendez-vous
                 dans votre espace client pour régler les factures échues ou non réglées.
-            voucher_mandatory: |
+            voucher_mandatory: >
                 Veuillez <a href="%url%">ajouter votre bon d'achat</a> si vous souhaitez utiliser votre encours.
         shipment:
             total_weight: Poids total de votre commande
@@ -540,7 +535,7 @@ ekyna_commerce:
                 subject: Création de compte client
             fraudster:
                 subject: Potientiel fraudeur détecté
-                message: |
+                message: >
                     Le client {identity} a été détecté comme fraudeur potentiel lors du paiement de son panier.<br>
                     Son statut à été défini à "Fraudeur" et il n'a plus accès au réglement en ligne.<br>
         alert:
@@ -1143,7 +1138,7 @@ ekyna_commerce:
             bills: Afficher les bons de livraison
             forms: Afficher les bons de préparation
         confirm:
-            cancel: |
+            cancel: >
                 Êtes-vous sûr de vouloir ANNULER cette expédition ou ce retour
                 et supprimer l'étiquette et le numéro de suivi ?
             complete: Êtes-vous sûr de vouloir FINALISER cette expédition ou ce retour ?
@@ -1151,7 +1146,7 @@ ekyna_commerce:
             remove_confirm: Souhaitez-vous réellement supprimer cette expédition ?
             edit_prevented: Veuillez annuler l'expédition pour pouvoir la modifier.
             cant_be_deleted: Cette expédition est valide et ne peut être supprimée.
-            sale_is_not_stockable: |
+            sale_is_not_stockable: >
                 Le statut de la vente n'étant pas accepté, les statuts
                 disponibles pour l'expédition ont été restreints.
             credit_method: Mode de remboursement qui sera associé à l'avoir généré.
