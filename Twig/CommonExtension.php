@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Common\Model\AddressInterface;
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRuntimeInterface
+class CommonExtension extends \Twig_Extension
 {
     /**
      * @var ConstantsHelper
