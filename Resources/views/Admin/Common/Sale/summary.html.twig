@@ -63,7 +63,7 @@
         <tr>
             <td>{{ invoice.number }}</td>
             <td>{{ invoice.grand_total }}</td>
-            <td>{{ invoice.created_at|localizeddate('short', 'none') }}</td>
+            <td>{{ invoice.created_at|localizeddate('short', 'short') }}</td>
         </tr>
     {%- endfor %}
     </tbody>
@@ -72,7 +72,7 @@
 <div>
     <dl class="dl-horizontal">
         <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>
-        <dd>{{ created_at|localizeddate('short', 'none') }}</dd>
+        <dd>{{ created_at|localizeddate('short', 'short') }}</dd>
     {% if payment_term is not empty -%}
         <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
         <dd>{{ payment_term }}</dd>
@@ -83,11 +83,11 @@
     {%- endif %}
     {% if shipped_at is not empty -%}
         <dt>{{ 'ekyna_commerce.shipment.field.shipped_at'|trans }}</dt>
-        <dd>{{ shipped_at|localizeddate('short', 'none') }}</dd>
+        <dd>{{ shipped_at|localizeddate('short', 'short') }}</dd>
     {%- endif %}
     {% if invoiced_at is not empty -%}
         <dt>{{ 'ekyna_commerce.invoice.field.invoiced_at'|trans }}</dt>
-        <dd>{{ invoiced_at|localizeddate('short', 'none') }}</dd>
+        <dd>{{ invoiced_at|localizeddate('short', 'short') }}</dd>
     {%- endif %}
     {% if description is not empty -%}
         <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>

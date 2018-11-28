@@ -60,7 +60,7 @@ class VatNumberType extends AbstractType
                 if ($customer->isVatValid()) {
                     $result = ['valid' => true];
                     if (!empty($details = $customer->getVatDetails())) {
-                        $result['content'] = $this->templating->render('EkynaCommerceBundle:Admin/Common:vat_details.html.twig', [
+                        $result['content'] = $this->templating->render('@EkynaCommerce/Admin/Common/vat_details.html.twig', [
                             'details' => $details,
                         ]);
                     }

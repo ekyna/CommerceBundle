@@ -47,7 +47,7 @@
                     {%- endif -%}
                 </td>
                 <td id="{{ shipmentId }}_trackingNumber">{{ display_shipment_tracking(shipment) }}</td>
-                <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'none') }}</td>
+                <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|localizeddate('short', 'short') }}</td>
                 <td id="{{ shipmentId }}_invoice">
                     {%- if shipment.invoice is not null %}{{ shipment.invoice.number }}{% endif -%}
                 </td>

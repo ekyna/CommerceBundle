@@ -11,6 +11,7 @@ use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
+use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Entity\OrderAttachment;
@@ -100,7 +101,7 @@ class NotifyType extends AbstractType
             $builder->add('from', ChoiceType::class, [
                 'label'        => 'ekyna_commerce.notify.field.from',
                 'choices'      => $froms,
-                'choice_label' => 'choiceLabel',
+                'choice_label' => [$this, 'renderChoiceLabel'],
                 'choice_value' => 'email',
                 'multiple'     => false,
                 'required'     => true,
@@ -114,7 +115,7 @@ class NotifyType extends AbstractType
                     ->create('recipients', ChoiceType::class, [
                         'label'        => 'ekyna_commerce.notify.field.recipients',
                         'choices'      => $recipients,
-                        'choice_label' => 'choiceLabel',
+                        'choice_label' => [$this, 'renderChoiceLabel'],
                         'choice_value' => 'email',
                         'multiple'     => true,
                         'expanded'     => true,
@@ -135,7 +136,7 @@ class NotifyType extends AbstractType
                     ->create('copies', ChoiceType::class, [
                         'label'        => 'ekyna_commerce.notify.field.copies',
                         'choices'      => $copies,
-                        'choice_label' => 'choiceLabel',
+                        'choice_label' => [$this, 'renderChoiceLabel'],
                         'choice_value' => 'email',
                         'multiple'     => true,
                         'expanded'     => true,
@@ -346,6 +347,30 @@ class NotifyType extends AbstractType
                     'align_with_widget' => true,
                 ],
             ]);
+    }
+
+    /**
+     * Renders the recipient choice label.
+     *
+     * @param Recipient $recipient
+     *
+     * @return string
+     */
+    public function renderChoiceLabel(Recipient $recipient)
+    {
+        $label = '';
+
+        if (!empty($type = $recipient->getType())) {
+            $label = '[' . $this->translator->trans('ekyna_commerce.notify.recipient.' . $type) . '] ';
+        }
+
+        if (!empty($name = $recipient->getName())) {
+            $label .= sprintf('%s &lt;%s&gt;', $name, $recipient->getEmail());
+        } else {
+            $label .= $recipient->getEmail();
+        }
+
+        return $label;
     }
 
     /**

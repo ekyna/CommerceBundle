@@ -3,9 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Bundle\AdminBundle\Service\Security\UserProviderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
-use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -78,7 +78,7 @@ class InChargeResolver
      *
      * @param InChargeSubjectInterface $subject
      *
-     * @return \Ekyna\Bundle\UserBundle\Model\UserInterface|null
+     * @return \Ekyna\Bundle\AdminBundle\Model\UserInterface|null
      */
     public function resolve(InChargeSubjectInterface $subject)
     {
@@ -89,9 +89,7 @@ class InChargeResolver
         }
 
         if (null !== $user = $this->userProvider->getUser()) {
-            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-                return $user;
-            }
+            return $user;
         }
 
         return null;
@@ -102,7 +100,7 @@ class InChargeResolver
      *
      * @param SaleInterface $sale
      *
-     * @return \Ekyna\Bundle\UserBundle\Model\UserInterface|null
+     * @return \Ekyna\Bundle\AdminBundle\Model\UserInterface|null
      */
     private function resolveSale(SaleInterface $sale)
     {

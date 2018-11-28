@@ -118,7 +118,7 @@ class CommerceSettingsSchema extends AbstractSchema
      */
     public function getShowTemplate()
     {
-        return 'EkynaCommerceBundle:Admin/Settings:show.html.twig';
+        return '@EkynaCommerce/Admin/Settings/show.html.twig';
     }
 
     /**
@@ -126,6 +126,6 @@ class CommerceSettingsSchema extends AbstractSchema
      */
     public function getFormTemplate()
     {
-        return 'EkynaCommerceBundle:Admin/Settings:form.html.twig';
+        return '@EkynaCommerce/Admin/Settings/form.html.twig';
     }
 }

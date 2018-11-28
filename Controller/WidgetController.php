@@ -68,7 +68,7 @@ class WidgetController extends Controller
             throw $this->createNotFoundException();
         }
 
-        $content = $this->templating->render('EkynaCommerceBundle:Widget:customer.html.twig', [
+        $content = $this->templating->render('@EkynaCommerce/Widget/customer.html.twig', [
             'user' => $this->helper->getUser(),
         ]);
 
@@ -109,7 +109,7 @@ class WidgetController extends Controller
 
         $cart = $this->helper->getCart();
 
-        $content = $this->templating->render('EkynaCommerceBundle:Widget:cart.html.twig', [
+        $content = $this->templating->render('@EkynaCommerce/Widget/cart.html.twig', [
             'cart' => $cart,
         ]);
 

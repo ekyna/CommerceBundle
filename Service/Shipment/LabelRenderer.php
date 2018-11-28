@@ -89,7 +89,7 @@ class LabelRenderer
             }
         }
 
-        $content = $this->templating->render('EkynaCommerceBundle:Admin/Common/Shipment:labels.html.twig', [
+        $content = $this->templating->render('@EkynaCommerce/Admin/Common/Shipment/labels.html.twig', [
             'layout' => $layout,
             'labels' => $labels,
         ]);

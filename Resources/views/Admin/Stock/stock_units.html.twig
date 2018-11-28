@@ -16,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        {% include "EkynaCommerceBundle:Js:stock_unit_rows.html.twig" with {
+        {% include '@EkynaCommerce/Js/stock_unit_rows.html.twig' with {
             'prefix': prefix,
             'stock_units': stockUnits,
         } only %}

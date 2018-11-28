@@ -53,7 +53,7 @@ class AcmeProductExtension extends Extension implements PrependExtensionInterfac
                             'priority' => 1024,
                         ],
                         'templates'  => [
-                            'show.html' => 'AcmeProductBundle:Admin/Product:show.html',
+                            'show.html' => '@AcmeProduct/Admin/Product/show.html',
                         ],
                     ],
                     'stock_unit' => [

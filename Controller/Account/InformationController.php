@@ -22,7 +22,7 @@ class InformationController extends AbstractController
     {
         $customer = $this->getCustomerOrRedirect();
 
-        return $this->render('EkynaCommerceBundle:Account/Information:index.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Information/index.html.twig', [
             'customer' => $customer,
         ]);
     }
@@ -62,7 +62,7 @@ class InformationController extends AbstractController
             }
         }
 
-        return $this->render('EkynaCommerceBundle:Account/Information:edit.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Information/edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }

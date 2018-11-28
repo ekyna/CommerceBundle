@@ -124,7 +124,7 @@ class SaleItemController extends AbstractSaleController
                 ->setContent($form->createView())
                 ->setVars($context->getTemplateVars([
                     'flow'          => $flow,
-                    'form_template' => 'EkynaCommerceBundle:Admin/Common/Item:_flow.html.twig',
+                    'form_template' => '@EkynaCommerce/Admin/Common/Item/_flow.html.twig',
                 ]));
 
             $this->get('event_dispatcher')->dispatch(
@@ -141,7 +141,7 @@ class SaleItemController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Item:add.html.twig',
+            '@EkynaCommerce/Admin/Common/Item/add.html.twig',
             $context->getTemplateVars([
                 'form' => $form->createView(),
                 'flow' => $flow,
@@ -230,7 +230,7 @@ class SaleItemController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Item:new.html.twig',
+            '@EkynaCommerce/Admin/Common/Item/new.html.twig',
             $context->getTemplateVars([
                 'form' => $form->createView(),
             ])
@@ -324,7 +324,7 @@ class SaleItemController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Item:configure.html.twig',
+            '@EkynaCommerce/Admin/Common/Item/configure.html.twig',
             $context->getTemplateVars([
                 'form' => $form->createView(),
             ])
@@ -408,7 +408,7 @@ class SaleItemController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Item:edit.html.twig',
+            '@EkynaCommerce/Admin/Common/Item/edit.html.twig',
             $context->getTemplateVars([
                 'form' => $form->createView(),
             ])
@@ -533,7 +533,7 @@ class SaleItemController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Item:remove.html.twig',
+            '@EkynaCommerce/Admin/Common/Item/remove.html.twig',
             $context->getTemplateVars([
                 // TODO 'form' => $form->createView(),
             ])

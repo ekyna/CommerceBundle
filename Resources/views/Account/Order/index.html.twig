@@ -1,10 +1,10 @@
-{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
 {% spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" with {
+    {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer
     } only %}
 {% endspaceless %}

@@ -1,4 +1,4 @@
-{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
 {% spaceless %}
@@ -18,7 +18,7 @@
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {
+    {% include '@EkynaCommerce/Account/Quote/_list.html.twig' with {
         'quotes': quotes, 'customer': customer
     } only %}
 

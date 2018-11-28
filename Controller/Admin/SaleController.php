@@ -130,7 +130,7 @@ class SaleController extends AbstractSaleController
         if ($html) {
             $content = $this->get('serializer')->normalize($sale, 'json', ['groups' => ['Summary']]);
             $content = $this->renderView(
-                'EkynaCommerceBundle:Admin/Common/Sale:summary.html.twig',
+                '@EkynaCommerce/Admin/Common/Sale/summary.html.twig',
                 array_replace($content, [
                     'shipment' => $sale instanceof ShipmentSubjectInterface,
                     'invoice'  => $sale instanceof InvoiceSubjectInterface,
@@ -193,7 +193,7 @@ class SaleController extends AbstractSaleController
             }
         }
 
-        $formTemplate = 'EkynaCommerceBundle:Admin/Common/Sale:_form_edit_shipment.html.twig';
+        $formTemplate = '@EkynaCommerce/Admin/Common/Sale/_form_edit_shipment.html.twig';
 
         if ($isXhr) {
             $modal = $this->createModal('edit', 'ekyna_commerce.sale.header.shipment.edit');
@@ -212,7 +212,7 @@ class SaleController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Sale:edit_shipment.html.twig',
+            '@EkynaCommerce/Admin/Common/Sale/edit_shipment.html.twig',
             $context->getTemplateVars([
                 'form'          => $form->createView(),
                 'form_template' => $formTemplate,

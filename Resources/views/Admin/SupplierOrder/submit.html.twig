@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity:sided.html.twig" %}
+{% extends '@EkynaAdmin/Entity/sided.html.twig' %}
 
 {% set supplierOrder = _context[resource_name] %}
 
@@ -12,7 +12,7 @@
 {% endblock actions %}
 
 {% block main %}
-    {% include "EkynaCommerceBundle:Admin/SupplierOrder/Show:items.html.twig" %}
+    {% include '@EkynaCommerce/Admin/SupplierOrder/Show/items.html.twig' %}
 
     {{ form_start(form) }}
     <div class="form-body">
@@ -26,7 +26,7 @@
                 {{ form_row(form.order.carrier, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-        {% include "EkynaCommerceBundle:Admin/SupplierOrder/Form:fields.html.twig" with {'form': form.order} only %}
+        {% include '@EkynaCommerce/Admin/SupplierOrder/Form/fields.html.twig' with {'form': form.order} only %}
         {{ form_row(form.order.trackingUrls) }}
         {{ form_row(form.order.description) }}
         <hr>

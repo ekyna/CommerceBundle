@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/new.html.twig' %}
 
 {% block main %}
     {{ form_start(form) }}
@@ -20,13 +20,13 @@
                 {% if flow.getCurrentStepNumber() == 1 %}
                     {{ form_row(form.supplier) }}
                 {% elseif flow.getCurrentStepNumber() == 2 %}
-                    {% include "EkynaCommerceBundle:Admin/SupplierOrder/Form:general.html.twig" %}
+                    {% include '@EkynaCommerce/Admin/SupplierOrder/Form/general.html.twig' %}
                 {% endif %}
             </div>
             {{ form_rest(form) }}
         </div>
 
-        {% include 'EkynaAdminBundle:Form:form_flow_buttons.html.twig' %}
+        {% include '@EkynaAdmin/Form/form_flow_buttons.html.twig' %}
     </div>
 
     {{ form_end(form) }}

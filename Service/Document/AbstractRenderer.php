@@ -240,7 +240,7 @@ abstract class AbstractRenderer implements RendererInterface
      */
     protected function getContent()
     {
-        return $this->templating->render('EkynaCommerceBundle:Document:render.html.twig', array_replace([
+        return $this->templating->render('@EkynaCommerce/Document/render.html.twig', array_replace([
             'debug'     => $this->debug,
             'logo_path' => $this->logoPath,
             'subjects'  => $this->subjects,

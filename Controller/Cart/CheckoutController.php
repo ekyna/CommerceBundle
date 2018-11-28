@@ -138,7 +138,7 @@ class CheckoutController extends AbstractController
             return $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
         }
 
-        return $this->render('EkynaCommerceBundle:Cart/Checkout:index.html.twig', $parameters);
+        return $this->render('@EkynaCommerce/Cart/Checkout/index.html.twig', $parameters);
     }
 
     /**
@@ -224,7 +224,7 @@ class CheckoutController extends AbstractController
             }
         }
 
-        return $this->render('EkynaCommerceBundle:Cart/Checkout:quote.html.twig', [
+        return $this->render('@EkynaCommerce/Cart/Checkout/quote.html.twig', [
             'cart' => $cart,
             'form' => $form->createView(),
         ]);
@@ -266,7 +266,7 @@ class CheckoutController extends AbstractController
 
         $view = $form->createView();
 
-        return $this->render('EkynaCommerceBundle:Cart/Checkout:shipment.html.twig', [
+        return $this->render('@EkynaCommerce/Cart/Checkout/shipment.html.twig', [
             'cart' => $cart,
             'form' => $view,
         ]);
@@ -306,7 +306,7 @@ class CheckoutController extends AbstractController
             return $this->paymentHelper->capture($payment, $statusUrl);
         }
 
-        return $this->render('EkynaCommerceBundle:Cart/Checkout:payment.html.twig', [
+        return $this->render('@EkynaCommerce/Cart/Checkout/payment.html.twig', [
             'cart'  => $cart,
             'forms' => $this->paymentCheckout->getFormsViews(),
         ]);
@@ -371,7 +371,7 @@ class CheckoutController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        return $this->render('EkynaCommerceBundle:Cart/Checkout:confirmation.html.twig', [
+        return $this->render('@EkynaCommerce/Cart/Checkout/confirmation.html.twig', [
             'order' => $order,
         ]);
     }

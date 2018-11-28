@@ -17,11 +17,6 @@ class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRun
      */
     private $constantHelper;
 
-    /**
-     * @var \Twig_TemplateInterface
-     */
-    private $addressTemplate;
-
 
     /**
      * Constructor.
@@ -36,22 +31,13 @@ class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRun
     /**
      * @inheritdoc
      */
-    public function initRuntime(\Twig_Environment $twig)
-    {
-        /** @var \Twig_TemplateInterface addressTemplate */
-        $this->addressTemplate = $twig->loadTemplate('EkynaCommerceBundle:Show:address.html.twig');
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getFilters()
     {
         return [
             new \Twig_SimpleFilter(
                 'address',
                 [$this, 'renderAddress'],
-                ['is_safe' => ['html']]
+                ['is_safe' => ['html'], 'needs_environment' => true,]
             ),
             new \Twig_SimpleFilter(
                 'identity',
@@ -93,14 +79,15 @@ class CommonExtension extends \Twig_Extension implements \Twig_Extension_InitRun
     /**
      * Renders the address.
      *
+     * @param \Twig_Environment $env
      * @param AddressInterface $address
      * @param bool             $displayPhones
      *
      * @return string
      */
-    public function renderAddress(AddressInterface $address, $displayPhones = true)
+    public function renderAddress(\Twig_Environment $env, AddressInterface $address, $displayPhones = true)
     {
-        return $this->addressTemplate->render([
+        return $env->render('@EkynaCommerce/Show/address.html.twig', [
             'address'        => $address,
             'display_phones' => $displayPhones,
         ]);

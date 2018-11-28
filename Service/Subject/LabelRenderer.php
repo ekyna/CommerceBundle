@@ -59,7 +59,7 @@ class LabelRenderer
      */
     public function render(array $labels, $format = SubjectLabel::FORMAT_LARGE)
     {
-        $content = $this->templating->render('EkynaCommerceBundle:Admin/Subject:label.html.twig', [
+        $content = $this->templating->render('@EkynaCommerce/Admin/Subject/label.html.twig', [
             'labels' => $labels,
             'format' => $format,
         ]);

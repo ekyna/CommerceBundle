@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity/Default:edit.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/edit.html.twig' %}
 
 {% block title %}
     <h1>{{ 'ekyna_commerce.quote.header.duplicate'|trans({'%number%': quote.number})|raw }}</h1>
@@ -6,6 +6,6 @@
 
 {% block main %}
     {{ form_start(form) }}
-    {% include "EkynaCommerceBundle:Admin/Quote:_form.html.twig" %}
+    {% include '@EkynaCommerce/Admin/Quote/_form.html.twig' %}
     {{ form_end(form) }}
 {% endblock main %}

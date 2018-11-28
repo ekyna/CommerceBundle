@@ -111,7 +111,7 @@
         }) }}
     </div>
 </div>
-{% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': sale, 'prefix': 'sale'} %}
+{% include '@EkynaCommerce/Admin/Common/Pricing/_show_vat_fields.html.twig' with {'subject': sale, 'prefix': 'sale'} %}
 <hr>
 <div class="row">
     <div class="col-md-4">
@@ -172,8 +172,7 @@
         {{ show_row(sale.createdAt, 'datetime', {
             'label': 'ekyna_core.field.created_at',
             'id': 'sale_createdAt',
-            'label_col': 6,
-            'time': false
+            'label_col': 6
         }) }}
     </div>
 </div>

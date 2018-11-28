@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
 {% block main %}
     <div class="actions">
@@ -66,7 +66,7 @@
                             {{ 'ekyna_core.field.translations'|trans }}
                         </div>
                         <div class="col-md-10">
-                            {% include 'EkynaCommerceBundle:Admin/Common/Method:translations.html.twig' with {
+                            {% include '@EkynaCommerce/Admin/Common/Method/translations.html.twig' with {
                                 'method': paymentMethod
                             } %}
                         </div>
@@ -92,7 +92,7 @@
                                             {{ 'ekyna_core.field.translations'|trans }}
                                         </div>
                                         <div class="col-md-10">
-                                            {% include 'EkynaCommerceBundle:Admin/Common/Message:translations.html.twig' with {
+                                            {% include '@EkynaCommerce/Admin/Common/Message/translations.html.twig' with {
                                                 'message': message
                                             } %}
                                         </div>

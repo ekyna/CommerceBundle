@@ -60,7 +60,7 @@ class PricingController
         if (!empty($number = $request->query->get('number'))) {
             if (null !== $result = $this->api->validateVatNumber($number)) {
                 $data['valid'] = $result->isValid();
-                $data['content'] = $this->templating->render('EkynaCommerceBundle:Admin/Common:vat_details.html.twig', [
+                $data['content'] = $this->templating->render('@EkynaCommerce/Admin/Common/vat_details.html.twig', [
                     'details' => $result->getDetails(),
                 ]);
             }

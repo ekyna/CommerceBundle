@@ -12,7 +12,7 @@
     {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
         <div class="tab-pane active" id="supplier-order-general">
-            {% include "EkynaCommerceBundle:Admin/SupplierOrder/Form:general.html.twig" %}
+            {% include '@EkynaCommerce/Admin/SupplierOrder/Form/general.html.twig' %}
         </div>
     </div>
     {{ form_rest(form) }}

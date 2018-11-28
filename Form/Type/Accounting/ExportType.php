@@ -61,9 +61,10 @@ class ExportType extends AbstractType
 
         $builder
             ->add('date', ChoiceType::class, [
-                'label'   => 'ekyna_commerce.accounting.label.plural',
-                'choices' => $choices,
-                'select2' => false,
+                'label'                     => 'ekyna_commerce.accounting.label.plural',
+                'choices'                   => $choices,
+                'select2'                   => false,
+                'choice_translation_domain' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label'        => 'ekyna_core.button.export',

@@ -76,7 +76,7 @@ class DocumentRenderer extends AbstractRenderer
      */
     protected function getTemplate()
     {
-        return 'EkynaCommerceBundle:Document:document.html.twig';
+        return '@EkynaCommerce/Document/document.html.twig';
     }
 
     /**

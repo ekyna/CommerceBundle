@@ -62,9 +62,9 @@ class StockRenderer
         StockUnitResolverInterface $resolver,
         NormalizerInterface $normalizer,
         EngineInterface $templating,
-        $unitTemplate = 'EkynaCommerceBundle:Admin/Stock:stock_units.html.twig',
-        $assignmentTemplate = 'EkynaCommerceBundle:Admin/Stock:stock_assignments.html.twig',
-        $subjectTemplate = 'EkynaCommerceBundle:Admin/Stock:subjects_stock.html.twig'
+        $unitTemplate = '@EkynaCommerce/Admin/Stock/stock_units.html.twig',
+        $assignmentTemplate = '@EkynaCommerce/Admin/Stock/stock_assignments.html.twig',
+        $subjectTemplate = '@EkynaCommerce/Admin/Stock/subjects_stock.html.twig'
     ) {
         $this->resolver = $resolver;
         $this->normalizer = $normalizer;

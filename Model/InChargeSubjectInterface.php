@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
-use Ekyna\Bundle\UserBundle\Model\UserInterface;
+use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 
 /**
  * Interface InChargeSubjectInterface

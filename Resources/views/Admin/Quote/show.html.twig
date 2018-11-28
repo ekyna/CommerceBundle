@@ -1,7 +1,7 @@
-{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
 
-{% import "EkynaCmsBundle:Admin:show_macros.html.twig" as _cms %}
+{% import '@EkynaCms/Admin/show_macros.html.twig' as _cms %}
 
 
 {% block title %}
@@ -68,7 +68,7 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="quote-general">
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_general.html.twig" with {'sale': quote} %}
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_general.html.twig' with {'sale': quote} %}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(quote.weightTotal, 'number', {
@@ -88,7 +88,7 @@
                 {{ _cms.show_tags(quote) }}
             </div>
             <div class="tab-pane" id="quote-addresses">
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_addresses.html.twig" with {'sale': quote} %}
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_addresses.html.twig' with {'sale': quote} %}
             </div>
             <div class="tab-pane" id="quote-details">
                 {{ render_sale_view(sale_view) }}
@@ -106,9 +106,9 @@
                 <h4 class="sub-header">
                     {{ 'ekyna_commerce.payment.label.plural'|trans }}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_payments.html.twig" with {'sale': quote} %}
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {'sale': quote} %}
                 <hr>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale/Fragment:payment_fields.html.twig" with {'sale': quote} %}
+                {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {'sale': quote} %}
             </div>
             <div class="tab-pane" id="quote-attachments">
                 <div class="actions">
@@ -128,17 +128,17 @@
                 <h4 class="sub-header">
                     {{ 'ekyna_commerce.attachment.label.plural'|trans }}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_attachments.html.twig" with {
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_attachments.html.twig' with {
                     'sale': quote,
                     'attachments': quote.attachments
                 } %}
             </div>
             <div class="tab-pane" id="quote-informations">
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_informations.html.twig" with {'sale': quote} %}
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_informations.html.twig' with {'sale': quote} %}
                 <h4 class="sub-header">
                     {{- 'ekyna_commerce.notification.label.plural'|trans -}}
                 </h4>
-                {% include "EkynaCommerceBundle:Admin/Common/Sale:show_notifications.html.twig" with {
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_notifications.html.twig' with {
                     'sale': quote,
                     'notifications': quote.notifications
                 } %}
@@ -151,7 +151,7 @@
 {% block side %}
     {{ parent() }}
     {% if quote.customer is not null %}
-        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:customer.html.twig" with {'customer': quote.customer} %}
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/customer.html.twig' with {'customer': quote.customer} %}
     {% endif %}
 {% endblock side %}
 

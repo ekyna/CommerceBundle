@@ -28,7 +28,7 @@ class InvoiceController extends AbstractController
 
         $invoices = $this->findInvoicesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Invoice:index.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Invoice/index.html.twig', [
             'customer' => $customer,
             'invoices' => $invoices,
         ]);
@@ -57,7 +57,7 @@ class InvoiceController extends AbstractController
 
         $invoices = $this->findInvoicesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Invoice:show.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Invoice/show.html.twig', [
             'customer'     => $customer,
             'invoice'      => $invoice,
             'invoices'     => $invoices,

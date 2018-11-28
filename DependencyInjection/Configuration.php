@@ -291,8 +291,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Accounting:_form.html',
-                                    'show.html'   => 'EkynaCommerceBundle:Admin/Accounting:show.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Accounting/_form.html',
+                                    'show.html'   => '@EkynaCommerce/Admin/Accounting/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Accounting\Entity\Accounting')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AccountingController')->end()
@@ -308,11 +308,11 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Cart:_form.html',
-                                    'list.html'   => 'EkynaCommerceBundle:Admin/Cart:list.html',
-                                    'show.html'   => 'EkynaCommerceBundle:Admin/Cart:show.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Cart:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Cart:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Cart/_form.html',
+                                    'list.html'   => '@EkynaCommerce/Admin/Cart/list.html',
+                                    'show.html'   => '@EkynaCommerce/Admin/Cart/show.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Cart/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Cart/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\Cart')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
@@ -337,10 +337,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Attachment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Attachment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Attachment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Attachment/remove.html',
                                 ])->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartAttachment')->end()
@@ -353,12 +353,12 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Item:_form.html',
-                                    'add.html'       => 'EkynaCommerceBundle:Admin/Common/Item:add.html',
-                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Item:new.html',
-                                    'configure.html' => 'EkynaCommerceBundle:Admin/Common/Item:configure.html',
-                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Item:edit.html',
-                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Item:remove.html',
+                                    '_form.html'     => '@EkynaCommerce/Admin/Common/Item/_form.html',
+                                    'add.html'       => '@EkynaCommerce/Admin/Common/Item/add.html',
+                                    'new.html'       => '@EkynaCommerce/Admin/Common/Item/new.html',
+                                    'configure.html' => '@EkynaCommerce/Admin/Common/Item/configure.html',
+                                    'edit.html'      => '@EkynaCommerce/Admin/Common/Item/edit.html',
+                                    'remove.html'    => '@EkynaCommerce/Admin/Common/Item/remove.html',
                                 ])->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemController')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartItem')->end()
@@ -371,10 +371,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Adjustment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Adjustment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Adjustment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Adjustment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartItemAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemAdjustmentController')->end()
@@ -387,10 +387,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Adjustment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Adjustment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Adjustment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Adjustment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
@@ -403,10 +403,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Payment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Payment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Payment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Payment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Payment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Payment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Payment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\CartPayment')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CartPaymentRepository')->end()
@@ -421,8 +421,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/Country:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/Country:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/Country/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/Country/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Common\Entity\Country')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CountryController')->end()
@@ -438,8 +438,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/Currency:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/Currency:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/Currency/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/Currency/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Common\Entity\Currency')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CurrencyController')->end()
@@ -469,8 +469,9 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/Customer:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/Customer:show.html',
+                                    '_form.html'       => '@EkynaCommerce/Admin/Customer/_form.html',
+                                    'show.html'        => '@EkynaCommerce/Admin/Customer/show.html',
+                                    'create_user.html' => '@EkynaCommerce/Admin/Customer/create_user.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Customer')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerController')->end()
@@ -486,8 +487,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/CustomerGroup:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/CustomerGroup:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/CustomerGroup/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/CustomerGroup/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerGroup')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerGroupController')->end()
@@ -514,9 +515,9 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/NotifyModel:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/NotifyModel:show.html',
-                                    'test.html'  => 'EkynaCommerceBundle:Admin/NotifyModel:test.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/NotifyModel/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/NotifyModel/show.html',
+                                    'test.html'  => '@EkynaCommerce/Admin/NotifyModel/test.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\NotifyModel')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\NotifyModelController')->end()
@@ -543,14 +544,14 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Order:_form.html',
-                                    'list.html'      => 'EkynaCommerceBundle:Admin/Order:list.html',
-                                    'show.html'      => 'EkynaCommerceBundle:Admin/Order:show.html',
-                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Order:edit.html',
-                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Order:remove.html',
-                                    'transform.html' => 'EkynaCommerceBundle:Admin/Order:transform.html',
-                                    'duplicate.html' => 'EkynaCommerceBundle:Admin/Order:duplicate.html',
-                                    'notify.html'    => 'EkynaCommerceBundle:Admin/Order:notify.html',
+                                    '_form.html'     => '@EkynaCommerce/Admin/Order/_form.html',
+                                    'list.html'      => '@EkynaCommerce/Admin/Order/list.html',
+                                    'show.html'      => '@EkynaCommerce/Admin/Order/show.html',
+                                    'edit.html'      => '@EkynaCommerce/Admin/Order/edit.html',
+                                    'remove.html'    => '@EkynaCommerce/Admin/Order/remove.html',
+                                    'transform.html' => '@EkynaCommerce/Admin/Order/transform.html',
+                                    'duplicate.html' => '@EkynaCommerce/Admin/Order/duplicate.html',
+                                    'notify.html'    => '@EkynaCommerce/Admin/Order/notify.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Order')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
@@ -575,10 +576,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Attachment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Attachment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Attachment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Attachment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderAttachment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
@@ -591,12 +592,12 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Item:_form.html',
-                                    'add.html'       => 'EkynaCommerceBundle:Admin/Common/Item:add.html',
-                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Item:new.html',
-                                    'configure.html' => 'EkynaCommerceBundle:Admin/Common/Item:configure.html',
-                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Item:edit.html',
-                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Item:remove.html',
+                                    '_form.html'     => '@EkynaCommerce/Admin/Common/Item/_form.html',
+                                    'add.html'       => '@EkynaCommerce/Admin/Common/Item/add.html',
+                                    'new.html'       => '@EkynaCommerce/Admin/Common/Item/new.html',
+                                    'configure.html' => '@EkynaCommerce/Admin/Common/Item/configure.html',
+                                    'edit.html'      => '@EkynaCommerce/Admin/Common/Item/edit.html',
+                                    'remove.html'    => '@EkynaCommerce/Admin/Common/Item/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderItem')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemController')->end()
@@ -616,10 +617,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Adjustment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Adjustment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Adjustment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Adjustment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderItemAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemAdjustmentController')->end()
@@ -632,10 +633,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Adjustment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Adjustment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Adjustment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Adjustment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
@@ -648,10 +649,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Payment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Payment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Payment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Payment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Payment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Payment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Payment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderPayment')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderPaymentRepository')->end()
@@ -667,10 +668,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Shipment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Shipment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Shipment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Shipment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Shipment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Shipment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Shipment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Shipment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderShipment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleShipmentController')->end()
@@ -701,10 +702,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Invoice:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Invoice:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Invoice:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Invoice:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Invoice/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Invoice/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Invoice/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Invoice/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderInvoice')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderInvoiceRepository')->end()
@@ -740,9 +741,9 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/PaymentMethod:_form.html',
-                                    'new.html'   => 'EkynaCommerceBundle:Admin/PaymentMethod:new.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/PaymentMethod:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/PaymentMethod/_form.html',
+                                    'new.html'   => '@EkynaCommerce/Admin/PaymentMethod/new.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/PaymentMethod/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\PaymentMethod')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\PaymentMethodController')->end()
@@ -769,8 +770,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/PaymentTerm:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/PaymentTerm:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/PaymentTerm/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/PaymentTerm/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Payment\Entity\PaymentTerm')->end()
                                 ->scalarNode('controller')->end()
@@ -818,9 +819,9 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/ShipmentMethod:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/ShipmentMethod:show.html',
-                                    'new.html'   => 'EkynaCommerceBundle:Admin/ShipmentMethod:new.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/ShipmentMethod/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/ShipmentMethod/show.html',
+                                    'new.html'   => '@EkynaCommerce/Admin/ShipmentMethod/new.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\ShipmentMethodController')->end()
@@ -847,8 +848,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/ShipmentZone:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/ShipmentZone:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/ShipmentZone/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/ShipmentZone/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Shipment\Entity\ShipmentZone')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\ShipmentZoneController')->end()
@@ -864,8 +865,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/ShipmentRule:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/ShipmentRule:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/ShipmentRule/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/ShipmentRule/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Shipment\Entity\ShipmentRule')->end()
                                 ->scalarNode('controller')->end()
@@ -895,8 +896,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/Supplier:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/Supplier:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/Supplier/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/Supplier/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\Supplier')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SupplierController')->end()
@@ -934,8 +935,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/SupplierCarrier:_form.html',
-                                    'show.html'   => 'EkynaCommerceBundle:Admin/SupplierCarrier:show.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/SupplierCarrier/_form.html',
+                                    'show.html'   => '@EkynaCommerce/Admin/SupplierCarrier/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierCarrier')->end()
                                 ->scalarNode('controller')->end()
@@ -951,11 +952,11 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/SupplierOrder:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/SupplierOrder:new.html',
-                                    'show.html'   => 'EkynaCommerceBundle:Admin/SupplierOrder:show.html',
-                                    'submit.html' => 'EkynaCommerceBundle:Admin/SupplierOrder:submit.html',
-                                    'notify.html' => 'EkynaCommerceBundle:Admin/SupplierOrder:notify.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/SupplierOrder/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/SupplierOrder/new.html',
+                                    'show.html'   => '@EkynaCommerce/Admin/SupplierOrder/show.html',
+                                    'submit.html' => '@EkynaCommerce/Admin/SupplierOrder/submit.html',
+                                    'notify.html' => '@EkynaCommerce/Admin/SupplierOrder/notify.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierOrder')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SupplierOrderController')->end()
@@ -981,10 +982,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Attachment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Attachment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Attachment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Attachment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierOrderAttachment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
@@ -1020,14 +1021,14 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Quote:_form.html',
-                                    'list.html'      => 'EkynaCommerceBundle:Admin/Quote:list.html',
-                                    'show.html'      => 'EkynaCommerceBundle:Admin/Quote:show.html',
-                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Quote:edit.html',
-                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Quote:remove.html',
-                                    'transform.html' => 'EkynaCommerceBundle:Admin/Quote:transform.html',
-                                    'duplicate.html' => 'EkynaCommerceBundle:Admin/Quote:duplicate.html',
-                                    'notify.html'    => 'EkynaCommerceBundle:Admin/Quote:notify.html',
+                                    '_form.html'     => '@EkynaCommerce/Admin/Quote/_form.html',
+                                    'list.html'      => '@EkynaCommerce/Admin/Quote/list.html',
+                                    'show.html'      => '@EkynaCommerce/Admin/Quote/show.html',
+                                    'edit.html'      => '@EkynaCommerce/Admin/Quote/edit.html',
+                                    'remove.html'    => '@EkynaCommerce/Admin/Quote/remove.html',
+                                    'transform.html' => '@EkynaCommerce/Admin/Quote/transform.html',
+                                    'duplicate.html' => '@EkynaCommerce/Admin/Quote/duplicate.html',
+                                    'notify.html'    => '@EkynaCommerce/Admin/Quote/notify.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Quote')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
@@ -1052,10 +1053,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Attachment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Attachment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Attachment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Attachment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Attachment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Attachment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Attachment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Attachment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteAttachment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\AttachmentController')->end()
@@ -1068,12 +1069,12 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'     => 'EkynaCommerceBundle:Admin/Common/Item:_form.html',
-                                    'add.html'       => 'EkynaCommerceBundle:Admin/Common/Item:add.html',
-                                    'new.html'       => 'EkynaCommerceBundle:Admin/Common/Item:new.html',
-                                    'configure.html' => 'EkynaCommerceBundle:Admin/Common/Item:configure.html',
-                                    'edit.html'      => 'EkynaCommerceBundle:Admin/Common/Item:edit.html',
-                                    'remove.html'    => 'EkynaCommerceBundle:Admin/Common/Item:remove.html',
+                                    '_form.html'     => '@EkynaCommerce/Admin/Common/Item/_form.html',
+                                    'add.html'       => '@EkynaCommerce/Admin/Common/Item/add.html',
+                                    'new.html'       => '@EkynaCommerce/Admin/Common/Item/new.html',
+                                    'configure.html' => '@EkynaCommerce/Admin/Common/Item/configure.html',
+                                    'edit.html'      => '@EkynaCommerce/Admin/Common/Item/edit.html',
+                                    'remove.html'    => '@EkynaCommerce/Admin/Common/Item/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteItem')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemController')->end()
@@ -1086,10 +1087,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Adjustment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Adjustment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Adjustment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Adjustment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteItemAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleItemAdjustmentController')->end()
@@ -1102,10 +1103,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Adjustment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Adjustment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Adjustment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Adjustment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Adjustment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Adjustment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuoteAdjustment')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleAdjustmentController')->end()
@@ -1118,10 +1119,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => 'EkynaCommerceBundle:Admin/Common/Payment:_form.html',
-                                    'new.html'    => 'EkynaCommerceBundle:Admin/Common/Payment:new.html',
-                                    'edit.html'   => 'EkynaCommerceBundle:Admin/Common/Payment:edit.html',
-                                    'remove.html' => 'EkynaCommerceBundle:Admin/Common/Payment:remove.html',
+                                    '_form.html'  => '@EkynaCommerce/Admin/Common/Payment/_form.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/Common/Payment/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/Common/Payment/edit.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/Common/Payment/remove.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Quote\Entity\QuotePayment')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\QuotePaymentRepository')->end()
@@ -1136,8 +1137,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/Tax:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/Tax:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/Tax/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/Tax/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\Tax')->end()
                                 ->scalarNode('controller')->end()
@@ -1153,8 +1154,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/TaxGroup:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/TaxGroup:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/TaxGroup/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/TaxGroup/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\TaxGroup')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\TaxGroupController')->end()
@@ -1170,8 +1171,8 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html' => 'EkynaCommerceBundle:Admin/TaxRule:_form.html',
-                                    'show.html'  => 'EkynaCommerceBundle:Admin/TaxRule:show.html',
+                                    '_form.html' => '@EkynaCommerce/Admin/TaxRule/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/TaxRule/show.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\TaxRule')->end()
                                 ->scalarNode('controller')->end()

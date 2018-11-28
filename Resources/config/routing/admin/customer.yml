@@ -34,6 +34,13 @@ ekyna_commerce_customer_admin_remove:
     requirements:
         customerId: \d+
 
+ekyna_commerce_customer_admin_create_user:
+    path: /{customerId}/create-user
+    defaults: { _controller: "ekyna_commerce.customer.controller:createUserAction" }
+    methods: [GET|POST]
+    requirements:
+        customerId: \d+
+
 ekyna_commerce_customer_admin_summary:
     path: /{customerId}/summary
     defaults: { _controller: "ekyna_commerce.customer.controller:summaryAction" }

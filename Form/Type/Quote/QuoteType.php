@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Quote;
 
+use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
-use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

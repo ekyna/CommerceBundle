@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity/Default:edit.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/edit.html.twig' %}
 
 {% block title %}
     <h1>{{ 'ekyna_commerce.quote.header.edit'|trans({'%number%': quote.number})|raw }}</h1>
@@ -6,12 +6,12 @@
 
 {% block side %}
     {{ parent() }}
-    {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale.html.twig" with {
+    {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' with {
         'title': 'ekyna_commerce.quote.label.singular',
         'sale': quote
     } only %}
     {% if quote.customer is not null %}
-        {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:customer.html.twig" with {
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/customer.html.twig' with {
             'customer': quote.customer
         } only %}
     {% endif %}

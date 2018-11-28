@@ -85,7 +85,7 @@
 
         <!-- Resetting event subscriber -->
         <service id="ekyna_commerce.resetting_event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\ResettingEventSubscriber">
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\FOSEventSubscriber">
             <argument type="service" id="router"/>
             <tag name="kernel.event_subscriber"/>
         </service>

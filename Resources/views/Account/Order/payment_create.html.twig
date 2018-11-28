@@ -1,4 +1,4 @@
-{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
 {% spaceless %}
@@ -7,18 +7,18 @@
         Du {{ order.createdAt|localizeddate('short', 'none') }}, {{ order|sale_state_badge }}
     </p>
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+    {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
         'sale': order, 'customer': customer
     } -%}
 
     <div class="row">
         <div class="col-md-8">
-            {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {
+            {%- include '@EkynaCommerce/Account/Sale/payment_forms.html.twig' with {
                 'sale': order, 'forms': forms
             } only -%}
         </div>
         <div class="col-md-4">
-            {% include "EkynaCommerceBundle:Account/Sale:summary.html.twig" with {
+            {% include '@EkynaCommerce/Account/Sale/summary.html.twig' with {
                 'title': 'ekyna_commerce.account.order.summary', 'sale': order, 'delivery': true
             } %}
         </div>
@@ -37,7 +37,7 @@
 
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Order:_list.html.twig" with {
+    {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer
     } only %}
 {% endspaceless %}

@@ -36,9 +36,9 @@ class ShipmentExtension extends \Twig_Extension
     private $shipmentHelper;
 
     /**
-     * @var \Twig_Template
+     * @var string
      */
-    private $template;
+    private $priceTemplate;
 
 
     /**
@@ -53,20 +53,12 @@ class ShipmentExtension extends \Twig_Extension
         ConstantsHelper $constantHelper,
         PriceListBuilder $priceListBuilder,
         ShipmentHelper $shipmentHelper,
-        $template = 'EkynaCommerceBundle:Admin/ShipmentPrice:list.html.twig'
+        $template = '@EkynaCommerce/Admin/ShipmentPrice/list.html.twig'
     ) {
         $this->constantHelper = $constantHelper;
         $this->priceListBuilder = $priceListBuilder;
         $this->shipmentHelper = $shipmentHelper;
-        $this->template = $template;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function initRuntime(\Twig_Environment $environment)
-    {
-        $this->template = $environment->loadTemplate($this->template);
+        $this->priceTemplate = $template;
     }
 
     /**
@@ -118,7 +110,7 @@ class ShipmentExtension extends \Twig_Extension
             new \Twig_SimpleFunction(
                 'display_shipment_prices',
                 [$this, 'renderShipmentPrices'],
-                ['is_safe' => ['html']]
+                ['is_safe' => ['html'], 'needs_environment' => true]
             ),
             new \Twig_SimpleFunction(
                 'display_shipment_tracking',
@@ -172,7 +164,8 @@ class ShipmentExtension extends \Twig_Extension
 
             if (null !== $url = $this->shipmentHelper->getProofUrl($shipment)) {
                 /** @noinspection HtmlUnknownTarget */
-                $output .= sprintf('&nbsp;&nbsp;<a href="%s" target="_blank"><i class="fa fa-check-square-o"></i></a>', $url);
+                $output .= sprintf('&nbsp;&nbsp;<a href="%s" target="_blank"><i class="fa fa-check-square-o"></i></a>',
+                    $url);
             }
         }
 
@@ -221,11 +214,12 @@ class ShipmentExtension extends \Twig_Extension
     /**
      * Renders the price list.
      *
+     * @param \Twig_Environment                             $env
      * @param ShipmentMethodInterface|ShipmentZoneInterface $source
      *
      * @return string
      */
-    public function renderShipmentPrices($source)
+    public function renderShipmentPrices(\Twig_Environment $env, $source)
     {
         if ($source instanceof ShipmentMethodInterface) {
             $list = $this->priceListBuilder->buildByMethod($source);
@@ -237,7 +231,7 @@ class ShipmentExtension extends \Twig_Extension
             );
         }
 
-        return $this->template->render([
+        return $env->render($this->priceTemplate, [
             'list' => $list,
         ]);
     }

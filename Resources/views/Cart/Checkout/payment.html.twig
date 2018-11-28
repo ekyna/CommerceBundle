@@ -1,4 +1,4 @@
-{% extends "EkynaCommerceBundle:Cart:layout.html.twig" %}
+{% extends '@EkynaCommerce/Cart/layout.html.twig' %}
 
 
 {% block metas %}
@@ -50,12 +50,12 @@
                         {{- 'ekyna_commerce.checkout.payment.last_step'|trans|raw -}}
                     </p>
                 </div>
-                {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {
+                {%- include '@EkynaCommerce/Account/Sale/payment_forms.html.twig' with {
                     'sale': cart, 'forms': forms
                 } only -%}
             </div>
             <div class="col-md-4">
-                {%- include "EkynaCommerceBundle:Account/Sale:summary.html.twig" with {
+                {%- include '@EkynaCommerce/Account/Sale/summary.html.twig' with {
                     'title': 'ekyna_commerce.checkout.summary', 'sale': cart, 'delivery': true
                 } -%}
             </div>

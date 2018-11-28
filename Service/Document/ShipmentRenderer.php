@@ -69,7 +69,7 @@ class ShipmentRenderer extends AbstractRenderer
     protected function getContent()
     {
         if ($this->type === static::TYPE_FORM) {
-            return $this->templating->render('EkynaCommerceBundle:Document:shipment_form.html.twig', [
+            return $this->templating->render('@EkynaCommerce/Document/shipment_form.html.twig', [
                 'subjects' => $this->subjects,
             ]);
         }
@@ -100,6 +100,6 @@ class ShipmentRenderer extends AbstractRenderer
      */
     protected function getTemplate()
     {
-        return 'EkynaCommerceBundle:Document:shipment.html.twig';
+        return '@EkynaCommerce/Document/shipment.html.twig';
     }
 }

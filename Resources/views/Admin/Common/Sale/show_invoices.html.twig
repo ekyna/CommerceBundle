@@ -56,7 +56,7 @@
                 <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency(commerce_default_currency) }}</td>
-                <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
+                <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'short') }}</td>
                 <td id="{{ invoiceId }}_shipment">
                     {%- if invoice.shipment is not null %}
                         {{ invoice.shipment.number }}
@@ -152,6 +152,7 @@
                 <td>{{ shipmentTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td>{{ taxesTotal|localizedcurrency(commerce_default_currency) }}</td>
                 <td>{{ total|localizedcurrency(commerce_default_currency) }}</td>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>

@@ -18,7 +18,7 @@ ekyna_commerce:
         virtual_stock: Stock prévisionnel
         replenishment_eda: Date de réappro.
         estimated_date_of_arrival: Date de livraison estimée
-        state: Statut
+        status: Statut
         front_office: Partie publique
         factory_name: Passerelle
 
@@ -514,12 +514,14 @@ ekyna_commerce:
             orders: Liste des commandes
             invoices: Liste des factures
             shipments: Liste des expéditions
+            create_user: Création de l'utilisateur
         button:
             list: Liste des clients
             show: Détail du client
             new: Nouveau client
             edit: Modifier le client
             remove: Supprimer le client
+            create_user: Créer l'utilisateur
         field:
             parent: Compte service achat
             in_charge: Responsable
@@ -538,6 +540,12 @@ ekyna_commerce:
                 message: >
                     Le client {identity} a été détecté comme fraudeur potentiel lors du paiement de son panier.<br>
                     Son statut à été défini à "Fraudeur" et il n'a plus accès au réglement en ligne.<br>
+        message:
+            create_user: >
+                Un utilisateur va être généré pour le client <strong>{identity}</strong>.
+                Les identifiants de connexion seront envoyé à l'adresse email <strong>{email}</strong>.
+            create_user_confirm: Confirmer la création de l'utilisateur ?
+            user_exists: Ce client a déjà un utilisateur.
         alert:
             no_item: Aucun client configuré
             no_invoice_address: Aucune adresse de facturation configuré.
@@ -669,6 +677,15 @@ ekyna_commerce:
             custom_message: Message personnalisé
             include_view: Détail
             include_form: Joindre le bon de commande
+        recipient:
+            website: Site internet
+            user: Vous
+            administrator: Administrateur
+            in_charge: Responsable
+            customer: Client
+            salesman: Commercial
+            accountable: Service achat
+            supplier: Fournisseur
         include_view:
             none: Non
             after: Après le message

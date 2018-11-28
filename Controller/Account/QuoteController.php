@@ -36,7 +36,7 @@ class QuoteController extends AbstractController
 
         $quotes = $this->findQuotesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Quote:index.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Quote/index.html.twig', [
             'customer' => $customer,
             'quotes'   => $quotes,
         ]);
@@ -61,7 +61,7 @@ class QuoteController extends AbstractController
 
         $quotes = $this->findQuotesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Quote:show.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Quote/show.html.twig', [
             'customer'     => $customer,
             'quote'        => $quote,
             'view'         => $quoteView,
@@ -136,7 +136,7 @@ class QuoteController extends AbstractController
 
         $quotes = $this->findQuotesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Quote:voucher.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Quote/voucher.html.twig', [
             'customer'     => $customer,
             'route_prefix' => 'ekyna_commerce_account_quote',
             'quote'        => $quote,
@@ -200,7 +200,7 @@ class QuoteController extends AbstractController
 
         $quotes = $this->findQuotesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Quote:payment_create.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Quote/payment_create.html.twig', [
             'customer' => $customer,
             'quote'    => $quote,
             'forms'    => $checkoutManager->getFormsViews(),
@@ -252,7 +252,7 @@ class QuoteController extends AbstractController
 
         $quotes = $this->findQuotesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Quote:payment_cancel.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Quote/payment_cancel.html.twig', [
             'customer' => $customer,
             'quote'    => $quote,
             'form'     => $form->createView(),
@@ -303,7 +303,7 @@ class QuoteController extends AbstractController
 
         $quotes = $this->findQuotesByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Quote:attachment_create.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Quote/attachment_create.html.twig', [
             'customer'     => $customer,
             'route_prefix' => 'ekyna_commerce_account_quote',
             'quote'        => $quote,

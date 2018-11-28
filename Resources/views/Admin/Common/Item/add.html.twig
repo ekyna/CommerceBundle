@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/new.html.twig' %}
 
 {% block title %}
     <h1>{{ 'ekyna_commerce.sale.header.item.add'|trans|raw }}</h1>
@@ -10,5 +10,5 @@
 {% endblock actions %}
 
 {% block main %}
-    {% include "EkynaCommerceBundle:Admin/Common/Item:_flow.html.twig" %}
+    {% include '@EkynaCommerce/Admin/Common/Item/_flow.html.twig' %}
 {% endblock main %}

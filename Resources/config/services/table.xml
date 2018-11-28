@@ -235,8 +235,8 @@
         <!-- In charge filter type -->
         <service id="ekyna_commerce.sale.in_charge.filter_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Filter\InChargeType">
-            <argument type="service" id="ekyna_user.group.repository"/>
-            <argument>%ekyna_user.user.class%</argument>
+            <argument type="service" id="ekyna_admin.group.repository"/>
+            <argument>%ekyna_admin.user.class%</argument>
             <tag name="table.filter_type"/>
         </service>
 

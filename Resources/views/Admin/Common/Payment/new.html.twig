@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/new.html.twig' %}
 
 {% block title %}
     <h1>{{ 'ekyna_commerce.payment.header.new'|trans|raw }}</h1>
@@ -58,7 +58,7 @@
 
 {% block side %}
     {{ parent() }}
-    {% include "EkynaCommerceBundle:Admin/Common/Sale/Side:sale.html.twig" %}
+    {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' %}
 {% endblock side %}
 
 

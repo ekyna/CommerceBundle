@@ -1,4 +1,4 @@
-{% extends "EkynaCommerceBundle:Cart:layout.html.twig" %}
+{% extends '@EkynaCommerce/Cart/layout.html.twig' %}
 
 
 {% block metas %}
@@ -40,7 +40,7 @@
                 {{ form_rest(form) }}
             </div>
             <div class="col-md-4">
-                {%- include "EkynaCommerceBundle:Account/Sale:summary.html.twig" with {
+                {%- include '@EkynaCommerce/Account/Sale/summary.html.twig' with {
                     'title': 'ekyna_commerce.checkout.summary', 'sale': cart, 'delivery': false
                 } only -%}
             </div>

@@ -457,7 +457,7 @@ class SaleShipmentController extends AbstractSaleController
 
         if ($html) {
             $content = $this->get('serializer')->normalize($shipment, 'json', ['groups' => ['Summary']]);
-            $content = $this->renderView('EkynaCommerceBundle:Admin/Common/Shipment:summary.html.twig', $content);
+            $content = $this->renderView('@EkynaCommerce/Admin/Common/Shipment/summary.html.twig', $content);
         } else {
             $content = $this->get('serializer')->serialize($shipment, 'json', ['groups' => ['Summary']]);
         }

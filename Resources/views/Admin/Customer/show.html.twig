@@ -1,14 +1,24 @@
-{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
 {% block main %}
 <div class="actions">
-    {% if customer.user is not null and is_granted('ROLE_ALLOWED_TO_SWITCH') %}
-        {{ ui_button('ekyna_user.user.button.impersonate', {
+    {% if customer.user is null %}
+        {{ ui_button('ekyna_commerce.customer.button.create_user', {
             'type': 'link',
-            'path': '/?_switch_user=' ~ customer.user.email,
+            'path': path('ekyna_commerce_customer_admin_create_user', {'customerId': customer.id}),
+            'theme': 'primary',
+            'icon': 'user'
+        }) }}
+    {% elseif is_granted('VIEW', customer.user) %}
+        {{ ui_button('ekyna_user.user.button.use_session', {
+            'type': 'link',
+            'path': path('ekyna_user_user_admin_use_session', {'userId': customer.user.id}),
             'theme': 'primary',
             'icon': 'eye-open'
         }, {
+            'onclick': ('return confirm(\'' ~ ('ekyna_user.user.alert.use_session'|trans({
+                '{email}': customer.user.email
+            })) ~ '\')'),
             'target': '_blank'
         }) }}
     {% endif %}
@@ -130,9 +140,8 @@
                         {{ show_row(customer.inCharge, 'entity', {
                             'label': 'ekyna_commerce.customer.field.in_charge',
                             'id': 'customer_user',
-                            'route': 'ekyna_user_user_admin_show',
+                            'route': 'ekyna_admin_user_admin_show',
                             'route_parameters_map': {'userId': 'id'},
-                            'field': 'username',
                             'label_col': 4
                         }) }}
                     </div>
@@ -163,7 +172,7 @@
                     'route_parameters_map': {'customerId': 'id'}
                 }) }}
                 {% set customerSource = customer.hasParent() ? customer.parent : customer %}
-                {% include "EkynaCommerceBundle:Admin/Common/Pricing:_show_vat_fields.html.twig" with {'subject': customerSource, 'prefix': 'customer'} %}
+                {% include '@EkynaCommerce/Admin/Common/Pricing/_show_vat_fields.html.twig' with {'subject': customerSource, 'prefix': 'customer'} %}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customerSource.paymentTerm, 'entity', {

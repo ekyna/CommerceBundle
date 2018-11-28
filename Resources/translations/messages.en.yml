@@ -514,12 +514,14 @@ ekyna_commerce:
             orders: Orders list
             invoices: Invoices list
             shipments: Shipments list
+            create_user: User creation
         button:
             list: Customers list
             show: Customer details
             new: New customer
             edit: Edit the customer
             remove: Remove the customer
+            create_user: Create the user
         field:
             parent: Accountable service
             in_charge: In charge
@@ -538,6 +540,12 @@ ekyna_commerce:
                 message: >
                     Customer {identity} has been detected as a potential fraudster during cart payment.<br>
                     His statut as been set as "Frandster" and he can no longer use online payment methods.<br>
+        message:
+            create_user: >
+                You are about to create a user for the customer <strong>{identity}</strong>.
+                The user credentials will be sent to the email address <strong>{email}</strong>.
+            create_user_confirm: Do you confirm the user creation ?
+            user_exists: This customer already have a user.
         alert:
             no_item: No customer configured
             no_invoice_address: No invoice address configured.
@@ -673,6 +681,15 @@ ekyna_commerce:
             custom_message: Custom message
             include_view: Detailed view
             include_form: Attach order form
+        recipient:
+            website: Website
+            user: You
+            administrator: Administrator
+            in_charge: In charge
+            customer: Customer
+            salesman: Salesman
+            accountable: Accountable service
+            supplier: Supplier
         include_view:
             none: No
             after: After the message

@@ -1,4 +1,4 @@
-{% extends "EkynaCommerceBundle:Cart:layout.html.twig" %}
+{% extends '@EkynaCommerce/Cart/layout.html.twig' %}
 
 
 {% block metas %}
@@ -16,7 +16,7 @@
         {{ render_sale_view(cart|sale_view({'taxes_view': false})) }}
 
         {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
-            {% include "EkynaCommerceBundle:Admin/Common/Sale:_form_transform.html.twig" %}
+            {% include '@EkynaCommerce/Admin/Common/Sale/_form_transform.html.twig' %}
         {{ form_end(form) }}
     </div>
 {% endblock content %}

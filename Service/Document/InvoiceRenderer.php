@@ -44,6 +44,6 @@ class InvoiceRenderer extends AbstractRenderer
      */
     protected function getTemplate()
     {
-        return 'EkynaCommerceBundle:Document:invoice.html.twig';
+        return '@EkynaCommerce/Document/invoice.html.twig';
     }
 }

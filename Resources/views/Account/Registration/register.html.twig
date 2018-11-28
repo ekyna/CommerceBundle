@@ -1,4 +1,4 @@
-{% extends 'EkynaCommerceBundle:Account:layout.html.twig' %}
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block content %}
 {% spaceless %}
@@ -8,7 +8,7 @@
                 {{ cms_title('h3') }}
                 {{ cms_content() }}
                 <hr>
-                {% include "EkynaCommerceBundle:Account/Registration:register_content.html.twig" %}
+                {% include '@EkynaCommerce/Account/Registration/register_content.html.twig' %}
             </div>
         </div>
     </div>

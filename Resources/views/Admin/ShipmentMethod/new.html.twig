@@ -1,4 +1,4 @@
-{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/new.html.twig' %}
 
 {% block main %}
     {{ form_start(form) }}
@@ -72,7 +72,7 @@
             {{ form_rest(form) }}
         </div>
 
-        {% include 'EkynaAdminBundle:Form:form_flow_buttons.html.twig' %}
+        {% include '@EkynaAdmin/Form/form_flow_buttons.html.twig' %}
     </div>
 
     {{ form_end(form) }}

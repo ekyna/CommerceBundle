@@ -1,4 +1,4 @@
-{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
 {% spaceless %}
@@ -7,18 +7,18 @@
         Du {{ quote.createdAt|localizeddate('short', 'none') }}, {{ quote|sale_state_badge }}
     </p>
 
-    {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+    {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
         'sale': quote, 'customer': customer
     } -%}
 
     <div class="row">
         <div class="col-md-8">
-            {%- include "EkynaCommerceBundle:Account/Sale:payment_forms.html.twig" with {
+            {%- include '@EkynaCommerce/Account/Sale/payment_forms.html.twig' with {
                 'sale': quote, 'forms': forms
             } only -%}
         </div>
         <div class="col-md-4">
-            {%- include "EkynaCommerceBundle:Account/Sale:summary.html.twig" with {
+            {%- include '@EkynaCommerce/Account/Sale/summary.html.twig' with {
                 'title': 'ekyna_commerce.account.quote.summary', 'sale': quote, 'delivery': true
             } -%}
         </div>
@@ -37,7 +37,7 @@
 
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {
+    {% include '@EkynaCommerce/Account/Quote/_list.html.twig' with {
         'quotes': quotes, 'customer': customer
     } only %}
 {% endspaceless %}

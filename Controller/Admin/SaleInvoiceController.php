@@ -451,7 +451,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         if ($html) {
             $content = $this->get('serializer')->normalize($invoice, 'json', ['groups' => ['Summary']]);
-            $content = $this->renderView('EkynaCommerceBundle:Admin/Common/Invoice:summary.html.twig', $content);
+            $content = $this->renderView('@EkynaCommerce/Admin/Common/Invoice/summary.html.twig', $content);
         } else {
             $content = $this->get('serializer')->serialize($invoice, 'json', ['groups' => ['Summary']]);
         }

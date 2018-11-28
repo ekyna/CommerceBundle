@@ -32,7 +32,7 @@ class OrderController extends AbstractController
 
         $orders = $this->findOrdersByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Order:index.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Order/index.html.twig', [
             'customer' => $customer,
             'orders'   => $orders,
         ]);
@@ -57,7 +57,7 @@ class OrderController extends AbstractController
 
         $orders = $this->findOrdersByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Order:show.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Order/show.html.twig', [
             'customer'     => $customer,
             'order'        => $order,
             'view'         => $orderView,
@@ -121,7 +121,7 @@ class OrderController extends AbstractController
 
         $orders = $this->findOrdersByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Order:payment_create.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Order/payment_create.html.twig', [
             'customer' => $customer,
             'order'    => $order,
             'forms'    => $checkoutManager->getFormsViews(),
@@ -179,7 +179,7 @@ class OrderController extends AbstractController
 
         $orders = $this->findOrdersByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Order:payment_cancel.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Order/payment_cancel.html.twig', [
             'customer' => $customer,
             'order'    => $order,
             'form'     => $form->createView(),
@@ -274,7 +274,7 @@ class OrderController extends AbstractController
 
         $orders = $this->findOrdersByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Order:attachment_create.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Order/attachment_create.html.twig', [
             'customer'     => $customer,
             'route_prefix' => 'ekyna_commerce_account_order',
             'order'        => $order,

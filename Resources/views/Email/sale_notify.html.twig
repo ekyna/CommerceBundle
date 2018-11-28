@@ -36,7 +36,11 @@
         {{ notify.shipmentMessage|raw }}
     {%- endif %}
 
-    {{- get_setting('commerce.email_signature')|raw -}}
+    {% if notify.from.user is not null and notify.from.user.emailSignature is not empty %}
+        {{- notify.from.user.emailSignature|raw -}}
+    {% else %}
+        {{- get_setting('commerce.email_signature')|raw -}}
+    {% endif %}
 
     <hr>
 

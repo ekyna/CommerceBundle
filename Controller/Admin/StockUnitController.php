@@ -78,7 +78,7 @@ class StockUnitController extends ResourceController
         $modal
             ->setContent($form->createView())
             ->setVars([
-                'form_template' => 'EkynaCommerceBundle:Admin/Stock:stock_adjustment_form.html.twig'
+                'form_template' => '@EkynaCommerce/Admin/Stock/stock_adjustment_form.html.twig'
             ]);
 
         return $this->get('ekyna_core.modal')->render($modal);
@@ -142,7 +142,7 @@ class StockUnitController extends ResourceController
         $modal
             ->setContent($form->createView())
             ->setVars([
-                'form_template' => 'EkynaCommerceBundle:Admin/Stock:stock_adjustment_form.html.twig'
+                'form_template' => '@EkynaCommerce/Admin/Stock/stock_adjustment_form.html.twig'
             ]);
 
         return $this->get('ekyna_core.modal')->render($modal);

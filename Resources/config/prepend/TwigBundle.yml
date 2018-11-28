@@ -3,4 +3,4 @@ twig:
         commerce_default_currency: "%ekyna_commerce.default.currency%"
         commerce_default_country: "%ekyna_commerce.default.country%"
     form_themes:
-        - 'EkynaCommerceBundle:Form:form_div_layout.html.twig'
+        - '@EkynaCommerce/Form/form_div_layout.html.twig'

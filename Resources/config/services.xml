@@ -87,7 +87,7 @@
         <!-- Mailer -->
         <service id="ekyna_commerce.mailer"
                  class="Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer">
-            <argument type="service" id="mailer" />
+            <argument type="service" id="ekyna_admin.mailer_factory" />
             <argument type="service" id="templating"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="ekyna_setting.manager"/>

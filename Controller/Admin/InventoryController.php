@@ -34,7 +34,7 @@ class InventoryController extends Controller
             $subject = $provider->getRepository()->find($request->attributes->get('identifier'));
 
             if ($subject instanceof StockSubjectInterface) {
-                $content = $this->renderView('EkynaCommerceBundle:Admin/Inventory:subject.html.twig', [
+                $content = $this->renderView('@EkynaCommerce/Admin/Inventory/subject.html.twig', [
                     'subject' => $subject,
                 ]);
             }

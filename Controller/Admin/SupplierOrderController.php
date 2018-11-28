@@ -294,7 +294,7 @@ class SupplierOrderController extends ResourceController
 
         if ($html) {
             $content = $this->renderView(
-                'EkynaCommerceBundle:Admin/SupplierOrder:summary.html.twig',
+                '@EkynaCommerce/Admin/SupplierOrder/summary.html.twig',
                 $this->get('serializer')->normalize($supplierOrder, 'json', ['groups' => ['Summary']])
             );
         } else {

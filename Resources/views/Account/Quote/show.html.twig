@@ -1,4 +1,4 @@
-{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
 {% spaceless %}
@@ -13,7 +13,7 @@
     </p>
     <hr>
 
-    {% include 'EkynaCommerceBundle:Account/Sale:addresses.html.twig' with {'sale': quote} only %}
+    {% include '@EkynaCommerce/Account/Sale/addresses.html.twig' with {'sale': quote} only %}
 
     {{- render_sale_view(view) -}}
 
@@ -57,20 +57,20 @@
 
     {# Payments #}
     {%- if quote is sale_with_payment -%}
-        {%- include "EkynaCommerceBundle:Account/Sale:payments.html.twig" with {
+        {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
             'sale': quote, 'customer': customer
         } only -%}
     {%- endif -%}
 
     {# Attachments #}
-    {%- include "EkynaCommerceBundle:Account/Sale:attachments.html.twig" with {
+    {%- include '@EkynaCommerce/Account/Sale/attachments.html.twig' with {
         'sale': quote, 'route_prefix': route_prefix, 'customer': customer
     } only -%}
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include "EkynaCommerceBundle:Account/Quote:_list.html.twig" with {
+    {% include '@EkynaCommerce/Account/Quote/_list.html.twig' with {
         'quotes': quotes, 'customer': customer
     } only %}
 {% endspaceless %}

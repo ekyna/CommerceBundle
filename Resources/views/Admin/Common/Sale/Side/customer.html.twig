@@ -18,7 +18,15 @@
                 <th>{{ 'ekyna_commerce.customer.label.singular'|trans }}</th>
                 <td>
                     <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}">
-                        {{ customer|identity|raw }}
+                        {{- customer|identity|raw -}}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.customer_group.label.singular'|trans }}</th>
+                <td>
+                    <a href="{{ path('ekyna_commerce_customer_group_admin_show', {'customerGroupId': customer.customerGroup.id}) }}">
+                        {{- customer.customerGroup -}}
                     </a>
                 </td>
             </tr>
@@ -37,7 +45,7 @@
                 <th>{{ 'ekyna_commerce.customer.field.parent'|trans }}</th>
                 <td>
                     <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.parent.id}) }}">
-                        {{ customer.parent|raw }}
+                        {{- customer.parent|raw -}}
                     </a>
                 </td>
             </tr>
@@ -48,7 +56,7 @@
                 <td>
                     {% if customerSource.paymentTerm is not null %}
                     <a href="{{ path('ekyna_commerce_payment_term_admin_show', {'paymentTermId': customerSource.paymentTerm.id}) }}">
-                        {{ customerSource.paymentTerm|raw }}
+                        {{- customerSource.paymentTerm|raw -}}
                     </a>
                     {% else %}
                         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
@@ -57,21 +65,15 @@
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.outstanding_limit'|trans }}</th>
-                <td>
-                    {{ customerSource.outstandingLimit|localizedcurrency(commerce_default_currency) }}
-                </td>
+                <td>{{ customerSource.outstandingLimit|localizedcurrency(commerce_default_currency) }}</td>
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.customer.field.outstanding_balance'|trans }}</th>
-                <td>
-                    {{ customerSource.outstandingBalance|localizedcurrency(commerce_default_currency) }}
-                </td>
+                <td>{{ customerSource.outstandingBalance|localizedcurrency(commerce_default_currency) }}</td>
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.customer.field.credit_balance'|trans }}</th>
-                <td>
-                    {{ customerSource.creditBalance|localizedcurrency(commerce_default_currency) }}
-                </td>
+                <td>{{ customerSource.creditBalance|localizedcurrency(commerce_default_currency) }}</td>
             </tr>
         </tbody>
         </table>

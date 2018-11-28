@@ -109,7 +109,7 @@ class SaleAdjustmentController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Adjustment:new.html.twig',
+            '@EkynaCommerce/Admin/Common/Adjustment/new.html.twig',
             $context->getTemplateVars([
                 'form' => $form->createView(),
             ])
@@ -181,7 +181,7 @@ class SaleAdjustmentController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Adjustment:edit.html.twig',
+            '@EkynaCommerce/Admin/Common/Adjustment/edit.html.twig',
             $context->getTemplateVars([
                 'form'          => $form->createView(),
             ])
@@ -242,7 +242,7 @@ class SaleAdjustmentController extends AbstractSaleController
         );
 
         return $this->render(
-            'EkynaCommerceBundle:Admin/Common/Adjustment:remove.html.twig',
+            '@EkynaCommerce/Admin/Common/Adjustment/remove.html.twig',
             $context->getTemplateVars([
                 // TODO 'form' => $form->createView(),
             ])

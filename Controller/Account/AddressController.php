@@ -35,7 +35,7 @@ class AddressController extends AbstractController
                 ->findByCustomer($parent);
         }
 
-        return $this->render('EkynaCommerceBundle:Account/Address:index.html.twig', $parameters);
+        return $this->render('@EkynaCommerce/Account/Address/index.html.twig', $parameters);
     }
 
     /**
@@ -87,7 +87,7 @@ class AddressController extends AbstractController
             ->get('ekyna_commerce.customer_address.repository')
             ->findByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Address:add.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Address/add.html.twig', [
             'form'      => $form->createView(),
             'addresses' => $addresses,
         ]);
@@ -142,7 +142,7 @@ class AddressController extends AbstractController
             ->get('ekyna_commerce.customer_address.repository')
             ->findByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Address:edit.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Address/edit.html.twig', [
             'form' => $form->createView(),
             'addresses' => $addresses,
         ]);
@@ -195,7 +195,7 @@ class AddressController extends AbstractController
             ->get('ekyna_commerce.customer_address.repository')
             ->findByCustomer($customer);
 
-        return $this->render('EkynaCommerceBundle:Account/Address:remove.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Address/remove.html.twig', [
             'address' => $address,
             'form'    => $form->createView(),
             'addresses' => $addresses,

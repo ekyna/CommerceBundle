@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Search\CustomerRepository;
+use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -110,7 +111,7 @@ class CustomerController extends ResourceController
 
         if ($html) {
             $content = $this->get('serializer')->normalize($customer, 'json', ['groups' => ['Summary']]);
-            $content = $this->renderView('EkynaCommerceBundle:Admin/Customer:summary.html.twig', $content);
+            $content = $this->renderView('@EkynaCommerce/Admin/Customer/summary.html.twig', $content);
         } else {
             $content = $this->get('serializer')->serialize($customer, 'json', ['groups' => ['Summary']]);
         }
@@ -118,6 +119,70 @@ class CustomerController extends ResourceController
         $response->setContent($content);
 
         return $response;
+    }
+
+    /**
+     * Create user action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function createUserAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        $customer = $context->getResource();
+
+        $this->isGranted('EDIT', $customer);
+
+        $cancelPath = $this->generateResourcePath($customer);
+
+        if ($customer->getUser()) {
+            $this->addFlash('ekyna_commerce.customer.message.user_exists');
+
+            return $this->redirect($cancelPath);
+        }
+
+        $form = $this->createForm(ConfirmType::class, null, [
+            'action'       => $this->generateResourcePath($customer, 'create_user'),
+            'method'       => 'POST',
+            'message'      => 'ekyna_commerce.customer.message.create_user_confirm',
+            'cancel_path'  => $cancelPath,
+            'submit_class' => 'success',
+            'submit_icon'  => 'ok',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $fosManager = $this->get('fos_user.user_manager');
+
+            /** @var \Ekyna\Bundle\UserBundle\Model\UserInterface $user */
+            $user = $fosManager->createUser();
+            $user
+                ->setSendCreationEmail(true)
+                ->setEnabled(true)
+                ->setEmail($customer->getEmail());
+
+            $customer->setUser($user);
+            $this->getManager()->persist($customer);
+            // TODO Validation ?
+
+            // TODO use ResourceManager
+            $event = $this->get('ekyna_user.user.operator')->create($user);
+
+            $event->toFlashes($this->getFlashBag());
+
+            return $this->redirect($cancelPath);
+        }
+
+        return $this->render(
+            $this->config->getTemplate('create_user.html'),
+            $context->getTemplateVars([
+                'form' => $form->createView(),
+            ])
+        );
     }
 
     /**
@@ -136,35 +201,35 @@ class CustomerController extends ResourceController
         }
 
         $tables = [
-            'children' => [
-                'type' => $this->config->getTableType(),
+            'children'  => [
+                'type'    => $this->config->getTableType(),
                 'options' => [
                     'parent' => $customer,
-                ]
+                ],
             ],
-            'quotes' => [
-                'type' => $this->get('ekyna_commerce.quote.configuration')->getTableType(),
+            'quotes'    => [
+                'type'    => $this->get('ekyna_commerce.quote.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
-                ]
+                ],
             ],
-            'orders' => [
-                'type' => $this->get('ekyna_commerce.order.configuration')->getTableType(),
+            'orders'    => [
+                'type'    => $this->get('ekyna_commerce.order.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
-                ]
+                ],
             ],
-            'invoices' => [
-                'type' => $this->get('ekyna_commerce.order_invoice.configuration')->getTableType(),
+            'invoices'  => [
+                'type'    => $this->get('ekyna_commerce.order_invoice.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
-                ]
+                ],
             ],
             'shipments' => [
-                'type' => $this->get('ekyna_commerce.order_shipment.configuration')->getTableType(),
+                'type'    => $this->get('ekyna_commerce.order_shipment.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
-                ]
+                ],
             ],
         ];
 

@@ -3,12 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
-use Ekyna\Bundle\UserBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
 use libphonenumber\PhoneNumberFormat;
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
@@ -26,32 +25,6 @@ use Symfony\Component\Form\FormInterface;
 class CustomerType extends ResourceFormType
 {
     /**
-     * @var string
-     */
-    private $customerGroupClass;
-
-    /**
-     * @var string
-     */
-    private $userClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $customerClass
-     * @param string $customerGroupClass
-     * @param string $userClass
-     */
-    public function __construct($customerClass, $customerGroupClass, $userClass)
-    {
-        parent::__construct($customerClass);
-
-        $this->customerGroupClass = $customerGroupClass;
-        $this->userClass = $userClass;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -62,14 +35,11 @@ class CustomerType extends ResourceFormType
                 'required' => false,
             ])
             ->add('user', UserSearchType::class, [
-                'required'  => false,
-                'roles'     => ['ROLE_USER', 'ROLE_ADMIN'],
-                'add_route' => 'ekyna_user_user_admin_new',
+                'required' => false,
             ])
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => 'ekyna_commerce.customer.field.in_charge',
                 'required' => false,
-                'roles'    => ['ROLE_ADMIN'],
             ])
             ->add('email', Type\EmailType::class, [
                 'label' => 'ekyna_core.field.email',
@@ -107,6 +77,7 @@ class CustomerType extends ResourceFormType
             ->add('state', Type\ChoiceType::class, [
                 'label'   => 'ekyna_core.field.status',
                 'choices' => CustomerStates::getChoices(),
+                'select2' => false,
             ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
@@ -115,12 +86,9 @@ class CustomerType extends ResourceFormType
 
         $formModifier = function (FormInterface $form, $hasParent) {
             $form
-                ->add('customerGroup', ResourceType::class, [
-                    'label'        => 'ekyna_commerce.customer_group.label.plural',
-                    'class'        => $this->customerGroupClass,
-                    'allow_new'    => true,
-                    'choice_label' => 'name',
-                    'disabled'     => $hasParent,
+                ->add('customerGroup', CustomerGroupChoiceType::class, [
+                    'allow_new' => true,
+                    'disabled'  => $hasParent,
                 ])
                 ->add('vatNumber', VatNumberType::class, [
                     'disabled' => $hasParent,

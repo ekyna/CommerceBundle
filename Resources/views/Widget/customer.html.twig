@@ -1,6 +1,6 @@
 {% if user is not null %}
     {{ knp_menu_render('user_widget', {
-        'template': 'EkynaUserBundle::menu.html.twig',
+        'template': '@EkynaUser/menu.html.twig',
         'style': 'stacked-pills'
     }) }}
 {% else %}

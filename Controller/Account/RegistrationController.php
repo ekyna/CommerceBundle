@@ -116,7 +116,7 @@ class RegistrationController extends Controller
             }*/
         }
 
-        return $this->render('EkynaCommerceBundle:Account/Registration:register.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Registration/register.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -140,7 +140,7 @@ class RegistrationController extends Controller
             throw $this->createNotFoundException(sprintf('The user with email "%s" does not exist', $email));
         }
 
-        return $this->render('EkynaCommerceBundle:Account/Registration:check_email.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Registration/check_email.html.twig', [
             'user' => $user,
         ]);
     }
@@ -212,7 +212,7 @@ class RegistrationController extends Controller
             }
         }
 
-        return $this->render('EkynaCommerceBundle:Account/Registration:confirmed.html.twig', [
+        return $this->render('@EkynaCommerce/Account/Registration/confirmed.html.twig', [
             'user'      => $user,
             'targetUrl' => $targetUrl,
         ]);

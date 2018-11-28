@@ -6,9 +6,9 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
-use Ekyna\Bundle\UserBundle\Model\UserInterface;
-use Ekyna\Bundle\UserBundle\Repository\UserRepositoryInterface;
-use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
+use Ekyna\Bundle\AdminBundle\Model\UserInterface;
+use Ekyna\Bundle\AdminBundle\Repository\UserRepositoryInterface;
+use Ekyna\Bundle\AdminBundle\Service\Security\UserProviderInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
@@ -67,17 +67,13 @@ class RecipientHelper
     {
         $from = new RecipientList();
 
-        /** @var UserInterface[] $administrators */
-        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
-        foreach ($administrators as $administrator) {
-            $from->add($this->createRecipient($administrator, 'Administrateur'));
-        }
+        $this->addAdministrators($from);
 
         $from->add($this->createWebsiteRecipient());
 
         if ($sale instanceof OrderInterface/* || $sale instanceof QuoteInterface*/) {
             if ($inCharge = $sale->getInCharge()) {
-                $from->add($this->createRecipient($inCharge, 'Responsable'));
+                $from->add($this->createRecipient($inCharge, Recipient::TYPE_IN_CHARGE));
             } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
                 $from->add($recipient);
             }
@@ -98,22 +94,22 @@ class RecipientHelper
         $list = new RecipientList();
 
         if ($customer = $sale->getCustomer()) {
-            $list->add($this->createRecipient($customer, 'Client')); // TODO constant / translation
+            $list->add($this->createRecipient($customer, Recipient::TYPE_CUSTOMER));
             if ($parent = $customer->getParent()) {
-                $list->add($this->createRecipient($parent, 'Facturation'));
+                $list->add($this->createRecipient($parent, Recipient::TYPE_ACCOUNTABLE));
             }
         } else {
-            $list->add($this->createRecipient($sale, 'Client'));
+            $list->add($this->createRecipient($sale, Recipient::TYPE_CUSTOMER));
         }
 
         if ($sale instanceof OrderInterface) {
             if (null !== $customer = $sale->getOriginCustomer()) {
-                $list->add($this->createRecipient($customer, 'Client d\'origine'));
+                $list->add($this->createRecipient($customer, Recipient::TYPE_SALESMAN));
             }
         }
         if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
             if ($inCharge = $sale->getInCharge()) {
-                $list->add($this->createRecipient($inCharge, 'Responsable'));
+                $list->add($this->createRecipient($inCharge, Recipient::TYPE_IN_CHARGE));
             } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
                 $list->add($recipient);
             }
@@ -135,15 +131,11 @@ class RecipientHelper
 
         if ($customer = $sale->getCustomer()) {
             if ($parent = $customer->getParent()) {
-                $copies->add($this->createRecipient($parent, 'Facturation')); // TODO constant / translation
+                $copies->add($this->createRecipient($parent, Recipient::TYPE_ACCOUNTABLE));
             }
         }
 
-        /** @var UserInterface[] $administrators */
-        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
-        foreach ($administrators as $administrator) {
-            $copies->add($this->createRecipient($administrator, 'Administrateur'));
-        }
+        $this->addAdministrators($copies);
 
         $copies->add($this->createWebsiteRecipient());
 
@@ -161,11 +153,7 @@ class RecipientHelper
     {
         $from = new RecipientList();
 
-        /** @var UserInterface[] $administrators */
-        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
-        foreach ($administrators as $administrator) {
-            $from->add($this->createRecipient($administrator, 'Administrateur'));
-        }
+        $this->addAdministrators($from);
 
         $from->add($this->createWebsiteRecipient());
 
@@ -184,7 +172,7 @@ class RecipientHelper
         $list = new RecipientList();
 
         if ($supplier = $order->getSupplier()) {
-            $list->add($this->createRecipient($supplier, 'Fournisseur')); // TODO constant / translation
+            $list->add($this->createRecipient($supplier, Recipient::TYPE_SUPPLIER));
         }
 
         return $list->all();
@@ -201,11 +189,7 @@ class RecipientHelper
     {
         $copies = new RecipientList();
 
-        /** @var UserInterface[] $administrators */
-        $administrators = $this->userRepository->findByRole('ROLE_ADMIN');
-        foreach ($administrators as $administrator) {
-            $copies->add($this->createRecipient($administrator, 'Administrateur'));
-        }
+        $this->addAdministrators($copies);
 
         $copies->add($this->createWebsiteRecipient());
 
@@ -222,7 +206,7 @@ class RecipientHelper
         return new Recipient(
             $this->settings->getParameter('general.admin_email'),
             $this->settings->getParameter('general.admin_name'),
-            'WebSite'
+            Recipient::TYPE_WEBSITE
         );
     }
 
@@ -234,7 +218,7 @@ class RecipientHelper
     public function createCurrentUserRecipient()
     {
         if (null !== $user = $this->userProvider->getUser()) {
-            return $this->createRecipient($user, 'You');
+            return $this->createRecipient($user, Recipient::TYPE_USER);
         }
 
         return null;
@@ -251,7 +235,8 @@ class RecipientHelper
     public function createRecipient($element, $type = null)
     {
         if ($element instanceof UserInterface) {
-            return new Recipient($element->getEmail(), $element->getUsername(), $type);
+            $type = $element === $this->userProvider->getUser() ? Recipient::TYPE_USER : $type;
+            return new Recipient($element->getEmail(), $element->getFirstName() . ' ' . $element->getLastName(), $type, $element);
         }
 
         if ($element instanceof SaleInterface || $element instanceof CustomerInterface) {
@@ -270,5 +255,18 @@ class RecipientHelper
             CustomerInterface::class,
             UserInterface::class
         ));
+    }
+
+    /**
+     * Adds the administrators to the list.
+     *
+     * @param RecipientList $list
+     */
+    private function addAdministrators(RecipientList $list)
+    {
+        $administrators = $this->userRepository->findAllActive();
+        foreach ($administrators as $administrator) {
+            $list->add($this->createRecipient($administrator, Recipient::TYPE_ADMINISTRATOR));
+        }
     }
 }

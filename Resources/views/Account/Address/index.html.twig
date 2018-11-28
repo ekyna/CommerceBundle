@@ -1,9 +1,9 @@
-{% extends "EkynaCommerceBundle:Account:layout.html.twig" %}
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
 {% spaceless %}
 
-    {% include "EkynaCommerceBundle:Account/Address:_list.html.twig" %}
+    {% include '@EkynaCommerce/Account/Address/_list.html.twig' %}
 
     <hr>
 
@@ -15,7 +15,7 @@
 
     {% if parent_addresses is defined and parent_addresses is not empty %}
         <br><br>
-        {% include "EkynaCommerceBundle:Account/Address:_list.html.twig" with {
+        {% include '@EkynaCommerce/Account/Address/_list.html.twig' with {
             'title': 'ekyna_commerce.account.address.parent_title',
             'addresses': parent_addresses,
             'buttons': false

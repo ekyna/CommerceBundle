@@ -22,7 +22,7 @@ class OrderListController extends Controller
      */
     public function invoiceAction(Request $request)
     {
-        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_invoice.class'));
+        $this->isGranted('VIEW', 'ekyna_commerce_order');
 
         $configuration = $this->get('ekyna_commerce.order_invoice.configuration');
 
@@ -42,7 +42,7 @@ class OrderListController extends Controller
                 'ekyna_commerce_admin_order_list_invoice'
             );
 
-        return $this->render('EkynaCommerceBundle:Admin/OrderList:invoice.html.twig', [
+        return $this->render('@EkynaCommerce/Admin/OrderList/invoice.html.twig', [
             'invoices' => $table->createView(),
         ]);
     }
@@ -56,7 +56,7 @@ class OrderListController extends Controller
      */
     public function invoiceDocumentAction(Request $request)
     {
-        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_invoice.class'));
+        $this->isGranted('VIEW', 'ekyna_commerce_order_invoice');
 
         $ids = (array)$request->query->get('id');
         $repository = $this->get('ekyna_commerce.order_invoice.repository');
@@ -89,7 +89,7 @@ class OrderListController extends Controller
      */
     public function paymentAction(Request $request)
     {
-        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_payment.class'));
+        $this->isGranted('VIEW', 'ekyna_commerce_order_payment');
 
         $configuration = $this->get('ekyna_commerce.order_payment.configuration');
 
@@ -109,7 +109,7 @@ class OrderListController extends Controller
                 'ekyna_commerce_admin_order_list_payment'
             );
 
-        return $this->render('EkynaCommerceBundle:Admin/OrderList:payment.html.twig', [
+        return $this->render('@EkynaCommerce/Admin/OrderList/payment.html.twig', [
             'payments' => $table->createView(),
         ]);
     }
@@ -123,7 +123,7 @@ class OrderListController extends Controller
      */
     public function shipmentAction(Request $request)
     {
-        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_shipment.class'));
+        $this->isGranted('VIEW', 'ekyna_commerce_order_shipment');
 
         $configuration = $this->get('ekyna_commerce.order_shipment.configuration');
 
@@ -143,7 +143,7 @@ class OrderListController extends Controller
                 'ekyna_commerce_admin_order_list_shipment'
             );
 
-        return $this->render('EkynaCommerceBundle:Admin/OrderList:shipment.html.twig', [
+        return $this->render('@EkynaCommerce/Admin/OrderList/shipment.html.twig', [
             'shipments' => $table->createView(),
         ]);
     }
@@ -157,7 +157,7 @@ class OrderListController extends Controller
      */
     public function shipmentDocumentAction(Request $request)
     {
-        $this->isGranted('VIEW', $this->getParameter('ekyna_commerce.order_shipment.class'));
+        $this->isGranted('VIEW', 'ekyna_commerce_order_shipment');
 
         $shipments = $this
             ->get('ekyna_commerce.order_shipment.repository')

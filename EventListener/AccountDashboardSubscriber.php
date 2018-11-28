@@ -75,7 +75,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
             if (null !== $customer->getPaymentTerm()) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.state.title',
-                    'EkynaCommerceBundle:Account/Dashboard:state.html.twig',
+                    '@EkynaCommerce/Account/Dashboard/state.html.twig',
                     'default'
                 );
                 $widget
@@ -91,7 +91,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
             if (!empty($quotes = $this->getQuotes($customer))) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.quote.latest',
-                    'EkynaCommerceBundle:Account/Quote:_list.html.twig',
+                    '@EkynaCommerce/Account/Quote/_list.html.twig',
                     'default'
                 );
                 $widget
@@ -114,7 +114,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
             if (!empty($orders = $this->getOrders($customer))) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.order.latest',
-                    'EkynaCommerceBundle:Account/Order:_list.html.twig',
+                    '@EkynaCommerce/Account/Order/_list.html.twig',
                     'default'
                 );
                 $widget
@@ -137,7 +137,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
             if (!$customer->hasParent() && !empty($invoices = $this->getInvoices($customer))) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.invoice.latest',
-                    'EkynaCommerceBundle:Account/Invoice:_list.html.twig',
+                    '@EkynaCommerce/Account/Invoice/_list.html.twig',
                     'default'
                 );
                 $widget

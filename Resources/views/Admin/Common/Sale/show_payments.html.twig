@@ -21,7 +21,7 @@
                 <td id="{{ paymentId }}_amount">{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
                 <td id="{{ paymentId }}_currency">{{ payment.getCurrency() }}</td>
                 <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
-                <td id="{{ paymentId }}_createdAt">{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
+                <td id="{{ paymentId }}_createdAt">{{ payment.getCreatedAt()|localizeddate('short', 'short') }}</td>
                 <td class="actions">
                     {{ payment_admin_actions(payment) }}
                     {% if payment.getDescription() is not empty -%}

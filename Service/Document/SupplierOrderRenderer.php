@@ -44,6 +44,6 @@ class SupplierOrderRenderer extends AbstractRenderer
      */
     protected function getTemplate()
     {
-        return 'EkynaCommerceBundle:Document:supplier_order.html.twig';
+        return '@EkynaCommerce/Document/supplier_order.html.twig';
     }
 }

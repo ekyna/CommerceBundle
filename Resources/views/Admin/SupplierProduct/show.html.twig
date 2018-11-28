@@ -1,6 +1,6 @@
-{% extends "EkynaAdminBundle:Entity/Default:show.html.twig" %}
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
-{% import "EkynaCommerceBundle:Admin:macros.html.twig" as macros %}
+{% import '@EkynaCommerce/Admin/macros.html.twig' as macros %}
 
 {% block actions %}
     {{ ui_button('ekyna_core.button.back', {

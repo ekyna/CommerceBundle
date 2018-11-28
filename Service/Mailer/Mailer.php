@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
+use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerFactory;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
@@ -32,9 +33,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 class Mailer
 {
     /**
-     * @var \Swift_Mailer
+     * @var MailerFactory
      */
-    protected $transport;
+    protected $mailer;
 
     /**
      * @var EngineInterface
@@ -80,18 +81,18 @@ class Mailer
     /**
      * Constructor.
      *
-     * @param \Swift_Mailer            $transport
+     * @param MailerFactory            $mailer
      * @param EngineInterface          $templating
      * @param TranslatorInterface      $translator
      * @param SettingsManagerInterface $settingsManager
      * @param RendererFactory          $rendererFactory
      * @param ShipmentLabelRenderer    $shipmentLabelRenderer
      * @param SubjectLabelRenderer     $subjectLabelRenderer
-     * @param SubjectHelperInterface $subjectHelper
+     * @param SubjectHelperInterface   $subjectHelper
      * @param FilesystemInterface      $filesystem
      */
     public function __construct(
-        \Swift_Mailer $transport,
+        MailerFactory $mailer,
         EngineInterface $templating,
         TranslatorInterface $translator,
         SettingsManagerInterface $settingsManager,
@@ -101,7 +102,7 @@ class Mailer
         SubjectHelperInterface $subjectHelper,
         FilesystemInterface $filesystem
     ) {
-        $this->transport = $transport;
+        $this->mailer = $mailer;
         $this->templating = $templating;
         $this->translator = $translator;
         $this->settingsManager = $settingsManager;
@@ -164,7 +165,7 @@ class Mailer
 
         $message = new \Swift_Message();
         $message
-            ->setSubject('Bon de commande ' . $order->getNumber()) // TODO translate with supplier locale
+            ->setSubject('Bon de commande ' . $order->getNumber())// TODO translate with supplier locale
             ->setFrom($fromEmail, $fromName)
             ->setTo($submit->getEmails())
             ->setBody($submit->getMessage(), 'text/html');
@@ -196,7 +197,7 @@ class Mailer
         // Trigger imap copy
         $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
 
-        return 0 < $this->transport->send($message);
+        return 0 < $this->mailer->send($message);
     }
 
     /**
@@ -348,7 +349,7 @@ class Mailer
             $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
         }
 
-        return $this->transport->send($message);
+        return $this->mailer->send($message);
     }
 
     /**
@@ -412,6 +413,6 @@ class Mailer
             ->setTo($toEmail)
             ->setBody($body, 'text/html');
 
-        return $this->transport->send($message);
+        return $this->mailer->send($message);
     }
 }

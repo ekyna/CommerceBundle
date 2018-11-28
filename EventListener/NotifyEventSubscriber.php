@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
+use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -75,7 +76,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         $source = $notify->getSource();
         if ($source instanceof SupplierOrderInterface) {
             if (null !== $supplier = $source->getSupplier()) {
-                $notify->addRecipient($this->helper->createRecipient($supplier, 'Fournisseur'));
+                $notify->addRecipient($this->helper->createRecipient($supplier, Recipient::TYPE_SUPPLIER));
             }
 
             return;
@@ -90,7 +91,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         if ($notify->getType() === NotificationTypes::MANUAL) {
             if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
                 if ($inCharge = $sale->getInCharge()) {
-                    $from = $this->helper->createRecipient($inCharge, 'Responsable');
+                    $from = $this->helper->createRecipient($inCharge, Recipient::TYPE_IN_CHARGE);
                 } elseif (null !== $recipient = $this->helper->createCurrentUserRecipient()) {
                     $from = $recipient;
                 }
@@ -100,7 +101,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         // Recipient
         if ($customer = $sale->getCustomer()) {
-            $notify->addRecipient($this->helper->createRecipient($customer, 'Client')); // TODO constant / translation
+            $notify->addRecipient($this->helper->createRecipient($customer, Recipient::TYPE_CUSTOMER));
 
             if (!$sale instanceof OrderInterface) {
                 return;
@@ -119,9 +120,9 @@ class NotifyEventSubscriber implements EventSubscriberInterface
                 return;
             }
 
-            $notify->addRecipient($this->helper->createRecipient($origin, 'Commercial'));
+            $notify->addRecipient($this->helper->createRecipient($origin, Recipient::TYPE_SALESMAN));
         } else {
-            $notify->addRecipient($this->helper->createRecipient($sale, 'Client'));
+            $notify->addRecipient($this->helper->createRecipient($sale, Recipient::TYPE_CUSTOMER));
         }
     }
 
