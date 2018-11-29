@@ -65,7 +65,7 @@ class StatWidget extends AbstractWidgetType
         $compareYear = $repository->findOneByYear($compareDate);
         $yearlyChart = $this->buildYearlyChart();
 
-        return $twig->render('EkynaCommerceBundle:Admin\Dashboard:widget_stat.html.twig', [
+        return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_stat.html.twig', [
             'current_day'   => $currentDay,
             'compare_day'   => $compareDay,
             'daily_chart'   => $dailyChart,

@@ -121,22 +121,23 @@
 
 {% macro show_stock_view(subject, prefix) %}
 {% spaceless %}
+    {% import _self as macros %}
     {% set prefix = prefix|default('subject') %}
     <div class="row">
         <div class="col-md-4">
-            {{ _self.show_stock_mode(subject, {
+            {{ macros.show_stock_mode(subject, {
                 'id': prefix ~'_stockMode',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_stock_state(subject, {
+            {{ macros.show_stock_state(subject, {
                 'id': prefix ~'_stockState',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_geocode(subject, {
+            {{ macros.show_geocode(subject, {
                 'id': prefix ~'_geocode',
                 'label_col': 6
             }) }}
@@ -144,19 +145,19 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            {{ _self.show_in_stock(subject, {
+            {{ macros.show_in_stock(subject, {
                 'id': prefix ~'_inStock',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_available_stock(subject, {
+            {{ macros.show_available_stock(subject, {
                 'id': prefix ~'_availableStock',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_virtual_stock(subject, {
+            {{ macros.show_virtual_stock(subject, {
                 'id': prefix ~'_virtualStock',
                 'label_col': 6
             }) }}
@@ -164,19 +165,19 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            {{ _self.show_stock_floor(subject, {
+            {{ macros.show_stock_floor(subject, {
                 'id': prefix ~'_stockFloor',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_replenishment_time(subject, {
+            {{ macros.show_replenishment_time(subject, {
                 'id': prefix ~'_replenishmentTime',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_eda(subject, {
+            {{ macros.show_eda(subject, {
                 'id': prefix ~'_estimatedDateOfArrival',
                 'label_col': 6
             }) }}
@@ -184,19 +185,19 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            {{ _self.show_minimum_order_quantity(subject, {
+            {{ macros.show_minimum_order_quantity(subject, {
                 'id': prefix ~'_minimumOrderQuantity',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_quote_only(subject, {
+            {{ macros.show_quote_only(subject, {
                 'id': prefix ~'_quoteOnly',
                 'label_col': 6
             }) }}
         </div>
         <div class="col-md-4">
-            {{ _self.show_end_of_life(subject, {
+            {{ macros.show_end_of_life(subject, {
                 'id': prefix ~'_endOfLife',
                 'label_col': 6
             }) }}
@@ -204,4 +205,3 @@
     </div>
 {% endspaceless %}
 {% endmacro show_stock_view %}
-

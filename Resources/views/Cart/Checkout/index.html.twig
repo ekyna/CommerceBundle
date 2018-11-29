@@ -177,14 +177,12 @@
                                 {{- 'ekyna_commerce.checkout.index.place_order'|trans -}}
                                 <span class="glyphicon glyphicon-chevron-right"></span>
                             </a>
-                            {% if controls.quote == 1 %}
                             <a href="{{ path('ekyna_commerce_cart_checkout_quote') }}"
                                class="btn btn-default btn-lg cart-checkout-quote{% if controls.valid == 0 or controls.quote == 0 %} disabled{% endif %}"
                                {%- if controls.quote == 0 %} style="display:none"{% endif %}>
                                 {{- 'ekyna_commerce.checkout.index.to_quote'|trans -}}
                                 <span class="glyphicon glyphicon-chevron-right"></span>
                             </a>
-                            {% endif %}
                         </p>
                     </div>
                 </div>

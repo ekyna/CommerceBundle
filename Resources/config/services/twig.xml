@@ -63,7 +63,7 @@
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
-            <argument type="service" id="ekyna_core.twig.ui_extension" />
+            <argument type="service" id="ekyna_core.ui.renderer" />
             <argument type="service" id="router" />
             <tag name="twig.extension"/>
         </service>

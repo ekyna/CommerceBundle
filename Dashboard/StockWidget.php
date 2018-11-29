@@ -43,7 +43,7 @@ class StockWidget extends AbstractWidgetType
     {
         $current = $this->getStockStatRepository()->findOneByDay();
 
-        return $twig->render('EkynaCommerceBundle:Admin\Dashboard:widget_stock.html.twig', [
+        return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_stock.html.twig', [
             'current'     => $current,
             'stock_chart' => $this->buildStockChart(),
         ]);

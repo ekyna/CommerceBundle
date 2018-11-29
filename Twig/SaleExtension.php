@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Bundle\CoreBundle\Twig\UiExtension;
+use Ekyna\Bundle\CoreBundle\Service\Ui\UiRenderer;
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
@@ -40,9 +40,9 @@ class SaleExtension extends \Twig_Extension
     private $viewBuilder;
 
     /**
-     * @var UiExtension
+     * @var UiRenderer
      */
-    private $uiExtension;
+    private $uiRenderer;
 
     /**
      * @var UrlGeneratorInterface
@@ -56,20 +56,20 @@ class SaleExtension extends \Twig_Extension
      * @param ConstantsHelper          $constantHelper
      * @param ContextProviderInterface $contextProvider
      * @param ViewBuilder              $viewBuilder
-     * @param UiExtension              $uiExtension
+     * @param UiRenderer               $uiRenderer
      * @param UrlGeneratorInterface    $urlGenerator
      */
     public function __construct(
         ConstantsHelper $constantHelper,
         ContextProviderInterface $contextProvider,
         ViewBuilder $viewBuilder,
-        UiExtension $uiExtension,
+        UiRenderer $uiRenderer,
         UrlGeneratorInterface $urlGenerator
     ) {
         $this->constantHelper = $constantHelper;
         $this->contextProvider = $contextProvider;
         $this->viewBuilder = $viewBuilder;
-        $this->uiExtension = $uiExtension;
+        $this->uiRenderer = $uiRenderer;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -521,9 +521,7 @@ class SaleExtension extends \Twig_Extension
             $template = $view->getTemplate();
         }
 
-        /** @noinspection PhpUndefinedMethodInspection */
-        /** @noinspection PhpInternalEntityUsedInspection */
-        return $env->loadTemplate($template)->renderBlock('sale', ['view' => $view]);
+        return $env->load($template)->renderBlock('sale', ['view' => $view]);
     }
 
     /**
@@ -573,7 +571,7 @@ class SaleExtension extends \Twig_Extension
         }
 
         return $this
-            ->uiExtension
+            ->uiRenderer
             ->renderButtonDropdown('ekyna_core.button.transform', $actions);
     }
 }

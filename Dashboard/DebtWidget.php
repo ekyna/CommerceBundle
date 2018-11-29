@@ -45,7 +45,7 @@ class DebtWidget extends AbstractWidgetType
      */
     public function render(WidgetInterface $widget, \Twig_Environment $twig)
     {
-        return $twig->render('EkynaCommerceBundle:Admin\Dashboard:widget_debt.html.twig', [
+        return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_debt.html.twig', [
             'regular_due'         => $this->orderRepository->getRegularDue(),
             'outstanding_expired' => $this->orderRepository->getOutstandingExpiredDue(),
             'outstanding_fall'    => $this->orderRepository->getOutstandingFallDue(),
