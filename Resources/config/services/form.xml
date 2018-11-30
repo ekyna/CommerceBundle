@@ -102,11 +102,12 @@
             <tag name="form.type"/>
         </service>
 
-        <!-- Notification form type -->
+        <!-- Notify form type -->
         <service id="ekyna_commerce.notify.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType">
             <argument type="service" id="ekyna_commerce.notify.recipient_helper"/>
             <argument type="service" id="translator"/>
+            <tag name="form.js" selector=".commerce-notify" path="ekyna-commerce/form/notify"/>
             <tag name="form.type"/>
         </service>
 

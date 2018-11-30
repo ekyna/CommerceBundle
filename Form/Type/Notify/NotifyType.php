@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderTemplateType;
 use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
+use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
@@ -29,6 +30,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -347,6 +350,21 @@ class NotifyType extends AbstractType
                     'align_with_widget' => true,
                 ],
             ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        $email = null;
+        if ($user = $this->recipientHelper->getUserProvider()->getUser()) {
+            $email = $user->getEmail();
+        }
+
+        FormUtil::addClass($view, 'commerce-notify');
+
+        $view->vars['attr']['data-current-user'] = $email;
     }
 
     /**

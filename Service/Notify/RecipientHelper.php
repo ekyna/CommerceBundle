@@ -57,6 +57,16 @@ class RecipientHelper
     }
 
     /**
+     * Returns the user provider.
+     *
+     * @return UserProviderInterface
+     */
+    public function getUserProvider()
+    {
+        return $this->userProvider;
+    }
+
+    /**
      * Creates the 'from' list from the given sale.
      *
      * @param SaleInterface $sale
