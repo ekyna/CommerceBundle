@@ -4,7 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
+use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -81,22 +83,22 @@ class StatWidget extends AbstractWidgetType
     /**
      * Builds the daily revenues chart config.
      *
-     * @param \DateTime $date
+     * @param \DateTime $currentDate
      *
      * @return array
      */
-    private function buildDailyChart(\DateTime $date)
+    private function buildDailyChart(\DateTime $currentDate)
     {
         $repository = $this->getOrderStatRepository();
 
-        $current = $repository->findDayRevenuesByMonth($date);
+        $currentRevenues = $repository->findDayRevenuesByMonth($currentDate);
 
-        $compareDate = (clone $date)->modify('-1 year');
-        $compare = $repository->findDayRevenuesByMonth($compareDate);
+        $compareDate = (clone $currentDate)->modify('-1 year');
+        $compareRevenues = $repository->findDayRevenuesByMonth($compareDate);
 
         $labels = array_map(function ($d) {
             return (new \DateTime($d))->format('j');
-        }, array_keys($current));
+        }, array_keys($currentRevenues));
 
         return [
             'type' => 'line',
@@ -104,13 +106,13 @@ class StatWidget extends AbstractWidgetType
                 'labels'   => $labels,
                 'datasets' => [
                     [
-                        'label'                => $date->format('M Y'),
+                        'label'                => $currentDate->format('M Y'),
                         'borderColor'          => '#00838f',
                         'backgroundColor'      => 'transparent',
                         'pointBackgroundColor' => '#00838f',
                         'pointBorderColor'     => 'transparent',
                         'pointBorderWidth'     => 0,
-                        'data'                 => array_values($current),
+                        'data'                 => array_values($currentRevenues),
                     ],
                     [
                         'label'           => $compareDate->format('M Y'),
@@ -118,17 +120,19 @@ class StatWidget extends AbstractWidgetType
                         'borderColor'     => 'transparent',
                         'borderWidth'     => 0,
                         'pointRadius'     => 0,
-                        'data'            => array_values($compare),
+                        'data'            => array_values($compareRevenues),
                     ],
                 ],
-                'options' => [
-                    'scales' => [
-                        'yAxes' => [
-                            [
-                                'ticks' => [
-                                    'suggestedMin' => 50,
-                                    'suggestedMax' => 100,
-                                ],
+            ],
+            'options'  => [
+                'title'  => ['display' => false],
+                'legend' => ['display' => false],
+                'layout' => ['padding' => ['top' => 12]],
+                'scales' => [
+                    'yAxes' => [
+                        [
+                            'ticks' => [
+                                'suggestedMin' => 0,
                             ],
                         ],
                     ],
@@ -140,47 +144,71 @@ class StatWidget extends AbstractWidgetType
     /**
      * Builds the monthly revenues chart config.
      *
-     * @param \DateTime $date
+     * @param \DateTime $currentDate
      *
      * @return array
      */
-    private function buildMonthlyChart(\DateTime $date)
+    private function buildMonthlyChart(\DateTime $currentDate)
     {
         $repository = $this->getOrderStatRepository();
 
-        $current = $repository->findMonthRevenuesByYear($date);
+        $currentRevenues = $repository->findMonthRevenuesByYear($currentDate, true);
 
-        $compareDate = (clone $date)->modify('-1 year');
-        $compare = $repository->findMonthRevenuesByYear($compareDate);
+        $compareDate = (clone $currentDate)->modify('-1 year');
+        $compareRevenues = $repository->findMonthRevenuesByYear($compareDate, true);
 
         $labels = array_map(function ($d) {
             return (new \DateTime($d))->format('M');
-        }, array_keys($current));
+        }, array_keys($currentRevenues));
+
+        $datasets = [];
+        $stacks = [
+            [
+                'color'  => '#0277bd',
+                'date'   => $currentDate->format('Y'),
+                'stack'  => $currentDate->format('Y-m'),
+                'values' => $currentRevenues,
+            ],
+            [
+                'color'  => '#aaa',
+                'date'   => $compareDate->format('Y'),
+                'stack'  => $compareDate->format('Y-m'),
+                'values' => $compareRevenues,
+            ],
+        ];
+
+        foreach ($stacks as $stack) {
+            $hex = new Hex($stack['color']);
+
+            foreach (SaleSources::getSources() as $source) {
+                $datasets[] = [
+                    'label'           => ucfirst($source) . ' ' . $stack['date'],
+                    'stack'           => $stack['stack'],
+                    'backgroundColor' => (string)$hex,
+                    'data'            => array_values(array_map(function ($data) use ($source) {
+                        return $data[$source];
+                    }, $stack['values'])),
+                ];
+
+                $hex = new Hex($hex->lighten(5));
+            }
+        }
 
         return [
             'type' => 'bar',
             'data' => [
                 'labels'   => $labels,
-                'datasets' => [
-                    [
-                        'label'           => $compareDate->format('Y'),
-                        'backgroundColor' => '#ccc',
-                        'data'            => array_values($compare),
-                    ],
-                    [
-                        'label'           => $date->format('Y'),
-                        'backgroundColor' => '#0277bd',
-                        'data'            => array_values($current),
-                    ],
-                ],
-                'options' => [
-                    'scales' => [
-                        'yAxes' => [
-                            [
-                                'ticks' => [
-                                    'suggestedMin' => 50,
-                                    'suggestedMax' => 100,
-                                ],
+                'datasets' => $datasets,
+            ],
+            'options' => [
+                'title'  => ['display' => false],
+                'legend' => ['display' => false],
+                'layout' => ['padding' => ['top' => 12]],
+                'scales' => [
+                    'yAxes' => [
+                        [
+                            'ticks' => [
+                                'suggestedMin' => 0,
                             ],
                         ],
                     ],
@@ -200,6 +228,7 @@ class StatWidget extends AbstractWidgetType
 
         $data = $repository->findYearRevenues();
 
+        // TODO use Hex()
         $colors = array_slice([
             '#bbdefb',
             '#90caf9',
@@ -225,13 +254,12 @@ class StatWidget extends AbstractWidgetType
             'options' => [
                 'title'  => ['display' => false],
                 'legend' => ['display' => false],
-                'layout' => ['padding' => ['top' => 16]],
+                'layout' => ['padding' => ['top' => 12]],
                 'scales' => [
                     'yAxes' => [
                         [
                             'ticks' => [
-                                'suggestedMin' => 50,
-                                'suggestedMax' => 100,
+                                'suggestedMin' => 0,
                             ],
                         ],
                     ],

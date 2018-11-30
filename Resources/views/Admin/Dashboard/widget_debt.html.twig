@@ -4,15 +4,27 @@
 <div class="row">
     <div class="col-md-4 commerce-debt-customer">
         <div class="commerce-panel">
-            <h3>{{ 'ekyna_commerce.dashboard.debt.title.customer'|trans }}</h3>
+            <h3>
+                <a href="{{ path('ekyna_commerce_export_admin_all_due_orders') }}" target="_blank">
+                    {{ 'ekyna_commerce.dashboard.debt.title.customer'|trans }}
+                </a>
+            </h3>
             <table>
                 <tbody>
                 <tr>
-                    <th>{{ 'ekyna_commerce.dashboard.debt.field.unpaid'|trans }}</th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_regular_due_orders') }}" target="_blank">
+                            {{- 'ekyna_commerce.dashboard.debt.field.unpaid'|trans -}}
+                        </a>
+                    </th>
                     <td>{{ regular_due|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_expired'|trans }}</th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_outstanding_expired_due_orders') }}" target="_blank">
+                            {{ 'ekyna_commerce.dashboard.debt.field.outstanding_expired'|trans }}
+                        </a>
+                    </th>
                     <td>{{ outstanding_expired|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
@@ -24,11 +36,19 @@
                     </td>
                 </tr>
                 <tr>
-                    <th><em>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_fall'|trans }}</em></th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_outstanding_fall_due_orders') }}" target="_blank">
+                            <em>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_fall'|trans }}</em>
+                        </a>
+                    </th>
                     <td><em>{{ outstanding_fall|localizedcurrency(commerce_default_currency) }}</em></td>
                 </tr>
                 <tr>
-                    <th><em>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_pending'|trans }}</em></th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_outstanding_pending_due_orders') }}" target="_blank">
+                            <em>{{ 'ekyna_commerce.dashboard.debt.field.outstanding_pending'|trans }}</em>
+                        </a>
+                    </th>
                     <td><em>{{ outstanding_pending|localizedcurrency(commerce_default_currency) }}</em></td>
                 </tr>
                 </tbody>

@@ -68,7 +68,117 @@ class ExportController extends Controller
             return $this->doRedirect();
         }
 
-        $filename = sprintf('due-order-%s.csv', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * All due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function allDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order.exporter')
+                ->exportAllDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('due-orders-%s.zip', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Regular due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function regularDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order.exporter')
+                ->exportRegularDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('regular-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Outstanding expired due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function outstandingExpiredDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order.exporter')
+                ->exportOutstandingExpiredDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('outstanding-expired-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Outstanding fall due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function outstandingFallDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order.exporter')
+                ->exportOutstandingFallDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('outstanding-fall-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Outstanding pending due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function outstandingPendingDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order.exporter')
+                ->exportOutstandingPendingDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('outstanding-pending-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
 
         return $this->doRespond($path, $filename);
     }

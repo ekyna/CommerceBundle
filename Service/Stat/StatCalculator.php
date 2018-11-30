@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Stat;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
+use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Entity;
@@ -141,7 +142,7 @@ class StatCalculator implements StatCalculatorInterface
         $qb = $this->getOrderRepository()->createQueryBuilder('o');
         $ex = $qb->expr();
 
-        $result = $qb
+        $data = $qb
             ->select([
                 'SUM(o.netTotal) as net',
                 'SUM(o.shipmentAmount) as shipping',
@@ -163,15 +164,48 @@ class StatCalculator implements StatCalculatorInterface
             ])
             ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
 
-        if ($result) {
-            return [
-                'revenue'  => (string)round($result['net'] - $result['shipping'], 3),
-                'shipping' => (string)round($result['shipping'], 3),
-                'margin'   => (string)round($result['margin'], 3),
-                'orders'   => (string)$result['orders'],
-                'items'    => (string)$result['items'],
-                'average'  => (string)round($result['average'], 3),
+        if ($data) {
+            $result = [
+                'revenue'  => (string)round($data['net'] - $data['shipping'], 3),
+                'shipping' => (string)round($data['shipping'], 3),
+                'margin'   => (string)round($data['margin'], 3),
+                'orders'   => (string)$data['orders'],
+                'items'    => (string)$data['items'],
+                'average'  => (string)round($data['average'], 3),
+                'details'  => [],
             ];
+
+            $query = $qb
+                ->select([
+                    'SUM(o.netTotal) as net',
+                    'SUM(o.shipmentAmount) as shipping',
+                ])
+                ->andWhere($ex->between('o.createdAt', ':from', ':to'))
+                ->andWhere($ex->in('o.state', ':state'))
+                ->andWhere($ex->eq('o.source', ':source'))
+                ->getQuery()
+                ->useQueryCache(true);
+
+            foreach (SaleSources::getSources() as $source) {
+                $data = $query
+                    ->setParameter('from', $from, Type::DATETIME)
+                    ->setParameter('to', $to, Type::DATETIME)
+                    ->setParameter('source', $source)
+                    ->setParameter('state', [
+                        OrderStates::STATE_COMPLETED,
+                        OrderStates::STATE_ACCEPTED,
+                        OrderStates::STATE_PENDING,
+                    ])
+                    ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
+
+                if ($data) {
+                    $result['details'][$source] = (string)round($data['net'] - $data['shipping'], 3);
+                } else {
+                    $result['details'][$source] = 0;
+                }
+            }
+
+            return $result;
         }
 
         return null;

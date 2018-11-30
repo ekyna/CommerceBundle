@@ -7,3 +7,28 @@ ekyna_commerce_export_admin_due_orders:
     path: /due-orders
     methods: [GET]
     defaults: { _controller: EkynaCommerceBundle:Admin\Export:dueOrders }
+
+ekyna_commerce_export_admin_all_due_orders:
+    path: /all-due-orders
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:allDueOrders }
+
+ekyna_commerce_export_admin_regular_due_orders:
+    path: /regular-due-orders
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:regularDueOrders }
+
+ekyna_commerce_export_admin_outstanding_expired_due_orders:
+    path: /outstanding-expired-due-orders
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:outstandingExpiredDueOrders }
+
+ekyna_commerce_export_admin_outstanding_fall_due_orders:
+    path: /outstanding-fall-due-orders
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:outstandingFallDueOrders }
+
+ekyna_commerce_export_admin_outstanding_pending_due_orders:
+    path: /outstanding-pending-due-orders
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:outstandingPendingDueOrders }

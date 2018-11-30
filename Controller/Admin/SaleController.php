@@ -12,6 +12,7 @@ use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Document\Model\Document;
@@ -468,7 +469,7 @@ class SaleController extends AbstractSaleController
             ->copyAddresses()
             ->copyItems();
 
-        $targetSale->setSource(null);
+        $targetSale->setSource(SaleSources::SOURCE_COMMERCIAL);
 
         $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale);
 
