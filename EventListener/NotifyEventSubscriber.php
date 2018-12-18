@@ -75,6 +75,10 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         $source = $notify->getSource();
         if ($source instanceof SupplierOrderInterface) {
+            if (null !== $recipient = $this->helper->createCurrentUserRecipient()) {
+                $notify->setFrom($recipient);
+            }
+
             if (null !== $supplier = $source->getSupplier()) {
                 $notify->addRecipient($this->helper->createRecipient($supplier, Recipient::TYPE_SUPPLIER));
             }
