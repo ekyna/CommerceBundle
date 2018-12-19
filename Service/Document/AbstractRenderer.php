@@ -146,8 +146,8 @@ abstract class AbstractRenderer implements RendererInterface
             $this->pdfGenerator->generateFromHtml($content, $path);
         } elseif ($format === RendererInterface::FORMAT_JPG) {
             $this->imageGenerator->generateFromHtml($content, $path);
-        } else {
-            file_put_contents($path, $content);
+        } elseif (!file_put_contents($path, $content)) {
+            throw new \RuntimeException("Failed to write content into file '$path'.");
         }
 
         return $path;

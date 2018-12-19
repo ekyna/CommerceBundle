@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use Ekyna\Bundle\CommerceBundle\Service\Common\Renderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 
 /**
  * Class CommonExtension
@@ -17,15 +17,22 @@ class CommonExtension extends \Twig_Extension
      */
     private $constantHelper;
 
+    /**
+     * @var Renderer
+     */
+    private $commonRenderer;
+
 
     /**
      * Constructor.
      *
-     * @param ConstantsHelper $constantHelper
+     * @param ConstantsHelper $helper
+     * @param Renderer $renderer
      */
-    public function __construct(ConstantsHelper $constantHelper)
+    public function __construct(ConstantsHelper $helper, Renderer $renderer)
     {
-        $this->constantHelper = $constantHelper;
+        $this->constantHelper = $helper;
+        $this->commonRenderer = $renderer;
     }
 
     /**
@@ -36,8 +43,8 @@ class CommonExtension extends \Twig_Extension
         return [
             new \Twig_SimpleFilter(
                 'address',
-                [$this, 'renderAddress'],
-                ['is_safe' => ['html'], 'needs_environment' => true,]
+                [$this->commonRenderer, 'renderAddress'],
+                ['is_safe' => ['html']]
             ),
             new \Twig_SimpleFilter(
                 'identity',
@@ -77,19 +84,16 @@ class CommonExtension extends \Twig_Extension
     }
 
     /**
-     * Renders the address.
-     *
-     * @param \Twig_Environment $env
-     * @param AddressInterface $address
-     * @param bool             $displayPhones
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function renderAddress(\Twig_Environment $env, AddressInterface $address, $displayPhones = true)
+    public function getFunctions()
     {
-        return $env->render('@EkynaCommerce/Show/address.html.twig', [
-            'address'        => $address,
-            'display_phones' => $displayPhones,
-        ]);
+        return [
+            new \Twig_SimpleFunction(
+                'sale_custom_buttons',
+                [$this->commonRenderer, 'renderSaleCustomButtons'],
+                ['is_safe' => ['html']]
+            ),
+        ];
     }
 }

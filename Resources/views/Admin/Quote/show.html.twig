@@ -16,6 +16,7 @@
         {{ quote.allTags|cms_tags({'text': false}) }}
     </div>
     <div class="actions">
+        {{ sale_custom_buttons(quote) }}
         {# TODO permission ? #}
         {{ ui_button('ekyna_core.button.notify', {
             'theme': 'default',

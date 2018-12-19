@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
         <!-- Country repository -->
         <service id="ekyna_commerce.country.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository">
@@ -114,6 +115,14 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SaleItemEventSubscriber">
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Common renderer -->
+        <service id="ekyna_commerce.common.renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\Renderer">
+            <argument type="service" id="templating"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="ekyna_core.ui.renderer"/>
         </service>
 
     </services>
