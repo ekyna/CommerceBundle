@@ -50,7 +50,6 @@ class AccountingType extends ResourceFormType
             ])
             ->add('paymentMethod', PaymentMethodChoiceType::class, [
                 'outstanding' => false,
-                'credit'      => false,
                 'required'    => false,
             ])
             ->add('customerGroups', CustomerGroupChoiceType::class, [
