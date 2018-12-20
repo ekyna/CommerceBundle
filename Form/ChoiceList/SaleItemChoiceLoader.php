@@ -111,7 +111,7 @@ class SaleItemChoiceLoader implements ChoiceLoaderInterface
                 continue;
             }
 
-            $list[] = $item;
+            $list[] = $child;
 
             if (0 < $this->depth && $this->depth < $depth) {
                 continue;

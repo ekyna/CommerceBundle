@@ -53,7 +53,7 @@ class SaleItemChoiceType extends AbstractType
                 'choice_label'  => function (SaleItemInterface $item) {
                     return sprintf(
                         '%s [%s] %s',
-                        str_repeat(' › ', $item->getLevel()),
+                        str_repeat('&nbsp;&nbsp;&rsaquo;&nbsp;', $item->getLevel()),
                         $item->getReference(),
                         $item->getDesignation()
                     );
