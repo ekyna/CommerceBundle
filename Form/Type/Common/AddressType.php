@@ -2,18 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
+use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Bundle\GoogleBundle\Form\Type\CoordinateType;
-use Ekyna\Component\Commerce\Common\Model\AddressInterface;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use libphonenumber\PhoneNumberFormat;
-use libphonenumber\PhoneNumberUtil;
-use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
+use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -153,7 +148,7 @@ class AddressType extends AbstractType
                     'maxlength'    => 10,
                     'autocomplete' => 'intercomid', // Non standard to suppress warning
                 ],
-            ])
+            ]);
             /*->add('state', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
                 'required' => false,
@@ -162,58 +157,28 @@ class AddressType extends AbstractType
                     'class' => 'address-state',
                 ]
             ])*/
-        ;
 
         if ($options['phones']) {
-
-            $phonesListener = function (FormEvent $event) use ($options, $section) {
-                $data = $event->getData();
-                $address = $event->getForm()->getNormData();
-                if ($address && !$address instanceof AddressInterface) {
-                    throw new InvalidArgumentException("Expected instance of " . AddressInterface::class);
-                }
-
-                $region = PhoneNumberUtil::UNKNOWN_REGION;
-                if ($data && $data instanceof AddressInterface && null !== $country = $address->getCountry()) {
-                    $region = $country->getCode();
-                } elseif (is_array($data) && isset($data['country'])) {
-                    $region = $data['country'];
-                } elseif ($address && null !== $country = $address->getCountry()) {
-                    $region = $country->getCode();
-                }
-
-                $form = $event->getForm();
-
-                $form
-                    ->remove('phone')
-                    ->remove('mobile')
-                    ->add('phone', PhoneNumberType::class, [
-                        'label'          => 'ekyna_core.field.phone',
-                        'required'       => $options['phone_required'],
-                        'default_region' => $region,
-                        'format'         => PhoneNumberFormat::NATIONAL,
-                        'attr'           => [
-                            'class'        => 'address-phone',
-                            'placeholder'  => 'ekyna_core.field.phone',
-                            'autocomplete' => $section . 'tel-national',
-                        ],
-                    ])
-                    ->add('mobile', PhoneNumberType::class, [
-                        'label'          => 'ekyna_core.field.mobile',
-                        'required'       => $options['mobile_required'],
-                        'default_region' => $region,
-                        'format'         => PhoneNumberFormat::NATIONAL,
-                        'attr'           => [
-                            'class'        => 'address-mobile',
-                            'placeholder'  => 'ekyna_core.field.mobile',
-                            'autocomplete' => $section . 'tel-national',
-                        ],
-                    ]);
-            };
-
             $builder
-                ->addEventListener(FormEvents::POST_SET_DATA, $phonesListener)
-                ->addEventListener(FormEvents::PRE_SUBMIT, $phonesListener);
+                ->add('phone', PhoneNumberType::class, [
+                    'label'         => 'ekyna_core.field.phone',
+                    'required'      => $options['phone_required'],
+                    'country_field' => 'country',
+                    'number_attr'   => [
+                        'class'        => 'address-phone',
+                        'autocomplete' => $section . 'tel-national',
+                    ],
+                ])
+                ->add('mobile', PhoneNumberType::class, [
+                    'label'         => 'ekyna_core.field.mobile',
+                    'required'      => $options['mobile_required'],
+                    'type'          => PhoneType::MOBILE,
+                    'country_field' => 'country',
+                    'number_attr'   => [
+                        'class'        => 'address-mobile',
+                        'autocomplete' => $section . 'tel-national',
+                    ],
+                ]);
         }
 
         if ($options['coordinate']) {

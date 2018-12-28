@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
+use Ekyna\Bundle\CoreBundle\Service\Geo\UserCountryGuesser;
 use Ekyna\Component\Commerce\Common\Model\CountryInterface;
 use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use Symfony\Component\Form\AbstractType;
@@ -18,6 +19,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CountryChoiceType extends AbstractType
 {
+    /**
+     * @var UserCountryGuesser
+     */
+    private $countryGuesser;
+
     /**
      * @var LocaleProviderInterface
      */
@@ -37,12 +43,18 @@ class CountryChoiceType extends AbstractType
     /**
      * Constructor.
      *
+     * @param UserCountryGuesser $countryGuesser
      * @param LocaleProviderInterface $localeProvider
      * @param string                  $countryClass
      * @param string                  $defaultCode
      */
-    public function __construct(LocaleProviderInterface $localeProvider, $countryClass, $defaultCode)
-    {
+    public function __construct(
+        UserCountryGuesser $countryGuesser,
+        LocaleProviderInterface $localeProvider,
+        $countryClass,
+        $defaultCode
+    ) {
+        $this->countryGuesser = $countryGuesser;
         $this->localeProvider = $localeProvider;
         $this->countryClass = $countryClass;
         $this->defaultCode = $defaultCode;
@@ -70,6 +82,7 @@ class CountryChoiceType extends AbstractType
         };
 
         $currentLocale = $this->localeProvider->getCurrentLocale();
+        $userCountry = $this->countryGuesser->getUserCountry($this->defaultCode);
 
         $resolver
             ->setDefaults([
@@ -83,8 +96,8 @@ class CountryChoiceType extends AbstractType
                 'class'             => $this->countryClass,
                 'enabled'           => true,
                 'query_builder'     => $queryBuilderDefault,
-                'preferred_choices' => function (CountryInterface $country) {
-                    return $country->getCode() === $this->defaultCode;
+                'preferred_choices' => function (CountryInterface $country) use ($userCountry) {
+                    return $country->getCode() === $userCountry;
                 },
                 'choice_value'      => 'code',
                 'choice_label'      => function (CountryInterface $country) use ($currentLocale) {

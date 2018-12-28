@@ -36,6 +36,7 @@
         <!-- Country form type -->
         <service id="ekyna_commerce.country_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType">
+            <argument type="service" id="ekyna_core.geo.user_country_guesser"/>
             <argument type="service" id="ekyna_resource.locale.request_provider"/>
             <argument>%ekyna_commerce.country.class%</argument>
             <argument>%ekyna_commerce.default.country%</argument>

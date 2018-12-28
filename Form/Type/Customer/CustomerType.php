@@ -8,9 +8,9 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
+use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
-use libphonenumber\PhoneNumberFormat;
-use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
+use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -57,20 +57,17 @@ class CustomerType extends ResourceFormType
             ])
             ->add('identity', IdentityType::class)
             ->add('phone', PhoneNumberType::class, [
-                'label'          => 'ekyna_core.field.phone',
-                'required'       => false,
-                'default_region' => 'FR', // TODO get user locale
-                'format'         => PhoneNumberFormat::NATIONAL,
-                'attr'           => [
+                'label'    => 'ekyna_core.field.phone',
+                'required' => false,
+                'number_attr'     => [
                     'autocomplete' => 'tel-national',
                 ],
             ])
             ->add('mobile', PhoneNumberType::class, [
-                'label'          => 'ekyna_core.field.mobile',
-                'required'       => false,
-                'default_region' => 'FR', // TODO get user locale
-                'format'         => PhoneNumberFormat::NATIONAL,
-                'attr'           => [
+                'label'    => 'ekyna_core.field.mobile',
+                'required' => false,
+                'type'     => PhoneType::MOBILE,
+                'number_attr'     => [
                     'autocomplete' => 'tel-national',
                 ],
             ])

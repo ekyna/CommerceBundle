@@ -4,10 +4,10 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
+use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
-use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberType as PhoneType;
 use libphonenumber\PhoneNumberUtil;
-use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -63,12 +63,12 @@ class ShipmentType extends AbstractType
             }
 
             $form->add('mobile', PhoneNumberType::class, [
-                'label'          => 'ekyna_core.field.mobile',
-                'property_path'  => $addressPath . '.mobile',
-                'required'       => false,
-                'default_region' => $region,
-                'format'         => PhoneNumberFormat::NATIONAL,
-                'attr'           => [
+                'label'           => 'ekyna_core.field.mobile',
+                'property_path'   => $addressPath . '.mobile',
+                'required'        => false,
+                'default_country' => $region,
+                'type'            => PhoneType::MOBILE,
+                'attr'            => [
                     'class'     => 'address-mobile',
                     'help_text' => 'ekyna_commerce.checkout.shipment.mobile_required',
                 ],

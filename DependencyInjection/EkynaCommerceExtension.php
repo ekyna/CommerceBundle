@@ -205,9 +205,7 @@ class EkynaCommerceExtension extends AbstractExtension
                 'types' => DoctrineBundleMapping::buildTypesConfiguration(),
             ],
             'orm'  => [
-                'mappings' => [
-                    'EkynaCommerce' => DoctrineBundleMapping::buildMappingConfiguration(),
-                ],
+                'mappings' => DoctrineBundleMapping::buildMappingConfiguration(),
             ],
         ]);
     }

@@ -68,21 +68,6 @@ class PriceType extends AbstractType
             ])
             ->getForm();
 
-        /*$mode = $builder
-            ->create('mode', Type\ChoiceType::class, [
-                'label'   => false,
-                'data'    => $this->defaultVatMode,
-                'choices' => [
-                    BVat::getLabel(CVat::MODE_NET) => CVat::MODE_NET,
-                    BVat::getLabel(CVat::MODE_ATI) => CVat::MODE_ATI,
-                ],
-                'attr'    => [
-                    'class' => 'commerce-price-mode',
-                ],
-                'select2' => false,
-            ])
-            ->getForm();*/
-
         $builder->setAttribute('mode_prototype', $mode);
     }
 

@@ -1,15 +1,5 @@
 module.exports = function (grunt, options) {
     return {
-        commerce_img: {
-            files: [
-                {
-                    expand: true,
-                    cwd: 'src/Ekyna/Bundle/CommerceBundle/Resources/private/img',
-                    src: ['**'],
-                    dest: 'src/Ekyna/Bundle/CommerceBundle/Resources/public/img'
-                }
-            ]
-        },
         commerce_less: { // For watch:commerce_less
             files: [
                 {

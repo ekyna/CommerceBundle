@@ -13,7 +13,7 @@ module.exports = {
     ],
     'build:commerce': [
         'clean:commerce_pre',
-        'copy:commerce_img',
+        'imagemin:commerce',
         'build:commerce_css',
         'build:commerce_js',
         'clean:commerce_post'

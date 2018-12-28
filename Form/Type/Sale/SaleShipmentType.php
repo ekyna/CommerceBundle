@@ -3,12 +3,12 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
+use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
-use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberType as PhoneType;
 use libphonenumber\PhoneNumberUtil;
-use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -91,12 +91,12 @@ class SaleShipmentType extends AbstractType
                 }
 
                 $form->add('mobile', PhoneNumberType::class, [
-                    'label'          => 'ekyna_core.field.mobile',
-                    'property_path'  => $addressPath . '.mobile',
-                    'required'       => false,
-                    'default_region' => $region,
-                    'format'         => PhoneNumberFormat::NATIONAL,
-                    'attr'           => [
+                    'label'           => 'ekyna_core.field.mobile',
+                    'property_path'   => $addressPath . '.mobile',
+                    'required'        => false,
+                    'default_country' => $region,
+                    'type'            => PhoneType::MOBILE,
+                    'attr'            => [
                         'class'     => 'address-mobile',
                         'help_text' => 'ekyna_commerce.checkout.shipment.mobile_required',
                     ],
