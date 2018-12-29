@@ -357,6 +357,13 @@ class OrderType extends ResourceTableType
      */
     public function buildRowView(View\RowView $view, RowInterface $row, array $options)
     {
+        /** @var OrderInterface $order */
+        $order = $row->getData();
+
+        if ($order->isFirst()) {
+            $view->vars['attr']['class'] = 'success';
+        }
+
         $view->vars['attr']['data-summary'] = json_encode([
             'route'      => 'ekyna_commerce_order_admin_summary',
             'parameters' => ['orderId' => $row->getData('id')],

@@ -56,10 +56,7 @@ class SaleSubjectType extends AbstractFilterType
         $builder
             ->add('operator', ChoiceType::class, [
                 'label'   => false,
-                'choices' => FilterOperator::getChoices([
-                    FilterOperator::IN,
-                    FilterOperator::NOT_IN,
-                ]),
+                'choices' => FilterOperator::getChoices([FilterOperator::IN]),
             ])
             ->add('value', SubjectChoiceType::class, [
                 'label'   => false,

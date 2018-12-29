@@ -35,6 +35,9 @@
             <call method="setMarginCalculator">
                 <argument type="service" id="ekyna_commerce.common.margin_calculator"/>
             </call>
+            <call method="setOrderRepository">
+                <argument type="service" id="ekyna_commerce.order.repository"/>
+            </call>
             <call method="setSubjectHelper">
                 <argument type="service" id="ekyna_commerce.subject_helper"/>
             </call>

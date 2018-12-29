@@ -150,7 +150,11 @@ class CustomerType extends ResourceTableType
                 ->addFilter('city', CType\Filter\TextType::class, [
                     'label'         => 'ekyna_core.field.city',
                     'property_path' => 'addresses.city',
-                    'position'      => 55,
+                    'position'      => 53,
+                ])
+                ->addFilter('phone', Type\Filter\PhoneNumberType::class, [
+                    'label'    => 'ekyna_core.field.phone',
+                    'position' => 56,
                 ])
                 ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
                     'position' => 60,
