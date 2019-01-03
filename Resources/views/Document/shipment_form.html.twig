@@ -19,7 +19,7 @@
                 {{ 'ekyna_commerce.order.label.singular'|trans }} <strong>{{ subject.sale.number }}</strong>
                 <small>
                     {{- 'ekyna_commerce.shipment.label.singular'|trans }} <strong>{{ subject.number }}</strong>
-                    {% if subject.partial %}&nbsp;<em>({{ 'ekyna_commerce.shipment.state.partial'|trans }})</em>{% endif %}
+                    {% if subject.partial %}&nbsp;<em>({{ 'ekyna_commerce.status.partial'|trans }})</em>{% endif %}
                 </small>
             </h1>
             <p>

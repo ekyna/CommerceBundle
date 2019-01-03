@@ -33,14 +33,14 @@ class AdminMenuPass implements CompilerPassInterface
         // Orders
         $pool->addMethodCall('createEntry', ['sales', [
             'name'     => 'orders',
-            'route'    => 'ekyna_commerce_order_admin_home',
+            'route'    => 'ekyna_commerce_order_admin_list',
             'label'    => 'ekyna_commerce.order.label.plural',
             'resource' => 'ekyna_commerce_order',
             'position' => 1,
         ]]);
         $pool->addMethodCall('createEntry', ['sales', [
             'name'     => 'quotes',
-            'route'    => 'ekyna_commerce_quote_admin_home',
+            'route'    => 'ekyna_commerce_quote_admin_list',
             'label'    => 'ekyna_commerce.quote.label.plural',
             'resource' => 'ekyna_commerce_quote',
             'position' => 2,
@@ -49,7 +49,7 @@ class AdminMenuPass implements CompilerPassInterface
         // Customers
         $pool->addMethodCall('createEntry', ['sales', [
             'name'     => 'customers',
-            'route'    => 'ekyna_commerce_customer_admin_home',
+            'route'    => 'ekyna_commerce_customer_admin_list',
             'label'    => 'ekyna_commerce.customer.label.plural',
             'resource' => 'ekyna_commerce_customer',
             'position' => 10,
@@ -90,7 +90,7 @@ class AdminMenuPass implements CompilerPassInterface
         // Supplier orders
         $pool->addMethodCall('createEntry', ['suppliers', [
             'name'     => 'supplier_orders',
-            'route'    => 'ekyna_commerce_supplier_order_admin_home',
+            'route'    => 'ekyna_commerce_supplier_order_admin_list',
             'label'    => 'ekyna_commerce.supplier_order.label.plural',
             'resource' => 'ekyna_commerce_supplier_order',
             'position' => 1,
@@ -99,7 +99,7 @@ class AdminMenuPass implements CompilerPassInterface
         // Suppliers
         $pool->addMethodCall('createEntry', ['suppliers', [
             'name'     => 'suppliers',
-            'route'    => 'ekyna_commerce_supplier_admin_home',
+            'route'    => 'ekyna_commerce_supplier_admin_list',
             'label'    => 'ekyna_commerce.supplier.label.plural',
             'resource' => 'ekyna_commerce_supplier',
             'position' => 2,
@@ -108,7 +108,7 @@ class AdminMenuPass implements CompilerPassInterface
         // Supplier carriers
         $pool->addMethodCall('createEntry', ['suppliers', [
             'name'     => 'supplier_carriers',
-            'route'    => 'ekyna_commerce_supplier_carrier_admin_home',
+            'route'    => 'ekyna_commerce_supplier_carrier_admin_list',
             'label'    => 'ekyna_commerce.supplier_carrier.label.plural',
             'resource' => 'ekyna_commerce_supplier_carrier',
             'position' => 3,
@@ -126,7 +126,7 @@ class AdminMenuPass implements CompilerPassInterface
         // Customer groups
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'customer_groups',
-            'route'    => 'ekyna_commerce_customer_group_admin_home',
+            'route'    => 'ekyna_commerce_customer_group_admin_list',
             'label'    => 'ekyna_commerce.customer_group.label.plural',
             'resource' => 'ekyna_commerce_customer_group',
             'position' => 40,
@@ -135,42 +135,42 @@ class AdminMenuPass implements CompilerPassInterface
         // Payment / Shipment methods
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'payment_term',
-            'route'    => 'ekyna_commerce_payment_term_admin_home',
+            'route'    => 'ekyna_commerce_payment_term_admin_list',
             'label'    => 'ekyna_commerce.payment_term.label.plural',
             'resource' => 'ekyna_commerce_payment_term',
             'position' => 50,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'payment_method',
-            'route'    => 'ekyna_commerce_payment_method_admin_home',
+            'route'    => 'ekyna_commerce_payment_method_admin_list',
             'label'    => 'ekyna_commerce.payment_method.label.plural',
             'resource' => 'ekyna_commerce_payment_method',
             'position' => 51,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'shipment_method',
-            'route'    => 'ekyna_commerce_shipment_method_admin_home',
+            'route'    => 'ekyna_commerce_shipment_method_admin_list',
             'label'    => 'ekyna_commerce.shipment_method.label.plural',
             'resource' => 'ekyna_commerce_shipment_method',
             'position' => 52,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'shipment_zone',
-            'route'    => 'ekyna_commerce_shipment_zone_admin_home',
+            'route'    => 'ekyna_commerce_shipment_zone_admin_list',
             'label'    => 'ekyna_commerce.shipment_zone.label.plural',
             'resource' => 'ekyna_commerce_shipment_zone',
             'position' => 53,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'shipment_rule',
-            'route'    => 'ekyna_commerce_shipment_rule_admin_home',
+            'route'    => 'ekyna_commerce_shipment_rule_admin_list',
             'label'    => 'ekyna_commerce.shipment_rule.label.plural',
             'resource' => 'ekyna_commerce_shipment_rule',
             'position' => 54,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'notify_model',
-            'route'    => 'ekyna_commerce_notify_model_admin_home',
+            'route'    => 'ekyna_commerce_notify_model_admin_list',
             'label'    => 'ekyna_commerce.notify_model.label.plural',
             'resource' => 'ekyna_commerce_notify_model',
             'position' => 55,
@@ -179,21 +179,21 @@ class AdminMenuPass implements CompilerPassInterface
         // Tax groups / Tax rules / Taxes
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'tax_group',
-            'route'    => 'ekyna_commerce_tax_group_admin_home',
+            'route'    => 'ekyna_commerce_tax_group_admin_list',
             'label'    => 'ekyna_commerce.tax_group.label.plural',
             'resource' => 'ekyna_commerce_tax_group',
             'position' => 70,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'tax_rule',
-            'route'    => 'ekyna_commerce_tax_rule_admin_home',
+            'route'    => 'ekyna_commerce_tax_rule_admin_list',
             'label'    => 'ekyna_commerce.tax_rule.label.plural',
             'resource' => 'ekyna_commerce_tax_rule',
             'position' => 71,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'taxes',
-            'route'    => 'ekyna_commerce_tax_admin_home',
+            'route'    => 'ekyna_commerce_tax_admin_list',
             'label'    => 'ekyna_commerce.tax.label.plural',
             'resource' => 'ekyna_commerce_tax',
             'position' => 72,
@@ -202,7 +202,7 @@ class AdminMenuPass implements CompilerPassInterface
         // Accounting
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'accounting',
-            'route'    => 'ekyna_commerce_accounting_admin_home',
+            'route'    => 'ekyna_commerce_accounting_admin_list',
             'label'    => 'ekyna_commerce.accounting.label.plural',
             'resource' => 'ekyna_commerce_accounting',
             'position' => 80,
@@ -211,14 +211,14 @@ class AdminMenuPass implements CompilerPassInterface
         // Countries / Currencies
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'countries',
-            'route'    => 'ekyna_commerce_country_admin_home',
+            'route'    => 'ekyna_commerce_country_admin_list',
             'label'    => 'ekyna_commerce.country.label.plural',
             'resource' => 'ekyna_commerce_country',
             'position' => 98,
         ]]);
         $pool->addMethodCall('createEntry', ['setting', [
             'name'     => 'currencies',
-            'route'    => 'ekyna_commerce_currency_admin_home',
+            'route'    => 'ekyna_commerce_currency_admin_list',
             'label'    => 'ekyna_commerce.currency.label.plural',
             'resource' => 'ekyna_commerce_currency',
             'position' => 99,

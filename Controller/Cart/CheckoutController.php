@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Cart;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
+use Ekyna\Bundle\CommerceBundle\Event\CheckoutEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\ShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager;
@@ -15,6 +16,7 @@ use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -46,7 +48,7 @@ class CheckoutController extends AbstractController
     /**
      * @var CheckoutManager
      */
-    protected $paymentCheckout;
+    protected $checkoutManager;
 
     /**
      * @var PaymentHelper
@@ -58,6 +60,11 @@ class CheckoutController extends AbstractController
      */
     protected $saleTransformer;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
 
     /**
      * Constructor.
@@ -65,24 +72,27 @@ class CheckoutController extends AbstractController
      * @param OrderRepositoryInterface       $orderRepository
      * @param QuoteRepositoryInterface       $quoteRepository
      * @param ShipmentPriceResolverInterface $shipmentPriceResolver
-     * @param CheckoutManager                $paymentCheckout
+     * @param CheckoutManager                $checkoutManager
      * @param PaymentHelper                  $paymentHelper
      * @param SaleTransformerInterface       $saleTransformer
+     * @param EventDispatcherInterface       $dispatcher
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         QuoteRepositoryInterface $quoteRepository,
         ShipmentPriceResolverInterface $shipmentPriceResolver,
-        CheckoutManager $paymentCheckout,
+        CheckoutManager $checkoutManager,
         PaymentHelper $paymentHelper,
-        SaleTransformerInterface $saleTransformer
+        SaleTransformerInterface $saleTransformer,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
         $this->shipmentPriceResolver = $shipmentPriceResolver;
-        $this->paymentCheckout = $paymentCheckout;
+        $this->checkoutManager = $checkoutManager;
         $this->paymentHelper = $paymentHelper;
         $this->saleTransformer = $saleTransformer;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -136,6 +146,10 @@ class CheckoutController extends AbstractController
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
+        }
+
+        if (null !== $cart) {
+            $this->dispatcher->dispatch(CheckoutEvent::EVENT_INIT, new CheckoutEvent($cart));
         }
 
         return $this->render('@EkynaCommerce/Cart/Checkout/index.html.twig', $parameters);
@@ -264,6 +278,8 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_payment'));
         }
 
+        $this->dispatcher->dispatch(CheckoutEvent::EVENT_SHIPMENT_STEP, new CheckoutEvent($cart));
+
         $view = $form->createView();
 
         return $this->render('@EkynaCommerce/Cart/Checkout/shipment.html.twig', [
@@ -291,9 +307,9 @@ class CheckoutController extends AbstractController
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_shipment'));
         }
 
-        $this->paymentCheckout->initialize($cart, $this->generateUrl('ekyna_commerce_cart_checkout_payment'));
+        $this->checkoutManager->initialize($cart, $this->generateUrl('ekyna_commerce_cart_checkout_payment'));
 
-        if (null !== $payment = $this->paymentCheckout->handleRequest($request)) {
+        if (null !== $payment = $this->checkoutManager->handleRequest($request)) {
             $cart->addPayment($payment);
             $this->saveCart();
 
@@ -306,9 +322,11 @@ class CheckoutController extends AbstractController
             return $this->paymentHelper->capture($payment, $statusUrl);
         }
 
+        $this->dispatcher->dispatch(CheckoutEvent::EVENT_PAYMENT_STEP, new CheckoutEvent($cart));
+
         return $this->render('@EkynaCommerce/Cart/Checkout/payment.html.twig', [
             'cart'  => $cart,
-            'forms' => $this->paymentCheckout->getFormsViews(),
+            'forms' => $this->checkoutManager->getFormsViews(),
         ]);
     }
 
@@ -370,6 +388,8 @@ class CheckoutController extends AbstractController
         if ($orderCustomer !== $currentCustomer) {
             throw new AccessDeniedHttpException();
         }
+
+        $this->dispatcher->dispatch(CheckoutEvent::EVENT_CONFIRMATION, new CheckoutEvent($order));
 
         return $this->render('@EkynaCommerce/Cart/Checkout/confirmation.html.twig', [
             'order' => $order,

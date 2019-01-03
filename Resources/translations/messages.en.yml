@@ -1344,7 +1344,9 @@ ekyna_commerce:
                 max_quantity: "Max. available quantity : %max%"
 
     subject:
-        label: Product
+        label:
+            singular: Product
+            plural: Products
         price_from: >
             <small>From</small>
 

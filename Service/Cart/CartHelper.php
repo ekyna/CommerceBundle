@@ -8,7 +8,6 @@ use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Bundle\CoreBundle\Modal;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
@@ -146,7 +145,7 @@ class CartHelper
      */
     public function createAddSubjectToCartForm(SubjectInterface $subject, array $options = [])
     {
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        /** @var \Ekyna\Component\Commerce\Cart\Model\CartItemInterface $item */
         $item = new $this->cartItemClass; // TODO Use sale factory (create methods to use interface: SaleInterface, etc)
 
         $this->getSaleHelper()->getSubjectHelper()->assign($item, $subject);
@@ -188,12 +187,12 @@ class CartHelper
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var SaleItemInterface $item */
+            /** @var \Ekyna\Component\Commerce\Cart\Model\CartItemInterface $item */
             $item = $form->getData();
             /** @var SubjectInterface $subject */
             $subject = $this->getSaleHelper()->getSubjectHelper()->resolve($item);
 
-            $event = new AddToCartEvent($subject, $modal);
+            $event = new AddToCartEvent($subject, $modal, $item);
 
             try {
                 $cart = $this->cartProvider->getCart(true);

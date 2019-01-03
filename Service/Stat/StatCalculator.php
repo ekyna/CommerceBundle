@@ -153,6 +153,7 @@ class StatCalculator implements StatCalculatorInterface
             ])
             ->andWhere($ex->between('o.createdAt', ':from', ':to'))
             ->andWhere($ex->in('o.state', ':state'))
+            ->andWhere($ex->eq('o.sample', ':sample'))
             ->getQuery()
             ->useQueryCache(true)
             ->setParameter('from', $from, Type::DATETIME)
@@ -162,6 +163,7 @@ class StatCalculator implements StatCalculatorInterface
                 OrderStates::STATE_ACCEPTED,
                 OrderStates::STATE_PENDING,
             ])
+            ->setParameter('sample', false)
             ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
 
         if ($data) {

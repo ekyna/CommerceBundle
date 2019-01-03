@@ -612,6 +612,30 @@ ekyna_commerce:
             mrs: Madame
             miss: Mademoiselle
 
+    marketplace:
+        label:
+            singular: Marketplace
+            plural: Marketplaces
+
+    marketplace_product:
+        label:
+            singular: Marketplaces
+            plural: Marketplaces
+        header:
+            list: Produits <small>Liste des produits</small>
+            show: Détail du produit <small>%name%</small>
+            new: Créer un nouveau produit
+            edit: Modifier le produit <small>%name%</small>
+            remove: Supprimer le produit <small>%name%</small>
+        button:
+            list: Liste des produits
+            show: Détail du produit
+            new: Nouveau produit
+            edit: Modifier le produit
+            remove: Supprimer le produit
+        alert:
+            no_item: Aucun produit configuré
+
     message:
         label:
             singular: Message
@@ -1345,7 +1369,9 @@ ekyna_commerce:
                 max_quantity: "Quantité max. disponible : %max%"
 
     subject:
-        label: Article
+        label:
+            singular: Article
+            plural: Articles
         price_from: >
             <small>À partir de</small>
 

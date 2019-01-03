@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Event;
 
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Cart\Model\CartItemInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,11 @@ class AddToCartEvent extends Event
     private $modal;
 
     /**
+     * @var CartItemInterface
+     */
+    private $item;
+
+    /**
      * @var string
      */
     private $message;
@@ -42,13 +48,15 @@ class AddToCartEvent extends Event
     /**
      * Constructor.
      *
-     * @param SubjectInterface $subject
-     * @param Modal            $modal
+     * @param SubjectInterface  $subject
+     * @param Modal             $modal
+     * @param CartItemInterface $item
      */
-    public function __construct(SubjectInterface $subject, Modal $modal = null)
+    public function __construct(SubjectInterface $subject, Modal $modal = null, CartItemInterface $item = null)
     {
         $this->subject = $subject;
         $this->modal = $modal;
+        $this->item = $item;
     }
 
     /**
@@ -69,6 +77,16 @@ class AddToCartEvent extends Event
     public function getModal()
     {
         return $this->modal;
+    }
+
+    /**
+     * Returns the item.
+     *
+     * @return CartItemInterface|null
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 
     /**

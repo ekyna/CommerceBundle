@@ -17,8 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ShipmentTrackingNumberType extends AbstractColumnType
 {
-    const /** @noinspection HtmlUnknownTarget */
-        TEMPLATE = '<a href="%s" target="_blank">%s</a>';
+    const TEMPLATE = '<a href="%s" target="_blank">%s</a>';
 
     /**
      * @var ShipmentHelper

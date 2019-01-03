@@ -6,9 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
-use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
-use Ekyna\Component\Resource\Model\ResourceInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
@@ -28,10 +26,6 @@ class SupplierProductType extends ResourceTableType
      */
     private $supplierClass;
 
-    /**
-     * @var SubjectProviderRegistryInterface
-     */
-    private $providerRegistry;
 
     /**
      * Constructor.
@@ -47,16 +41,6 @@ class SupplierProductType extends ResourceTableType
     }
 
     /**
-     * Sets the providerRegistry.
-     *
-     * @param SubjectProviderRegistryInterface $providerRegistry
-     */
-    public function setProviderRegistry($providerRegistry)
-    {
-        $this->providerRegistry = $providerRegistry;
-    }
-
-    /**
      * Builds the table for the given subject.
      *
      * @param TableBuilderInterface $builder
@@ -64,17 +48,13 @@ class SupplierProductType extends ResourceTableType
      */
     private function buildForSubject(TableBuilderInterface $builder, SubjectInterface $subject)
     {
-        if (null === $provider = $this->providerRegistry->getProviderBySubject($subject)) {
-            throw new \InvalidArgumentException("Invalid subject.");
-        }
-
         $source = $builder->getSource();
         if ($source instanceof EntitySource) {
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($provider, $subject) {
+            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($subject) {
                 $qb
                     ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.provider', ':provider'))
-                    ->setParameter('provider', $provider->getName())
                     ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.identifier', ':identifier'))
+                    ->setParameter('provider', $subject::getProviderName())
                     ->setParameter('identifier', $subject->getId());
             });
 
@@ -90,6 +70,8 @@ class SupplierProductType extends ResourceTableType
      */
     private function buildForSupplier(TableBuilderInterface $builder, SupplierInterface $supplier)
     {
+        $builder->setExportable(true);
+
         $source = $builder->getSource();
         if ($source instanceof EntitySource) {
             $source->setQueryBuilderInitializer(function (QueryBuilder $qb, $alias) use ($supplier) {
@@ -154,7 +136,6 @@ class SupplierProductType extends ResourceTableType
         }
 
         $builder
-            ->setExportable(true)
             ->addColumn('reference', CType\Column\TextType::class, [
                 'label'    => 'ekyna_core.field.reference',
                 'sortable' => true,
@@ -251,7 +232,7 @@ class SupplierProductType extends ResourceTableType
         $resolver
             ->setDefault('subject', null)
             ->setDefault('supplier', null)
-            ->setAllowedTypes('subject', ['null', ResourceInterface::class])
+            ->setAllowedTypes('subject', ['null', SubjectInterface::class])
             ->setAllowedTypes('supplier', ['null', SupplierInterface::class]);
     }
 }

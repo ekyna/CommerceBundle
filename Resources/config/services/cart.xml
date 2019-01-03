@@ -14,6 +14,14 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <!-- Google tracking event subscriber -->
+        <service id="ekyna_commerce.event_listener.google_tracking"
+                 class="Ekyna\Bundle\CommerceBundle\EventListener\GoogleTrackingEventSubscriber">
+            <argument type="service" id="ekyna_google.tracking.pool"/>
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <!-- Cart abstract provider -->
         <service id="ekyna_commerce.cart.abstract_provider"
                  class="Ekyna\Component\Commerce\Cart\Provider\AbstractCartProvider"
@@ -149,6 +157,7 @@
             <argument type="service" id="ekyna_commerce.payment.checkout_manager"/>
             <argument type="service" id="ekyna_commerce.payment_helper"/>
             <argument type="service" id="ekyna_commerce.sale_transformer"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
     </services>

@@ -41,6 +41,10 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.accounting.exporter')
                 ->export(new \DateTime($date));
         } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
 
             return $this->doRedirect();
@@ -63,6 +67,10 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.order.exporter')
                 ->exportDueOrders();
         } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
 
             return $this->doRedirect();
@@ -85,6 +93,10 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.order.exporter')
                 ->exportAllDueOrders();
         } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
 
             return $this->doRedirect();
@@ -107,6 +119,10 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.order.exporter')
                 ->exportRegularDueOrders();
         } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
 
             return $this->doRedirect();
@@ -129,6 +145,10 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.order.exporter')
                 ->exportOutstandingExpiredDueOrders();
         } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
 
             return $this->doRedirect();
@@ -151,6 +171,10 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.order.exporter')
                 ->exportOutstandingFallDueOrders();
         } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
 
             return $this->doRedirect();
@@ -173,6 +197,10 @@ class ExportController extends Controller
                 ->get('ekyna_commerce.order.exporter')
                 ->exportOutstandingPendingDueOrders();
         } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
             $this->addFlash($e->getMessage(), 'danger');
 
             return $this->doRedirect();

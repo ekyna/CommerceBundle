@@ -69,7 +69,7 @@ class SubjectChoiceType extends AbstractType
             /** @var SubjectIdentity $identity */
             $identity = $event->getData();
 
-            $hasIdentity = false;
+            $disabled = false;
             $subjectChoices = [];
             $subjectRequired = $options['required'];
 
@@ -80,9 +80,11 @@ class SubjectChoiceType extends AbstractType
 
                 $subjectChoices[(string)$subject] = $subject->getId();
                 $subjectRequired = true;
-            }
 
-            $disabled = $options['lock_mode'] && $hasIdentity;
+                if ($options['lock_mode']) {
+                    $disabled = true;
+                }
+            }
 
             $form
                 ->add('provider', ChoiceType::class, [
@@ -171,7 +173,7 @@ class SubjectChoiceType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'label'          => 'ekyna_commerce.subject.label',
+                'label'          => 'ekyna_commerce.subject.label.singular',
                 'lock_mode'      => false,
                 'data_class'     => SubjectIdentity::class,
                 'error_bubbling' => false,
