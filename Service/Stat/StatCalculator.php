@@ -152,18 +152,18 @@ class StatCalculator implements StatCalculatorInterface
                 'AVG(o.netTotal) as average',
             ])
             ->andWhere($ex->between('o.createdAt', ':from', ':to'))
-            ->andWhere($ex->in('o.state', ':state'))
             ->andWhere($ex->eq('o.sample', ':sample'))
+            ->andWhere($ex->in('o.state', ':state'))
             ->getQuery()
             ->useQueryCache(true)
             ->setParameter('from', $from, Type::DATETIME)
             ->setParameter('to', $to, Type::DATETIME)
+            ->setParameter('sample', false)
             ->setParameter('state', [
                 OrderStates::STATE_COMPLETED,
                 OrderStates::STATE_ACCEPTED,
                 OrderStates::STATE_PENDING,
             ])
-            ->setParameter('sample', false)
             ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
 
         if ($data) {
@@ -177,14 +177,16 @@ class StatCalculator implements StatCalculatorInterface
                 'details'  => [],
             ];
 
+            $qb = $this->getOrderRepository()->createQueryBuilder('o');
             $query = $qb
                 ->select([
                     'SUM(o.netTotal) as net',
                     'SUM(o.shipmentAmount) as shipping',
                 ])
                 ->andWhere($ex->between('o.createdAt', ':from', ':to'))
-                ->andWhere($ex->in('o.state', ':state'))
+                ->andWhere($ex->eq('o.sample', ':sample'))
                 ->andWhere($ex->eq('o.source', ':source'))
+                ->andWhere($ex->in('o.state', ':state'))
                 ->getQuery()
                 ->useQueryCache(true);
 
@@ -193,6 +195,7 @@ class StatCalculator implements StatCalculatorInterface
                     ->setParameter('from', $from, Type::DATETIME)
                     ->setParameter('to', $to, Type::DATETIME)
                     ->setParameter('source', $source)
+                    ->setParameter('sample', false)
                     ->setParameter('state', [
                         OrderStates::STATE_COMPLETED,
                         OrderStates::STATE_ACCEPTED,
