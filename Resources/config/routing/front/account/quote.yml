@@ -21,6 +21,7 @@ ekyna_commerce_account_quote_show:
     requirements:
         number: "[a-zA-Z0-9]+"
     methods: [GET]
+    options: {expose: true}
 
 ekyna_commerce_account_quote_voucher:
     path: /{number}/voucher
@@ -63,4 +64,3 @@ ekyna_commerce_account_quote_attachment_download:
         number: "[a-zA-Z0-9]+"
         id: \d+
     methods: [GET]
-

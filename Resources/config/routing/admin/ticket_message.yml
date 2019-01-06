@@ -1,0 +1,29 @@
+ekyna_commerce_ticket_message_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.ticket_message.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        ticketId: \d+
+    options: { expose: true }
+
+ekyna_commerce_ticket_message_admin_edit:
+    path: /{ticketMessageId}/edit
+    defaults: { _controller: "ekyna_commerce.ticket_message.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        ticketId: \d+
+        ticketMessageId: \d+
+    options: { expose: true }
+
+ekyna_commerce_ticket_message_admin_remove:
+    path: /{ticketMessageId}/remove
+    defaults: { _controller: "ekyna_commerce.ticket_message.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        ticketId: \d+
+        ticketMessageId: \d+
+    options: { expose: true }
+
+ekyna_commerce_ticket_attachment_admin:
+    resource: ticket_attachment.yml
+    prefix: /{ticketMessageId}/attachments

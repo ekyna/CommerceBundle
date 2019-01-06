@@ -65,7 +65,7 @@ define([
 
                 dialog.realize();
 
-                dialog.getModalBody().html(Templates['pick_relay_point.html.twig'].render());
+                dialog.getModalBody().html(Templates['@EkynaCommerce/Js/pick_relay_point.html.twig'].render());
 
                 $modalList = dialog.getModalBody().find('.rp-list');
                 $modalForm = dialog.getModalBody().find('.rp-form');
@@ -346,7 +346,7 @@ define([
                         if (pointMarkers[i].get('id') === number) {
                             pointMarkers[i].setIcon(selectedIcon);
                             infoWindow = new google.maps.InfoWindow({
-                                content: Templates['relay_point.html.twig'].render(point)
+                                content: Templates['@EkynaCommerce/Js/relay_point.html.twig'].render(point)
                             });
                             infoWindow.open(map, pointMarkers[i]);
 
@@ -366,7 +366,7 @@ define([
 
                 if (point) {
                     $input.val(point.number);
-                    $address.html(Templates['relay_point.html.twig'].render(point)).show();
+                    $address.html(Templates['@EkynaCommerce/Js/relay_point.html.twig'].render(point)).show();
                     $none.hide();
                 } else {
                     $input.val(null);
@@ -389,7 +389,7 @@ define([
                 });
 
                 queryXhr.done(function (response) {
-                    $modalList.html(Templates['relay_point_list.html.twig'].render(response));
+                    $modalList.html(Templates['@EkynaCommerce/Js/relay_point_list.html.twig'].render(response));
 
                     updateMapRelayPoints(response);
                 });

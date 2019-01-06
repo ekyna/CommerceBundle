@@ -1,0 +1,132 @@
+#commerce-support {
+    margin-bottom: 20px;
+
+    .ticket {
+        .panel-heading a:after {
+            font-family: 'Glyphicons Halflings';
+            content: "\e114";
+            float: right;
+            color: #686868;
+        }
+
+        .panel-heading a.collapsed:after {
+            content: "\e080";
+        }
+
+        p.panel-title {
+            > a {
+                display: block;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+
+            font-size: 14px;
+
+            span {
+                margin-right: 6px;
+            }
+
+            strong {
+                font-size: 16px;
+            }
+        }
+
+        span.field {
+            color: #999;
+            margin-right: 8px;
+        }
+
+        .controls {
+            display: block;
+            float: right;
+            overflow: hidden;
+            margin: 0;
+
+            > a,
+            > button {
+                margin-left: 6px;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+
+        .ticket-body {
+            border-bottom: 1px dotted #ddd;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+
+            > p {
+                margin-bottom: 0;
+
+                &.info {
+                    line-height: 24px;
+
+                    > a {
+                        margin-right: 6px;
+                    }
+                }
+            }
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+
+            > .head {
+                padding-left: 6px;
+                margin-bottom: 6px;
+
+                > strong, > em {
+                    font-size: 12px;
+                    line-height: 20px;
+                    margin-right: 8px;
+                }
+            }
+
+            > .content {
+                background: #f2f2f2;
+                border-radius: 4px;
+                padding: 6px 12px;
+                margin-bottom: 10px;
+
+                > p:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            > .table {
+                margin-bottom: 0;
+            }
+
+            &.customer {
+                margin-right: 10%;
+            }
+
+            &.admin {
+                background: #fafafa;
+                margin-left: 10%;
+
+                > .content {
+                    background: #e6e6e6;
+                }
+            }
+        }
+
+        .panel-footer {
+            button {
+                margin-left: 12px;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+}

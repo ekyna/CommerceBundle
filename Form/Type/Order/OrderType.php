@@ -30,7 +30,6 @@ class OrderType extends SaleType
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => 'ekyna_commerce.customer.field.in_charge',
                 'required' => false,
-                'roles'    => ['ROLE_ADMIN'],
             ])
             ->add('originCustomer', CustomerSearchType::class, [
                 'label'    => 'ekyna_commerce.sale.field.origin_customer',

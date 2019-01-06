@@ -63,9 +63,21 @@
     {%- endif -%}
 
     {# Attachments #}
-    {%- include '@EkynaCommerce/Account/Sale/attachments.html.twig' with {
-        'sale': quote, 'route_prefix': route_prefix, 'customer': customer
-    } only -%}
+    {%- if quote is sale_with_attachment -%}
+        {%- include '@EkynaCommerce/Account/Sale/attachments.html.twig' with {
+            'sale': quote, 'route_prefix': route_prefix
+        } only -%}
+    {%- endif -%}
+
+    {# Tickets #}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {{- 'ekyna_commerce.ticket.label.plural'|trans|raw -}}
+        </div>
+        <div class="panel-body">
+            {{- render_tickets(order, {'new': path('ekyna_commerce_account_ticket_new', {'quote': quote.number})}) -}}
+        </div>
+    </div>
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
@@ -73,10 +85,17 @@
     {% include '@EkynaCommerce/Account/Quote/_list.html.twig' with {
         'quotes': quotes, 'customer': customer
     } only %}
+
 {% endspaceless %}
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
 {% endblock %}

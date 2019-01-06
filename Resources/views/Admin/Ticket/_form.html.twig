@@ -1,0 +1,30 @@
+{% spaceless %}
+<ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+    <li class="active">
+        <a href="#ticket-general" id="toggle-general" data-toggle="tab">
+            {{- 'ekyna_core.field.general'|trans -}}
+        </a>
+    </li>
+</ul>
+<div class="panel-body form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form, {'global_errors': true}) }}
+    <div class="tab-content">
+        <div class="tab-pane active" id="ticket-general">
+            {{ form_row(form.subject) }}
+            {{ form_row(form.inCharge) }}
+            {{ form_row(form.customer) }}
+            {{ form_row(form.order) }}
+            {{ form_row(form.quote) }}
+            {% if form.message is defined %}
+                {{ form_row(form.message.content) }}
+                {% if form.message.notify is defined %}
+                    {{ form_widget(form.message.notify) }}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {{ form_rest(form) }}
+</div>
+{% endspaceless %}

@@ -1,0 +1,92 @@
+# Ticket
+ekyna_commerce_account_ticket_index:
+    path: ""
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Account/Ticket:index }
+    options:
+        _cms:
+            name: Mes tickets
+            parent: ekyna_user_account_index
+            position: 70
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false
+
+ekyna_commerce_account_ticket_new:
+    path: /new
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/Ticket:new }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_edit:
+    path: /{ticketId}/edit
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/Ticket:edit }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_remove:
+    path: /{ticketId}/remove
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/Ticket:remove }
+    requirements: { ticketId: \d+ }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_close:
+    path: /{ticketId}/close
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/Ticket:close }
+    requirements: { ticketId: \d+ }
+    options: { expose: true }
+
+# Message
+ekyna_commerce_account_ticket_message_new:
+    path: /{ticketId}/messages/new
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/TicketMessage:new }
+    requirements: { ticketId: \d+ }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_message_edit:
+    path: /{ticketId}/messages/{ticketMessageId}/edit
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/TicketMessage:edit }
+    requirements: { ticketId: \d+, ticketMessageId: \d+ }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_message_remove:
+    path: /{ticketId}/messages/{ticketMessageId}/remove
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/TicketMessage:remove }
+    requirements: { ticketId: \d+, ticketMessageId: \d+ }
+    options: { expose: true }
+
+# Attachment
+ekyna_commerce_account_ticket_attachment_new:
+    path: /{ticketId}/messages/{ticketMessageId}/attachments/new
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/TicketAttachment:new }
+    requirements: { ticketId: \d+, ticketMessageId: \d+ }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_attachment_edit:
+    path: /{ticketId}/messages/{ticketMessageId}/attachments/{ticketAttachmentId}/edit
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/TicketAttachment:edit }
+    requirements: { ticketId: \d+, ticketMessageId: \d+, ticketAttachmentId: \d+ }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_attachment_remove:
+    path: /{ticketId}/messages/{ticketMessageId}/attachments/{ticketAttachmentId}/remove
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/TicketAttachment:remove }
+    requirements: { ticketId: \d+, ticketMessageId: \d+, ticketAttachmentId: \d+ }
+    options: { expose: true }
+
+ekyna_commerce_account_ticket_attachment_download:
+    path: /{ticketId}/messages/{ticketMessageId}/attachments/{ticketAttachmentId}/download
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Account/TicketAttachment:download }
+    requirements: { ticketId: \d+, ticketMessageId: \d+, ticketAttachmentId: \d+ }
+    options: { expose: true }

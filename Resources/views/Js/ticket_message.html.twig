@@ -1,0 +1,69 @@
+<div class="message {{ message.admin ? 'admin' : 'customer' }}" data-id="{{ message.id }}">
+    <div class="head">
+        <p class="controls">
+            {% if message.attachment -%}
+            <button type="button" class="btn btn-xs btn-success attachment-new"
+               title="{{ trans.attachment }}">
+                <i class="fa fa-file"></i>
+            </button>
+            {%- endif %}
+            {% if message.edit -%}
+            <button type="button" class="btn btn-xs btn-warning message-edit" title="{{ trans.edit }}">
+                <i class="fa fa-pencil"></i>
+            </button>
+            {%- endif %}
+            {% if message.remove -%}
+            <button type="button" class="btn btn-xs btn-danger message-remove" title="{{ trans.remove }}">
+                <i class="fa fa-trash"></i>
+            </button>
+            {%- endif %}
+        </p>
+        <strong>{{ message.author }}</strong>
+        <em class="date">
+            {{ message.f_created_at }}
+            {% if message.updated_at > message.created_at %}({{ message.f_updated_at }}){% endif %}
+        </em>
+    </div>
+    <div class="content">
+        {{- message.content|raw -}}
+    </div>
+    <table class="table table-condensed table-hover">
+        <tbody>
+        {% for attachment in message.attachments -%}
+        <tr class="attachment" data-id="{{ attachment.id }}">
+            <td>
+                <a href="javascript: void(0)">
+                {% if attachment.title is not empty -%}
+                    {{ attachment.title }}
+                {%- else -%}
+                    {{ attachment.file }}
+                {%- endif %}
+                </a>
+            </td>
+            <td>
+                <em class="date">
+                    {{- attachment.f_created_at }}
+                    {% if attachment.updated_at > attachment.created_at %}({{ attachment.f_updated_at }}){% endif -%}
+                </em>
+            </td>
+            <td>
+                <span class="controls">
+                    <button type="button" class="btn btn-xs btn-default attachment-download" title="{{ trans.download }}">
+                        <i class="fa fa-download"></i>
+                    </button>
+                    {% if attachment.edit -%}
+                    <button type="button" class="btn btn-xs btn-warning attachment-edit" title="{{ trans.edit }}">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    {% endif %}
+                    {% if attachment.remove -%}
+                    <button type="button" class="btn btn-xs btn-danger attachment-remove" title="{{ trans.remove }}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    {%- endif %}
+                </span>
+            </td>
+        </tr>
+        {%- endfor %}
+    </table>
+</div>

@@ -178,6 +178,10 @@ ekyna_commerce:
                 invoice_name: Contact facturation
                 invoice_email: Email facturation
                 invoice_phone: Téléphone facturation
+        ticket:
+            title: Mes tickets
+            go_to_sale_details: >
+                Pour créer un nouveau ticket, veuillez vous rendre sur le détail d'une commande ou d'un devis.
         widget:
             title: Espace client
 
@@ -1630,3 +1634,61 @@ ekyna_commerce:
             notices: Mentions (facture)
         alert:
             no_item: Aucune règle de taxes configuré
+
+    ticket:
+        label:
+            singular: Ticket
+            plural: Tickets
+        header:
+            list: Tickets <small>Liste des tickets</small>
+            show: Détails du ticket <small>%name%</small>
+            new: Créer un nouveau ticket
+            edit: Modifier le ticket
+            remove: Supprimer le ticket
+            open: Ouvrir un nouveau ticket
+            close: Fermer le ticket
+        button:
+            list: Liste des tickets
+            show: Détail du ticket
+            new: Nouveau ticket
+            edit: Modifier le ticket
+            remove: Supprimer le ticket
+            open: Ouvrir un nouveau ticket
+            close: Fermer le ticket
+            answer: Ajouter une réponse
+        status:
+            opened: Ouvert
+            pending: En attente
+            closed: Fermé
+        field:
+            created_at: Créé le
+            updated_at: Modifié le
+        alert:
+            no_item: Aucun ticket configuré
+        message:
+            close_confirm: Confirmer la clôture du ticket.
+            remove_confirm: Confirmer la suppression du ticket.
+
+    ticket_message:
+        label:
+            singular: Message
+            plural: Messages
+        header:
+            new: Ajouter un nouveau message
+            edit: Modifier le message
+            remove: Supprimer le message
+        notify:
+            customer:
+                subject: "Service client %site_name%"
+                content: >
+                    <p>Vous avez reçu un nouveau message pour votre ticket <strong>%number%</strong>
+                    &laquo;<em>%subject%<em>&raquo;. Cliquez sur le lien suivant pour voir le message :</p>
+                    <p style="text-align:center"><a href="%url%" class="read-message">Voir le message</a>.</p>
+                    <p>Pour répondre à ce message, rendez-vous dans votre espace client.
+                    <u>Ne répondez pas à cet email</u>.</p>
+            admin:
+                subject: "Service client : nouveau messages"
+                content: Vous avez reçu de nouveaux messages dans les tickets qui vous sont assignés.
+
+        message:
+            remove_confirm: Confirmer la suppression du message.

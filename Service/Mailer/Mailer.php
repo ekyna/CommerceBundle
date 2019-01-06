@@ -2,21 +2,25 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
+use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerFactory;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer as ShipmentLabelRenderer;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer as SubjectLabelRenderer;
-use Ekyna\Bundle\CoreBundle\Service\SwiftMailer\ImapCopyPlugin;
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Common\Model\Notify;
+use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\ShipmentRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer as ShipmentLabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer as SubjectLabelRenderer;
+use Ekyna\Bundle\CoreBundle\Service\SwiftMailer\ImapCopyPlugin;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
-use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
@@ -165,7 +169,7 @@ class Mailer
 
         $message = new \Swift_Message();
         $message
-            ->setSubject('Bon de commande ' . $order->getNumber())// TODO translate with supplier locale
+            ->setSubject('Bon de commande ' . $order->getNumber()) // TODO translate with supplier locale
             ->setFrom($fromEmail, $fromName)
             ->setTo($submit->getEmails())
             ->setBody($submit->getMessage(), 'text/html');
@@ -198,6 +202,92 @@ class Mailer
         $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
 
         return 0 < $this->mailer->send($message);
+    }
+
+    /**
+     * Notifies the customer about the ticket message creation or update.
+     *
+     * @param TicketMessageInterface $message
+     *
+     * @return int
+     */
+    public function sendTicketMessageToCustomer(TicketMessageInterface $message)
+    {
+        if ($message->isCustomer()) {
+            throw new LogicException("Expected admin message.");
+        }
+
+        if (!$message->isNotify()) {
+            return 0;
+        }
+
+        if (empty($fromEmail = $this->settingsManager->getParameter('notification.no_reply'))) {
+            $fromEmail = $this->settingsManager->getParameter('notification.from_email');
+        }
+        $fromName = $this->settingsManager->getParameter('notification.from_name');
+
+        // TODO Translate with customer/user's locale
+
+        $subject = $this->translator->trans('ekyna_commerce.ticket_message.notify.customer.subject', [
+            '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
+        ]);
+
+        $body = $this->templating->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
+            'subject' => $subject,
+            'message' => $message,
+        ]);
+
+        $customer = $message->getTicket()->getCustomer();
+
+        $email = new \Swift_Message();
+        $email
+            ->setSubject($subject)
+            ->setFrom($fromEmail, $fromName)
+            ->setTo($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName())
+            ->setBody($body, 'text/html');
+
+        return 0 < $this->mailer->send($email);
+    }
+
+    /**
+     * Notifies the administrator about the ticket message creation or update.
+     *
+     * @param array         $messages
+     * @param UserInterface $admin
+     *
+     * @return int
+     */
+    public function sendTicketMessagesToAdmin(array $messages, UserInterface $admin = null)
+    {
+        foreach ($messages as $message) {
+            if (!$message instanceof TicketMessageInterface) {
+                throw new UnexpectedValueException("Expected instance of " . TicketMessageInterface::class);
+            }
+            if (!$message->isCustomer()) {
+                throw new LogicException("Expected customer messages.");
+            }
+        }
+
+        // TODO Translate with user's locale
+
+        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
+        $fromName = $this->settingsManager->getParameter('notification.from_name');
+
+        $subject = $this->translator->trans('ekyna_commerce.ticket_message.notify.admin.subject');
+
+        $body = $this->templating->render('@EkynaCommerce/Email/admin_ticket_message.html.twig', [
+            'subject'  => $subject,
+            'messages' => $messages,
+        ]);
+
+        $email = new \Swift_Message();
+        $email
+            ->setSubject($subject)
+            ->setFrom($fromEmail, $fromName)
+            ->setTo($admin->getEmail(), $admin->getFullName() ? $admin->getFullName() : null)
+            ->setBody($body, 'text/html');
+
+        return 0 < $this->mailer->send($email);
     }
 
     /**
@@ -395,7 +485,7 @@ class Mailer
      * @param string $toEmail
      * @param string $subject
      *
-     * @return integer
+     * @return int
      */
     protected function sendEmail($body, $subject, $toEmail = null)
     {

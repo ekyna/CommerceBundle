@@ -108,6 +108,14 @@
             <tag name="twig.extension"/>
         </service>
 
+        <!-- Support extension -->
+        <service id="ekyna_commerce.twig.support_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SupportExtension"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.ticket.renderer"/>
+            <tag name="twig.extension"/>
+        </service>
+
     </services>
 
 </container>

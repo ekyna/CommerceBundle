@@ -39,7 +39,7 @@ define(['jquery', 'ekyna-dispatcher', 'ekyna-modal', 'ekyna-commerce/templates',
     StockUnits.prototype.render = function ($tr, data) {
         var id = $tr.attr('id');
 
-        var content = Templates['stock_unit_rows.html.twig'].render({
+        var content = Templates['@EkynaCommerce/Js/stock_unit_rows.html.twig'].render({
             'prefix': this.prefix,
             'stock_units': data.stock_units
         });

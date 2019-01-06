@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Ekyna\Bundle\CommerceBundle\Search\CustomerRepository;
+use Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

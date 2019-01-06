@@ -65,6 +65,11 @@
                 {{ 'ekyna_core.field.informations'|trans }}
             </a>
         </li>
+        <li>
+            <a href="#quote-tickets" id="toggle-tickets" data-toggle="tab">
+                {{ 'ekyna_commerce.ticket.label.plural'|trans }}
+            </a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -144,6 +149,12 @@
                     'notifications': quote.notifications
                 } %}
             </div>
+            <div class="tab-pane" id="quote-tickets">
+                {{- render_tickets(quote, {
+                    'admin': true,
+                    'new': path('ekyna_commerce_ticket_admin_new', {'quote': quote.number})
+                }) -}}
+            </div>
         </div>
     </div>
 </div>
@@ -159,10 +170,12 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
 {% endblock stylesheets %}
 
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
     <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
+    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
 {% endblock javascripts %}

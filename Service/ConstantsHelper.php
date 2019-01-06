@@ -15,6 +15,7 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 use Ekyna\Component\Commerce\Stock\Model as Stock;
 use Ekyna\Component\Commerce\Supplier\Model as Supplier;
+use Ekyna\Component\Commerce\Support\Model as Support;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -634,6 +635,47 @@ class ConstantsHelper extends AbstractConstantsHelper
         }
 
         return $this->renderBadge($this->renderSupplierOrderStateLabel($stateOrSupplierOrder), $theme);
+    }
+
+    /**
+     * Renders the ticket state label.
+     *
+     * @param Support\TicketInterface|string $stateOrTicket
+     *
+     * @return string
+     */
+    public function renderTicketStateLabel($stateOrTicket)
+    {
+        if ($stateOrTicket instanceof Support\TicketInterface) {
+            $stateOrTicket = $stateOrTicket->getState();
+        }
+
+        if (Model\TicketStates::isValid($stateOrTicket)) {
+            return $this->renderLabel(Model\TicketStates::getLabel($stateOrTicket));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the ticket state badge.
+     *
+     * @param Support\TicketInterface|string $stateOrTicket
+     *
+     * @return string
+     */
+    public function renderTicketStateBadge($stateOrTicket)
+    {
+        if ($stateOrTicket instanceof Support\TicketInterface) {
+            $stateOrTicket = $stateOrTicket->getState();
+        }
+
+        $theme = 'default';
+        if (Model\TicketStates::isValid($stateOrTicket)) {
+            $theme = Model\TicketStates::getTheme($stateOrTicket);
+        }
+
+        return $this->renderBadge($this->renderTicketStateLabel($stateOrTicket), $theme);
     }
 
     /**

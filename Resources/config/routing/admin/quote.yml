@@ -19,6 +19,7 @@ ekyna_commerce_quote_admin_show:
     methods: [GET]
     requirements:
         quoteId: \d+
+    options: {expose: true}
 
 ekyna_commerce_quote_admin_summary:
     path: /{quoteId}/summary
@@ -26,6 +27,13 @@ ekyna_commerce_quote_admin_summary:
     methods: [GET]
     requirements:
         quoteId: \d+
+    options:
+        expose: true
+
+ekyna_commerce_quote_admin_search:
+    path: /search
+    defaults: { _controller: "ekyna_commerce.quote.controller:searchAction" }
+    methods: [GET]
     options:
         expose: true
 

@@ -1,24 +1,35 @@
-{% block widget_attributes -%}{% for key, value in attr %} {{ key }}="{{ value }}"{% endfor -%}{% endblock widget_attributes %}
+{%- block widget_attributes -%}{% for key, value in attr %} {{ key }}="{{ value }}"{% endfor -%}{% endblock widget_attributes -%}
 
-{% block phone_widget %}
-{% spaceless %}
-    {% set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) %}
+
+{%- block customer_widget -%}
+    {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
+    <div{{ block('widget_attributes') }}>
+    {%- if value -%}
+        <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': value.id}) }}" class="show-entity">
+            {{- customer|identity -}}
+        </a>
+    {%- else -%}
+        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+    {%- endif -%}
+    </div>
+{%- endblock customer_widget -%}
+
+
+{%- block phone_widget -%}
+    {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
         {%- if value is not empty -%}
-            {{ value|phone_number_format }}
+            {{- value|phone_number_format -}}
         {%- else -%}
             &nbsp;&nbsp;
         {%- endif -%}
     </div>
-{% endspaceless %}
-{% endblock phone_widget %}
+{%- endblock phone_widget -%}
 
 
-{% block vat_display_mode_widget %}
-{% spaceless %}
-    {% set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) %}
+{%- block vat_display_mode_widget -%}
+    {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
         <span class="label label-{{ theme }}">{{ value|trans }}</span>
     </div>
-{% endspaceless %}
-{% endblock vat_display_mode_widget %}
+{%- endblock vat_display_mode_widget -%}

@@ -1,0 +1,12 @@
+<div class="form-body borderless">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form, {'global_errors': true}) }}
+
+    {{ form_row(form.subject) }}
+    {% if form.message is defined %}
+        {{ form_row(form.message.content) }}
+    {% endif %}
+
+    {{ form_rest(form) }}
+</div>

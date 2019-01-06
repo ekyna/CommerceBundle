@@ -1,0 +1,55 @@
+<p class="controls">
+    {% if ticket.edit -%}
+    <button type="button" class="btn btn-xs btn-warning ticket-edit">
+        <i class="fa fa-pencil"></i> {{ trans.edit }}
+    </button>
+    {%- endif %}
+    {% if ticket.remove -%}
+    <button type="button" class="btn btn-xs btn-danger ticket-remove">
+        <i class="fa fa-trash"></i> {{ trans.remove }}
+    </button>
+    {%- endif %}
+</p>
+<p class="info">
+    {% if config.admin -%}
+    <span class="field">{{ trans.customer }}</span>
+    <a href="javascript:void(0)"
+        class="btn btn-xs btn-default customer-show"
+        data-summary='{"route": "ekyna_commerce_customer_admin_summary", "parameters": {"customerId": {{ ticket.customer.id }}}}'
+        data-id="{{ ticket.customer.id }}">
+        {% if ticket.customer.company is not empty -%}
+            <em>{{ ticket.customer.company }}</em> {{ ticket.customer.first_name }} {{ ticket.customer.last_name }}
+        {%- else -%}
+            {{ ticket.customer.first_name }} {{ ticket.customer.last_name }}
+        {%- endif %}
+    </a>
+    {% if ticket.in_charge is not empty -%}
+        <br><span class="field">{{ trans.in_charge }}</span> {{ ticket.in_charge }}
+    {%- endif %}
+    <br>
+    {% endif %}
+    <span class="date">
+        <span class="field">{{ trans.created_at }}</span>{{ ticket.f_created_at }}
+        {% if ticket.updated_at > ticket.created_at -%}
+            (<span class="field">{{ trans.updated_at }}</span> {{ ticket.f_updated_at }})
+        {%- endif %}
+    </span>
+    {% if ticket.orders is not empty -%}
+        <br><span class="field">{{ trans.orders }}</span>
+        {% for order in ticket.orders -%}
+        <a href="javascript:void(0)"
+           class="btn btn-xs btn-default order-show"
+           {% if config.admin %}data-summary='{"route": "ekyna_commerce_order_admin_summary", "parameters": {"orderId": {{ order.id }}}}'{% endif %}
+           data-id="{{ order.id }}">{{ order.number }}</a>
+        {%- endfor %}
+    {%- endif %}
+    {% if ticket.quotes is not empty -%}
+        <br><span class="field">{{ trans.quotes }}</span>
+        {% for quote in ticket.quotes -%}
+        <a href="javascript:void(0)"
+           class="btn btn-xs btn-default quote-show"
+           {% if config.admin %}data-summary='{"route": "ekyna_commerce_quote_admin_summary", "parameters": {"quoteId": {{ quote.id }}}}'{% endif %}
+           data-id="{{ quote.id }}">{{ quote.number }}</a>
+        {%- endfor %}
+    {%- endif %}
+</p>

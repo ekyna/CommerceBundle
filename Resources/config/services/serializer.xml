@@ -195,6 +195,54 @@
             <tag name="serializer.denormalizer"/>
         </service>
 
+        <!-- Ticket normalizer -->
+        <service id="ekyna_commerce.ticket.normalizer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <call method="setFormatter">
+                <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            </call>
+            <call method="setAuthorization">
+                <argument type="service" id="security.authorization_checker"/>
+            </call>
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
+            <tag name="serializer.normalizer" />
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Ticket message -->
+        <service id="ekyna_commerce.ticket_message.normalizer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketMessageNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <call method="setFormatter">
+                <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            </call>
+            <call method="setAuthorization">
+                <argument type="service" id="security.authorization_checker"/>
+            </call>
+            <tag name="serializer.normalizer" />
+            <tag name="serializer.denormalizer"/>
+        </service>
+
+        <!-- Attachment normalizer -->
+        <service id="ekyna_commerce.ticket_attachment.normalizer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketAttachmentNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <call method="setFormatter">
+                <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            </call>
+            <call method="setAuthorization">
+                <argument type="service" id="security.authorization_checker"/>
+            </call>
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
     </services>
 
 </container>

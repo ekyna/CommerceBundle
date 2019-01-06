@@ -19,6 +19,7 @@ ekyna_commerce_order_admin_show:
     methods: [GET]
     requirements:
         orderId: \d+
+    options: {expose: true}
 
 ekyna_commerce_order_admin_summary:
     path: /{orderId}/summary
@@ -26,6 +27,13 @@ ekyna_commerce_order_admin_summary:
     methods: [GET]
     requirements:
         orderId: \d+
+    options:
+        expose: true
+
+ekyna_commerce_order_admin_search:
+    path: /search
+    defaults: { _controller: "ekyna_commerce.order.controller:searchAction" }
+    methods: [GET]
     options:
         expose: true
 

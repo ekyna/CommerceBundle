@@ -1,7 +1,7 @@
 {% extends '@EkynaAdmin/Entity/Default/edit.html.twig' %}
 
 {% block title %}
-    <h1>{{ (resource_id ~ '.header.test')|trans({'%name%': resource})|raw }}</h1>
+    <h1>{{ (trans_prefix ~ '.header.test')|trans({'%name%': resource})|raw }}</h1>
 {% endblock title %}
 
 {% block main %}

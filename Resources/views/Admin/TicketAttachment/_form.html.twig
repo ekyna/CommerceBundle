@@ -1,0 +1,27 @@
+<div class="form-body borderless">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_errors(form, {'global_errors': true}) }}
+
+    {{ form_row(form.title) }}
+    {% if form.type is defined -%}
+        {{ form_row(form.type) }}
+    {%- endif %}
+    <div class="upload-widget">
+        {{ form_row(form.file) }}
+        {% if form.key is defined -%}
+            {{ form_row(form.key) }}
+        {%- endif %}
+        {% if form.rename is defined -%}
+            {{ form_row(form.rename) }}
+        {%- endif %}
+        {% if form.unlink is defined -%}
+            {{ form_row(form.unlink) }}
+        {%- endif %}
+    </div>
+    {% if form.internal is defined -%}
+        {{ form_row(form.internal) }}
+    {%- endif %}
+
+    {{ form_rest(form) }}
+</div>

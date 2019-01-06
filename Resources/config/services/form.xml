@@ -119,6 +119,11 @@
             <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.order_search.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderSearchType">
+            <argument>%ekyna_commerce.order.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.order_payment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType">
             <argument>%ekyna_commerce.order_payment.class%</argument>
@@ -163,6 +168,11 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType">
             <argument>%ekyna_commerce.quote.class%</argument>
             <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="ekyna_commerce.quote_search.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteSearchType">
+            <argument>%ekyna_commerce.quote.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote_payment.form_type"

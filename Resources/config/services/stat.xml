@@ -49,6 +49,15 @@
             <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_export"/>
         </service>
 
+        <!-- Dashboard support widget -->
+        <service id="ekyna_commerce.dashboard.support_widget"
+                 class="Ekyna\Bundle\CommerceBundle\Dashboard\SupportWidget">
+            <argument type="service" id="ekyna_commerce.ticket.repository"/>
+            <argument type="service" id="table.factory"/>
+            <argument type="service" id="request_stack"/>
+            <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_support"/>
+        </service>
+
     </services>
 
 </container>

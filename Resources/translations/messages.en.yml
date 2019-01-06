@@ -177,6 +177,10 @@ ekyna_commerce:
                 invoice_name: Billing full name
                 invoice_email: Billing email
                 invoice_phone: Billing phone number
+        ticket:
+            title: My tickets
+            go_to_sale_details: >
+                To create a new ticket, please go to the details of an order or a quote.
         widget:
             title: Customer area
 
@@ -1603,3 +1607,57 @@ ekyna_commerce:
             notices: Notices (invoice)
         alert:
             no_item: No tax rule configured.
+
+    ticket:
+        label:
+            singular: Ticket
+            plural: Tickets
+        header:
+            list: Tickets <small>List of the tickets</small>
+            show: Ticket details <small>%name%</small>
+            new: Create a new ticket
+            edit: Edit the ticket
+            remove: Edit the ticket
+            open: Open a new ticket
+            close: Close the ticket
+        button:
+            list: Tickets list
+            show: Ticket details
+            new: New ticket
+            edit: Edit the ticket
+            remove: Remove the ticket
+            open: Open a new ticket
+            close: Close the ticket
+            answer: Add an answer
+        status:
+            opened: Opened
+            pending: Pending
+            closed: Closed
+        alert:
+            no_item: No ticket configured.
+        message:
+            close_confirm: Confirm the ticket closing.
+            remove_confirm: Confirmer the ticket removal.
+
+    ticket_message:
+        label:
+            singular: Message
+            plural: Messages
+        header:
+            new: Add a new message
+            edit: Edit the message
+            remove: Delete the message
+        notify:
+            customer:
+                subject: "Support %site_name% : answer to your ticket"
+                content: >
+                    <p>You have a new message for your ticket <strong>%number%</strong> &laquo;<em>%subject%<em>&raquo;.
+                    Click on the following link to read the message:</p>
+                    <p style="text-align:center"><a href="%url%">See the message</a>.</p>
+                    <p>You can reply to this message in your customer area.
+                    <u>Do not reply to this email</u>.</p>
+            admin:
+                subject: "Customer service : new messages"
+                content: You have new messages for your assigned tickets.
+        message:
+            remove_confirm: Confirm the message removal.

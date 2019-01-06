@@ -1,0 +1,14 @@
+{%- if ticket.state != 'closed' -%}
+<div class="panel-footer">
+    <p class="text-center">
+        <button type="button" class="btn btn-sm btn-warning ticket-close">
+            <i class="fa fa-close"></i> {{ trans.close }}
+        </button>
+        {% if ticket.message -%}
+        <button type="button" class="btn btn-sm btn-success message-new">
+            <i class="fa fa-comment"></i> {{ trans.answer }}
+        </button>
+        {%- endif %}
+    </p>
+</div>
+{%- endif -%}

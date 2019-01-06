@@ -82,6 +82,10 @@ ekyna_commerce_tax_rule_admin:
     resource: "admin/tax_rule.yml"
     prefix:   /tax-rules
 
+ekyna_commerce_ticket_admin:
+    resource: "admin/ticket.yml"
+    prefix:   /tickets
+
 ekyna_commerce_export_admin:
     resource: "admin/export.yml"
     prefix:   /export

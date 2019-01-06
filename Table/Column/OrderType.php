@@ -2,12 +2,16 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Bundle\TableBundle\Extension\Type\Column\AnchorType;
+use Doctrine\Common\Collections\Collection;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
+use Ekyna\Component\Table\Extension\Core\Type\Column\ColumnType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class OrderType
@@ -17,16 +21,59 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class OrderType extends AbstractColumnType
 {
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
+
+    /**
+     * Constructor.
+     *
+     * @param UrlGeneratorInterface $urlGenerator
+     */
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
      * @inheritDoc
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $view->vars['attr'] = array_replace($view->vars['attr'], [
-            'data-summary' => json_encode([
+        $orders = $row->getData($column->getConfig()->getPropertyPath());
+
+        if ($orders instanceof Collection) {
+            $orders = $orders->toArray();
+        } elseif (!is_array($orders)) {
+            $orders = [$orders];
+        }
+
+        $output = '';
+
+        foreach ($orders as $order) {
+            if (!$order instanceof OrderInterface) {
+                continue;
+            }
+
+            $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
+                'orderId' => $order->getId(),
+            ]);
+
+            $summary = json_encode([
                 'route'      => 'ekyna_commerce_order_admin_summary',
-                'parameters' => ['orderId' => $row->getData('order')->getId()],
-            ]),
-        ]);
+                'parameters' => ['orderId' => $order->getId()],
+            ]);
+
+            $output .= sprintf(
+                '<a href="%s" data-summary=\'%s\'>%s</a> ',
+                $href,
+                $summary,
+                $order->getNumber()
+            );
+        }
+
+        $view->vars['value'] = $output;
     }
 
     /**
@@ -35,12 +82,21 @@ class OrderType extends AbstractColumnType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label'                => 'ekyna_commerce.order.label.singular',
-            'property_path'        => 'order.number',
-            'route_name'           => 'ekyna_commerce_order_admin_show',
-            'route_parameters_map' => [
-                'orderId' => 'order.id',
-            ],
+            'multiple'      => false,
+            'label'         => function (Options $options, $value) {
+                if ($value) {
+                    return $value;
+                }
+
+                return 'ekyna_commerce.order.label.' . ($options['multiple'] ? 'plural' : 'singular');
+            },
+            'property_path' => function (Options $options, $value) {
+                if ($value) {
+                    return $value;
+                }
+
+                return $options['multiple'] ? 'orders' : 'order';
+            },
         ]);
     }
 
@@ -49,7 +105,7 @@ class OrderType extends AbstractColumnType
      */
     public function getBlockPrefix()
     {
-        return 'anchor';
+        return 'text';
     }
 
     /**
@@ -57,6 +113,6 @@ class OrderType extends AbstractColumnType
      */
     public function getParent()
     {
-        return AnchorType::class;
+        return ColumnType::class;
     }
 }

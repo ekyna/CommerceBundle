@@ -72,12 +72,22 @@
         } only -%}
     {% endif %}
 
+    {# Tickets #}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {{- 'ekyna_commerce.ticket.label.plural'|trans|raw -}}
+        </div>
+        <div class="panel-body">
+            {{- render_tickets(order, {'new': path('ekyna_commerce_account_ticket_new', {'order': order.number})}) -}}
+        </div>
+    </div>
+
     <br><br>
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
-    {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
+    {%- include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer
-    } only %}
+    } only -%}
 
 {% endspaceless %}
 {% endblock %}
@@ -85,4 +95,10 @@
 {% block stylesheets %}
     {{- parent() -}}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
 {% endblock %}

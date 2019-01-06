@@ -66,6 +66,11 @@ class AccountMenuSubscriber implements EventSubscriberInterface
         $menu->addChild('ekyna_commerce.account.address.title', [
             'route' => 'ekyna_commerce_account_address_index',
         ]);
+
+        // Tickets
+        $menu->addChild('ekyna_commerce.account.ticket.title', [
+            'route' => 'ekyna_commerce_account_ticket_index',
+        ]);
     }
 
     /**

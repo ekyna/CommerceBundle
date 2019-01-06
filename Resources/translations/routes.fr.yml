@@ -34,3 +34,5 @@ ekyna_commerce_account_order_invoice_download: /mon-compte/commandes/{number}/fa
 ekyna_commerce_account_invoice_index: /mon-compte/factures
 ekyna_commerce_account_invoice_show: /mon-compte/factures/{number}
 ekyna_commerce_account_invoice_download: /mon-compte/factures/{number}/telecharger.{_format}
+
+ekyna_commerce_account_ticket_index: /mon-compte/tickets

@@ -23,11 +23,11 @@ class CustomerSearchType extends AbstractType
     /**
      * Constructor.
      *
-     * @param string $customerClass
+     * @param string $class
      */
-    public function __construct($customerClass)
+    public function __construct(string $class)
     {
-        $this->customerClass = $customerClass;
+        $this->customerClass = $class;
     }
 
     /**
@@ -37,7 +37,13 @@ class CustomerSearchType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'label'    => 'ekyna_commerce.customer.label.singular',
+                'label'    => function (Options $options, $value) {
+                    if (null !== $value) {
+                        return $value;
+                    }
+
+                    return 'ekyna_commerce.customer.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                },
                 'class'    => $this->customerClass,
                 'route'    => 'ekyna_commerce_customer_admin_search',
                 'required' => false,

@@ -3,7 +3,7 @@
 {% set supplierOrder = _context[resource_name] %}
 
 {% block title %}
-    <h1>{{ (resource_id ~ '.header.submit')|trans({'%name%': supplierOrder})|raw }}</h1>
+    <h1>{{ (trans_prefix ~ '.header.submit')|trans({'%name%': supplierOrder})|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}

@@ -1,0 +1,17 @@
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
+
+{% block main %}
+    {{ render_ticket(ticket, {
+        'admin': true
+    }) }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+{% endblock %}

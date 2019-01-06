@@ -50,15 +50,13 @@ class StockAssignmentNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($assignment, $format, $context);
 
-        $groups = isset($context['groups']) ? (array)$context['groups'] : [];
-
         $actions = [];
 
-        if (in_array('StockAssignment', $groups)) {
+        if ($this->contextHasGroup('StockAssignment', $context)) {
             $data = array_replace($data, [
                 'ready'   => $assignment->isFullyShipped() || $assignment->isFullyShippable(),
             ]);
-        } elseif (in_array('StockView', $groups)) {
+        } elseif ($this->contextHasGroup('StockView', $context)) {
             $order = $assignment->getSaleItem()->getSale();
 
             $actions[] = [

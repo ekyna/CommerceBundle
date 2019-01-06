@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekyna\Bundle\CommerceBundle\Search;
+namespace Ekyna\Bundle\CommerceBundle\Service\Search;
 
 use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
 use Elastica\Query;
@@ -8,7 +8,7 @@ use Elastica\Filter;
 
 /**
  * Class CustomerRepository
- * @package Ekyna\Bundle\CommerceBundle\Search
+ * @package Ekyna\Bundle\CommerceBundle\Service\Search
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
 class CustomerRepository extends ResourceRepository

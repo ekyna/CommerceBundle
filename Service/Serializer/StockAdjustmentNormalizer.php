@@ -50,9 +50,7 @@ class StockAdjustmentNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($adjustment, $format, $context);
 
-        $groups = isset($context['groups']) ? (array)$context['groups'] : [];
-
-        if (in_array('StockView', $groups)) {
+        if ($this->contextHasGroup('StockView', $context)) {
             $actions = [
                 [
                     'label' => '<i class="fa fa-pencil"></i>',

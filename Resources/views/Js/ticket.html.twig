@@ -1,0 +1,36 @@
+{%- if config.standalone %}<div id="commerce-support" data-trans="{{ trans|json_encode }}" data-config="{{ config|json_encode }}">{% endif -%}
+<div class="ticket panel panel-default" id="ticket-{{ ticket.id }}" data-id="{{ ticket.id }}">
+    <div class="ticket-header panel-heading" role="tab" id="ticket-head-{{ ticket.id }}">
+        {%- include "@EkynaCommerce/Js/ticket_header.html.twig" with {
+            'ticket': ticket, 'config': config, 'trans': trans
+        } only -%}
+    </div>
+    {%- if not config.standalone -%}
+    <div aria-labelledby="ticket-head-{{ ticket.id }}"
+         class="panel-collapse collapse{% if config.standalone or (ticket.expanded is defined and ticket.expanded) %} in{% endif %}"
+         id="toggle-ticket-{{ ticket.id }}" role="tabpanel">
+    {%- endif -%}
+    <div class="panel-body">
+        <div class="ticket-body">
+            {% include "@EkynaCommerce/Js/ticket_body.html.twig" with {
+                'ticket': ticket, 'config': config, 'trans': trans
+            } only %}
+        </div>
+        <div class="messages">
+        {%- for message in ticket.messages -%}
+            {%- include "@EkynaCommerce/Js/ticket_message.html.twig" with {
+                'message': message, 'config': config, 'trans': trans
+            } only -%}
+        {%- endfor -%}
+        </div>
+    </div>
+    <div class="ticket-footer">
+        {%- include "@EkynaCommerce/Js/ticket_footer.html.twig" with {
+            'ticket': ticket, 'config': config, 'trans': trans
+        } only -%}
+    </div>
+    {%- if not config.standalone -%}
+    </div>
+    {%- endif -%}
+</div>
+{%- if config.standalone %}</div>{% endif -%}

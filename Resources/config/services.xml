@@ -26,6 +26,7 @@
         <import resource="services/subject.xml"/>
         <import resource="services/supplier.xml"/>
         <import resource="services/table.xml"/>
+        <import resource="services/ticket.xml"/>
         <import resource="services/twig.xml"/>
         <import resource="services/validators.xml"/>
         <import resource="services/view.xml"/>
@@ -77,6 +78,20 @@
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
         </service>
 
+        <!-- Security voters -->
+        <service id="ekyna_commerce.security.ticket_voter"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Security\TicketVoter">
+            <tag name="security.voter"/>
+        </service>
+        <service id="ekyna_commerce.security.ticket_message_voter"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Security\TicketMessageVoter">
+            <tag name="security.voter"/>
+        </service>
+        <service id="ekyna_commerce.security.ticket_attachment_voter"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Security\TicketAttachmentVoter">
+            <tag name="security.voter"/>
+        </service>
+
         <!-- Load metadata listener -->
         <service id="ekyna_commerce.doctrine.orm.listener.load_metadata_listener"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Listener\LoadMetadataListener"
@@ -99,6 +114,10 @@
         </service>
 
         <!-- Show types -->
+        <service id="ekyna_commerce.show.customer_type"
+                 class="Ekyna\Bundle\CommerceBundle\Show\Type\CustomerType">
+            <tag name="ekyna_admin.show.type" alias="customer"/>
+        </service>
         <service id="ekyna_commerce.show.phone_type"
                  class="Ekyna\Bundle\CommerceBundle\Show\Type\PhoneType">
             <tag name="ekyna_admin.show.type" alias="phone"/>

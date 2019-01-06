@@ -206,7 +206,7 @@ class Widget {
             icon: '> a > span',
             button: '> a.dropdown-toggle',
             dropdown: '> div.dropdown-menu',
-            widget_template: Templates['widget.html.twig'],
+            widget_template: Templates['@EkynaCommerce/Js/widget.html.twig'],
             debug: false
         });
 

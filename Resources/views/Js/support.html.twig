@@ -1,0 +1,22 @@
+<div id="commerce-support" data-trans="{{ trans|json_encode }}" data-config="{{ config|json_encode }}">
+    <div class="tickets">
+    {% for ticket in tickets -%}
+        {%- include "@EkynaCommerce/Js/ticket.html.twig" with {
+            'ticket': ticket,
+            'config': config,
+            'trans': trans,
+            'loop': loop
+        } only -%}
+    {%- endfor -%}
+    </div>
+    <div class="alert alert-info no-tickets"{% if 0 < tickets|length %} style="display: none;"{% endif %}>
+        <p>{{ trans.no_ticket }}</p>
+    </div>
+    {% if config.new is not empty -%}
+    <div class="text-center">
+        <button type="button" data-url="{{ config.new }}" class="btn btn-primary btn-sm ticket-new">
+            {{ 'ekyna_commerce.ticket.button.open'|trans }}
+        </button>
+    </div>
+    {%- endif %}
+</div>

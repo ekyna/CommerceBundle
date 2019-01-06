@@ -20,6 +20,13 @@ module.exports = function (grunt, options) {
             options: {
                 spawn: false
             }
+        },
+        commerce_twig: {
+            files: ['src/Ekyna/Bundle/CommerceBundle/Resources/views/**/*.twig'],
+            tasks: ['twig:commerce'],
+            options: {
+                spawn: false
+            }
         }
     }
 };

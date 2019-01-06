@@ -27,7 +27,6 @@ class QuoteType extends SaleType
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => 'ekyna_commerce.customer.field.in_charge',
                 'required' => false,
-                'roles'    => ['ROLE_ADMIN'],
             ])
             ->add('expiresAt', DateTimeType::class, [
                 'label'    => 'ekyna_core.field.expires_at',

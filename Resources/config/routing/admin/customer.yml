@@ -19,6 +19,7 @@ ekyna_commerce_customer_admin_show:
     methods: [GET]
     requirements:
         customerId: \d+
+    options: {expose: true}
 
 ekyna_commerce_customer_admin_edit:
     path: /{customerId}/edit

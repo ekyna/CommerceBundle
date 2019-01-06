@@ -1,0 +1,50 @@
+ekyna_commerce_ticket_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.ticket.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_ticket_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.ticket.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_ticket_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.ticket.controller:newAction" }
+    methods: [GET|POST]
+    options: { expose: true }
+
+ekyna_commerce_ticket_admin_show:
+    path: /{ticketId}/show
+    defaults: { _controller: "ekyna_commerce.ticket.controller:showAction" }
+    methods: [GET]
+    requirements:
+        ticketId: \d+
+
+ekyna_commerce_ticket_admin_edit:
+    path: /{ticketId}/edit
+    defaults: { _controller: "ekyna_commerce.ticket.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        ticketId: \d+
+    options: { expose: true }
+
+ekyna_commerce_ticket_admin_close:
+    path: /{ticketId}/close
+    defaults: { _controller: "ekyna_commerce.ticket.controller:closeAction" }
+    methods: [GET|POST]
+    requirements:
+        ticketId: \d+
+    options: { expose: true }
+
+ekyna_commerce_ticket_admin_remove:
+    path: /{ticketId}/remove
+    defaults: { _controller: "ekyna_commerce.ticket.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        ticketId: \d+
+    options: { expose: true }
+
+ekyna_commerce_ticket_message_admin:
+    resource: ticket_message.yml
+    prefix: /{ticketId}/messages

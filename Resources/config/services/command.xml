@@ -21,6 +21,16 @@
             <tag name="console.command"/>
         </service>
 
+        <!-- Ticket message notify command -->
+        <service id="ekyna_commerce.command.ticket_message.notify"
+                 class="Ekyna\Bundle\CommerceBundle\Command\SupportNotifyCommand">
+            <argument type="service" id="ekyna_commerce.ticket_message.repository"/>
+            <argument type="service" id="ekyna_admin.user.repository"/>
+            <argument type="service" id="ekyna_commerce.ticket_message.manager"/>
+            <argument type="service" id="ekyna_commerce.mailer"/>
+            <tag name="console.command"/>
+        </service>
+
     </services>
 
 </container>

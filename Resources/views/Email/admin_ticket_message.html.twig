@@ -1,0 +1,41 @@
+{% extends "email.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style type="text/css">
+    table { border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; width: 100% }
+    td, th { font-size: 13px; padding: 2px 4px; border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
+    p { margin-bottom: 10px; }
+</style>
+{% endblock stylesheets %}
+
+{% block subject %}{{ subject|raw }}{% endblock subject %}
+
+{% block body %}
+{% spaceless %}
+    {{ 'ekyna_commerce.ticket_message.notify.admin.content'|trans|raw }}
+    <table border="0" cellpadding="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Ticket</th>
+            <th>Message</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for message in messages -%}
+        <tr>
+            <td>
+                <a href="{{ absolute_url(path('ekyna_commerce_ticket_admin_show', {'ticketId': message.ticket.id})) }}">
+                    {{- message.ticket.number -}}
+                </a>
+            </td>
+            <td>
+                {{- message.content|raw -}}
+            </td>
+        </tr>
+        {%- endfor %}
+        </tbody>
+    </table>
+    {{- get_setting('commerce.email_signature')|raw -}}
+{% endspaceless %}
+{% endblock body %}

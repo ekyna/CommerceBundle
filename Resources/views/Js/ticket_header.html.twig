@@ -1,0 +1,12 @@
+<p class="panel-title">
+    {% if not config.standalone -%}
+    <a aria-controls="#toggle-ticket-{{ ticket.id }}" aria-expanded="true" data-parent="#support-tickets"
+       data-toggle="collapse" href="#toggle-ticket-{{ ticket.id }}" role="button">
+    {% endif -%}
+        {{ ticket.state_badge|raw }}
+        <span>{{ ticket.number }}</span>
+        <strong>{{ ticket.subject }}</strong>
+    {% if not config.standalone -%}
+    </a>
+    {%- endif %}
+</p>

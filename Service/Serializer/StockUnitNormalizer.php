@@ -51,9 +51,7 @@ class StockUnitNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($unit, $format, $context);
 
-        $groups = isset($context['groups']) ? (array)$context['groups'] : [];
-
-        if (in_array('StockView', $groups) || in_array('StockAssignment', $groups)) {
+        if ($this->contextHasGroup(['StockView', 'StockAssignment'], $context)) {
             $translator = $this->constantHelper->getTranslator();
 
             if (null === $eda = $data['eda']) {
@@ -62,7 +60,7 @@ class StockUnitNormalizer extends BaseNormalizer
 
             $actions = [];
 
-            if (in_array('StockView', $groups)) {
+            if ($this->contextHasGroup('StockView', $context)) {
                 if (null !== $supplierOrderItem = $unit->getSupplierOrderItem()) {
                     $supplierOrder = $supplierOrderItem->getOrder();
 

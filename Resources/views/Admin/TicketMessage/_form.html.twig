@@ -1,0 +1,6 @@
+<div class="form-body borderless">
+    {{ form_widget(form.content, {'label_col': 0, 'widget_col': 0}) }}
+    {% if form.notify is defined %}
+        {{ form_widget(form.notify, {'label_col': 0, 'widget_col': 0}) }}
+    {% endif %}
+</div>

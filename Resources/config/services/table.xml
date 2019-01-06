@@ -44,6 +44,13 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Order(s) column type -->
+        <service id="ekyna_commerce.order.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\OrderType">
+            <argument type="service" id="router"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Order state column type -->
         <service id="ekyna_commerce.order_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleStateType">
@@ -71,6 +78,13 @@
         <service id="ekyna_commerce.payment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\PaymentStateType">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Quote(s) column type -->
+        <service id="ekyna_commerce.quote.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\QuoteType">
+            <argument type="service" id="router"/>
             <tag name="table.column_type"/>
         </service>
 
@@ -207,6 +221,13 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Ticket state column type -->
+        <service id="ekyna_commerce.ticket_state.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\TicketStateType">
+            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Vat display mode column type -->
         <service id="ekyna_commerce.vat_display_mode.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\VatDisplayModeType">
@@ -220,6 +241,13 @@
             <argument>%ekyna_commerce.supplier_product.class%</argument>
             <argument>%ekyna_commerce.supplier.class%</argument>
             <tag name="table.type"/>
+        </service>
+
+        <!-- Customer(s) filter type -->
+        <service id="ekyna_commerce.customer.filter_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\CustomerType">
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="table.filter_type"/>
         </service>
 
         <!-- In charge filter type -->
@@ -237,6 +265,13 @@
             <tag name="table.filter_type"/>
         </service>
 
+        <!-- Order(s) filter type -->
+        <service id="ekyna_commerce.order.filter_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\OrderType">
+            <argument>%ekyna_commerce.order.class%</argument>
+            <tag name="table.filter_type"/>
+        </service>
+
         <!-- Order tags filter type -->
         <service id="ekyna_commerce.sale.tags.filter_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Filter\SaleTagsType">
@@ -249,6 +284,13 @@
         <service id="ekyna_commerce.sale.subject.filter_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Filter\SaleSubjectType">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
+            <tag name="table.filter_type"/>
+        </service>
+
+        <!-- Quote(s) filter type -->
+        <service id="ekyna_commerce.quote.filter_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Filter\QuoteType">
+            <argument>%ekyna_commerce.quote.class%</argument>
             <tag name="table.filter_type"/>
         </service>
 

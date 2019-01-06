@@ -64,6 +64,11 @@
                 {{ 'ekyna_commerce.shipment.label.plural'|trans }}
             </a>
         </li>
+        <li>
+            <a href="#customer-tickets" id="toggle-tickets" data-toggle="tab">
+                {{ 'ekyna_commerce.ticket.label.plural'|trans }}
+            </a>
+        </li>
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -338,7 +343,23 @@
                 </div>
                 {{ ekyna_table_render(shipments) }}
             </div>
+            <div class="tab-pane" id="customer-tickets">
+                {{- render_tickets(customer, {
+                    'admin': true,
+                    'new': path('ekyna_commerce_ticket_admin_new')
+                }) -}}
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+{% endblock javascripts %}
