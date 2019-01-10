@@ -64,11 +64,13 @@
                 {{ 'ekyna_commerce.shipment.label.plural'|trans }}
             </a>
         </li>
+        {% if support_enabled() -%}
         <li>
             <a href="#customer-tickets" id="toggle-tickets" data-toggle="tab">
                 {{ 'ekyna_commerce.ticket.label.plural'|trans }}
             </a>
         </li>
+        {%- endif %}
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -343,12 +345,14 @@
                 </div>
                 {{ ekyna_table_render(shipments) }}
             </div>
+            {% if support_enabled() -%}
             <div class="tab-pane" id="customer-tickets">
-                {{- render_tickets(customer, {
+                {{- support_tickets(customer, {
                     'admin': true,
                     'new': path('ekyna_commerce_ticket_admin_new')
                 }) -}}
             </div>
+            {%- endif %}
         </div>
     </div>
 </div>

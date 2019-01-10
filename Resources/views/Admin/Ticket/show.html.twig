@@ -1,9 +1,9 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
 {% block main %}
-    {{ render_ticket(ticket, {
+    {{- support_ticket(ticket, {
         'admin': true
-    }) }}
+    }) -}}
 {% endblock %}
 
 {% block stylesheets %}

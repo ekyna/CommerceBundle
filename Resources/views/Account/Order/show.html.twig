@@ -73,14 +73,16 @@
     {% endif %}
 
     {# Tickets #}
+    {% if support_enabled() -%}
     <div class="panel panel-default">
         <div class="panel-heading">
             {{- 'ekyna_commerce.ticket.label.plural'|trans|raw -}}
         </div>
         <div class="panel-body">
-            {{- render_tickets(order, {'new': path('ekyna_commerce_account_ticket_new', {'order': order.number})}) -}}
+            {{- support_tickets(order, {'new': path('ekyna_commerce_account_ticket_new', {'order': order.number})}) -}}
         </div>
     </div>
+    {%- endif %}
 
     <br><br>
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>

@@ -58,6 +58,9 @@
         <service id="ekyna_commerce.account.menu_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\AccountMenuSubscriber">
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            <argument type="collection">
+                <argument key="support">%ekyna_commerce.support.enabled%</argument>
+            </argument>
             <tag name="kernel.event_subscriber"/>
         </service>
 

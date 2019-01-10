@@ -16,15 +16,24 @@ class SupportExtension extends \Twig_Extension
      */
     private $renderer;
 
+    /**
+     * @var array
+     */
+    private $config;
+
 
     /**
      * Constructor.
      *
      * @param TicketRenderer $renderer
+     * @param array          $config
      */
-    public function __construct(TicketRenderer $renderer)
+    public function __construct(TicketRenderer $renderer, array $config = [])
     {
         $this->renderer = $renderer;
+        $this->config = array_replace([
+            'enabled' => true,
+        ], $config);
     }
 
     /**
@@ -34,15 +43,29 @@ class SupportExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction(
-                'render_ticket',
+                'support_enabled',
+                [$this, 'isSupportEnabled']
+            ),
+            new \Twig_SimpleFunction(
+                'support_ticket',
                 [$this->renderer, 'renderTicket'],
                 ['is_safe' => ['html']]
             ),
             new \Twig_SimpleFunction(
-                'render_tickets',
+                'support_tickets',
                 [$this->renderer, 'renderTickets'],
                 ['is_safe' => ['html']]
             ),
         ];
+    }
+
+    /**
+     * Returns whether support is enabled.
+     *
+     * @return bool
+     */
+    public function isSupportEnabled()
+    {
+        return $this->config['enabled'];
     }
 }

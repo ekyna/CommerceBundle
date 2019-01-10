@@ -22,11 +22,11 @@ ekyna_commerce_account_invoice:
     resource: "account/invoice.yml"
     prefix:   /invoices
 
-ekyna_commerce_account_ticket:
-    resource: "account/ticket.yml"
-    prefix:   /tickets
-
 ekyna_commerce_account_payment_status:
     path: /payment/status
     defaults: { _controller: "ekyna_commerce.controller.account.payment:statusAction" }
     methods: [GET]
+
+ekyna_commerce_account_loader:
+    resource: .
+    type: commerce_account

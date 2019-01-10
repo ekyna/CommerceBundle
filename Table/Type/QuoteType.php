@@ -61,6 +61,10 @@ class QuoteType extends ResourceTableType
 
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
+            ->addColumn('flags', Type\Column\SaleFlagsType::class, [
+                'property_path' => false,
+                'position'      => 5,
+            ])
             ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.number',
                 'route_name'           => 'ekyna_commerce_quote_admin_show',

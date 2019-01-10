@@ -65,11 +65,13 @@
                 {{ 'ekyna_core.field.informations'|trans }}
             </a>
         </li>
+        {% if support_enabled() -%}
         <li>
             <a href="#quote-tickets" id="toggle-tickets" data-toggle="tab">
                 {{ 'ekyna_commerce.ticket.label.plural'|trans }}
             </a>
         </li>
+        {%- endif %}
     </ul>
     <div class="show-body">
         <div class="tab-content">
@@ -149,12 +151,14 @@
                     'notifications': quote.notifications
                 } %}
             </div>
+            {% if support_enabled() -%}
             <div class="tab-pane" id="quote-tickets">
-                {{- render_tickets(quote, {
+                {{- support_tickets(quote, {
                     'admin': true,
                     'new': path('ekyna_commerce_ticket_admin_new', {'quote': quote.number})
                 }) -}}
             </div>
+            {%- endif %}
         </div>
     </div>
 </div>

@@ -31,6 +31,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureDocument($config['document'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
+        $this->configureSupport($config['support'], $container);
         $this->configureSaleFactory($container);
     }
 
@@ -141,6 +142,21 @@ class EkynaCommerceExtension extends AbstractExtension
         $container
             ->getDefinition('ekyna_commerce.availability_helper')
             ->replaceArgument(2, $availability['in_stock_limit']);
+    }
+
+    /**
+     * Configures the support.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureSupport(array $config, ContainerBuilder $container)
+    {
+        $container->setParameter('ekyna_commerce.support.enabled', $config['enabled']);
+
+        $container
+            ->getDefinition('ekyna_commerce.twig.support_extension')
+            ->replaceArgument(1, $config);
     }
 
     /**

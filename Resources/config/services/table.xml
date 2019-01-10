@@ -88,6 +88,13 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Sale flags column type -->
+        <service id="ekyna_commerce.sale_flags.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleFlagsType">
+            <argument type="service" id="ekyna_commerce.common.renderer"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Shipment state column type -->
         <service id="ekyna_commerce.shipment_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\ShipmentStateType">

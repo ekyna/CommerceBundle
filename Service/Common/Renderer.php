@@ -7,6 +7,7 @@ use Ekyna\Bundle\CoreBundle\Model\UiButton;
 use Ekyna\Bundle\CoreBundle\Service\Ui\UiRenderer;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -94,5 +95,28 @@ class Renderer
         }
 
         return $output;
+    }
+
+    /**
+     * Renders the sale flags.
+     *
+     * @param SaleInterface $sale
+     *
+     * @return string
+     */
+    public function renderSaleFlags(SaleInterface $sale)
+    {
+        $flags = '';
+
+        if (SaleSources::SOURCE_WEBSITE === $sale->getSource()) {
+            $flags .= '<i class="fa fa-sitemap"></i>';
+        } elseif (SaleSources::SOURCE_COMMERCIAL === $sale->getSource()) {
+            $flags .= '<i class="fa fa-briefcase"></i>';
+        }
+        if (!empty($sale->getComment())) {
+            $flags .= '<i class="fa fa-comment"></i>';
+        }
+
+        return $flags;
     }
 }

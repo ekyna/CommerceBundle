@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface
         $this->addDocumentSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
+        $this->addSupportSection($rootNode);
         $this->addPoolsSection($rootNode);
 
         return $treeBuilder;
@@ -269,6 +270,21 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `support` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addSupportSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('support')
+                    ->canBeDisabled()
                 ->end()
             ->end();
     }

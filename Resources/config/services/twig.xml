@@ -113,6 +113,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\SupportExtension"
                  public="false">
             <argument type="service" id="ekyna_commerce.ticket.renderer"/>
+            <argument type="collection"/><!-- Replace by DI extension -->
             <tag name="twig.extension"/>
         </service>
 

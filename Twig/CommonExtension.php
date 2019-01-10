@@ -94,6 +94,11 @@ class CommonExtension extends \Twig_Extension
                 [$this->commonRenderer, 'renderSaleCustomButtons'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFunction(
+                'sale_flags',
+                [$this->commonRenderer, 'renderSaleFlags'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 }

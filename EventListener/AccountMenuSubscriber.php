@@ -18,15 +18,24 @@ class AccountMenuSubscriber implements EventSubscriberInterface
      */
     protected $customerProvider;
 
+    /**
+     * @var array
+     */
+    protected $config;
+
 
     /**
      * Constructor.
      *
      * @param CustomerProviderInterface $customerProvider
+     * @param array                     $config
      */
-    public function __construct(CustomerProviderInterface $customerProvider)
+    public function __construct(CustomerProviderInterface $customerProvider, array $config = [])
     {
         $this->customerProvider = $customerProvider;
+        $this->config = array_replace([
+            'support' => true,
+        ], $config);
     }
 
     /**
@@ -68,9 +77,11 @@ class AccountMenuSubscriber implements EventSubscriberInterface
         ]);
 
         // Tickets
-        $menu->addChild('ekyna_commerce.account.ticket.title', [
-            'route' => 'ekyna_commerce_account_ticket_index',
-        ]);
+        if ($this->config['support']) {
+            $menu->addChild('ekyna_commerce.account.ticket.title', [
+                'route' => 'ekyna_commerce_account_ticket_index',
+            ]);
+        }
     }
 
     /**
