@@ -111,12 +111,12 @@
     {% if remaining is not empty %}
     <hr>
     <p>
-    {%- if remaining.eda is null -%}
-        {{ 'ekyna_commerce.document.mention.remaining_unknown'|trans }}
-    {%- else -%}
+    {%- if remaining_date and (remaining.eda is not null) -%}
         {{ 'ekyna_commerce.document.mention.remaining_with_date'|trans({
             '%date%': remaining.eda|localizeddate('long', 'none')
         }) }}
+    {%- else -%}
+        {{ 'ekyna_commerce.document.mention.remaining_unknown'|trans }}
     {%- endif -%}
     </p>
     <table class="bloc table details">

@@ -13,7 +13,8 @@
 <div class="main-header">
     <div class="infos">
         <span class="sale-state">{{ quote|sale_state_badge }}</span>
-        {{ quote.allTags|cms_tags({'text': false}) }}
+        {{- quote|sale_flags -}}
+        {{- quote.allTags|cms_tags({'text': false}) -}}
     </div>
     <div class="actions">
         {{ sale_custom_buttons(quote) }}

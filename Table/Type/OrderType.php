@@ -170,12 +170,12 @@ class OrderType extends ResourceTableType
             /*->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 120,
             ])*/
-            ->addColumn('sample', CType\Column\BooleanType::class, [
+            /*->addColumn('sample', CType\Column\BooleanType::class, [
                 'label'       => 'ekyna_commerce.field.sample',
                 'true_class'  => 'label-warning',
                 'false_class' => 'label-default',
                 'position'    => 130,
-            ])
+            ])*/
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
                 'position'      => 140,

@@ -32,7 +32,7 @@ class SupplierOrderRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     protected function supports($subject)
     {

@@ -23,7 +23,7 @@ class ShipmentRenderer extends AbstractRenderer
 
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function __construct($subjects, $type)
     {
@@ -78,17 +78,18 @@ class ShipmentRenderer extends AbstractRenderer
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     protected function getParameters()
     {
         return [
-            'type' => $this->type,
+            'remaining_date' => $this->config['shipment_remaining_date'],
+            'type'           => $this->type,
         ];
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     protected function supports($subject)
     {

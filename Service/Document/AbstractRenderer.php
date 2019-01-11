@@ -34,14 +34,9 @@ abstract class AbstractRenderer implements RendererInterface
     protected $imageGenerator;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $logoPath;
-
-    /**
-     * @var bool
-     */
-    protected $debug;
+    protected $config;
 
     /**
      * @var array
@@ -112,23 +107,13 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
-     * Sets the logo path.
+     * Sets the config.
      *
-     * @param string $logoPath
+     * @param array $config
      */
-    public function setLogoPath($logoPath)
+    public function setConfig(array $config)
     {
-        $this->logoPath = $logoPath;
-    }
-
-    /**
-     * Sets whether to debug.
-     *
-     * @param bool $debug
-     */
-    public function setDebug($debug)
-    {
-        $this->debug = (bool)$debug;
+        $this->config = $config;
     }
 
     /**
@@ -199,7 +184,7 @@ abstract class AbstractRenderer implements RendererInterface
         $header = $response->headers->makeDisposition($disposition, $filename);
         $response->headers->set('Content-Disposition', $header);
 
-        if (!$this->debug) {
+        if (!$this->config['debug']) {
             $response->setLastModified($this->getLastModified());
             if ($response->isNotModified($request)) {
                 return $response;
@@ -241,8 +226,8 @@ abstract class AbstractRenderer implements RendererInterface
     protected function getContent()
     {
         return $this->templating->render('@EkynaCommerce/Document/render.html.twig', array_replace([
-            'debug'     => $this->debug,
-            'logo_path' => $this->logoPath,
+            'debug'     => $this->config['debug'],
+            'logo_path' => $this->config['logo_path'],
             'subjects'  => $this->subjects,
             'template'  => $this->getTemplate(),
         ], $this->getParameters()));

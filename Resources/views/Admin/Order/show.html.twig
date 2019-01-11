@@ -13,13 +13,11 @@
 <div class="main-header">
     <div class="infos">
         <span class="sale-state">{{ order|sale_state_badge }}</span>
+        {{- order|sale_flags -}}
         {{- order.allTags|cms_tags({'text': false}) -}}
         {% if order.sample -%}
             <span class="label label-info" style="margin-left:6px;">{{ 'ekyna_commerce.field.sample'|trans }}</span>
         {%- endif %}
-        {%- if order.first -%}
-            <span class="label label-success">1<sup>st</sup></span>
-        {%- endif -%}
         {% if app.debug -%}
             <a href="{{ admin_resource_path(order, 'update_state') }}" class="btn btn-xs btn-link">{# TODO XHR #}
                 <i class="fa fa-refresh text-muted"></i>

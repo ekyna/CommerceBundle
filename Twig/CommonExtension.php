@@ -80,6 +80,11 @@ class CommonExtension extends \Twig_Extension
                 'notify_type_label',
                 [$this->constantHelper, 'renderNotifyTypeLabel']
             ),
+            new \Twig_SimpleFilter(
+                'sale_flags',
+                [$this->commonRenderer, 'renderSaleFlags'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
@@ -92,11 +97,6 @@ class CommonExtension extends \Twig_Extension
             new \Twig_SimpleFunction(
                 'sale_custom_buttons',
                 [$this->commonRenderer, 'renderSaleCustomButtons'],
-                ['is_safe' => ['html']]
-            ),
-            new \Twig_SimpleFunction(
-                'sale_flags',
-                [$this->commonRenderer, 'renderSaleFlags'],
                 ['is_safe' => ['html']]
             ),
         ];

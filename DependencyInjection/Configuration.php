@@ -181,6 +181,7 @@ class Configuration implements ConfigurationInterface
                         ->integerNode('header_height')->defaultValue(370)->end()
                         ->integerNode('title_height')->defaultValue(130)->end()
                         ->integerNode('footer_height')->defaultValue(91)->end()
+                        ->booleanNode('shipment_remaining_date')->defaultTrue()->end()
                     ->end()
                 ->end()
             ->end();

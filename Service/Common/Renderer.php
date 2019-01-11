@@ -8,6 +8,7 @@ use Ekyna\Bundle\CoreBundle\Service\Ui\UiRenderer;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -37,9 +38,9 @@ class Renderer
     /**
      * Constructor.
      *
-     * @param EngineInterface $templating
+     * @param EngineInterface          $templating
      * @param EventDispatcherInterface $dispatcher
-     * @param UiRenderer $uiRenderer
+     * @param UiRenderer               $uiRenderer
      */
     public function __construct(
         EngineInterface $templating,
@@ -84,7 +85,7 @@ class Renderer
             return '';
         }
 
-        usort($buttons, function(UiButton $a, UiButton $b) {
+        usort($buttons, function (UiButton $a, UiButton $b) {
             return $a->getPriority() - $b->getPriority();
         });
 
@@ -101,20 +102,35 @@ class Renderer
      * Renders the sale flags.
      *
      * @param SaleInterface $sale
+     * @param array         $options
      *
      * @return string
      */
-    public function renderSaleFlags(SaleInterface $sale)
+    public function renderSaleFlags(SaleInterface $sale, array $options = [])
     {
+        $options = array_replace([
+            'badge' => true,
+        ], $options);
+
+        $template = $options['badge']
+            ? '<span class="label label-%s"><i class="fa fa-%s"></i></span>'
+            : '<i class="text-%s fa fa-%s"></i>';
+
         $flags = '';
 
         if (SaleSources::SOURCE_WEBSITE === $sale->getSource()) {
-            $flags .= '<i class="fa fa-sitemap"></i>';
+            $flags .= sprintf($template, 'default', 'sitemap');
         } elseif (SaleSources::SOURCE_COMMERCIAL === $sale->getSource()) {
-            $flags .= '<i class="fa fa-briefcase"></i>';
+            $flags .= sprintf($template, 'default', 'briefcase');
+        }
+        if ($sale instanceof OrderInterface && $sale->isFirst()) {
+            $flags .= sprintf($template, 'success', 'thumbs-o-up');
+        }
+        if ($sale->isSample()) {
+            $flags .= sprintf($template, 'warning', 'cube');
         }
         if (!empty($sale->getComment())) {
-            $flags .= '<i class="fa fa-comment"></i>';
+            $flags .= sprintf($template, 'danger', 'comment');
         }
 
         return $flags;

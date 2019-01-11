@@ -90,6 +90,14 @@ class EkynaCommerceExtension extends AbstractExtension
         $container
             ->getDefinition('ekyna_commerce.document.page_builder')
             ->replaceArgument(2, $config);
+
+        $container
+            ->getDefinition('ekyna_commerce.document.renderer_factory')
+            ->replaceArgument(3, [
+                'shipment_remaining_date' => $config['shipment_remaining_date'],
+                'logo_path'               => '%ekyna_commerce.company_logo%',
+                'debug'                   => '%kernel.debug%',
+            ]);
     }
 
     /**

@@ -33,14 +33,9 @@ class RendererFactory
     protected $imageGenerator;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $logoPath;
-
-    /**
-     * @var bool
-     */
-    protected $debug;
+    protected $config;
 
 
     /**
@@ -49,21 +44,23 @@ class RendererFactory
      * @param EngineInterface    $templating
      * @param GeneratorInterface $pdfGenerator
      * @param GeneratorInterface $imageGenerator
-     * @param string             $logoPath
-     * @param bool               $debug
+     * @param array              $config
      */
     public function __construct(
         EngineInterface $templating,
         GeneratorInterface $pdfGenerator,
         GeneratorInterface $imageGenerator,
-        $logoPath,
-        $debug
+        array $config = []
     ) {
         $this->templating = $templating;
         $this->pdfGenerator = $pdfGenerator;
         $this->imageGenerator = $imageGenerator;
-        $this->logoPath = $logoPath;
-        $this->debug = $debug;
+
+        $this->config = array_replace([
+            'shipment_remaining_date' => true,
+            'logo_path'               => null,
+            'debug'                   => false,
+        ], $config);
     }
 
     /**
@@ -100,8 +97,7 @@ class RendererFactory
         $renderer->setTemplating($this->templating);
         $renderer->setPdfGenerator($this->pdfGenerator);
         $renderer->setImageGenerator($this->imageGenerator);
-        $renderer->setLogoPath($this->logoPath);
-        $renderer->setDebug($this->debug);
+        $renderer->setConfig($this->config);
 
         return $renderer;
     }
