@@ -165,6 +165,12 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         refreshCheckout();
     });
 
+    Dispatcher.on('ekyna_commerce.add_to_cart', function (e) {
+        if (e.success) {
+            refreshCheckout();
+        }
+    });
+
     $checkout.on('click', '.cart-checkout-footer a.btn', function (e) {
         e.stopPropagation();
 
