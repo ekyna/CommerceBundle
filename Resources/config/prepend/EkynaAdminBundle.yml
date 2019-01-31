@@ -1,4 +1,4 @@
 ekyna_admin:
     show:
         templates:
-            - EkynaCommerceBundle:Show:show_div_layout.html.twig
+            - '@EkynaCommerce/Show/show_div_layout.html.twig'

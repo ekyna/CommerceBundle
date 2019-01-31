@@ -438,7 +438,7 @@ class SaleShipmentController extends AbstractSaleController
 
         $response = new Response();
         $response->setVary(['Accept', 'Accept-Encoding']);
-        $response->setLastModified($shipment->getUpdatedAt());
+        $response->setExpires(new \DateTime('+5 min'));
 
         $html = false;
         $accept = $request->getAcceptableContentTypes();
@@ -449,10 +449,6 @@ class SaleShipmentController extends AbstractSaleController
             $html = true;
         } else {
             throw $this->createNotFoundException("Unsupported content type.");
-        }
-
-        if ($response->isNotModified($request)) {
-            return $response;
         }
 
         if ($html) {

@@ -459,7 +459,7 @@ class CartController extends AbstractController
 
         $parameters['controls'] = $this->buildCartControls($cart);
 
-        $response = $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
+        $response = $this->render('@EkynaCommerce/Cart/response.xml.twig', $parameters);
 
         $response->headers->set('Content-type', 'application/xml');
 

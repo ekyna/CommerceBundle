@@ -6,7 +6,8 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
         'invoice': '#cart-checkout-invoice',
         'delivery': '#cart-checkout-delivery',
         'comment': '#cart-checkout-comment',
-        'attachments': '#cart-checkout-attachments'
+        'attachments': '#cart-checkout-attachments',
+        'content': '#cart-checkout-content'
     };
 
     var buttonMapping = {

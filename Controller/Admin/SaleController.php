@@ -111,7 +111,7 @@ class SaleController extends AbstractSaleController
 
         $response = new Response();
         $response->setVary(['Accept', 'Accept-Encoding']);
-        $response->setLastModified($sale->getUpdatedAt());
+        $response->setExpires(new \DateTime('+3 min'));
 
         $html = false;
         $accept = $request->getAcceptableContentTypes();
@@ -122,10 +122,6 @@ class SaleController extends AbstractSaleController
             $html = true;
         } else {
             throw $this->createNotFoundException("Unsupported content type.");
-        }
-
-        if ($response->isNotModified($request)) {
-            return $response;
         }
 
         if ($html) {

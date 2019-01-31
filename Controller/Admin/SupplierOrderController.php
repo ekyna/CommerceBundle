@@ -275,7 +275,7 @@ class SupplierOrderController extends ResourceController
 
         $response = new Response();
         $response->setVary(['Accept-Encoding', 'Accept']);
-        $response->setLastModified($supplierOrder->getUpdatedAt());
+        $response->setExpires(new \DateTime('+3 min'));
 
         $html = false;
 
@@ -286,10 +286,6 @@ class SupplierOrderController extends ResourceController
             $html = true;
         } else {
             throw $this->createNotFoundException("Unsupported conten type.");
-        }
-
-        if ($response->isNotModified($request)) {
-            return $response;
         }
 
         if ($html) {

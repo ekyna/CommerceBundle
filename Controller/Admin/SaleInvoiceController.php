@@ -432,7 +432,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         $response = new Response();
         $response->setVary(['Accept', 'Accept-Encoding']);
-        $response->setLastModified($invoice->getUpdatedAt());
+        $response->setExpires(new \DateTime('+5 min'));
 
         $html = false;
         $accept = $request->getAcceptableContentTypes();
@@ -443,10 +443,6 @@ class SaleInvoiceController extends AbstractSaleController
             $html = true;
         } else {
             throw $this->createNotFoundException("Unsupported content type.");
-        }
-
-        if ($response->isNotModified($request)) {
-            return $response;
         }
 
         if ($html) {

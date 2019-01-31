@@ -19,5 +19,6 @@
         <![CDATA[<p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>]]>
     </view>
 {%- endif -%}
+    <content><![CDATA[{{ cart_checkout_content(cart) }}]]></content>
 </response>
 {% endspaceless %}

@@ -16,6 +16,7 @@ class CheckoutEvent extends Event
     const EVENT_SHIPMENT_STEP = 'ekyna_commerce.checkout.shipment_step';
     const EVENT_PAYMENT_STEP  = 'ekyna_commerce.checkout.payment_step';
     const EVENT_CONFIRMATION  = 'ekyna_commerce.checkout.confirmation';
+    const EVENT_CONTENT       = 'ekyna_commerce.checkout.content';
 
 
     /**
@@ -23,13 +24,18 @@ class CheckoutEvent extends Event
      */
     private $sale;
 
+    /**
+     * @var string
+     */
+    private $content;
+
 
     /**
      * Constructor.
      *
      * @param SaleInterface $sale
      */
-    public function __construct(SaleInterface $sale)
+    public function __construct(SaleInterface $sale = null)
     {
         $this->sale = $sale;
     }
@@ -37,10 +43,34 @@ class CheckoutEvent extends Event
     /**
      * Returns the sale.
      *
-     * @return SaleInterface
+     * @return SaleInterface|null
      */
     public function getSale()
     {
         return $this->sale;
+    }
+
+    /**
+     * Returns the content.
+     *
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Sets the content.
+     *
+     * @param string $content
+     *
+     * @return CheckoutEvent
+     */
+    public function setContent(string $content)
+    {
+        $this->content = $content;
+
+        return $this;
     }
 }

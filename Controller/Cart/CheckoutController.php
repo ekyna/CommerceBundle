@@ -145,7 +145,7 @@ class CheckoutController extends AbstractController
         $parameters['controls'] = $this->buildCartControls($cart);
 
         if ($request->isXmlHttpRequest()) {
-            return $this->render('EkynaCommerceBundle:Cart:response.xml.twig', $parameters);
+            return $this->render('@EkynaCommerce/Cart/response.xml.twig', $parameters);
         }
 
         if (null !== $cart) {

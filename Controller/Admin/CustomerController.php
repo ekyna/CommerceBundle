@@ -92,7 +92,7 @@ class CustomerController extends ResourceController
 
         $response = new Response();
         $response->setVary(['Accept', 'Accept-Encoding']);
-        $response->setLastModified($customer->getUpdatedAt());
+        $response->setExpires(new \DateTime('+5 min'));
 
         $html = false;
         $accept = $request->getAcceptableContentTypes();
@@ -103,10 +103,6 @@ class CustomerController extends ResourceController
             $html = true;
         } else {
             throw $this->createNotFoundException("Unsupported content type.");
-        }
-
-        if ($response->isNotModified($request)) {
-            return $response;
         }
 
         if ($html) {
