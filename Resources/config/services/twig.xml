@@ -12,6 +12,14 @@
             <tag name="twig.extension"/>
         </service>
 
+        <!-- Checkout extension -->
+        <service id="ekyna_commerce.twig.checkout_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\CheckoutExtension"
+                 public="false">
+            <argument type="service" id="event_dispatcher"/>
+            <tag name="twig.extension"/>
+        </service>
+
         <!-- Common extension -->
         <service id="ekyna_commerce.twig.common_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension"
