@@ -51,12 +51,12 @@ class ExportType extends AbstractType
         );
 
         for ($i = 12; $i > 0; $i--) {
-            $date->modify('-1 month');
-
             $value = $date->format('Y-m-d');
             $key = mb_convert_case($formatter->format($date->getTimestamp()), MB_CASE_TITLE);
 
             $choices[$key] = $value;
+
+            $date->modify('-1 month');
         }
 
         $builder
