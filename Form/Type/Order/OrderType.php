@@ -45,7 +45,7 @@ class OrderType extends SaleType
             $order = $event->getData();
             $form = $event->getForm();
 
-            $disabled = null !== $order && ($order->hasPayments() || $order->hasInvoices());
+            $disabled = null !== $order && ($order->hasPayments() || $order->hasInvoices() || $order->isReleased());
 
             $form->add('sample', CheckboxType::class, [
                 'label'    => 'ekyna_commerce.field.sample',

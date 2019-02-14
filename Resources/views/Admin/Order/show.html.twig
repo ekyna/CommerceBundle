@@ -52,6 +52,13 @@
                 'icon': 'list',
                 'path': admin_resource_path(order, 'abort')
             }) }}
+        {% elseif order.sample %}
+            {{ ui_button('ekyna_commerce.order.button.' ~ (order.released ? 'un' : '') ~ 'release', {
+                'theme': 'warning',
+                'type': 'link',
+                'icon': order.released ? 'remove-circle' : 'ok-circle',
+                'path': admin_resource_path(order, 'release')
+            }) }}
         {% endif %}
         {{ admin_resource_btn(order, 'edit', {'label': 'ekyna_core.button.edit'}) }}
         {{ admin_resource_btn(order, 'remove', {'label': 'ekyna_core.button.remove'}) }}
@@ -158,12 +165,14 @@
                 {# --------------- SHIPMENTS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
+                    {% if not order.released %}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {
                         'orderId': order.id
                     }) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{- 'ekyna_commerce.shipment.button.new'|trans -}}
                     </a>
+                    {% endif %}
                 </div>
                 <h4 class="sub-header">
                     {{- 'ekyna_commerce.shipment.label.plural'|trans -}}
@@ -176,12 +185,14 @@
                 {# --------------- RETURNS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
+                    {% if not order.released %}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_shipment', 'new', {
                         'orderId': order.id, 'return': 1
                     }) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{- 'ekyna_commerce.return.button.new'|trans -}}
                     </a>
+                    {% endif %}
                 </div>
                 <h4 class="sub-header">
                     {{- 'ekyna_commerce.return.label.plural'|trans -}}

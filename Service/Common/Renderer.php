@@ -11,6 +11,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Templating\EngineInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class Renderer
@@ -34,6 +35,11 @@ class Renderer
      */
     private $uiRenderer;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
 
     /**
      * Constructor.
@@ -41,15 +47,18 @@ class Renderer
      * @param EngineInterface          $templating
      * @param EventDispatcherInterface $dispatcher
      * @param UiRenderer               $uiRenderer
+     * @param TranslatorInterface      $translator
      */
     public function __construct(
         EngineInterface $templating,
         EventDispatcherInterface $dispatcher,
-        UiRenderer $uiRenderer
+        UiRenderer $uiRenderer,
+        TranslatorInterface $translator
     ) {
         $this->templating = $templating;
         $this->dispatcher = $dispatcher;
         $this->uiRenderer = $uiRenderer;
+        $this->translator = $translator;
     }
 
     /**
@@ -113,24 +122,70 @@ class Renderer
         ], $options);
 
         $template = $options['badge']
-            ? '<span class="label label-%s"><i class="fa fa-%s"></i></span>'
-            : '<i class="text-%s fa fa-%s"></i>';
+            ? '<span title="%s" class="label label-%s"><i class="fa fa-%s"></i></span>'
+            : '<i title="%s" class="text-%s fa fa-%s"></i>';
 
         $flags = '';
 
         if (SaleSources::SOURCE_WEBSITE === $sale->getSource()) {
-            $flags .= sprintf($template, 'default', 'sitemap');
+            $flags .= sprintf(
+                $template,
+                $this->translator->trans('ekyna_commerce.sale.source.website'),
+                'default',
+                'sitemap'
+            );
         } elseif (SaleSources::SOURCE_COMMERCIAL === $sale->getSource()) {
-            $flags .= sprintf($template, 'default', 'briefcase');
-        }
+            $flags .= sprintf(
+                $template,
+                $this->translator->trans('ekyna_commerce.sale.source.commercial'),
+                'default',
+                'briefcase'
+            );
+        } // TODO marketplace
+
         if ($sale instanceof OrderInterface && $sale->isFirst()) {
-            $flags .= sprintf($template, 'success', 'thumbs-o-up');
+            $flags .= sprintf(
+                $template,
+                $this->translator->trans('ekyna_commerce.sale.flag.first_order'),
+                'success',
+                'thumbs-o-up'
+            );
         }
+
         if ($sale->isSample()) {
-            $flags .= sprintf($template, 'warning', 'cube');
+            $flags .= sprintf(
+                $template,
+                $this->translator->trans('ekyna_commerce.field.sample'),
+                'info',
+                'cube'
+            );
+
+            if ($sale->canBeReleased()) {
+                $flags .= sprintf(
+                    $template,
+                    $this->translator->trans('ekyna_commerce.sale.flag.can_be_released'),
+                    'danger',
+                    'check-circle-o'
+                );
+            }
         }
+
+        if (!empty($sale->getPreparationNote())) {
+            $flags .= sprintf(
+                $template,
+                $this->translator->trans('ekyna_commerce.sale.field.preparation_note'),
+                'warning',
+                'check-square-o'
+            );
+        }
+
         if (!empty($sale->getComment())) {
-            $flags .= sprintf($template, 'danger', 'comment');
+            $flags .= sprintf(
+                $template,
+                $this->translator->trans('ekyna_core.field.comment'),
+                'danger',
+                'comment'
+            );
         }
 
         return $flags;

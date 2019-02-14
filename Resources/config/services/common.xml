@@ -123,6 +123,7 @@
             <argument type="service" id="templating"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_core.ui.renderer"/>
+            <argument type="service" id="translator"/>
         </service>
 
     </services>

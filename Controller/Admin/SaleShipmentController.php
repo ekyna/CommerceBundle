@@ -271,8 +271,6 @@ class SaleShipmentController extends AbstractSaleController
 
                 if ($isXhr) {
                     return $this->buildXhrSaleViewResponse($sale);
-                } else {
-                    $event->toFlashes($this->getFlashBag());
                 }
 
                 return $this->redirect($this->generateResourcePath($sale));

@@ -119,13 +119,6 @@ ekyna_commerce_order_admin_notify:
     requirements:
         orderId: \d+
 
-ekyna_commerce_order_admin_prioritize:
-    path: /{orderId}/prioritize
-    defaults: { _controller: "ekyna_commerce.order.controller:prioritizeAction" }
-    methods: [GET|POST]
-    requirements:
-        orderId: \d+
-
 ekyna_commerce_order_admin_prepare:
     path: /{orderId}/prepare
     defaults: { _controller: "ekyna_commerce.order.controller:prepareAction" }
@@ -136,6 +129,20 @@ ekyna_commerce_order_admin_prepare:
 ekyna_commerce_order_admin_abort:
     path: /{orderId}/abort
     defaults: { _controller: "ekyna_commerce.order.controller:abortAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_admin_prioritize:
+    path: /{orderId}/prioritize
+    defaults: { _controller: "ekyna_commerce.order.controller:prioritizeAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_admin_release:
+    path: /{orderId}/release
+    defaults: { _controller: "ekyna_commerce.order.controller:releaseAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+

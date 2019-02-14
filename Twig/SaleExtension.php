@@ -224,6 +224,10 @@ class SaleExtension extends \Twig_Extension
     public function isSalePreparable(Common\SaleInterface $sale)
     {
         if ($sale instanceof Order\OrderInterface) {
+            if ($sale->isReleased()) {
+                return false;
+            }
+
             return Shipment\ShipmentStates::isPreparableState($sale->getShipmentState());
         }
 

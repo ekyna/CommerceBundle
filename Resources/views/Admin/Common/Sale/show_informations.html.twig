@@ -33,6 +33,7 @@
         }) }}
     </div>
 </div>
+<hr>
 {{ show_row(sale.comment, 'textarea', {
     'label': 'ekyna_core.field.comment',
     'id': 'sale_comment',
@@ -41,8 +42,13 @@
     'label': 'ekyna_commerce.sale.field.document_comment',
     'id': 'sale_documentComment',
 }) }}
+<hr>
 {{ show_row(sale.description, 'textarea', {
     'label': 'ekyna_commerce.field.description',
     'id': 'sale_description',
+}) }}
+{{ show_row(sale.preparationNote, 'textarea', {
+    'label': 'ekyna_commerce.sale.field.preparation_note',
+    'id': 'sale_premaration_note',
 }) }}
 {% endspaceless %}

@@ -12,8 +12,8 @@
     <div class="wrapper">
         <div class="bloc">
             <div class="tags">
-                {{ subject.sale|cms_tags }}
-                {{ subject.sale.itemsTags|cms_tags }}
+                {{- subject.sale|sale_flags -}}
+                {{- subject.sale.allTags|cms_tags({'text': false}) -}}
             </div>
             <h1>
                 {{ 'ekyna_commerce.order.label.singular'|trans }} <strong>{{ subject.sale.number }}</strong>
@@ -26,6 +26,9 @@
                 {% if subject.sale.company is not empty %}<strong>{{ subject.sale.company }}</strong>{% endif %}
                 {{ subject.sale|identity }}
             </p>
+            {% if subject.sale.preparationNote is not empty %}
+            <p class="note">{{ subject.sale.preparationNote|nl2br }}</p>
+            {% endif %}
             <table class="table details">
                 <thead>
                 <tr>

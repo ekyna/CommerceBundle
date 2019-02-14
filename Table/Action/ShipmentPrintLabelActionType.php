@@ -86,13 +86,13 @@ class ShipmentPrintLabelActionType extends AbstractActionType
                     $labels[] = $label;
                 }
             }
+
+            $this->shipmentPersister->flush();
         } catch (ShipmentGatewayException $e) {
             $table->addError(new TableError($e->getMessage()));
 
             return true;
         }
-
-        $this->shipmentPersister->flush();
 
         if (!empty($labels)) {
             return $this->labelRenderer->render($labels);

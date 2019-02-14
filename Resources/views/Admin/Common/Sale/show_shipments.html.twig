@@ -53,6 +53,7 @@
                 </td>
                 <td class="actions">
                     {# Gateway actions #}
+                    {% if not shipment.sale.released %}
                     {%- for button in shipment_gateway_buttons(shipment) -%}
                     <a href="{{ path(button.route, button.parameters) }}"
                        class="btn btn-xs btn-{{ button.theme }}"
@@ -66,6 +67,7 @@
                         {%- endif -%}
                     </a>
                     {%- endfor %}
+                    {% endif %}
                     {# Toggle details #}
                     {% if details -%}
                     <a href="javascript:void(0)"
@@ -83,6 +85,7 @@
                        target="_blank">
                         <span class="fa fa-file"></span>
                     </a>
+                    {% if not shipment.sale.released %}
                     {# Form document #}
                     {%- if not shipment.return -%}
                     <a href="{{ admin_resource_path(shipment, 'render', {'type': 'form'}) }}"
@@ -108,6 +111,7 @@
                            title="{{ 'ekyna_core.button.remove'|trans }}">
                             <span class="fa fa-trash"></span>
                         </a>
+                    {% endif %}
                     {% endif %}
                 </td>
             </tr>

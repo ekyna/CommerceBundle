@@ -137,9 +137,6 @@ class ShipmentExtension extends \Twig_Extension
             new \Twig_SimpleTest('shipment_subject', function ($subject) {
                 return $subject instanceof ShipmentSubjectInterface;
             }),
-            new \Twig_SimpleTest('shipment_partial', function ($subject) {
-                return $subject instanceof ShipmentSubjectInterface;
-            }),
         ];
     }
 

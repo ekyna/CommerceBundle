@@ -44,9 +44,10 @@
 
         <!-- Sale normalizer -->
         <service id="ekyna_commerce.sale.normalizer"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Serializer\SaleNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
+            <argument type="service" id="ekyna_commerce.common.renderer"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>

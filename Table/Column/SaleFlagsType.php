@@ -45,6 +45,7 @@ class SaleFlagsType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
+        $view->vars['attr']['class'] = 'flags-icons';
         $view->vars['value'] = $this->renderer->renderSaleFlags($view->vars['value'], ['badge' => false]);
         $view->vars['block_prefix'] = 'text';
     }

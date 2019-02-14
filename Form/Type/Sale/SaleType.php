@@ -156,6 +156,10 @@ class SaleType extends ResourceFormType
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
+            ])
+            ->add('preparationNote', Type\TextareaType::class, [
+                'label'    => 'ekyna_commerce.sale.field.preparation_note',
+                'required' => false,
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

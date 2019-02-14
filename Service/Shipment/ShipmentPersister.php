@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
+use Ekyna\Component\Commerce\Exception\StockLogicException;
 use Ekyna\Component\Commerce\Shipment\Gateway\PersisterInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 
@@ -53,7 +55,13 @@ class ShipmentPersister implements PersisterInterface
             return;
         }
 
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->flush();
+        } catch (StockLogicException $e) {
+            // TODO Report error by email
+
+            throw new ShipmentGatewayException($e->getMessage(), $e->getCode(), $e);
+        }
 
         $this->pendingFlush = false;
     }

@@ -794,15 +794,17 @@ ekyna_commerce:
             remove: Supprimer la commande
             transform: Transformer la commande
             notify: Notifier la commande
+            release: Côturer
+            unrelease: Réouvrir
         alert:
             no_item: Aucune commande configuré
         message:
             already_paid: Cette commande est déjà réglée en totalité
+            can_be_released: >
+                Cette commande d'échantillons peut être clôturée si aucun autre retour n'est prévu ou attendu.
             cant_be_deleted: >
                 Cette commande a des paiement(s) valide(s), des livraison(s)
                 et/ou des facture(s) et ne peut être supprimée.
-            cant_be_prepared: >
-                Le statut de cette commande ne permet pas la préparation d'expédition.
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
@@ -1049,7 +1051,7 @@ ekyna_commerce:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
         prepare:
             success: L'expédition a bien été préparée.
-            failure: Aucune expédition a préparer.
+            failure: Cette commande ne peut pas être préparée.
         abort:
             success: La préparation a bien été annulée.
         prioritize:
@@ -1114,11 +1116,19 @@ ekyna_commerce:
             deposit_total: Acompte TTC
             margin: Marge
             weight_total: Poids total
+            preparation_note: Note préparation
             document_comment: Commentaire documents
             document_footer: Pied de page des documents
             payment_state: Statut paiement
             shipment_state: Statut livraison
             invoice_state: Statut facturation
+        flag:
+            first_order: Première commande
+            can_be_released: Peut être clôturée
+        source:
+            website: Site internet
+            marketplace: Marketplace
+            commercial: Commercial
         table:
             payment_state: Paiement
             shipment_state: Livraison

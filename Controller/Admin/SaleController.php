@@ -19,6 +19,7 @@ use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
@@ -83,6 +84,8 @@ class SaleController extends AbstractSaleController
             $this->addFlash('ekyna_commerce.cart.message.transformation_to_order_is_ready');
         } elseif ($sale instanceof QuoteInterface && $sale->getState() === QuoteStates::STATE_ACCEPTED) {
             $this->addFlash('ekyna_commerce.quote.message.transformation_to_order_is_ready');
+        } elseif ($sale->canBeReleased()) {
+            $this->addFlash('ekyna_commerce.order.message.can_be_released', 'warning');
         }
 
         $data['sale_view'] = $this->buildSaleView($sale);
@@ -462,10 +465,12 @@ class SaleController extends AbstractSaleController
             ->get('ekyna_commerce.sale_copier_factory')
             ->create($sourceSale, $targetSale)
             ->copyData()
-            ->copyAddresses()
             ->copyItems();
 
-        $targetSale->setSource(SaleSources::SOURCE_COMMERCIAL);
+        $targetSale
+            ->setCustomerGroup(null)
+            ->setSameAddress(true)
+            ->setSource(SaleSources::SOURCE_COMMERCIAL);
 
         $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale);
 
@@ -656,6 +661,42 @@ class SaleController extends AbstractSaleController
         }
 
         if (null === $redirect = $request->query->get('_redirect')) {
+            $redirect = $this->generateResourcePath($sale);
+        }
+
+        return $this->redirect($redirect);
+    }
+
+    /**
+     * Toggle release action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function releaseAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException("Not yet supported.");
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        if ($sale instanceof OrderInterface && $sale->isSample()) {
+            $sale->setReleased(!$sale->isReleased());
+
+            $event = $this->getOperator()->update($sale);
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        if (null !== $path = $request->query->get('_redirect')) {
+            $redirect = $path;
+        } elseif (null !== $referer = $request->headers->get('referer')) {
+            $redirect = $referer;
+        } else {
             $redirect = $this->generateResourcePath($sale);
         }
 

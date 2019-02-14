@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
@@ -62,6 +63,14 @@ abstract class AbstractOrderListType extends ResourceTableType
                         'label'         => 'ekyna_commerce.customer.label.singular',
                         'property_path' => 'order',
                         'position'      => 25,
+                    ])
+                    ->addColumn('flags', Column\SaleFlagsType::class, [
+                        'property_path' => 'order',
+                        'position'      => 14,
+                    ])
+                    ->addColumn('tags', TagsType::class, [
+                        'property_path' => 'order.allTags',
+                        'position'      => 998,
                     ])
                     ->addFilter('order', CType\Filter\TextType::class, [
                         'label'         => 'ekyna_commerce.order.label.singular',

@@ -52,7 +52,7 @@ abstract class AbstractSaleController extends ResourceController
 
         $view = $this->getSaleHelper()->buildView($sale, [
             'private'  => true,
-            'editable' => true,
+            'editable' => !($sale->isReleased() && !$this->getParameter('kernel.debug')),
         ]);
         $view->vars['form'] = $form->createView();
 

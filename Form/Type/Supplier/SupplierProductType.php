@@ -76,6 +76,7 @@ class SupplierProductType extends ResourceFormType
             $form->add('netPrice', MoneyType::class, [
                 'label'    => 'ekyna_commerce.field.net_price',
                 'currency' => $currency->getCode(),
+                'scale'    => 5,
             ]);
         });
     }
