@@ -794,7 +794,7 @@ ekyna_commerce:
             remove: Supprimer la commande
             transform: Transformer la commande
             notify: Notifier la commande
-            release: Côturer
+            release: Clôturer
             unrelease: Réouvrir
         alert:
             no_item: Aucune commande configuré

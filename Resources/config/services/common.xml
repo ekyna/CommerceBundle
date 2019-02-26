@@ -117,12 +117,22 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <!-- Common renderer -->
-        <service id="ekyna_commerce.common.renderer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\Renderer">
+        <!-- Address renderer -->
+        <service id="ekyna_commerce.common.address_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer">
             <argument type="service" id="templating"/>
+        </service>
+
+        <!-- Button renderer -->
+        <service id="ekyna_commerce.common.button_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_core.ui.renderer"/>
+        </service>
+
+        <!-- Flag renderer -->
+        <service id="ekyna_commerce.common.flag_renderer"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer">
             <argument type="service" id="translator"/>
         </service>
 

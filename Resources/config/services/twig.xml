@@ -25,7 +25,9 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension"
                  public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <argument type="service" id="ekyna_commerce.common.renderer"/>
+            <argument type="service" id="ekyna_commerce.common.address_renderer"/>
+            <argument type="service" id="ekyna_commerce.common.button_renderer"/>
+            <argument type="service" id="ekyna_commerce.common.flag_renderer"/>
             <tag name="twig.extension"/>
         </service>
 

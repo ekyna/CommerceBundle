@@ -91,7 +91,7 @@
         <!-- Sale flags column type -->
         <service id="ekyna_commerce.sale_flags.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SaleFlagsType">
-            <argument type="service" id="ekyna_commerce.common.renderer"/>
+            <argument type="service" id="ekyna_commerce.common.flag_renderer"/>
             <tag name="table.column_type"/>
         </service>
 

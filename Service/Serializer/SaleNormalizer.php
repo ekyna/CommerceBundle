@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
 use Ekyna\Bundle\CmsBundle\Service\Renderer\TagRenderer;
-use Ekyna\Bundle\CommerceBundle\Service\Common\Renderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer as BaseNormalizer;
 
 /**
@@ -14,7 +14,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer
 class SaleNormalizer extends BaseNormalizer
 {
     /**
-     * @var Renderer
+     * @var FlagRenderer
      */
     private $commonRenderer;
 
@@ -27,9 +27,9 @@ class SaleNormalizer extends BaseNormalizer
     /**
      * Constructor.
      *
-     * @param Renderer    $commonRenderer
+     * @param FlagRenderer    $commonRenderer
      */
-    public function __construct(Renderer $commonRenderer)
+    public function __construct(FlagRenderer $commonRenderer)
     {
         $this->commonRenderer = $commonRenderer;
     }

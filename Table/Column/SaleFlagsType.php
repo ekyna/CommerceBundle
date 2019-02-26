@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Bundle\CommerceBundle\Service\Common\Renderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnBuilderInterface;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SaleFlagsType extends AbstractColumnType
 {
     /**
-     * @var Renderer
+     * @var FlagRenderer
      */
     private $renderer;
 
@@ -27,7 +27,7 @@ class SaleFlagsType extends AbstractColumnType
     /**
      * @inheritDoc
      */
-    public function __construct(Renderer $renderer)
+    public function __construct(FlagRenderer $renderer)
     {
         $this->renderer = $renderer;
     }
@@ -45,7 +45,6 @@ class SaleFlagsType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $view->vars['attr']['class'] = 'flags-icons';
         $view->vars['value'] = $this->renderer->renderSaleFlags($view->vars['value'], ['badge' => false]);
         $view->vars['block_prefix'] = 'text';
     }

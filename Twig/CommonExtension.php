@@ -2,7 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\Common\Renderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 
 /**
@@ -18,21 +20,39 @@ class CommonExtension extends \Twig_Extension
     private $constantHelper;
 
     /**
-     * @var Renderer
+     * @var AddressRenderer
      */
-    private $commonRenderer;
+    private $addressRenderer;
+
+    /**
+     * @var ButtonRenderer
+     */
+    private $buttonRenderer;
+
+    /**
+     * @var FlagRenderer
+     */
+    private $flagRenderer;
 
 
     /**
      * Constructor.
      *
-     * @param ConstantsHelper $helper
-     * @param Renderer $renderer
+     * @param ConstantsHelper $constantHelper
+     * @param AddressRenderer $addressRenderer
+     * @param ButtonRenderer  $buttonRenderer
+     * @param FlagRenderer    $flagRenderer
      */
-    public function __construct(ConstantsHelper $helper, Renderer $renderer)
-    {
-        $this->constantHelper = $helper;
-        $this->commonRenderer = $renderer;
+    public function __construct(
+        ConstantsHelper $constantHelper,
+        AddressRenderer $addressRenderer,
+        ButtonRenderer $buttonRenderer,
+        FlagRenderer $flagRenderer
+    ) {
+        $this->constantHelper = $constantHelper;
+        $this->addressRenderer = $addressRenderer;
+        $this->buttonRenderer = $buttonRenderer;
+        $this->flagRenderer = $flagRenderer;
     }
 
     /**
@@ -43,7 +63,7 @@ class CommonExtension extends \Twig_Extension
         return [
             new \Twig_SimpleFilter(
                 'address',
-                [$this->commonRenderer, 'renderAddress'],
+                [$this->addressRenderer, 'renderAddress'],
                 ['is_safe' => ['html']]
             ),
             new \Twig_SimpleFilter(
@@ -82,7 +102,7 @@ class CommonExtension extends \Twig_Extension
             ),
             new \Twig_SimpleFilter(
                 'sale_flags',
-                [$this->commonRenderer, 'renderSaleFlags'],
+                [$this->flagRenderer, 'renderSaleFlags'],
                 ['is_safe' => ['html']]
             ),
         ];
@@ -96,7 +116,7 @@ class CommonExtension extends \Twig_Extension
         return [
             new \Twig_SimpleFunction(
                 'sale_custom_buttons',
-                [$this->commonRenderer, 'renderSaleCustomButtons'],
+                [$this->buttonRenderer, 'renderSaleCustomButtons'],
                 ['is_safe' => ['html']]
             ),
         ];

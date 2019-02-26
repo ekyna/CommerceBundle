@@ -773,14 +773,16 @@ ekyna_commerce:
             remove: Remove the order
             transform: Transform the order
             notify: Notify the order
+            release: Close
+            unrelease: Reopen
         alert:
             no_item: Not order configured
         message:
             already_paid: This order has already been paid.
+            can_be_released: >
+                This sample order can be closed if no other return is planned.
             cant_be_deleted: >
                 This order has valid payment(s), shipment(s) or invoice(s) and therefore cannot be deleted.
-            cant_be_prepared: >
-                The status of this order does not allow preparation.
         dashboard:
             title: Orders to process
             none: No order to process
@@ -1027,7 +1029,7 @@ ekyna_commerce:
                 remove: Are you sure you want to remove this discount ?
         prepare:
             success: Shipment has been successfully prepared.
-            failure: No shipment to prepare.
+            failure: This order can't be prepared.
         abort:
             success: Shipment preparation has been canceled.
         prioritize:
@@ -1089,11 +1091,19 @@ ekyna_commerce:
             deposit_total: Deposit
             margin: Margin
             weight_total: Total weight
+            preparation_note: Preparation note
             document_comment: Documents comment
             document_footer: Documents footer
             payment_state: Payment status
             shipment_state: Shipment status
             invoice_state: Invoice status
+        flag:
+            first_order: First order
+            can_be_released: Can be closed
+        source:
+            website: Website
+            marketplace: Marketplace
+            commercial: Commercial
         table:
             payment_state: Payment
             shipment_state: Shipment
