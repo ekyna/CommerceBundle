@@ -370,6 +370,12 @@ class SupplierOrderController extends ResourceController
             $labels[0]->setGeocode($geocode);
         }
 
+        $date = $order->getOrderedAt() ?? new \DateTime();
+        $extra = sprintf('%s (%s)', $order->getNumber(), $date->format('Y-m-d'));
+        foreach ($labels as $label) {
+            $label->setExtra($extra);
+        }
+
         $pdf = $renderer->render($labels, SubjectLabel::FORMAT_LARGE);
 
         return new Response($pdf, Response::HTTP_OK, [

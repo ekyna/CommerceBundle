@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesserInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 
@@ -17,15 +18,24 @@ class SubjectExtension extends \Twig_Extension
      */
     private $subjectHelper;
 
+    /**
+     * @var PurchaseCostGuesserInterface
+     */
+    private $purchaseCostGuesser;
+
 
     /**
      * Constructor.
      *
-     * @param SubjectHelperInterface $subjectHelper
+     * @param SubjectHelperInterface       $subjectHelper
+     * @param PurchaseCostGuesserInterface $purchaseCostGuesser
      */
-    public function __construct(SubjectHelperInterface $subjectHelper)
-    {
+    public function __construct(
+        SubjectHelperInterface $subjectHelper,
+        PurchaseCostGuesserInterface $purchaseCostGuesser
+    ) {
         $this->subjectHelper = $subjectHelper;
+        $this->purchaseCostGuesser = $purchaseCostGuesser;
     }
 
     /**
@@ -53,6 +63,10 @@ class SubjectExtension extends \Twig_Extension
             new \Twig_SimpleFilter(
                 'subject_private_url',
                 [$this->subjectHelper, 'generatePrivateUrl']
+            ),
+            new \Twig_SimpleFilter(
+                'subject_purchase_cost',
+                [$this->purchaseCostGuesser, 'guess']
             ),
         ];
     }

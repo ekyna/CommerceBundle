@@ -70,6 +70,16 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Supplier order exporter -->
+        <service id="ekyna_commerce.supplier_order.exporter"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderExporter">
+            <argument type="service" id="ekyna_commerce.supplier_order.repository"/>
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
+        </service>
+
     </services>
 
 </container>

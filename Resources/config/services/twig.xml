@@ -106,6 +106,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Twig\SubjectExtension"
                  public="false">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.subject.purchase_cost_guesser"/>
             <tag name="twig.extension"/>
         </service>
 

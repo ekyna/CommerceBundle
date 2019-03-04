@@ -103,6 +103,11 @@ class OrderShipmentType extends AbstractOrderListType
                 'time_format' => 'none',
                 'position'    => 80,
             ])
+            ->addColumn('completedAt', CType\Column\DateTimeType::class, [
+                'label'       => 'ekyna_core.field.completed_at',
+                'time_format' => 'none',
+                'position'    => 90,
+            ])
             ->addColumn('actions', Column\ShipmentActionsType::class, [
                 'position' => 999,
             ]);
@@ -141,6 +146,10 @@ class OrderShipmentType extends AbstractOrderListType
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.created_at',
                 'position' => 70,
+            ])
+            ->addFilter('completedAt', CType\Filter\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.completed_at',
+                'position' => 80,
             ]);
 
         $builder

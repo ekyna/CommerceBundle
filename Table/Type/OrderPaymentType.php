@@ -75,6 +75,11 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'       => 'ekyna_core.field.created_at',
                 'time_format' => 'none',
                 'position'    => 80,
+            ])
+            ->addColumn('completedAt', CType\Column\DateTimeType::class, [
+                'label'       => 'ekyna_core.field.completed_at',
+                'time_format' => 'none',
+                'position'    => 90,
             ]);
 
         if ($options['order'] || $options['customer']) {
@@ -107,6 +112,10 @@ class OrderPaymentType extends AbstractOrderListType
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.created_at',
+                'position' => 80,
+            ])
+            ->addFilter('completedAt', CType\Filter\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.completed_at',
                 'position' => 80,
             ]);
     }

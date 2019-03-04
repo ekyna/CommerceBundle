@@ -121,6 +121,10 @@ class PaymentType extends ResourceFormType
                         return $qb;
                     },
                 ])
+                ->add('completedAt', Type\DateTimeType::class, [
+                    'label'    => 'ekyna_core.field.completed_at',
+                    'disabled' => $methodDisabled,
+                ])
                 ->add('description', Type\TextareaType::class, [
                     'label'    => 'ekyna_commerce.field.description',
                     'required' => false,

@@ -73,24 +73,6 @@ abstract class AbstractSubjectController extends ResourceController
     }
 
     /**
-     * Creates the subject stock view response.
-     *
-     * @param StockSubjectInterface $subject
-     *
-     * @return Response
-     */
-    private function createStockViewResponse(StockSubjectInterface $subject)
-    {
-        $serialized = $this->get('serializer')->serialize($subject, 'json', ['groups' => ['StockView']]);
-
-        $response = new Response($serialized, Response::HTTP_OK, [
-            'Content-Type' => 'application/json',
-        ]);
-
-        return $response->setPrivate();
-    }
-
-    /**
      * Label action.
      *
      * @param Request $request

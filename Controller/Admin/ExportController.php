@@ -212,6 +212,110 @@ class ExportController extends Controller
     }
 
     /**
+     * Suppliers expired due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function suppliersExpiredDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.supplier_order.exporter')
+                ->exportSuppliersExpiredDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('suppliers-expired-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Suppliers fall due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function suppliersFallDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.supplier_order.exporter')
+                ->exportSuppliersFallDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('suppliers-fall-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Forwarders expired due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function forwardersExpiredDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.supplier_order.exporter')
+                ->exportForwardersExpiredDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('forwarders-expired-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Forwarders fall due orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function forwardersFallDueOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.supplier_order.exporter')
+                ->exportForwardersFallDueOrders();
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('forwarders-fall-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
      * Builds and returns the file response.
      *
      * @param string $path

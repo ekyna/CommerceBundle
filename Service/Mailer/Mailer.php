@@ -191,6 +191,12 @@ class Mailer
 
             $labels = $this->subjectLabelRenderer->buildLabels($subjects);
 
+            $date = $order->getOrderedAt() ?? new \DateTime();
+            $extra = sprintf('%s (%s)', $order->getNumber(), $date->format('Y-m-d'));
+            foreach ($labels as $label) {
+                $label->setExtra($extra);
+            }
+
             $message->attach(\Swift_Attachment::newInstance(
                 $this->subjectLabelRenderer->render($labels),
                 'labels.pdf',

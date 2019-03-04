@@ -52,8 +52,8 @@ class DebtWidget extends AbstractWidgetType
             'outstanding_pending' => $this->orderRepository->getOutstandingPendingDue(),
             'supplier_expired'    => $this->supplierOrderRepository->getSuppliersExpiredDue(),
             'supplier_fall'       => $this->supplierOrderRepository->getSuppliersFallDue(),
-            'carrier_expired'     => $this->supplierOrderRepository->getCarriersExpiredDue(),
-            'carrier_fall'        => $this->supplierOrderRepository->getCarriersFallDue(),
+            'carrier_expired'     => $this->supplierOrderRepository->getForwardersExpiredDue(),
+            'carrier_fall'        => $this->supplierOrderRepository->getForwardersFallDue(),
         ]);
     }
 

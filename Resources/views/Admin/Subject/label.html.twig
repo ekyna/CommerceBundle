@@ -89,7 +89,7 @@
         }
 
         .label-large > p {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .label-large > p:last-child {
@@ -109,7 +109,10 @@
 
         .label-large > .reference,
         .label-large > .geocode {
-            font-size: 24pt;
+            font-size: 28pt;
+        }
+        .label-large > .extra {
+            font-size: 14pt;
         }
     </style>
 </head>
@@ -131,6 +134,7 @@
             <p class="designation">{{ label.designation|default('&nbsp')|raw }}</p>
             <p class="reference">{{ label.reference|default('&nbsp')|raw }}</p>
             <p class="geocode">{{ label.geocode|default('&nbsp')|raw }}</p>
+            <p class="extra">{{ label.extra|default('&nbsp')|raw }}</p>
             {% if label.barcode is not empty -%}
                 <p class="barcode-image">
                     <img src="data:image/png;base64,{{ label.barcode|barcode_128(256, 60) }}">

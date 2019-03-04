@@ -37,6 +37,11 @@ class SubjectLabel
      */
     private $geocode;
 
+    /**
+     * @var string
+     */
+    private $extra;
+
 
     /**
      * Constructor.
@@ -150,6 +155,30 @@ class SubjectLabel
     public function setGeocode($geocode)
     {
         $this->geocode = $geocode;
+
+        return $this;
+    }
+
+    /**
+     * Returns the extra.
+     *
+     * @return string
+     */
+    public function getExtra()
+    {
+        return $this->extra;
+    }
+
+    /**
+     * Sets the extra.
+     *
+     * @param string $extra
+     *
+     * @return SubjectLabel
+     */
+    public function setExtra($extra)
+    {
+        $this->extra = $extra;
 
         return $this;
     }

@@ -116,6 +116,14 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Invoice payments column type -->
+        <service id="ekyna_commerce.invoice_payments.column_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\InvoicePaymentsType">
+            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
+            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Invoice state column type -->
         <service id="ekyna_commerce.invoice_state.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\InvoiceStateType">

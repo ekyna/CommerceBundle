@@ -36,16 +36,6 @@ class OrderInvoiceType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.type',
                 'position' => 20,
             ])
-            /*->addColumn('goodsBase', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.invoice.field.goods_base',
-                'currency_path' => 'currency',
-                'position'      => 30,
-            ])
-            ->addColumn('shipmentBase', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.invoice.field.shipment_base',
-                'currency_path' => 'currency',
-                'position'      => 40,
-            ])*/
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.ati_total',
                 'currency_path' => 'currency',
@@ -57,10 +47,9 @@ class OrderInvoiceType extends AbstractOrderListType
                 'currency_path' => 'currency',
                 'position'      => 60,
             ])
-            ->addColumn('salePaid', BType\Column\PriceType::class, [
+            ->addColumn('invoicePaid', Column\InvoicePaymentsType::class, [
                 'label'         => 'ekyna_commerce.invoice.field.sale_paid',
-                'property_path' => 'order.paidTotal',
-                'currency_path' => 'currency',
+                'property_path' => false,
                 'position'      => 70,
             ])
             ->addColumn('outstandingDate', CType\Column\DateTimeType::class, [
@@ -99,19 +88,14 @@ class OrderInvoiceType extends AbstractOrderListType
                 'property_path' => 'order.grandTotal',
                 'position'      => 50,
             ])
-            ->addFilter('salePaid', CType\Filter\NumberType::class, [
-                'label'         => 'ekyna_commerce.invoice.field.sale_paid',
-                'property_path' => 'order.paidTotal',
-                'position'      => 70,
-            ])
             ->addFilter('outstandingDate', CType\Filter\DateTimeType::class, [
                 'label'         => 'ekyna_commerce.sale.field.outstanding_date',
                 'property_path' => 'order.outstandingDate',
-                'position'      => 80,
+                'position'      => 60,
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.created_at',
-                'position' => 80,
+                'position' => 70,
             ]);
 
         $builder->addAction('documents', InvoiceDocumentActionType::class, [

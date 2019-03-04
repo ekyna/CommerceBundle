@@ -62,11 +62,19 @@
             <table>
                 <tbody>
                 <tr>
-                    <th>{{ 'ekyna_commerce.dashboard.debt.field.expired'|trans }}</th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_suppliers_expired_due_orders') }}" target="_blank">
+                            {{- 'ekyna_commerce.dashboard.debt.field.expired'|trans -}}
+                        </a>
+                    </th>
                     <td>{{ supplier_expired|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>{{ 'ekyna_commerce.dashboard.debt.field.fall'|trans }}</th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_suppliers_fall_due_orders') }}" target="_blank">
+                            {{- 'ekyna_commerce.dashboard.debt.field.fall'|trans -}}
+                        </a>
+                    </th>
                     <td>{{ supplier_fall|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
@@ -84,11 +92,19 @@
             <table>
                 <tbody>
                 <tr>
-                    <th>{{ 'ekyna_commerce.dashboard.debt.field.expired'|trans }}</th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_forwarders_expired_due_orders') }}" target="_blank">
+                            {{- 'ekyna_commerce.dashboard.debt.field.expired'|trans -}}
+                        </a>
+                    </th>
                     <td>{{ carrier_expired|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
-                    <th>{{ 'ekyna_commerce.dashboard.debt.field.fall'|trans }}</th>
+                    <th>
+                        <a href="{{ path('ekyna_commerce_export_admin_forwarders_fall_due_orders') }}" target="_blank">
+                            {{- 'ekyna_commerce.dashboard.debt.field.fall'|trans -}}
+                        </a>
+                    </th>
                     <td>{{ carrier_fall|localizedcurrency(commerce_default_currency) }}</td>
                 </tr>
                 <tr>
