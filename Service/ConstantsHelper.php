@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
@@ -184,6 +185,47 @@ class ConstantsHelper extends AbstractConstantsHelper
     }
 
     /**
+     * Renders the cart state label.
+     *
+     * @param CartInterface|string $stateOrCart
+     *
+     * @return string
+     */
+    public function renderCartStateLabel($stateOrCart)
+    {
+        if ($stateOrCart instanceof CartInterface) {
+            $stateOrCart = $stateOrCart->getState();
+        }
+
+        if (Model\CartStates::isValid($stateOrCart)) {
+            return $this->renderLabel(Model\CartStates::getLabel($stateOrCart));
+        }
+
+        return $this->renderLabel();
+    }
+
+    /**
+     * Renders the cart state badge.
+     *
+     * @param CartInterface|string $stateOrCart
+     *
+     * @return string
+     */
+    public function renderCartStateBadge($stateOrCart)
+    {
+        if ($stateOrCart instanceof CartInterface) {
+            $stateOrCart = $stateOrCart->getState();
+        }
+
+        $theme = 'default';
+        if (Model\CartStates::isValid($stateOrCart)) {
+            $theme = Model\CartStates::getTheme($stateOrCart);
+        }
+
+        return $this->renderBadge($this->renderCartStateLabel($stateOrCart), $theme);
+    }
+
+    /**
      * Renders the sale state label.
      *
      * @param Common\SaleInterface $sale
@@ -196,6 +238,8 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderOrderStateLabel($sale);
         } elseif ($sale instanceof QuoteInterface) {
             return $this->renderQuoteStateLabel($sale);
+        } elseif ($sale instanceof CartInterface) {
+            return $this->renderCartStateLabel($sale);
         } else {
             throw new InvalidArgumentException("Unexpected sale.");
         }
@@ -214,6 +258,8 @@ class ConstantsHelper extends AbstractConstantsHelper
             return $this->renderOrderStateBadge($sale);
         } elseif ($sale instanceof QuoteInterface) {
             return $this->renderQuoteStateBadge($sale);
+        } elseif ($sale instanceof CartInterface) {
+            return $this->renderCartStateBadge($sale);
         } else {
             throw new InvalidArgumentException("Unexpected sale.");
         }

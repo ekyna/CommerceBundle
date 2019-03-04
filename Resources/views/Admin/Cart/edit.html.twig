@@ -1,0 +1,18 @@
+{% extends '@EkynaAdmin/Entity/Default/edit.html.twig' %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.cart.header.edit'|trans({'%number%': cart.number})|raw }}</h1>
+{% endblock title %}
+
+{% block side %}
+    {{ parent() }}
+    {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' with {
+        'title': 'ekyna_commerce.cart.label.singular',
+        'sale': cart
+    } only %}
+    {% if cart.customer is not null %}
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/customer.html.twig' with {
+            'customer': cart.customer
+        } only %}
+    {% endif %}
+{% endblock side %}

@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
+use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
 use Ekyna\Bundle\CmsBundle\Service\Renderer\TagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer as BaseNormalizer;
@@ -43,8 +44,12 @@ class SaleNormalizer extends BaseNormalizer
 
         if ($this->contextHasGroup('Summary', $context)) {
             $data['flags'] = $this->commonRenderer->renderSaleFlags($sale, ['badge' => false]);
-            /** @var \Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface $sale */
-            $data['tags'] = $this->getTagRenderer()->renderTags($sale, ['text' => false, 'badge' => false]);
+
+            if ($sale instanceof TagsSubjectInterface) {
+                $data['tags'] = $this->getTagRenderer()->renderTags($sale, ['text' => false, 'badge' => false]);
+            } else {
+                $data['tags'] = '';
+            }
         }
 
         return $data;

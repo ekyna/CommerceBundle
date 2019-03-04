@@ -1,0 +1,139 @@
+ekyna_commerce_cart_admin_home:
+    path: ""
+    defaults: { _controller: "ekyna_commerce.cart.controller:homeAction" }
+    methods: [GET]
+
+ekyna_commerce_cart_admin_list:
+    path: /list
+    defaults: { _controller: "ekyna_commerce.cart.controller:listAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_cart_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.cart.controller:newAction" }
+    methods: [GET|POST]
+
+ekyna_commerce_cart_admin_show:
+    path: /{cartId}/show
+    defaults: { _controller: "ekyna_commerce.cart.controller:showAction" }
+    methods: [GET]
+    requirements:
+        cartId: \d+
+    options: {expose: true}
+
+ekyna_commerce_cart_admin_summary:
+    path: /{cartId}/summary
+    defaults: { _controller: "ekyna_commerce.cart.controller:summaryAction" }
+    methods: [GET]
+    requirements:
+        cartId: \d+
+    options:
+        expose: true
+
+ekyna_commerce_cart_admin_search:
+    path: /search
+    defaults: { _controller: "ekyna_commerce.cart.controller:searchAction" }
+    methods: [GET]
+    options:
+        expose: true
+
+ekyna_commerce_cart_admin_edit:
+    path: /{cartId}/edit
+    defaults: { _controller: "ekyna_commerce.cart.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_admin_edit_shipment:
+    path: /{cartId}/edit-shipment
+    defaults: { _controller: "ekyna_commerce.cart.controller:editShipmentAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+
+#ekyna_commerce_cart_admin_toggle:
+#    path: /{cartId}/toggle/{field}
+#    defaults: { _controller: "ekyna_commerce.cart.controller:toggleAction", field: enabled }
+#    methods: [GET]
+#    requirements:
+#        cartId: \d+
+#        field: \w+
+
+ekyna_commerce_cart_admin_remove:
+    path: /{cartId}/remove
+    defaults: { _controller: "ekyna_commerce.cart.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_admin_refresh:
+    path: /{cartId}/refresh
+    defaults: { _controller: "ekyna_commerce.cart.controller:refreshAction" }
+    methods: [GET]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_admin_recalculate:
+    path: /{cartId}/recalculate
+    defaults: { _controller: "ekyna_commerce.cart.controller:recalculateAction" }
+    methods: [POST]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_admin_transform:
+    path: /{cartId}/transform/{target}
+    defaults: { _controller: "ekyna_commerce.cart.controller:transformAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+        target: "[a-z]+"
+
+ekyna_commerce_cart_admin_duplicate:
+    path: /{cartId}/duplicate
+    defaults: { _controller: "ekyna_commerce.cart.controller:duplicateAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_admin_notify:
+    path: /{cartId}/notify
+    defaults: { _controller: "ekyna_commerce.cart.controller:notifyAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_admin_document_generate:
+    path: /{cartId}/document/generate/{type}
+    defaults:
+        _controller: "ekyna_commerce.cart.controller:documentGenerateAction"
+    methods: [GET]
+    requirements:
+        cartId: \d+
+        type: "[a-z]+"
+
+ekyna_commerce_cart_admin_document_render:
+    path: /{cartId}/document/render/{type}.{_format}
+    defaults:
+        _controller: "ekyna_commerce.cart.controller:documentRenderAction"
+        _format: html
+    methods: [GET]
+    requirements:
+        cartId: \d+
+        type: "[a-z]+"
+        _format: html|pdf|jpg
+
+ekyna_commerce_cart_admin_attachment:
+    resource: cart_attachment.yml
+    prefix: /{cartId}/attachments
+
+ekyna_commerce_cart_admin_item:
+    resource: cart_item.yml
+    prefix: /{cartId}/items
+
+ekyna_commerce_cart_admin_adjustment:
+    resource: cart_adjustment.yml
+    prefix: /{cartId}/adjustments
+
+ekyna_commerce_cart_admin_payment:
+    resource: cart_payment.yml
+    prefix: /{cartId}/payments

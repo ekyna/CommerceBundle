@@ -1,0 +1,31 @@
+ekyna_commerce_cart_payment_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.cart_payment.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_payment_admin_edit:
+    path: /{cartPaymentId}/edit
+    defaults: { _controller: "ekyna_commerce.cart_payment.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+        cartPaymentId: \d+
+
+ekyna_commerce_cart_payment_admin_action:
+    path: /{cartPaymentId}/action/{action}
+    defaults: { _controller: "ekyna_commerce.cart_payment.controller:actionAction" }
+    methods: [GET]
+    requirements:
+        cartId: \d+
+        cartPaymentId: \d+
+        action: accept|cancel|hang|reject|refund
+
+ekyna_commerce_cart_payment_admin_remove:
+    path: /{cartPaymentId}/remove
+    defaults: { _controller: "ekyna_commerce.cart_payment.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+        cartPaymentId: \d+

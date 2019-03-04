@@ -13,6 +13,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -99,52 +100,6 @@ class SaleType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
-            ->add('autoShipping', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale.field.auto_shipping',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
-            ->add('autoDiscount', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale.field.auto_discount',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
-            ->add('autoNotify', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale.field.auto_notify',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
-            ->add('taxExempt', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale.field.tax_exempt',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
-            ->add('shipmentMethod', ShipmentMethodPickType::class, [
-                'available' => !$options['admin_mode'],
-            ])
-            ->add('paymentTerm', PaymentTermChoiceType::class, [
-                'required' => false,
-            ])
-            ->add('title', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.title',
-                'required' => false,
-            ])
-            ->add('voucherNumber', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                'required' => false,
-            ])
-            ->add('originNumber', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.sale.field.origin_number',
-                'required' => false,
-            ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',
                 'required' => false,
@@ -162,7 +117,7 @@ class SaleType extends ResourceFormType
                 'required' => false,
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             /** @var SaleInterface $sale */
             $sale = $event->getData();
             $form = $event->getForm();
@@ -173,7 +128,64 @@ class SaleType extends ResourceFormType
                 $currency = $this->defaultCurrency;
             }
 
+            $locked = $sale instanceof CartInterface;
+
             $form
+                ->add('autoShipping', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.auto_shipping',
+                    'required' => false,
+                    'disabled' => $locked,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('autoDiscount', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.auto_discount',
+                    'required' => false,
+                    'disabled' => $locked,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('autoNotify', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.auto_notify',
+                    'required' => false,
+                    'disabled' => $locked,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('taxExempt', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.tax_exempt',
+                    'required' => false,
+                    'disabled' => $locked,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('shipmentMethod', ShipmentMethodPickType::class, [
+                    'disabled' => $locked,
+                    'available' => !$options['admin_mode'],
+                ])
+                ->add('paymentTerm', PaymentTermChoiceType::class, [
+                    'required' => false,
+                    'disabled' => $locked,
+                ])
+                ->add('title', Type\TextType::class, [
+                    'label'    => 'ekyna_core.field.title',
+                    'required' => false,
+                    'disabled' => $locked,
+                ])
+                ->add('voucherNumber', Type\TextType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                    'required' => false,
+                    'disabled' => $locked,
+                ])
+                ->add('originNumber', Type\TextType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.origin_number',
+                    'required' => false,
+                    'disabled' => $locked,
+                ])
                 ->add('number', Type\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
                     'required' => false,
@@ -182,10 +194,12 @@ class SaleType extends ResourceFormType
                 ->add('depositTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.sale.field.deposit_total',
                     'currency' => $currency,
+                    'disabled' => $locked,
                 ])
                 ->add('outstandingLimit', MoneyType::class, [
                     'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
                     'currency' => $currency,
+                    'disabled' => $locked,
                 ])
                 ->add('relayPoint', RelayPointType::class, [
                     'search' => $sale->isSameAddress() ? $sale->getInvoiceAddress() : $sale->getDeliveryAddress(),

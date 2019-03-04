@@ -1,0 +1,11 @@
+{% extends '@EkynaAdmin/Entity/Default/edit.html.twig' %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.cart.header.duplicate'|trans({'%number%': cart.number})|raw }}</h1>
+{% endblock title %}
+
+{% block main %}
+    {{ form_start(form) }}
+    {% include '@EkynaCommerce/Admin/Cart/_form.html.twig' %}
+    {{ form_end(form) }}
+{% endblock main %}

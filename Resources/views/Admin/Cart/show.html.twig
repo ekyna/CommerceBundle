@@ -1,0 +1,180 @@
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
+
+{% block title %}
+    {{ admin_resource_pin(resource) }}
+    <h1>{{ 'ekyna_commerce.cart.header.show'|trans({'%number%': cart.number})|raw }}</h1>
+{% endblock title %}
+
+{% block main %}
+<div class="main-header">
+    <div class="infos">
+        <span class="sale-state">{{ cart|sale_state_badge }}</span>
+        {{- cart|sale_flags -}}
+    </div>
+    <div class="actions">
+        {{ sale_custom_buttons(cart) }}
+        {# TODO permission ? #}
+        {#{{ ui_button('ekyna_core.button.notify', {
+            'theme': 'default',
+            'type': 'link',
+            'path': admin_resource_path(cart, 'notify')
+        }) }}#}
+        {{ ui_button('ekyna_core.button.duplicate', {
+            'theme': 'default',
+            'type': 'link',
+            'path': admin_resource_path(cart, 'duplicate')
+        }) }}
+        {{ sale_transform_btn(cart) }}
+        {{ admin_resource_btn(cart, 'edit', {'label': 'ekyna_core.button.edit'}) }}
+        {{ admin_resource_btn(cart, 'remove', {'label': 'ekyna_core.button.remove'}) }}
+    </div>
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+        <li class="active">
+            <a href="#cart-general" id="toggle-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#cart-addresses" id="toggle-addresses" data-toggle="tab">
+                {{ 'ekyna_commerce.address.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#cart-details" id="toggle-details" data-toggle="tab">
+                {{ 'ekyna_commerce.sale.field.details'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#cart-payments" id="toggle-payments" data-toggle="tab">
+                {{ 'ekyna_commerce.payment.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#cart-attachments" id="toggle-attachments" data-toggle="tab">
+                {{ 'ekyna_commerce.attachment.label.plural'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#cart-informations" id="toggle-informations" data-toggle="tab">
+                {{ 'ekyna_core.field.informations'|trans }}
+            </a>
+        </li>
+        {#{% if support_enabled() -%}
+        <li>
+            <a href="#cart-tickets" id="toggle-tickets" data-toggle="tab">
+                {{ 'ekyna_commerce.ticket.label.plural'|trans }}
+            </a>
+        </li>
+        {%- endif %}#}
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="cart-general">
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_general.html.twig' with {'sale': cart} %}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(cart.weightTotal, 'number', {
+                            'label': 'ekyna_commerce.sale.field.weight_total',
+                            'append': 'kg',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(cart.expiresAt, 'datetime', {
+                            'label': 'ekyna_core.field.expires_at',
+                            'time': false,
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="cart-addresses">
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_addresses.html.twig' with {'sale': cart} %}
+            </div>
+            <div class="tab-pane" id="cart-details">
+                {{ render_sale_view(sale_view) }}
+            </div>
+            <div class="tab-pane" id="cart-payments">
+                <div class="actions">
+                    {# TODO Permission #}
+                    {%- if not cart.paid -%}
+                    <a href="{{ admin_resource_path('ekyna_commerce.cart_payment', 'new', {'cartId': cart.id}) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{ 'ekyna_commerce.payment.button.new'|trans }}
+                    </a>
+                    {%- endif -%}
+                </div>
+                <h4 class="sub-header">
+                    {{ 'ekyna_commerce.payment.label.plural'|trans }}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {'sale': cart} %}
+                <hr>
+                {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {'sale': cart} %}
+            </div>
+            <div class="tab-pane" id="cart-attachments">
+                <div class="actions">
+                    {% for type in cart|sale_editable_document_types -%}
+                    <a href="{{ admin_resource_path(cart, 'document_generate', {'cartId': cart.id, 'type': type}) }}"
+                       class="btn btn-default btn-xs pull-right">
+                        {{ 'ekyna_commerce.attachment.button.create'|trans }}
+                        {{ ('ekyna_commerce.document.type.' ~ type)|trans }}
+                    </a>
+                    {%- endfor %}
+                    {# TODO Permission #}
+                    <a href="{{ admin_resource_path('ekyna_commerce.cart_attachment', 'new', {'cartId': cart.id}) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{ 'ekyna_commerce.attachment.button.new'|trans }}
+                    </a>
+                </div>
+                <h4 class="sub-header">
+                    {{ 'ekyna_commerce.attachment.label.plural'|trans }}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_attachments.html.twig' with {
+                    'sale': cart,
+                    'attachments': cart.attachments
+                } %}
+            </div>
+            <div class="tab-pane" id="cart-informations">
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_informations.html.twig' with {'sale': cart} %}
+                <h4 class="sub-header">
+                    {{- 'ekyna_commerce.notification.label.plural'|trans -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_notifications.html.twig' with {
+                    'sale': cart,
+                    'notifications': cart.notifications
+                } %}
+            </div>
+            {#{% if support_enabled() -%}
+            <div class="tab-pane" id="cart-tickets">
+                {{- support_tickets(cart, {
+                    'admin': true,
+                    'new': path('ekyna_commerce_ticket_admin_new', {'cart': cart.number})
+                }) -}}
+            </div>
+            {%- endif %}#}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block side %}
+    {{ parent() }}
+    {% if cart.customer is not null %}
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/customer.html.twig' with {'customer': cart.customer} %}
+    {% endif %}
+{% endblock side %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
+    <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
+    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+{% endblock javascripts %}

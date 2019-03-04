@@ -300,15 +300,33 @@ ekyna_commerce:
         label:
             singular: Panier
             plural: Paniers
+        header:
+            list: Paniers <small>Liste des paniers</small>
+            show: Détail du panier <small>%number%</small>
+            new: Créer un nouveau panier
+            edit: Modifier le panier <small>%number%</small>
+            remove: Supprimer le panier <small>%number%</small>
+            transform: Transformer le panier <small>%number%</small>
+            duplicate: Dupliquer le panier <small>%number%</small>
+            notify: Notifier le panier <small>%number%</small>
         widget:
             title: Mon panier
             items: "{1} Un article|]1,Inf[ %count% articles"
             show_cart: Voir votre panier
             empty: Votre panier est vide.
         button:
+            list: Liste des paniers
+            show: Détail du panier
+            new: Nouveau panier
+            edit: Modifier le panier
+            remove: Supprimer le panier
+            transform: Transformer le panier
+            notify: Notifier le panier
             add: Ajouter au panier
             continue: Continuer mes achats
             cart: Voir mon panier
+        alert:
+            no_item: Aucun panier configuré
         message:
             transformation_to_order_is_ready: Ce panier est prêt à être transformé en commande.
             already_paid: Ce panier est déjà réglée en totalité

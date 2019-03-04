@@ -16,6 +16,14 @@
     </div>
 </div>
 <div class="row">
+    {% if sale is sale_cart %}
+    <div class="col-md-12">
+        {{ show_row(sale.title, 'text', {
+            'label': 'ekyna_core.field.title',
+            'id': 'sale_title'
+        }) }}
+    </div>
+    {% else %}
     <div class="col-md-6">
         {{ show_row(sale.title, 'text', {
             'label': 'ekyna_core.field.title',
@@ -32,6 +40,7 @@
             'label_col': 4
         }) }}
     </div>
+    {% endif %}
 </div>
 <hr>
 {{ show_row(sale.comment, 'textarea', {

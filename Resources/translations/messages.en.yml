@@ -299,15 +299,33 @@ ekyna_commerce:
         label:
             singular: Cart
             plural: Carts
+        header:
+            list: Carts <small>Carts list</small>
+            show: Cart details <small>%number%</small>
+            new: Create a new cart
+            edit: Edit the cart <small>%number%</small>
+            remove: Remove the cart <small>%number%</small>
+            transform: Transfor the cart <small>%number%</small>
+            duplicate: Duplicate the cart <small>%number%</small>
+            notify: Notify the cart <small>%number%</small>
         widget:
             title: My cart
             items: "{1} One product|]1,Inf[ %count% products"
             show_cart: Checkout
             empty: Your cart is empty
         button:
+            list: Carts list
+            show: Cart details
+            new: New cart
+            edit: Edit the cart
+            remove: Remove the cart
+            transform: Transform the cart
+            notify: Notify the cart
             add: Add to cart
             continue: Continue shopping
             cart: Checkout
+        alert:
+            no_item: No cart configured
         message:
             transformation_to_order_is_ready: This cart can be transformed into an order.
             already_paid: This cart has already been paid.

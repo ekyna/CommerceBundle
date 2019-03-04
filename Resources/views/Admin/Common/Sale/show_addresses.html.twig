@@ -9,7 +9,11 @@
             <div class="col-md-8">
                 <div class="panel panel-default" id="sale_invoiceAddress">
                     <div class="panel-body">
-                        {{- sale.invoiceAddress|address -}}
+                    {%- if sale.invoiceAddress is not null -%}
+                        {{ sale.invoiceAddress|address }}
+                    {%- else -%}
+                        <p><em>{{ 'ekyna_core.value.undefined'|trans }}</em></p>
+                    {%- endif -%}
                     </div>
                 </div>
             </div>
@@ -26,17 +30,21 @@
                 {{ 'ekyna_commerce.sale.field.delivery_address'|trans }}
             </div>
             <div class="col-md-8">
-                {% if not sale.sameAddress -%}
-                    <div class="panel panel-default">
-                        <div class="panel-body" id="sale_deliveryAddress">
-                            {{ sale.deliveryAddress|address }}
-                        </div>
+            {%- if not sale.sameAddress -%}
+                <div class="panel panel-default">
+                    <div class="panel-body" id="sale_deliveryAddress">
+                    {%- if sale.deliveryAddress is not null -%}
+                        {{ sale.deliveryAddress|address }}
+                    {%- else -%}
+                        <p><em>{{ 'ekyna_core.value.undefined'|trans }}</em></p>
+                    {%- endif -%}
                     </div>
-                {%- else -%}
-                    <div class="show-widget show-widget-inline" id="sale_deliveryAddress">
-                        <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
-                    </div>
-                {%- endif %}
+                </div>
+            {%- else -%}
+                <div class="show-widget show-widget-inline" id="sale_deliveryAddress">
+                    <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
+                </div>
+            {%- endif -%}
             </div>
         </div>
     </div>

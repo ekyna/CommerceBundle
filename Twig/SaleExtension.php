@@ -2,8 +2,10 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CoreBundle\Service\Ui\UiRenderer;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
@@ -115,7 +117,55 @@ class SaleExtension extends \Twig_Extension
                 'sale_with_attachment',
                 [$this, 'isSaleWithAttachment']
             ),
+            new \Twig_SimpleTest(
+                'sale_cart',
+                [$this, 'isSaleCart']
+            ),
+            new \Twig_SimpleTest(
+                'sale_quote',
+                [$this, 'isSaleQuote']
+            ),
+            new \Twig_SimpleTest(
+                'sale_order',
+                [$this, 'isSaleOrder']
+            ),
         ];
+    }
+
+    /**
+     * Returns whether the given sale is a cart.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleCart(Common\SaleInterface $sale)
+    {
+        return $sale instanceof CartInterface;
+    }
+
+    /**
+     * Returns whether the given sale is a quote.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleQuote(Common\SaleInterface $sale)
+    {
+        return $sale instanceof QuoteInterface;
+    }
+
+    /**
+     * Returns whether the given sale is an order.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleOrder(Common\SaleInterface $sale)
+    {
+        return $sale instanceof OrderInterface;
     }
 
     /**
@@ -539,13 +589,11 @@ class SaleExtension extends \Twig_Extension
     {
         $actions = [];
 
-        // TODO use constants for target
-
         if (empty($targets = Common\TransformationTargets::getTargetsForSale($sale))) {
             return '';
         }
 
-        /*if ($sale instanceof CartInterface) {
+        if ($sale instanceof CartInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
                     $this->urlGenerator->generate('ekyna_commerce_cart_admin_transform', [
@@ -553,8 +601,7 @@ class SaleExtension extends \Twig_Extension
                         'target' => $target,
                     ]);
             }
-        } else*/
-        if ($sale instanceof QuoteInterface) {
+        } elseif ($sale instanceof QuoteInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
                     $this->urlGenerator->generate('ekyna_commerce_quote_admin_transform', [

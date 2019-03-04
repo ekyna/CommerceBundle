@@ -59,6 +59,9 @@
         <service id="ekyna_commerce.cart.view_type"
                  class="Ekyna\Bundle\CommerceBundle\Service\Cart\CartViewType"
                  parent="ekyna_commerce.abstract_view_type">
+            <call method="setShipmentPriceResolver">
+                <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
+            </call>
             <tag name="ekyna_commerce.view_type"/>
         </service>
 

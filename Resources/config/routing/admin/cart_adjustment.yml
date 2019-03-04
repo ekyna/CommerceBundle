@@ -1,0 +1,22 @@
+ekyna_commerce_cart_adjustment_admin_new:
+    path: /new
+    defaults: { _controller: "ekyna_commerce.cart_adjustment.controller:newAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+
+ekyna_commerce_cart_adjustment_admin_edit:
+    path: /{cartAdjustmentId}/edit
+    defaults: { _controller: "ekyna_commerce.cart_adjustment.controller:editAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+        cartAdjustmentId: \d+
+
+ekyna_commerce_cart_adjustment_admin_remove:
+    path: /{cartAdjustmentId}/remove
+    defaults: { _controller: "ekyna_commerce.cart_adjustment.controller:removeAction" }
+    methods: [GET|POST]
+    requirements:
+        cartId: \d+
+        cartAdjustmentId: \d+
