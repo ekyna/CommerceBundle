@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
+use Ekyna\Component\Table\Column\ColumnBuilderInterface;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
@@ -43,6 +44,14 @@ class InvoicePaymentsType extends AbstractColumnType
     {
         $this->paymentResolver = $paymentResolver;
         $this->formatter = $formatter;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildColumn(ColumnBuilderInterface $builder, array $options)
+    {
+        $builder->setSortable(false);
     }
 
     /**

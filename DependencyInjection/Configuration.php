@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
 use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes;
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -84,12 +85,10 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('cart')
-                                    ->isRequired()
                                     ->cannotBeEmpty()
                                     ->defaultValue('+1 month')
                                 ->end()
                                 ->scalarNode('quote')
-                                    ->isRequired()
                                     ->cannotBeEmpty()
                                     ->defaultValue('+2 months')
                                 ->end()
@@ -99,7 +98,6 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->integerNode('threshold')
-                                    ->isRequired()
                                     ->defaultValue(5)
                                 ->end()
                             ->end()
@@ -267,7 +265,18 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('availability')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->integerNode('in_stock_limit')->defaultValue(100)->isRequired()->end()
+                                ->integerNode('in_stock_limit')->defaultValue(100)->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('subject_default')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('stock_mode')->defaultValue(StockSubjectModes::MODE_AUTO)->cannotBeEmpty()->end()
+                                ->integerNode('stock_floor')->defaultValue(0)->end()
+                                ->integerNode('replenishment_time')->defaultValue(2)->end()
+                                ->integerNode('minimum_order_quantity')->defaultValue(1)->end()
+                                ->booleanNode('quote_only')->defaultFalse()->end()
+                                ->booleanNode('end_of_life')->defaultFalse()->end()
                             ->end()
                         ->end()
                     ->end()

@@ -101,6 +101,10 @@
                     <dt>{{ 'ekyna_core.field.comment'|trans }}</dt>
                     <dd>{{ comment|nl2br|raw }}</dd>
                     {%- endif %}
+                    {% if preparation_note is not empty -%}
+                    <dt>{{ 'ekyna_commerce.sale.field.preparation_note'|trans }}</dt>
+                    <dd>{{ preparation_note|nl2br|raw }}</dd>
+                    {%- endif %}
                 </dl>
             </div>
         </td>

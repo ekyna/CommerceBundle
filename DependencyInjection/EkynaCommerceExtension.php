@@ -145,11 +145,11 @@ class EkynaCommerceExtension extends AbstractExtension
      */
     private function configureStock(array $config, ContainerBuilder $container)
     {
-        $availability = $config['availability'];
+        $container->setParameter('ekyna_commerce.stock_subject_defaults', $config['subject_default']);
 
         $container
             ->getDefinition('ekyna_commerce.availability_helper')
-            ->replaceArgument(2, $availability['in_stock_limit']);
+            ->replaceArgument(2, $config['availability']['in_stock_limit']);
     }
 
     /**

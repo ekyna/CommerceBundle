@@ -6,7 +6,7 @@
 
 {% if address.lastName is not empty and address.firstName is not empty -%}
     <strong>{{ address|identity }}</strong><br>
-{%- elseif attribute(address, 'customer') is defined and address.customer is not null -%}
+{%- elseif address.company is empty and attribute(address, 'customer') is defined and address.customer is not null -%}
     <strong>{{ address.customer|identity }}</strong><br>
 {%- endif %}
 
