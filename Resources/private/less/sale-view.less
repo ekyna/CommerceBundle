@@ -100,6 +100,7 @@
                 .sale-detail-designation {
                     padding: 0;
                     line-height: 18px + (2*@base-cell-padding);
+                    max-width: 280px;
 
                     > i {
                         display: inline-block;
@@ -241,7 +242,7 @@
             .sale-detail-actions {
                 position: relative;
                 padding: @base-cell-padding;
-                width: 18px + (2*@base-cell-padding);
+                width: 40px + (2*@base-cell-padding);
                 text-align: right;
 
                 a {
@@ -269,7 +270,7 @@
 
                     > a {
                         display: none;
-                        &:last-child {
+                        &:nth-last-child(-n+2) {
                             display: inline-block;
                         }
                     }

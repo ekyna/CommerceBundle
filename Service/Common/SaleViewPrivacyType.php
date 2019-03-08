@@ -46,6 +46,14 @@ class SaleViewPrivacyType extends AbstractViewType
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getPriority()
+    {
+        return 1024;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getName()

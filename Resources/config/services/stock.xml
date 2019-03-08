@@ -120,6 +120,7 @@
                  class="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="ekyna_commerce.stock.logger"/>

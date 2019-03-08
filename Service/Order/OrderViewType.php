@@ -195,31 +195,6 @@ class OrderViewType extends AbstractViewType
 
         $sale = $item->getSale();
 
-        // Information
-        if (!$item instanceof Order\OrderItemInterface) {
-            throw new \Exception("Unexpected sale item type.");
-        }
-        if (!empty($assignments = $item->getStockAssignments()->toArray())) {
-            $view->vars['information'] = $this->stockRenderer->renderStockAssignments($assignments, [
-                'prefix' => $view->getId() . '_su',
-                'class'  => 'table-alt',
-            ]);
-
-            $class = 'text-muted';
-            /** @var StockAssignmentInterface $assignment */
-            foreach ($assignments as $assignment) {
-                if (!$assignment->isFullyShipped() && !$assignment->isFullyShippable()) {
-                    $class = 'text-danger';
-                }
-            }
-
-            $view->addAction(new View\Action('javascript: void(0)', 'fa fa-tasks', [
-                'title'               => $this->trans('ekyna_commerce.sale.button.item.information'),
-                'data-toggle-details' => $view->getId() . '_information',
-                'class'               => $class,
-            ]));
-        }
-
         // Popover
         $popover = '';
         if (!($item->isCompound() && !$item->hasPrivateChildren())) {
@@ -309,17 +284,50 @@ class OrderViewType extends AbstractViewType
             }
         }
 
-        if (!$item->isImmutable() && !$item->getParent()) {
-            // Configure action
-            if ($item->isConfigurable()) {
-                $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
+        // If no parent
+        if (!$item->getParent()) {
+            // Move up
+            if (0 < $item->getPosition()) {
+                $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_up', [
                     'orderId'     => $item->getSale()->getId(),
                     'orderItemId' => $item->getId(),
                 ]);
-                $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
-                    'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
-                    'data-sale-modal' => null,
-                    'class'           => 'text-primary',
+                $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
+                    'title'         => $this->trans('ekyna_core.button.move_up'),
+                    'data-sale-xhr' => 'get',
+                    'class'         => 'text-muted',
+                ]));
+            }
+
+            // Move down
+            if (!$item->isLast()) {
+                $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_down', [
+                    'orderId'     => $item->getSale()->getId(),
+                    'orderItemId' => $item->getId(),
+                ]);
+                $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
+                    'title'         => $this->trans('ekyna_core.button.move_down'),
+                    'data-sale-xhr' => 'get',
+                    'class'         => 'text-muted',
+                ]));
+            }
+
+            // If not immutable, invoiced or shipped
+            if (!(
+                $item->isImmutable() ||
+                $this->invoiceCalculator->isInvoiced($item) ||
+                $this->shipmentCalculator->isShipped($item)
+            )) {
+                // Remove action
+                $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
+                    'orderId'     => $item->getSale()->getId(),
+                    'orderItemId' => $item->getId(),
+                ]);
+                $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+                    'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
+                    'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
+                    'data-sale-xhr' => null,
+                    'class'         => 'text-danger',
                 ]));
             }
         }
@@ -337,61 +345,45 @@ class OrderViewType extends AbstractViewType
         ]));
         //}
 
-        // Abort if has parent
-        if ($item->getParent()) {
-            return;
+        // Configure action
+        if (!$item->isImmutable() && !$item->getParent()) {
+            if ($item->isConfigurable()) {
+                $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
+                    'orderId'     => $item->getSale()->getId(),
+                    'orderItemId' => $item->getId(),
+                ]);
+                $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
+                    'title'           => $this->trans('ekyna_commerce.sale.button.item.configure'),
+                    'data-sale-modal' => null,
+                    'class'           => 'text-primary',
+                ]));
+            }
         }
 
-        // Move up
-        if (0 < $item->getPosition()) {
-            $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_up', [
-                'orderId'     => $item->getSale()->getId(),
-                'orderItemId' => $item->getId(),
+        // Information
+        if (!$item instanceof Order\OrderItemInterface) {
+            throw new \Exception("Unexpected sale item type.");
+        }
+        if (!empty($assignments = $item->getStockAssignments()->toArray())) {
+            $view->vars['information'] = $this->stockRenderer->renderStockAssignments($assignments, [
+                'prefix' => $view->getId() . '_su',
+                'class'  => 'table-alt',
             ]);
-            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
-                'title'         => $this->trans('ekyna_core.button.move_up'),
-                'data-sale-xhr' => 'get',
-                'class'         => 'text-muted',
+
+            $class = 'text-muted';
+            /** @var StockAssignmentInterface $assignment */
+            foreach ($assignments as $assignment) {
+                if (!$assignment->isFullyShipped() && !$assignment->isFullyShippable()) {
+                    $class = 'text-danger';
+                }
+            }
+
+            $view->addAction(new View\Action('javascript: void(0)', 'fa fa-tasks', [
+                'title'               => $this->trans('ekyna_commerce.sale.button.item.information'),
+                'data-toggle-details' => $view->getId() . '_information',
+                'class'               => $class,
             ]));
         }
-
-        // Move down
-        if (!$item->isLast()) {
-            $moveUpPath = $this->generateUrl('ekyna_commerce_order_item_admin_move_down', [
-                'orderId'     => $item->getSale()->getId(),
-                'orderItemId' => $item->getId(),
-            ]);
-            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
-                'title'         => $this->trans('ekyna_core.button.move_down'),
-                'data-sale-xhr' => 'get',
-                'class'         => 'text-muted',
-            ]));
-        }
-
-        // Abort if immutable
-        if ($item->isImmutable()) {
-            return;
-        }
-        // Abort if invoiced
-        if ($this->invoiceCalculator->isInvoiced($item)) {
-            return;
-        }
-        // Abort if shipped
-        if ($this->shipmentCalculator->isShipped($item)) {
-            return;
-        }
-
-        // Remove action
-        $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
-            'orderId'     => $item->getSale()->getId(),
-            'orderItemId' => $item->getId(),
-        ]);
-        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-            'title'         => $this->trans('ekyna_commerce.sale.button.item.remove'),
-            'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.remove'),
-            'data-sale-xhr' => null,
-            'class'         => 'text-danger',
-        ]));
     }
 
     /**
