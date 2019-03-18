@@ -197,7 +197,12 @@ class CartHelper
             try {
                 $cart = $this->cartProvider->getCart(true);
 
-                $this->saleHelper->addItem($cart, $item);
+                // TODO addItem() may return the 'merged in' sale item.
+                // We need to provide the real added quantity (not the resulting one),
+                // so that the google tracking event subscriber can calculate the proper
+                // price value
+                /** @noinspection PhpParamsInspection */
+                $event->setItem($this->saleHelper->addItem($cart, $item));
 
                 $this->cartProvider->saveCart();
 

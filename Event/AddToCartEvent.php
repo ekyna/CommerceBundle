@@ -80,16 +80,6 @@ class AddToCartEvent extends Event
     }
 
     /**
-     * Returns the item.
-     *
-     * @return CartItemInterface|null
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
      * Sets the modal.
      *
      * @param Modal $modal
@@ -101,6 +91,26 @@ class AddToCartEvent extends Event
         $this->modal = $modal;
 
         return $this;
+    }
+
+    /**
+     * Returns the item.
+     *
+     * @return CartItemInterface|null
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     * Sets the item.
+     *
+     * @param CartItemInterface $item
+     */
+    public function setItem(CartItemInterface $item = null)
+    {
+        $this->item = $item;
     }
 
     /**

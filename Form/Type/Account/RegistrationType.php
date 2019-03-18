@@ -13,7 +13,7 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Component\Commerce\Exception\LogicException;
-use Gregwar\CaptchaBundle\Type\CaptchaType;
+use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
@@ -67,98 +67,6 @@ class RegistrationType extends AbstractType
     }
 
     /**
-     * Creates the customer form.
-     *
-     * @param FormBuilderInterface $builder
-     *
-     * @return FormBuilderInterface
-     */
-    private function createCustomerForm(FormBuilderInterface $builder)
-    {
-        $form = $builder->create('customer', null, [
-            'data_class' => CustomerInterface::class,
-            'compound'   => true,
-        ]);
-
-        $form
-            ->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
-                'required' => false,
-                'attr'     => [
-                    'maxlength'    => 35,
-                    'autocomplete' => 'organization',
-                ],
-            ])
-            ->add('vatNumber', VatNumberType::class)
-            ->add('identity', IdentityType::class)
-            ->add('phone', PhoneNumberType::class, [
-                'label'       => 'ekyna_core.field.phone',
-                'required'    => false,
-                'number_attr' => [
-                    'autocomplete' => 'tel-national',
-                ],
-            ])
-            ->add('mobile', PhoneNumberType::class, [
-                'label'       => 'ekyna_core.field.mobile',
-                'required'    => false,
-                'type'        => PhoneType::MOBILE,
-                'number_attr' => [
-                    'autocomplete' => 'tel-national',
-                ],
-            ]);
-
-        if ($this->config['birthday']) {
-            $form->add('birthday', Type\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.birthday',
-                'required' => false,
-                'format'   => 'dd/MM/yyyy', // TODO localized format
-                'attr'     => [
-                    'autocomplete' => 'bday',
-                ],
-            ]);
-        }
-
-        return $form;
-    }
-
-    /**
-     * Creates the invoice contact form.
-     *
-     * @param FormBuilderInterface $builder
-     *
-     * @return FormBuilderInterface
-     */
-    private function createInvoiceContactForm(FormBuilderInterface $builder)
-    {
-        $form = $builder->create('invoiceContact', null, [
-            'data_class' => Contact::class,
-            'compound'   => true,
-        ]);
-
-        $form
-            ->add('identity', IdentityType::class, [
-                'required' => true,
-                'section'  => 'billing',
-            ])
-            ->add('email', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.account.registration.field.invoice_email',
-                'required' => false,
-                'attr'     => [
-                    'autocomplete' => 'billing email',
-                ],
-            ])
-            ->add('phone', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.account.registration.field.invoice_phone',
-                'required' => false,
-                'attr'     => [
-                    'autocomplete' => 'billing tel-national',
-                ],
-            ]);
-
-        return $form;
-    }
-
-    /**
      * @inheritdoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -193,7 +101,9 @@ class RegistrationType extends AbstractType
                 'label'    => 'ekyna_core.field.comment',
                 'required' => false,
             ])
-            ->add('captcha', CaptchaType::class)
+            ->add('captcha', EWZRecaptchaType::class, [
+                'mapped' => false,
+            ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
                     'save' => [
@@ -338,5 +248,97 @@ class RegistrationType extends AbstractType
             'csrf_token_id'     => 'registration',
             'validation_groups' => ['Registration'],
         ]);
+    }
+
+    /**
+     * Creates the customer form.
+     *
+     * @param FormBuilderInterface $builder
+     *
+     * @return FormBuilderInterface
+     */
+    private function createCustomerForm(FormBuilderInterface $builder)
+    {
+        $form = $builder->create('customer', null, [
+            'data_class' => CustomerInterface::class,
+            'compound'   => true,
+        ]);
+
+        $form
+            ->add('company', Type\TextType::class, [
+                'label'    => 'ekyna_core.field.company',
+                'required' => false,
+                'attr'     => [
+                    'maxlength'    => 35,
+                    'autocomplete' => 'organization',
+                ],
+            ])
+            ->add('vatNumber', VatNumberType::class)
+            ->add('identity', IdentityType::class)
+            ->add('phone', PhoneNumberType::class, [
+                'label'       => 'ekyna_core.field.phone',
+                'required'    => false,
+                'number_attr' => [
+                    'autocomplete' => 'tel-national',
+                ],
+            ])
+            ->add('mobile', PhoneNumberType::class, [
+                'label'       => 'ekyna_core.field.mobile',
+                'required'    => false,
+                'type'        => PhoneType::MOBILE,
+                'number_attr' => [
+                    'autocomplete' => 'tel-national',
+                ],
+            ]);
+
+        if ($this->config['birthday']) {
+            $form->add('birthday', Type\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.birthday',
+                'required' => false,
+                'format'   => 'dd/MM/yyyy', // TODO localized format
+                'attr'     => [
+                    'autocomplete' => 'bday',
+                ],
+            ]);
+        }
+
+        return $form;
+    }
+
+    /**
+     * Creates the invoice contact form.
+     *
+     * @param FormBuilderInterface $builder
+     *
+     * @return FormBuilderInterface
+     */
+    private function createInvoiceContactForm(FormBuilderInterface $builder)
+    {
+        $form = $builder->create('invoiceContact', null, [
+            'data_class' => Contact::class,
+            'compound'   => true,
+        ]);
+
+        $form
+            ->add('identity', IdentityType::class, [
+                'required' => true,
+                'section'  => 'billing',
+            ])
+            ->add('email', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.account.registration.field.invoice_email',
+                'required' => false,
+                'attr'     => [
+                    'autocomplete' => 'billing email',
+                ],
+            ])
+            ->add('phone', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.account.registration.field.invoice_phone',
+                'required' => false,
+                'attr'     => [
+                    'autocomplete' => 'billing tel-national',
+                ],
+            ]);
+
+        return $form;
     }
 }
