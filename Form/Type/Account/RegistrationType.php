@@ -14,6 +14,7 @@ use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
+use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
@@ -102,7 +103,8 @@ class RegistrationType extends AbstractType
                 'required' => false,
             ])
             ->add('captcha', EWZRecaptchaType::class, [
-                'mapped' => false,
+                'mapped'      => false,
+                'constraints' => [new IsTrue()],
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
