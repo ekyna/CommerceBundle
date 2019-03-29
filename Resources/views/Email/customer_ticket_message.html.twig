@@ -20,6 +20,7 @@
 
 {% block body %}
 {% spaceless %}
+    {% do trans_set_locale(locale) %}
     {% if 0 < ticket.orders|length %}
         {% set path = path('ekyna_commerce_account_order_show', {'number': ticket.orders|first.number}) %}
     {% elseif 0 < ticket.quotes|length %}
@@ -33,5 +34,6 @@
         '%url%': absolute_url(path)
     })|raw }}
     {{- get_setting('commerce.email_signature')|raw -}}
+    {% do trans_revert_locale() %}
 {% endspaceless %}
 {% endblock body %}

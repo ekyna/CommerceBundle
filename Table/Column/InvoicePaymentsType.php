@@ -2,7 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Component\Commerce\Common\Util\Formatter;
+use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
+use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
@@ -23,27 +24,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class InvoicePaymentsType extends AbstractColumnType
 {
+    use FormatterAwareTrait;
+
     /**
      * @var InvoicePaymentResolverInterface
      */
     private $paymentResolver;
-
-    /**
-     * @var Formatter
-     */
-    private $formatter;
 
 
     /**
      * Constructor.
      *
      * @param InvoicePaymentResolverInterface $paymentResolver
-     * @param Formatter                       $formatter
+     * @param FormatterFactory                $formatterFactory
      */
-    public function __construct(InvoicePaymentResolverInterface $paymentResolver, Formatter $formatter)
+    public function __construct(InvoicePaymentResolverInterface $paymentResolver, FormatterFactory $formatterFactory)
     {
         $this->paymentResolver = $paymentResolver;
-        $this->formatter = $formatter;
+        $this->formatterFactory = $formatterFactory;
     }
 
     /**
@@ -85,7 +83,7 @@ class InvoicePaymentsType extends AbstractColumnType
             $total += $payment->getAmount();
         }
 
-        $view->vars['value'] = $this->formatter->currency($total, $invoice->getCurrency());
+        $view->vars['value'] = $this->getFormatter()->currency($total, $invoice->getCurrency());
 
         if (-1 !== Money::compare($total, $invoice->getGrandTotal(), $invoice->getCurrency())) {
             return;

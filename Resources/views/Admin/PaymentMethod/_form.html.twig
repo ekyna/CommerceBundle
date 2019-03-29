@@ -32,6 +32,7 @@
                     {{ form_row(form.enabled, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            {{ form_row(form.currencies) }}
             {% if form.config is defined %}
                 {{ form_row(form.config) }}
             {% endif %}

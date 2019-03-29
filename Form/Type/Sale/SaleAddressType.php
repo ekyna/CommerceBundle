@@ -102,7 +102,12 @@ class SaleAddressType extends AbstractType
                 return;
             }
 
-            $this->buildChoiceField($form, $sale->getCustomer(), $options);
+            $customer = $sale->getCustomer();
+            if (!$options['customer_field'] && !$customer) {
+                return;
+            }
+
+            $this->buildChoiceField($form, $customer);
         }, 2048);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
@@ -122,7 +127,11 @@ class SaleAddressType extends AbstractType
             /** @var CustomerInterface $customer */
             $customer = $this->customerRepository->find($data['customer']);
 
-            $this->buildChoiceField($form, $customer, $options);
+            if (!$options['customer_field'] && !$customer) {
+                return;
+            }
+
+            $this->buildChoiceField($form, $customer);
         }, 2048);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -146,14 +155,9 @@ class SaleAddressType extends AbstractType
      *
      * @param FormInterface     $form
      * @param CustomerInterface $customer
-     * @param array             $options
      */
-    private function buildChoiceField(FormInterface $form, CustomerInterface $customer = null, array $options)
+    private function buildChoiceField(FormInterface $form, CustomerInterface $customer = null)
     {
-        if (!$options['customer_field'] && !$customer) {
-            return;
-        }
-
         $choiceOptions = [
             'label'    => 'ekyna_commerce.sale.field.address_choice',
             'choices'  => [],

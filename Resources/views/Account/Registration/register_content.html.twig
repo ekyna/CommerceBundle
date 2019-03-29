@@ -38,9 +38,9 @@
             <div class="col-md-10">
                 <span id="registration_user" class="input-sm form-control" disabled>
                     <strong>{{ form.vars.user.email }}</strong>
-                    {% if form.vars.user_owner is not same as (null) %}
+                    {% if form.vars.user_owner is not same as (null) -%}
                         (via <strong>{{ form.vars.user_owner|capitalize }}</strong>)
-                    {% endif %}
+                    {%- endif %}
                 </span>
             </div>
         </div>
@@ -80,7 +80,14 @@
                 {{ form_row(form.customer.mobile, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.customer.currency, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.customer.locale, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
 
         <div id="registration_invoiceContact">
             <div class="row">

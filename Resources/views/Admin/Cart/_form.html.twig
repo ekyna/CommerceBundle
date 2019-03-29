@@ -23,11 +23,14 @@
     <div class="tab-content">
         <div class="tab-pane active" id="cart-general">
             <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.number, {'label_col': 4, 'widget_col': 8}) }}
+                <div class="col-md-4">
+                    {{ form_row(form.number, {'label_col': 6, 'widget_col': 6}) }}
                 </div>
-                <div class="col-md-6">
-                    {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+                <div class="col-md-4">
+                    {{ form_row(form.currency, {'label_col': 6, 'widget_col': 6}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.locale, {'label_col': 6, 'widget_col': 6}) }}
                 </div>
             </div>
             <div class="row">
@@ -121,6 +124,7 @@
             {{ form_row(form.comment) }}
             {{ form_row(form.documentComment) }}
             {{ form_row(form.description) }}
+            {{ form_row(form.preparationNote) }}
         </div>
     </div>
     {{ ivory_google_api() }}

@@ -156,6 +156,22 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
+                        {{ show_row(customer.currency, 'text', {
+                            'label': 'ekyna_commerce.currency.label.singular',
+                            'id': 'sale_currency',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(customer.locale|language|capitalize, 'text', {
+                            'label': 'ekyna_core.field.locale',
+                            'id': 'sale_locale',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
                         {{ show_row(customer.customerGroup, 'entity', {
                             'label': 'ekyna_commerce.customer_group.label.singular',
                             'id': 'customer_group',

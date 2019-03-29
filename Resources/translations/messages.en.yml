@@ -936,8 +936,8 @@ ekyna_commerce:
             vat_valid: Valid VAT number
             vat_display_mode: VAT display
         vat_display_mode:
-            ati: Including taxes
-            net: Excluding taxes
+            ati: Inc. tax.
+            net: Exc. tax.
 
     quote:
         label:

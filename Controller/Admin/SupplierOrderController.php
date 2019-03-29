@@ -454,8 +454,10 @@ class SupplierOrderController extends ResourceController
 
         $this->isGranted('VIEW', $order);
 
-        $formatter = $this->get('ekyna_commerce.util.formatter.default');
         $translator = $this->get('translator');
+        $formatter = $this
+            ->get('ekyna_commerce.util.formatter_factory')
+            ->create(null, $order->getCurrency()->getCode());
 
         $parameters = [
             '%number%' => $order->getNumber(),

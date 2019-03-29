@@ -16,9 +16,9 @@
     {%- endif %}#}
 {%- else -%}
     <view{{ macros.view_controls(controls) }}>
-        <![CDATA[<p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>]]>
+        <![CDATA[<div class="alert alert-info"><p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p></div>]]>
     </view>
 {%- endif -%}
-    <content><![CDATA[{{ cart_checkout_content(cart) }}]]></content>
+    <content type="cart"><![CDATA[{{ cart_checkout_content(cart) }}]]></content>
 </response>
 {% endspaceless %}

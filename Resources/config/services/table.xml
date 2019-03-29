@@ -120,7 +120,7 @@
         <service id="ekyna_commerce.invoice_payments.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\InvoicePaymentsType">
             <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <tag name="table.column_type"/>
         </service>
 
@@ -217,7 +217,7 @@
         <!-- Supplier order payment column type -->
         <service id="ekyna_commerce.supplier_order_payment.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderPaymentType">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="translator"/>
             <tag name="table.column_type"/>
         </service>

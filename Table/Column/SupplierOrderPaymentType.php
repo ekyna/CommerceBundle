@@ -2,7 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
-use Ekyna\Component\Commerce\Common\Util\Formatter;
+use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
+use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnBuilderInterface;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -19,10 +20,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class SupplierOrderPaymentType extends AbstractColumnType
 {
-    /**
-     * @var Formatter
-     */
-    private $formatter;
+    use FormatterAwareTrait;
 
     /**
      * @var TranslatorInterface
@@ -33,12 +31,12 @@ class SupplierOrderPaymentType extends AbstractColumnType
     /**
      * Constructor.
      *
-     * @param Formatter           $formatter
+     * @param FormatterFactory    $formatterFactory
      * @param TranslatorInterface $translator
      */
-    public function __construct(Formatter $formatter, TranslatorInterface $translator)
+    public function __construct(FormatterFactory $formatterFactory, TranslatorInterface $translator)
     {
-        $this->formatter = $formatter;
+        $this->formatterFactory = $formatterFactory;
         $this->translator = $translator;
     }
 
@@ -57,8 +55,10 @@ class SupplierOrderPaymentType extends AbstractColumnType
     {
         $date = $row->getData($options['prefix'] . 'Date');
 
+        $formatter = $this->getFormatter();
+
         if (null !== $date) {
-            $label = $this->formatter->date($date);
+            $label = $formatter->date($date);
             $class = 'success';
         } elseif ($options['prefix'] === 'forwarder' && null === $row->getData('carrier')) {
             $label = $this->translator->trans('ekyna_core.value.none');
@@ -68,7 +68,7 @@ class SupplierOrderPaymentType extends AbstractColumnType
             $class = 'danger';
 
             if (null !== $due = $row->getData($options['prefix'] . 'DueDate')) {
-                $label .= '&nbsp;' . $this->formatter->date($due);
+                $label .= '&nbsp;' . $formatter->date($due);
             }
         }
 

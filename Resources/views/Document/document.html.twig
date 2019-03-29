@@ -10,10 +10,12 @@
         {{ subject.sale.number -}}
     </h1>
     <p>
-        Le {{ date|localizeddate('long', 'none') }}{# TODO trans #}
+        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
+        {{ date|localizeddate('long', 'none', locale) }}.
         {% if subject.sale.customer is not null -%}
-            , client <strong>{{ subject.sale.customer.number }}</strong>
-        {%- endif %}.
+            <span class="text-alt">{{ 'ekyna_commerce.customer.label.singular'|trans }}</span>&nbsp;
+            <strong>{{ subject.sale.customer.number }}</strong>.
+        {%- endif %}
         {{ macro.render_voucher_number(subject.sale) }}
         {{ macro.render_payment_term(subject.sale) }}
     </p>
@@ -114,7 +116,7 @@
             <td>{{ row.reference }}</td>
             <td class="text-right">
                 {%- if not row.virtual -%}
-                    {{ row.unit|localizedcurrency(currency) }}
+                    {{ row.unit|localizedcurrency(currency, locale) }}
                 {%- else -%}
                     &nbsp;
                 {%- endif -%}
@@ -139,7 +141,7 @@
             {% if line_discount %}
             <td class="text-right">
                 {%- if not row.virtual -%}
-                    {{ row.gross|localizedcurrency(currency) }}
+                    {{ row.gross|localizedcurrency(currency, locale) }}
                 {%- else -%}
                     &nbsp;
                 {%- endif -%}
@@ -153,7 +155,7 @@
                     &nbsp;
                 {%- endfor -%}
             </td>
-            <td class="text-right">-{{- row.discount|localizedcurrency(currency) -}}</td>
+            <td class="text-right">-{{- row.discount|localizedcurrency(currency, locale) -}}</td>
             {%- else -%}
             <td class="text-right">&nbsp;</td>
             <td class="text-right">&nbsp;</td>
@@ -161,7 +163,7 @@
             {% endif %}
             <td class="text-right">
                 {%- if not row.virtual -%}
-                    {{ row.base|localizedcurrency(currency) }}
+                    {{ row.base|localizedcurrency(currency, locale) }}
                 {%- else -%}
                     &nbsp;
                 {%- endif -%}
@@ -179,12 +181,12 @@
         <tr>
             <td colspan="{{ columns_count - (line_discount ? 4 : 1) }}">{{ 'ekyna_commerce.sale.field.gross_totals'|trans }}</td>
             {% if line_discount -%}
-            <td class="text-right">{{ grossTotal|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ grossTotal|localizedcurrency(currency, locale) }}</td>
             <td class="text-right" colspan="2">
-                {%- if 0 < discountTotal %}-{% endif %}{{ discountTotal|localizedcurrency(currency) -}}
+                {%- if 0 < discountTotal %}-{% endif %}{{ discountTotal|localizedcurrency(currency, locale) -}}
             </td>
             {%- endif %}
-            <td class="text-right">{{ baseTotal|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ baseTotal|localizedcurrency(currency, locale) }}</td>
         </tr>
     </tbody>
     {%- endif %}
@@ -203,7 +205,7 @@
                     {{- line.designation -}}
                 {%- endif -%}
             </th>
-            <td class="total text-right">-{{ line.base(subject.ati)|localizedcurrency(currency) }}</td>
+            <td class="total text-right">-{{ line.base(subject.ati)|localizedcurrency(currency, locale) }}</td>
         </tr>
     {%- endfor %}
     </tbody>
@@ -217,7 +219,7 @@
         <tr>
             <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
             <th>{{ ('ekyna_commerce.sale.field.shipment_' ~ (subject.ati ? 'ati' : 'net') ~ '_total')|trans }}</th>
-            <td class="total text-right">{{ line.base(subject.ati)|localizedcurrency(currency) }}</td>
+            <td class="total text-right">{{ line.base(subject.ati)|localizedcurrency(currency, locale) }}</td>
         </tr>
     {%- endfor %}
     </tbody>
@@ -230,20 +232,22 @@
             <td colspan="{{ columns_count - 2 }}" rowspan="{{ subject.ati ? 2 : 3 }}">&nbsp;</td>
             {% if subject.ati -%}
             <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency) }}</td>
+            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency, locale) }}</td>
             {%- else -%}
             <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-            <td class="total text-right">{{ (subject.goodsBase - subject.discountBase + subject.shipmentBase)|localizedcurrency(currency) }}</td>
+            <td class="total text-right">
+                {{- (subject.goodsBase - subject.discountBase + subject.shipmentBase)|localizedcurrency(currency, locale) -}}
+            </td>
             {%- endif %}
         </tr>
         <tr>
             <th>{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-            <td class="total text-right">{{ subject.taxesTotal|localizedcurrency(currency) }}</td>
+            <td class="total text-right">{{ subject.taxesTotal|localizedcurrency(currency, locale) }}</td>
         </tr>
         {% if not subject.ati -%}
         <tr>
             <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency) }}</td>
+            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency, locale) }}</td>
         </tr>
         {%- endif %}
     </tbody>
@@ -262,7 +266,7 @@
         {% for details in subject.taxesDetails -%}
         <tr>
             <th>{{ details.name }}</th>
-            <td class="text-right">{{ details.amount|localizedcurrency(currency) }}</td>
+            <td class="text-right">{{ details.amount|localizedcurrency(currency, locale) }}</td>
         </tr>
         {%- endfor %}
     </tbody>

@@ -150,6 +150,8 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $locale = $sale->getLocale();
+
         if ($notify->getType() === NotificationTypes::MANUAL) {
             if ($sale instanceof OrderInterface) {
                 $type = 'order';
@@ -161,13 +163,13 @@ class NotifyEventSubscriber implements EventSubscriberInterface
                 throw new InvalidArgumentException("Unexpected sale class.");
             }
 
-            $type = $this->translator->trans('ekyna_commerce.' . $type . '.label.singular');
+            $type = $this->translator->trans('ekyna_commerce.' . $type . '.label.singular', [], null, $locale);
 
             $notify->setSubject(
                 $this->translator->trans('ekyna_commerce.notify.type.manual.subject', [
                     '%type%'   => mb_strtolower($type),
                     '%number%' => $sale->getNumber(),
-                ])
+                ], null, $locale)
             );
 
             return;
@@ -250,17 +252,18 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         $type = $notify->getType();
         $sale = $this->getSaleFromEvent($event);
         $number = $sale ? $sale->getNumber() : '';
+        $locale = $sale ? $sale->getLocale() : null;
 
         if (empty($notify->getSubject())) {
             $trans = sprintf('ekyna_commerce.notify.type.%s.subject', $type);
-            if ($trans != $subject = $this->translator->trans($trans, ['%number%' => $number])) {
+            if ($trans != $subject = $this->translator->trans($trans, ['%number%' => $number], null, $locale)) {
                 $notify->setSubject($subject);
             }
         }
 
         if (empty($notify->getCustomMessage())) {
             $trans = sprintf('ekyna_commerce.notify.type.%s.message', $type);
-            if ($trans != $message = $this->translator->trans($trans)) {
+            if ($trans != $message = $this->translator->trans($trans, [], null, $locale)) {
                 $notify->setCustomMessage($message);
             }
         }

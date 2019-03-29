@@ -167,9 +167,14 @@ class Mailer
         $fromEmail = $this->settingsManager->getParameter('notification.from_email');
         $fromName = $this->settingsManager->getParameter('notification.from_name');
 
+        $subject = $this
+            ->translator
+            ->trans('ekyna_commerce.supplier_order_attachment.type.form', [], null, $order->getLocale());
+        $subject .= ' ' . $order->getNumber();
+
         $message = new \Swift_Message();
         $message
-            ->setSubject('Bon de commande ' . $order->getNumber()) // TODO translate with supplier locale
+            ->setSubject($subject)
             ->setFrom($fromEmail, $fromName)
             ->setTo($submit->getEmails())
             ->setBody($submit->getMessage(), 'text/html');
@@ -232,18 +237,18 @@ class Mailer
         }
         $fromName = $this->settingsManager->getParameter('notification.from_name');
 
-        // TODO Translate with customer/user's locale
+        $customer = $message->getTicket()->getCustomer();
+        $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('ekyna_commerce.ticket_message.notify.customer.subject', [
             '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
-        ]);
+        ], null, $locale);
 
         $body = $this->templating->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
             'subject' => $subject,
             'message' => $message,
+            'locale' => $locale,
         ]);
-
-        $customer = $message->getTicket()->getCustomer();
 
         $email = new \Swift_Message();
         $email

@@ -1,0 +1,15 @@
+<{{ tag }} class="dropdown{% if class is not empty %} {{ class }}{% endif %}" id="{{ id }}">
+    <a href="javascript:void(0)" title="{{ current|currency_name|capitalize }}" class="dropdown-toggle"
+       data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        {{- current|currency_symbol -}}
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+        <form action="{{ path('ekyna_commerce_widget_currency_change') }}" method="post">
+            {% for currency in currencies %}{% if currency != current -%}
+            <button class="btn btn-sm btn-default" type="submit" name="currency" value="{{ currency }}" title="{{ currency|currency_name|capitalize }}">
+                {{- currency|currency_symbol -}}
+            </button>
+            {%- endif %}{% endfor %}
+        </form>
+    </div>
+</{{ tag }}>

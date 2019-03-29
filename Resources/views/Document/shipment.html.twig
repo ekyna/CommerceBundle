@@ -12,14 +12,19 @@
         {{ subject.number -}}
     </h1>
     <p>
-        Le {{ subject.createdAt|localizeddate('long', 'none') }}, commande <strong>{{ subject.sale.number }}</strong>
+        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
+        {{ subject.createdAt|localizeddate('long', 'none', locale) }}.
+        <span class="text-alt">{{ 'ekyna_commerce.order.label.singular'|trans }}</span>&nbsp;
+        <strong>{{ subject.sale.number }}</strong>.
         {% if subject.sale.customer is not null -%}
-            , client <strong>{{ subject.sale.customer.number }}</strong>
-        {%- endif %}.
-        {% if subject.sale.voucherNumber is not empty -%}
-            {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ subject.sale.voucherNumber }}</strong>.
+            <span class="text-alt">{{ 'ekyna_commerce.customer.label.singular'|trans }}</span>&nbsp;
+            <strong>{{ subject.sale.customer.number }}</strong>.
         {%- endif %}
-    </p>{# TODO trans #}
+        {% if subject.sale.voucherNumber is not empty -%}
+            <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</span>&nbsp;
+            <strong>{{ subject.sale.voucherNumber }}</strong>.
+        {%- endif %}
+    </p>
     {% endspaceless %}
 {%- endblock doc_title_content %}
 
@@ -113,7 +118,7 @@
     <p>
     {%- if remaining_date and (remaining.eda is not null) -%}
         {{ 'ekyna_commerce.document.mention.remaining_with_date'|trans({
-            '%date%': remaining.eda|localizeddate('long', 'none')
+            '%date%': remaining.eda|localizeddate('long', 'none', locale)
         }) }}
     {%- else -%}
         {{ 'ekyna_commerce.document.mention.remaining_unknown'|trans }}

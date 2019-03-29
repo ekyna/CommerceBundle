@@ -164,8 +164,10 @@ class AddressType extends AbstractType
                     'label'         => 'ekyna_core.field.phone',
                     'required'      => $options['phone_required'],
                     'country_field' => 'country',
+                    'attr'          => [
+                        'class' => 'address-phone',
+                    ],
                     'number_attr'   => [
-                        'class'        => 'address-phone',
                         'autocomplete' => $section . 'tel-national',
                     ],
                 ])
@@ -174,8 +176,10 @@ class AddressType extends AbstractType
                     'required'      => $options['mobile_required'],
                     'type'          => PhoneType::MOBILE,
                     'country_field' => 'country',
+                    'attr'          => [
+                        'class' => 'address-mobile',
+                    ],
                     'number_attr'   => [
-                        'class'        => 'address-mobile',
                         'autocomplete' => $section . 'tel-national',
                     ],
                 ]);

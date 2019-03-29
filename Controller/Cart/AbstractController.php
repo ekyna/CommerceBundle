@@ -201,12 +201,12 @@ class AbstractController
         $customer = $this->getCustomer();
 
         $controls = [
-            'empty'    => 1,
-            'valid'    => 0,
-            'errors'   => [],
-            'user'     => null !== $this->getUser() ? 1 : 0,
-            'customer' => null !== $customer ? 1 : 0,
-            'quote'    => null !== $customer && $customer->getCustomerGroup()->isQuoteAllowed() ? 1 : 0,
+            'empty'       => 1,
+            'valid'       => 0,
+            'errors'      => [],
+            'user'        => null !== $this->getUser() ? 1 : 0,
+            'customer'    => null !== $customer ? 1 : 0,
+            'quote'       => null !== $customer && $customer->getCustomerGroup()->isQuoteAllowed() ? 1 : 0,
             'information' => 1,
             'invoice'     => 0,
             'delivery'    => 0,
@@ -217,22 +217,26 @@ class AbstractController
         if ($cart && 0 < $cart->getItems()->count()) {
             $controls['empty'] = 0;
 
-            if (!$cart->isIdentityEmpty() && !empty($cart->getEmail())) {
-                $controls['invoice'] = 1;
-                if (null !== $cart->getInvoiceAddress()) {
-                    $controls['delivery'] = 1;
-                    $controls['comment'] = 1;
-                    $controls['attachments'] = 1;
-                }
-            }
-
-            $valid = $this->stepValidator->validate($cart, SaleStepValidatorInterface::CHECKOUT_STEP);
-            if ($valid) {
-                $controls['valid'] = 1;
+            if ($cart->isLocked()) {
+                $controls['information'] = 0;
             } else {
-                /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
-                foreach ($this->stepValidator->getViolationList() as $violation) {
-                    $controls['errors'][] = $violation->getMessage();
+                if (!$cart->isIdentityEmpty() && !empty($cart->getEmail())) {
+                    $controls['invoice'] = 1;
+                    if (null !== $cart->getInvoiceAddress()) {
+                        $controls['delivery'] = 1;
+                        $controls['comment'] = 1;
+                        $controls['attachments'] = 1;
+                    }
+                }
+
+                $valid = $this->stepValidator->validate($cart, SaleStepValidatorInterface::CHECKOUT_STEP);
+                if ($valid) {
+                    $controls['valid'] = 1;
+                } else {
+                    /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
+                    foreach ($this->stepValidator->getViolationList() as $violation) {
+                        $controls['errors'][] = $violation->getMessage();
+                    }
                 }
             }
         }

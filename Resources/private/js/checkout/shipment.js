@@ -4,7 +4,7 @@ define(['jquery'], function($) {
     var $submit = $('button.cart-checkout-submit'),
         $method = $('input[name="shipment[shipmentMethod]"]'),
         $submitPrevented = $('div.submit-prevented'),
-        $mobile = $('input.address-mobile'),
+        $mobile = $('.address-mobile input.number'),
         $mobileGroup = $mobile.closest('.form-group'),
         animDuration = 150;
 

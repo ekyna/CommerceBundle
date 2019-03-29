@@ -14,7 +14,7 @@
         <!-- Accounting form types -->
         <service id="ekyna_commerce.accounting_export.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType">
-            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument type="service" id="ekyna_resource.locale_provider"/>
             <tag name="form.type"/>
         </service>
 
@@ -23,6 +23,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType">
             <argument>%ekyna_commerce.cart.class%</argument>
             <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.js" selector=".commerce-sale" path="ekyna-commerce/form/sale"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.cart_payment.form_type"
@@ -37,7 +38,7 @@
         <service id="ekyna_commerce.country_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType">
             <argument type="service" id="ekyna_core.geo.user_country_guesser"/>
-            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument type="service" id="ekyna_resource.locale_provider"/>
             <argument>%ekyna_commerce.country.class%</argument>
             <argument>%ekyna_commerce.default.country%</argument>
             <tag name="form.type"/>
@@ -117,6 +118,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType">
             <argument>%ekyna_commerce.order.class%</argument>
             <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.js" selector=".commerce-sale" path="ekyna-commerce/form/sale"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.order_search.form_type"
@@ -168,6 +170,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType">
             <argument>%ekyna_commerce.quote.class%</argument>
             <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.js" selector=".commerce-sale" path="ekyna-commerce/form/sale"/>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.quote_search.form_type"
@@ -263,7 +266,8 @@
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <argument type="service" id="ekyna_commerce.shipment_method.repository"/>
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="translator"/>
             <tag name="form.type"/>
         </service>

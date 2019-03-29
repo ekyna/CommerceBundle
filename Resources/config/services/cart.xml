@@ -22,28 +22,15 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <!-- Cart abstract provider -->
-        <service id="ekyna_commerce.cart.abstract_provider"
-                 class="Ekyna\Component\Commerce\Cart\Provider\AbstractCartProvider"
-                 abstract="true">
-            <call method="setCartRepository">
-                <argument type="service" id="ekyna_commerce.cart.repository"/>
-            </call>
-            <call method="setCartOperator">
-                <argument type="service" id="ekyna_commerce.cart.operator"/>
-            </call>
-            <call method="setSaleFactory">
-                <argument type="service" id="ekyna_commerce.sale_factory"/>
-            </call>
-            <call method="setCustomerProvider">
-                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
-            </call>
-        </service>
-
         <!-- Cart session provider -->
         <service id="ekyna_commerce.cart.session_provider"
                  class="Ekyna\Bundle\CommerceBundle\Service\Cart\SessionCartProvider"
-                 parent="ekyna_commerce.cart.abstract_provider">
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.cart.repository"/>
+            <argument type="service" id="ekyna_commerce.cart.operator"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
             <argument type="service" id="session"/>
         </service>
 

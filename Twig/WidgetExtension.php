@@ -33,7 +33,8 @@ class WidgetExtension extends \Twig_Extension
         $this->widgetHelper = $widgetHelper;
 
         $this->config = array_replace([
-            'template' => '@EkynaCommerce/Js/widget.html.twig',
+            'widget_template'   => '@EkynaCommerce/Js/widget.html.twig',
+            'currency_template' => '@EkynaCommerce/Widget/currency.html.twig',
         ], $config);
     }
 
@@ -51,6 +52,11 @@ class WidgetExtension extends \Twig_Extension
             new \Twig_SimpleFunction(
                 'commerce_cart_widget',
                 [$this, 'renderCartWidget'],
+                ['is_safe' => ['html'], 'needs_environment' => true]
+            ),
+            new \Twig_SimpleFunction(
+                'commerce_currency_widget',
+                [$this, 'renderCurrencyWidget'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
         ];
@@ -83,6 +89,31 @@ class WidgetExtension extends \Twig_Extension
     }
 
     /**
+     * Renders the currency widget.
+     *
+     * @param \Twig_Environment $env
+     * @param array             $options
+     *
+     * @return string
+     */
+    public function renderCurrencyWidget(\Twig_Environment $env, array $options = [])
+    {
+        $data = $this->widgetHelper->getCurrencyWidgetData();
+
+        if (empty($data['currencies'])) {
+            return '';
+        }
+
+        $data = array_replace([
+            'template' => $this->config['currency_template'],
+            'tag'      => 'li',
+            'class'    => null,
+        ], $data, $options);
+
+        return $env->render($data['template'], $data);
+    }
+
+    /**
      * Renders the widget.
      *
      * @param \Twig_Environment $env
@@ -94,7 +125,7 @@ class WidgetExtension extends \Twig_Extension
     private function renderWidget(\Twig_Environment $env, array $data, array $options)
     {
         $data = array_replace([
-            'template' => $this->config['template'],
+            'template' => $this->config['widget_template'],
             'tag'      => 'li',
             'class'    => null,
             'icon'     => null,

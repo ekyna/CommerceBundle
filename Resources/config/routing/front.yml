@@ -1,10 +1,10 @@
 ekyna_commerce_payment:
     resource: "front/payment.yml"
-    prefix:   /payment
+    prefix:   /_locale/payment
 
 ekyna_commerce_cart:
     resource: "front/cart.yml"
-    prefix:   /cart
+    prefix:   /_locale/cart
 
 ekyna_commerce_cart_checkout:
     resource: "front/cart-checkout.yml"

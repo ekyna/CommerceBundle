@@ -20,6 +20,7 @@
 
 {% block body %}
 {% spaceless %}
+    {% do trans_set_locale(sale.locale) %}
     {% if notify.includeView == 'before' -%}
         {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
     {%- endif %}
@@ -62,5 +63,6 @@
             '%url%': url('ekyna_user_account_index')
         })|raw }}
     </p>
+    {% do trans_revert_locale() %}
 {% endspaceless %}
 {% endblock body %}

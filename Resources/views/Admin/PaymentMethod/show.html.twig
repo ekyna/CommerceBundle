@@ -46,6 +46,11 @@
                             }) }}
                         </div>
                     </div>
+                    {{ show_row(paymentMethod.currencies, 'entity', {
+                        'label': 'ekyna_commerce.currency.label.plural',
+                        'route': 'ekyna_commerce_currency_admin_show',
+                        'route_parameters_map': {'currencyId': 'id'}
+                    }) }}
                     {% if paymentMethod.config is not empty %}
                         <div class="row show-row">
                             <div class="col-md-2 show-label">{{ 'ekyna_core.field.config'|trans }}</div>

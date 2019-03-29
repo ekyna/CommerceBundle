@@ -55,7 +55,7 @@ ekyna_commerce_cart_checkout_payment:
 # TODO Payment cancel
 
 ekyna_commerce_cart_checkout_status:
-    path: /status
+    path: /{_locale}/status
     defaults: { _controller: "ekyna_commerce.controller.cart_checkout:statusAction" }
     methods: [GET]
     options: { i18n: false }

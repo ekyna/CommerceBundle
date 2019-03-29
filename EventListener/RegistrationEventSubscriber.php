@@ -5,6 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use Ekyna\Bundle\CommerceBundle\Event\RegistrationEvent;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
+use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -20,6 +22,16 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class RegistrationEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var LocaleProviderInterface
+     */
+    private $localeProvider;
+
+    /**
+     * @var CurrencyProviderInterface
+     */
+    private $currencyProvider;
+
     /**
      * @var Mailer
      */
@@ -54,14 +66,18 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param Mailer                  $mailer
-     * @param MailerInterface         $fosMailer
-     * @param TokenGeneratorInterface $tokenGenerator
-     * @param UrlGeneratorInterface   $urlGenerator
-     * @param TranslatorInterface     $translator
-     * @param SessionInterface        $session
+     * @param LocaleProviderInterface   $localeProvider
+     * @param CurrencyProviderInterface $currencyProvider
+     * @param Mailer                    $mailer
+     * @param MailerInterface           $fosMailer
+     * @param TokenGeneratorInterface   $tokenGenerator
+     * @param UrlGeneratorInterface     $urlGenerator
+     * @param TranslatorInterface       $translator
+     * @param SessionInterface          $session
      */
     public function __construct(
+        LocaleProviderInterface $localeProvider,
+        CurrencyProviderInterface $currencyProvider,
         Mailer $mailer,
         MailerInterface $fosMailer,
         TokenGeneratorInterface $tokenGenerator,
@@ -69,12 +85,32 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
         TranslatorInterface $translator,
         SessionInterface $session
     ) {
+        $this->localeProvider = $localeProvider;
+        $this->currencyProvider = $currencyProvider;
         $this->mailer = $mailer;
         $this->fosMailer = $fosMailer;
         $this->tokenGenerator = $tokenGenerator;
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
         $this->session = $session;
+    }
+
+    /**
+     * Account registration initialize event handler.
+     *
+     * @param RegistrationEvent $event
+     */
+    public function onRegistrationInitialize(RegistrationEvent $event)
+    {
+        $customer = $event->getRegistration()->getCustomer();
+
+        if (null === $customer->getLocale()) {
+            $customer->setLocale($this->localeProvider->getCurrentLocale());
+        }
+
+        if (null === $customer->getCurrency()) {
+            $customer->setCurrency($this->currencyProvider->getCurrency());
+        }
     }
 
     /**
@@ -186,8 +222,9 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            RegistrationEvent::REGISTRATION_SUCCESS   => ['onRegistrationSuccess'],
-            RegistrationEvent::REGISTRATION_COMPLETED => ['onRegistrationCompleted'],
+            RegistrationEvent::REGISTRATION_INITIALIZE => ['onRegistrationInitialize'],
+            RegistrationEvent::REGISTRATION_SUCCESS    => ['onRegistrationSuccess'],
+            RegistrationEvent::REGISTRATION_COMPLETED  => ['onRegistrationCompleted'],
         ];
     }
 }

@@ -61,7 +61,13 @@
                 'orderId': assignment.order_id
             }}|json_encode }}"{% endif %}>
             <td colspan="5"></td>
-            <td class="text-right">{{ assignment.sold }}</td>
+            <td class="text-right">
+            {% if assignment.preparation %}
+                <strong class="text-danger">{{ assignment.sold }}</strong>
+            {% else %}
+                {{ assignment.sold }}
+            {% endif %}
+            </td>
             <td class="text-right">{{ assignment.shipped }}</td>
             <td colspan="2"></td>
             <td class="actions">

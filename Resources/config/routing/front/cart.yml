@@ -4,6 +4,7 @@ ekyna_commerce_cart_item_configure:
     methods: [GET, POST]
     requirements:
         itemId: \d+
+    options: { i18n: false }
 
 ekyna_commerce_cart_item_remove:
     path: /items/{itemId}/remove
@@ -11,6 +12,7 @@ ekyna_commerce_cart_item_remove:
     methods: [POST]
     requirements:
         itemId: \d+
+    options: { i18n: false }
 
 ekyna_commerce_cart_item_adjustment_remove:
     path: /items/{itemId}/adjustments/{adjustmentId}/remove
@@ -19,6 +21,7 @@ ekyna_commerce_cart_item_adjustment_remove:
     requirements:
         itemId: \d+
         adjustmentId: \d+
+    options: { i18n: false }
 
 ekyna_commerce_cart_adjustment_remove:
     path: /adjustments/{adjustmentId}/remove
@@ -26,11 +29,13 @@ ekyna_commerce_cart_adjustment_remove:
     methods: [POST]
     requirements:
         adjustmentId: \d+
+    options: { i18n: false }
 
 ekyna_commerce_cart_attachment_add:
     path: /attachments/add
     defaults: { _controller: "ekyna_commerce.controller.cart:attachmentAddAction" }
     methods: [GET, POST]
+    options: { i18n: false }
 
 ekyna_commerce_cart_attachment_remove:
     path: /attachments/{attachmentId}/remove
@@ -38,6 +43,7 @@ ekyna_commerce_cart_attachment_remove:
     methods: [POST]
     requirements:
         adjustmentId: \d+
+    options: { i18n: false }
 
 ekyna_commerce_cart_attachment_download:
     path: /attachments/{attachmentId}/download
@@ -45,23 +51,28 @@ ekyna_commerce_cart_attachment_download:
     methods: [GET]
     requirements:
         adjustmentId: \d+
+    options: { i18n: false }
 
 ekyna_commerce_cart_information:
     path: /information
     defaults: { _controller: "ekyna_commerce.controller.cart:informationAction" }
     methods: [GET, POST]
+    options: { i18n: false }
 
 ekyna_commerce_cart_invoice_address:
     path: /invoice-address
     defaults: { _controller: "ekyna_commerce.controller.cart:invoiceAddressAction" }
     methods: [GET, POST]
+    options: { i18n: false }
 
 ekyna_commerce_cart_delivery_address:
     path: /delivery-address
     defaults: { _controller: "ekyna_commerce.controller.cart:deliveryAddressAction" }
     methods: [GET, POST]
+    options: { i18n: false }
 
 ekyna_commerce_cart_comment:
     path: /comment
     defaults: { _controller: "ekyna_commerce.controller.cart:commentAction" }
     methods: [GET, POST]
+    options: { i18n: false }

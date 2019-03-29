@@ -1,5 +1,7 @@
 {% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
+{% do trans_set_locale(subject.locale) %}
+{% set locale = subject.locale %}
 
 {# --- HEADER --- #}
 {% block doc_header -%}
@@ -17,7 +19,7 @@
         </td>
         <td class="address">
             {%- block company -%}
-                {{ macro.render_company() }}
+                {{ macro.render_company(locale) }}
             {%- endblock company -%}
         </td>
     </tr>
@@ -96,3 +98,5 @@
     {% endblock doc_footer_content %}
 </div>
 {% endblock doc_footer %}
+
+{% do trans_revert_locale() %}

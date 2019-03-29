@@ -10,6 +10,7 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\AddressNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
+            <argument type="service" id="libphonenumber\PhoneNumberUtil"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>
@@ -37,7 +38,7 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\RelayPointNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument type="service" id="ekyna_resource.locale_provider"/>
             <tag name="serializer.normalizer" priority="1024"/>
             <tag name="serializer.denormalizer" priority="1024"/>
         </service>
@@ -57,7 +58,6 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleItemNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
             <argument type="service" id="ekyna_commerce.shipment.calculator"/>
             <argument type="service" id="ekyna_commerce.invoice.calculator"/>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
@@ -115,7 +115,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\StockUnitNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <tag name="serializer.normalizer"/>
@@ -127,7 +127,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\StockAdjustmentNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <tag name="serializer.normalizer"/>
@@ -139,7 +139,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\StockAssignmentNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <tag name="serializer.normalizer"/>
@@ -150,7 +150,7 @@
         <service id="ekyna_commerce.subject.normalizer_helper"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Helper\SubjectNormalizerHelper"
                  public="false" lazy="true">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
@@ -182,7 +182,7 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierOrderItemNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <tag name="serializer.normalizer" />
             <tag name="serializer.denormalizer"/>
         </service>
@@ -201,8 +201,8 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <call method="setFormatter">
-                <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <call method="setFormatterFactory">
+                <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             </call>
             <call method="setAuthorization">
                 <argument type="service" id="security.authorization_checker"/>
@@ -219,8 +219,8 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketMessageNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <call method="setFormatter">
-                <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <call method="setFormatterFactory">
+                <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             </call>
             <call method="setAuthorization">
                 <argument type="service" id="security.authorization_checker"/>
@@ -234,8 +234,8 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketAttachmentNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <call method="setFormatter">
-                <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <call method="setFormatterFactory">
+                <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             </call>
             <call method="setAuthorization">
                 <argument type="service" id="security.authorization_checker"/>

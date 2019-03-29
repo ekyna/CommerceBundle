@@ -77,10 +77,12 @@ class CheckoutManager
     {
         $this->forms = [];
 
+        $currency = $sale->getCurrency();
+
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface[] $methods */
         $methods = $admin
-            ? $this->methodRepository->findEnabled()
-            : $this->methodRepository->findAvailable();
+            ? $this->methodRepository->findEnabled($currency)
+            : $this->methodRepository->findAvailable($currency);
 
         if (empty($methods)) {
             throw new RuntimeException("No payment method available.");

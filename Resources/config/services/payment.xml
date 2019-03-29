@@ -76,6 +76,9 @@
             <call method="setCustomerUpdater">
                 <argument type="service" id="ekyna_commerce.customer.updater"/>
             </call>
+            <call method="setCurrencyConverter">
+                <argument type="service" id="ekyna_commerce.currency.converter"/>
+            </call>
         </service>
 
         <!-- Payment checkout manager -->

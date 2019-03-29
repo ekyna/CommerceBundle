@@ -74,6 +74,7 @@ ekyna_commerce:
         delivery_address:
             is_required: Please fill in the delivery address.
             should_be_null: Please leave the delivery address empty.
+        cart_is_locked: Your cart is locked because of a processing payment.
         identity_must_be_set: Please fill in your customer information.
         invoice_address_must_be_set: Please fill in the billing address.
         delivery_address_must_be_set: Please fill in the delivery address.

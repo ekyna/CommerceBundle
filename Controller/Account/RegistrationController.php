@@ -64,6 +64,9 @@ class RegistrationController extends Controller
 
         $registration = new Registration($customer);
 
+        $event = new RegistrationEvent($registration);
+        $dispatcher->dispatch(RegistrationEvent::REGISTRATION_INITIALIZE, $event);
+
         $form = $this->createForm(RegistrationType::class, $registration, [
             'action' => $this->generateUrl('fos_user_registration_register'),
             'method' => 'POST',
@@ -77,7 +80,7 @@ class RegistrationController extends Controller
                     // Remove the temp password
                     $user->setPlainPassword(null);
                 }
-                $event = new RegistrationEvent($registration);
+
                 $dispatcher->dispatch(RegistrationEvent::REGISTRATION_SUCCESS, $event);
 
                 // This FOSUB event is disabled because we need the customer (and not only the user)

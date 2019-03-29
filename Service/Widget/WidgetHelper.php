@@ -4,7 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Widget;
 
 use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
-use Ekyna\Component\Commerce\Common\Util\Formatter;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
+use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
+use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -16,6 +18,8 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class WidgetHelper
 {
+    use FormatterAwareTrait;
+
     /**
      * @var CustomerProviderInterface
      */
@@ -32,9 +36,9 @@ class WidgetHelper
     private $cartProvider;
 
     /**
-     * @var Formatter
+     * @var CurrencyProviderInterface
      */
-    private $formatter;
+    private $currencyProvider;
 
     /**
      * @var UrlGeneratorInterface
@@ -53,22 +57,25 @@ class WidgetHelper
      * @param CustomerProviderInterface $customerProvider
      * @param UserProviderInterface     $userProvider
      * @param CartProviderInterface     $cartProvider
-     * @param Formatter                 $formatter
+     * @param CurrencyProviderInterface $currencyProvider
+     * @param FormatterFactory          $formatterFactory
      * @param UrlGeneratorInterface     $urlGenerator
      * @param TranslatorInterface       $translator
      */
     public function __construct(
         CustomerProviderInterface $customerProvider,
-        UserProviderInterface     $userProvider,
+        UserProviderInterface $userProvider,
         CartProviderInterface $cartProvider,
-        Formatter $formatter,
+        CurrencyProviderInterface $currencyProvider,
+        FormatterFactory $formatterFactory,
         UrlGeneratorInterface $urlGenerator,
         TranslatorInterface $translator
     ) {
         $this->customerProvider = $customerProvider;
         $this->userProvider = $userProvider;
         $this->cartProvider = $cartProvider;
-        $this->formatter = $formatter;
+        $this->currencyProvider = $currencyProvider;
+        $this->formatterFactory = $formatterFactory;
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
     }
@@ -104,6 +111,26 @@ class WidgetHelper
     }
 
     /**
+     * Returns the cart provider.
+     *
+     * @return CartProviderInterface
+     */
+    public function getCartProvider()
+    {
+        return $this->cartProvider;
+    }
+
+    /**
+     * Returns the currency provider.
+     *
+     * @return CurrencyProviderInterface
+     */
+    public function getCurrencyProvider()
+    {
+        return $this->currencyProvider;
+    }
+
+    /**
      * Returns the customer widget data.
      *
      * @return array
@@ -113,10 +140,10 @@ class WidgetHelper
         $label = $this->translator->trans('ekyna_commerce.account.widget.title');
 
         $data = [
-            'id'     => 'customer-widget',
-            'href'   => $this->urlGenerator->generate('ekyna_user_account_index'),
-            'title'  => $label,
-            'label'  => $label,
+            'id'    => 'customer-widget',
+            'href'  => $this->urlGenerator->generate('ekyna_user_account_index'),
+            'title' => $label,
+            'label' => $label,
         ];
 
         if (null !== $customer = $this->getCustomer()) {
@@ -136,20 +163,40 @@ class WidgetHelper
         $label = $this->translator->trans('ekyna_commerce.cart.widget.title');
 
         $data = [
-            'id'     => 'cart-widget',
-            'href'   => $this->urlGenerator->generate('ekyna_commerce_cart_checkout_index'),
-            'title'  => $label,
-            'label'  => $label,
+            'id'    => 'cart-widget',
+            'href'  => $this->urlGenerator->generate('ekyna_commerce_cart_checkout_index'),
+            'title' => $label,
+            'label' => $label,
         ];
 
         $cart = $this->getCart();
         if ((null !== $cart) && $cart->hasItems()) {
             $count = $cart->getItems()->count();
             $count = $this->translator->transChoice('ekyna_commerce.cart.widget.items', $count, ['%count%' => $count]);
-            $total = $this->formatter->currency($cart->getGrandTotal());
+
+            $currency = $cart->getCurrency()->getCode();
+            $total = $this
+                ->formatterFactory
+                ->create(null, $currency)
+                ->currency($cart->getGrandTotal(), $currency);
+
             $data['label'] = $count . ' <strong>' . $total . '</strong>';
         }
 
         return $data;
+    }
+
+    /**
+     * Returns the currency widget data.
+     *
+     * @return array
+     */
+    public function getCurrencyWidgetData()
+    {
+        return [
+            'id'         => 'currency-widget',
+            'current'    => $this->currencyProvider->getCurrentCurrency(),
+            'currencies' => $this->currencyProvider->getAvailableCurrencies(),
+        ];
     }
 }

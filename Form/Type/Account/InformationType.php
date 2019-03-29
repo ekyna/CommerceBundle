@@ -3,9 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Account;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -73,6 +75,8 @@ class InformationType extends AbstractType
                     'autocomplete' => 'tel-national',
                 ],
             ])
+            ->add('currency', CurrencyChoiceType::class)
+            ->add('locale', LocaleChoiceType::class)
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
                     'save'   => [

@@ -18,7 +18,8 @@
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_user.user.provider"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="router"/>
             <argument type="service" id="translator"/>
         </service>
@@ -36,7 +37,7 @@
         <service id="ekyna_commerce.availability_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.util.formatter.default"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="translator"/>
             <argument>100</argument>
         </service>

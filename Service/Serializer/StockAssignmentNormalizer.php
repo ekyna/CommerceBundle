@@ -6,7 +6,7 @@ use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Model\OrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockAssignmentNormalizer as BaseNormalizer;
-use Ekyna\Component\Commerce\Common\Util\Formatter;
+use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 
 /**
  * Class StockAssignmentNormalizer
@@ -29,14 +29,16 @@ class StockAssignmentNormalizer extends BaseNormalizer
     /**
      * Constructor.
      *
-     * @param Formatter       $formatter
-     * @param ConstantsHelper $constantHelper
-     * @param ResourceHelper  $resourceHelper
+     * @param FormatterFactory $formatterFactory
+     * @param ConstantsHelper  $constantHelper
+     * @param ResourceHelper   $resourceHelper
      */
-    public function __construct(Formatter $formatter, ConstantsHelper $constantHelper, ResourceHelper $resourceHelper)
-    {
-        parent::__construct($formatter);
-
+    public function __construct(
+        FormatterFactory $formatterFactory,
+        ConstantsHelper $constantHelper,
+        ResourceHelper $resourceHelper
+    ) {
+        $this->formatterFactory = $formatterFactory;
         $this->constantHelper = $constantHelper;
         $this->resourceHelper = $resourceHelper;
     }
@@ -54,7 +56,7 @@ class StockAssignmentNormalizer extends BaseNormalizer
 
         if ($this->contextHasGroup('StockAssignment', $context)) {
             $data = array_replace($data, [
-                'ready'   => $assignment->isFullyShipped() || $assignment->isFullyShippable(),
+                'ready' => $assignment->isFullyShipped() || $assignment->isFullyShippable(),
             ]);
         } elseif ($this->contextHasGroup('StockView', $context)) {
             $order = $assignment->getSaleItem()->getSale();

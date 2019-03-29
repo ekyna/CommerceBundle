@@ -13,12 +13,15 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -53,7 +56,6 @@ class SaleType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('currency', CurrencyChoiceType::class)
             ->add('customer', CustomerSearchType::class, [
                 'required' => false,
             ])
@@ -131,6 +133,14 @@ class SaleType extends ResourceFormType
             $locked = $sale instanceof CartInterface;
 
             $form
+                ->add('currency', CurrencyChoiceType::class, [
+                    'required' => !$locked,
+                    'disabled' => $locked,
+                ])
+                ->add('locale', LocaleChoiceType::class, [
+                    'required' => !$locked,
+                    'disabled' => $locked,
+                ])
                 ->add('autoShipping', Type\CheckboxType::class, [
                     'label'    => 'ekyna_commerce.sale.field.auto_shipping',
                     'required' => false,
@@ -164,7 +174,7 @@ class SaleType extends ResourceFormType
                     ],
                 ])
                 ->add('shipmentMethod', ShipmentMethodPickType::class, [
-                    'disabled' => $locked,
+                    'disabled'  => $locked,
                     'available' => !$options['admin_mode'],
                 ])
                 ->add('paymentTerm', PaymentTermChoiceType::class, [
@@ -215,6 +225,14 @@ class SaleType extends ResourceFormType
             ],
             ['invoiceAddress', 'deliveryAddress']
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'commerce-sale');
     }
 
     /**

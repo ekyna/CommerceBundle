@@ -99,7 +99,10 @@
 
         <!-- Sale amount calculator -->
         <service id="ekyna_commerce.common.amount_calculator"
-                 class="Ekyna\Component\Commerce\Common\Calculator\AmountCalculator"/>
+                 class="Ekyna\Component\Commerce\Common\Calculator\AmountCalculator">
+            <argument type="service" id="ekyna_commerce.common.context_provider"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+        </service>
 
         <!-- Sale weight calculator -->
         <service id="ekyna_commerce.common.weight_calculator"
@@ -156,6 +159,12 @@
             </call>
             <call method="setSaleUpdater">
                 <argument type="service" id="ekyna_commerce.sale_updater"/>
+            </call>
+            <call method="setCurrencyConverter">
+                <argument type="service" id="ekyna_commerce.currency.converter"/>
+            </call>
+            <call method="setLocaleProvider">
+                <argument type="service" id="ekyna_resource.locale_provider"/>
             </call>
             <call method="setDefaultVatDisplayMode">
                 <argument>%ekyna_commerce.default.vat_display_mode%</argument>

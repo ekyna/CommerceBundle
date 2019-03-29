@@ -118,4 +118,51 @@ class WidgetController extends Controller
 
         return $response;
     }
+
+    /**
+     * Currency change action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function currencyChangeAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException();
+        }
+
+        // Change current currency
+        if ($code = $request->request->get('currency')) {
+            $currencyProvider = $this->helper->getCurrencyProvider();
+            $currencyProvider->setCurrentCurrency($code);
+
+            // TODO Dispatch and use event
+
+            // Update cart currency
+            $cartProvider = $this->helper->getCartProvider();
+            if ($cartProvider->hasCart()) {
+                $cart = $cartProvider->getCart();
+
+                if (!$cart->isLocked()) {
+                    $currency = $currencyProvider->getCurrency();
+
+                    if ($cart->getCurrency() !== $currency) {
+                        $cart->setCurrency($currency);
+                        $cartProvider->saveCart();
+                    }
+                }
+            }
+        }
+
+        if ($referer = $request->headers->get('referer')) {
+            if ($parts = parse_url($referer)) {
+                if ($request->getHttpHost() === $parts["host"]) {
+                    return $this->redirect($referer);
+                }
+            }
+        }
+
+        return $this->redirect("/");
+    }
 }

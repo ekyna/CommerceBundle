@@ -13,8 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RegistrationEvent extends Event
 {
-    const REGISTRATION_SUCCESS = 'ekyna_commerce.account.registration.success';
-    const REGISTRATION_COMPLETED = 'ekyna_commerce.account.registration.completed';
+    const REGISTRATION_INITIALIZE = 'ekyna_commerce.account.registration.initialize';
+    const REGISTRATION_SUCCESS    = 'ekyna_commerce.account.registration.success';
+    const REGISTRATION_COMPLETED  = 'ekyna_commerce.account.registration.completed';
 
 
     /**

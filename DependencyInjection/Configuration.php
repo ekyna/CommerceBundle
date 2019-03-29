@@ -98,7 +98,7 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->integerNode('threshold')
-                                    ->defaultValue(5)
+                                    ->defaultValue(10)
                                 ->end()
                             ->end()
                         ->end()

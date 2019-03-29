@@ -2,19 +2,24 @@ define(['jquery', 'jquery-ui/widget'], function($) {
     "use strict";
 
     var mapping = {
-        company: '.address-company',
-        gender: '.identity-gender',
-        first_name: '.identity-first-name',
-        last_name: '.identity-last-name',
-        street: '.address-street',
-        complement: '.address-complement',
-        supplement: '.address-supplement',
-        postal_code: '.address-postal-code',
-        city: '.address-city',
-        country: '.address-country',
+        company: 'input.address-company',
+        gender: 'select.identity-gender',
+        first_name: 'input.identity-first-name',
+        last_name: 'input.identity-last-name',
+        street: 'input.address-street',
+        complement: 'input.address-complement',
+        supplement: 'input.address-supplement',
+        postal_code: 'input.address-postal-code',
+        city: 'input.address-city',
+        country: 'select.address-country',
         //state: '.address-state',
-        phone: '.address-phone',
-        mobile: '.address-mobile'
+        phone: '.address-phone input.number',
+        phone_country: '.address-phone input.country',
+        mobile: '.address-mobile input.number',
+        mobile_country: '.address-mobile input.country',
+        digicode1: 'input.address-digicode1',
+        digicode2: 'input.address-digicode2',
+        intercom: 'input.address-intercom'
     };
 
     $.widget("ekyna.address", {

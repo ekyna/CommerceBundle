@@ -41,6 +41,14 @@
                 {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.currency, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.locale, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
 
         {{ bootstrap_set_sizing('md') }}
         {{ form_rest(form) }}

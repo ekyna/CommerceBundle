@@ -4,11 +4,13 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -57,17 +59,17 @@ class CustomerType extends ResourceFormType
             ])
             ->add('identity', IdentityType::class)
             ->add('phone', PhoneNumberType::class, [
-                'label'    => 'ekyna_core.field.phone',
-                'required' => false,
-                'number_attr'     => [
+                'label'       => 'ekyna_core.field.phone',
+                'required'    => false,
+                'number_attr' => [
                     'autocomplete' => 'tel-national',
                 ],
             ])
             ->add('mobile', PhoneNumberType::class, [
-                'label'    => 'ekyna_core.field.mobile',
-                'required' => false,
-                'type'     => PhoneType::MOBILE,
-                'number_attr'     => [
+                'label'       => 'ekyna_core.field.mobile',
+                'required'    => false,
+                'type'        => PhoneType::MOBILE,
+                'number_attr' => [
                     'autocomplete' => 'tel-national',
                 ],
             ])
@@ -76,6 +78,8 @@ class CustomerType extends ResourceFormType
                 'choices' => CustomerStates::getChoices(),
                 'select2' => false,
             ])
+            ->add('currency', CurrencyChoiceType::class)
+            ->add('locale', LocaleChoiceType::class)
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,

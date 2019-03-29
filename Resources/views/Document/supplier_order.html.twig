@@ -8,14 +8,17 @@
 {# --- DOC TITLE --- #}
 {% block doc_title_content -%}
     <h1>
-        {{- 'ekyna_commerce.supplier_order.label.singular'|trans }}
-        {{ subject.number -}}
+        <span class="text-alt">{{ 'ekyna_commerce.supplier_order.label.singular'|trans }}</span>
+        {{ subject.number }}
     </h1>
-    {% if subject.orderedAt is not same as(null) -%}
-    <p>Le {{ subject.orderedAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
-    {%- else -%}
-    <p>Le {{ subject.createdAt|localizeddate('long', 'none') }}.</p>{# TODO trans #}
-    {%- endif -%}
+    <p>
+        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
+        {% if subject.orderedAt is not same as(null) -%}
+            {{ subject.orderedAt|localizeddate('long', 'none', locale) }}
+        {%- else -%}
+            {{ subject.createdAt|localizeddate('long', 'none', locale) }}
+        {%- endif -%}.
+    </p>
 {%- endblock doc_title_content %}
 
 
@@ -28,11 +31,11 @@
 {%- endblock doc_customer -%}
 
 {%- block doc_invoice_address -%}
-    {{ macro.render_company() }}
+    {{ macro.render_company(locale) }}
 {%- endblock doc_invoice_address -%}
 
 {%- block doc_delivery_address -%}
-    {{ macro.render_company() }}
+    {{ macro.render_company(locale) }}
 {%- endblock doc_delivery_address -%}
 
 
@@ -60,9 +63,9 @@
             <tr>
                 <td>{{ item.designation }}</td>
                 <td>{{ item.reference }}</td>
-                <td class="text-right">{{ item.netPrice|localizedcurrency(currency) }}</td>
+                <td class="text-right">{{ item.netPrice|localizedcurrency(currency, locale) }}</td>
                 <td class="text-right">{{ item.quantity|localizednumber }}</td>{# TODO Packing format #}
-                <td class="text-right">{{ (item.netPrice * item.quantity)|localizedcurrency(currency) }}</td>
+                <td class="text-right">{{ (item.netPrice * item.quantity)|localizedcurrency(currency, locale) }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -80,9 +83,8 @@
                 <tr>
                     <td colspan="4">
                         {{ 'ekyna_commerce.supplier_order.field.shipping_cost'|trans }}
-                        {#{{ subject|supplier_order_weight_total|localizednumber }}&nbsp;kg#}
                     </td>
-                    <td class="text-right">{{ subject.shippingCost|localizedcurrency(currency) }}</td>
+                    <td class="text-right">{{ subject.shippingCost|localizedcurrency(currency, locale) }}</td>
                 </tr>
             </tbody>
         {% endif %}
@@ -93,7 +95,7 @@
         <tr>
             <td colspan="3" rowspan="3">&nbsp;</td>
             <th class="text-right">{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
-            <td class="total final text-right">{{ (total + subject.shippingCost)|localizedcurrency(currency) }}</td>
+            <td class="total final text-right">{{ (total + subject.shippingCost)|localizedcurrency(currency, locale) }}</td>
         </tr>
         </tbody>
     </table>

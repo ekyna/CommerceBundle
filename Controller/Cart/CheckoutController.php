@@ -117,14 +117,16 @@ class CheckoutController extends AbstractController
                 'validation_groups' => ['Calculation', 'Availability'],
             ]);
 
-            $saleForm->handleRequest($request);
+            if (!$cart->isLocked()) {
+                $saleForm->handleRequest($request);
 
-            if ($saleForm->isSubmitted() && $saleForm->isValid()) {
-                $this->getCartHelper()->getCartProvider()->updateCustomerGroupAndCurrency();
+                if ($saleForm->isSubmitted() && $saleForm->isValid()) {
+                    $this->getCartHelper()->getCartProvider()->updateCustomerGroupAndCurrency();
 
-                $saleHelper->recalculate($cart);
+                    $saleHelper->recalculate($cart);
 
-                $this->saveCart();
+                    $this->saveCart();
+                }
             }
 
             $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);

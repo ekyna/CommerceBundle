@@ -16,6 +16,7 @@
             <argument type="service" id="ekyna_commerce.common.view_type_registry"/>
             <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.common.margin_calculator"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
         </service>
 
         <!-- Availability view type -->
@@ -45,6 +46,9 @@
         <service id="ekyna_commerce.sale.view_type"
                  class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleViewType"
                  parent="ekyna_commerce.abstract_view_type">
+            <call method="setLocaleProvider">
+                <argument type="service" id="ekyna_resource.locale_provider"/>
+            </call>
             <tag name="ekyna_commerce.view_type"/>
         </service>
 

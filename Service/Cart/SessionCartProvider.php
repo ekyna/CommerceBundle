@@ -4,6 +4,11 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
 use Ekyna\Component\Commerce\Cart\Provider\AbstractCartProvider;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
+use Ekyna\Component\Commerce\Cart\Repository\CartRepositoryInterface;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
+use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
+use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -34,11 +39,25 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     /**
      * Constructor.
      *
+     * @param CartRepositoryInterface $cartRepository
+     * @param ResourceOperatorInterface $cartOperator
+     * @param SaleFactoryInterface $saleFactory
+     * @param CustomerProviderInterface $customerProvider
+     * @param CurrencyProviderInterface $currencyProvider
      * @param SessionInterface $session
      * @param string $key
      */
-    public function __construct(SessionInterface $session, $key = self::KEY)
-    {
+    public function __construct(
+        CartRepositoryInterface $cartRepository,
+        ResourceOperatorInterface $cartOperator,
+        SaleFactoryInterface $saleFactory,
+        CustomerProviderInterface $customerProvider,
+        CurrencyProviderInterface $currencyProvider,
+        SessionInterface $session,
+        $key = self::KEY
+    ) {
+        parent::__construct($cartRepository, $cartOperator, $saleFactory, $customerProvider, $currencyProvider);
+
         $this->session = $session;
         $this->key = $key;
     }

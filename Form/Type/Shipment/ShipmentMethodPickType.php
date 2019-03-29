@@ -5,8 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Context\ContextInterface;
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Common\Util\Formatter;
+use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayInterface;
 use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
@@ -48,19 +49,24 @@ class ShipmentMethodPickType extends AbstractType
     private $contextProvider;
 
     /**
-     * @var ContextInterface
+     * @var CurrencyConverterInterface
      */
-    private $context;
+    private $currencyConverter;
 
     /**
-     * @var Formatter
+     * @var FormatterFactory
      */
-    private $formatter;
+    private $formatterFactory;
 
     /**
      * @var TranslatorInterface
      */
     private $translator;
+
+    /**
+     * @var ContextInterface
+     */
+    private $context;
 
     /**
      * @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface[]
@@ -80,7 +86,8 @@ class ShipmentMethodPickType extends AbstractType
      * @param RegistryInterface                 $gatewayRegistry
      * @param ShipmentMethodRepositoryInterface $methodRepository
      * @param ContextProviderInterface          $contextProvider
-     * @param Formatter                         $formatter
+     * @param CurrencyConverterInterface        $currencyConverter
+     * @param FormatterFactory                  $formatterFactory
      * @param TranslatorInterface               $translator
      */
     public function __construct(
@@ -88,14 +95,16 @@ class ShipmentMethodPickType extends AbstractType
         RegistryInterface $gatewayRegistry,
         ShipmentMethodRepositoryInterface $methodRepository,
         ContextProviderInterface $contextProvider,
-        Formatter $formatter,
+        CurrencyConverterInterface $currencyConverter,
+        FormatterFactory $formatterFactory,
         TranslatorInterface $translator
     ) {
         $this->priceResolver = $priceResolver;
         $this->gatewayRegistry = $gatewayRegistry;
         $this->methodRepository = $methodRepository;
         $this->contextProvider = $contextProvider;
-        $this->formatter = $formatter;
+        $this->currencyConverter = $currencyConverter;
+        $this->formatterFactory = $formatterFactory;
         $this->translator = $translator;
     }
 
@@ -230,7 +239,19 @@ class ShipmentMethodPickType extends AbstractType
                 } else {
                     $suffix = $this->translator->trans('ekyna_commerce.pricing.vat_display_mode.net');
                 }
-                $amount = sprintf('%s&nbsp;%s', $this->formatter->currency($amount), $suffix);
+
+                $currency = $this->context->getCurrency()->getCode();
+
+                $amount = $this->currencyConverter->convert(
+                    $amount,
+                    $this->currencyConverter->getDefaultCurrency(),
+                    $this->context->getCurrency()->getCode(),
+                    $this->context->getDate()
+                );
+
+                $amount = $this->formatterFactory->createFromContext($this->context)->currency($amount, $currency);
+
+                $amount = sprintf('%s&nbsp;%s', $amount, $suffix);
             }
 
             return sprintf('%s (%s)', $method->getTitle(), $amount);
@@ -264,7 +285,8 @@ class ShipmentMethodPickType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $choices = function (Options $options) {
-            return $this->buildChoices($options['sale'], $options['return'], $options['with_price'], $options['available']);
+            return $this->buildChoices($options['sale'], $options['return'], $options['with_price'],
+                $options['available']);
         };
 
         $resolver

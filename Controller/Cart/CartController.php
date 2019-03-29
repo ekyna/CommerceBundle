@@ -10,6 +10,7 @@ use League\Flysystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -57,6 +58,10 @@ class CartController extends AbstractController
 
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
+        }
+
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
         }
 
         $itemId = intval($request->attributes->get('itemId'));
@@ -116,6 +121,10 @@ class CartController extends AbstractController
             throw new NotFoundHttpException('Cart not found.');
         }
 
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
+        }
+
         $itemId = intval($request->attributes->get('itemId'));
         if (0 < $itemId) {
             // TODO use operator to delete item (cart will be automatically saved)
@@ -166,6 +175,10 @@ class CartController extends AbstractController
             throw new NotFoundHttpException('Cart not found.');
         }
 
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
+        }
+
         $saleHelper = $this->getSaleHelper();
 
         $attachment = $saleHelper->getSaleFactory()->createAttachmentForSale($cart);
@@ -208,6 +221,10 @@ class CartController extends AbstractController
             throw new NotFoundHttpException('Cart not found.');
         }
 
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
+        }
+
         $attachmentId = intval($request->attributes->get('attachmentId'));
         if (0 < $attachmentId) {
             // TODO use operator to delete attachment (cart will be automatically saved)
@@ -243,6 +260,10 @@ class CartController extends AbstractController
     {
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
+        }
+
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
         }
 
         $attachment = null;
@@ -373,6 +394,10 @@ class CartController extends AbstractController
 
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
+        }
+
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
         }
 
         $form = $this

@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -44,8 +45,15 @@ class CurrencyChoiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label'             => 'ekyna_commerce.currency.label.singular',
+            'label'             => function (Options $options, $value) {
+                if ($value) {
+                    return $value;
+                }
+
+                return 'ekyna_commerce.currency.label.' . ($options['multiple'] ? 'plural' : 'singular');
+            },
             'class'             => $this->currencyClass,
+            'choice_value'      => 'code',
             'query_builder'     => function (EntityRepository $er) {
                 $qb = $er->createQueryBuilder('o');
 

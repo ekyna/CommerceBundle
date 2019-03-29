@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\PaymentMethodTypeSubscriber;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MessagesType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MethodTranslationType;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
@@ -50,8 +51,9 @@ class PaymentMethodType extends ResourceFormType
                 'label' => 'ekyna_core.field.name',
             ])
             ->add('factoryName', GatewayFactoriesChoiceType::class, [
-                'label'    => 'ekyna_commerce.field.factory_name',
-                'disabled' => true,
+                'label'              => 'ekyna_commerce.field.factory_name',
+                'translation_domain' => null,
+                'disabled'           => true,
             ])
             ->add('media', MediaChoiceType::class, [
                 'label' => 'ekyna_core.field.image',
@@ -82,6 +84,10 @@ class PaymentMethodType extends ResourceFormType
                 'attr'     => [
                     'align_with_widget' => true,
                 ],
+            ])
+            ->add('currencies', CurrencyChoiceType::class, [
+                'multiple' => true,
+                'required' => false,
             ]);
 
         $builder->addEventSubscriber(new PaymentMethodTypeSubscriber($this->registry));

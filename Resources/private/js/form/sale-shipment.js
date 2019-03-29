@@ -13,7 +13,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             var $this = $(this),
                 $methodSelect = $this.find('select.sale-shipment-method'),
                 $amountInput = $this.find('input.sale-shipment-amount'),
-                $mobile = $('input.address-mobile'),
+                $mobile = $('.address-mobile input.number'),
                 $mobileGroup = $mobile.closest('.form-group'),
                 animDuration = 150;
 

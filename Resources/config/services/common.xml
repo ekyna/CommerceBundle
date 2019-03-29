@@ -38,13 +38,23 @@
             <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
+        <!-- Currency provider -->
+        <service id="ekyna_commerce.common.currency_provider"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Currency\SessionCurrencyProvider"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.currency.repository"/>
+            <argument type="service" id="session"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+
         <!-- Context provider -->
         <service id="ekyna_commerce.common.context_provider"
                  class="Ekyna\Component\Commerce\Common\Context\ContextProvider">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
-            <argument type="service" id="ekyna_resource.locale.request_provider"/>
+            <argument type="service" id="ekyna_resource.locale_provider"/>
+            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument type="service" id="ekyna_commerce.country.repository"/>
             <argument type="service" id="ekyna_commerce.currency.repository"/>
@@ -70,14 +80,8 @@
         <!-- Formatter factory -->
         <service id="ekyna_commerce.util.formatter_factory"
                  class="Ekyna\Component\Commerce\Common\Util\FormatterFactory">
-            <argument type="service" id="ekyna_resource.locale.request_provider"/>
-            <argument>%ekyna_commerce.default.currency%</argument>
-        </service>
-
-        <!-- Default formatter -->
-        <service id="ekyna_commerce.util.formatter.default"
-                 class="Ekyna\Component\Commerce\Common\Util\Formatter">
-            <factory service="ekyna_commerce.util.formatter_factory" method="create"/>
+            <argument type="service" id="ekyna_resource.locale_provider"/>
+            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
         </service>
 
         <!-- In charge resolver -->

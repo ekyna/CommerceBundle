@@ -4,9 +4,11 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
 use Ekyna\Component\Commerce\Customer\Event\CustomerEvents;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
+use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 
 /**
  * Class CustomerEventSubscriber
@@ -20,6 +22,16 @@ class CustomerEventSubscriber extends BaseSubscriber
      */
     protected $inChargeResolver;
 
+    /**
+     * @var LocaleProviderInterface
+     */
+    protected $localeProvider;
+
+    /**
+     * @var CurrencyProviderInterface
+     */
+    protected $currencyProvider;
+
 
     /**
      * Sets the 'in charge' resolver.
@@ -29,6 +41,26 @@ class CustomerEventSubscriber extends BaseSubscriber
     public function setInChargeResolver(InChargeResolver $inChargeResolver)
     {
         $this->inChargeResolver = $inChargeResolver;
+    }
+
+    /**
+     * Sets the locale provider.
+     *
+     * @param LocaleProviderInterface $provider
+     */
+    public function setLocaleProvider(LocaleProviderInterface $provider)
+    {
+        $this->localeProvider = $provider;
+    }
+
+    /**
+     * Sets the currency provider.
+     *
+     * @param CurrencyProviderInterface $provider
+     */
+    public function setCurrencyProvider(CurrencyProviderInterface $provider)
+    {
+        $this->currencyProvider = $provider;
     }
 
     /**
@@ -42,6 +74,13 @@ class CustomerEventSubscriber extends BaseSubscriber
         $customer = $this->getCustomerFromEvent($event);
 
         $this->inChargeResolver->update($customer);
+
+        if (null === $customer->getLocale()) {
+            $customer->setLocale($this->localeProvider->getCurrentLocale());
+        }
+        if (null === $customer->getCurrency()) {
+            $customer->setCurrency($this->currencyProvider->getCurrency());
+        }
     }
 
     /**

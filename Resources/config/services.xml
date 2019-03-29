@@ -58,17 +58,9 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SecurityListener">
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            <argument type="service" id="router"/>
             <tag name="kernel.event_subscriber" />
-        </service>
-
-        <!-- OAuth authentication handlers -->
-        <service id="ekyna_commerce.security.oauth_authentication_success_handler"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Security\OAuthAuthenticationSuccessHandler"
-                 parent="security.authentication.success_handler"
-                 public="false">
-            <call method="setCustomerProvider">
-                <argument type="service" id="ekyna_commerce.customer.security_provider"/>
-            </call>
         </service>
 
         <!-- Security logout handler -->

@@ -37,6 +37,12 @@
             <call method="setInChargeResolver">
                 <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
             </call>
+            <call method="setLocaleProvider">
+                <argument type="service" id="ekyna_resource.locale_provider"/>
+            </call>
+            <call method="setCurrencyProvider">
+                <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            </call>
             <tag name="resource.event_subscriber"/>
         </service>
         <!-- Customer address event listener -->
@@ -77,6 +83,8 @@
         <!-- Registration event subscriber -->
         <service id="ekyna_commerce.registration_event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\RegistrationEventSubscriber">
+            <argument type="service" id="ekyna_resource.locale_provider"/>
+            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
             <argument type="service" id="ekyna_commerce.mailer"/>
             <argument type="service" id="fos_user.mailer"/>
             <argument type="service" id="fos_user.util.token_generator"/>

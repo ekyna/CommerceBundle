@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
-use Ekyna\Component\Commerce\Common\Util\Formatter;
+use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Stock\Helper\AbstractAvailabilityHelper;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -27,18 +27,18 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
     /**
      * Constructor.
      *
-     * @param Formatter           $formatter
+     * @param FormatterFactory    $formatterFactory
      * @param TranslatorInterface $translator
      * @param string              $prefix
      * @param int                 $inStockLimit
      */
     public function __construct(
-        Formatter $formatter,
+        FormatterFactory $formatterFactory,
         TranslatorInterface $translator,
         $inStockLimit = 100,
         $prefix = 'ekyna_commerce.stock_subject.availability.'
     ) {
-        parent::__construct($formatter, $inStockLimit);
+        parent::__construct($formatterFactory, $inStockLimit);
 
         $this->translator = $translator;
         $this->prefix = $prefix;

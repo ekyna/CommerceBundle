@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Account;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Doctrine\ORM\EntityRepository;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
@@ -12,6 +13,7 @@ use Ekyna\Bundle\CommerceBundle\Model\Contact;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue;
@@ -264,6 +266,7 @@ class RegistrationType extends AbstractType
         $form = $builder->create('customer', null, [
             'data_class' => CustomerInterface::class,
             'compound'   => true,
+            'required' => true,
         ]);
 
         $form
@@ -276,7 +279,9 @@ class RegistrationType extends AbstractType
                 ],
             ])
             ->add('vatNumber', VatNumberType::class)
-            ->add('identity', IdentityType::class)
+            ->add('identity', IdentityType::class, [
+                'required' => true,
+            ])
             ->add('phone', PhoneNumberType::class, [
                 'label'       => 'ekyna_core.field.phone',
                 'required'    => false,
@@ -291,7 +296,9 @@ class RegistrationType extends AbstractType
                 'number_attr' => [
                     'autocomplete' => 'tel-national',
                 ],
-            ]);
+            ])
+            ->add('currency', CurrencyChoiceType::class)
+            ->add('locale', LocaleChoiceType::class);
 
         if ($this->config['birthday']) {
             $form->add('birthday', Type\DateTimeType::class, [

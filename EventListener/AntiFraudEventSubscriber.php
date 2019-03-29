@@ -72,7 +72,7 @@ class AntiFraudEventSubscriber implements EventSubscriberInterface
         $this->mailer = $mailer;
 
         $this->config = array_replace([
-            'threshold' => 5,
+            'threshold' => 10,
         ], $config);
     }
 
@@ -106,11 +106,11 @@ class AntiFraudEventSubscriber implements EventSubscriberInterface
         if (null !== $customer = $sale->getCustomer()) {
             $customer->setState(CustomerStates::STATE_FRAUDSTER);
             $this->entityManager->persist($customer);
-            $this->entityManager->flush();
-        }
+            //$this->entityManager->flush();
 
-        // Send email notification
-        $this->mailer->sendAdminFraudsterAlert($customer);
+            // Send email notification
+            $this->mailer->sendAdminFraudsterAlert($customer);
+        }
 
         // Delete cart
         $deleteEvent = $this->cartOperator->delete($sale);

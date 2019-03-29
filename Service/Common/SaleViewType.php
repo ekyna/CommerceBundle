@@ -6,6 +6,8 @@ use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Common\View\LineView;
+use Ekyna\Component\Commerce\Common\View\SaleView;
+use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 
 /**
  * Class SaleViewType
@@ -14,6 +16,40 @@ use Ekyna\Component\Commerce\Common\View\LineView;
  */
 class SaleViewType extends AbstractViewType
 {
+    /**
+     * @var LocaleProviderInterface
+     */
+    private $localeProvider;
+
+
+    /**
+     * Sets the localeProvider.
+     *
+     * @param LocaleProviderInterface $provider
+     */
+    public function setLocaleProvider(LocaleProviderInterface $provider)
+    {
+        $this->localeProvider = $provider;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(Model\SaleInterface $sale, SaleView $view, array &$options)
+    {
+        $options['locale'] = $sale->getLocale() ?? $this->localeProvider->getCurrentLocale();
+
+        if ($sale->isReleased()) {
+            $options['editable'] = false;
+        }
+
+        if ($sale->isLocked() && !(isset($options['private']) && $options['private'])) {
+            $options['editable'] = false;
+
+            $view->addAlert("Cart is locked while payment is processing."); // TODO Trans
+        }
+    }
+
     /**
      * @inheritDoc
      */
