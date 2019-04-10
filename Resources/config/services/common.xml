@@ -38,6 +38,18 @@
             <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
+        <!-- Country provider -->
+        <service id="ekyna_commerce.common.country_provider"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Country\SessionCountryProvider"
+                 lazy="true">
+            <argument type="service" id="ekyna_commerce.country.repository"/>
+            <argument type="service" id="session"/>
+            <argument>%ekyna_commerce.default.country%</argument>
+            <call method="setCountryGuesser">
+                <argument type="service" id="ekyna_core.geo.user_country_guesser"/>
+            </call>
+        </service>
+
         <!-- Currency provider -->
         <service id="ekyna_commerce.common.currency_provider"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Currency\SessionCurrencyProvider"
@@ -55,9 +67,8 @@
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_resource.locale_provider"/>
             <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            <argument type="service" id="ekyna_commerce.common.country_provider"/>
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
-            <argument type="service" id="ekyna_commerce.country.repository"/>
-            <argument type="service" id="ekyna_commerce.currency.repository"/>
             <argument>%ekyna_commerce.default.vat_display_mode%</argument>
             <argument>%ekyna_commerce.context.class%</argument>
         </service>

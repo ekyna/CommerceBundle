@@ -181,8 +181,6 @@ ekyna_commerce:
             title: My tickets
             go_to_sale_details: >
                 To create a new ticket, please go to the details of an order or a quote.
-        widget:
-            title: Customer area
 
     dashboard:
         export:
@@ -308,11 +306,6 @@ ekyna_commerce:
             transform: Transfor the cart <small>%number%</small>
             duplicate: Duplicate the cart <small>%number%</small>
             notify: Notify the cart <small>%number%</small>
-        widget:
-            title: My cart
-            items: "{1} One product|]1,Inf[ %count% products"
-            show_cart: Checkout
-            empty: Your cart is empty
         button:
             list: Carts list
             show: Cart details
@@ -1690,3 +1683,14 @@ ekyna_commerce:
                 content: You have new messages for your assigned tickets.
         message:
             remove_confirm: Confirm the message removal.
+
+    widget:
+        customer:
+            title: Customer area
+        cart:
+            title: My cart
+            items: "{1} One product|]1,Inf[ %count% products"
+            show_cart: Checkout
+            empty: Your cart is empty
+        context:
+            title: Settings

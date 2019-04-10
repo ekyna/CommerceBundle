@@ -1,5 +1,6 @@
 #cart-widget,
-#customer-widget {
+#customer-widget,
+#context-widget {
     .dropdown-menu {
         min-width: 260px;
         padding: 10px;
@@ -59,6 +60,39 @@
         tr:last-child {
             td {
                 border-bottom: none;
+            }
+        }
+    }
+}
+
+#context-widget {
+    > a {
+        > span {
+            margin-right: 10px;
+
+            &.currency {
+                font-size: 19px;
+                position: relative;
+                top: 2px;
+            }
+
+            &.country-flag {
+                position: relative;
+                top: 2px;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    > .dropdown-menu {
+        min-width: 200px;
+
+        > form {
+            button {
+                width: 100%;
             }
         }
     }

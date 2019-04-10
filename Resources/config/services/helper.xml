@@ -10,17 +10,19 @@
                  class="Ekyna\Bundle\CommerceBundle\Controller\WidgetController">
             <argument type="service" id="ekyna_commerce.widget_helper"/>
             <argument type="service" id="templating"/>
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="router"/>
+            <argument>%ekyna_cms.home_route%</argument>
         </service>
 
         <!-- Widget helper -->
         <service id="ekyna_commerce.widget_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper">
-            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_user.user.provider"/>
-            <argument type="service" id="ekyna_commerce.cart.session_provider"/>
-            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="router"/>
+            <argument type="service" id="request_stack"/>
             <argument type="service" id="translator"/>
         </service>
 

@@ -3,11 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Widget;
 
 use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
-use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
-use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
+use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
-use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Intl\Intl;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -21,29 +21,24 @@ class WidgetHelper
     use FormatterAwareTrait;
 
     /**
-     * @var CustomerProviderInterface
-     */
-    private $customerProvider;
-
-    /**
      * @var UserProviderInterface
      */
     private $userProvider;
 
     /**
-     * @var CartProviderInterface
+     * @var ContextProviderInterface
      */
-    private $cartProvider;
-
-    /**
-     * @var CurrencyProviderInterface
-     */
-    private $currencyProvider;
+    private $contextProvider;
 
     /**
      * @var UrlGeneratorInterface
      */
     private $urlGenerator;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
 
     /**
      * @var TranslatorInterface
@@ -54,29 +49,26 @@ class WidgetHelper
     /**
      * Constructor.
      *
-     * @param CustomerProviderInterface $customerProvider
-     * @param UserProviderInterface     $userProvider
-     * @param CartProviderInterface     $cartProvider
-     * @param CurrencyProviderInterface $currencyProvider
-     * @param FormatterFactory          $formatterFactory
-     * @param UrlGeneratorInterface     $urlGenerator
-     * @param TranslatorInterface       $translator
+     * @param UserProviderInterface    $userProvider
+     * @param ContextProviderInterface $contextProvider
+     * @param FormatterFactory         $formatterFactory
+     * @param UrlGeneratorInterface    $urlGenerator
+     * @param RequestStack             $requestStack
+     * @param TranslatorInterface      $translator
      */
     public function __construct(
-        CustomerProviderInterface $customerProvider,
         UserProviderInterface $userProvider,
-        CartProviderInterface $cartProvider,
-        CurrencyProviderInterface $currencyProvider,
+        ContextProviderInterface $contextProvider,
         FormatterFactory $formatterFactory,
         UrlGeneratorInterface $urlGenerator,
+        RequestStack $requestStack,
         TranslatorInterface $translator
     ) {
-        $this->customerProvider = $customerProvider;
         $this->userProvider = $userProvider;
-        $this->cartProvider = $cartProvider;
-        $this->currencyProvider = $currencyProvider;
+        $this->contextProvider = $contextProvider;
         $this->formatterFactory = $formatterFactory;
         $this->urlGenerator = $urlGenerator;
+        $this->requestStack = $requestStack;
         $this->translator = $translator;
     }
 
@@ -87,7 +79,7 @@ class WidgetHelper
      */
     public function getCustomer()
     {
-        return $this->customerProvider->getCustomer();
+        return $this->contextProvider->getCustomerProvider()->getCustomer();
     }
 
     /**
@@ -107,27 +99,57 @@ class WidgetHelper
      */
     public function getCart()
     {
-        return $this->cartProvider->getCart();
+        return $this->contextProvider->getCartProvider()->getCart();
     }
 
     /**
-     * Returns the cart provider.
+     * Returns the current currency.
      *
-     * @return CartProviderInterface
+     * @return \Ekyna\Component\Commerce\Common\Model\CurrencyInterface
      */
-    public function getCartProvider()
+    public function getCurrency()
     {
-        return $this->cartProvider;
+        return $this->contextProvider->getCurrencyProvider()->getCurrency();
     }
 
     /**
-     * Returns the currency provider.
+     * Returns the current country.
      *
-     * @return CurrencyProviderInterface
+     * @return \Ekyna\Component\Commerce\Common\Model\CountryInterface
      */
-    public function getCurrencyProvider()
+    public function getCountry()
     {
-        return $this->currencyProvider;
+        return $this->contextProvider->getCountryProvider()->getCountry();
+    }
+
+    /**
+     * Returns the current locale.
+     *
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->contextProvider->getLocalProvider()->getCurrentLocale();
+    }
+
+    /**
+     * Returns the context provider.
+     *
+     * @return ContextProviderInterface
+     */
+    public function getContextProvider(): ContextProviderInterface
+    {
+        return $this->contextProvider;
+    }
+
+    /**
+     * Returns the url generator.
+     *
+     * @return UrlGeneratorInterface
+     */
+    public function getUrlGenerator(): UrlGeneratorInterface
+    {
+        return $this->urlGenerator;
     }
 
     /**
@@ -137,7 +159,7 @@ class WidgetHelper
      */
     public function getCustomerWidgetData()
     {
-        $label = $this->translator->trans('ekyna_commerce.account.widget.title');
+        $label = $this->translator->trans('ekyna_commerce.widget.customer.title');
 
         $data = [
             'id'    => 'customer-widget',
@@ -160,7 +182,7 @@ class WidgetHelper
      */
     public function getCartWidgetData()
     {
-        $label = $this->translator->trans('ekyna_commerce.cart.widget.title');
+        $label = $this->translator->trans('ekyna_commerce.widget.cart.title');
 
         $data = [
             'id'    => 'cart-widget',
@@ -172,7 +194,7 @@ class WidgetHelper
         $cart = $this->getCart();
         if ((null !== $cart) && $cart->hasItems()) {
             $count = $cart->getItems()->count();
-            $count = $this->translator->transChoice('ekyna_commerce.cart.widget.items', $count, ['%count%' => $count]);
+            $count = $this->translator->transChoice('ekyna_commerce.widget.cart.items', $count, ['%count%' => $count]);
 
             $currency = $cart->getCurrency()->getCode();
             $total = $this
@@ -187,16 +209,60 @@ class WidgetHelper
     }
 
     /**
+     * Returns the context widget data.
+     *
+     * @return array
+     */
+    public function getContextWidgetData()
+    {
+        $currency = $this->contextProvider->getCurrencyProvider()->getCurrentCurrency();
+        $country = $this->contextProvider->getCountryProvider()->getCurrentCountry();
+        $locale = $this->contextProvider->getLocalProvider()->getCurrentLocale();
+
+        $currencyLabel = Intl::getCurrencyBundle()->getCurrencySymbol($currency, $locale);
+        $countryLabel = Intl::getRegionBundle()->getCountryName($country, $locale);
+        $localeLabel = Intl::getLocaleBundle()->getLocaleName($locale, $locale);
+
+        $label = sprintf(
+            '<span class="currency">%s</span><span class="country-flag %s" title="%s"></span><span class="locale">%s</span>',
+            $currencyLabel,
+            strtolower($country),
+            $countryLabel,
+            mb_convert_case($localeLabel, MB_CASE_TITLE)
+        );
+
+        $config = [];
+        if ($request = $this->requestStack->getMasterRequest()) {
+            $config['route'] = $request->attributes->get('_route');
+            $parameters = $request->attributes->get('_route_params');
+            unset($parameters['_locale']);
+            if (!empty($parameters)) {
+                $config['param'] = $parameters;
+            }
+        }
+
+        return [
+            'id'     => 'context-widget',
+            'href'   => 'javascript:void(0)',
+            'title'  => $this->translator->trans('ekyna_commerce.widget.context.title'),
+            'label'  => $label,
+            'config' => $config,
+        ];
+    }
+
+    /**
      * Returns the currency widget data.
      *
      * @return array
      */
     public function getCurrencyWidgetData()
     {
+        $provider = $this->contextProvider->getCurrencyProvider();
+
         return [
             'id'         => 'currency-widget',
-            'current'    => $this->currencyProvider->getCurrentCurrency(),
-            'currencies' => $this->currencyProvider->getAvailableCurrencies(),
+            'current'    => $provider->getCurrentCurrency(),
+            'currencies' => $provider->getAvailableCurrencies(),
         ];
     }
 }

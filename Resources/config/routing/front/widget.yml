@@ -29,6 +29,28 @@ ekyna_commerce_widget_cart_dropdown:
     methods: [GET]
     options:
         expose: true
+        
+ekyna_commerce_widget_context_widget:
+    path: /context/widget
+    defaults:
+        _controller: "ekyna_commerce.controller.widget:contextWidgetAction"
+    methods: [GET]
+    options:
+        expose: true
+
+ekyna_commerce_widget_context_dropdown:
+    path: /context/dropdown
+    defaults:
+        _controller: "ekyna_commerce.controller.widget:contextDropdownAction"
+    methods: [GET]
+    options:
+        expose: true
+
+ekyna_commerce_widget_context_change:
+    path: /context/change
+    defaults:
+        _controller: "ekyna_commerce.controller.widget:contextChangeAction"
+    methods: [POST]
 
 ekyna_commerce_widget_currency_change:
     path: /currency/change

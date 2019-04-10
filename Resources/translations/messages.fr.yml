@@ -182,8 +182,6 @@ ekyna_commerce:
             title: Mes tickets
             go_to_sale_details: >
                 Pour créer un nouveau ticket, veuillez vous rendre sur le détail d'une commande ou d'un devis.
-        widget:
-            title: Espace client
 
     dashboard:
         export:
@@ -309,11 +307,6 @@ ekyna_commerce:
             transform: Transformer le panier <small>%number%</small>
             duplicate: Dupliquer le panier <small>%number%</small>
             notify: Notifier le panier <small>%number%</small>
-        widget:
-            title: Mon panier
-            items: "{1} Un article|]1,Inf[ %count% articles"
-            show_cart: Voir votre panier
-            empty: Votre panier est vide.
         button:
             list: Liste des paniers
             show: Détail du panier
@@ -1721,3 +1714,14 @@ ekyna_commerce:
 
         message:
             remove_confirm: Confirmer la suppression du message.
+
+    widget:
+        customer:
+            title: Espace client
+        cart:
+            title: Mon panier
+            items: "{1} Un article|]1,Inf[ %count% articles"
+            show_cart: Voir votre panier
+            empty: Votre panier est vide.
+        context:
+            title: Préférences

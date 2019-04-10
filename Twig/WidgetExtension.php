@@ -55,6 +55,11 @@ class WidgetExtension extends \Twig_Extension
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
             new \Twig_SimpleFunction(
+                'commerce_context_widget',
+                [$this, 'renderContextWidget'],
+                ['is_safe' => ['html'], 'needs_environment' => true]
+            ),
+            new \Twig_SimpleFunction(
                 'commerce_currency_widget',
                 [$this, 'renderCurrencyWidget'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
@@ -86,6 +91,19 @@ class WidgetExtension extends \Twig_Extension
     public function renderCartWidget(\Twig_Environment $env, array $options = [])
     {
         return $this->renderWidget($env, $this->widgetHelper->getCartWidgetData(), $options);
+    }
+
+    /**
+     * Renders the context widget.
+     *
+     * @param \Twig_Environment $env
+     * @param array             $options
+     *
+     * @return string
+     */
+    public function renderContextWidget(\Twig_Environment $env, array $options = [])
+    {
+        return $this->renderWidget($env, $this->widgetHelper->getContextWidgetData(), $options);
     }
 
     /**
@@ -129,7 +147,12 @@ class WidgetExtension extends \Twig_Extension
             'tag'      => 'li',
             'class'    => null,
             'icon'     => null,
+            'config'   => null,
         ], $data, $options);
+
+        if (!empty($data['config'])) {
+            $data['config'] = \json_encode($data['config']);
+        }
 
         return $env->render($data['template'], $data);
     }

@@ -74,7 +74,9 @@ class CountryChoiceType extends AbstractType
                 return function (EntityRepository $er) {
                     $qb = $er->createQueryBuilder('o');
 
-                    return $qb->andWhere($qb->expr()->eq('o.enabled', true));
+                    return $qb
+                        ->andWhere($qb->expr()->eq('o.enabled', true))
+                        ->addOrderBy('o.name', 'ASC');
                 };
             }
 

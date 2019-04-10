@@ -54,10 +54,17 @@ function init(config) {
             dropdown_route: 'ekyna_commerce_widget_cart_dropdown',
             event: 'ekyna_commerce.cart',
             debug: false,
+        },
+        context: {
+            selector: '#context-widget',
+            widget_route: 'ekyna_commerce_widget_context_widget',
+            dropdown_route: 'ekyna_commerce_widget_context_dropdown',
+            event: 'ekyna_commerce.context',
+            debug: false,
         }
     }, config);
 
-    let customerWidget, cartWidget;
+    let customerWidget, cartWidget, contextWidget;
     if (config.customer) {
         config.customer.debug = config.debug;
         customerWidget = new Widget(config.customer);
@@ -66,14 +73,31 @@ function init(config) {
         config.cart.debug = config.debug;
         cartWidget = new Widget(config.cart);
     }
+    if (config.context) {
+        config.context.debug = config.debug;
+        contextWidget = new Widget(config.context);
 
-    if (customerWidget || cartWidget) {
+        /** Same in src/Ekyna/Bundle/CoreBundle/Resources/private/js/form/phone-number.js */
+        if (0 === $('link#core-flags-stylesheet').length) {
+            let stylesheet = document.createElement('link');
+            stylesheet.id = 'core-flags-stylesheet';
+            stylesheet.href = '/bundles/ekynacore/css/flags.css';
+            stylesheet.type = 'text/css';
+            stylesheet.rel = 'stylesheet';
+            $('head').append(stylesheet);
+        }
+    }
+
+    if (customerWidget || cartWidget || contextWidget) {
         Dispatcher.on('ekyna_user.authentication', function () {
             if (customerWidget) {
                 customerWidget.reload();
             }
             if (cartWidget) {
                 cartWidget.reload();
+            }
+            if (contextWidget) {
+                contextWidget.reload();
             }
         });
         if (cartWidget) {
@@ -301,6 +325,7 @@ class Widget {
             url: Router.generate(this.config.dropdown_route),
             method: 'GET',
             dataType: 'html',
+            data: this.$element.data('config'),
             cache: false,
         });
 
