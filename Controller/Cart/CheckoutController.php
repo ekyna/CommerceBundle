@@ -15,7 +15,6 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
-use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,11 +40,6 @@ class CheckoutController extends AbstractController
     protected $quoteRepository;
 
     /**
-     * @var ShipmentPriceResolverInterface
-     */
-    protected $shipmentPriceResolver;
-
-    /**
      * @var CheckoutManager
      */
     protected $checkoutManager;
@@ -69,18 +63,16 @@ class CheckoutController extends AbstractController
     /**
      * Constructor.
      *
-     * @param OrderRepositoryInterface       $orderRepository
-     * @param QuoteRepositoryInterface       $quoteRepository
-     * @param ShipmentPriceResolverInterface $shipmentPriceResolver
-     * @param CheckoutManager                $checkoutManager
-     * @param PaymentHelper                  $paymentHelper
-     * @param SaleTransformerInterface       $saleTransformer
-     * @param EventDispatcherInterface       $dispatcher
+     * @param OrderRepositoryInterface $orderRepository
+     * @param QuoteRepositoryInterface $quoteRepository
+     * @param CheckoutManager          $checkoutManager
+     * @param PaymentHelper            $paymentHelper
+     * @param SaleTransformerInterface $saleTransformer
+     * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         QuoteRepositoryInterface $quoteRepository,
-        ShipmentPriceResolverInterface $shipmentPriceResolver,
         CheckoutManager $checkoutManager,
         PaymentHelper $paymentHelper,
         SaleTransformerInterface $saleTransformer,
@@ -88,7 +80,6 @@ class CheckoutController extends AbstractController
     ) {
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
-        $this->shipmentPriceResolver = $shipmentPriceResolver;
         $this->checkoutManager = $checkoutManager;
         $this->paymentHelper = $paymentHelper;
         $this->saleTransformer = $saleTransformer;

@@ -6,7 +6,6 @@ use Ekyna\Component\Commerce\Cart\Provider\AbstractCartProvider;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Cart\Repository\CartRepositoryInterface;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -41,7 +40,6 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
      *
      * @param CartRepositoryInterface $cartRepository
      * @param ResourceOperatorInterface $cartOperator
-     * @param SaleFactoryInterface $saleFactory
      * @param CustomerProviderInterface $customerProvider
      * @param CurrencyProviderInterface $currencyProvider
      * @param SessionInterface $session
@@ -50,13 +48,12 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     public function __construct(
         CartRepositoryInterface $cartRepository,
         ResourceOperatorInterface $cartOperator,
-        SaleFactoryInterface $saleFactory,
         CustomerProviderInterface $customerProvider,
         CurrencyProviderInterface $currencyProvider,
         SessionInterface $session,
         $key = self::KEY
     ) {
-        parent::__construct($cartRepository, $cartOperator, $saleFactory, $customerProvider, $currencyProvider);
+        parent::__construct($cartRepository, $cartOperator, $customerProvider, $currencyProvider);
 
         $this->session = $session;
         $this->key = $key;
@@ -89,7 +86,9 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
     {
         parent::clearCart();
 
-        $this->session->set($this->key, null);
+        if (is_null($this->cart)) {
+            $this->session->set($this->key, null);
+        }
 
         return $this;
     }

@@ -11,10 +11,17 @@
 
         <!-- TODO remove forms defined by resources di builder -->
 
-        <!-- Accounting form types -->
+        <!-- Accounting form type -->
         <service id="ekyna_commerce.accounting_export.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType">
             <argument type="service" id="ekyna_resource.locale_provider"/>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Address form type -->
+        <service id="ekyna_commerce.address.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType">
+            <argument type="service" id="ekyna_commerce.common.country_provider"/>
             <tag name="form.type"/>
         </service>
 
@@ -37,7 +44,7 @@
         <!-- Country form type -->
         <service id="ekyna_commerce.country_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType">
-            <argument type="service" id="ekyna_core.geo.user_country_guesser"/>
+            <argument type="service" id="ekyna_commerce.common.country_provider"/>
             <argument type="service" id="ekyna_resource.locale_provider"/>
             <argument>%ekyna_commerce.country.class%</argument>
             <argument>%ekyna_commerce.default.country%</argument>

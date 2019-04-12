@@ -2,8 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
+use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
+use Ekyna\Component\Commerce\Common\Event\ContextChangeEvent;
 use Ekyna\Component\Commerce\Common\Event\ContextEvent;
 use Ekyna\Component\Commerce\Common\Event\ContextEvents;
+use Ekyna\Component\Commerce\Common\Model\CountryInterface;
+use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
+use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -15,6 +20,16 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class ContextEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var CartProviderInterface
+     */
+    protected $cartProvider;
+
+    /**
+     * @var SaleUpdaterInterface
+     */
+    protected $saleUpdater;
+
     /**
      * @var TokenStorageInterface
      */
@@ -29,15 +44,97 @@ class ContextEventSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param TokenStorageInterface $tokenStorage
+     * @param CartProviderInterface         $cartProvider
+     * @param SaleUpdaterInterface          $saleUpdater
+     * @param TokenStorageInterface         $tokenStorage
      * @param AuthorizationCheckerInterface $authorisationChecker
      */
     public function __construct(
+        CartProviderInterface $cartProvider,
+        SaleUpdaterInterface $saleUpdater,
         TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authorisationChecker
     ) {
+        $this->cartProvider = $cartProvider;
+        $this->saleUpdater = $saleUpdater;
         $this->tokenStorage = $tokenStorage;
         $this->authorisationChecker = $authorisationChecker;
+    }
+
+    /**
+     * Context change event handler.
+     *
+     * @param ContextChangeEvent $event
+     */
+    public function onContextChange(ContextChangeEvent $event)
+    {
+        if (!$this->cartProvider->hasCart()) {
+            return;
+        }
+
+        $cart = $this->cartProvider->getCart();
+
+        if ($cart->isLocked()) {
+            return;
+        }
+
+        $changed = false;
+
+        if ($currency = $event->getCurrency()) {
+            $changed |= $this->onCurrencyChange($currency);
+        }
+
+        if ($country = $event->getCountry()) {
+            $changed |= $this->onCountryChange($country);
+        }
+
+        if ($changed) {
+            $this->cartProvider->saveCart();
+        }
+    }
+
+    /**
+     * On context currency change.
+     *
+     * @param CurrencyInterface $currency
+     *
+     * @return bool
+     */
+    private function onCurrencyChange(CurrencyInterface $currency)
+    {
+        $cart = $this->cartProvider->getCart();
+
+        if ($cart->getCurrency() === $currency) {
+            return false;
+        }
+
+        $cart->setCurrency($currency);
+
+        return true;
+    }
+
+    /**
+     * On context country change.
+     *
+     * @param CountryInterface $country
+     *
+     * @return bool
+     */
+    private function onCountryChange(CountryInterface $country)
+    {
+        $cart = $this->cartProvider->getCart();
+
+        // If cart does not have a delivery address (country), shipping cost
+        // and taxation are calculated based on the context country.
+
+        $address = $cart->isSameAddress() ? $cart->getInvoiceAddress() : $cart->getDeliveryAddress();
+        if ($address) {
+            return false;
+        }
+
+        $this->saleUpdater->recalculate($cart);
+
+        return true;
     }
 
     /**
@@ -66,7 +163,8 @@ class ContextEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ContextEvents::BUILD => ['onContextBuild'],
+            ContextEvents::CHANGE => ['onContextChange'],
+            ContextEvents::BUILD  => ['onContextBuild'],
         ];
     }
 }

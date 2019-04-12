@@ -7,17 +7,13 @@
 
         <!-- Sale factory -->
         <service id="ekyna_commerce.sale_factory"
-                 class="Ekyna\Component\Commerce\Common\Factory\SaleFactory"
-                 lazy="true">
-            <argument type="service" id="ekyna_commerce.customer_group.repository"/>
-            <argument type="service" id="ekyna_commerce.currency.repository"/>
+                 class="Ekyna\Component\Commerce\Common\Factory\SaleFactory">
             <argument type="collection"/><!-- Replaced by DI extension -->
         </service>
 
         <!-- Sale copier factory -->
         <service id="ekyna_commerce.sale_copier_factory"
-                 class="Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactory"
-                 lazy="true">
+                 class="Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactory">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
 

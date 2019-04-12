@@ -1363,7 +1363,7 @@ ekyna_commerce:
                 in_stock: Available (%qty%)
                 pre_order: Restocking the %eda% (%qty%)
                 replenishment: ~%days% days replenishment
-                end_of_life: End of like
+                end_of_life: End of life
                 out_of_stock: Out of stock
                 min_quantity: "Min. purchase quantity : %min%"
                 max_quantity: "Max. available quantity : %max%"

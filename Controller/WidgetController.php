@@ -192,7 +192,6 @@ class WidgetController
             throw new NotFoundHttpException();
         }
 
-        $old = $this->getContextFormData($request);
         $form = $this->createContextForm($request);
 
         $form->handleRequest($request);
@@ -200,12 +199,10 @@ class WidgetController
         if ($form->isSubmitted() && $form->isValid()) {
             $new = $form->getData();
 
-            if ($old['currency'] != $new['currency']) {
-                $this->helper->getContextProvider()->changeCurrency($new['currency']);
-            }
-            if ($old['country'] != $new['country']) {
-                $this->helper->getContextProvider()->changeCountry($new['country']);
-            }
+            $this
+                ->helper
+                ->getContextProvider()
+                ->changeCurrencyAndCountry($new['currency'], $new['country']);
 
             if (!empty($new['route'])) {
                 $parameters = $new['param'] ?? [];
@@ -215,7 +212,38 @@ class WidgetController
             }
         }
 
-        throw new \RuntimeException("Unexpected form data");
+        return new RedirectResponse($this->urlGenerator->generate($this->homeRoute, [
+            '_locale' => $this->helper->getLocale()
+        ]));
+    }
+
+    /**
+     * Currency change action.
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function currencyChangeAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException();
+        }
+
+        // Change current currency
+        if ($code = $request->request->get('currency')) {
+            $this->helper->getContextProvider()->changeCurrencyAndCountry($code);
+        }
+
+        if ($referer = $request->headers->get('referer')) {
+            if ($parts = parse_url($referer)) {
+                if ($request->getHttpHost() === $parts["host"]) {
+                    return new RedirectResponse($referer);
+                }
+            }
+        }
+
+        return new RedirectResponse("/");
     }
 
     private function getContextFormData(Request $request): array
@@ -244,34 +272,5 @@ class WidgetController
         if (!$request->isXmlHttpRequest()) {
             throw new NotFoundHttpException();
         }
-    }
-
-    /**
-     * Currency change action.
-     *
-     * @param Request $request
-     *
-     * @return RedirectResponse
-     */
-    public function currencyChangeAction(Request $request)
-    {
-        if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException();
-        }
-
-        // Change current currency
-        if ($code = $request->request->get('currency')) {
-            $this->helper->getContextProvider()->changeCurrency($code);
-        }
-
-        if ($referer = $request->headers->get('referer')) {
-            if ($parts = parse_url($referer)) {
-                if ($request->getHttpHost() === $parts["host"]) {
-                    return new RedirectResponse($referer);
-                }
-            }
-        }
-
-        return new RedirectResponse("/");
     }
 }

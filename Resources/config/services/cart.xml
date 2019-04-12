@@ -28,7 +28,6 @@
                  lazy="true">
             <argument type="service" id="ekyna_commerce.cart.repository"/>
             <argument type="service" id="ekyna_commerce.cart.operator"/>
-            <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_commerce.common.currency_provider"/>
             <argument type="service" id="session"/>
@@ -140,7 +139,6 @@
                  parent="ekyna_commerce.controller.cart.abstract">
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.quote.repository"/>
-            <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.payment.checkout_manager"/>
             <argument type="service" id="ekyna_commerce.payment_helper"/>
             <argument type="service" id="ekyna_commerce.sale_transformer"/>

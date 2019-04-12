@@ -125,7 +125,6 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentAddressResolver">
             <argument type="service" id="ekyna_commerce.shipment_address.transformer"/>
             <argument type="service" id="ekyna_setting.manager"/>
-            <argument type="service" id="ekyna_commerce.country.repository"/>
         </service>
 
         <!-- Shipment subject state resolver -->

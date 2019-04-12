@@ -16,7 +16,7 @@
         <!-- Tax resolver -->
         <service id="ekyna_commerce.pricing.tax_resolver"
                  class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
-            <argument type="service" id="ekyna_commerce.country.repository"/>
+            <argument type="service" id="ekyna_commerce.common.country_provider"/>
             <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
         </service>
 

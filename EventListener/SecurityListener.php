@@ -157,7 +157,7 @@ class SecurityListener implements EventSubscriberInterface
         $currency = $customer->getCurrency()->getCode();
 
         if ($this->currencyProvider->getCurrentCurrency() !== $currency) {
-            $this->currencyProvider->setCurrentCurrency($currency);
+            $this->currencyProvider->setCurrency($currency);
 
             $this->redirect = true;
         }

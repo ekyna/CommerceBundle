@@ -29,11 +29,6 @@ class ShipmentAddressResolver extends BaseResolver
     private $settingsManager;
 
     /**
-     * @var CountryRepositoryInterface
-     */
-    private $countryRepository;
-
-    /**
      * @var PhoneNumberUtil
      */
     private $phoneUtil;
@@ -46,15 +41,11 @@ class ShipmentAddressResolver extends BaseResolver
      * @param SettingsManagerInterface $settingsManager
      * @param CountryRepositoryInterface $countryRepository
      */
-    public function __construct(
-        ShipmentAddressTransformer $transformer,
-        SettingsManagerInterface $settingsManager,
-        CountryRepositoryInterface $countryRepository
-    ) {
+    public function __construct(ShipmentAddressTransformer $transformer, SettingsManagerInterface $settingsManager)
+    {
         parent::__construct($transformer);
 
         $this->settingsManager = $settingsManager;
-        $this->countryRepository = $countryRepository;
     }
 
     /**
@@ -110,7 +101,7 @@ class ShipmentAddressResolver extends BaseResolver
     private function findCountryByCode($code)
     {
         /** @var \Ekyna\Component\Commerce\Common\Model\CountryInterface $country */
-        if (null === $country = $this->countryRepository->findOneBy(['code' => $code])) {
+        if (null === $country = $this->getCountryRepository()->findOneBy(['code' => $code])) {
             throw new InvalidArgumentException("Unexpected country code.");
         }
 

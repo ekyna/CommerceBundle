@@ -176,7 +176,7 @@ class EkynaCommerceExtension extends AbstractExtension
     {
         $factoryDefinition = $container->getDefinition('ekyna_commerce.sale_factory');
 
-        $factoryDefinition->replaceArgument(2, [
+        $factoryDefinition->replaceArgument(0, [
             'address'         => [
                 Cart\Model\CartInterface::class   => '%ekyna_commerce.cart_address.class%',
                 Order\Model\OrderInterface::class => '%ekyna_commerce.order_address.class%',
