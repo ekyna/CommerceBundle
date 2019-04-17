@@ -46,16 +46,14 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType">
             <argument type="service" id="ekyna_commerce.common.country_provider"/>
             <argument type="service" id="ekyna_resource.locale_provider"/>
-            <argument>%ekyna_commerce.country.class%</argument>
-            <argument>%ekyna_commerce.default.country%</argument>
             <tag name="form.type"/>
         </service>
 
         <!-- Currency form type -->
         <service id="ekyna_commerce.currency_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType">
-            <argument>%ekyna_commerce.currency.class%</argument>
-            <argument>%ekyna_commerce.default.currency%</argument>
+            <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            <argument type="service" id="ekyna_resource.locale_provider"/>
             <tag name="form.type"/>
         </service>
 

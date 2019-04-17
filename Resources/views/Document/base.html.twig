@@ -94,7 +94,7 @@
 {% block doc_footer %}
 <div class="bloc footer">
     {% block doc_footer_content %}
-        {{- get_setting('commerce.invoice_footer')|raw -}}
+        {{- get_setting('commerce.invoice_footer', locale)|raw -}}
     {% endblock doc_footer_content %}
 </div>
 {% endblock doc_footer %}

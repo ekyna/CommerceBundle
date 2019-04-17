@@ -1,11 +1,14 @@
-{{ show_row(settings.commerce.invoice_footer, 'textarea', {
+{{ show_row(settings.commerce.invoice_footer, 'i18n_parameter', {
     'label': 'ekyna_commerce.setting.invoice_footer',
-    'label_col': 3,
-    'html': true
-}) }}{{ show_row(settings.commerce.email_signature, 'textarea', {
+    'type': 'textarea',
+    'options': {'html': true},
+    'label_col': 3
+}) }}
+{{ show_row(settings.commerce.email_signature, 'i18n_parameter', {
     'label': 'ekyna_commerce.setting.email_signature',
-    'label_col': 3,
-    'html': true
+    'type': 'textarea',
+    'options': {'html': true},
+    'label_col': 3
 }) }}
 <div class="row show-row">
     <div class="col-md-3 show-label">

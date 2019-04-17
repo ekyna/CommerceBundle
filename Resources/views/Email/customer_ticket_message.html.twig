@@ -33,7 +33,7 @@
         '%subject%': ticket.subject,
         '%url%': absolute_url(path)
     })|raw }}
-    {{- get_setting('commerce.email_signature')|raw -}}
+    {{- get_setting('commerce.email_signature', locale)|raw -}}
     {% do trans_revert_locale() %}
 {% endspaceless %}
 {% endblock body %}

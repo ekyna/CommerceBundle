@@ -59,6 +59,7 @@
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            <argument type="service" id="ekyna_commerce.common.country_provider"/>
             <argument type="service" id="router"/>
             <tag name="kernel.event_subscriber" />
         </service>

@@ -25,6 +25,7 @@ class ShipmentZoneType extends ResourceFormType
             ])
             ->add('countries', CountryChoiceType::class, [
                 'label'    => 'ekyna_commerce.country.label.plural',
+                'enabled'  => false,
                 'multiple' => true,
             ])
             ->add('pricing', ShipmentPricingType::class, [

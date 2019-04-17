@@ -2,10 +2,15 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 
-use Doctrine\ORM\EntityRepository;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
-use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
+use Ekyna\Bundle\CommerceBundle\Form\ChoiceList\CurrencyChoiceLoader;
+use Ekyna\Bundle\CoreBundle\Form\DataTransformer\ObjectToIdentifierTransformer;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
+use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
+use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;
+use Symfony\Bridge\Doctrine\Form\EventListener\MergeDoctrineCollectionListener;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,26 +22,43 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CurrencyChoiceType extends AbstractType
 {
     /**
-     * @var string
+     * @var CurrencyProviderInterface
      */
-    private $currencyClass;
+    private $currencyProvider;
 
     /**
-     * @var string
+     * @var LocaleProviderInterface
      */
-    private $defaultCode;
+    private $localeProvider;
 
 
     /**
      * Constructor.
      *
-     * @param string $currencyClass
-     * @param string $defaultCode
+     * @param CurrencyProviderInterface $currencyProvider
+     * @param LocaleProviderInterface   $localeProvider
      */
-    public function __construct($currencyClass, $defaultCode)
+    public function __construct(CurrencyProviderInterface $currencyProvider, LocaleProviderInterface $localeProvider)
     {
-        $this->currencyClass = $currencyClass;
-        $this->defaultCode = $defaultCode;
+        $this->currencyProvider = $currencyProvider;
+        $this->localeProvider = $localeProvider;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addModelTransformer(new ObjectToIdentifierTransformer(
+            $this->currencyProvider->getCurrencyRepository(),
+            'code', $options['multiple']
+        ));
+
+        if ($options['multiple']) {
+            $builder
+                ->addEventSubscriber(new MergeDoctrineCollectionListener())
+                ->addViewTransformer(new CollectionToArrayTransformer(), true);
+        }
     }
 
     /**
@@ -44,25 +66,51 @@ class CurrencyChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'label'             => function (Options $options, $value) {
-                if ($value) {
-                    return $value;
+        $userCurrency = $this->currencyProvider->getCurrency();
+
+        $resolver
+            ->setDefaults([
+                'label'                     => function (Options $options, $value) {
+                    if (false === $value || !empty($value)) {
+                        return $value;
+                    }
+
+                    return 'ekyna_commerce.currency.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                },
+                'enabled'                   => true,
+                'choice_loader'             => function (Options $options) {
+                    if ($options['choices']) {
+                        @trigger_error(sprintf(
+                            'Using the "choices" option in %s has been deprecated since Symfony 3.3 and will be ' .
+                            'ignored in 4.0. Override the "choice_loader" option instead or set it to null.',
+                            __CLASS__
+                        ), E_USER_DEPRECATED);
+
+                        return null;
+                    }
+
+                    return new CurrencyChoiceLoader(
+                        $this->currencyProvider->getCurrencyRepository(),
+                        $this->localeProvider->getCurrentLocale(),
+                        $options['enabled']
+                    );
+                },
+                'choice_translation_domain' => false,
+                'preferred_choices'         => function (string $code) use ($userCurrency) {
+                    return strtoupper($code) === strtoupper($userCurrency->getCode());
+                },
+            ])
+            ->setAllowedTypes('enabled', 'bool')
+            ->setNormalizer('attr', function (Options $options, $value) {
+                $value = (array)$value;
+
+                if (!isset($value['placeholder'])) {
+                    $value['placeholder'] = 'ekyna_commerce.currency.label.' .
+                        ($options['multiple'] ? 'plural' : 'singular');
                 }
 
-                return 'ekyna_commerce.currency.label.' . ($options['multiple'] ? 'plural' : 'singular');
-            },
-            'class'             => $this->currencyClass,
-            'choice_value'      => 'code',
-            'query_builder'     => function (EntityRepository $er) {
-                $qb = $er->createQueryBuilder('o');
-
-                return $qb->andWhere($qb->expr()->eq('o.enabled', true));
-            },
-            'preferred_choices' => function (CurrencyInterface $currency) {
-                return $currency->getCode() === $this->defaultCode;
-            },
-        ]);
+                return $value;
+            });
     }
 
     /**
@@ -70,6 +118,6 @@ class CurrencyChoiceType extends AbstractType
      */
     public function getParent()
     {
-        return ResourceType::class;
+        return ChoiceType::class;
     }
 }

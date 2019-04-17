@@ -86,6 +86,7 @@ class PaymentMethodType extends ResourceFormType
                 ],
             ])
             ->add('currencies', CurrencyChoiceType::class, [
+                'enabled'  => false,
                 'multiple' => true,
                 'required' => false,
             ]);

@@ -12,12 +12,18 @@
         {{ subject.number }}
     </h1>
     <p>
-        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
-        {% if subject.orderedAt is not same as(null) -%}
+        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>&nbsp;
+        <strong>
+        {%- if subject.orderedAt is not null -%}
             {{ subject.orderedAt|localizeddate('long', 'none', locale) }}
         {%- else -%}
             {{ subject.createdAt|localizeddate('long', 'none', locale) }}
-        {%- endif -%}.
+        {%- endif -%}
+        </strong>.
+        {%- if subject.estimatedDateOfArrival is not null -%}
+        &nbsp;<span class="text-alt">{{ 'ekyna_commerce.field.estimated_date_of_arrival'|trans }}</span>&nbsp;
+        <strong>{{ subject.estimatedDateOfArrival|localizeddate('long', 'none', locale) }}</strong>.
+        {%- endif -%}
     </p>
 {%- endblock doc_title_content %}
 

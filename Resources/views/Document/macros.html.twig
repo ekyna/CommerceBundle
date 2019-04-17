@@ -92,7 +92,7 @@
 {% macro render_voucher_number(sale) %}
 {% spaceless %}
     {% if sale.voucherNumber is not empty -%}
-        <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</span>
+        <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</span>&nbsp;
         <strong>{{ sale.voucherNumber }}</strong>.
     {%- endif %}
 {% endspaceless %}
@@ -102,10 +102,10 @@
 {% macro render_payment_term(sale, currency) %}
 {% spaceless %}
     {% if sale.paymentTerm is not null -%}
-        <span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</span>
+        <span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</span>&nbsp;
         <strong>{{ sale.paymentTerm }}</strong>.
         {% if sale.outstandingDate is not null %}
-            <span class="text-alt">{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</span>
+            <span class="text-alt">{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</span>&nbsp;
             <strong>{{ sale.outstandingDate|localizeddate('long', 'none', locale) }}</strong>.
         {% endif %}
     {%- endif %}

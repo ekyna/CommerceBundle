@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
+use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Component\Commerce\Supplier\Repository\SupplierProductRepositoryInterface;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -79,7 +80,8 @@ class SupplierType extends ResourceFormType
             ->add('description', Symfony\TextareaType::class, [
                 'label'    => 'ekyna_core.field.description',
                 'required' => false,
-            ]);
+            ])
+            ->add('locale', LocaleChoiceType::class);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierInterface $data */
@@ -95,5 +97,18 @@ class SupplierType extends ResourceFormType
                 'disabled' => !empty($products),
             ]);
         });
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierInterface $data */
+            $data = $event->getData();
+
+            if (null === $address = $data->getAddress()) {
+                return null;
+            }
+
+            if ($address->isEmpty()) {
+                $data->setAddress(null);
+            }
+        }, 2048);
     }
 }

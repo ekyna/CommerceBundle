@@ -64,6 +64,7 @@ class ShipmentRuleType extends ResourceFormType
             ])
             ->add('countries', CountryChoiceType::class, [
                 'label'    => 'ekyna_commerce.country.label.plural',
+                'enabled'  => false,
                 'multiple' => true,
                 'required' => false,
                 'attr'     => [

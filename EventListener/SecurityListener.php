@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\UserBundle\Event\AuthenticationEvent;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
+use Ekyna\Component\Commerce\Common\Country\CountryProviderInterface;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use FOS\UserBundle\FOSUserEvents;
@@ -36,6 +37,11 @@ class SecurityListener implements EventSubscriberInterface
     protected $currencyProvider;
 
     /**
+     * @var CountryProviderInterface
+     */
+    protected $countryProvider;
+
+    /**
      * @var UrlGeneratorInterface
      */
     protected $urlGenerator;
@@ -52,17 +58,20 @@ class SecurityListener implements EventSubscriberInterface
      * @param CartProviderInterface     $cartProvider
      * @param CustomerProviderInterface $customerProvider
      * @param CurrencyProviderInterface $currencyProvider
+     * @param CountryProviderInterface  $countryProvider
      * @param UrlGeneratorInterface     $urlGenerator
      */
     public function __construct(
         CartProviderInterface $cartProvider,
         CustomerProviderInterface $customerProvider,
         CurrencyProviderInterface $currencyProvider,
-        UrlGeneratorInterface     $urlGenerator
+        CountryProviderInterface $countryProvider,
+        UrlGeneratorInterface $urlGenerator
     ) {
         $this->cartProvider = $cartProvider;
         $this->customerProvider = $customerProvider;
         $this->currencyProvider = $currencyProvider;
+        $this->countryProvider = $countryProvider;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -127,9 +136,9 @@ class SecurityListener implements EventSubscriberInterface
         // Resets the customer provider to prevent customer mismatch.
         $this->customerProvider->reset();
 
-        $this->configureCurrency();
-
         $this->checkCartOwner();
+
+        $this->configureContext();
     }
 
     /**
@@ -140,27 +149,9 @@ class SecurityListener implements EventSubscriberInterface
         // Resets the customer provider to prevent customer mismatch.
         $this->customerProvider->reset();
 
-        $this->configureCurrency();
-
         $this->checkCartOwner();
-    }
 
-    /**
-     * Configures the currency regarding to the customer setting.
-     */
-    protected function configureCurrency()
-    {
-        if (!$customer = $this->customerProvider->getCustomer()) {
-            return;
-        }
-
-        $currency = $customer->getCurrency()->getCode();
-
-        if ($this->currencyProvider->getCurrentCurrency() !== $currency) {
-            $this->currencyProvider->setCurrency($currency);
-
-            $this->redirect = true;
-        }
+        $this->configureContext();
     }
 
     /**
@@ -169,21 +160,87 @@ class SecurityListener implements EventSubscriberInterface
      */
     protected function checkCartOwner()
     {
-        if ($this->cartProvider->hasCart()) {
-            $cart = $this->cartProvider->getCart();
-            $customer = $this->customerProvider->getCustomer();
+        if (!$this->cartProvider->hasCart()) {
+            return;
+        }
 
-            if ($cart->getCustomer() !== $customer) {
-                $cart
-                    ->setCustomer($customer)
-                    ->setCurrency($customer->getCurrency());
+        $cart = $this->cartProvider->getCart();
 
-                $this->cartProvider->updateCustomerGroupAndCurrency();
+        // Set cart customer
+        $customer = $this->customerProvider->getCustomer();
+        if ($customer !== $cart->getCustomer()) {
+            $cart->setCustomer($customer);
 
-                $this->cartProvider->saveCart();
-
-                $this->redirect = true;
+            if ($customer) {
+                $cart->setCurrency($customer->getCurrency());
             }
+
+            $this->cartProvider->updateCustomerGroupAndCurrency();
+
+            $this->cartProvider->saveCart();
+
+            $this->redirect = true;
+        }
+    }
+
+    /**
+     * Configures the currency regarding to the customer setting.
+     */
+    protected function configureContext()
+    {
+        $cart = $this->cartProvider->getCart();
+        $customer = $this->customerProvider->getCustomer();
+
+        if ($cart) {
+            // Set cart's currency as current
+            $this->configureContextCurrency($cart->getCurrency()->getCode());
+
+            // Set cart's delivery country as current
+            if ($country = $cart->getDeliveryCountry()) {
+                $this->configureContextCountry($country->getCode());
+
+                return;
+            }
+        } elseif ($customer) {
+            // Set customer's currency as current
+            $this->configureContextCurrency($customer->getCurrency()->getCode());
+        }
+
+        if (!$customer) {
+            return;
+        }
+
+        // Set customer's delivery country as current
+        if (null !== $address = $customer->getDefaultDeliveryAddress(true)) {
+            $this->configureContextCountry($address->getCountry()->getCode());
+        }
+    }
+
+    /**
+     * Configures the context's current currency.
+     *
+     * @param string $code
+     */
+    protected function configureContextCurrency(string $code)
+    {
+        if ($code !== $this->currencyProvider->getCurrentCurrency()) {
+            $this->currencyProvider->setCurrency($code);
+
+            $this->redirect = true;
+        }
+    }
+
+    /**
+     * Configures the context's current country.
+     *
+     * @param string $code
+     */
+    protected function configureContextCountry(string $code)
+    {
+        if ($code !== $this->countryProvider->getCurrentCountry()) {
+            $this->countryProvider->setCountry($code);
+
+            $this->redirect = true;
         }
     }
 

@@ -21,9 +21,22 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="supplier-general">
-                {{ show_row(supplier.name, 'text', {
-                    'label': 'ekyna_core.field.name'
-                }) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(supplier.name, 'text', {
+                            'label': 'ekyna_core.field.name',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(supplier.carrier, 'entity', {
+                            'label': 'ekyna_commerce.supplier_carrier.label.singular',
+                            'route': 'ekyna_commerce_supplier_carrier_admin_show',
+                            'route_parameters_map': {'supplierCarrierId': 'id'},
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(supplier.currency, 'entity', {
@@ -34,10 +47,9 @@
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(supplier.tax, 'entity', {
-                            'label': 'ekyna_commerce.tax.label.singular',
-                            'route': 'ekyna_commerce_tax_admin_show',
-                            'route_parameters_map': {'taxId': 'id'},
+                        {{ show_row(supplier.locale|language|capitalize, 'text', {
+                            'label': 'ekyna_core.field.locale',
+                            'id': 'sale_locale',
                             'label_col': 4
                         }) }}
                     </div>
@@ -50,10 +62,10 @@
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(supplier.carrier, 'entity', {
-                            'label': 'ekyna_commerce.supplier_carrier.label.singular',
-                            'route': 'ekyna_commerce_supplier_carrier_admin_show',
-                            'route_parameters_map': {'supplierCarrierId': 'id'},
+                        {{ show_row(supplier.tax, 'entity', {
+                            'label': 'ekyna_commerce.tax.label.singular',
+                            'route': 'ekyna_commerce_tax_admin_show',
+                            'route_parameters_map': {'taxId': 'id'},
                             'label_col': 4
                         }) }}
                     </div>

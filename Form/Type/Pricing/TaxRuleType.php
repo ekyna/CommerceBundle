@@ -42,6 +42,7 @@ class TaxRuleType extends ResourceFormType
                 ],
             ])
             ->add('countries', CountryChoiceType::class, [
+                'enabled'  => false,
                 'multiple' => true,
             ])
             ->add('taxes', TaxChoiceType::class, [

@@ -2,26 +2,30 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Settings;
 
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Setting\ShipmentLabelType;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
+use Ekyna\Bundle\SettingBundle\Form\Type\I18nParameterType;
+use Ekyna\Bundle\SettingBundle\Model\I18nParameter;
 use Ekyna\Bundle\SettingBundle\Schema\AbstractSchema;
+use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaInterface;
+use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaTrait;
 use Ekyna\Bundle\SettingBundle\Schema\SettingsBuilder;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class CommerceSettingsSchema
  * @package Ekyna\Bundle\CommerceBundle\Service\Settings
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CommerceSettingsSchema extends AbstractSchema
+class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaInterface
 {
+    use LocalizedSchemaTrait;
+
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildSettings(SettingsBuilder $builder)
     {
@@ -42,12 +46,12 @@ class CommerceSettingsSchema extends AbstractSchema
 
         $builder
             ->setDefaults(array_merge([
-                'invoice_footer'  => '<p>Default invoice footer</p>',
-                'email_signature' => '<p>Default email signature</p>',
+                'invoice_footer'  => $this->createI18nParameter('<p>Default invoice footer</p>'),
+                'email_signature' => $this->createI18nParameter('<p>Default email signature</p>'),
                 'shipment_label'  => $labelDefaults,
             ], $this->defaults))
-            ->setAllowedTypes('invoice_footer', 'string')
-            ->setAllowedTypes('email_signature', 'string')
+            ->setAllowedTypes('invoice_footer', I18nParameter::class)
+            ->setAllowedTypes('email_signature', I18nParameter::class)
             ->setAllowedTypes('shipment_label', 'array')
             ->setNormalizer('shipment_label', function (Options $options, $value) use ($labelResolver) {
                 return $labelResolver->resolve($value);
@@ -55,58 +59,50 @@ class CommerceSettingsSchema extends AbstractSchema
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('invoice_footer', TinymceType::class, [
-                'label' => 'ekyna_commerce.setting.invoice_footer',
-                'theme' => 'simple',
-            ])
-            ->add('email_signature', TinymceType::class, [
-                'label' => 'ekyna_commerce.setting.email_signature',
-                'theme' => 'simple',
-            ]);
-
-        $label = $builder
-            ->create('shipment_label', FormType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.label',
-                'required' => false,
-            ])
-            ->add('size', ChoiceType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.size',
-                'choices'  => LabelRenderer::getSizes(),
-                'required' => false,
-                'select2'  => false,
-            ])
-            ->add('width', IntegerType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.width',
-                'required' => false,
-                'attr'     => [
-                    'input_group' => ['append' => 'mm'],
+            ->add('invoice_footer', I18nParameterType::class, [
+                'label'        => 'ekyna_commerce.setting.invoice_footer',
+                'form_type'    => TinymceType::class,
+                'form_options' => [
+                    'label'       => false,
+                    'theme'       => 'simple',
+                    'constraints' => [
+                        new Assert\NotBlank(),
+                    ],
+                ],
+                'constraints'  => [
+                    new Assert\Valid(),
                 ],
             ])
-            ->add('height', IntegerType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.height',
-                'required' => false,
-                'attr'     => [
-                    'input_group' => ['append' => 'mm'],
+            ->add('email_signature', I18nParameterType::class, [
+                'label'        => 'ekyna_commerce.setting.email_signature',
+                'form_type'    => TinymceType::class,
+                'form_options' => [
+                    'label'       => false,
+                    'theme'       => 'simple',
+                    'constraints' => [
+                        new Assert\NotBlank(),
+                    ],
+                ],
+                'constraints'  => [
+                    new Assert\Valid(),
                 ],
             ])
-            ->add('margin', IntegerType::class, [
-                'label'    => 'ekyna_commerce.setting.shipment_label.margin',
-                'required' => false,
-                'attr'     => [
-                    'input_group' => ['append' => 'mm'],
+            ->add('shipment_label', ShipmentLabelType::class, [
+                'label'       => 'ekyna_commerce.setting.shipment_label.label',
+                'required'    => false,
+                'constraints' => [
+                    new Assert\Valid(),
                 ],
             ]);
-
-        $builder->add($label);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getLabel()
     {
@@ -114,7 +110,7 @@ class CommerceSettingsSchema extends AbstractSchema
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getShowTemplate()
     {
@@ -122,7 +118,7 @@ class CommerceSettingsSchema extends AbstractSchema
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getFormTemplate()
     {
