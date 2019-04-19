@@ -24,6 +24,7 @@
                 <option name="types">image</option>
             </constraint>
         </property>
+        <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\PaymentMethod"/>
     </class>
 
     <!-- ShipmentMethod -->

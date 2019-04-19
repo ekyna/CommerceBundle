@@ -76,6 +76,13 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Payment method -->
+        <service id="ekyna_commerce.payment_method.validator"
+                 class="Ekyna\Bundle\CommerceBundle\Validator\Constraints\PaymentMethodValidator">
+            <argument type="service" id="payum"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
     </services>
 
 </container>
