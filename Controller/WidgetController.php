@@ -46,6 +46,11 @@ class WidgetController
      */
     private $homeRoute;
 
+    /**
+     * @var array
+     */
+    private $locales;
+
 
     /**
      * Constructor.
@@ -55,19 +60,22 @@ class WidgetController
      * @param FormFactoryInterface  $formFactory
      * @param UrlGeneratorInterface $urlGenerator
      * @param string                $homeRoute
+     * @param array                 $locales
      */
     public function __construct(
         WidgetHelper $helper,
         EngineInterface $templating,
         FormFactoryInterface $formFactory,
         UrlGeneratorInterface $urlGenerator,
-        string $homeRoute
+        string $homeRoute,
+        array $locales
     ) {
         $this->helper = $helper;
         $this->templating = $templating;
         $this->formFactory = $formFactory;
         $this->urlGenerator = $urlGenerator;
         $this->homeRoute = $homeRoute;
+        $this->locales = $locales;
     }
 
     /**
@@ -213,7 +221,7 @@ class WidgetController
         }
 
         return new RedirectResponse($this->urlGenerator->generate($this->homeRoute, [
-            '_locale' => $this->helper->getLocale()
+            '_locale' => $this->helper->getLocale(),
         ]));
     }
 
@@ -262,8 +270,9 @@ class WidgetController
         return $this
             ->formFactory
             ->create(ContextType::class, $this->getContextFormData($request), [
-                'method' => 'POST',
-                'action' => $this->helper->getUrlGenerator()->generate('ekyna_commerce_widget_context_change'),
+                'method'  => 'POST',
+                'action'  => $this->helper->getUrlGenerator()->generate('ekyna_commerce_widget_context_change'),
+                'locales' => $this->locales,
             ]);
     }
 

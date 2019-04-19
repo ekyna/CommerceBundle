@@ -147,11 +147,16 @@ class WidgetExtension extends \Twig_Extension
             'tag'      => 'li',
             'class'    => null,
             'icon'     => null,
-            'config'   => null,
+            'url'      => null,
+            'data'     => null,
         ], $data, $options);
 
-        if (!empty($data['config'])) {
-            $data['config'] = \json_encode($data['config']);
+        if (!empty($data['url'])) {
+            $data['url'] = \json_encode($data['url']);
+        }
+
+        if (!empty($data['data'])) {
+            $data['data'] = \json_encode($data['data']);
         }
 
         return $env->render($data['template'], $data);

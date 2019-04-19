@@ -1,4 +1,4 @@
-<{{ tag }} class="dropdown{% if class is not empty %} {{ class }}{% endif %}" id="{{ id }}"{% if config is not empty %} data-config='{{ config }}'{% endif %}>
+<{{ tag }} class="dropdown{% if class is not empty %} {{ class }}{% endif %}" id="{{ id }}" data-url='{{ url|raw }}'{% if data is not empty %} data-data='{{ data|raw }}'{% endif %}>
     <a href="{{ href }}" title="{{ title }}" class="dropdown-toggle"
        data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
         {% if icon is not empty %}<span class="{{ icon }}"></span>{% endif %}

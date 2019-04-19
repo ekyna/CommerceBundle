@@ -166,6 +166,10 @@ class WidgetHelper
             'href'  => $this->urlGenerator->generate('ekyna_user_account_index'),
             'title' => $label,
             'label' => $label,
+            'url'   => [
+                'widget'   => $this->urlGenerator->generate('ekyna_commerce_widget_customer_widget'),
+                'dropdown' => $this->urlGenerator->generate('ekyna_commerce_widget_customer_dropdown'),
+            ],
         ];
 
         if (null !== $customer = $this->getCustomer()) {
@@ -189,6 +193,10 @@ class WidgetHelper
             'href'  => $this->urlGenerator->generate('ekyna_commerce_cart_checkout_index'),
             'title' => $label,
             'label' => $label,
+            'url'   => [
+                'widget'   => $this->urlGenerator->generate('ekyna_commerce_widget_cart_widget'),
+                'dropdown' => $this->urlGenerator->generate('ekyna_commerce_widget_cart_dropdown'),
+            ],
         ];
 
         $cart = $this->getCart();
@@ -231,22 +239,26 @@ class WidgetHelper
             mb_convert_case($localeLabel, MB_CASE_TITLE)
         );
 
-        $config = [];
+        $data = [];
         if ($request = $this->requestStack->getMasterRequest()) {
-            $config['route'] = $request->attributes->get('_route');
+            $data['route'] = $request->attributes->get('_route');
             $parameters = $request->attributes->get('_route_params');
             unset($parameters['_locale']);
             if (!empty($parameters)) {
-                $config['param'] = $parameters;
+                $data['param'] = $parameters;
             }
         }
 
         return [
-            'id'     => 'context-widget',
-            'href'   => 'javascript:void(0)',
-            'title'  => $this->translator->trans('ekyna_commerce.widget.context.title'),
-            'label'  => $label,
-            'config' => $config,
+            'id'    => 'context-widget',
+            'href'  => 'javascript:void(0)',
+            'title' => $this->translator->trans('ekyna_commerce.widget.context.title'),
+            'label' => $label,
+            'url'   => [
+                'widget'   => $this->urlGenerator->generate('ekyna_commerce_widget_context_widget'),
+                'dropdown' => $this->urlGenerator->generate('ekyna_commerce_widget_context_dropdown'),
+            ],
+            'data'  => $data,
         ];
     }
 

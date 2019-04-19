@@ -21,6 +21,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
     var $checkout = $('.cart-checkout'),
         $customer = $checkout.find('.cart-checkout-customer'),
         $forms = $checkout.find('.cart-checkout-forms'),
+        $footer = $checkout.find('.cart-checkout-footer'),
         $submit = $checkout.find('.cart-checkout-submit'),
         $quote = $checkout.find('.cart-checkout-quote'),
         $submitPrevented = $checkout.find('.submit-prevented'),
@@ -44,10 +45,12 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form'],
             if (1 === controls.empty) {
                 $forms.slideUp();
                 $customer.slideUp();
+                $footer.hide();
                 $submit.addClass('disabled').hide();
                 $quote.addClass('disabled').hide();
             } else {
                 $forms.show().slideDown();
+                $footer.show();
                 $submit.show();
 
                 for (var key in buttonMapping) {

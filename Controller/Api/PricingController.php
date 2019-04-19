@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Api;
 use Ekyna\Component\Commerce\Pricing\Api\PricingApiInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -49,7 +50,7 @@ class PricingController
         // TODO authorisation / throttle
 
         if (!$request->isXmlHttpRequest()) {
-            throw $this->$this->createNotFoundException();
+            throw new NotFoundHttpException();
         }
 
         $data = [

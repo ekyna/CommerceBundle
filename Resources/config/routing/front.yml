@@ -1,10 +1,18 @@
 ekyna_commerce_payment:
     resource: "front/payment.yml"
-    prefix:   /_locale/payment
+    prefix:   /{_locale}/payment
 
 ekyna_commerce_cart:
     resource: "front/cart.yml"
-    prefix:   /_locale/cart
+    prefix:   /{_locale}/cart
+
+ekyna_commerce_widget:
+    resource: "front/widget.yml"
+    prefix:   /{_locale}/widget
+
+ekyna_commerce_subject:
+    resource: "front/subject.yml"
+    prefix:   /{_locale}/subject
 
 ekyna_commerce_cart_checkout:
     resource: "front/cart-checkout.yml"
@@ -13,11 +21,3 @@ ekyna_commerce_cart_checkout:
 ekyna_commerce_account:
     resource: "front/account.yml"
     prefix:   /my-account
-
-ekyna_commerce_widget:
-    resource: "front/widget.yml"
-    prefix:   /widget
-
-ekyna_commerce_subject:
-    resource: "front/subject.yml"
-    prefix:   /subject

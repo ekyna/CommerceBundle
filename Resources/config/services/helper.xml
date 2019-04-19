@@ -13,6 +13,7 @@
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
             <argument>%ekyna_cms.home_route%</argument>
+            <argument>%ekyna_cms.public_locales%</argument>
         </service>
 
         <!-- Widget helper -->

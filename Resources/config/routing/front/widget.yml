@@ -3,57 +3,53 @@ ekyna_commerce_widget_customer_widget:
     defaults:
         _controller: "ekyna_commerce.controller.widget:customerWidgetAction"
     methods: [GET]
-    options:
-        expose: true
+    options: { i18n: false }
 
 ekyna_commerce_widget_customer_dropdown:
     path: /customer/dropdown
     defaults:
         _controller: "ekyna_commerce.controller.widget:customerDropdownAction"
     methods: [GET]
-    options:
-        expose: true
+    options: { i18n: false }
         
 ekyna_commerce_widget_cart_widget:
     path: /cart/widget
     defaults:
         _controller: "ekyna_commerce.controller.widget:cartWidgetAction"
     methods: [GET]
-    options:
-        expose: true
+    options: { i18n: false }
 
 ekyna_commerce_widget_cart_dropdown:
     path: /cart/dropdown
     defaults:
         _controller: "ekyna_commerce.controller.widget:cartDropdownAction"
     methods: [GET]
-    options:
-        expose: true
-        
+    options: { i18n: false }
+
 ekyna_commerce_widget_context_widget:
     path: /context/widget
     defaults:
         _controller: "ekyna_commerce.controller.widget:contextWidgetAction"
     methods: [GET]
-    options:
-        expose: true
+    options: { i18n: false }
 
 ekyna_commerce_widget_context_dropdown:
     path: /context/dropdown
     defaults:
         _controller: "ekyna_commerce.controller.widget:contextDropdownAction"
     methods: [GET]
-    options:
-        expose: true
+    options: { i18n: false }
 
 ekyna_commerce_widget_context_change:
     path: /context/change
     defaults:
         _controller: "ekyna_commerce.controller.widget:contextChangeAction"
     methods: [POST]
+    options: { i18n: false }
 
 ekyna_commerce_widget_currency_change:
     path: /currency/change
     defaults:
         _controller: "ekyna_commerce.controller.widget:currencyChangeAction"
     methods: [POST]
+    options: { i18n: false }

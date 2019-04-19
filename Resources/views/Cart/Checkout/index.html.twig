@@ -20,7 +20,7 @@
             {% if cart is not same as(null) -%}
                 {{ render_sale_view(view) }}
             {%- else -%}
-                <p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p>
+                <div class="alert alert-info"><p>{{ 'ekyna_commerce.checkout.index.empty'|trans }}.</p></div>
             {%- endif %}
         </div>
 

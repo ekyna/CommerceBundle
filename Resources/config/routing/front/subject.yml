@@ -3,3 +3,4 @@ ekyna_commerce_subject_add_to_cart:
     defaults:
         _controller: "ekyna_commerce.controller.subject:addToCartAction"
     methods: [GET,POST]
+    options: { i18n: false }

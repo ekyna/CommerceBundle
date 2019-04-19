@@ -2,7 +2,6 @@
 /// <reference path="../typings/templates.d.ts" />
 
 import * as $ from 'jquery';
-import * as Router from 'routing';
 import * as Templates from 'ekyna-commerce/templates';
 import * as _ from 'underscore';
 import * as Dispatcher from 'ekyna-dispatcher';
@@ -43,22 +42,16 @@ function init(config) {
         debug: false,
         customer: {
             selector: '#customer-widget',
-            widget_route: 'ekyna_commerce_widget_customer_widget',
-            dropdown_route: 'ekyna_commerce_widget_customer_dropdown',
             event: 'ekyna_commerce.customer',
             debug: false
         },
         cart: {
             selector: '#cart-widget',
-            widget_route: 'ekyna_commerce_widget_cart_widget',
-            dropdown_route: 'ekyna_commerce_widget_cart_dropdown',
             event: 'ekyna_commerce.cart',
             debug: false,
         },
         context: {
             selector: '#context-widget',
-            widget_route: 'ekyna_commerce_widget_context_widget',
-            dropdown_route: 'ekyna_commerce_widget_context_dropdown',
             event: 'ekyna_commerce.context',
             debug: false,
         }
@@ -188,11 +181,13 @@ interface WidgetConfig {
     icon: string
     button: string
     dropdown: string
-    widget_route: string
-    widget_template: Template
-    dropdown_route: string
+    template: Template
     event: string
     debug: boolean
+    url: {
+        widget: string,
+        dropdown: string
+    }
 }
 
 interface WidgetData {
@@ -230,7 +225,7 @@ class Widget {
             icon: '> a > span',
             button: '> a.dropdown-toggle',
             dropdown: '> div.dropdown-menu',
-            widget_template: Templates['@EkynaCommerce/Js/widget.html.twig'],
+            template: Templates['@EkynaCommerce/Js/widget.html.twig'],
             debug: false
         });
 
@@ -238,6 +233,7 @@ class Widget {
         if (1 != this.$element.length) {
             throw 'Widget not found ! (' + this.config.selector + ')';
         }
+        this.config.url = this.$element.data('url');
 
         this.dropdownShowHandler = _.bind(this.onDropdownShow, this);
 
@@ -267,7 +263,7 @@ class Widget {
         this.busy = true;
 
         let xhr = $.ajax({
-            url: Router.generate(this.config.widget_route),
+            url: this.config.url.widget,
             method: 'GET',
             dataType: 'json',
             cache: false
@@ -305,7 +301,7 @@ class Widget {
     }
 
     private renderWidget(data: WidgetData) {
-        let $element = $(this.config.widget_template.render(_.defaults(data, this.defaultData)));
+        let $element = $(this.config.template.render(_.defaults(data, this.defaultData)));
         this.$element.replaceWith($element);
         this.$element = $element;
 
@@ -322,10 +318,10 @@ class Widget {
         this.$dropdown.loadingSpinner('on');
 
         let xhr = $.ajax({
-            url: Router.generate(this.config.dropdown_route),
+            url: this.config.url.dropdown,
             method: 'GET',
             dataType: 'html',
-            data: this.$element.data('config'),
+            data: this.$element.data('data'),
             cache: false,
         });
 

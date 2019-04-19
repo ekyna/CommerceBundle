@@ -372,14 +372,15 @@ class CheckoutController extends AbstractController
             throw new NotFoundHttpException('Order not found.');
         }
 
-        $orderCustomer = $order->getCustomer();
-        $currentCustomer = $this->getCustomer();
-        if ($currentCustomer && $currentCustomer->hasParent()) {
-            $currentCustomer = $currentCustomer->getParent();
-        }
+        if (!is_null($orderCustomer = $order->getCustomer())) {
+            $currentCustomer = $this->getCustomer();
+            if ($currentCustomer && $currentCustomer->hasParent()) {
+                $currentCustomer = $currentCustomer->getParent();
+            }
 
-        if ($orderCustomer !== $currentCustomer) {
-            throw new AccessDeniedHttpException();
+            if ($orderCustomer !== $currentCustomer) {
+                throw new AccessDeniedHttpException();
+            }
         }
 
         $this->dispatcher->dispatch(CheckoutEvent::EVENT_CONFIRMATION, new CheckoutEvent($order));

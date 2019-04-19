@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ContextType
@@ -25,7 +26,7 @@ class ContextType extends AbstractType
         $param = $builder
             ->create('param', HiddenType::class)
             ->addModelTransformer(new CallbackTransformer(
-                function($value) {
+                function ($value) {
                     if (empty($value)) {
                         return null;
                     }
@@ -46,8 +47,25 @@ class ContextType extends AbstractType
             ->add('country', CountryChoiceType::class, [
                 'label' => 'ekyna_commerce.context.field.delivery_country',
             ])
-            ->add('locale', LocaleChoiceType::class)
             ->add('route', HiddenType::class)
             ->add($param);
+
+        if (2 > count($options['locales'])) {
+            return;
+        }
+
+        $builder->add('locale', LocaleChoiceType::class, [
+            'locales' => $options['locales'],
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired('locales')
+            ->setAllowedTypes('locales', 'array');
     }
 }
