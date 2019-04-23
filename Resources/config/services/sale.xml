@@ -113,6 +113,7 @@
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
             <argument type="service" id="ekyna_commerce.subject.purchase_cost_guesser"/>
         </service>
 

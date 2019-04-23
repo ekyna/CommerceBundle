@@ -12,6 +12,8 @@ ekyna_commerce:
         max_quantity: Max quantity
         net_price: Price ex-tax
         buy_net_price: Purchase price
+        exchange_rate: Exchange rate
+        exchange_date: Exchange date
         geocode: Geocode
         in_stock: Real stock
         available_stock: Available stock

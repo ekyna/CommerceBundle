@@ -468,8 +468,11 @@ class SaleController extends AbstractSaleController
             ->copyItems();
 
         $targetSale
-            ->setCustomerGroup(null)
             ->setSameAddress(true)
+            ->setCustomerGroup(null)
+            ->setPaymentTerm(null)
+            ->setOutstandingLimit(0)
+            ->setDepositTotal(0)
             ->setSource(SaleSources::SOURCE_COMMERCIAL);
 
         $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale);

@@ -20,7 +20,12 @@
                 <td id="{{ paymentId }}_number">{{ payment.getNumber() }}</td>
                 <td id="{{ paymentId }}_method">{{ payment.getMethod() }}</td>
                 <td id="{{ paymentId }}_amount">{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
-                <td id="{{ paymentId }}_currency">{{ payment.getCurrency() }}</td>
+                <td id="{{ paymentId }}_currency">
+                    {{ payment.getCurrency().code|currency_symbol }}
+                    {%- if payment.getCurrency().code != commerce_default_currency -%}
+                        &nbsp;({{ payment.getExchangeRate()|localizednumber }})
+                    {%- endif -%}
+                </td>
                 <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
                 <td id="{{ paymentId }}_createdAt">{{ payment.getCreatedAt()|localizeddate('short', 'short') }}</td>
                 <td id="{{ paymentId }}_completedAt">{{ payment.getCompletedAt()|localizeddate('short', 'short') }}</td>

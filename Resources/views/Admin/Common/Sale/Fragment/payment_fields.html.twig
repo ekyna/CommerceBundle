@@ -1,3 +1,28 @@
+{% if sale.currency.code != commerce_default_currency -%}
+<div class="row">
+    <div class="col-md-4">
+        {{ show_row(sale.currency.code|currency_name|title, 'text', {
+            'label': 'ekyna_commerce.currency.label.singular',
+            'id': 'sale_currency',
+            'label_col': 6
+        }) }}
+    </div>
+    <div class="col-md-4">
+        {{ show_row(sale.exchangeRate|localizednumber, 'text', {
+            'label': 'ekyna_commerce.field.exchange_rate',
+            'id': 'sale_exchange_rate',
+            'label_col': 6
+        }) }}
+    </div>
+    <div class="col-md-4">
+        {{ show_row(sale.exchangeDate, 'datetime', {
+            'label': 'ekyna_commerce.field.exchange_date',
+            'id': 'sale_exchange_date',
+            'label_col': 6
+        }) }}
+    </div>
+</div>
+{%- endif %}
 <div class="row">
     <div class="col-md-4">
         {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', {

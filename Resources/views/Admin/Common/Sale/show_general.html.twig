@@ -186,7 +186,7 @@
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.currency, 'text', {
+        {{ show_row(sale.currency.code|currency_name|title, 'text', {
             'label': 'ekyna_commerce.currency.label.singular',
             'id': 'sale_currency',
             'label_col': 6
