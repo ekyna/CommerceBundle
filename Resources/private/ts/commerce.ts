@@ -149,7 +149,7 @@ function init(config) {
                                 $form.data('form').destroy();
 
                                 $form.replaceWith($content);
-                                $form = $content;
+                                $form = $content.eq(0);
 
                                 let form = Form.create($form);
                                 form.init();

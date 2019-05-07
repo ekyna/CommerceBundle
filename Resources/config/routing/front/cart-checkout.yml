@@ -56,7 +56,9 @@ ekyna_commerce_cart_checkout_payment:
 
 ekyna_commerce_cart_checkout_status:
     path: /{_locale}/status
-    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:statusAction" }
+    defaults:
+        _controller: "ekyna_commerce.controller.cart_checkout:statusAction"
+        _locale: "%locale%"
     methods: [GET]
     options: { i18n: false }
 

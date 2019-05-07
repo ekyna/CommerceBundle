@@ -1,4 +1,4 @@
-{% macro view_controls(controls) %} data-controls='{{ controls|json_encode|raw }}'{% endmacro view_controls %}
+{% macro view_controls(controls) %} data-controls='{{ controls|json_encode_data|raw }}'{% endmacro view_controls %}
 
 {% macro cart_information(cart) %}
 {% spaceless %}

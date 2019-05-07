@@ -67,9 +67,35 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
             $this->fixItemPrivacy($child);
         }
 
+        // Skip if not private
+        if (!$item->isPrivate()) {
+            return;
+        }
+
         // Parent items with public children can't be private.
-        if ($item->isPrivate() && $item->hasPublicChildren()) {
+        if ($item->hasPublicChildren()) {
             $item->setPrivate(false);
+
+            return;
+        }
+
+        // Skip if no parent
+        if (null === $parent = $item->getParent()) {
+            return;
+        }
+
+        // Public if parent is compound and configurable
+        if ($parent->isCompound() && $parent->isConfigurable()) {
+            $item->setPrivate(false);
+
+            return;
+        }
+
+        // Public if different tax group than parent's one
+        if ($item->getTaxGroup() !== $parent->getTaxGroup()) {
+            $item->setPrivate(false);
+
+            return;
         }
     }
 
