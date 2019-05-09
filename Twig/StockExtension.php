@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
+use Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface;
 
 /**
  * Class StockExtension
@@ -35,6 +36,11 @@ class StockExtension extends \Twig_Extension
      */
     private $stockPrioritizer;
 
+    /**
+     * @var WarehouseProviderInterface
+     */
+    private $warehouseProvider;
+
 
     /**
      * Constructor.
@@ -42,18 +48,21 @@ class StockExtension extends \Twig_Extension
      * @param ConstantsHelper             $constantHelper
      * @param StockRenderer               $stockRenderer
      * @param AvailabilityHelperInterface $availabilityHelper
-     * @param StockPrioritizerInterface $stockPrioritizer
+     * @param StockPrioritizerInterface   $stockPrioritizer
+     * @param WarehouseProviderInterface  $warehouseProvider
      */
     public function __construct(
         ConstantsHelper $constantHelper,
         StockRenderer $stockRenderer,
         AvailabilityHelperInterface $availabilityHelper,
-        StockPrioritizerInterface $stockPrioritizer
+        StockPrioritizerInterface $stockPrioritizer,
+        WarehouseProviderInterface $warehouseProvider
     ) {
         $this->constantHelper = $constantHelper;
         $this->stockRenderer = $stockRenderer;
         $this->availabilityHelper = $availabilityHelper;
         $this->stockPrioritizer = $stockPrioritizer;
+        $this->warehouseProvider = $warehouseProvider;
     }
 
     /**
@@ -135,6 +144,10 @@ class StockExtension extends \Twig_Extension
                 'render_subjects_stock',
                 [$this->stockRenderer, 'renderSubjectsStock'],
                 ['is_safe' => ['html']]
+            ),
+            new \Twig_SimpleFunction(
+                'commerce_warehouse',
+                [$this->warehouseProvider, 'getWarehouse']
             ),
         ];
     }

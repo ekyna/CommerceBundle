@@ -1,0 +1,41 @@
+{% spaceless %}
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+        <li class="active">
+            <a href="#warehouse-general" id="toggle-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#warehouse-address" id="toggle-address" data-toggle="tab">
+                {{ 'ekyna_core.field.address'|trans }}
+            </a>
+        </li>
+    </ul>
+    <div class="panel-body form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ form_errors(form, {'global_errors': true}) }}
+        <div class="tab-content">
+            <div class="tab-pane active" id="warehouse-general">
+                {{ form_row(form.name) }}
+                {{ form_row(form.countries) }}
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form_row(form.office, {'label_col': 6, 'widget_col': 6}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.default, {'label_col': 6, 'widget_col': 6}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.priority, {'label_col': 6, 'widget_col': 6}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="warehouse-address">
+                {{ form_row(form.address, {'label_col': 0, 'widget_col': 12}) }}
+            </div>
+        </div>
+        {{ ivory_google_api() }}
+        {{ form_rest(form) }}
+    </div>
+{% endspaceless %}

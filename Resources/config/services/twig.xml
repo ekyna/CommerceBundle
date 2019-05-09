@@ -98,6 +98,7 @@
             <argument type="service" id="ekyna_commerce.stock.stock_renderer"/>
             <argument type="service" id="ekyna_commerce.availability_helper"/>
             <argument type="service" id="ekyna_commerce.stock_prioritizer"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface"/>
             <tag name="twig.extension"/>
         </service>
 

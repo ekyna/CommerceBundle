@@ -1727,3 +1727,24 @@ ekyna_commerce:
             empty: Votre panier est vide.
         context:
             title: Préférences
+
+    warehouse:
+        label:
+            singular: Entrepôt
+            plural: Entrepôts
+        header:
+            list: Entrepôts <small>Liste des entrepôts</small>
+            show: Détails de l'entrepôt <small>%name%</small>
+            new: Créer un nouvel entrepôt
+            edit: Modifier l'entrepôt
+            remove: Supprimer l'entrepôt
+        button:
+            list: Liste des entrepôts
+            show: Détail de l'entrepôt
+            new: Nouvel entrepôt
+            edit: Modifier l'entrepôt
+            remove: Supprimer l'entrepôt
+        field:
+            office: Office
+        alert:
+            no_item: Aucun entrepôt configuré

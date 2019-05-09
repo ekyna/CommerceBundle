@@ -90,6 +90,10 @@ ekyna_commerce_ticket_admin:
     resource: "admin/ticket.yml"
     prefix:   /tickets
 
+ekyna_commerce_warehouse_admin:
+    resource: "admin/warehouse.yml"
+    prefix:   /warehouses
+
 ekyna_commerce_export_admin:
     resource: "admin/export.yml"
     prefix:   /export

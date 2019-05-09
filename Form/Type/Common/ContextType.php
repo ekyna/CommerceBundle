@@ -29,19 +29,23 @@ class ContextType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('customerGroup', CustomerGroupChoiceType::class)
-            ->add('invoiceCountry', CountryChoiceType::class, [
-                'label' => 'ekyna_commerce.context.field.invoice_country',
-            ])
+            ->add('currency', CurrencyChoiceType::class)
             ->add('deliveryCountry', CountryChoiceType::class, [
                 'label' => 'ekyna_commerce.context.field.delivery_country',
-            ])
-            ->add('currency', CurrencyChoiceType::class)
-            ->add('vatDisplayMode', VatDisplayModeType::class)
-            ->add('date', DateTimeType::class, [
-                'required' => false,
-                'format'   => 'dd/MM/yyyy',
             ]);
+
+        if ($options['admin_mode']) {
+            $builder
+                ->add('invoiceCountry', CountryChoiceType::class, [
+                    'label' => 'ekyna_commerce.context.field.invoice_country',
+                ])
+                ->add('customerGroup', CustomerGroupChoiceType::class)
+                ->add('vatDisplayMode', VatDisplayModeType::class)
+                ->add('date', DateTimeType::class, [
+                    'required' => false,
+                    'format'   => 'dd/MM/yyyy',
+                ]);
+        }
     }
 
     /**

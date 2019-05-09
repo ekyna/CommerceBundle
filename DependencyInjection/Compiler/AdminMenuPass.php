@@ -130,6 +130,15 @@ class AdminMenuPass implements CompilerPassInterface
             'position' => 3,
         ]]);
 
+        // Warehouse
+        $pool->addMethodCall('createEntry', ['suppliers', [
+            'name'     => 'warehouses',
+            'route'    => 'ekyna_commerce_warehouse_admin_list',
+            'label'    => 'ekyna_commerce.warehouse.label.plural',
+            'resource' => 'ekyna_commerce_warehouse',
+            'position' => 4,
+        ]]);
+
         // ------------------------------------------------------------
 
         $pool->addMethodCall('createGroup', [[

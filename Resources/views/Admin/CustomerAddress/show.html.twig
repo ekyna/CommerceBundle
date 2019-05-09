@@ -4,9 +4,6 @@
 
 {% block main %}
 <div class="actions">
-    {#{% if not page.getDynamicPath %}
-        {{ ui_button('ekyna_core.button.show_front', {'type': 'link', 'icon': 'eye-open', 'path': path(page.route)}, {'target': '_blank'}) }}
-    {% endif %}#}
     {{ admin_resource_btn(customerAddress, 'edit') }}
     {{ admin_resource_btn(customerAddress, 'remove') }}
 </div>
@@ -24,7 +21,6 @@
                 {{ show_row(customerAddress.street, 'text', {
                     'label': 'ekyna_core.field.street'
                 }) }}
-                {# TODO #}
             </div>
         </div>
     </div>

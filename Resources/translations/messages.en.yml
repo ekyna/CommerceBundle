@@ -1696,3 +1696,24 @@ ekyna_commerce:
             empty: Your cart is empty
         context:
             title: Settings
+
+    warehouse:
+        label:
+            singular: Warehouse
+            plural: Warehouses
+        header:
+            list: Warehouses <small>List of warehouses</small>
+            show: Warehouse details <small>%name%</small>
+            new: Create a new warehouse
+            edit: Edit the warehouse <small>%name%</small>
+            remove: Remove the warehouse <small>%name%</small>
+        button:
+            list: Warehouses list
+            show: Warehouse details
+            new: New warehouse
+            edit: Edit the warehouse
+            remove: Remove the warehouse
+        field:
+            office: Office
+        alert:
+            no_item: No warehouse configured

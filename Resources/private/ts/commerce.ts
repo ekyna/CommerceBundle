@@ -327,6 +327,12 @@ class Widget {
 
         xhr.done((html: string) => {
             this.$dropdown.html(html);
+
+            let $form = this.$dropdown.find('form');
+            if ($form.length) {
+                let form = Form.create($form);
+                form.init();
+            }
         });
 
         xhr.fail(function () {

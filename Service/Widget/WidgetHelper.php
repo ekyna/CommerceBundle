@@ -232,10 +232,10 @@ class WidgetHelper
         $localeLabel = Intl::getLocaleBundle()->getLocaleName($locale, $locale);
 
         $label = sprintf(
-            '<span class="currency">%s</span><span class="country-flag %s" title="%s"></span><span class="locale">%s</span>',
-            $currencyLabel,
+            '<span class="country-flag %s" title="%s"></span><span class="currency">%s</span><span class="locale">%s</span>',
             strtolower($country),
             $countryLabel,
+            $currencyLabel,
             mb_convert_case($localeLabel, MB_CASE_TITLE)
         );
 

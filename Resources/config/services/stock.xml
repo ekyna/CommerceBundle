@@ -138,6 +138,14 @@
             <argument>%ekyna_commerce.subject_stock.list_template%</argument>
         </service>
 
+        <!-- Warehouse provider -->
+        <service id="Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider" public="false">
+            <argument type="service" id="ekyna_commerce.common.context_provider"/>
+            <argument type="service" id="ekyna_commerce.warehouse.repository"/>
+        </service>
+        <service id="Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface"
+                 alias="Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider"/>
+
     </services>
 
 </container>

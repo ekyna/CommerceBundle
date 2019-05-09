@@ -43,9 +43,12 @@ class ContextType extends AbstractType
             ));
 
         $builder
-            ->add('currency', CurrencyChoiceType::class)
             ->add('country', CountryChoiceType::class, [
-                'label' => 'ekyna_commerce.context.field.delivery_country',
+                'label'   => 'ekyna_commerce.context.field.delivery_country',
+                'select2' => true,
+            ])
+            ->add('currency', CurrencyChoiceType::class, [
+                'select2' => false,
             ])
             ->add('route', HiddenType::class)
             ->add($param);
@@ -56,6 +59,7 @@ class ContextType extends AbstractType
 
         $builder->add('locale', LocaleChoiceType::class, [
             'locales' => $options['locales'],
+            'select2' => false,
         ]);
     }
 

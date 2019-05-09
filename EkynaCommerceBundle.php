@@ -68,6 +68,8 @@ class EkynaCommerceBundle extends AbstractBundle
 
             Commerce\Support\Model\TicketInterface::class            => 'ekyna_commerce.ticket.class',
             Commerce\Support\Model\TicketMessageInterface::class     => 'ekyna_commerce.ticket_message.class',
+
+            Commerce\Stock\Model\WarehouseInterface::class           => 'ekyna_commerce.warehouse.class',
         ]);
     }
 }

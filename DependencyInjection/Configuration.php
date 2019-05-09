@@ -1253,6 +1253,21 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('trans_prefix')->defaultValue('ekyna_commerce.attachment')->end()
                             ->end()
                         ->end()
+                        ->arrayNode('warehouse')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => '@EkynaCommerce/Admin/Warehouse/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/Warehouse/show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Stock\Entity\Warehouse')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\WarehouseRepository')->end()
+                                ->scalarNode('controller')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\WarehouseType')->end()
+                                ->scalarNode('parent')->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end()
