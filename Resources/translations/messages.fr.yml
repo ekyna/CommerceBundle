@@ -122,6 +122,8 @@ ekyna_commerce:
             edit:
                 title: Modifier mes informations
                 success: Vos informations ont bien été enregistrées.
+        balance:
+            title: Solde de compte
         state:
             title: Situation de mon compte
         order:
@@ -136,7 +138,9 @@ ekyna_commerce:
             button:
                 pay: Régler la commande
             message:
-                payment_denied: Contactez votre service d'achat pour le réglement de cette commande.
+                payment_denied: >
+                    Contactez votre service d'achat pour le réglement de cette commande
+                    (Vous devez être connecté en tant que %identity%).
         quote:
             title: Mes devis
             summary: Mon devis
@@ -532,6 +536,7 @@ ekyna_commerce:
             invoices: Liste des factures
             shipments: Liste des expéditions
             create_user: Création de l'utilisateur
+            balance: Solde de compte
         button:
             list: Liste des clients
             show: Détail du client
@@ -539,6 +544,7 @@ ekyna_commerce:
             edit: Modifier le client
             remove: Supprimer le client
             create_user: Créer l'utilisateur
+            balance: Solde de compte
         field:
             parent: Compte service achat
             in_charge: Responsable
@@ -566,6 +572,13 @@ ekyna_commerce:
         alert:
             no_item: Aucun client configuré
             no_invoice_address: Aucune adresse de facturation configuré.
+        balance:
+            debit: Débit
+            credit: Crédit
+            balance: Solde
+            by_order: Par commande
+            order_date: Date commande
+            due_date: Date d'échéance
 
     customer_address:
         label:
@@ -986,6 +999,11 @@ ekyna_commerce:
         dashboard:
             title: Devis à traiter
             none: Aucun devis à traiter
+
+    refund:
+        label:
+            singular: Remboursement
+            plural: Remboursements
 
     relay_point:
         label:

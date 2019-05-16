@@ -12,6 +12,7 @@ module.exports = function (grunt, options) {
             },
             files: {
                 'src/Ekyna/Bundle/CommerceBundle/Resources/public/js/templates.js': [
+                    'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/customer_balance_rows.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/pick_relay_point.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/relay_point.html.twig',
                     'src/Ekyna/Bundle/CommerceBundle/Resources/views/Js/relay_point_list.html.twig',

@@ -15,6 +15,17 @@
             <tag name="serializer.denormalizer"/>
         </service>
 
+        <!-- Balance normalizer -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Serializer\BalanceNormalizer"
+                 public="false">
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <call method="setFormatterFactory">
+                <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
+            </call>
+            <tag name="serializer.normalizer" priority="1024"/>
+        </service>
+
         <!-- Customer normalizer -->
         <service id="ekyna_commerce.customer.normalizer"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\CustomerNormalizer"

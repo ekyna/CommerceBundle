@@ -6,6 +6,10 @@ ekyna_commerce_account_information:
     resource: "account/information.yml"
     prefix:   /information
 
+ekyna_commerce_account_balance:
+    resource: "account/balance.yml"
+    prefix:   /situation
+
 ekyna_commerce_account_address:
     resource: "account/address.yml"
     prefix:   /addresses

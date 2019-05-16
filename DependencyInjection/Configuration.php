@@ -334,11 +334,14 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->variableNode('templates')->defaultValue([
-                                    '_form.html'  => '@EkynaCommerce/Admin/Cart/_form.html',
-                                    'list.html'   => '@EkynaCommerce/Admin/Cart/list.html',
-                                    'show.html'   => '@EkynaCommerce/Admin/Cart/show.html',
-                                    'edit.html'   => '@EkynaCommerce/Admin/Cart/edit.html',
-                                    'remove.html' => '@EkynaCommerce/Admin/Cart/remove.html',
+                                    '_form.html'     => '@EkynaCommerce/Admin/Cart/_form.html',
+                                    'list.html'      => '@EkynaCommerce/Admin/Cart/list.html',
+                                    'show.html'      => '@EkynaCommerce/Admin/Cart/show.html',
+                                    'edit.html'      => '@EkynaCommerce/Admin/Cart/edit.html',
+                                    'remove.html'    => '@EkynaCommerce/Admin/Cart/remove.html',
+                                    'transform.html' => '@EkynaCommerce/Admin/Cart/transform.html',
+                                    'duplicate.html' => '@EkynaCommerce/Admin/Cart/duplicate.html',
+                                    'notify.html'    => '@EkynaCommerce/Admin/Cart/notify.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Cart\Entity\Cart')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
@@ -497,6 +500,7 @@ class Configuration implements ConfigurationInterface
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html'       => '@EkynaCommerce/Admin/Customer/_form.html',
                                     'show.html'        => '@EkynaCommerce/Admin/Customer/show.html',
+                                    'balance.html'     => '@EkynaCommerce/Admin/Customer/balance.html',
                                     'create_user.html' => '@EkynaCommerce/Admin/Customer/create_user.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Customer')->end()

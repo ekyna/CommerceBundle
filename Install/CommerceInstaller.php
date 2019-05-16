@@ -34,6 +34,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $installer = new Installer(
             $this->container->get('doctrine.orm.entity_manager'),
             $this->container->get('ekyna_commerce.customer_group.repository'),
+            $this->container->get('ekyna_commerce.country.repository'),
             $output
         );
 
@@ -62,6 +63,10 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
         $output->writeln('<info>[Commerce] Installing default customer groups:</info>');
         $installer->installCustomerGroups();
+        $output->writeln('');
+
+        $output->writeln('<info>[Commerce] Installing default warehouse:</info>');
+        $installer->installDefaultWarehouse();
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing payment methods:</info>');

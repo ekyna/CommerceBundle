@@ -778,12 +778,11 @@ class ConstantsHelper extends AbstractConstantsHelper
             return sprintf('<em>%s</em>', $this->translator->trans('ekyna_core.value.undefined'));
         }
 
-        return sprintf(
-            '%s %s %s',
-            $this->translator->trans($this->getGenderLabel($identity->getGender(), $long)),
-            $identity->getLastName(),
-            $identity->getFirstName()
-        );
+        $gender = $identity->getGender()
+            ? $this->translator->trans($this->getGenderLabel($identity->getGender(), $long))
+            : null;
+
+        return trim(sprintf('%s %s %s', $gender, $identity->getLastName(), $identity->getFirstName()));
     }
 
     /**

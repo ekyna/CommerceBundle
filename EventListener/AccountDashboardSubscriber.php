@@ -72,7 +72,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
         $customer = $this->customerProvider->getCustomer();
 
         if (null !== $customer) {
-            if (null !== $customer->getPaymentTerm()) {
+            if ($customer->isBusiness() && $customer->getPaymentTerm()) {
                 $widget = new DashboardWidget(
                     'ekyna_commerce.account.state.title',
                     '@EkynaCommerce/Account/Dashboard/state.html.twig',

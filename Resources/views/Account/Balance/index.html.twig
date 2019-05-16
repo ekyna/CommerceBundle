@@ -1,0 +1,19 @@
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
+
+{% block account %}
+{% spaceless %}
+    <h3>{{ 'ekyna_commerce.account.balance.title'|trans }}</h3>
+
+    <hr>
+
+    {% include "@EkynaCommerce/Customer/balance.html.twig" with {
+        'balance': balance,
+        'form': form
+    } only %}
+{% endspaceless %}
+{% endblock account %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/customer-balance']);</script>
+{% endblock javascripts %}

@@ -7,6 +7,8 @@ ekyna_commerce_cart_checkout_confirmation: /mon-panier/confirmation/{orderKey}
 ekyna_commerce_account_information_index: /mon-compte/informations
 ekyna_commerce_account_information_edit: /mon-compte/informations/modifier
 
+ekyna_commerce_account_balance_index: /mon-compte/situation
+
 ekyna_commerce_account_address_index: /mon-compte/adresses
 ekyna_commerce_account_address_add: /mon-compte/adresses/ajouter
 ekyna_commerce_account_address_edit: /mon-compte/adresses/modifier/{addressId}

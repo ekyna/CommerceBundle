@@ -75,11 +75,11 @@
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {% set currency = supplierOrder.currency.code|currency_symbol %}
+                        {% set currency_symbol = supplierOrder.currency.code|currency_symbol %}
                         {% if supplierOrder.currency.code != commerce_default_currency and supplierOrder.exchangeRate %}
-                            {% set currency = currency ~ '&nbsp;(' ~ (supplierOrder.exchangeRate|localizednumber) ~')' %}
+                            {% set currency_symbol = currency_symbol ~ '&nbsp;(' ~ (supplierOrder.exchangeRate|localizednumber) ~')' %}
                         {% endif %}
-                        {{ show_row(currency, 'text', {
+                        {{ show_row(currency_symbol, 'text', {
                             'label': 'ekyna_commerce.currency.label.singular',
                             'id': 'order_currency',
                             'label_col': 6

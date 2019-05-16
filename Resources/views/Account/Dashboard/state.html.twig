@@ -16,7 +16,9 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label col-md-6">Limite d'encours</label>
+                <label class="control-label col-md-6">
+                    {{- 'ekyna_commerce.sale.field.outstanding_limit'|trans -}}
+                </label>
                 <div class="col-md-6">
                     <p class="form-control">
                         {{- customer.outstandingLimit|localizedcurrency(commerce_default_currency) -}}
@@ -26,7 +28,9 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label col-md-6">Solde d'encours</label>
+                <label class="control-label col-md-6">
+                    {{- 'ekyna_commerce.customer.field.outstanding_balance'|trans -}}
+                </label>
                 <div class="col-md-6">
                     <p class="form-control">
                         {{- customer.outstandingBalance|localizedcurrency(commerce_default_currency) -}}
@@ -35,4 +39,9 @@
             </div>
         </div>
     </div>
+    <p class="text-center">
+        <a class="btn btn-primary" href="{{ path('ekyna_commerce_account_balance_index') }}">
+            {{- 'ekyna_commerce.account.balance.title'|trans -}}
+        </a>
+    </p>
 </div>

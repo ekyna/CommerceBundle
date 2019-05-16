@@ -1,0 +1,25 @@
+<tbody>
+{% for line in balance.lines %}
+    <tr>
+        <td class="text-right">{{ line.date }}</td>
+        <td>{{ line.number }}</td>
+        <td class="text-right">{{ line.order_date }}</td>
+        <td><a href="{{ line.order_url }}">{{ line.order_number }}</a></td>
+        <td>{{ line.label }}</td>
+        <td class="text-right">{{ line.debit }}</td>
+        <td class="text-right">{{ line.credit }}</td>
+        <td class="text-right">{{ line.due_date }}</td>
+    </tr>
+{% endfor %}
+<tr style="font-weight: bold">
+    <td class="text-right" colspan="5"></td>
+    <td class="text-right">{{ balance.debit }}</td>
+    <td class="text-right">{{ balance.credit }}</td>
+    <td></td>
+</tr>
+<tr style="font-weight: bold">
+    <td class="text-right" colspan="6"></td>
+    <td class="text-right">{{ balance.diff }}</td>
+    <td></td>
+</tr>
+</tbody>

@@ -25,7 +25,9 @@
         </div>
         {% else %}
         <div class="alert alert-info">
-            {{ 'ekyna_commerce.account.order.message.payment_denied'|trans }}
+            {{ 'ekyna_commerce.account.order.message.payment_denied'|trans({
+                '%identity%': order.customer|identity
+            })|raw }}
         </div>
         {% endif %}
     {% endif %}

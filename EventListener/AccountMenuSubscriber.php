@@ -54,6 +54,13 @@ class AccountMenuSubscriber implements EventSubscriberInterface
             'route' => 'ekyna_commerce_account_information_index',
         ]);
 
+        if ($customer->isBusiness() && $customer->getPaymentTerm()) {
+            // Balance
+            $menu->addChild('ekyna_commerce.account.balance.title', [
+                'route' => 'ekyna_commerce_account_balance_index',
+            ]);
+        }
+
         // Quotes
         $menu->addChild('ekyna_commerce.account.quote.title', [
             'route' => 'ekyna_commerce_account_quote_index',

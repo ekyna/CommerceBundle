@@ -4,8 +4,13 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
 use Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
+use Ekyna\Component\Commerce\Customer\Balance\Balance;
+use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CustomerController extends ResourceController
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function searchAction(Request $request)
     {
@@ -115,6 +120,89 @@ class CustomerController extends ResourceController
         $response->setContent($content);
 
         return $response;
+    }
+
+    /**
+     * Balance action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function balanceAction(Request $request)
+    {
+        $context = $this->loadContext($request);
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        $customer = $context->getResource();
+
+        $balance = new Balance($customer);
+        $balance->setPublic(false);
+
+        $form = $this
+            ->createForm(BalanceType::class, $balance, [
+                'action' => $this->generateUrl('ekyna_commerce_customer_admin_balance', [
+                    'customerId' => $customer->getId(),
+                ]),
+                'method' => 'POST',
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'ekyna_core.button.apply',
+            ])
+            ->add('export', SubmitType::class, [
+                'label' => 'ekyna_core.button.export',
+            ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                if ($form->get('export')->isClicked()) {
+                    $this->get(BalanceBuilder::class)->build($balance);
+
+                    $data = $this->get('serializer')->normalize($balance, 'csv');
+
+                    return $this->createCsvResponse($data);
+                }
+            } else {
+                // TODO Fix data
+            }
+        }
+
+        $this->get(BalanceBuilder::class)->build($balance);
+
+        $data = $this->get('serializer')->normalize($balance, 'json');
+
+        if ($request->isXmlHttpRequest()) {
+            return JsonResponse::create($data);
+        }
+
+        return $this->render(
+            $this->config->getTemplate('balance.html'),
+            $context->getTemplateVars([
+                'balance' => $data,
+                'form'    => $form->createView(),
+            ])
+        );
+    }
+
+    /**
+     * Creates the CSV file download response.
+     *
+     * @param array $data
+     *
+     * @return Response
+     */
+    private function createCsvResponse(array $data): Response
+    {
+        $path = tempnam(sys_get_temp_dir(), 'balance');
+
+        $handle = fopen($path, 'w');
+        foreach ($data['lines'] as $line) {
+            fputcsv($handle, $line, ';');
+        }
+        fclose($handle);
+
+        return $this->file($path, 'balance.csv');
     }
 
     /**

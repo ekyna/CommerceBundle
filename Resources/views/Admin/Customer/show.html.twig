@@ -22,6 +22,13 @@
             'target': '_blank'
         }) }}
     {% endif %}
+    {{ ui_button('ekyna_commerce.customer.button.balance', {
+        'type': 'link',
+        'path': path('ekyna_commerce_customer_admin_balance', {'customerId': customer.id}),
+        'theme': 'default',
+        'icon': 'balance-scale',
+        'fa_icon': true
+    }) }}
     {{ admin_resource_btn(customer, 'edit') }}
     {{ admin_resource_btn(customer, 'remove') }}
 </div>

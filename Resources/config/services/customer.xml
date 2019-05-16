@@ -20,6 +20,12 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
+        <!-- Customer balance builder -->
+        <service id="Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder">
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
+            <argument type="service" id="ekyna_commerce.order_payment.repository"/>
+        </service>
+
         <!-- Customer security provider -->
         <service id="ekyna_commerce.customer.security_provider"
                  class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">

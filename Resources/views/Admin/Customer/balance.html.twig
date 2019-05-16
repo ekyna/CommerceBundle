@@ -1,0 +1,49 @@
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(customer, 'show', {
+        'label': 'ekyna_core.button.back'
+    }) }}
+    {% if customer.user is null %}
+        {{ ui_button('ekyna_commerce.customer.button.create_user', {
+            'type': 'link',
+            'path': path('ekyna_commerce_customer_admin_create_user', {'customerId': customer.id}),
+            'theme': 'primary',
+            'icon': 'user'
+        }) }}
+    {% elseif is_granted('VIEW', customer.user) %}
+        {{ ui_button('ekyna_user.user.button.use_session', {
+            'type': 'link',
+            'path': path('ekyna_user_user_admin_use_session', {'userId': customer.user.id}),
+            'theme': 'primary',
+            'icon': 'eye-open'
+        }, {
+            'onclick': ('return confirm(\'' ~ ('ekyna_user.user.alert.use_session'|trans({
+                '{email}': customer.user.email
+            })) ~ '\')'),
+            'target': '_blank'
+        }) }}
+    {% endif %}
+    {{ admin_resource_btn(customer, 'edit') }}
+    {{ admin_resource_btn(customer, 'remove') }}
+</div>
+<div class="show">
+    <div class="show-body">
+        {% include "@EkynaCommerce/Customer/balance.html.twig" with {
+            'balance': balance,
+            'form': form
+        } only %}
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#<link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>#}
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/customer-balance']);</script>
+{% endblock javascripts %}

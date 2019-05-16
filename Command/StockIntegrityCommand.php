@@ -71,8 +71,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
             'id'         => 'ID',
             'product_id' => 'Product',
             'order_id'   => 'Order',
-            'qty'        => 'Assignment qty',
-            'sum'        => 'Items sum',
+            'sold_qty'   => 'Assignment qty',
+            'sold_sum'   => 'Items sum',
         ];
 
         // Assignment sold quantities
@@ -92,7 +92,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
             $assignmentMap
         );*/
         $this->check('Assignment sold quantities',
-            'SELECT a.id, i1.subject_identifier AS product_id, o.id AS order_id, SUM(a.sold_quantity) AS qty, 
+            'SELECT a.id, i1.subject_identifier AS product_id, o.id AS order_id, o.is_released, 
+                SUM(a.sold_quantity) AS sold_qty, SUM(a.shipped_quantity) AS shipped_qty, 
                 (
                     (i1.quantity * IFNULL(i2.quantity, 1) * IFNULL(i3.quantity, 1) * IFNULL(i4.quantity, 1) * IFNULL(i5.quantity, 1))-
                     IFNULL((
@@ -102,7 +103,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
                         WHERE line.order_item_id=i1.id
                           AND invoice.type=\'credit\'
                     ), 0)
-                ) AS sum
+                ) AS sold_sum
             FROM commerce_stock_assignment AS a
             JOIN commerce_order_item AS i1 ON i1.id=a.order_item_id
             LEFT JOIN commerce_order_item AS i2 ON i2.id=i1.parent_id
@@ -111,26 +112,37 @@ class StockIntegrityCommand extends ContainerAwareCommand
             LEFT JOIN commerce_order_item AS i5 ON i5.id=i4.parent_id
             JOIN commerce_order AS o ON (o.id=i1.order_id OR o.id=i2.order_id OR o.id=i3.order_id OR o.id=i4.order_id OR o.id=i5.order_id) 
             GROUP BY a.order_item_id
-            HAVING qty != sum;',
+            HAVING sold_qty != sold_sum;',
             $assignmentMap,
             function ($result) {
-                if ($result['sum'] > $result['qty']) {
+                if ($result['sold_sum'] > $result['sold_qty']) {
                     return new Action(sprintf(
                         "Product #%d Assignment #%d sold: %f < %f (increment is not yet supported)",
                         $result['product_id'],
                         $result['id'],
-                        $result['qty'],
-                        $result['sum']
+                        $result['sold_qty'],
+                        $result['sold_sum']
                     ));
                 }
 
                 // TODO Prevent/fix unit overflow
 
                 return new Fix(
-                    sprintf("Product #%d Assignment #%d sold: %f => %f", $result['product_id'], $result['id'], $result['qty'], $result['sum']),
+                    sprintf("Product #%d Assignment #%d sold: %f => %f", $result['product_id'], $result['id'],
+                        $result['sold_qty'], $result['sold_sum']),
                     'UPDATE commerce_stock_assignment SET sold_quantity=? WHERE id=? LIMIT 1',
-                    [$result['sum'], $result['id']]
+                    [$result['sold_sum'], $result['id']]
                 );
+            },
+            function($result) {
+                if ($result['is_released']) {
+                    $result['sold_sum'] = min($result['sold_qty'], $result['shipped_qty']);
+                }
+
+                return $result;
+            },
+            function($result) {
+                return $result['sold_sum'] != $result['sold_qty'];
             }
         );
 
@@ -179,7 +191,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
             GROUP BY a.order_item_id
             HAVING qty != sum;',
             $assignmentMap,
-            function($result) {
+            function ($result) {
                 if ($result['sum'] > $result['qty']) {
                     return new Action(sprintf(
                         "Product #%d Assignment #%d shipped: %f < %f (increment is not yet supported)",
@@ -193,7 +205,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
                 // TODO Prevent/fix unit overflow
 
                 return new Fix(
-                    sprintf("Product #%d Assignment #%d shipped: %f => %f", $result['product_id'], $result['id'], $result['qty'], $result['sum']),
+                    sprintf("Product #%d Assignment #%d shipped: %f => %f", $result['product_id'], $result['id'],
+                        $result['qty'], $result['sum']),
                     'UPDATE commerce_stock_assignment SET shipped_quantity=? WHERE id=? LIMIT 1',
                     [$result['sum'], $result['id']]
                 );
@@ -236,7 +249,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
             GROUP BY u.id
             HAVING qty != sum;',
             $unitMap,
-            function($result) {
+            function ($result) {
                 if (0 < $result['ordered'] && $result['sum'] > $max = $result['ordered'] + $result['adjusted']) {
                     return new Action(sprintf(
                         "Product #%d Unit #%d sold: %f > %f (overflow)",
@@ -250,7 +263,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
                 // TODO Prevent/fix unit overflow
 
                 return new Fix(
-                    sprintf("Product #%d Unit #%d sold: %f => %f", $result['product_id'], $result['id'], $result['qty'], $result['sum']),
+                    sprintf("Product #%d Unit #%d sold: %f => %f", $result['product_id'], $result['id'], $result['qty'],
+                        $result['sum']),
                     'UPDATE commerce_stock_unit SET sold_quantity=? WHERE id=? LIMIT 1',
                     [$result['sum'], $result['id']],
                     $result['id']
@@ -267,7 +281,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
             GROUP BY u.id
             HAVING qty != sum;',
             $unitMap,
-            function($result) {
+            function ($result) {
                 if ($result['sum'] > $max = $result['received'] + $result['adjusted']) {
                     return new Action(sprintf(
                         "Product #%d Unit #%d shipped: %f > %f (overflow)",
@@ -363,10 +377,12 @@ class StockIntegrityCommand extends ContainerAwareCommand
      * @param string   $sql
      * @param array    $map
      * @param callable $fixer
+     * @param callable $normalizer
+     * @param callable $filter
      *
      * @return array
      */
-    private function check($title, $sql, array $map, callable $fixer = null)
+    private function check($title, $sql, array $map, callable $fixer = null, callable $normalizer = null, callable $filter = null)
     {
         $fixes = [];
 
@@ -380,6 +396,13 @@ class StockIntegrityCommand extends ContainerAwareCommand
             $table->setHeaders(array_values($map));
             $ids = [];
             while (false !== $result = $results->fetch(\PDO::FETCH_ASSOC)) {
+                if ($normalizer) {
+                    $result = $normalizer($result);
+                }
+                if ($filter && !$filter($result)) {
+                    continue;
+                }
+
                 $table->addRow(array_intersect_key($result, $map));
                 $ids[] = $result['id'];
 
@@ -475,7 +498,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
         foreach ($units as $unit) {
             $subject = $unit->getSubject();
 
-            $this->output->write((string) $subject . ' ... ');
+            $this->output->write((string)$subject . ' ... ');
 
             if ($updater->update($subject)) {
                 $manager->persist($subject);

@@ -122,6 +122,8 @@ ekyna_commerce:
             edit:
                 title: Edit my information
                 success: Your information has been saved.
+        balance:
+            title: Account balance
         state:
             title: My account status
         order:
@@ -136,7 +138,9 @@ ekyna_commerce:
             button:
                 pay: Payment
             message:
-                payment_denied: Please contact your accountable service to settle this order.
+                payment_denied: >
+                    Please contact your accountable service to settle this order
+                    (You must login as %identity%).
         quote:
             title: My quotes
             summary: My quote
@@ -532,6 +536,7 @@ ekyna_commerce:
             invoices: Invoices list
             shipments: Shipments list
             create_user: User creation
+            balance: Account balance
         button:
             list: Customers list
             show: Customer details
@@ -539,6 +544,7 @@ ekyna_commerce:
             edit: Edit the customer
             remove: Remove the customer
             create_user: Create the user
+            balance: Account balance
         field:
             parent: Accountable service
             in_charge: In charge
@@ -566,6 +572,13 @@ ekyna_commerce:
         alert:
             no_item: No customer configured
             no_invoice_address: No invoice address configured.
+        balance:
+            debit: Debit
+            credit: Credit
+            balance: Balance
+            by_order: By order
+            order_date: Order date
+            due_date: Due date
 
     customer_address:
         label:
@@ -964,6 +977,11 @@ ekyna_commerce:
         dashboard:
             title: Quotes to process
             none: No quote to process
+
+    refund:
+        label:
+            singular: Refund
+            plural: Refunds
 
     relay_point:
         label:
