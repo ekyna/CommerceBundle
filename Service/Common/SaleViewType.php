@@ -95,7 +95,7 @@ class SaleViewType extends AbstractViewType
 
         $link = [
             'href'  => $url,
-            //'title' => $item->getDesignation(),
+            'title' => $item->getDesignation(),
         ];
         if (isset($view->vars['link'])) {
             $view->vars['link'] = array_replace($view->vars['link'], $link);
