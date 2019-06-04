@@ -1,0 +1,169 @@
+Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface:
+    supplier_order_1:
+        __factory: { '@ekyna_commerce.supplier_order.repository::createNew': [] }
+        supplier: '@supplier_1'
+        carrier: '@supplier_carrier_1'
+        currency: <currencyByCode('EUR')>
+        paymentTotal: 1100
+        estimatedDateOfArrival: <datetime('+2 week')>
+        state: 'ordered'
+        orderedAt: <datetime('now')>
+    supplier_order_2:
+        __factory: { '@ekyna_commerce.supplier_order.repository::createNew': [] }
+        supplier: '@supplier_1'
+        carrier: '@supplier_carrier_1'
+        currency: <currencyByCode('EUR')>
+        paymentTotal: 2150
+        state: 'ordered'
+        orderedAt: <datetime('now')>
+    supplier_order_3:
+        __factory: { '@ekyna_commerce.supplier_order.repository::createNew': [] }
+        supplier: '@supplier_1'
+        carrier: '@supplier_carrier_1'
+        currency: <currencyByCode('EUR')>
+        paymentTotal: 800
+
+Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface:
+    supplier_order_item_1_1:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_1'
+        product: '@supplier_product_coque_1'
+        quantity: 20
+    supplier_order_item_1_2:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_1'
+        product: '@supplier_product_coque_2'
+        quantity: 25
+    supplier_order_item_1_3:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_1'
+        product: '@supplier_product_manchon_1'
+        quantity: 10
+    supplier_order_item_1_4:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_1'
+        product: '@supplier_product_manchon_2'
+        quantity: 10
+
+    supplier_order_item_2_1:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_2'
+        product: '@supplier_product_manchon_1'
+        quantity: 15
+    supplier_order_item_2_2:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_2'
+        product: '@supplier_product_manchon_2'
+        quantity: 10
+    supplier_order_item_2_3:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_2'
+        product: '@supplier_product_socle_1'
+        quantity: 15
+    supplier_order_item_2_4:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_2'
+        product: '@supplier_product_socle_2'
+        quantity: 30
+    supplier_order_item_2_5:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_2'
+        product: '@supplier_product_tablet_1_variant_1'
+        quantity: 10
+    supplier_order_item_2_6:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_2'
+        product: '@supplier_product_tablet_1_variant_3'
+        quantity: 10
+
+    supplier_order_item_3_1:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_3'
+        product: '@supplier_product_socle_1'
+        quantity: 10
+    supplier_order_item_3_2:
+        __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
+        order: '@supplier_order_3'
+        product: '@supplier_product_socle_2'
+        quantity: 10
+
+Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface:
+    supplier_delivery_1:
+        __factory: { '@ekyna_commerce.supplier_delivery.repository::createNew': [] }
+        order: '@supplier_order_1'
+    supplier_delivery_2:
+        __factory: { '@ekyna_commerce.supplier_delivery.repository::createNew': [] }
+        order: '@supplier_order_1'
+    supplier_delivery_3:
+        __factory: { '@ekyna_commerce.supplier_delivery.repository::createNew': [] }
+        order: '@supplier_order_2'
+
+Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface:
+    supplier_delivery_item_1_1:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_1'
+        orderItem: '@supplier_order_item_1_1'
+        quantity: 10
+        geocode: A1
+    supplier_delivery_item_1_2:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_1'
+        orderItem: '@supplier_order_item_1_2'
+        quantity: 10
+        geocode: A2
+
+    supplier_delivery_item_2_1:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_2'
+        orderItem: '@supplier_order_item_1_1'
+        quantity: 10
+        geocode: A1
+    supplier_delivery_item_2_2:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_2'
+        orderItem: '@supplier_order_item_1_2'
+        quantity: 15
+        geocode: A2
+    supplier_delivery_item_2_3:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_2'
+        orderItem: '@supplier_order_item_1_3'
+        quantity: 10
+        geocode: B1
+    supplier_delivery_item_2_4:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_2'
+        orderItem: '@supplier_order_item_1_4'
+        quantity: 10
+        geocode: B2
+
+    supplier_delivery_item_3_1:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_3'
+        orderItem: '@supplier_order_item_2_1'
+        quantity: 10
+        geocode: A1
+    supplier_delivery_item_3_2:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_3'
+        orderItem: '@supplier_order_item_2_3'
+        quantity: 10
+        geocode: A2
+    supplier_delivery_item_3_3:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_3'
+        orderItem: '@supplier_order_item_2_4'
+        quantity: 15
+        geocode: B2
+    supplier_delivery_item_3_4:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_3'
+        orderItem: '@supplier_order_item_2_5'
+        quantity: 10
+        geocode: C1
+    supplier_delivery_item_3_5:
+        __factory: { '@ekyna_commerce.supplier_delivery_item.repository::createNew': [] }
+        delivery: '@supplier_delivery_3'
+        orderItem: '@supplier_order_item_2_6'
+        quantity: 10
+        geocode: C2

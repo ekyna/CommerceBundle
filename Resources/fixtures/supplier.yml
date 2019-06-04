@@ -1,0 +1,112 @@
+Ekyna\Component\Commerce\Supplier\Model\SupplierCarrierInterface:
+    supplier_carrier_1:
+        __factory: { '@ekyna_commerce.supplier_carrier.repository::createNew': [] }
+        name: TNT
+
+Ekyna\Component\Commerce\Supplier\Model\SupplierInterface:
+    supplier_1:
+        __factory: { '@ekyna_commerce.supplier.repository::createNew': [] }
+        name: TechData
+        gender: 'mr'
+        firstName: <firstName()>
+        lastName: <lastName()>
+        email: <safeEmail()>
+        customerCode: SOME-CODE
+        address: <generateAddress(@self)>
+        currency: <currencyByCode('EUR')>
+        #tax: TODO
+        carrier: '@supplier_carrier_1'
+
+Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface:
+    supplier_product_coque_1:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Coque VESA 9 à 11 pouces
+        reference: CV9-1234
+        netPrice: 20
+        weight: 0.3
+        availableStock: 50
+        subjectIdentity: <subjectIdentity(<getProduct('COQU-VESA-11')>)>
+    supplier_product_coque_2:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Coque VESA 11 à 13 pouces
+        reference: CV11-2345
+        netPrice: 24
+        weight: 0.32
+        availableStock: 60
+        subjectIdentity: <subjectIdentity(<getProduct('COQU-VESA-13')>)>
+    supplier_product_manchon_1:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Manchon switch
+        reference: MS-3456
+        netPrice: 5
+        weight: 0.11
+        orderedStock: 40
+        estimatedDateOfArrival: <datetime('+1 week')>
+        subjectIdentity: <subjectIdentity(<getProduct('MANC-SWIT')>)>
+    supplier_product_manchon_2:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Manchon rotate
+        reference: MR-4567
+        netPrice: 5
+        weight: 0.11
+        orderedStock: 40
+        estimatedDateOfArrival: <datetime('+4 day')>
+        subjectIdentity: <subjectIdentity(<getProduct('MANC-ROTA')>)>
+    supplier_product_socle_1:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Socle Counter 45
+        reference: SC-5678
+        netPrice: 25
+        weight: 0.25
+        availableStock: 25
+        subjectIdentity: <subjectIdentity(<getProduct('SOCL-COUN')>)>
+    supplier_product_socle_2:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Socle Free Standing
+        reference: SF-6789
+        netPrice: 55
+        weight: 0.27
+        availableStock: 35
+        subjectIdentity: <subjectIdentity(<getProduct('SOCL-FRST')>)>
+    supplier_product_tablet_1_variant_1:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Galaxy Tab A 9.7 WiFi 16Go White
+        reference: GT-1234
+        netPrice: 220
+        weight: 0.8
+        availableStock: 50
+        subjectIdentity: <subjectIdentity(<getProduct('GALA-TABA-1')>)>
+    supplier_product_tablet_1_variant_2:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Galaxy Tab A 9.7 WiFi 16Go Black
+        reference: GT-1235
+        netPrice: 220
+        weight: 0.8
+        availableStock: 10
+        subjectIdentity: <subjectIdentity(<getProduct('GALA-TABA-2')>)>
+    supplier_product_tablet_1_variant_3:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Galaxy Tab A 9.7 WiFi 3G 32Go White
+        reference: GT-1236
+        netPrice: 240
+        weight: 0.8
+        availableStock: 50
+        subjectIdentity: <subjectIdentity(<getProduct('GALA-TABA-3')>)>
+    supplier_product_tablet_1_variant_4:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_1'
+        designation: Galaxy Tab A 9.7 WiFi 3G 4G 32Go Black
+        reference: GT-1237
+        netPrice: 260
+        weight: 0.8
+        availableStock: 20
+        subjectIdentity: <subjectIdentity(<getProduct('GALA-TABA-4')>)>

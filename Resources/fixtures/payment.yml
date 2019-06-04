@@ -1,0 +1,18 @@
+Ekyna\Component\Commerce\Payment\Model\PaymentTermInterface:
+    payment_term_30_days:
+        __factory: { '@ekyna_commerce.payment_term.repository::createNew': [] }
+        name: 30 jours
+        days: 30
+        title: 30 jours
+    payment_term_30_days_eom:
+        __factory: { '@ekyna_commerce.payment_term.repository::createNew': [] }
+        name: 30 jours fin de mois
+        days: 30
+        endOfMonth: true
+        title: 30 jours fin de mois
+    payment_term_45_days_eom:
+        __factory: { '@ekyna_commerce.payment_term.repository::createNew': [] }
+        name: 45 jours fin de mois
+        days: 45
+        endOfMonth: true
+        title: 45 jours fin de mois

@@ -48,9 +48,6 @@
             <call method="setCountryGuesser">
                 <argument type="service" id="ekyna_core.geo.user_country_guesser"/>
             </call>
-            <call method="setDefaultCountry">
-                <argument>%ekyna_commerce.default.country%</argument>
-            </call>
         </service>
 
         <!-- Currency provider -->

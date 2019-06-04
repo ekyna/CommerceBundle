@@ -23,7 +23,18 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
 
                 if (selection.length) {
                     var customer = selection[0];
-                    console.log(customer);
+
+                    if (!customer.hasOwnProperty('currency')) {
+                        if (!customer.hasOwnProperty('element')) {
+                            return;
+                        }
+
+                        customer = $(customer.element).data('entity');
+                    }
+
+                    if (!customer.hasOwnProperty('currency')) {
+                        return;
+                    }
 
                     $currencyChoice.val(customer.currency).trigger('change');
                     $localeChoice.val(customer.locale).trigger('change');

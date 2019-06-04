@@ -17,11 +17,6 @@ class SessionCountryProvider extends BaseProvider
      */
     private $countryGuesser;
 
-    /**
-     * @var string
-     */
-    private $defaultCountry;
-
 
     /**
      * Sets the country guesser.
@@ -34,20 +29,10 @@ class SessionCountryProvider extends BaseProvider
     }
 
     /**
-     * Sets the default country code.
-     *
-     * @param string $code
-     */
-    public function setDefaultCountry(string $code)
-    {
-        $this->defaultCountry = $code;
-    }
-
-    /**
      * @inheritDoc
      */
     protected function guessCountry(): ?string
     {
-        return $this->countryGuesser->getUserCountry($this->defaultCountry);
+        return $this->countryGuesser->getUserCountry($this->getFallbackCountry());
     }
 }

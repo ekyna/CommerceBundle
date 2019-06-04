@@ -106,11 +106,16 @@ class DocumentPageBuilder
                     $group = ['height' => 0, 'rows' => []];
                 }
 
+                $reference = $parent->getReference();
+                if ($parent->isConfigurable() && $parent->isCompound() && !$parent->hasPrivateChildren()) {
+                    $reference = null;
+                }
+
                 // Add parent row
                 $group['rows'][] = $row = [
                     'level'         => $level - 1,
                     'virtual'       => true,
-                    'reference'     => $parent->getReference(),
+                    'reference'     => $reference,
                     'designation'   => $parent->getDesignation(),
                     'description'   => $parent->getDescription(),
                     'url'           => $this->subjectHelper->generatePublicUrl($parent, false),
@@ -140,7 +145,7 @@ class DocumentPageBuilder
             $group['rows'][] = $row = [
                 'level'         => $level,
                 'virtual'       => false,
-                'reference'     => $line->getReference(),
+                'reference'     => $item->getReference(),
                 'designation'   => $line->getDesignation(),
                 'description'   => $line->getDescription(),
                 'url'           => $this->subjectHelper->generatePublicUrl($line->getSaleItem(), false),

@@ -9,7 +9,9 @@ use Ekyna\Component\Commerce\Customer;
 use Ekyna\Component\Commerce\Order;
 use Ekyna\Component\Commerce\Quote;
 use Ekyna\Component\Commerce\Pricing\Api;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 /**
  * Class EkynaCommerceExtension
@@ -33,6 +35,11 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureStock($config['stock'], $container);
         $this->configureSupport($config['support'], $container);
         $this->configureSaleFactory($container);
+
+        if (in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
+            $loader = new XmlFileLoader($container, new FileLocator($this->getConfigurationDirectory()));
+            $loader->load('services_dev_test.xml');
+        }
     }
 
     /**

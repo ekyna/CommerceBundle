@@ -35,7 +35,10 @@ define(['jquery', 'jquery-ui/widget'], function($) {
         isEmpty: function() {
             for (var key in mapping) {
                 if (mapping.hasOwnProperty(key)) {
-                    if (key !== 'country' && this.element.find(mapping[key]).val()) {
+                    if (key === 'country' || key === 'phone_country' || key === 'mobile_country') {
+                        continue;
+                    }
+                    if (this.element.find(mapping[key]).val()) {
                         return false;
                     }
                 }
