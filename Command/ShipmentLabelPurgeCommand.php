@@ -53,7 +53,7 @@ class ShipmentLabelPurgeCommand extends Command
 
         $qb = $this->manager->createQueryBuilder();
 
-        $date = (new \DateTime('-1 month'))->setTime(0, 0, 0);
+        $date = (new \DateTime('-1 month'))->setTime(0, 0, 0, 0);
 
         $count = $qb
             ->update(OrderShipmentLabel::class, 'l')

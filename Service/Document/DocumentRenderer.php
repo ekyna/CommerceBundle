@@ -32,7 +32,7 @@ class DocumentRenderer extends AbstractRenderer
 
         /** @var DocumentInterface $s */
         foreach ($this->subjects as $s) {
-            if (null === $date || $s->getSale()->getUpdatedAt() > $date) {
+            if (is_null($date) || ($s->getSale()->getUpdatedAt() > $date)) {
                $date = $s->getSale()->getUpdatedAt();
             }
         }

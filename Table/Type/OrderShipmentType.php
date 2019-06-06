@@ -165,7 +165,8 @@ class OrderShipmentType extends AbstractOrderListType
             ->addAction('bills', Action\ShipmentDocumentActionType::class, [
                 'label' => 'ekyna_commerce.shipment.action.bills',
                 'type'  => 'bill',
-            ])->addAction('forms', Action\ShipmentDocumentActionType::class, [
+            ])
+            ->addAction('forms', Action\ShipmentDocumentActionType::class, [
                 'label' => 'ekyna_commerce.shipment.action.forms',
                 'type'  => 'form',
             ]);

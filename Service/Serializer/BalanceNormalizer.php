@@ -58,10 +58,11 @@ class BalanceNormalizer implements NormalizerInterface
         ];
 
         $data = [
-            'debit'  => $formatter->currency($object->getDebit(), 'EUR'),
-            'credit' => $formatter->currency($object->getCredit(), 'EUR'),
-            'diff'   => $formatter->currency($object->getDiff(), 'EUR'),
-            'lines'  => [],
+            'debit'    => $formatter->currency($object->getDebit(), 'EUR'),
+            'credit'   => $formatter->currency($object->getCredit(), 'EUR'),
+            'diff'     => $formatter->currency($object->getDiff(), 'EUR'),
+            'not_done' => $object->isNotDone(),
+            'lines'    => [],
         ];
 
         foreach ($object->getLines() as $line) {
@@ -72,9 +73,13 @@ class BalanceNormalizer implements NormalizerInterface
                 'order_number' => $line->getOrderNumber(),
                 'order_date'   => $formatter->date($line->getOrderDate()),
                 'due_date'     => $line->getDueDate() ? $formatter->date($line->getDueDate()) : null,
+                'done'         => $line->isDone(),
             ];
 
             if ($format === 'json') {
+                $datum['debit_raw'] = $line->getDebit();
+                $datum['credit_raw'] = $line->getCredit();
+
                 $datum['debit'] = 0 < $line->getDebit() ? $formatter->currency($line->getDebit(), 'EUR') : null;
                 $datum['credit'] = 0 < $line->getCredit() ? $formatter->currency($line->getCredit(), 'EUR') : null;
 

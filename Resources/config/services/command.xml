@@ -5,25 +5,88 @@
 
     <services>
 
-        <!-- Invoice recalculate -->
-        <service id="ekyna_commerce.command.invoice.recalculate"
-                 class="Ekyna\Bundle\CommerceBundle\Command\InvoiceRecalculateCommand">
+        <!-- Cart purge command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\CartPurgeCommand">
+            <argument type="service" id="ekyna_commerce.cart.repository"/>
+            <argument type="service" id="ekyna_commerce.cart.operator"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Cart transform command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\CartTransformCommand">
+            <argument type="service" id="ekyna_commerce.cart.repository"/>
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.sale_transformer"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Customer balance integrity command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\CustomerBalanceIntegrityCommand">
+            <argument type="service" id="doctrine.dbal.default_connection"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Invoice due date command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand">
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
+            <argument type="service" id="ekyna_commerce.payment.due_date_resolver"/>
+            <argument type="service" id="ekyna_commerce.order_invoice.manager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Invoice recalculate command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\InvoiceRecalculateCommand">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <argument type="service" id="ekyna_commerce.document.calculator"/>
             <argument type="service" id="ekyna_commerce.order_invoice.manager"/>
             <tag name="console.command"/>
         </service>
 
-        <!-- Shipment label purge -->
-        <service id="ekyna_commerce.command.shipment.purge_label"
-                 class="Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand">
+        <!-- Order date modify command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\OrderDateModifyCommand">
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.order.manager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Order state update command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\OrderStateUpdateCommand">
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.order.state_resolver"/>
+            <argument type="service" id="ekyna_commerce.order.operator"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Payment state change command -->
+        <!-- TODO <service id="Ekyna\Bundle\CommerceBundle\Command\PaymentStateChangeCommand">
+            <tag name="console.command"/>
+        </service>-->
+
+        <!-- Payment watch command -->
+        <!-- TODO <service id="Ekyna\Bundle\CommerceBundle\Command\PaymentWatchCommand">
+            <tag name="console.command"/>
+        </service>-->
+
+        <!-- Shipment label purge command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand">
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <tag name="console.command"/>
         </service>
 
+        <!-- Stat update command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand">
+            <argument type="service" id="ekyna_commerce.stat.updater"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Stock integrity command -->
+        <!-- TODO <service id="Ekyna\Bundle\CommerceBundle\Command\StockIntegrityCommand">
+            <tag name="console.command"/>
+        </service>-->
+
         <!-- Ticket message notify command -->
-        <service id="ekyna_commerce.command.ticket_message.notify"
-                 class="Ekyna\Bundle\CommerceBundle\Command\SupportNotifyCommand">
+        <service id="Ekyna\Bundle\CommerceBundle\Command\SupportNotifyCommand">
             <argument type="service" id="ekyna_commerce.ticket_message.repository"/>
             <argument type="service" id="ekyna_admin.user.repository"/>
             <argument type="service" id="ekyna_commerce.ticket_message.manager"/>

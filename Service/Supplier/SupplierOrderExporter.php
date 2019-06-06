@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Supplier;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Component\Commerce\Supplier\Export\SupplierOrderExporter as BaseExporter;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderRepositoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -21,12 +22,15 @@ class SupplierOrderExporter extends BaseExporter
 
 
     /**
-     * Sets the translator.
+     * Constructor.
      *
+     * @param SupplierOrderRepositoryInterface $repository
      * @param TranslatorInterface $translator
      */
-    public function setTranslator(TranslatorInterface $translator)
+    public function __construct(SupplierOrderRepositoryInterface $repository, TranslatorInterface $translator)
     {
+        parent::__construct($repository);
+
         $this->translator = $translator;
     }
 

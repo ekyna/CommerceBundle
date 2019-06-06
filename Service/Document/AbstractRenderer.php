@@ -250,7 +250,7 @@ abstract class AbstractRenderer implements RendererInterface
         } else {
             /** @var TimestampableInterface $s */
             foreach ($this->subjects as $s) {
-                if (null === $subject || $subject->getUpdatedAt() < $s->getUpdatedAt()) {
+                if (is_null($subject) || ($subject->getUpdatedAt() < $s->getUpdatedAt())) {
                     $subject = $s;
                 }
             }

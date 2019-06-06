@@ -15,11 +15,11 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 /**
- * Class PaymentChangeStateCommand
+ * Class PaymentStateChangeCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentChangeStateCommand extends ContainerAwareCommand
+class PaymentStateChangeCommand extends ContainerAwareCommand
 {
     /**
      * @inheritDoc

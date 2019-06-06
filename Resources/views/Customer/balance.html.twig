@@ -3,14 +3,17 @@
     {{ bootstrap_set_sizing('sm') }}
     {{ form_start(form) }}
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             {{ form_row(form.from) }}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             {{ form_row(form.to) }}
         </div>
         <div class="col-md-2">
             {{ form_row(form.byOrder) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_row(form.notDone) }}
         </div>
         <div class="col-md-2">
             {{ form_widget(form.submit) }}

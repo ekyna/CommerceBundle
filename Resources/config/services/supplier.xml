@@ -75,10 +75,7 @@
         <service id="ekyna_commerce.supplier_order.exporter"
                  class="Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderExporter">
             <argument type="service" id="ekyna_commerce.supplier_order.repository"/>
-            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
-            <call method="setTranslator">
-                <argument type="service" id="translator"/>
-            </call>
+            <argument type="service" id="translator"/>
         </service>
 
     </services>

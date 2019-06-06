@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Component\Commerce\Order\Export\OrderExporter as BaseExporter;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -23,12 +24,15 @@ class OrderExporter extends BaseExporter
 
 
     /**
-     * Sets the translator.
+     * Constructor.
      *
-     * @param TranslatorInterface $translator
+     * @param OrderRepositoryInterface $repository
+     * @param TranslatorInterface      $translator
      */
-    public function setTranslator(TranslatorInterface $translator)
+    public function __construct(OrderRepositoryInterface $repository, TranslatorInterface $translator)
     {
+        parent::__construct($repository);
+
         $this->translator = $translator;
     }
 

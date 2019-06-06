@@ -90,10 +90,10 @@ class StatCalculator implements StatCalculatorInterface
     public function calculateDayOrderStats(\DateTime $date)
     {
         $from = clone $date;
-        $from->setTime(0, 0, 0);
+        $from->setTime(0, 0, 0, 0);
 
         $to = clone $date;
-        $to->setTime(23, 59, 59);
+        $to->setTime(23, 59, 59, 999999);
 
         return $this->calculateOrderStats($from, $to);
     }
@@ -106,12 +106,12 @@ class StatCalculator implements StatCalculatorInterface
         $from = clone $date;
         $from
             ->modify('first day of this month')
-            ->setTime(0, 0, 0);
+            ->setTime(0, 0, 0, 0);
 
         $to = clone $date;
         $to
             ->modify('last day of this month')
-            ->setTime(23, 59, 59);
+            ->setTime(23, 59, 59, 999999);
 
         return $this->calculateOrderStats($from, $to);
     }
@@ -124,12 +124,12 @@ class StatCalculator implements StatCalculatorInterface
         $from = clone $date;
         $from
             ->modify('first day of january ' . $date->format('Y'))
-            ->setTime(0, 0, 0);
+            ->setTime(0, 0, 0, 0);
 
         $to = clone $date;
         $to
             ->modify('last day of december ' . $date->format('Y'))
-            ->setTime(23, 59, 59);
+            ->setTime(23, 59, 59, 999999);
 
         return $this->calculateOrderStats($from, $to);
     }

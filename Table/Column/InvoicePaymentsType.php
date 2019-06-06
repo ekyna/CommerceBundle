@@ -77,11 +77,7 @@ class InvoicePaymentsType extends AbstractColumnType
             return;
         }
 
-        $payments = $this->paymentResolver->resolve($invoice);
-        $total = 0;
-        foreach ($payments as $payment) {
-            $total += $payment->getAmount();
-        }
+        $total = $this->paymentResolver->getPaidTotal($invoice);
 
         $view->vars['value'] = $this->getFormatter()->currency($total, $invoice->getCurrency());
 
@@ -89,11 +85,11 @@ class InvoicePaymentsType extends AbstractColumnType
             return;
         }
 
-        if (null === $date = $invoice->getSale()->getOutstandingDate()) {
+        if (null === $date = $invoice->getDueDate()) {
             return;
         }
 
-        $diff = $date->diff((new \DateTime())->setTime(0, 0, 0));
+        $diff = $date->diff((new \DateTime())->setTime(0, 0, 0, 0));
         if (0 < $diff->days && !$diff->invert) {
             $class = $view->vars['attr']['class'] ?? '';
             $view->vars['attr']['class'] = trim($class . ' danger');

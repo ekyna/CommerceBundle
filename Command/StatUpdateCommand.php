@@ -2,8 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Stat\Updater\StatUpdaterInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,12 +14,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class StatUpdateCommand extends ContainerAwareCommand
+class StatUpdateCommand extends Command
 {
     /**
      * @var StatUpdaterInterface
      */
     private $updater;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $manager;
 
     /**
      * @var bool
@@ -30,6 +36,20 @@ class StatUpdateCommand extends ContainerAwareCommand
      */
     private $flush;
 
+
+    /**
+     * Constructor.
+     *
+     * @param StatUpdaterInterface   $updater
+     * @param EntityManagerInterface $manager
+     */
+    public function __construct(StatUpdaterInterface $updater, EntityManagerInterface $manager)
+    {
+        parent::__construct();
+
+        $this->updater = $updater;
+        $this->manager = $manager;
+    }
 
     /**
      * @inheritdoc
@@ -47,8 +67,6 @@ class StatUpdateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->updater = $this->getContainer()->get('ekyna_commerce.stat.updater');
-
         $this->force = $input->getOption('force');
         $this->flush = false;
 
@@ -57,7 +75,7 @@ class StatUpdateCommand extends ContainerAwareCommand
         $this->updateOrderStat($output);
 
         if ($this->flush) {
-            $this->getContainer()->get('doctrine.orm.default_entity_manager')->flush();
+            $this->manager->flush();
         }
     }
 
@@ -93,7 +111,7 @@ class StatUpdateCommand extends ContainerAwareCommand
      */
     private function updateOrderStat(OutputInterface $output)
     {
-        $connection = $this->getContainer()->get('doctrine.dbal.default_connection');
+        $connection = $this->manager->getConnection();
 
         $orderDates = $statDates = $updatedMonths = $updatedYears = [];
 

@@ -54,6 +54,7 @@
                  public="false">
             <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
+            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             <tag name="twig.extension"/>
         </service>
 

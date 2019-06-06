@@ -53,7 +53,9 @@ abstract class AbstractOrderListType extends ResourceTableType
                         ->setParameter('customer', $customer);
                 });
 
-                $builder->setFilterable(false);
+                $builder
+                    ->setFilterable(false)
+                    ->setPerPageChoices([100]);
             } else {
                 $builder
                     ->setExportable(true)

@@ -156,35 +156,40 @@ class CustomerType extends ResourceTableType
                     'label'    => 'ekyna_core.field.phone',
                     'position' => 56,
                 ])
-                ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
+                ->addFilter('parent', CType\Filter\BooleanType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.parent',
+                    'mode'     => CType\Filter\BooleanType::MODE_IS_NULL,
                     'position' => 60,
+                ])
+                ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
+                    'position' => 70,
                 ])
                 ->addFilter('creditBalance', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.customer.field.credit_balance',
-                    'position' => 70,
+                    'position' => 80,
                 ])
                 ->addFilter('outstandingBalance', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
-                    'position' => 80,
+                    'position' => 90,
                 ])
                 ->addFilter('outstandingLimit', CType\Filter\NumberType::class, [
                     'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
-                    'position' => 90,
-                ])
-                ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 100,
                 ])
-                ->addFilter('state', Type\Filter\InChargeType::class, [
+                ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 110,
+                ])
+                ->addFilter('state', Type\Filter\InChargeType::class, [
+                    'position' => 120,
                 ])
                 ->addFilter('state', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'choices'  => CustomerStates::getChoices(),
-                    'position' => 120,
+                    'position' => 130,
                 ])
                 ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                     'label'    => 'ekyna_core.field.created_at',
-                    'position' => 130,
+                    'position' => 140,
                 ]);
         }
     }

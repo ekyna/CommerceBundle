@@ -52,9 +52,8 @@ class OrderInvoiceType extends AbstractOrderListType
                 'property_path' => false,
                 'position'      => 70,
             ])
-            ->addColumn('outstandingDate', CType\Column\DateTimeType::class, [
+            ->addColumn('dueDate', CType\Column\DateTimeType::class, [
                 'label'         => 'ekyna_commerce.sale.field.outstanding_date',
-                'property_path' => 'order.outstandingDate',
                 'time_format'   => 'none',
                 'position'      => 80,
             ])

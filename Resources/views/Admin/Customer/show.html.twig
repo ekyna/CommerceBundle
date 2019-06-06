@@ -325,7 +325,7 @@
                         })
                     }) }}
                 </div>
-                {{ ekyna_table_render(children) }}
+                {{ ekyna_table_render(customer_children) }}
             </div>
             {% endif %}
             <div class="tab-pane" id="customer-quotes">
@@ -340,7 +340,7 @@
                         })
                     }) }}
                 </div>
-                {{ ekyna_table_render(quotes) }}
+                {{ ekyna_table_render(customer_quotes) }}
             </div>
             <div class="tab-pane" id="customer-orders">
                 <div class="sub-header">
@@ -354,19 +354,19 @@
                         })
                     }) }}
                 </div>
-                {{ ekyna_table_render(orders) }}
+                {{ ekyna_table_render(customer_orders) }}
             </div>
             <div class="tab-pane" id="customer-invoices">
                 <div class="sub-header">
                     <h2>{{ 'ekyna_commerce.customer.header.invoices'|trans|raw }}</h2>
                 </div>
-                {{ ekyna_table_render(invoices) }}
+                {{ ekyna_table_render(customer_invoices) }}
             </div>
             <div class="tab-pane" id="customer-shipments">
                 <div class="sub-header">
                     <h2>{{ 'ekyna_commerce.customer.header.shipments'|trans|raw }}</h2>
                 </div>
-                {{ ekyna_table_render(shipments) }}
+                {{ ekyna_table_render(customer_shipments) }}
             </div>
             {% if support_enabled() -%}
             <div class="tab-pane" id="customer-tickets">

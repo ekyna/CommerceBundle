@@ -10,14 +10,14 @@
         {{ subject.sale.number -}}
     </h1>
     <p>
-        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
-        {{ date|localizeddate('long', 'none', locale) }}.
+        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>&nbsp;
+        <strong>{{ date|localizeddate('long', 'none', locale) }}</strong>.
         {% if subject.sale.customer is not null -%}
             <span class="text-alt">{{ 'ekyna_commerce.customer.label.singular'|trans }}</span>&nbsp;
             <strong>{{ subject.sale.customer.number }}</strong>.
         {%- endif %}
-        {{ macro.render_voucher_number(subject.sale) }}
-        {{ macro.render_payment_term(subject.sale) }}
+        {{ macro.render_voucher_number(subject) }}
+        {{ macro.render_payment_term(subject) }}
     </p>
     {% if subject.comment is not empty -%}
     <p>{{ subject.comment|nl2br }}</p>

@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
+use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 
 /**
@@ -25,17 +26,27 @@ class InvoiceExtension extends \Twig_Extension
      */
     private $taxResolver;
 
+    /**
+     * @var InvoicePaymentResolverInterface
+     */
+    private $paymentResolver;
+
 
     /**
      * Constructor.
      *
-     * @param ConstantsHelper      $constantHelper
-     * @param TaxResolverInterface $taxResolver
+     * @param ConstantsHelper                 $constantHelper
+     * @param TaxResolverInterface            $taxResolver
+     * @param InvoicePaymentResolverInterface $paymentResolver
      */
-    public function __construct(ConstantsHelper $constantHelper, TaxResolverInterface $taxResolver)
-    {
+    public function __construct(
+        ConstantsHelper $constantHelper,
+        TaxResolverInterface $taxResolver,
+        InvoicePaymentResolverInterface $paymentResolver
+    ) {
         $this->constantHelper = $constantHelper;
         $this->taxResolver = $taxResolver;
+        $this->paymentResolver = $paymentResolver;
     }
 
     /**
@@ -69,6 +80,10 @@ class InvoiceExtension extends \Twig_Extension
                 [$this, 'renderInvoiceNotices'],
                 ['is_safe' => ['html']]
             ),
+            new \Twig_SimpleFilter(
+                'invoice_paid_total',
+                [$this->paymentResolver, 'getPaidTotal']
+            ),
         ];
     }
 
@@ -99,7 +114,7 @@ class InvoiceExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function renderInvoiceNotices(InvoiceInterface $invoice)
+    public function renderInvoiceNotices(InvoiceInterface $invoice): string
     {
         if (null !== $rule = $this->taxResolver->resolveSaleTaxRule($invoice->getSale())) {
             return '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';

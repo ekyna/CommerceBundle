@@ -84,13 +84,6 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Public if parent is compound and configurable
-        if ($parent->isCompound() && $parent->isConfigurable()) {
-            $item->setPrivate(false);
-
-            return;
-        }
-
         // Public if different tax group than parent's one
         if ($item->getTaxGroup() !== $parent->getTaxGroup()) {
             $item->setPrivate(false);

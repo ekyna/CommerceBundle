@@ -2,11 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\NumberSubjectInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,18 +19,32 @@ use Symfony\Component\Console\Question\Question;
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderDateModifyCommand extends ContainerAwareCommand
+class OrderDateModifyCommand extends Command
 {
+    /**
+     * @var OrderRepositoryInterface
+     */
+    private $repository;
+
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private $manager;
+
 
     /**
-     * @var Connection
+     * Constructor.
+     *
+     * @param OrderRepositoryInterface $repository
+     * @param EntityManagerInterface $manager
      */
-    private $co;
+    public function __construct(OrderRepositoryInterface $repository, EntityManagerInterface $manager)
+    {
+        parent::__construct();
 
+        $this->repository = $repository;
+        $this->manager = $manager;
+    }
 
     /**
      * @inheritDoc
@@ -109,15 +123,6 @@ class OrderDateModifyCommand extends ContainerAwareCommand
     /**
      * @inheritDoc
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        $this->em = $this->getContainer()->get('ekyna_commerce.order.manager');
-        $this->co = $this->em->getConnection();
-    }
-
-    /**
-     * @inheritDoc
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Check arguments
@@ -135,10 +140,7 @@ class OrderDateModifyCommand extends ContainerAwareCommand
         }
 
         // Find order
-        /** @var \Ekyna\Component\Commerce\Order\Model\OrderInterface $order */
-        $order = $this->getContainer()->get('ekyna_commerce.order.repository')->findOneBy([
-            'number' => $number,
-        ]);
+        $order = $this->repository->findOneByNumber($number);
         if (null === $order) {
             throw new InvalidArgumentException("No order found for number '$number'.");
         }
@@ -160,9 +162,7 @@ class OrderDateModifyCommand extends ContainerAwareCommand
         /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface[] $invoices */
         $invoices = $order->getInvoices()->toArray();
 
-        $em = $this->getContainer()->get('ekyna_commerce.order.manager');
-        $co = $em->getConnection();
-
+        $co = $this->manager->getConnection();
         $co->beginTransaction();
 
         try {
@@ -229,7 +229,7 @@ class OrderDateModifyCommand extends ContainerAwareCommand
             return;
         }
 
-        $query = $this->em->createQuery(
+        $query = $this->manager->createQuery(
             "UPDATE " . get_class($object) . " o SET " .
             implode(", ", $couples) . " " .
             "WHERE o.number = :number"

@@ -125,6 +125,10 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
+        <!-- Due date resolver -->
+        <service id="ekyna_commerce.payment.due_date_resolver"
+                 class="Ekyna\Component\Commerce\Payment\Resolver\DueDateResolver"/>
+
         <!-- Payment subject state resolver -->
         <service id="ekyna_commerce.payment.subject_state_resolver"
                  class="Ekyna\Component\Commerce\Payment\Resolver\PaymentSubjectStateResolver">

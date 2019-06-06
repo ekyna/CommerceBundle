@@ -461,6 +461,7 @@ ekyna_commerce:
             shipment_bill: Shipment bill
             return_bill: Return bill
         mention:
+            due_date: Due date
             remaining_unknown: The following products will be shipped later.
             remaining_with_date: The following products will be shipped from %date%.
             deposit: <strong>%percent%</strong> deposit resulting in an amount of <strong>%amount%</strong>
@@ -577,6 +578,7 @@ ekyna_commerce:
             credit: Credit
             balance: Balance
             by_order: By order
+            not_done: Not settled
             order_date: Order date
             due_date: Due date
 

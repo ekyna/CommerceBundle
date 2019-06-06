@@ -45,7 +45,7 @@ class CustomerController extends ResourceController
         $data = $this->container->get('serializer')->serialize([
             'results'     => $results,
             'total_count' => count($results),
-        ], 'json', ['groups' => ['Default']]);
+        ], 'json', ['groups' => ['Search']]);
 
         $response = new Response($data);
         $response->headers->set('Content-Type', 'text/javascript');
@@ -285,31 +285,31 @@ class CustomerController extends ResourceController
         }
 
         $tables = [
-            'children'  => [
+            'customer_children'  => [
                 'type'    => $this->config->getTableType(),
                 'options' => [
                     'parent' => $customer,
                 ],
             ],
-            'quotes'    => [
+            'customer_quotes'    => [
                 'type'    => $this->get('ekyna_commerce.quote.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
                 ],
             ],
-            'orders'    => [
+            'customer_orders'    => [
                 'type'    => $this->get('ekyna_commerce.order.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
                 ],
             ],
-            'invoices'  => [
+            'customer_invoices'  => [
                 'type'    => $this->get('ekyna_commerce.order_invoice.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,
                 ],
             ],
-            'shipments' => [
+            'customer_shipments' => [
                 'type'    => $this->get('ekyna_commerce.order_shipment.configuration')->getTableType(),
                 'options' => [
                     'customer' => $customer,

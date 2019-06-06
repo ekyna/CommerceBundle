@@ -32,6 +32,10 @@ class BalanceType extends AbstractType
             ->add('byOrder', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.customer.balance.by_order',
                 'required' => false,
+            ])
+            ->add('notDone', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.customer.balance.not_done',
+                'required' => false,
             ]);
     }
 

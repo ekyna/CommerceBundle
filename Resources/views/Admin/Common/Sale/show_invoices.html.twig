@@ -9,9 +9,13 @@
                 <th>{{ 'ekyna_core.field.mode'|trans }}</th>
             {%- endif %}
             <th>{{ 'ekyna_commerce.invoice.field.goods_base'|trans }}</th>
-            <th>{{ 'ekyna_commerce.invoice.field.shipment_base'|trans }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.shipment_net_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.field.taxes_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
+            {% if prefix != 'credit' -%}
+            <th>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</th>
+            <th>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</th>
+            {% endif %}
             <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
             <th>{{ 'ekyna_commerce.shipment.label.singular'|trans }}</th>
             <th></th>
@@ -56,7 +60,16 @@
                 <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency(currency) }}</td>
-                <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'short') }}</td>
+                {% if prefix != 'credit' -%}
+                {% set paid_total = invoice|invoice_paid_total %}
+                <td id="{{ invoiceId }}_paidTotal"{% if paid_total < invoice.grandTotal %} class="danger"{% endif %}>
+                    {{- paid_total|localizedcurrency(currency) -}}
+                </td>
+                <td id="{{ invoiceId }}_dueDate"{# TODO add danger class if due date is past #}>
+                    {{- invoice.dueDate ? invoice.dueDate|localizeddate('short', 'none') : '&dash;' -}}
+                </td>
+                {%- endif %}
+                <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ invoiceId }}_shipment">
                     {%- if invoice.shipment is not null %}
                         {{ invoice.shipment.number }}
@@ -117,7 +130,7 @@
             </tr>#}
         {% else %}
             <tr>
-                <td colspan="{{ prefix == 'credit' ? 10 : 9 }}" class="text-center">
+                <td colspan="{{ prefix == 'credit' ? 10 : 11 }}" class="text-center">
                     <em>{{ 'ekyna_commerce.invoice.alert.no_item'|trans }}</em>
                 </td>
             </tr>

@@ -89,30 +89,33 @@
 {% endmacro %}
 
 
-{% macro render_voucher_number(sale) %}
+{% macro render_voucher_number(subject) %}
 {% spaceless %}
-    {% if sale.voucherNumber is not empty -%}
+    {% if subject.sale.voucherNumber is not empty -%}
         <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</span>&nbsp;
-        <strong>{{ sale.voucherNumber }}</strong>.
+        <strong>{{ subject.sale.voucherNumber }}</strong>.
     {%- endif %}
 {% endspaceless %}
 {% endmacro %}
 
 
-{% macro render_payment_term(sale, currency) %}
+{% macro render_payment_term(subject) %}
 {% spaceless %}
-    {% if sale.paymentTerm is not null -%}
+    {% if subject.sale.paymentTerm is not null -%}
         <span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</span>&nbsp;
-        <strong>{{ sale.paymentTerm }}</strong>.
-        {% if sale.outstandingDate is not null %}
-            <span class="text-alt">{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</span>&nbsp;
-            <strong>{{ sale.outstandingDate|localizeddate('long', 'none', locale) }}</strong>.
+        <strong>{{ subject.sale.paymentTerm }}</strong>.
+        {% if subject is invoice_invoice and subject.dueDate is not null %}
+            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans }}</span>&nbsp;
+            <strong>{{ subject.dueDate|localizeddate('long', 'none', subject.sale.locale) }}</strong>.
+        {% elseif subject.sale.outstandingDate is not null %}
+            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans }}</span>&nbsp;
+            <strong>{{ subject.sale.outstandingDate|localizeddate('long', 'none', subject.sale.locale) }}</strong>.
         {% endif %}
     {%- endif %}
-    {% if 0 < sale.depositTotal -%}
-        {{ 'ekyna_commerce.document.mention.deposit'|trans({
-            '%percent%': (sale.depositTotal / sale.grandTotal)|localizednumber('percent'),
-            '%amount%': sale.depositTotal|localizedcurrency(currency ? currency : sale.currency.code, sale.locale)
+    {% if 0 < subject.sale.depositTotal -%}
+        <br>{{ 'ekyna_commerce.document.mention.deposit'|trans({
+            '%percent%': (subject.sale.depositTotal / subject.sale.grandTotal)|localizednumber('percent'),
+            '%amount%': subject.sale.depositTotal|localizedcurrency(subject.currency, subject.sale.locale)
         })|raw }}.
     {%- endif %}
 {% endspaceless %}

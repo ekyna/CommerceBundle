@@ -1,6 +1,8 @@
 <tbody>
 {% for line in balance.lines %}
-    <tr>
+    <tr data-done="{{ line.done ? '1' : '0' }}" data-debit="{{ line.debit_raw }}" data-credit="{{ line.credit_raw }}"
+            {% if not line.done %} class="danger"{% endif %}
+            {% if balance.not_done and line.done %} style="display:none"{% endif %}>
         <td class="text-right">{{ line.date }}</td>
         <td>{{ line.number }}</td>
         <td class="text-right">{{ line.order_date }}</td>
@@ -11,15 +13,17 @@
         <td class="text-right">{{ line.due_date }}</td>
     </tr>
 {% endfor %}
+</tbody>
+<tfoot>
 <tr style="font-weight: bold">
     <td class="text-right" colspan="5"></td>
-    <td class="text-right">{{ balance.debit }}</td>
-    <td class="text-right">{{ balance.credit }}</td>
+    <td class="debit-total text-right">{{ balance.debit }}</td>
+    <td class="credit-total text-right">{{ balance.credit }}</td>
     <td></td>
 </tr>
 <tr style="font-weight: bold">
     <td class="text-right" colspan="6"></td>
-    <td class="text-right">{{ balance.diff }}</td>
+    <td class="balance-total text-right">{{ balance.diff }}</td>
     <td></td>
 </tr>
-</tbody>
+</tfoot>

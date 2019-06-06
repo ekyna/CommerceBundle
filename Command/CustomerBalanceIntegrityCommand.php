@@ -2,7 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,8 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
+class CustomerBalanceIntegrityCommand extends Command
 {
+    /**
+     * @var Connection
+     */
+    private $connection;
+
     /**
      * @var InputInterface
      */
@@ -30,11 +36,18 @@ class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
      */
     private $fix = false;
 
-    /**
-     * @var \Doctrine\DBAL\Connection
-     */
-    private $connection;
 
+    /**
+     * Constructor.
+     *
+     * @param Connection $connection
+     */
+    public function __construct(Connection $connection)
+    {
+        parent::__construct();
+
+        $this->connection = $connection;
+    }
 
     /**
      * @inheritDoc
@@ -47,8 +60,7 @@ class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
             ->addOption('outstanding', 'o', InputOption::VALUE_NONE, 'Check outstanding balances only')
             ->addOption('credit', 'c', InputOption::VALUE_NONE, 'Check credit balances only')
             ->addOption('fix', 'f', InputOption::VALUE_NONE, 'To fix balances')
-            ->addOption('email', null, InputOption::VALUE_REQUIRED, 'The email to sends the report to')
-        ;
+            ->addOption('email', null, InputOption::VALUE_REQUIRED, 'The email to sends the report to');
     }
 
     /**
@@ -64,8 +76,6 @@ class CustomerBalanceIntegrityCommand extends ContainerAwareCommand
             // TODO
             throw new \RuntimeException('Not yet supported');
         }
-
-        $this->connection = $this->getContainer()->get('doctrine.dbal.default_connection');
 
         $outstanding = $input->getOption('outstanding');
         $credit = $input->getOption('credit');
