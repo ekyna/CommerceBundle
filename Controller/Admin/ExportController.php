@@ -56,6 +56,58 @@ class ExportController extends Controller
     }
 
     /**
+     * Due invoices export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function dueInvoicesAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order_invoice.exporter')
+                ->exportDueInvoices();
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('due-invoices-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Fall invoices export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function fallInvoicesAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order_invoice.exporter')
+                ->exportFallInvoices();
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('fall-invoices-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
      * Due orders export.
      *
      * @return \Symfony\Component\HttpFoundation\Response

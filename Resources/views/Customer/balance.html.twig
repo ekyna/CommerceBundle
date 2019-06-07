@@ -9,11 +9,8 @@
         <div class="col-md-2">
             {{ form_row(form.to) }}
         </div>
-        <div class="col-md-2">
-            {{ form_row(form.byOrder) }}
-        </div>
-        <div class="col-md-2">
-            {{ form_row(form.notDone) }}
+        <div class="col-md-4">
+            {{ form_row(form.filter) }}
         </div>
         <div class="col-md-2">
             {{ form_widget(form.submit) }}
@@ -31,6 +28,7 @@
                 <th>{{ 'ekyna_core.field.number'|trans }}</th>
                 <th>{{ 'ekyna_commerce.customer.balance.order_date'|trans }}</th>
                 <th>{{ 'ekyna_commerce.order.label.singular'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
                 <th>{{ 'ekyna_core.field.label'|trans }}</th>
                 <th>{{ 'ekyna_commerce.customer.balance.debit'|trans }}</th>
                 <th>{{ 'ekyna_commerce.customer.balance.credit'|trans }}</th>

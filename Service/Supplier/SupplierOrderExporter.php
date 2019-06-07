@@ -37,7 +37,7 @@ class SupplierOrderExporter extends BaseExporter
     /**
      * @inheritDoc
      */
-    protected function buildHeaders()
+    protected function buildHeaders(): array
     {
         return [
             'id',
@@ -59,7 +59,7 @@ class SupplierOrderExporter extends BaseExporter
     /**
      * @inheritDoc
      */
-    protected function buildRow(SupplierOrderInterface $order)
+    protected function buildRow(SupplierOrderInterface $order): array
     {
         $row = parent::buildRow($order);
 

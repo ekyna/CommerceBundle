@@ -192,6 +192,8 @@ ekyna_commerce:
     dashboard:
         export:
             title: Exports
+            due_invoices: Factures échues
+            fall_invoices: Factures à échoir
             due_orders: Commandes échues
             field:
                 due_amount: Montant dû
@@ -577,8 +579,9 @@ ekyna_commerce:
             debit: Débit
             credit: Crédit
             balance: Solde
-            by_order: Par commande
-            not_done: Non soldé
+            all: Tout
+            due_invoices: Factures échues
+            befall_invoices: Factures à échoir
             order_date: Date commande
             due_date: Date d'échéance
 

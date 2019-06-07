@@ -192,6 +192,8 @@ ekyna_commerce:
         export:
             title: Export
             due_orders: Due orders
+            due_invoices: Due invoices
+            fall_invoices: Befall invoices
             field:
                 due_amount: Due amount
         debt:
@@ -577,8 +579,9 @@ ekyna_commerce:
             debit: Debit
             credit: Credit
             balance: Balance
-            by_order: By order
-            not_done: Not settled
+            all: All
+            due_invoices: Due invoices
+            befall_invoices: Befall invoices
             order_date: Order date
             due_date: Due date
 

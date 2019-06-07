@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
+use Ekyna\Component\Commerce\Common\Util\DateUtil;
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
 use Ekyna\Component\Commerce\Customer\Balance\Balance;
 use Ekyna\Component\Commerce\Customer\Balance\Line;
@@ -58,25 +59,27 @@ class BalanceNormalizer implements NormalizerInterface
         ];
 
         $data = [
-            'debit'    => $formatter->currency($object->getDebit(), 'EUR'),
-            'credit'   => $formatter->currency($object->getCredit(), 'EUR'),
-            'diff'     => $formatter->currency($object->getDiff(), 'EUR'),
-            'not_done' => $object->isNotDone(),
-            'lines'    => [],
+            'debit'  => $formatter->currency($object->getDebit(), 'EUR'),
+            'credit' => $formatter->currency($object->getCredit(), 'EUR'),
+            'diff'   => $formatter->currency($object->getDiff(), 'EUR'),
+            'filter' => $object->getFilter(),
+            'lines'  => [],
         ];
 
         foreach ($object->getLines() as $line) {
             $datum = [
-                'date'         => $formatter->date($line->getDate()),
-                'number'       => $line->getNumber(),
-                'label'        => $translations[$line->getType()],
-                'order_number' => $line->getOrderNumber(),
-                'order_date'   => $formatter->date($line->getOrderDate()),
-                'due_date'     => $line->getDueDate() ? $formatter->date($line->getDueDate()) : null,
-                'done'         => $line->isDone(),
+                'date'           => $formatter->date($line->getDate()),
+                'number'         => $line->getNumber(),
+                'label'          => $translations[$line->getType()],
+                'order_number'   => $line->getOrderNumber(),
+                'voucher_number' => $line->getVoucherNumber(),
+                'order_date'     => $formatter->date($line->getOrderDate()),
+                'due_date'       => $line->getDueDate() ? $formatter->date($line->getDueDate()) : null,
+                'due'            => $line->isDue(),
             ];
 
             if ($format === 'json') {
+                $datum['date_raw'] = $line->getDate()->format(DateUtil::DATE_FORMAT);
                 $datum['debit_raw'] = $line->getDebit();
                 $datum['credit_raw'] = $line->getCredit();
 

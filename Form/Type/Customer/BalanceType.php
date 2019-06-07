@@ -22,20 +22,29 @@ class BalanceType extends AbstractType
     {
         $builder
             ->add('from', Type\DateType::class, [
-                'label'    => 'ekyna_core.field.from_date',
-                'required' => false,
+                'label'          => 'ekyna_core.field.from_date',
+                'required'       => false,
+                'format'         => 'yyyy-MM-dd',
+                'picker_options' => [
+                    'widgetPositioning' => [
+                        'horizontal' => 'left',
+                    ],
+                ],
             ])
             ->add('to', Type\DateType::class, [
                 'label'    => 'ekyna_core.field.to_date',
                 'required' => false,
+                'format'   => 'yyyy-MM-dd',
             ])
-            ->add('byOrder', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.customer.balance.by_order',
-                'required' => false,
-            ])
-            ->add('notDone', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.customer.balance.not_done',
-                'required' => false,
+            ->add('filter', Type\ChoiceType::class, [
+                'label'    => 'ekyna_core.button.filter',
+                'required' => true,
+                'select2'  => false,
+                'choices'  => [
+                    'ekyna_commerce.customer.balance.all'             => Balance::FILTER_ALL,
+                    'ekyna_commerce.customer.balance.due_invoices'    => Balance::FILTER_DUE_INVOICES,
+                    'ekyna_commerce.customer.balance.befall_invoices' => Balance::FILTER_BEFALL_INVOICES,
+                ],
             ]);
     }
 

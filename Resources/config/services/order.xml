@@ -120,6 +120,14 @@
             <argument type="service" id="translator"/>
         </service>
 
+        <!-- Order invoice exporter -->
+        <service id="ekyna_commerce.order_invoice.exporter"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Order\OrderInvoiceExporter">
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
+            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
+            <argument type="service" id="translator"/>
+        </service>
+
     </services>
 
 </container>

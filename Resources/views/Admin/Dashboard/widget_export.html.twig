@@ -13,12 +13,22 @@
                     </tr>
                 </table>
                 {{ form_end(form) }}
-
-                {#{{ form(form, { 'style': 'inline' }) }}#}
+                <hr>
                 <p>
                     <a href="{{ path('ekyna_commerce_export_admin_due_orders') }}"
                        class="btn btn-sm btn-default">
+                        <span class="glyphicon glyphicon-download"></span>
                         {{- 'ekyna_commerce.dashboard.export.due_orders'|trans -}}
+                    </a>
+                    <a href="{{ path('ekyna_commerce_export_admin_due_invoices') }}"
+                       class="btn btn-sm btn-default">
+                        <span class="glyphicon glyphicon-download"></span>
+                        {{- 'ekyna_commerce.dashboard.export.due_invoices'|trans -}}
+                    </a>
+                    <a href="{{ path('ekyna_commerce_export_admin_fall_invoices') }}"
+                       class="btn btn-sm btn-default">
+                        <span class="glyphicon glyphicon-download"></span>
+                        {{- 'ekyna_commerce.dashboard.export.fall_invoices'|trans -}}
                     </a>
                 </p>
             </div>

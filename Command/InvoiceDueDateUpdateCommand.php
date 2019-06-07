@@ -95,8 +95,6 @@ class InvoiceDueDateUpdateCommand extends Command
             $invoices = $select->setFirstResult($page * $limit)->execute();
             $page++;
 
-            $connection->beginTransaction();
-
             /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
             foreach ($invoices as $invoice) {
                 $number = $invoice->getNumber();
@@ -121,8 +119,6 @@ class InvoiceDueDateUpdateCommand extends Command
                     $output->writeln('<error>failure</error>');
                 }
             }
-
-            $connection->commit();
 
             $this->manager->clear();
         } while (!empty($invoices));

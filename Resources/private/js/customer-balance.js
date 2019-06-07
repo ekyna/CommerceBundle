@@ -1,14 +1,28 @@
 define(['jquery', 'ekyna-modal', 'ekyna-commerce/templates', 'ekyna-ui', 'ekyna-polyfill'], function ($, Modal, Templates) {
 
+    function getToday() {
+        var d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
     function CustomerBalance ($element) {
         this.$element = $element;
         this.$element.data('customerBalance', this);
 
         this.$form = this.$element.find('form');
-        this.$submit = this.$form.find('button[name="balance[submit]"]');
-
         this.$table = this.$element.find('table');
-        this.$notDone = this.$form.find('input[name="balance[notDone]"]');
+
+        this.$from = this.$form.find('input[name="balance[from]"]');
+        this.$to = this.$form.find('input[name="balance[to]"]');
+        this.$filter = this.$form.find('select[name="balance[filter]"]');
+        this.$submit = this.$form.find('button[name="balance[submit]"]');
 
         this.init();
     }
@@ -18,13 +32,11 @@ define(['jquery', 'ekyna-modal', 'ekyna-commerce/templates', 'ekyna-ui', 'ekyna-
     };
 
     CustomerBalance.prototype.bindEvents = function() {
-        this.$submit.on('click', this.update.bind(this));
-        this.$notDone.on('change', this.toggleDone.bind(this));
+        this.$submit.on('click', $.proxy(this.filter, this));
     };
 
     CustomerBalance.prototype.unbindEvents = function() {
         this.$submit.off('click');
-        this.$notDone.off('change');
     };
 
     CustomerBalance.prototype.update = function(e) {
@@ -51,23 +63,69 @@ define(['jquery', 'ekyna-modal', 'ekyna-commerce/templates', 'ekyna-ui', 'ekyna-
         return false;
     };
 
-    CustomerBalance.prototype.toggleDone = function() {
+    CustomerBalance.prototype.filter = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.$element.loadingSpinner();
+
         this.$table.find('> tbody > tr').show();
 
-        if (this.$notDone.is(':checked')) {
-            this.$table.find('> tbody > tr[data-done="1"]').hide();
-        }
+        var from = this.$from.val(),
+            to = this.$to.val(),
+            filter = this.$filter.val(),
+            credit = 0,
+            debit = 0,
+            balance,
+            today = getToday();
 
-        var credit = 0, debit = 0, balance = 0;
-        this.$table.find('> tbody > tr:visible').each(function(index, row) {
+        this.$table.find('> tbody > tr').each(function(index, row) {
+            var $row = $(row),
+                date = $row.data('date');
+
+            if (from || to) {
+                if (from && from > date) {
+                    $row.hide();
+                    return true;
+                }
+
+                if (to && to < date) {
+                    $row.hide();
+                    return true;
+                }
+            }
+
+            if (filter !== 'all') {
+                if ($row.data('type') !== 'invoice' || !$row.data('due')) {
+                    $row.hide();
+                    return true;
+                }
+
+                if (filter === 'due_invoices') {
+                    if (date > today) {
+                        $row.hide();
+                        return true;
+                    }
+                } else if (filter === 'befall_invoices') {
+                    if (date <= today) {
+                        $row.hide();
+                        return true;
+                    }
+                }
+            }
+
             debit += parseFloat($(row).data('debit'));
             credit += parseFloat($(row).data('credit'));
         });
 
         balance = credit - debit;
-        this.$table.find('> tfoot .debit-total').text(debit.localizedCurrency('EUR')); // TODO currency
-        this.$table.find('> tfoot .credit-total').text(credit.localizedCurrency('EUR')); // TODO currency
-        this.$table.find('> tfoot .balance-total').text(balance.localizedCurrency('EUR')); // TODO currency
+        this.$table.find('> tfoot .debit-total').text(debit.localizedCurrency('EUR'));
+        this.$table.find('> tfoot .credit-total').text(credit.localizedCurrency('EUR'));
+        this.$table.find('> tfoot .balance-total').text(balance.localizedCurrency('EUR'));
+
+        this.$element.loadingSpinner('off');
+
+        return false;
     };
 
     $.fn.customerBalance = function () {
