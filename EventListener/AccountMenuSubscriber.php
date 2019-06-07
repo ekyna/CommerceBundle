@@ -47,7 +47,9 @@ class AccountMenuSubscriber implements EventSubscriberInterface
     {
         $menu = $event->getMenu();
 
-        $customer = $this->customerProvider->getCustomer();
+        if (!$customer = $this->customerProvider->getCustomer()) {
+            return;
+        }
 
         // Information
         $menu->addChild('ekyna_commerce.account.information.title', [
@@ -72,7 +74,7 @@ class AccountMenuSubscriber implements EventSubscriberInterface
         ]);
 
         // Invoices
-        if ($customer && !$customer->hasParent()) {
+        if (!$customer->hasParent()) {
             $menu->addChild('ekyna_commerce.account.invoice.title', [
                 'route' => 'ekyna_commerce_account_invoice_index',
             ]);
