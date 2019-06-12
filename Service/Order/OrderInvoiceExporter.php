@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 
-use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Ekyna\Component\Commerce\Order\Export\OrderInvoiceExporter as BaseExporter;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -24,15 +23,11 @@ class OrderInvoiceExporter extends BaseExporter
      * Constructor.
      *
      * @param OrderInvoiceRepositoryInterface $repository
-     * @param InvoicePaymentResolverInterface $resolver
      * @param TranslatorInterface             $translator
      */
-    public function __construct(
-        OrderInvoiceRepositoryInterface $repository,
-        InvoicePaymentResolverInterface $resolver,
-        TranslatorInterface $translator
-    ) {
-        parent::__construct($repository, $resolver);
+    public function __construct(OrderInvoiceRepositoryInterface $repository, TranslatorInterface $translator)
+    {
+        parent::__construct($repository);
 
         $this->translator = $translator;
     }

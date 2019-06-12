@@ -36,6 +36,7 @@
         <!-- Dashboard debt widget -->
         <service id="ekyna_commerce.dashboard.debt_widget"
                  class="Ekyna\Bundle\CommerceBundle\Dashboard\DebtWidget">
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.supplier_order.repository"/>
             <tag name="ekyna_admin.dashboard.widget_type" alias="commerce_debt"/>

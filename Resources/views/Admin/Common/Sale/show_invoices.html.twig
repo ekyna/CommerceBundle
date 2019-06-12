@@ -61,9 +61,8 @@
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency(currency) }}</td>
                 {% if prefix != 'credit' -%}
-                {% set paid_total = invoice|invoice_paid_total %}
-                <td id="{{ invoiceId }}_paidTotal"{% if paid_total < invoice.grandTotal %} class="danger"{% endif %}>
-                    {{- paid_total|localizedcurrency(currency) -}}
+                <td id="{{ invoiceId }}_paidTotal"{% if invoice.paidTotal < invoice.grandTotal %} class="danger"{% endif %}>
+                    {{- invoice.paidTotal|localizedcurrency(currency) -}}
                 </td>
                 <td id="{{ invoiceId }}_dueDate"{# TODO add danger class if due date is past #}>
                     {{- invoice.dueDate ? invoice.dueDate|localizeddate('short', 'none') : '&dash;' -}}

@@ -159,9 +159,9 @@ class CustomerController extends ResourceController
                 if ($form->get('export')->isClicked()) {
                     $this->get(BalanceBuilder::class)->build($balance);
 
-                    $data = $this->get('serializer')->normalize($balance, 'csv');
+                    $lines = $this->get('serializer')->normalize($balance, 'csv');
 
-                    return $this->createCsvResponse($data);
+                    return $this->createCsvResponse($lines);
                 }
             } else {
                 // TODO Fix data
@@ -188,16 +188,16 @@ class CustomerController extends ResourceController
     /**
      * Creates the CSV file download response.
      *
-     * @param array $data
+     * @param array $lines
      *
      * @return Response
      */
-    private function createCsvResponse(array $data): Response
+    private function createCsvResponse(array $lines): Response
     {
         $path = tempnam(sys_get_temp_dir(), 'balance');
 
         $handle = fopen($path, 'w');
-        foreach ($data['lines'] as $line) {
+        foreach ($lines as $line) {
             fputcsv($handle, $line, ';');
         }
         fclose($handle);

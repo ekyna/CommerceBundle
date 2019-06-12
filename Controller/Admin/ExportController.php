@@ -108,6 +108,32 @@ class ExportController extends Controller
     }
 
     /**
+     * Remaining orders export.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function remainingOrdersAction()
+    {
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order.exporter')
+                ->exportRemainingOrders();
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('remaining-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
      * Due orders export.
      *
      * @return \Symfony\Component\HttpFoundation\Response

@@ -116,10 +116,9 @@
             <tag name="table.column_type"/>
         </service>
 
-        <!-- Invoice payments column type -->
+        <!-- Invoice paid total column type -->
         <service id="ekyna_commerce.invoice_payments.column_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Column\InvoicePaymentsType">
-            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
+                 class="Ekyna\Bundle\CommerceBundle\Table\Column\InvoicePaidTotalType">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <tag name="table.column_type"/>
         </service>

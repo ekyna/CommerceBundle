@@ -81,7 +81,10 @@
 
         <!-- Invoice payment resolver -->
         <service id="ekyna_commerce.invoice.payment_resolver"
-                 class="Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolver"/>
+                 class="Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolver">
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
 
         <!-- Invoice subject state resolver -->
         <service id="ekyna_commerce.invoice.subject_state_resolver"

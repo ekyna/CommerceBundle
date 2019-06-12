@@ -1,30 +1,24 @@
-<tbody>
 {% for line in balance.lines %}
-    <tr data-due="{{ line.due ? '1' : '0' }}" data-type="{{ line.type }}" data-date="{{ line.date_raw }}"
-        data-debit="{{ line.debit_raw }}" data-credit="{{ line.credit_raw }}"
-        {% if line.due %} class="danger"{% endif %}>
-        <td class="text-right">{{ line.date }}</td>
+    <tr {% if line.due %} class="danger"{% endif %}>
+        <td class="text-right">{{ line.formatted.date }}</td>
         <td>{{ line.number }}</td>
-        <td class="text-right">{{ line.order_date }}</td>
-        <td><a href="{{ line.order_url }}">{{ line.order_number }}</a></td>
+        <td class="text-right">{{ line.formatted.order_date }}</td>
+        <td>{% if line.order_url %}<a href="{{ line.order_url }}">{{ line.order_number }}</a>{% else %}{{ line.order_number }}{% endif %}</td>
         <td>{{ line.voucher_number }}</td>
         <td>{{ line.label }}</td>
-        <td class="text-right">{{ line.debit }}</td>
-        <td class="text-right">{{ line.credit }}</td>
-        <td class="text-right">{{ line.due_date }}</td>
+        <td class="text-right">{{ line.formatted.debit }}</td>
+        <td class="text-right">{{ line.formatted.credit }}</td>
+        <td class="text-right">{{ line.formatted.due_date }}</td>
     </tr>
 {% endfor %}
-</tbody>
-<tfoot>
 <tr style="font-weight: bold">
     <td class="text-right" colspan="6"></td>
-    <td class="debit-total text-right">{{ balance.debit }}</td>
-    <td class="credit-total text-right">{{ balance.credit }}</td>
+    <td class="debit-total text-right">{{ balance.formatted.debit }}</td>
+    <td class="credit-total text-right">{{ balance.formatted.credit }}</td>
     <td></td>
 </tr>
 <tr style="font-weight: bold">
     <td class="text-right" colspan="7"></td>
-    <td class="balance-total text-right">{{ balance.diff }}</td>
+    <td class="balance-total text-right">{{ balance.formatted.diff }}</td>
     <td></td>
 </tr>
-</tfoot>

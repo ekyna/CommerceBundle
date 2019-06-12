@@ -192,8 +192,6 @@ ekyna_commerce:
         export:
             title: Export
             due_orders: Due orders
-            due_invoices: Due invoices
-            fall_invoices: Befall invoices
             field:
                 due_amount: Due amount
         debt:
@@ -203,9 +201,9 @@ ekyna_commerce:
                 carrier: Carriers debts
             field:
                 unpaid: Unpaid
-                outstanding_expired: Expired outstanding
-                outstanding_fall: Fall outstanding
-                outstanding_pending: Pending outstanding
+                due_invoices: Due invoices
+                fall_invoices: Befall invoices
+                remaining_orders: Remaining orders
                 expired: Expired
                 fall: Fall due
                 total: Total
@@ -579,6 +577,7 @@ ekyna_commerce:
             debit: Debit
             credit: Credit
             balance: Balance
+            forward: Carry forwards
             all: All
             due_invoices: Due invoices
             befall_invoices: Befall invoices

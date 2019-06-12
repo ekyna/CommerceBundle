@@ -26,10 +26,18 @@
             <tag name="console.command"/>
         </service>
 
-        <!-- Invoice due date command -->
+        <!-- Invoice due date update command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <argument type="service" id="ekyna_commerce.payment.due_date_resolver"/>
+            <argument type="service" id="ekyna_commerce.order_invoice.manager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Invoice paid total update command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand">
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
+            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             <argument type="service" id="ekyna_commerce.order_invoice.manager"/>
             <tag name="console.command"/>
         </service>

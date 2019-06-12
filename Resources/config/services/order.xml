@@ -38,6 +38,9 @@
             <call method="setOrderRepository">
                 <argument type="service" id="ekyna_commerce.order.repository"/>
             </call>
+            <call method="setInvoicePaymentResolver">
+                <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
+            </call>
             <call method="setSubjectHelper">
                 <argument type="service" id="ekyna_commerce.subject_helper"/>
             </call>
@@ -124,7 +127,6 @@
         <service id="ekyna_commerce.order_invoice.exporter"
                  class="Ekyna\Bundle\CommerceBundle\Service\Order\OrderInvoiceExporter">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
-            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             <argument type="service" id="translator"/>
         </service>
 

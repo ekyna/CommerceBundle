@@ -13,6 +13,11 @@ ekyna_commerce_export_admin_fall_invoices:
     methods: [GET]
     defaults: { _controller: EkynaCommerceBundle:Admin\Export:fallInvoices }
 
+ekyna_commerce_export_admin_remaining_orders:
+    path: /remaining-orders
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:remainingOrders }
+
 ekyna_commerce_export_admin_due_orders:
     path: /due-orders
     methods: [GET]

@@ -4,18 +4,19 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Ekyna\Component\Commerce\Common\Util\DateUtil;
-use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
+use Ekyna\Component\Commerce\Common\Util\Money;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
+use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InvoiceDueDateUpdateCommand
+ * Class InvoicePaidTotalUpdateCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class InvoiceDueDateUpdateCommand extends Command
+class InvoicePaidTotalUpdateCommand extends Command
 {
     /**
      * @var EntityRepository
@@ -23,7 +24,7 @@ class InvoiceDueDateUpdateCommand extends Command
     private $repository;
 
     /**
-     * @var DueDateResolverInterface
+     * @var InvoicePaymentResolverInterface
      */
     private $resolver;
 
@@ -37,12 +38,12 @@ class InvoiceDueDateUpdateCommand extends Command
      * Constructor.
      *
      * @param EntityRepository         $repository
-     * @param DueDateResolverInterface $resolver
+     * @param InvoicePaymentResolverInterface $resolver
      * @param EntityManagerInterface   $manager
      */
     public function __construct(
         EntityRepository $repository,
-        DueDateResolverInterface $resolver,
+        InvoicePaymentResolverInterface $resolver,
         EntityManagerInterface $manager
     ) {
         parent::__construct();
@@ -58,8 +59,8 @@ class InvoiceDueDateUpdateCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('ekyna:commerce:invoice:update-due-date')
-            ->setDescription('Updates the invoices due date');
+            ->setName('ekyna:commerce:invoice:update-paid-total')
+            ->setDescription('Updates the invoices paid total');
     }
 
     /**
@@ -77,16 +78,17 @@ class InvoiceDueDateUpdateCommand extends Command
 
         /** @noinspection SqlResolve */
         $update = $this->manager->getConnection()->prepare(
-            "UPDATE {$metadata->getTableName()} SET due_date=:date WHERE id=:id LIMIT 1"
+            "UPDATE {$metadata->getTableName()} SET paid_total=:total WHERE id=:id LIMIT 1"
         );
 
         $limit = 30;
         $page = 0;
 
         $select = $qb
-            ->andWhere($qb->expr()->isNull('i.dueDate'))
+            ->andWhere($qb->expr()->eq('i.type', ':type'))
             ->addOrderBy('i.id', 'ASC')
             ->getQuery()
+            ->setParameter('type', InvoiceTypes::TYPE_INVOICE)
             ->setMaxResults($limit);
 
         do {
@@ -103,15 +105,15 @@ class InvoiceDueDateUpdateCommand extends Command
                     str_pad('.', 44 - mb_strlen($number), '.', STR_PAD_LEFT)
                 ));
 
-                $date = $this->resolver->resolveInvoiceDueDate($invoice);
+                $total = $this->resolver->getPaidTotal($invoice);
 
-                if (DateUtil::equals($date, $invoice->getDueDate())) {
+                if (0 === Money::compare($total, $invoice->getPaidTotal(), $invoice->getCurrency())) {
                     $output->writeln('<comment>skipped</comment>');
 
                     continue;
                 }
 
-                if ($update->execute(['date' => $date->format('Y-m-d H:i:s'), 'id' => $invoice->getId()])) {
+                if ($update->execute(['total' => $total, 'id' => $invoice->getId()])) {
                     $output->writeln('<info>done</info>');
                 } else {
                     $output->writeln('<error>failure</error>');

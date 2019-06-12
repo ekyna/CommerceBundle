@@ -24,7 +24,6 @@ class BalanceType extends AbstractType
             ->add('from', Type\DateType::class, [
                 'label'          => 'ekyna_core.field.from_date',
                 'required'       => false,
-                'format'         => 'yyyy-MM-dd',
                 'picker_options' => [
                     'widgetPositioning' => [
                         'horizontal' => 'left',
@@ -34,7 +33,6 @@ class BalanceType extends AbstractType
             ->add('to', Type\DateType::class, [
                 'label'    => 'ekyna_core.field.to_date',
                 'required' => false,
-                'format'   => 'yyyy-MM-dd',
             ])
             ->add('filter', Type\ChoiceType::class, [
                 'label'    => 'ekyna_core.button.filter',

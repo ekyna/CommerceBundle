@@ -47,15 +47,15 @@ class OrderInvoiceType extends AbstractOrderListType
                 'currency_path' => 'currency',
                 'position'      => 60,
             ])
-            ->addColumn('invoicePaid', Column\InvoicePaymentsType::class, [
+            ->addColumn('paidTotal', Column\InvoicePaidTotalType::class, [
                 'label'         => 'ekyna_commerce.invoice.field.sale_paid',
                 'property_path' => false,
                 'position'      => 70,
             ])
             ->addColumn('dueDate', CType\Column\DateTimeType::class, [
-                'label'         => 'ekyna_commerce.sale.field.outstanding_date',
-                'time_format'   => 'none',
-                'position'      => 80,
+                'label'       => 'ekyna_commerce.sale.field.outstanding_date',
+                'time_format' => 'none',
+                'position'    => 80,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',

@@ -192,8 +192,6 @@ ekyna_commerce:
     dashboard:
         export:
             title: Exports
-            due_invoices: Factures échues
-            fall_invoices: Factures à échoir
             due_orders: Commandes échues
             field:
                 due_amount: Montant dû
@@ -204,9 +202,9 @@ ekyna_commerce:
                 carrier: Créances transitaires
             field:
                 unpaid: Non réglé
-                outstanding_expired: Encours échus
-                outstanding_fall: Encours à échoir
-                outstanding_pending: Encours à livrer
+                due_invoices: Factures échues
+                fall_invoices: Factures à échoir
+                remaining_orders: Commandes à facturer
                 expired: Échus
                 fall: À échoir
                 total: Total
@@ -580,6 +578,7 @@ ekyna_commerce:
             credit: Crédit
             balance: Solde
             all: Tout
+            forward: À nouveau
             due_invoices: Factures échues
             befall_invoices: Factures à échoir
             order_date: Date commande

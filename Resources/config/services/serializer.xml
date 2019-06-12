@@ -20,6 +20,7 @@
                  public="false">
             <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
             <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <call method="setFormatterFactory">
                 <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             </call>

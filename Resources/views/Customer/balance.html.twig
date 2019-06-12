@@ -35,9 +35,11 @@
                 <th>{{ 'ekyna_commerce.customer.balance.due_date'|trans }}</th>
             </tr>
             </thead>
-            {% include "@EkynaCommerce/Js/customer_balance_rows.html.twig" with {
+            <tbody>
+            {%- include "@EkynaCommerce/Js/customer_balance_rows.html.twig" with {
                 'balance': balance
-            } only %}
+            } only -%}
+            </tbody>
         </table>
     </div>
 </div>

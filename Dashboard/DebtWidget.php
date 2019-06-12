@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
+use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderRepositoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,6 +16,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class DebtWidget extends AbstractWidgetType
 {
+    /**
+     * @var OrderInvoiceRepositoryInterface
+     */
+    protected $invoiceRepository;
+
     /**
      * @var OrderRepositoryInterface
      */
@@ -29,13 +35,16 @@ class DebtWidget extends AbstractWidgetType
     /**
      * Constructor.
      *
+     * @param OrderInvoiceRepositoryInterface  $invoiceRepository
      * @param OrderRepositoryInterface         $orderRepository
      * @param SupplierOrderRepositoryInterface $supplierOrderRepository
      */
     public function __construct(
+        OrderInvoiceRepositoryInterface $invoiceRepository,
         OrderRepositoryInterface $orderRepository,
         SupplierOrderRepositoryInterface $supplierOrderRepository
     ) {
+        $this->invoiceRepository = $invoiceRepository;
         $this->orderRepository = $orderRepository;
         $this->supplierOrderRepository = $supplierOrderRepository;
     }
@@ -46,14 +55,13 @@ class DebtWidget extends AbstractWidgetType
     public function render(WidgetInterface $widget, \Twig_Environment $twig)
     {
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_debt.html.twig', [
-            'regular_due'         => $this->orderRepository->getRegularDue(),
-            'outstanding_expired' => $this->orderRepository->getOutstandingExpiredDue(),
-            'outstanding_fall'    => $this->orderRepository->getOutstandingFallDue(),
-            'outstanding_pending' => $this->orderRepository->getOutstandingPendingDue(),
-            'supplier_expired'    => $this->supplierOrderRepository->getSuppliersExpiredDue(),
-            'supplier_fall'       => $this->supplierOrderRepository->getSuppliersFallDue(),
-            'carrier_expired'     => $this->supplierOrderRepository->getForwardersExpiredDue(),
-            'carrier_fall'        => $this->supplierOrderRepository->getForwardersFallDue(),
+            'due_invoices'     => $this->invoiceRepository->getDueTotal(),
+            'fall_invoices'    => $this->invoiceRepository->getFallTotal(),
+            'remaining_orders' => $this->orderRepository->getRemainingTotal(),
+            'supplier_expired' => $this->supplierOrderRepository->getSuppliersExpiredDue(),
+            'supplier_fall'    => $this->supplierOrderRepository->getSuppliersFallDue(),
+            'carrier_expired'  => $this->supplierOrderRepository->getForwardersExpiredDue(),
+            'carrier_fall'     => $this->supplierOrderRepository->getForwardersFallDue(),
         ]);
     }
 
