@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Supplier;
 
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Component\Commerce\Supplier\Export\SupplierOrderExporter as BaseExporter;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderRepositoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -25,7 +24,7 @@ class SupplierOrderExporter extends BaseExporter
      * Constructor.
      *
      * @param SupplierOrderRepositoryInterface $repository
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface              $translator
      */
     public function __construct(SupplierOrderRepositoryInterface $repository, TranslatorInterface $translator)
     {
@@ -37,34 +36,48 @@ class SupplierOrderExporter extends BaseExporter
     /**
      * @inheritDoc
      */
-    protected function buildHeaders(): array
+    protected function buildHeader(string $name): string
     {
-        return [
-            'id',
-            $this->translator->trans('ekyna_core.field.number'),
-            $this->translator->trans('ekyna_commerce.field.status'),
-            $this->translator->trans('ekyna_commerce.supplier_order.field.ordered_at'),
-            $this->translator->trans('ekyna_core.field.completed_at'),
-            $this->translator->trans('ekyna_commerce.supplier.label.singular'),
-            $this->translator->trans('ekyna_commerce.supplier_order.field.payment_total'),
-            $this->translator->trans('ekyna_commerce.supplier_order.field.payment_date'),
-            $this->translator->trans('ekyna_commerce.supplier_order.field.payment_due_date'),
-            $this->translator->trans('ekyna_commerce.supplier_carrier.label.singular'),
-            $this->translator->trans('ekyna_commerce.supplier_order.field.forwarder_total'),
-            $this->translator->trans('ekyna_commerce.supplier_order.field.forwarder_date'),
-            $this->translator->trans('ekyna_commerce.supplier_order.field.forwarder_due_date'),
-        ];
+        switch ($name) {
+
+            case 'number':
+                return $this->translator->trans('ekyna_core.field.number');
+            case 'state':
+                return $this->translator->trans('ekyna_commerce.field.status');
+            case 'ordered_at':
+                return $this->translator->trans('ekyna_commerce.supplier_order.field.ordered_at');
+            case 'completed_at':
+                return $this->translator->trans('ekyna_core.field.completed_at');
+            case 'supplier':
+                return $this->translator->trans('ekyna_commerce.supplier.label.singular');
+            case 'payment_total':
+                return $this->translator->trans('ekyna_commerce.supplier_order.field.payment_total');
+            case 'payment_date' :
+                return $this->translator->trans('ekyna_commerce.supplier_order.field.payment_date');
+            case 'payment_due_date':
+                return $this->translator->trans('ekyna_commerce.supplier_order.field.payment_due_date');
+            case 'carrier':
+                return $this->translator->trans('ekyna_commerce.supplier_carrier.label.singular');
+            case 'forwarder_total':
+                return $this->translator->trans('ekyna_commerce.supplier_order.field.forwarder_total');
+            case 'forwarder_date':
+                return $this->translator->trans('ekyna_commerce.supplier_order.field.forwarder_date');
+            case 'forwarder_due_date':
+                return $this->translator->trans('ekyna_commerce.supplier_order.field.forwarder_due_date');
+        };
+
+        return $name;
     }
 
     /**
      * @inheritDoc
      */
-    protected function buildRow(SupplierOrderInterface $order): array
+    protected function transform(string $name, string $value): string
     {
-        $row = parent::buildRow($order);
+        if ($name === 'state') {
+            return $this->translator->trans(SupplierOrderStates::getLabel($value));
+        }
 
-        $row['state'] = $this->translator->trans(SupplierOrderStates::getLabel($row['state']));
-
-        return $row;
+        return $value;
     }
 }

@@ -35,22 +35,31 @@ class OrderInvoiceExporter extends BaseExporter
     /**
      * @inheritDoc
      */
-    protected function buildHeaders(): array
+    protected function buildHeader(string $name): string
     {
-        $number = $this->translator->trans('ekyna_core.field.number');
+        switch ($name) {
+            case 'date':
+                return $this->translator->trans('ekyna_core.field.date');
+            case 'number':
+                return $this->translator->trans('ekyna_core.field.number');
+            case 'order_date':
+                return $this->translator->trans('ekyna_commerce.customer.balance.order_date');
+            case 'order_number':
+                return $this->translator->trans('ekyna_commerce.order.label.singular');
+            case 'voucher_number':
+                return $this->translator->trans('ekyna_commerce.sale.field.voucher_number');
+            case 'company':
+                return $this->translator->trans('ekyna_core.field.company');
+            case 'grand_total':
+                return $this->translator->trans('ekyna_commerce.sale.field.ati_total');
+            case 'paid_total':
+                return $this->translator->trans('ekyna_commerce.sale.field.paid_total');
+            case 'due_date':
+                return $this->translator->trans('ekyna_commerce.customer.balance.due_date');
+            case 'payment_term':
+                return $this->translator->trans('ekyna_commerce.payment_term.label.singular');
+        }
 
-        return [
-            $this->translator->trans('ekyna_core.field.date'),
-            $number,
-            $this->translator->trans('ekyna_commerce.customer.balance.order_date'),
-            $this->translator->trans('ekyna_commerce.order.label.singular') . ' ' . $number,
-            $this->translator->trans('ekyna_commerce.sale.field.voucher_number'),
-            $this->translator->trans('ekyna_core.field.company'),
-            $this->translator->trans('ekyna_commerce.sale.field.ati_total'),
-            $this->translator->trans('ekyna_commerce.sale.field.paid_total'),
-            $this->translator->trans('ekyna_core.field.currency'),
-            $this->translator->trans('ekyna_commerce.customer.balance.due_date'),
-            $this->translator->trans('ekyna_commerce.payment_term.label.singular'),
-        ];
+        return $name;
     }
 }

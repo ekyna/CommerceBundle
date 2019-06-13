@@ -6,7 +6,6 @@ use Ekyna\Bundle\CommerceBundle\Model\InvoiceStates;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Component\Commerce\Order\Export\OrderExporter as BaseExporter;
-use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -39,34 +38,56 @@ class OrderExporter extends BaseExporter
     /**
      * @inheritDoc
      */
-    protected function buildHeaders(): array
+    protected function buildHeader(string $name): string
     {
-        return [
-            'id',
-            $this->translator->trans('ekyna_core.field.number'),
-            $this->translator->trans('ekyna_core.field.company'),
-            $this->translator->trans('ekyna_commerce.sale.field.payment_state'),
-            $this->translator->trans('ekyna_commerce.sale.field.shipment_state'),
-            $this->translator->trans('ekyna_commerce.sale.field.invoice_state'),
-            $this->translator->trans('ekyna_commerce.payment_term.label.singular'),
-            $this->translator->trans('ekyna_commerce.dashboard.export.field.due_amount'),
-            $this->translator->trans('ekyna_commerce.sale.field.outstanding_expired'),
-            $this->translator->trans('ekyna_commerce.sale.field.outstanding_date'),
-            $this->translator->trans('ekyna_core.field.created_at'),
-        ];
+        switch ($name) {
+            case 'number':
+                return $this->translator->trans('ekyna_core.field.number');
+            case 'voucher_number':
+                return $this->translator->trans('ekyna_commerce.sale.field.voucher_number');
+            case 'company':
+                return $this->translator->trans('ekyna_core.field.company');
+            case 'payment_state':
+                return $this->translator->trans('ekyna_commerce.sale.field.payment_state');
+            case 'shipment_state':
+                return $this->translator->trans('ekyna_commerce.sale.field.shipment_state');
+            case 'invoice_state':
+                return $this->translator->trans('ekyna_commerce.sale.field.invoice_state');
+            case 'payment_term':
+                return $this->translator->trans('ekyna_commerce.payment_term.label.singular');
+            case 'grand_total':
+                return $this->translator->trans('ekyna_commerce.sale.field.ati_total');
+            case 'paid_total':
+                return $this->translator->trans('ekyna_commerce.sale.field.paid_total');
+            case 'invoice_total':
+                return $this->translator->trans('ekyna_commerce.sale.field.invoice_total');
+            case 'due_amount':
+                return $this->translator->trans('ekyna_commerce.dashboard.export.field.due_amount');
+            case 'outstanding_expired':
+                return $this->translator->trans('ekyna_commerce.sale.field.outstanding_expired');
+            case 'outstanding_date':
+                return $this->translator->trans('ekyna_commerce.sale.field.outstanding_date');
+            case 'created_at':
+                return $this->translator->trans('ekyna_core.field.created_at');
+        }
+
+        return $name;
     }
 
     /**
      * @inheritDoc
      */
-    protected function buildRow(OrderInterface $order): array
+    protected function transform(string $name, string $value): string
     {
-        $row = parent::buildRow($order);
+        switch ($name) {
+            case 'payment_state':
+                return $this->translator->trans(PaymentStates::getLabel($value));
+            case 'shipment_state':
+                return $this->translator->trans(ShipmentStates::getLabel($value));
+            case 'invoice_state':
+                return $this->translator->trans(InvoiceStates::getLabel($value));
+        }
 
-        $row['payment_state'] = $this->translator->trans(PaymentStates::getLabel($row['payment_state']));
-        $row['shipment_state'] = $this->translator->trans(ShipmentStates::getLabel($row['shipment_state']));
-        $row['invoice_state'] = $this->translator->trans(InvoiceStates::getLabel($row['invoice_state']));
-
-        return $row;
+        return $value;
     }
 }
