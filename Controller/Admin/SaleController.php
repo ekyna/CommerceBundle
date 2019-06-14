@@ -41,7 +41,7 @@ class SaleController extends AbstractSaleController
      */
     protected function createNew(Context $context)
     {
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = parent::createNew($context);
 
         /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
@@ -77,7 +77,7 @@ class SaleController extends AbstractSaleController
      */
     protected function buildShowData(array &$data, Context $context)
     {
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
         if ($sale instanceof CartInterface && $sale->getState() === CartStates::STATE_ACCEPTED) {
@@ -107,7 +107,7 @@ class SaleController extends AbstractSaleController
         }
 
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
         $this->isGranted('VIEW', $sale);
@@ -150,7 +150,7 @@ class SaleController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function editShipmentAction(Request $request)
     {
@@ -162,7 +162,7 @@ class SaleController extends AbstractSaleController
          */
 
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
         $this->isGranted('EDIT', $sale);
@@ -276,7 +276,7 @@ class SaleController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function refreshAction(Request $request)
     {
@@ -285,7 +285,7 @@ class SaleController extends AbstractSaleController
         }
 
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
         return $this->buildXhrSaleViewResponse($sale);
@@ -296,7 +296,7 @@ class SaleController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function updateStateAction(Request $request)
     {
@@ -310,7 +310,7 @@ class SaleController extends AbstractSaleController
 
         $context = $this->loadContext($request);
 
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
         /** @var \Ekyna\Component\Commerce\Common\Resolver\StateResolverInterface $resolver */
@@ -332,7 +332,7 @@ class SaleController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function recalculateAction(Request $request)
     {
@@ -341,7 +341,7 @@ class SaleController extends AbstractSaleController
         }
 
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
         $form = $this->buildRecalculateForm($sale);
@@ -371,7 +371,7 @@ class SaleController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function transformAction(Request $request)
     {
@@ -381,7 +381,7 @@ class SaleController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sourceSale */
+        /** @var SaleInterface $sourceSale */
         $sourceSale = $context->getResource($resourceName);
 
         $target = $request->attributes->get('target');
@@ -441,7 +441,7 @@ class SaleController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function duplicateAction(Request $request)
     {
@@ -451,7 +451,7 @@ class SaleController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sourceSale */
+        /** @var SaleInterface $sourceSale */
         $sourceSale = $context->getResource($resourceName);
 
         // Create the target sale
@@ -522,7 +522,7 @@ class SaleController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
         $builder = $this->get('ekyna_commerce.notify.builder');
@@ -567,7 +567,7 @@ class SaleController extends AbstractSaleController
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
         if ($sale instanceof ShipmentSubjectInterface) {
@@ -607,7 +607,7 @@ class SaleController extends AbstractSaleController
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
         if ($sale instanceof ShipmentSubjectInterface) {
@@ -646,7 +646,7 @@ class SaleController extends AbstractSaleController
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
         if ($sale instanceof ShipmentSubjectInterface) {
@@ -685,7 +685,7 @@ class SaleController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
         if ($sale instanceof OrderInterface && $sale->isSample()) {
@@ -721,7 +721,7 @@ class SaleController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
         $redirect = $this->redirect($this->generateResourcePath($sale));
@@ -766,7 +766,7 @@ class SaleController extends AbstractSaleController
 
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
         $type = $request->attributes->get('type');
@@ -904,7 +904,7 @@ class SaleController extends AbstractSaleController
      * Creates the notify form.
      *
      * @param SaleInterface                                 $sale
-     * @param \Ekyna\Component\Commerce\Common\Model\Notify $notification
+     * @param Notify $notification
      * @param bool                                          $footer
      *
      * @return \Symfony\Component\Form\FormInterface
