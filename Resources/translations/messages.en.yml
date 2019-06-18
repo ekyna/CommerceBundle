@@ -662,6 +662,9 @@ ekyna_commerce:
                 message: >
                     <p>Hi,</p>
                     <p>Please check attachments below.</p>
+            balance:
+                subject: Account balance
+                message: Your account balance to this day
             cart_remind:
                 label: Abandonned cart reminder
             order_accepted:

@@ -136,6 +136,34 @@ class Mailer
     }
 
     /**
+     * Sends the email.
+     *
+     * @param string $body
+     * @param string $toEmail
+     * @param string $subject
+     *
+     * @return int
+     */
+    protected function sendEmail($body, $subject, $toEmail = null)
+    {
+        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
+        $fromName = $this->settingsManager->getParameter('notification.from_name');
+
+        if (null === $toEmail) {
+            $toEmail = $this->settingsManager->getParameter('notification.to_emails');
+        }
+
+        $message = new \Swift_Message();
+        $message
+            ->setSubject($subject)
+            ->setFrom($fromEmail, $fromName)
+            ->setTo($toEmail)
+            ->setBody($body, 'text/html');
+
+        return $this->mailer->send($message);
+    }
+
+    /**
      * Notifies the administrator about a customer registration.
      *
      * @param CustomerInterface $customer
@@ -151,6 +179,57 @@ class Mailer
         $subject = $this->translator->trans('ekyna_commerce.customer.notify.registration.subject');
 
         return $this->sendEmail($body, $subject);
+    }
+
+    /**
+     * Notifies the customer about his account balance.
+     *
+     * @param CustomerInterface $customer
+     * @param array             $balance
+     * @param string            $csvPath
+     *
+     * @return bool
+     */
+    public function sendCustomerBalance(CustomerInterface $customer, array $balance, string $csvPath = null)
+    {
+        if (empty($balance)) {
+            return false;
+        }
+
+        $locale = $customer->getLocale();
+
+        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
+        $fromName = $this->settingsManager->getParameter('notification.from_name');
+
+        $subject = $this
+            ->translator
+            ->trans('ekyna_commerce.notify.type.balance.subject', [], null, $locale);
+
+        $body = $this->templating->render('@EkynaCommerce/Email/customer_balance.html.twig', [
+            'subject'  => $subject,
+            'locale'   => $locale,
+            'customer' => $customer,
+            'balance'  => $balance,
+        ]);
+
+        $message = new \Swift_Message();
+        $message
+            ->setSubject($subject)
+            ->setFrom($fromEmail, $fromName)
+            ->setTo($customer->getEmail())
+            ->setBody($body, 'text/html');
+
+        // CSV attachment if any
+        if (!empty($csvPath) && is_file($csvPath)) {
+            $message->attach(
+                \Swift_Attachment::newInstance(file_get_contents($csvPath), 'account-balance.csv', 'text/csv')
+            );
+        }
+
+        // Trigger imap copy
+        $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
+
+        return 0 < $this->mailer->send($message);
     }
 
     /**
@@ -247,7 +326,7 @@ class Mailer
         $body = $this->templating->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
             'subject' => $subject,
             'message' => $message,
-            'locale' => $locale,
+            'locale'  => $locale,
         ]);
 
         $email = new \Swift_Message();
@@ -304,7 +383,7 @@ class Mailer
     /**
      * Sends the notification message.
      *
-     * @param \Ekyna\Component\Commerce\Common\Model\Notify $notify
+     * @param Notify $notify
      *
      * @return int
      */
@@ -454,9 +533,25 @@ class Mailer
     }
 
     /**
+     * Formats the recipient.
+     *
+     * @param Recipient $recipient
+     *
+     * @return string
+     */
+    private function formatRecipient(Recipient $recipient)
+    {
+        if (empty($recipient->getName())) {
+            return $recipient->getEmail();
+        }
+
+        return sprintf('%s <%s>', $recipient->getName(), $recipient->getEmail());
+    }
+
+    /**
      * Returns the sale from the notify object.
      *
-     * @param \Ekyna\Component\Commerce\Common\Model\Notify $notify
+     * @param Notify $notify
      *
      * @return SaleInterface
      */
@@ -471,49 +566,5 @@ class Mailer
         }
 
         throw new RuntimeException("Failed to fetch the sale from the notify object.");
-    }
-
-    /**
-     * Formats the recipient.
-     *
-     * @param \Ekyna\Component\Commerce\Common\Model\Recipient $recipient
-     *
-     * @return string
-     */
-    private function formatRecipient(Recipient $recipient)
-    {
-        if (empty($recipient->getName())) {
-            return $recipient->getEmail();
-        }
-
-        return sprintf('%s <%s>', $recipient->getName(), $recipient->getEmail());
-    }
-
-    /**
-     * Sends the email.
-     *
-     * @param string $body
-     * @param string $toEmail
-     * @param string $subject
-     *
-     * @return int
-     */
-    protected function sendEmail($body, $subject, $toEmail = null)
-    {
-        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
-        $fromName = $this->settingsManager->getParameter('notification.from_name');
-
-        if (null === $toEmail) {
-            $toEmail = $this->settingsManager->getParameter('notification.to_emails');
-        }
-
-        $message = new \Swift_Message();
-        $message
-            ->setSubject($subject)
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($toEmail)
-            ->setBody($body, 'text/html');
-
-        return $this->mailer->send($message);
     }
 }

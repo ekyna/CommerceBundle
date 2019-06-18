@@ -104,7 +104,6 @@ class BalanceNormalizer implements NormalizerInterface
         } elseif ($format === 'csv') {
             $lines[] = [
                 'date'           => 'Date',
-                'type'           => 'Type',
                 'number'         => 'Number',
                 'label'          => 'Label',
                 'order_number'   => 'Order number',
@@ -121,7 +120,6 @@ class BalanceNormalizer implements NormalizerInterface
         if (0 < $object->getDebitForward() || 0 < $object->getCreditForward()) {
             $datum = [
                 'date'           => $date($object->getFrom()),
-                'type'           => Line::TYPE_FORWARD,
                 'number'         => null,
                 'label'          => $this->translator->trans('ekyna_commerce.customer.balance.forward'),
                 'order_number'   => null,
@@ -134,6 +132,7 @@ class BalanceNormalizer implements NormalizerInterface
             ];
 
             if ($format === 'json') {
+                $datum['type'] = Line::TYPE_FORWARD;
                 $datum['order_url'] = null;
                 $datum['formatted'] = [
                     'date'       => $fDate($object->getFrom()),
@@ -151,7 +150,6 @@ class BalanceNormalizer implements NormalizerInterface
         foreach ($object->getLines() as $line) {
             $datum = [
                 'date'           => $date($line->getDate()),
-                'type'           => $line->getType(),
                 'number'         => $line->getNumber(),
                 'label'          => $translations[$line->getType()],
                 'order_number'   => $line->getOrderNumber(),
@@ -164,6 +162,19 @@ class BalanceNormalizer implements NormalizerInterface
             ];
 
             if ($format === 'json') {
+                $datum['type'] = $line->getType();
+
+                if ($object->isPublic()) {
+                    $url = $this->urlGenerator->generate('ekyna_commerce_account_order_show', [
+                        'number' => $line->getOrderNumber(),
+                    ], UrlGeneratorInterface::ABSOLUTE_URL);
+                } else {
+                    $url = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
+                        'orderId' => $line->getOrderId(),
+                    ], UrlGeneratorInterface::ABSOLUTE_URL);
+                }
+                $datum['order_url'] = $url;
+
                 $datum['formatted'] = [
                     'date'       => $fDate($line->getDate()),
                     'order_date' => $fDate($line->getOrderDate()),
@@ -171,17 +182,6 @@ class BalanceNormalizer implements NormalizerInterface
                     'debit'      => $fCurrency($line->getDebit()),
                     'credit'     => $fCurrency($line->getCredit()),
                 ];
-
-                if ($object->isPublic()) {
-                    $url = $this->urlGenerator->generate('ekyna_commerce_account_order_show', [
-                        'number' => $line->getOrderNumber(),
-                    ]);
-                } else {
-                    $url = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                        'orderId' => $line->getOrderId(),
-                    ]);
-                }
-                $datum['order_url'] = $url;
             }
 
             $lines[] = $datum;

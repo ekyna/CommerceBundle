@@ -148,23 +148,43 @@ class CustomerController extends ResourceController
             ->add('submit', SubmitType::class, [
                 'label' => 'ekyna_core.button.apply',
             ])
+            ->add('notify', SubmitType::class, [
+                'label' => 'ekyna_core.button.notify',
+            ])
             ->add('export', SubmitType::class, [
                 'label' => 'ekyna_core.button.export',
             ]);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                if ($form->get('export')->isClicked()) {
-                    $this->get(BalanceBuilder::class)->build($balance);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var \Symfony\Component\Form\ClickableInterface $export */
+            $export = $form->get('export');
+            /** @var \Symfony\Component\Form\ClickableInterface $notify */
+            $notify = $form->get('notify');
+            if ($export->isClicked() || $notify->isClicked()) {
+                $this->get(BalanceBuilder::class)->build($balance);
 
-                    $lines = $this->get('serializer')->normalize($balance, 'csv');
+                $lines = $this->get('serializer')->normalize($balance, 'csv');
+                $path = $this->createCsv($lines);
 
-                    return $this->createCsvResponse($lines);
+                if ($export->isClicked()) {
+                    return $this->file($path, 'balance.csv');
                 }
-            } else {
-                // TODO Fix data
+
+                if ($notify->isClicked()) {
+                    $balance->setPublic(false);
+
+                    $data = $this->get('serializer')->normalize($balance, 'json');
+
+                    $this->get('ekyna_commerce.mailer')->sendCustomerBalance($customer, $data, $path);
+
+                    $this->addFlash('ekyna_commerce.notify.message.sent', 'success');
+
+                    return $this->redirectToRoute('ekyna_commerce_customer_admin_balance', [
+                        'customerId' => $customer->getId(),
+                    ]);
+                }
             }
         }
 
@@ -186,13 +206,13 @@ class CustomerController extends ResourceController
     }
 
     /**
-     * Creates the CSV file download response.
+     * Creates the CSV file.
      *
      * @param array $lines
      *
-     * @return Response
+     * @return string
      */
-    private function createCsvResponse(array $lines): Response
+    private function createCsv(array $lines): string
     {
         $path = tempnam(sys_get_temp_dir(), 'balance');
 
@@ -202,7 +222,7 @@ class CustomerController extends ResourceController
         }
         fclose($handle);
 
-        return $this->file($path, 'balance.csv');
+        return $path;
     }
 
     /**

@@ -686,6 +686,9 @@ ekyna_commerce:
                 message: >
                     <p>Bonjour,</p>
                     <p>Veuillez trouver les éléments en pièces jointes.</p>
+            balance:
+                subject: Situation de compte
+                message: Votre situation de compte à ce jour.
             cart_remind:
                 label: Rappel panier abandonné
             order_accepted:

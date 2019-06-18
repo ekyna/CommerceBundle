@@ -140,6 +140,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         $notify = $event->getNotify();
 
         $source = $notify->getSource();
+
         if ($source instanceof SupplierOrderInterface) {
             $notify->setSubject(sprintf('Order %s', $source->getNumber()));
 
@@ -278,7 +279,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @param Notify $notify
      *
-     * @return \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel|null
+     * @return NotifyModel|null
      */
     protected function getModel(Notify $notify)
     {
