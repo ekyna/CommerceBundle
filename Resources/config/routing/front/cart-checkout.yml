@@ -1,6 +1,6 @@
 ekyna_commerce_cart_checkout_index:
     path: ""
-    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:indexAction" }
+    controller: "ekyna_commerce.controller.cart_checkout:indexAction"
     methods: [GET, POST]
     options:
         _cms:
@@ -12,7 +12,7 @@ ekyna_commerce_cart_checkout_index:
 
 ekyna_commerce_cart_checkout_quote:
     path: /transform-to-quote
-    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:quoteAction" }
+    controller: "ekyna_commerce.controller.cart_checkout:quoteAction"
     methods: [GET, POST]
     options:
         _cms:
@@ -26,7 +26,7 @@ ekyna_commerce_cart_checkout_quote:
 
 ekyna_commerce_cart_checkout_shipment:
     path: /shipment
-    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:shipmentAction" }
+    controller: "ekyna_commerce.controller.cart_checkout:shipmentAction"
     methods: [GET, POST]
     options:
         _cms:
@@ -40,7 +40,7 @@ ekyna_commerce_cart_checkout_shipment:
 
 ekyna_commerce_cart_checkout_payment:
     path: /payment
-    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:paymentAction" }
+    controller: "ekyna_commerce.controller.cart_checkout:paymentAction"
     methods: [GET, POST]
     options:
         _cms:
@@ -52,19 +52,19 @@ ekyna_commerce_cart_checkout_payment:
                 index: false
                 follow: false
 
-# TODO Payment cancel
+ekyna_commerce_cart_checkout_unlock:
+    path: /unlock
+    controller: "ekyna_commerce.controller.cart_checkout:unlockAction"
+    methods: [GET]
 
 ekyna_commerce_cart_checkout_status:
-    path: /{_locale}/status
-    defaults:
-        _controller: "ekyna_commerce.controller.cart_checkout:statusAction"
-        _locale: "%locale%"
+    path: /status
+    controller: "ekyna_commerce.controller.cart_checkout:statusAction"
     methods: [GET]
-    options: { i18n: false }
 
 ekyna_commerce_cart_checkout_confirmation:
     path: /confirmation/{orderKey}
-    defaults: { _controller: "ekyna_commerce.controller.cart_checkout:confirmationAction" }
+    controller: "ekyna_commerce.controller.cart_checkout:confirmationAction"
     methods: [GET]
     requirements:
         orderKey: "[a-zA-Z0-9]+"

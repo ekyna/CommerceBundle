@@ -14,6 +14,7 @@ use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -130,6 +131,12 @@ class CheckoutController extends AbstractController
                     '&nbsp;<sup class="text-danger">&starf;</sup>'
                 );
                 $view->addMessage($this->translate('ekyna_commerce.checkout.message.shipment_defaults'));
+            }
+
+            if ($cart->isLocked()) {
+                $view->addAlert($this->translate('ekyna_commerce.checkout.message.unlock', [
+                    '{{url}}' => $this->generateUrl('ekyna_commerce_cart_checkout_unlock'),
+                ]));
             }
 
             $parameters['view'] = $view;
@@ -321,6 +328,37 @@ class CheckoutController extends AbstractController
             'cart'  => $cart,
             'forms' => $this->checkoutManager->getFormsViews(),
         ]);
+    }
+
+    /**
+     * Unlock action.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function unlockAction()
+    {
+        if (null === $cart = $this->getCart()) {
+            return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
+        }
+
+        $statusUrl = $this->generateUrl(
+            'ekyna_commerce_cart_checkout_status',
+            [],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        foreach ($cart->getPayments() as $payment) {
+            $method = $payment->getMethod();
+            if ($method->isManual() || $method->isOutstanding() || $method->isCredit()) {
+                continue;
+            }
+
+            if (PaymentStates::STATE_NEW === $payment->getState()) {
+                return $this->paymentHelper->cancel($payment, $statusUrl);
+            }
+        }
+
+        return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
     }
 
     /**

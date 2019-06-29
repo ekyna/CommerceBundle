@@ -376,6 +376,9 @@ ekyna_commerce:
                 <sup class="text-danger">&starf;</sup> Frais de port par défaut,
                 choix du mode de livraion à la prochaine étape.
             empty_information: Saisissez vos nom, prénom et adresse email
+            unlock: >
+                Si vous n'avez effectué aucun paiement, vous pouvez
+                <a href="{{url}}">cliquer sur ce lien pour déverrouiller votre panier</a>.
             empty_invoice: Saisissez votre adresse de facturation
             empty_delivery: (Si différente) Saisissez votre adresse de livraison
             empty_comment: (Optionnel) Ajoutez un commentaire à votre commande

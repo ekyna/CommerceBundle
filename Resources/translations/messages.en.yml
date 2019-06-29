@@ -376,6 +376,9 @@ ekyna_commerce:
             shipment_defaults: >
                 <sup class="text-danger">&starf;</sup> Default shipping cost,
                 choose a shipment method on the next step.
+            unlock: >
+                If you did not do any payment, you can
+                <a href="{{url}}">click on this link to unlock your cart</a>.
             empty_information: Enter your last name, first name and email address
             empty_invoice: Enter your billing information
             empty_delivery: (If different) Enter your billing address

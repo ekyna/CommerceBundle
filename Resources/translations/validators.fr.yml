@@ -74,7 +74,7 @@ ekyna_commerce:
         delivery_address:
             is_required: Veuillez saisir une addresse de livraison.
             should_be_null: L'adresse de livraison devrait être vide.
-        cart_is_locked: Votre panier est vérouillé car un paiement est en cours de traitement.
+        cart_is_locked: Votre panier est vérrouillé car un paiement est en cours de traitement.
         identity_must_be_set: Veuillez saisir vos informations client.
         invoice_address_must_be_set: Veuillez saisir une adresse de facturation.
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.

@@ -2,6 +2,8 @@ ekyna_commerce_cart_checkout_index: /mon-panier
 ekyna_commerce_cart_checkout_quote: /mon-panier/transformer-en-devis
 ekyna_commerce_cart_checkout_shipment: /mon-panier/livraison
 ekyna_commerce_cart_checkout_payment: /mon-panier/paiement
+ekyna_commerce_cart_checkout_status: /mon-panier/statut
+ekyna_commerce_cart_checkout_unlock: /mon-panier/deverouiller
 ekyna_commerce_cart_checkout_confirmation: /mon-panier/confirmation/{orderKey}
 
 ekyna_commerce_account_information_index: /mon-compte/informations

@@ -2,6 +2,8 @@ ekyna_commerce_cart_checkout_index: /my-cart
 ekyna_commerce_cart_checkout_quote: /my-cart/transform-to-quote
 ekyna_commerce_cart_checkout_shipment: /my-cart/shipment
 ekyna_commerce_cart_checkout_payment: /my-cart/payment
+ekyna_commerce_cart_checkout_status: /my-cart/status
+ekyna_commerce_cart_checkout_unlock: /my-cart/unlock
 ekyna_commerce_cart_checkout_confirmation: /my-cart/confirmation/{orderKey}
 
 ekyna_commerce_account_information_index: /my-account/information
