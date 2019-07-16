@@ -71,19 +71,32 @@
             <argument type="service" id="Ekyna\Component\Commerce\Stock\Overflow\OverflowHandler"/>
         </service>
 
+        <!-- Stock assignment cache -->
+        <service id="ekyna_commerce.stock_assignment.cache"
+                 class="Ekyna\Component\Commerce\Stock\Cache\StockAssignmentCache"/>
+
+        <!-- Stock assignment manager -->
+        <service id="ekyna_commerce.stock_assignment.manager"
+                 class="Ekyna\Component\Commerce\Stock\Manager\StockAssignmentManager">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.cache"/>
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
         <!-- Stock assignment updater -->
         <service id="ekyna_commerce.stock_assignment.updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockAssignmentUpdater">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
         </service>
 
         <!-- Stock assignment dispatcher -->
         <service id="ekyna_commerce.stock_assignment.dispatcher"
                  class="Ekyna\Component\Commerce\Stock\Dispatcher\StockAssignmentDispatcher"
                  lazy="true">
-            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
             <argument type="service" id="ekyna_commerce.stock_unit.manager"/>
             <argument type="service" id="ekyna_commerce.stock.logger"/>
         </service>
@@ -102,6 +115,7 @@
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.updater"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
@@ -128,8 +142,8 @@
                  lazy="true">
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
-            <argument type="service" id="ekyna_commerce.sale_factory"/>
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.manager"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
             <argument type="service" id="ekyna_commerce.stock.logger"/>
         </service>
 
