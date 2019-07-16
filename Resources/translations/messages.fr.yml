@@ -1049,6 +1049,7 @@ ekyna_commerce:
                 configure: Configurer l'article
                 new: Créer une ligne
                 edit: Modifier la ligne
+                prioritize: Réssigner le stock
                 remove: Supprimer la ligne
             item_adjustment:
                 new: Ajouter une remise de ligne

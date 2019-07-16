@@ -1027,6 +1027,7 @@ ekyna_commerce:
                 configure: Configure the product
                 new: Create a new line
                 edit: Edit the line
+                prioritize: Reassign stocks
                 remove: Remove the line
             item_adjustment:
                 new: Add a new line discount

@@ -4,9 +4,10 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemModalEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemPrioritizeType;
+use Ekyna\Bundle\CoreBundle\Modal\Modal;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -242,7 +243,7 @@ class SaleItemController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function configureAction(Request $request)
     {
@@ -475,6 +476,81 @@ class SaleItemController extends AbstractSaleController
         }
 
         return $this->redirectToReferer($this->generateResourcePath($sale, 'show'));
+    }
+
+    /**
+     * Prioritize the sale item stock.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function prioritizeAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException("Only XHR is supported");
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        $item = $context->getResource($resourceName);
+
+        $prioritizer = $this->get('ekyna_commerce.stock_prioritizer');
+
+        if (!$prioritizer->canPrioritizeSaleItem($item)) {
+            throw $this->createNotFoundException("Can't prioritize this item.");
+        }
+
+        $saleName = $this->getParentConfiguration()->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($saleName);
+
+        $this->isGranted('EDIT', $item);
+
+        $action = $this->generateUrl($this->getConfiguration()->getRoute('prioritize'), [
+            $saleName . 'Id'     => $sale->getId(),
+            $saleName . 'ItemId' => $item->getId(),
+        ]);
+
+        $data = [
+            'quantity' => $item->getTotalQuantity(),
+        ];
+
+        $form = $this->createForm(SaleItemPrioritizeType::class, $data, [
+            'method'       => 'post',
+            'action'       => $action,
+            'admin_mode'   => true,
+            'attr'         => [
+                'class' => 'form-horizontal',
+            ],
+            'max_quantity' => $item->getTotalQuantity(),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $changed = $this
+                ->get('ekyna_commerce.stock_prioritizer')
+                ->prioritizeSaleItem($item, $form->get('quantity')->getData());
+
+            if ($changed) {
+                $this->getManager()->flush();
+            }
+
+            return $this->buildXhrSaleViewResponse($sale);
+        }
+
+        $modal = $this->createModal('new', 'ekyna_commerce.sale.header.item.prioritize');
+        $vars = $context->getTemplateVars();
+        unset($vars['form_template']);
+        $modal
+            ->setSize(Modal::SIZE_NORMAL)
+            ->setContent($form->createView())
+            ->setVars($vars);
+
+        return $this->get('ekyna_core.modal')->render($modal);
     }
 
     /**

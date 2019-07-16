@@ -44,6 +44,14 @@ ekyna_commerce_order_item_admin_move_down:
         orderId: \d+
         orderItemId: \d+
 
+ekyna_commerce_order_item_admin_prioritize:
+    path: /{orderItemId}/prioritize
+    defaults: { _controller: "ekyna_commerce.order_item.controller:prioritizeAction" }
+    methods: [GET|POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+
 ekyna_commerce_order_item_admin_remove:
     path: /{orderItemId}/remove
     defaults: { _controller: "ekyna_commerce.order_item.controller:removeAction" }

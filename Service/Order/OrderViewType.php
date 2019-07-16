@@ -7,9 +7,9 @@ use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Order\Model as Order;
-use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculatorInterface;
+use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
@@ -220,7 +220,8 @@ class OrderViewType extends AbstractViewType
                 $credited = $this->invoiceCalculator->calculateCreditedQuantity($item);
 
                 if (0 < $credited) {
-                    $invoiced = sprintf('%s (-%s)', $this->formatter->number($invoiced), $this->formatter->number($credited));
+                    $invoiced = sprintf('%s (-%s)', $this->formatter->number($invoiced),
+                        $this->formatter->number($credited));
                 } else {
                     $invoiced = $this->formatter->number($invoiced);
                 }
@@ -360,10 +361,25 @@ class OrderViewType extends AbstractViewType
             }
         }
 
-        // Information
         if (!$item instanceof Order\OrderItemInterface) {
             throw new \Exception("Unexpected sale item type.");
         }
+
+        // Prioritize
+        if ($this->stockPrioritizer->canPrioritizeSaleItem($item)) {
+            // Prioritize button
+            $prioritizePath = $this->generateUrl('ekyna_commerce_order_item_admin_prioritize', [
+                'orderId'     => $sale->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $view->addAction(new View\Action($prioritizePath, 'fa fa-level-up', [
+                'title'           => $this->trans('ekyna_commerce.sale.button.prioritize'),
+                'data-sale-modal' => null,
+                'class'           => 'text-primary',
+            ]));
+        }
+
+        // Information
         if (!empty($assignments = $item->getStockAssignments()->toArray())) {
             $view->vars['information'] = $this->stockRenderer->renderStockAssignments($assignments, [
                 'prefix' => $view->getId() . '_su',
