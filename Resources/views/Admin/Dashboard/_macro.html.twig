@@ -1,17 +1,17 @@
-{% macro render_stat_line(stat) %}
+{% macro render_stat_line(stat, class, style) %}
 {% spaceless %}
+<tr
+    {%- if class is not empty %} class="{{ class }}"{% endif %}
+    {%- if style is not empty %} style="{{ style }}"{% endif %}>
 {% if stat is null %}
-<tr>
     <td><em>{{ 'ekyna_core.value.none'|trans }}</em></td>
     <td>&dash;</td>
     <td>&dash;</td>
     <td>&dash;</td>
-    <td>&dash;%</td>
     <td>&dash;</td>
     <td>&dash;</td>
-</tr>
+    <td>&dash;</td>
 {% else %}
-<tr>
     <td>{{ stat.date }}</td>{# TODO localize #}
     <td>{{ stat.revenue|localizedcurrency(commerce_default_currency) }}</td>
     <td>{{ stat.shipping|localizedcurrency(commerce_default_currency) }}</td>
@@ -19,16 +19,16 @@
     <td>{{ stat.marginPercent|localizednumber }}%</td>
     <td>{{ stat.orders }}</td>
     <td>{{ stat.average|localizedcurrency(commerce_default_currency) }}</td>
-</tr>
 {% endif %}
+</tr>
 {% endspaceless %}
 {% endmacro %}
 
 
-{% macro render_stat_panel(title, current, compare) %}
+{% macro render_stat_panel(id, title, current, compare, aggregate) %}
 {% spaceless %}
 {% import _self as macros %}
-<div class="commerce-panel">
+<div class="commerce-panel" id="{{ id }}">
     <h3>
         {{ title|trans }}
         <span>
@@ -36,10 +36,18 @@
                 (?)
             {%- else -%}
                 {{ current.revenue|localizedcurrency(commerce_default_currency) }}
-                {% if compare is not null %}
-                    {% set evolution = (current.revenue - compare.revenue) * 100 / compare.revenue %}
+                {% if compare is not null -%}
+                <span class="compare">
+                    {%- set evolution = (current.revenue - compare.revenue) * 100 / compare.revenue -%}
                     &nbsp;({{ evolution|round(1)|localizednumber }}%)
-                {% endif %}
+                </span>
+                {%- endif %}
+                {% if aggregate is not null -%}
+                <span class="aggregate" style="display:none">
+                    {%- set evolution = (current.revenue - aggregate.revenue) * 100 / aggregate.revenue -%}
+                    &nbsp;({{ evolution|round(1)|localizednumber }}%)
+                </span>
+                {%- endif %}
             {%- endif -%}
         </span>
     </h3>
@@ -54,10 +62,28 @@
             <th>{{ 'ekyna_commerce.dashboard.stat.field.average'|trans }}</th>
         </tr>
         {{ macros.render_stat_line(current) }}
-        {{ macros.render_stat_line(compare) }}
+        {{ macros.render_stat_line(compare, 'compare') }}
+        {% if aggregate -%}
+            {{ macros.render_stat_line(aggregate, 'aggregate', 'display:none') }}
+        {%- endif %}
         </tbody>
     </table>
 </div>
+{% if aggregate -%}
+<script type="application/javascript">
+    require(['jquery'], function($) {
+        var $stats = $('#{{ id }}');
+        $stats.on('mouseenter', function() {
+            $stats.find('.compare').hide();
+            $stats.find('.aggregate').show();
+        });
+        $stats.on('mouseleave', function() {
+            $stats.find('.aggregate').hide();
+            $stats.find('.compare').show();
+        });
+    });
+</script>
+{%- endif %}
 {% endspaceless %}
 {% endmacro %}
 

@@ -3,18 +3,34 @@
 {% spaceless %}
 <div class="row">
     <div class="col-lg-4 commerce-stat-day">
-        {{ macros.render_stat_panel('ekyna_commerce.dashboard.stat.title.daily', current_day, compare_day) }}
-        {{ macros.render_stat_chart('daily_revenues', daily_chart) }}
+        {{ macros.render_stat_panel(
+            'daily_revenues_stats',
+            'ekyna_commerce.dashboard.stat.title.daily',
+            current_day,
+            compare_day
+        ) }}
+        {{ macros.render_stat_chart('daily_revenues_chart', daily_chart) }}
     </div>
 
     <div class="col-lg-4 commerce-stat-month">
-        {{ macros.render_stat_panel('ekyna_commerce.dashboard.stat.title.monthly', current_month, compare_month) }}
-        {{ macros.render_stat_chart('monthly_revenues', monthly_chart) }}
+        {{ macros.render_stat_panel(
+            'monthly_revenues_stats',
+            'ekyna_commerce.dashboard.stat.title.monthly',
+            current_month,
+            compare_month
+        ) }}
+        {{ macros.render_stat_chart('monthly_revenues_chart', monthly_chart) }}
     </div>
 
     <div class="col-lg-4 commerce-stat-year">
-        {{ macros.render_stat_panel('ekyna_commerce.dashboard.stat.title.yearly', current_year, compare_year) }}
-        {{ macros.render_stat_chart('yearly_revenues', yearly_chart) }}
+        {{ macros.render_stat_panel(
+            'yearly_revenues_stats',
+            'ekyna_commerce.dashboard.stat.title.yearly',
+            current_year,
+            compare_year,
+            aggregate_year
+        ) }}
+        {{ macros.render_stat_chart('yearly_revenues_chart', yearly_chart) }}
     </div>
 </div>
 {% endspaceless %}

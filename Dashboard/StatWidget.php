@@ -65,18 +65,20 @@ class StatWidget extends AbstractWidgetType
 
         $currentYear = $repository->findOneByYear($currentDate);
         $compareYear = $repository->findOneByYear($compareDate);
+        $aggregateYear = $repository->findSumByYear($compareDate);
         $yearlyChart = $this->buildYearlyChart();
 
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_stat.html.twig', [
-            'current_day'   => $currentDay,
-            'compare_day'   => $compareDay,
-            'daily_chart'   => $dailyChart,
-            'current_month' => $currentMonth,
-            'compare_month' => $compareMonth,
-            'monthly_chart' => $monthlyChart,
-            'current_year'  => $currentYear,
-            'compare_year'  => $compareYear,
-            'yearly_chart'  => $yearlyChart,
+            'current_day'    => $currentDay,
+            'compare_day'    => $compareDay,
+            'daily_chart'    => $dailyChart,
+            'current_month'  => $currentMonth,
+            'compare_month'  => $compareMonth,
+            'monthly_chart'  => $monthlyChart,
+            'current_year'   => $currentYear,
+            'compare_year'   => $compareYear,
+            'aggregate_year' => $aggregateYear,
+            'yearly_chart'   => $yearlyChart,
         ]);
     }
 
@@ -101,8 +103,8 @@ class StatWidget extends AbstractWidgetType
         }, array_keys($currentRevenues));
 
         return [
-            'type' => 'line',
-            'data' => [
+            'type'    => 'line',
+            'data'    => [
                 'labels'   => $labels,
                 'datasets' => [
                     [
@@ -124,7 +126,7 @@ class StatWidget extends AbstractWidgetType
                     ],
                 ],
             ],
-            'options'  => [
+            'options' => [
                 'title'  => ['display' => false],
                 'legend' => ['display' => false],
                 'layout' => ['padding' => ['top' => 12]],
@@ -195,8 +197,8 @@ class StatWidget extends AbstractWidgetType
         }
 
         return [
-            'type' => 'bar',
-            'data' => [
+            'type'    => 'bar',
+            'data'    => [
                 'labels'   => $labels,
                 'datasets' => $datasets,
             ],
