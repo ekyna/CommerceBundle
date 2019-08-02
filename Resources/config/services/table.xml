@@ -81,6 +81,13 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Price column type extension -->
+        <service id="Ekyna\Bundle\CommerceBundle\Table\Extension\PriceTypeExtension">
+            <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="table.column_type_extension"
+                 extended_type="Ekyna\Bundle\TableBundle\Extension\Type\Column\PriceType"/>
+        </service>
+
         <!-- Quote(s) column type -->
         <service id="ekyna_commerce.quote.column_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Column\QuoteType">

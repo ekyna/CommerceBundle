@@ -47,14 +47,17 @@ class InChargeType extends AbstractFilterType
             ->setDefaults([
                 'label'         => 'ekyna_commerce.customer.field.in_charge',
                 'class'         => $this->userClass,
-                'entity_label'  => 'username',
+                'entity_label'  => 'shortName',
                 'query_builder' => function (EntityRepository $repository) {
                     $qb = $repository->createQueryBuilder('u');
 
                     return $qb
                         ->andWhere($qb->expr()->in('u.group', ':groups'))
+                        ->andWhere($qb->expr()->in('u.active', ':active'))
                         ->setParameter('groups', $this->groupRepository->findByRole('ROLE_ADMIN'))
-                        ->orderBy('u.username', 'ASC');
+                        ->setParameter('active', true)
+                        ->orderBy('u.firstName', 'ASC')
+                        ->orderBy('u.lastName', 'ASC');
                 },
             ]);
     }
