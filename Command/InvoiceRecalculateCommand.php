@@ -7,11 +7,10 @@ use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Class InvoiceRecalculateCommand
@@ -63,7 +62,8 @@ class InvoiceRecalculateCommand extends Command
         $this
             ->setName('ekyna:commerce:invoice:recalculate')
             ->setDescription('Recalculates the invoices created the given month.')
-            ->addArgument('month', InputArgument::OPTIONAL, 'The month date as `Y-m-d`.');
+            ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'The invoice id.')
+            ->addOption('month', 'm', InputOption::VALUE_REQUIRED, 'The month date as `Y-m`.');
     }
 
     /**
@@ -71,37 +71,45 @@ class InvoiceRecalculateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $helper = $this->getHelper('question');
+        $invoices = [];
+        if (null !== $id = $input->getOption('id')) {
+            if (null === $invoice = $this->invoiceRepository->find($id)) {
+                $output->writeln("<error>Invoice #$id not found</error>");
 
-        // Argument
-        /** @var \DateTime $month */
-        if (null === $month = $this->createDate($input->getArgument('month'))) {
-            $question = new Question('Please enter the month date as `Y-m-d`: ');
-            $question->setValidator(function ($answer) {
-                if (null === $date = $this->createDate($answer)) {
-                    throw new \RuntimeException('The `from` date should be formatted as `Y-m-d`');
-                }
+                return;
+            }
 
-                return $date;
-            });
-            $question->setMaxAttempts(3);
+            $invoices = [$invoice];
+        } elseif (null !== $month = $this->createDate($input->getArgument('month'))) {
+            if (false === $date = \DateTime::createFromFormat('Y-m-d', $month . '-01')) {
+                $output->writeln("<error>Failed to parse '$month'</error>");
 
-            $month = $helper->ask($input, $output, $question);
+                return;
+            }
+
+            $invoices = $this->invoiceRepository->findByMonth($date);
         }
 
         // Confirmation
         $output->writeln('<error>This is a dangerous operation.</error>');
+        $count = count($invoices);
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
-            "Recalculate invoices of {$month->format('Y-m-d')} ?", false
+            "Recalculate $count invoices ?", false
         );
         if (!$helper->ask($input, $output, $question)) {
             return;
         }
 
+        $confirm = function($number, $old, $new) use ($helper, $input, $output) {
+            $question = new ConfirmationQuestion(
+                "Update invoice $number total from $old to $new ?", false
+            );
+            return $helper->ask($input, $output, $question);
+        };
+
         // Recalculation
         $count = 0;
-        $invoices = $this->invoiceRepository->findByMonth($month);
         foreach ($invoices as $invoice) {
             $output->write(sprintf(
                 '<comment>[%d] %s</comment> ... ',
@@ -118,10 +126,11 @@ class InvoiceRecalculateCommand extends Command
             $currency = $invoice->getCurrency();
 
             if (0 !== Money::compare($oldTotal, $newTotal, $currency)) {
-                $output->writeln('<error>error</error>');
-                $this->invoiceManager->detach($invoice);
+                if (!$confirm($invoice->getNumber(), $oldTotal, $newTotal)) {
+                    $output->writeln('<comment>abort</comment>');
 
-                continue;
+                    return;
+                }
             }
 
             $this->invoiceManager->persist($invoice);
@@ -148,7 +157,7 @@ class InvoiceRecalculateCommand extends Command
      */
     private function createDate(string $date = null)
     {
-        if ($date = \DateTime::createFromFormat('Y-m-d', $date)) {
+        if ($date = \DateTime::createFromFormat('Y-m-d', $date . '-01')) {
             return $date;
         }
 

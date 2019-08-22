@@ -8,17 +8,26 @@
 
     <div class="row">
         <div class="col-md-6">
+            {{ show_row(form.vars.delivery_country, 'text', {
+                'label': 'ekyna_commerce.country.label.singular',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-6">
             {{ show_row(form.vars.total_weight, 'number', {
                 'label': 'ekyna_commerce.sale.field.weight_total',
                 'append': 'kg',
                 'label_col': 6
             }) }}
         </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-6">
-            {{ show_row(form.vars.delivery_country, 'text', {
-                'label': 'ekyna_commerce.country.label.singular',
-                'label_col': 6
-            }) }}
+            {{ form_row(form.shipmentLabel, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.shipmentWeight, {'label_col': 6, 'widget_col': 6}) }}
         </div>
     </div>
 

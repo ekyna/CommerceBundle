@@ -9,7 +9,7 @@
 
     {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
         'sale': order, 'customer': customer
-    } -%}
+    } only -%}
 
     {{ bootstrap_set_style('horizontal') }}
     {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
@@ -23,9 +23,9 @@
     <br><br>
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
-    {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
+    {%- include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer
-    } only %}
+    } only -%}
 
 {% endspaceless %}
 {% endblock %}

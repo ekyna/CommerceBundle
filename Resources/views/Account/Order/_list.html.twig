@@ -41,7 +41,7 @@
             </td>
             {%- endif %}
             <td class="text-right">
-                {{- order.grandTotal|localizedcurrency(order.currency.code) -}}
+                {{- order.grandTotal|currency_quote(order) -}}
             </td>
             <td>
                 {{- order|sale_state_badge -}}

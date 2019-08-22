@@ -24,6 +24,13 @@ ekyna_commerce:
         front_office: Front office
         factory_name: Gateway
 
+    notice:
+        exchange: >
+            Prices and amounts are fixed using euros. All prices
+            and amounts displayed using other currencies are
+            <strong>subject to change without prior notice</strong>
+            due to currency fluctuation.
+
     button:
         print_label: Print label
         toggle_quantities: All / None
@@ -242,6 +249,8 @@ ekyna_commerce:
             tax: Taxes
             payment: Payments
             unpaid: Unpaid
+            exchange_gain: Exchange gain
+            exchange_loss: Exchange loss
         alert:
             no_item: No account configured
 
@@ -309,8 +318,8 @@ ekyna_commerce:
             new: Create a new cart
             edit: Edit the cart <small>%number%</small>
             remove: Remove the cart <small>%number%</small>
-            transform: Transfor the cart <small>%number%</small>
-            duplicate: Duplicate the cart <small>%number%</small>
+            transform: Transfor the cart <small>%number% into %target%</small>
+            duplicate: Duplicate the cart <small>%number% into %target%</small>
             notify: Notify the cart <small>%number%</small>
         button:
             list: Carts list
@@ -798,8 +807,8 @@ ekyna_commerce:
             new: Create a new order
             edit: Edit the order <small>%number%</small>
             remove: Remove the order <small>%number%</small>
-            transform: Transform the order <small>%number%</small>
-            duplicate: Duplicate the order <small>%number%</small>
+            transform: Transform the order <small>%number% into %target%</small>
+            duplicate: Duplicate the order <small>%number% into %target%</small>
             notify: Notify the order <small>%number%</small>
         button:
             list: Orders list
@@ -916,6 +925,8 @@ ekyna_commerce:
             edit: Edit the method
             remove: Remove the method
             choose: "Pay by %gateway_name%"
+        field:
+            use_default_currency: Default curerency
         alert:
             empty_list: No payment method available
 
@@ -967,8 +978,8 @@ ekyna_commerce:
             new: Create a new quote
             edit: Edit quote <small>%number%</small>
             remove: Remove quote <small>%number%</small>
-            transform: Transform quote <small>%number%</small>
-            duplicate: Duplicate quote <small>%number%</small>
+            transform: Transform quote <small>%number% into %target%</small>
+            duplicate: Duplicate quote <small>%number% into %target%</small>
             notify: Notify quote <small>%number%</small>
         button:
             list: Quotes list
@@ -1084,6 +1095,8 @@ ekyna_commerce:
                 If you select a customer, the following fields will be filled automatically. Otherwise, please fill the information.
             already_exists: A document with the same type already exists in the attachments.
             immutable_element: This item cannot be be changed or deleted.
+            null_exchange_rate: >
+                Exchange rate is not fixed. <a href="{{url}}">Fix exchange rate</a>.
         form:
             add_item: Add a product line
             remove_item: Remove the product line ?
@@ -1113,6 +1126,7 @@ ekyna_commerce:
             ati_total: Total inc-tax
             shipment_net_total: Shipping exc-tax
             shipment_ati_total: Shipping inc-tax
+            shipment_label: Shipping label
             shipping_cost: Shipping cost
             discount: Discount
             tax_name: Tax

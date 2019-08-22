@@ -1,8 +1,20 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
-
 {% import '@EkynaCms/Admin/show_macros.html.twig' as _cms %}
 
+{% block flashes %}
+    {{ parent() }}
+    {% if order.exchangeRate is null and order.currency.code != commerce_default_currency %}
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ 'ekyna_commerce.sale.message.null_exchange_rate'|trans({
+            '{{url}}': path('ekyna_commerce_order_admin_set_exchnage_rate', {
+                'orderId': order.id
+            })
+        })|raw }}
+    </div>
+    {% endif %}
+{% endblock %}
 
 {% block title %}
     {{ admin_resource_pin(resource) }}
@@ -32,11 +44,7 @@
             'type': 'link',
             'path': admin_resource_path(order, 'notify')
         }) }}
-        {{ ui_button('ekyna_core.button.duplicate', {
-            'theme': 'default',
-            'type': 'link',
-            'path': admin_resource_path(order, 'duplicate')
-        }) }}
+        {{ sale_duplicate_btn(order) }}
         {{ sale_transform_btn(order) }}
         {% if order is sale_preparable %}
             {{ ui_button('ekyna_commerce.sale.button.prepare', {
@@ -52,7 +60,8 @@
                 'icon': 'list',
                 'path': admin_resource_path(order, 'abort')
             }) }}
-        {% elseif order.sample %}
+        {% endif %}
+        {% if order.sample %}
             {{ ui_button('ekyna_commerce.order.button.' ~ (order.released ? 'un' : '') ~ 'release', {
                 'theme': 'warning',
                 'type': 'link',
@@ -320,6 +329,8 @@
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
     <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
+    {% if support_enabled() -%}
     <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+    {%- endif %}
 {% endblock javascripts %}
 

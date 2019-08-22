@@ -113,36 +113,40 @@
 </div>
 {% include '@EkynaCommerce/Admin/Common/Pricing/_show_vat_fields.html.twig' with {'subject': sale, 'prefix': 'sale'} %}
 <hr>
+{%- if sale is sale_order -%}
+    {% set toggle_route = 'ekyna_commerce_order_admin_toggle' -%}
+    {% set toggle_params = {'orderId': sale.id} %}
+{%- elseif sale is sale_quote -%}
+    {% set toggle_route = 'ekyna_commerce_quote_admin_toggle' -%}
+    {% set toggle_params = {'quoteId': sale.id} %}
+{%- else -%}
+    {% set toggle_route = 'ekyna_commerce_cart_admin_toggle' -%}
+    {% set toggle_params = {'cartId': sale.id} %}
+{%- endif -%}
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.autoShipping, 'boolean', {
+        {{- show_row(sale.autoShipping, 'boolean', {
             'label': 'ekyna_commerce.sale.field.auto_shipping',
             'id': 'sale_autoShipping',
             'label_col': 6,
-            'color': true,
-            'true_class': 'label label-success',
-            'false_class': 'label label-danger'
-        }) }}
+            'toggle_path': path(toggle_route, toggle_params|merge({field: 'autoShipping'}))
+        }) -}}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.autoDiscount, 'boolean', {
+        {{- show_row(sale.autoDiscount, 'boolean', {
             'label': 'ekyna_commerce.sale.field.auto_discount',
             'id': 'sale_autoDiscount',
             'label_col': 6,
-            'color': true,
-            'true_class': 'label label-success',
-            'false_class': 'label label-danger'
-        }) }}
+            'toggle_path': path(toggle_route, toggle_params|merge({field: 'autoDiscount'}))
+        }) -}}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.autoNotify, 'boolean', {
+        {{- show_row(sale.autoNotify, 'boolean', {
             'label': 'ekyna_commerce.sale.field.auto_notify',
             'id': 'sale_notifyEnabled',
             'label_col': 6,
-            'color': true,
-            'true_class': 'label label-success',
-            'false_class': 'label label-danger'
-        }) }}
+            'toggle_path': path(toggle_route, toggle_params|merge({field: 'autoNotify'}))
+        }) -}}
     </div>
 </div>
 <div class="row">
@@ -178,10 +182,11 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.grandTotal, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.ati_total',
             'id': 'sale_grandTotal',
             'class': 'sale-grand-total',
+            'subject': sale,
             'label_col': 6
         }) }}
     </div>
@@ -203,10 +208,11 @@
 {% if not sale.sample %}
 <div class="row">
     <div class="col-md-6">
-        {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.paidTotal, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.paid_total',
             'id': 'sale_paidTotal',
             'class': 'sale-paid-total',
+            'subject': sale,
             'label_col': 4
         }) }}
     </div>
@@ -244,10 +250,11 @@
 {% if sale is invoice_subject and not sale.sample %}
 <div class="row">
     <div class="col-md-6">
-        {{ show_row(sale.invoiceTotal|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.invoiceTotal, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.invoice_total',
             'id': 'sale_invoiceTotal',
             'class': 'sale-invoice-total',
+            'subject': sale,
             'label_col': 4
         }) }}
     </div>

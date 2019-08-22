@@ -4,15 +4,18 @@
     {{ form_start(form) }}
     <div class="row">
         <div class="col-md-2">
+            {{ form_row(form.currency) }}
+        </div>
+        <div class="col-md-2">
             {{ form_row(form.from) }}
         </div>
         <div class="col-md-2">
             {{ form_row(form.to) }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             {{ form_row(form.filter) }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             {{ form_widget(form.submit) }}&nbsp;
             {% if form.notify is defined %}
                 {{ form_widget(form.notify) }}&nbsp;

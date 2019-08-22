@@ -12,19 +12,19 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentDataInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 /**
  * Class ShipmentExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ShipmentExtension extends \Twig_Extension
+class ShipmentExtension extends AbstractExtension
 {
-    /**
-     * @var ConstantsHelper
-     */
-    private $constantHelper;
-
     /**
      * @var PriceListBuilder
      */
@@ -44,18 +44,15 @@ class ShipmentExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantsHelper  $constantHelper
      * @param PriceListBuilder $priceListBuilder
      * @param ShipmentHelper   $shipmentHelper
      * @param string           $template
      */
     public function __construct(
-        ConstantsHelper $constantHelper,
         PriceListBuilder $priceListBuilder,
         ShipmentHelper $shipmentHelper,
         $template = '@EkynaCommerce/Admin/ShipmentPrice/list.html.twig'
     ) {
-        $this->constantHelper = $constantHelper;
         $this->priceListBuilder = $priceListBuilder;
         $this->shipmentHelper = $shipmentHelper;
         $this->priceTemplate = $template;
@@ -67,34 +64,34 @@ class ShipmentExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_state_label',
-                [$this->constantHelper, 'renderShipmentStateLabel'],
+                [ConstantsHelper::class, 'renderShipmentStateLabel'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_state_badge',
-                [$this->constantHelper, 'renderShipmentStateBadge'],
+                [ConstantsHelper::class, 'renderShipmentStateBadge'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_action_label',
                 [$this->shipmentHelper, 'getActionLabel'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_weight',
                 [$this->shipmentHelper, 'getShipmentWeight']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_deleteable',
                 [$this->shipmentHelper, 'isShipmentDeleteable']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_sender_address',
                 [$this->shipmentHelper, 'resolveSenderAddress']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_receiver_address',
                 [$this->shipmentHelper, 'resolveReceiverAddress']
             ),
@@ -107,21 +104,21 @@ class ShipmentExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'display_shipment_prices',
                 [$this, 'renderShipmentPrices'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'display_shipment_tracking',
                 [$this, 'renderShipmentTracking'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'shipment_platform_global_actions',
                 [$this->shipmentHelper, 'getPlatformsGlobalActions']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'shipment_gateway_buttons',
                 [$this, 'getGatewayButtons']
             ),
@@ -134,7 +131,7 @@ class ShipmentExtension extends \Twig_Extension
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest('shipment_subject', function ($subject) {
+            new TwigTest('shipment_subject', function ($subject) {
                 return $subject instanceof ShipmentSubjectInterface;
             }),
         ];
@@ -211,12 +208,12 @@ class ShipmentExtension extends \Twig_Extension
     /**
      * Renders the price list.
      *
-     * @param \Twig_Environment                             $env
+     * @param Environment                                   $env
      * @param ShipmentMethodInterface|ShipmentZoneInterface $source
      *
      * @return string
      */
-    public function renderShipmentPrices(\Twig_Environment $env, $source)
+    public function renderShipmentPrices(Environment $env, $source)
     {
         if ($source instanceof ShipmentMethodInterface) {
             $list = $this->priceListBuilder->buildByMethod($source);

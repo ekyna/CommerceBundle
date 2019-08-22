@@ -4,6 +4,38 @@
     {{ bootstrap_set_col_size('md') }}
     {{ form_errors(form, {'global_errors': true}) }}
 
+    {% if form.currency is defined %}
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.currency, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.locale, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.taxExempt, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.autoShipping, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.autoDiscount, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.autoNotify, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+    </div>
+    {% endif %}
+    {% if form.sample is defined %}
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.sample, {'label_col': 6, 'widget_col': 6}) }}
+        </div>
+    </div>
+    {% endif %}
+
     {% if form.customer is defined %}
         {{ form_row(form.customer) }}
     {% endif %}

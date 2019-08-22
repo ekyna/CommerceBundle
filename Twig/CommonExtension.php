@@ -6,103 +6,86 @@ use Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyRenderer;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * Class CommonExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CommonExtension extends \Twig_Extension
+class CommonExtension extends AbstractExtension
 {
-    /**
-     * @var ConstantsHelper
-     */
-    private $constantHelper;
-
-    /**
-     * @var AddressRenderer
-     */
-    private $addressRenderer;
-
-    /**
-     * @var ButtonRenderer
-     */
-    private $buttonRenderer;
-
-    /**
-     * @var FlagRenderer
-     */
-    private $flagRenderer;
-
-
-    /**
-     * Constructor.
-     *
-     * @param ConstantsHelper $constantHelper
-     * @param AddressRenderer $addressRenderer
-     * @param ButtonRenderer  $buttonRenderer
-     * @param FlagRenderer    $flagRenderer
-     */
-    public function __construct(
-        ConstantsHelper $constantHelper,
-        AddressRenderer $addressRenderer,
-        ButtonRenderer $buttonRenderer,
-        FlagRenderer $flagRenderer
-    ) {
-        $this->constantHelper = $constantHelper;
-        $this->addressRenderer = $addressRenderer;
-        $this->buttonRenderer = $buttonRenderer;
-        $this->flagRenderer = $flagRenderer;
-    }
-
     /**
      * @inheritdoc
      */
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'address',
-                [$this->addressRenderer, 'renderAddress'],
+                [AddressRenderer::class, 'renderAddress'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'identity',
-                [$this->constantHelper, 'renderIdentity'],
+                [ConstantsHelper::class, 'renderIdentity'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'gender',
-                [$this->constantHelper, 'getGenderLabel']
+                [ConstantsHelper::class, 'getGenderLabel']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'adjustment_mode_label',
-                [$this->constantHelper, 'getAdjustmentModeLabel']
+                [ConstantsHelper::class, 'getAdjustmentModeLabel']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'adjustment_type_label',
-                [$this->constantHelper, 'getAdjustmentTypeLabel']
+                [ConstantsHelper::class, 'getAdjustmentTypeLabel']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'accounting_type_label',
-                [$this->constantHelper, 'renderAccountingTypeLabel']
+                [ConstantsHelper::class, 'renderAccountingTypeLabel']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'customer_state_label',
-                [$this->constantHelper, 'renderCustomerStateLabel']
+                [ConstantsHelper::class, 'renderCustomerStateLabel']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'customer_state_badge',
-                [$this->constantHelper, 'renderCustomerStateBadge'],
+                [ConstantsHelper::class, 'renderCustomerStateBadge'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'notify_type_label',
-                [$this->constantHelper, 'renderNotifyTypeLabel']
+                [ConstantsHelper::class, 'renderNotifyTypeLabel']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_flags',
-                [$this->flagRenderer, 'renderSaleFlags'],
+                [FlagRenderer::class, 'renderSaleFlags'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
+                'currency_quote',
+                [CurrencyRenderer::class, 'renderQuote'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
+                'currency_base',
+                [CurrencyRenderer::class, 'renderBase'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
+                'currency_rate',
+                [CurrencyRenderer::class, 'renderRate'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
+                'currency_convert',
+                [CurrencyRenderer::class, 'renderConvert'],
                 ['is_safe' => ['html']]
             ),
         ];
@@ -114,9 +97,26 @@ class CommonExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'sale_custom_buttons',
-                [$this->buttonRenderer, 'renderSaleCustomButtons'],
+                [ButtonRenderer::class, 'renderSaleCustomButtons'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFunction(
+                'currency_configure',
+                [CurrencyRenderer::class, 'configure']
+            ),
+            new TwigFunction(
+                'currency_get_base',
+                [CurrencyRenderer::class, 'getBase']
+            ),
+            new TwigFunction(
+                'currency_get_quote',
+                [CurrencyRenderer::class, 'getQuote']
+            ),
+            new TwigFunction(
+                'currency_rate',
+                [CurrencyRenderer::class, 'renderRate'],
                 ['is_safe' => ['html']]
             ),
         ];

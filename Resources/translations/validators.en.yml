@@ -29,6 +29,7 @@ ekyna_commerce:
         phone_or_mobile_is_mandatory: Please enter a phone or mobile phone number.
         term_required_for_outstanding: You must select payment term if you want to define the outstanding limit.
         outstanding_required_for_term: You must define the outstanding limit if you want to select a payment term.
+        unique_user: This user is already assigned to another customer.
     gender:
         invalid: This title is not valid
     identity:

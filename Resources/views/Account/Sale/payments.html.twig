@@ -7,20 +7,39 @@
     </div>
     <div class="table-responsive">
         <table class="table">
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.number'|trans }}</th>
+                <th>{{ 'ekyna_core.field.method'|trans }}</th>
+                <th>{{ 'ekyna_core.field.amount'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.status'|trans }}</th>
+                <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
+                <th>{{ 'ekyna_core.field.completed_at'|trans }}</th>
+                {% if not customer.hasParent() -%}
+                <th></th>
+                {%- endif %}
+            </tr>
+            </thead>
             <tbody>
             {%- for payment in sale|sale_payments -%}
                 <tr>
                     <td>{{ payment.getNumber() }}</td>
                     <td>{{ payment.getMethod() }}</td>
-                    <td>{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
-                    {#<td>{{ payment.getCurrency() }}</td>#}
+                    <td>{{ payment.getRealAmount()|currency_quote(payment, true) }}</td>
                     <td>{{ payment|payment_state_badge }}</td>
                     <td>{{ payment.getCreatedAt()|localizeddate('short', 'none') }}</td>
-                    {% if not customer.hasParent() %}
+                    <td>
+                        {% if payment.getCompletedAt() -%}
+                            {{ payment.getCompletedAt()|localizeddate('short', 'none') }}
+                        {%- else -%}
+                            &dash;
+                        {%- endif %}
+                    </td>
+                    {% if not customer.hasParent() -%}
                     <td class="actions text-right">
                         {{- payment_account_actions(payment) -}}
                     </td>
-                    {% endif %}
+                    {%- endif %}
                 </tr>
             {%- endfor -%}
             </tbody>

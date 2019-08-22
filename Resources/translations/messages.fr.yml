@@ -24,6 +24,13 @@ ekyna_commerce:
         front_office: Partie publique
         factory_name: Passerelle
 
+    notice:
+        exchange: >
+            Les tarifs et montants sont fixés en euros. Tous les prix
+            et montants affichés dans d'autres devises sont
+            <strong>sujet à variation sans préavis</strong>
+            selon les variations des taux de change.
+
     button:
         print_label: Étiquette
         toggle_quantities: Tout / Aucun
@@ -243,6 +250,8 @@ ekyna_commerce:
             tax: Taxes
             payment: Paiements
             unpaid: Impayé
+            exchange_gain: Gain de change
+            exchange_loss: Perte de change
         alert:
             no_item: Aucun compte configuré
 
@@ -310,8 +319,8 @@ ekyna_commerce:
             new: Créer un nouveau panier
             edit: Modifier le panier <small>%number%</small>
             remove: Supprimer le panier <small>%number%</small>
-            transform: Transformer le panier <small>%number%</small>
-            duplicate: Dupliquer le panier <small>%number%</small>
+            transform: Transformer le panier <small>%number% en %target%</small>
+            duplicate: Dupliquer le panier <small>%number% en %target%</small>
             notify: Notifier le panier <small>%number%</small>
         button:
             list: Liste des paniers
@@ -819,8 +828,8 @@ ekyna_commerce:
             new: Créer une nouvelle commande
             edit: Modifier la commande <small>%number%</small>
             remove: Supprimer la commande <small>%number%</small>
-            transform: Transformer la commande <small>%number%</small>
-            duplicate: Dupliquer la commande <small>%number%</small>
+            transform: Transformer la commande <small>%number% en %target%</small>
+            duplicate: Dupliquer la commande <small>%number% en %target%</small>
             notify: Notifier la commande <small>%number%</small>
         button:
             list: Liste des commandes
@@ -938,6 +947,8 @@ ekyna_commerce:
             edit: Modifier le mode
             remove: Supprimer le mode
             choose: "Régler par %gateway_name%"
+        field:
+            use_default_currency: Devise par défaut
         alert:
             empty_list: Aucun mode de paiement configuré
 
@@ -989,8 +1000,8 @@ ekyna_commerce:
             new: Créer un nouveau devis
             edit: Modifier le devis <small>%number%</small>
             remove: Supprimer le devis <small>%number%</small>
-            transform: Transformer le devis <small>%number%</small>
-            duplicate: Dupliquer le devis <small>%number%</small>
+            transform: Transformer le devis <small>%number% en %target%</small>
+            duplicate: Dupliquer le devis <small>%number% en %target%</small>
             notify: Notifier le devis <small>%number%</small>
         button:
             list: Liste des devis
@@ -1109,6 +1120,8 @@ ekyna_commerce:
                 lors de l'enregistrement. Sinon veuillez saisir ces informations.
             already_exists: Un document de ce type existe déjà dans les pièces jointes.
             immutable_element: Cet élément ne peut pas être modifié ou supprimé.
+            null_exchange_rate: >
+                Le taux de change n'est pas fixé. <a href="{{url}}">Fixer le taux de change</a>.
         form:
             add_item: Ajouter une ligne produit
             remove_item: Supprimer la ligne produit ?
@@ -1138,6 +1151,7 @@ ekyna_commerce:
             ati_total: Total TTC
             shipment_net_total: Port HT
             shipment_ati_total: Port TTC
+            shipment_label: Libellé expédition
             shipping_cost: Frais de port
             discount: Remise
             tax_name: Taxe

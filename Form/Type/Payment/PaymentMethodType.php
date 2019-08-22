@@ -85,6 +85,13 @@ class PaymentMethodType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
+            ->add('defaultCurrency', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.payment_method.field.use_default_currency',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('currencies', CurrencyChoiceType::class, [
                 'enabled'  => false,
                 'multiple' => true,

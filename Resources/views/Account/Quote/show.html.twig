@@ -10,6 +10,10 @@
         {% if quote.voucherNumber is not empty -%}
             {{ 'ekyna_commerce.sale.field.voucher_number'|trans }}: <strong>{{ quote.voucherNumber }}</strong>.
         {%- endif %}
+        {% if quote.currency.code != commerce_default_currency -%}
+            {{ 'ekyna_commerce.field.exchange_rate'|trans }}:
+            <strong>{{ quote|currency_rate }}</strong>.
+        {%- endif %}
     </p>
     <hr>
 
@@ -17,11 +21,12 @@
 
     {{- render_sale_view(view) -}}
 
+    {% set remaining = quote|payment_remaining_total %}
     {% if quote.expired %}
         <div class="alert alert-warning">
             {{ 'ekyna_commerce.account.quote.message.expired'|trans }}
         </div>
-    {% elseif 0 < quote.remainingAmount %}
+    {% elseif 0 < remaining %}
         {% if customer.parent is null %}
             {# Voucher required message #}
             {#{% if not quote.hasVoucher() %}
@@ -38,7 +43,7 @@
                    style="margin-right: 12px">
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     {{ 'ekyna_commerce.account.quote.button.pay'|trans }}
-                    ({{ quote.remainingAmount|localizedcurrency(quote.currency.code) }})
+                    <strong>{{ remaining|localizedcurrency(quote.currency.code) }}</strong>
                 </a>
                 {#{% endif %}#}
                 {# Voucher button #}

@@ -37,9 +37,9 @@ class InvoicePaidTotalUpdateCommand extends Command
     /**
      * Constructor.
      *
-     * @param EntityRepository         $repository
+     * @param EntityRepository                $repository
      * @param InvoicePaymentResolverInterface $resolver
-     * @param EntityManagerInterface   $manager
+     * @param EntityManagerInterface          $manager
      */
     public function __construct(
         EntityRepository $repository,
@@ -77,8 +77,12 @@ class InvoicePaidTotalUpdateCommand extends Command
         $metadata->getTableName();
 
         /** @noinspection SqlResolve */
-        $update = $this->manager->getConnection()->prepare(
+        $updateCurrent = $this->manager->getConnection()->prepare(
             "UPDATE {$metadata->getTableName()} SET paid_total=:total WHERE id=:id LIMIT 1"
+        );
+        /** @noinspection SqlResolve */
+        $updateReal = $this->manager->getConnection()->prepare(
+            "UPDATE {$metadata->getTableName()} SET real_paid_total=:total WHERE id=:id LIMIT 1"
         );
 
         $limit = 30;
@@ -105,19 +109,32 @@ class InvoicePaidTotalUpdateCommand extends Command
                     str_pad('.', 44 - mb_strlen($number), '.', STR_PAD_LEFT)
                 ));
 
+                $done = false;
+
                 $total = $this->resolver->getPaidTotal($invoice);
+                if (0 !== Money::compare($total, $invoice->getPaidTotal(), $invoice->getCurrency())) {
+                    if (!$updateCurrent->execute(['total' => $total, 'id' => $invoice->getId()])) {
+                        $output->writeln('<error>failure</error>');
+                        continue;
+                    }
+                    $done = true;
+                }
 
-                if (0 === Money::compare($total, $invoice->getPaidTotal(), $invoice->getCurrency())) {
-                    $output->writeln('<comment>skipped</comment>');
+                $total = $this->resolver->getRealPaidTotal($invoice);
+                if (0 !== Money::compare($total, $invoice->getRealPaidTotal(), $invoice->getCurrency())) {
+                    if (!$updateReal->execute(['total' => $total, 'id' => $invoice->getId()])) {
+                        $output->writeln('<error>failure</error>');
+                        continue;
+                    }
+                    $done = true;
+                }
 
+                if ($done) {
+                    $output->writeln('<info>done</info>');
                     continue;
                 }
 
-                if ($update->execute(['total' => $total, 'id' => $invoice->getId()])) {
-                    $output->writeln('<info>done</info>');
-                } else {
-                    $output->writeln('<error>failure</error>');
-                }
+                $output->writeln('<comment>skipped</comment>');
             }
 
             $this->manager->clear();

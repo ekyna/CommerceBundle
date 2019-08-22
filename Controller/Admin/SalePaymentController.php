@@ -81,7 +81,7 @@ class SalePaymentController extends AbstractSaleController
 
         $action = $this->generateResourcePath($this->config->getResourceId(), 'new', $context->getIdentifiers());
 
-        $checkoutManager->initialize($sale, $action, true);
+        $model = $checkoutManager->initialize($sale, $action, true);
 
         if (null !== $payment = $checkoutManager->handleRequest($request)) {
             $sale->addPayment($payment);
@@ -109,8 +109,9 @@ class SalePaymentController extends AbstractSaleController
         return $this->render(
             $this->config->getTemplate('new.html'),
             $context->getTemplateVars([
-                'sale'  => $sale,
-                'forms' => $checkoutManager->getFormsViews(),
+                'payment' => $model,
+                'sale'    => $sale,
+                'forms'   => $checkoutManager->getFormsViews(),
             ])
         );
     }

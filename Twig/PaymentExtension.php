@@ -8,24 +8,29 @@ use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions as BTransitions;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
+use Ekyna\Component\Commerce\Payment\Calculator\PaymentCalculatorInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Ekyna\Component\Commerce\Payment\Model\PaymentSubjectInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions as CTransitions;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 /**
  * Class PaymentExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentExtension extends \Twig_Extension
+class PaymentExtension extends AbstractExtension
 {
     /**
-     * @var ConstantsHelper
+     * @var PaymentCalculatorInterface
      */
-    private $constantHelper;
+    private $paymentCalculator;
 
     /**
      * @var ResourceHelper
@@ -41,16 +46,16 @@ class PaymentExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantsHelper     $constantHelper
-     * @param ResourceHelper      $resourceHelper
-     * @param TranslatorInterface $translator
+     * @param PaymentCalculatorInterface $paymentCalculator
+     * @param ResourceHelper             $resourceHelper
+     * @param TranslatorInterface        $translator
      */
     public function __construct(
-        ConstantsHelper $constantHelper,
+        PaymentCalculatorInterface $paymentCalculator,
         ResourceHelper $resourceHelper,
         TranslatorInterface $translator
     ) {
-        $this->constantHelper = $constantHelper;
+        $this->paymentCalculator = $paymentCalculator;
         $this->resourceHelper = $resourceHelper;
         $this->translator = $translator;
     }
@@ -61,12 +66,12 @@ class PaymentExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'payment_account_actions',
                 [$this, 'getPaymentAccountActions'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'payment_admin_actions',
                 [$this, 'getPaymentAdminActions'],
                 ['is_safe' => ['html']]
@@ -80,30 +85,34 @@ class PaymentExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'payment_state_label',
-                [$this->constantHelper, 'renderPaymentStateLabel'],
+                [ConstantsHelper::class, 'renderPaymentStateLabel'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'payment_state_badge',
-                [$this->constantHelper, 'renderPaymentStateBadge'],
+                [ConstantsHelper::class, 'renderPaymentStateBadge'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'payment_term_trigger_label',
-                [$this->constantHelper, 'renderPaymentTermTriggerLabel'],
+                [ConstantsHelper::class, 'renderPaymentTermTriggerLabel'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'payment_state_message',
                 [$this, 'renderPaymentStateMessage'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'payment_method_config',
                 [$this, 'renderMethodConfig'],
                 ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
+                'payment_remaining_total',
+                [$this->paymentCalculator, 'calculateRemainingTotal']
             ),
         ];
     }
@@ -114,10 +123,10 @@ class PaymentExtension extends \Twig_Extension
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest('payment_subject', function($subject) {
+            new TwigTest('payment_subject', function ($subject) {
                 return $subject instanceof PaymentSubjectInterface;
             }),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'payment_user_cancellable',
                 [CTransitions::class, 'isUserCancellable']
             ),
@@ -238,8 +247,9 @@ class PaymentExtension extends \Twig_Extension
                 $confirm = ' onclick="javascript: return confirm(\'' . $config['confirm'] . '\')"';
             }
 
+            /** @noinspection HtmlUnknownAttribute */
             $output .= sprintf(
-                '<a href="%s" class="btn btn-xs btn-%s"%s>%s</a>',
+                '<a href="%s" class="btn btn-xs btn-%s" %s>%s</a>',
                 $config['href'], $config['theme'], $confirm, $config['label']
             );
         }

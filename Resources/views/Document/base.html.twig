@@ -1,7 +1,11 @@
 {% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
-{% do trans_set_locale(subject.locale) %}
 {% set locale = subject.locale %}
+
+{# --- PRE --- #}
+{% block doc_pre -%}
+    {% do trans_set_locale(locale) %}
+{%- endblock doc_pre %}
 
 {# --- HEADER --- #}
 {% block doc_header -%}
@@ -28,11 +32,11 @@
 
 
 {# --- TITLE --- #}
-{% block doc_title %}
+{% block doc_title -%}
 <div class="bloc title">
 {% block doc_title_content %}<h1>Sale document</h1>{% endblock doc_title_content %}
 </div>
-{% endblock doc_title %}
+{%- endblock doc_title %}
 
 
 {# --- ADDRESSES --- #}
@@ -71,7 +75,7 @@
 
 
 {# --- MISC --- #}
-{% block doc_misc %}
+{% block doc_misc -%}
     {#<table class="order-doc-bloc order-doc-inf">
         <tbody>
             <tr>
@@ -87,16 +91,20 @@
             </tr>
         </tbody>
     </table>#}
-{% endblock doc_misc %}
+{%- endblock doc_misc %}
 
 
 {# --- FOOTER --- #}
-{% block doc_footer %}
+{% block doc_footer -%}
 <div class="bloc footer">
     {% block doc_footer_content %}
         {{- get_setting('commerce.invoice_footer', locale)|raw -}}
     {% endblock doc_footer_content %}
 </div>
-{% endblock doc_footer %}
+{%- endblock doc_footer %}
 
-{% do trans_revert_locale() %}
+
+{# --- POST --- #}
+{% block doc_post -%}
+    {% do trans_revert_locale() %}
+{%- endblock doc_post %}

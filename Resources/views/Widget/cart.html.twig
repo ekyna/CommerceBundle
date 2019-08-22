@@ -14,7 +14,7 @@
 <p>
     <a href="{{ path('ekyna_commerce_cart_checkout_index') }}" class="btn btn-primary">
         {{ 'ekyna_commerce.widget.cart.show_cart'|trans }}
-        (<strong>{{ cart.grandTotal|localizedcurrency(cart.currency.code) }}</strong>)
+        (<strong>{{ cart.grandTotal|currency_quote(cart) }}</strong>)
     </a>
 </p>
 {% else %}

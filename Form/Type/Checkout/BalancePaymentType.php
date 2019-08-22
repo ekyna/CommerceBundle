@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
+use Ekyna\Component\Commerce\Payment\Model\PaymentTermInterface;
+use Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -20,27 +22,49 @@ use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 class BalancePaymentType extends AbstractType
 {
     /**
+     * @var PaymentUpdaterInterface
+     */
+    private $paymentUpdater;
+
+    /**
+     * Constructor.
+     *
+     * @param PaymentUpdaterInterface $paymentUpdater
+     */
+    public function __construct(PaymentUpdaterInterface $paymentUpdater)
+    {
+        $this->paymentUpdater = $paymentUpdater;
+    }
+
+    /**
      * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (0 < $options['available_amount']) {
-            $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
-                /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
-                $payment = $event->getData();
-                $form = $event->getForm();
+            $builder
+                ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+                    /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
+                    $payment = $event->getData();
+                    $form = $event->getForm();
 
-                $max = min($options['available_amount'], $payment->getAmount());
+                    $max = min($options['available_amount'], $payment->getAmount());
 
-                $form->add('amount', MoneyType::class, [
-                    'label'       => 'ekyna_core.field.amount',
-                    'currency'    => $payment->getCurrency()->getCode(),
-                    'disabled'    => !empty($options['lock_message']),
-                    'constraints' => [
-                        new LessThanOrEqual($max),
-                    ],
-                ]);
-            });
+                    $form->add('amount', MoneyType::class, [
+                        'label'       => 'ekyna_core.field.amount',
+                        'currency'    => $payment->getCurrency()->getCode(),
+                        'disabled'    => !empty($options['lock_message']),
+                        'constraints' => [
+                            new LessThanOrEqual($max),
+                        ],
+                    ]);
+                })
+                ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
+                    /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
+                    $payment = $event->getData();
+
+                    $this->paymentUpdater->fixRealAmount($payment);
+                }, -2048);
         }
     }
 
@@ -54,6 +78,7 @@ class BalancePaymentType extends AbstractType
 
         $view->vars['currency_code'] = $payment->getCurrency()->getCode();
         $view->vars['available_amount'] = $options['available_amount'];
+        $view->vars['payment_term'] = $options['payment_term'];
     }
 
     /**
@@ -63,7 +88,9 @@ class BalancePaymentType extends AbstractType
     {
         $resolver
             ->setRequired('available_amount')
-            ->setAllowedTypes('available_amount', ['int', 'float']);
+            ->setDefault('payment_term', null)
+            ->setAllowedTypes('available_amount', ['int', 'float'])
+            ->setAllowedTypes('payment_term', [PaymentTermInterface::class, 'null']);
     }
 
     /**

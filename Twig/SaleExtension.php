@@ -8,8 +8,8 @@ use Ekyna\Bundle\CoreBundle\Service\Ui\UiRenderer;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
-use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\SaleView;
+use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
@@ -18,19 +18,18 @@ use Ekyna\Component\Commerce\Payment\Model as Payment;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 /**
  * Class SaleExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleExtension extends \Twig_Extension
+class SaleExtension extends AbstractExtension
 {
-    /**
-     * @var ConstantsHelper
-     */
-    private $constantHelper;
-
     /**
      * @var ContextProviderInterface
      */
@@ -55,20 +54,17 @@ class SaleExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantsHelper          $constantHelper
      * @param ContextProviderInterface $contextProvider
      * @param ViewBuilder              $viewBuilder
      * @param UiRenderer               $uiRenderer
      * @param UrlGeneratorInterface    $urlGenerator
      */
     public function __construct(
-        ConstantsHelper $constantHelper,
         ContextProviderInterface $contextProvider,
         ViewBuilder $viewBuilder,
         UiRenderer $uiRenderer,
         UrlGeneratorInterface $urlGenerator
     ) {
-        $this->constantHelper = $constantHelper;
         $this->contextProvider = $contextProvider;
         $this->viewBuilder = $viewBuilder;
         $this->uiRenderer = $uiRenderer;
@@ -81,51 +77,51 @@ class SaleExtension extends \Twig_Extension
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_stockable_state',
                 [$this, 'isSaleStockableSale']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_preparable',
                 [$this, 'isSalePreparable']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_preparing',
                 [$this, 'isSalePreparing']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_with_payment',
                 [$this, 'isSaleWithPayment']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_with_shipment',
                 [$this, 'isSaleWithShipment']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_with_return',
                 [$this, 'isSaleWithReturn']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_with_invoice',
                 [$this, 'isSaleWithInvoice']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_with_credit',
                 [$this, 'isSaleWithCredit']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_with_attachment',
                 [$this, 'isSaleWithAttachment']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_cart',
                 [$this, 'isSaleCart']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_quote',
                 [$this, 'isSaleQuote']
             ),
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'sale_order',
                 [$this, 'isSaleOrder']
             ),
@@ -174,53 +170,53 @@ class SaleExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_state_label',
-                [$this->constantHelper, 'renderSaleStateLabel']
+                [ConstantsHelper::class, 'renderSaleStateLabel']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_state_badge',
-                [$this->constantHelper, 'renderSaleStateBadge'],
+                [ConstantsHelper::class, 'renderSaleStateBadge'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_payments',
                 [$this, 'getSalePayments']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_shipments',
                 [$this, 'getSaleShipments']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_returns',
                 [$this, 'getSaleReturns']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_invoices',
                 [$this, 'getSaleInvoices']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_credits',
                 [$this, 'getSaleCredits']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_attachments',
                 [$this, 'getSaleAttachments']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_shipment_amount',
                 [$this, 'getSaleShipmentAmount']
             ),
             // Builds the sale view form the sale
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_view',
                 [$this->viewBuilder, 'buildSaleView']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_editable_document_types',
                 [SaleDocumentUtil::class, 'getSaleEditableDocumentTypes']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'sale_support_document_type',
                 [SaleDocumentUtil::class, 'isSaleSupportsDocumentType']
             ),
@@ -234,15 +230,21 @@ class SaleExtension extends \Twig_Extension
     {
         return [
             // Renders the sale view
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'render_sale_view',
                 [$this, 'renderSaleView'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
             // Renders the sale transform button
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'sale_transform_btn',
                 [$this, 'renderSaleTransformButton'],
+                ['is_safe' => ['html']]
+            ),
+            // Renders the sale duplicate button
+            new TwigFunction(
+                'sale_duplicate_btn',
+                [$this, 'renderSaleDuplicateButton'],
                 ['is_safe' => ['html']]
             ),
         ];
@@ -585,18 +587,43 @@ class SaleExtension extends \Twig_Extension
      *
      * @return string
      */
+    public function renderSaleDuplicateButton(Common\SaleInterface $sale)
+    {
+        return $this->renderSaleOperationButton($sale, 'duplicate');
+    }
+
+    /**
+     * Renders the sale transform button.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return string
+     */
     public function renderSaleTransformButton(Common\SaleInterface $sale)
+    {
+        return $this->renderSaleOperationButton($sale, 'transform');
+    }
+
+    /**
+     * Renders the sale operation button.
+     *
+     * @param Common\SaleInterface $sale
+     * @param string               $operation
+     *
+     * @return string
+     */
+    private function renderSaleOperationButton(Common\SaleInterface $sale, string $operation)
     {
         $actions = [];
 
-        if (empty($targets = Common\TransformationTargets::getTargetsForSale($sale))) {
+        if (empty($targets = Common\TransformationTargets::getTargetsForSale($sale, $operation === 'duplicate'))) {
             return '';
         }
 
         if ($sale instanceof CartInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
-                    $this->urlGenerator->generate('ekyna_commerce_cart_admin_transform', [
+                    $this->urlGenerator->generate('ekyna_commerce_cart_admin_' . $operation, [
                         'cartId' => $sale->getId(),
                         'target' => $target,
                     ]);
@@ -604,7 +631,7 @@ class SaleExtension extends \Twig_Extension
         } elseif ($sale instanceof QuoteInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
-                    $this->urlGenerator->generate('ekyna_commerce_quote_admin_transform', [
+                    $this->urlGenerator->generate('ekyna_commerce_quote_admin_' . $operation, [
                         'quoteId' => $sale->getId(),
                         'target'  => $target,
                     ]);
@@ -612,7 +639,7 @@ class SaleExtension extends \Twig_Extension
         } elseif ($sale instanceof Order\OrderInterface) {
             foreach ($targets as $target) {
                 $actions['ekyna_commerce.' . $target . '.label.singular'] =
-                    $this->urlGenerator->generate('ekyna_commerce_order_admin_transform', [
+                    $this->urlGenerator->generate('ekyna_commerce_order_admin_' . $operation, [
                         'orderId' => $sale->getId(),
                         'target'  => $target,
                     ]);
@@ -623,6 +650,6 @@ class SaleExtension extends \Twig_Extension
 
         return $this
             ->uiRenderer
-            ->renderButtonDropdown('ekyna_core.button.transform', $actions);
+            ->renderButtonDropdown('ekyna_core.button.' . $operation, $actions);
     }
 }

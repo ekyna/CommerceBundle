@@ -203,6 +203,7 @@ class CustomerBalanceIntegrityCommand extends Command
             'AND m.factory_name=\'credit_balance\''
         );
 
+        // TODO payment refund type implementation
         $refundQuery = $this->connection->prepare(
             'SELECT SUM(p.amount) ' .
             'FROM commerce_order_payment AS p ' .
@@ -241,8 +242,10 @@ class CustomerBalanceIntegrityCommand extends Command
             $paymentQuery->execute(['customer_id' => $customer['id']]);
             $expected -= $payments = floatval($paymentQuery->fetchColumn(0));
 
-            $refundQuery->execute(['customer_id' => $customer['id']]);
-            $expected += $refunds = floatval($refundQuery->fetchColumn(0));
+            $refunds = 0;
+            // TODO payment refund type implementation
+//            $refundQuery->execute(['customer_id' => $customer['id']]);
+//            $expected += $refunds = floatval($refundQuery->fetchColumn(0));
 
             if (0 != bccomp($actual, $expected, 3)) {
                 $row = [

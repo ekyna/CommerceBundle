@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CartHelper
 {
     /**
-     * @var \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
+     * @var SaleHelper
      */
     protected $saleHelper;
 
@@ -80,7 +80,7 @@ class CartHelper
     /**
      * Returns the sale helper.
      *
-     * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
+     * @return SaleHelper
      */
     public function getSaleHelper()
     {

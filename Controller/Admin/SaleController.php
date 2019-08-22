@@ -4,13 +4,14 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
+use Ekyna\Bundle\AdminBundle\Controller\Resource\ToggleableTrait;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
-use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
-use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
+use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
@@ -36,6 +37,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SaleController extends AbstractSaleController
 {
+    use ToggleableTrait;
+
     /**
      * @inheritDoc
      */
@@ -87,7 +90,6 @@ class SaleController extends AbstractSaleController
         } elseif ($sale->canBeReleased()) {
             $this->addFlash('ekyna_commerce.order.message.can_be_released', 'warning');
         }
-
         $data['sale_view'] = $this->buildSaleView($sale);
 
         return null;
@@ -304,7 +306,7 @@ class SaleController extends AbstractSaleController
             throw $this->createNotFoundException();
         }
 
-        /* TODO if (!($request->isXmlHttpRequest() && $request->getMethod() === 'GET')) {
+        /* TODO if (!($request->isXmlHttpRequest())) {
             throw $this->createNotFoundException();
         }*/
 
@@ -313,12 +315,13 @@ class SaleController extends AbstractSaleController
         /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
+        $changed = $this->get('ekyna_commerce.sale_updater')->recalculate($sale);
+
         /** @var \Ekyna\Component\Commerce\Common\Resolver\StateResolverInterface $resolver */
         $resolver = $this->get($this->config->getServiceKey('state_resolver'));
+        $changed |= $resolver->resolve($sale);
 
-        //$sale->setState('new');
-
-        if ($resolver->resolve($sale)) {
+        if ($changed) {
             $event = $this->getOperator()->update($sale);
             $event->toFlashes($this->getFlashBag());
         }
@@ -385,8 +388,7 @@ class SaleController extends AbstractSaleController
         $sourceSale = $context->getResource($resourceName);
 
         $target = $request->attributes->get('target');
-
-        if (!TransformationTargets::isValidTargetForSale($target, $sourceSale)) {
+        if (!TransformationTargets::isValidTargetForSale($target, $sourceSale, false)) {
             throw new InvalidArgumentException('Invalid target.');
         }
 
@@ -431,7 +433,8 @@ class SaleController extends AbstractSaleController
         return $this->render(
             $this->config->getTemplate('transform.html'),
             $context->getTemplateVars([
-                'form' => $form->createView(),
+                'target' => $target,
+                'form'   => $form->createView(),
             ])
         );
     }
@@ -454,11 +457,20 @@ class SaleController extends AbstractSaleController
         /** @var SaleInterface $sourceSale */
         $sourceSale = $context->getResource($resourceName);
 
-        // Create the target sale
         /** @var SaleInterface $targetSale */
-        $targetSale = $this->getRepository()->createNew();
+        $target = $request->attributes->get('target');
+        if (!TransformationTargets::isValidTargetForSale($target, $sourceSale, true)) {
+            throw new InvalidArgumentException('Invalid target.');
+        }
 
-        $this->getOperator()->initialize($targetSale);
+        // Create the target sale
+        /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface $targetRepository */
+        $targetRepository = $this->get('ekyna_commerce.' . $target . '.repository');
+        /** @var SaleInterface $targetSale */
+        $targetSale = $targetRepository->createNew();
+        /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $targetOperator */
+        $targetOperator = $this->get('ekyna_commerce.' . $target . '.operator');
+        $targetOperator->initialize($targetSale);
 
         // Copies source to target
         $this
@@ -473,15 +485,18 @@ class SaleController extends AbstractSaleController
             ->setPaymentTerm(null)
             ->setOutstandingLimit(0)
             ->setDepositTotal(0)
-            ->setSource(SaleSources::SOURCE_COMMERCIAL);
+            ->setSource(SaleSources::SOURCE_COMMERCIAL)
+            ->setExchangeRate(null)
+            ->setExchangeDate(null)
+            ->setAcceptedAt(null);
 
-        $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale);
+        $form = $this->createDuplicateConfirmForm($sourceSale, $targetSale, $target);
 
         $form->handleRequest($request);
 
         // If user confirmed
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->getOperator()->create($targetSale);
+            $event = $targetOperator->create($targetSale);
 
             if ($event->hasErrors()) {
                 foreach ($event->getErrors() as $error) {
@@ -502,7 +517,8 @@ class SaleController extends AbstractSaleController
         return $this->render(
             $this->config->getTemplate('duplicate.html'),
             $context->getTemplateVars([
-                'form' => $form->createView(),
+                'target' => $target,
+                'form'   => $form->createView(),
             ])
         );
     }
@@ -707,6 +723,40 @@ class SaleController extends AbstractSaleController
     }
 
     /**
+     * Set exchange rate action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function setExchangeRateAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException("Not yet supported.");
+        }
+
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        if ($this->get('ekyna_commerce.sale_updater')->updateExchangeRate($sale, true)) {
+            $event = $this->getOperator()->update($sale);
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        if (null !== $path = $request->query->get('_redirect')) {
+            $redirect = $path;
+        } elseif (null !== $referer = $request->headers->get('referer')) {
+            $redirect = $referer;
+        } else {
+            $redirect = $this->generateResourcePath($sale);
+        }
+
+        return $this->redirect($redirect);
+    }
+
+    /**
      * Document generate action.
      *
      * @param Request $request
@@ -778,7 +828,9 @@ class SaleController extends AbstractSaleController
         $document = new Document();
         $document
             ->setSale($sale)
-            ->setType($type);
+            ->setType($type)
+            ->setLocale($request->query->get('locale'))
+            ->setCurrency($request->query->get('currency'));
 
         $this->get('ekyna_commerce.document.builder')->build($document);
         $this->get('ekyna_commerce.document.calculator')->calculate($document);
@@ -797,7 +849,7 @@ class SaleController extends AbstractSaleController
      *
      * @return \Symfony\Component\Form\FormInterface
      */
-    protected function createTransformConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale, $target)
+    protected function createTransformConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale, string $target)
     {
         $action = $this->generateResourcePath($sourceSale, 'transform', ['target' => $target]);
 
@@ -847,13 +899,18 @@ class SaleController extends AbstractSaleController
      *
      * @param SaleInterface $sourceSale
      * @param SaleInterface $targetSale
+     * @param string        $target
      *
      * @return \Symfony\Component\Form\FormInterface
      */
-    protected function createDuplicateConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale)
+    protected function createDuplicateConfirmForm(SaleInterface $sourceSale, SaleInterface $targetSale, string $target)
     {
-        $form = $this->createForm($this->config->getFormType(), $targetSale, [
-            'action'            => $this->generateResourcePath($sourceSale, 'duplicate'),
+        $type = $this->get(sprintf('ekyna_commerce.%s.configuration', $target))->getFormType();
+
+        $action = $this->generateResourcePath($sourceSale, 'duplicate', ['target' => $target]);
+
+        $form = $this->createForm($type, $targetSale, [
+            'action'            => $action,
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal form-with-tabs'],
             'admin_mode'        => true,
@@ -903,9 +960,9 @@ class SaleController extends AbstractSaleController
     /**
      * Creates the notify form.
      *
-     * @param SaleInterface                                 $sale
-     * @param Notify $notification
-     * @param bool                                          $footer
+     * @param SaleInterface $sale
+     * @param Notify        $notification
+     * @param bool          $footer
      *
      * @return \Symfony\Component\Form\FormInterface
      */

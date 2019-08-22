@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Document\Model as Document;
-use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculatorInterface;
+use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 
 /**
@@ -21,7 +21,7 @@ class DocumentPageBuilder
     protected $subjectHelper;
 
     /**
-     * @var ShipmentCalculatorInterface
+     * @var ShipmentSubjectCalculatorInterface
      */
     protected $shipmentCalculator;
 
@@ -41,13 +41,13 @@ class DocumentPageBuilder
     /**
      * Constructor.
      *
-     * @param SubjectHelper               $subjectHelper
-     * @param ShipmentCalculatorInterface $shipmentCalculator
-     * @param array                       $config
+     * @param SubjectHelper                      $subjectHelper
+     * @param ShipmentSubjectCalculatorInterface $shipmentCalculator
+     * @param array                              $config
      */
     public function __construct(
         SubjectHelper $subjectHelper,
-        ShipmentCalculatorInterface $shipmentCalculator,
+        ShipmentSubjectCalculatorInterface $shipmentCalculator,
         array $config = []
     ) {
         $this->subjectHelper = $subjectHelper;

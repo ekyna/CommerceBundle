@@ -33,12 +33,12 @@
         </service>
 
         <!-- Shipment calculator -->
-        <service id="ekyna_commerce.shipment.calculator"
-                 class="Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCalculator"
+        <service id="ekyna_commerce.shipment.subject_calculator"
+                 class="Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculator"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <call method="setInvoiceCalculator">
-                <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+                <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             </call>
         </service>
 
@@ -91,7 +91,7 @@
                  class="Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
         </service>
 
         <!-- Shipment invoice synchronizer -->
@@ -130,7 +130,7 @@
         <!-- Shipment subject state resolver -->
         <service id="ekyna_commerce.shipment.subject_state_resolver"
                  class="Ekyna\Component\Commerce\Shipment\Resolver\ShipmentSubjectStateResolver">
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
         </service>
 
         <!-- Shipment persister (for gateways) -->

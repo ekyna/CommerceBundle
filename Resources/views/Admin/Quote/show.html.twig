@@ -1,8 +1,20 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
-
 {% import '@EkynaCms/Admin/show_macros.html.twig' as _cms %}
 
+{% block flashes %}
+    {{ parent() }}
+    {% if quote.exchangeRate is null and quote.currency.code != commerce_default_currency %}
+        <div class="alert alert-warning alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ 'ekyna_commerce.sale.message.null_exchange_rate'|trans({
+                '{{url}}': path('ekyna_commerce_quote_admin_set_exchnage_rate', {
+                    'quoteId': quote.id
+                })
+            })|raw }}
+        </div>
+    {% endif %}
+{% endblock %}
 
 {% block title %}
     {{ admin_resource_pin(resource) }}
@@ -24,11 +36,7 @@
             'type': 'link',
             'path': admin_resource_path(quote, 'notify')
         }) }}
-        {{ ui_button('ekyna_core.button.duplicate', {
-            'theme': 'default',
-            'type': 'link',
-            'path': admin_resource_path(quote, 'duplicate')
-        }) }}
+        {{ sale_duplicate_btn(quote) }}
         {{ sale_transform_btn(quote) }}
         {{ admin_resource_btn(quote, 'edit', {'label': 'ekyna_core.button.edit'}) }}
         {{ admin_resource_btn(quote, 'remove', {'label': 'ekyna_core.button.remove'}) }}
@@ -182,5 +190,7 @@
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
     <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
+    {% if support_enabled() -%}
     <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+    {%- endif %}
 {% endblock javascripts %}

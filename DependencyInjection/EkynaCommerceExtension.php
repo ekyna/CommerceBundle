@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Cart;
@@ -83,7 +84,7 @@ class EkynaCommerceExtension extends AbstractExtension
     {
         $container
             ->getDefinition('ekyna_commerce.accounting.exporter')
-            ->replaceArgument(5, $config);
+            ->replaceArgument(8, $config);
     }
 
     /**
@@ -95,7 +96,7 @@ class EkynaCommerceExtension extends AbstractExtension
     private function configureDocument(array $config, ContainerBuilder $container)
     {
         $container
-            ->getDefinition('ekyna_commerce.document.page_builder')
+            ->getDefinition(DocumentPageBuilder::class)
             ->replaceArgument(2, $config);
 
         $container

@@ -86,15 +86,13 @@ class QuoteType extends ResourceTableType
                 'label'    => 'ekyna_commerce.sale.field.voucher_number',
                 'position' => 45,
             ])
-            ->addColumn('grandTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.sale.field.ati_total',
-                'currency_path' => 'currency.code',
-                'position'      => 50,
+            ->addColumn('grandTotal', Type\Column\CurrencyType::class, [
+                'label'    => 'ekyna_commerce.sale.field.ati_total',
+                'position' => 50,
             ])
-            ->addColumn('paidTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.sale.field.paid_total',
-                'currency_path' => 'currency.code',
-                'position'      => 60,
+            ->addColumn('paidTotal', Type\Column\CurrencyType::class, [
+                'label'    => 'ekyna_commerce.sale.field.paid_total',
+                'position' => 60,
             ])
             ->addColumn('state', Type\Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.field.status',

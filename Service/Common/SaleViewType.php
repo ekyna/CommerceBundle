@@ -37,7 +37,15 @@ class SaleViewType extends AbstractViewType
      */
     public function configureOptions(Model\SaleInterface $sale, SaleView $view, array &$options)
     {
-        $options['locale'] = $sale->getLocale() ?? $this->localeProvider->getCurrentLocale();
+        if (!isset($options['locale'])) {
+            $options['locale'] = $sale->getLocale() ?? $this->localeProvider->getCurrentLocale();
+        }
+        if (!isset($options['currency'])) {
+            $options['currency'] = $sale->getCurrency()->getCode();
+        }
+        if (!isset($options['ati'])) {
+            $options['ati'] = $sale->isAtiDisplayMode();
+        }
 
         if ($sale->isReleased()) {
             $options['editable'] = false;
@@ -45,8 +53,6 @@ class SaleViewType extends AbstractViewType
 
         if ($sale->isLocked() && !(isset($options['private']) && $options['private'])) {
             $options['editable'] = false;
-
-            $view->addAlert("Cart is locked while payment is processing."); // TODO Trans
         }
     }
 
@@ -126,20 +132,20 @@ class SaleViewType extends AbstractViewType
      */
     public function buildShipmentView(Model\SaleInterface $sale, View\LineView $view, array $options)
     {
-        if (0 >= $sale->getShipmentResult()->getTotal()) {
+        if (0 >= $sale->getShipmentResult($options['currency'])->getTotal()) {
             $free = $this->trans('ekyna_commerce.checkout.shipment.free_shipping');
             $view->setBase($free);
             $view->setTotal($free);
         }
 
-        if (null !== $sale->getShipmentMethod()) {
+        if (!empty($sale->getShipmentLabel()) || !is_null($sale->getShipmentMethod())) {
             return;
         }
 
         $designation = $this->trans('ekyna_commerce.sale.field.shipping_cost');
 
-        // Total weight
-        $designation .= ' (' . $this->formatter->number($sale->getWeightTotal()) . ' kg)';
+        // Shipment weight
+        $designation .= ' (' . $this->formatter->number($sale->getShipmentWeight() ?? $sale->getWeightTotal()) . ' kg)';
 
         $view->setDesignation($designation);
     }

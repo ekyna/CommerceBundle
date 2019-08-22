@@ -5,16 +5,23 @@
         {{ title|trans }}
     </div>
     {%- endif %}
+    {% do currency_configure(sale) %}{# Configure currency renderer #}
     <div class="panel-body">
         <table class="table table-condensed">
         <tbody>
+            {% if sale.currency.code != commerce_default_currency -%}
+            <tr>
+                <th>{{ 'ekyna_commerce.field.exchange_rate'|trans }}</th>
+                <td>{{ null|currency_rate }}</td>
+            </tr>
+            {%- endif %}
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-                <td>{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}</td>
+                <td>{{ sale.grandTotal|currency_quote(null, true) }}</td>
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</th>
-                <td>{{ sale.paidTotal|localizedcurrency(sale.currency.code) }}</td>
+                <td>{{ sale.paidTotal|currency_quote(null, true) }}</td>
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
@@ -34,11 +41,11 @@
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.deposit_total'|trans }}</th>
-                <td>{{ sale.depositTotal|localizedcurrency(sale.currency.code) }}</td>
+                <td>{{ sale.depositTotal|currency_quote }}</td>
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.outstanding_limit'|trans }}</th>
-                <td>{{ sale.outstandingLimit|localizedcurrency(sale.currency.code) }}</td>
+                <td>{{ sale.outstandingLimit|currency_quote }}</td>
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</th>
@@ -47,5 +54,6 @@
         </tbody>
         </table>
     </div>
+    {% do currency_configure() %}{# Reset currency renderer #}
 </div>
 {% endspaceless %}

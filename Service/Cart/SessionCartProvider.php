@@ -7,6 +7,7 @@ use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
 use Ekyna\Component\Commerce\Cart\Repository\CartRepositoryInterface;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
+use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -42,6 +43,7 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
      * @param ResourceOperatorInterface $cartOperator
      * @param CustomerProviderInterface $customerProvider
      * @param CurrencyProviderInterface $currencyProvider
+     * @param LocaleProviderInterface   $localeProvider
      * @param SessionInterface $session
      * @param string $key
      */
@@ -50,10 +52,11 @@ class SessionCartProvider extends AbstractCartProvider implements CartProviderIn
         ResourceOperatorInterface $cartOperator,
         CustomerProviderInterface $customerProvider,
         CurrencyProviderInterface $currencyProvider,
+        LocaleProviderInterface $localeProvider,
         SessionInterface $session,
         $key = self::KEY
     ) {
-        parent::__construct($cartRepository, $cartOperator, $customerProvider, $currencyProvider);
+        parent::__construct($cartRepository, $cartOperator, $customerProvider, $currencyProvider, $localeProvider);
 
         $this->session = $session;
         $this->key = $key;

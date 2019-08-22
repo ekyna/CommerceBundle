@@ -16,21 +16,26 @@
         <tbody>
         {#<tr>
             <th class="text-right">{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            <td>{{ sale.netTotal|localizedcurrency(sale.currency.code) }}</td>
+            <td>{{ sale.netTotal|currency_quote(sale) }}</td>
         </tr>
         <tr>
             <th class="text-right">{{ 'ekyna_commerce.sale.field.tax_total'|trans }}</th>
-            <td>{{ sale.taxTotal|localizedcurrency(sale.currency.code) }}</td>
+            <td>{{ sale.taxTotal|currency_quote(sale) }}</td>
         </tr>#}
         {% if delivery and sale.shipmentMethod is not null -%}
         <tr>
             <th class="text-right">{{ sale.shipmentMethod.title }}</th>
-            <td class="text-right">{{ sale|sale_shipment_amount|localizedcurrency(sale.currency.code) }}</td>
+            <td class="text-right">{{ sale|sale_shipment_amount|currency_quote(sale) }}</td>
         </tr>
         {%- endif %}
         <tr>
             <th class="text-right">{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            <td class="text-right">{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}</td>
+            <td class="text-right">
+                {{- sale.grandTotal|currency_quote(sale, true) -}}
+                {% if sale.currency.code != commerce_default_currency -%}
+                    <br><small>{{ sale|currency_rate }}</small>
+                {%- endif %}
+            </td>
         </tr>
         {% if not delivery or sale.shipmentMethod is null -%}
         <tr>

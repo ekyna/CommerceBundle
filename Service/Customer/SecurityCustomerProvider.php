@@ -79,6 +79,16 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
     }
 
     /**
+     * @inheritdoc
+     */
+    public function clear()
+    {
+        parent::reset();
+
+        $this->initialized = true;
+    }
+
+    /**
      * Loads the customer once.
      */
     private function initialize()

@@ -21,7 +21,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper">
             <argument type="service" id="ekyna_user.user.provider"/>
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
-            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface"/>
             <argument type="service" id="router"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="translator"/>
@@ -46,11 +46,10 @@
         </service>
 
         <!-- Constants helper -->
-        <service id="ekyna_commerce.constants_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"
-                 lazy="true">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper">
             <argument type="service" id="translator"/>
             <argument>%ekyna_commerce.genders.class%</argument>
+            <tag name="twig.runtime"/>
         </service>
 
         <!-- Sale helper -->

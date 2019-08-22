@@ -5,8 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Account\QuoteVoucherType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Model\QuoteVoucher;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
+use Ekyna\Bundle\CommerceBundle\Model\QuoteVoucher;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
@@ -28,7 +28,7 @@ class QuoteController extends AbstractController
     /**
      * Quote index action.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function indexAction()
     {
@@ -47,7 +47,7 @@ class QuoteController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function showAction(Request $request)
     {
@@ -75,7 +75,7 @@ class QuoteController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function voucherAction(Request $request)
     {
@@ -150,7 +150,7 @@ class QuoteController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function paymentCreateAction(Request $request)
     {

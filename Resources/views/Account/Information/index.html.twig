@@ -1,10 +1,10 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
-{% macro field(label, value, label_col, widget_col) %}
+{% macro field(label, value, label_col, widget_col, symbol) %}
 {% spaceless %}
     <div class="form-group form-group-sm">
         <label class="control-label col-md-{{ label_col }} control-label-sm">
-            {{- label|trans|raw -}}
+            {{- label|trans|raw }}{% if symbol %}&nbsp;{{ symbol|raw }}{% endif -%}
         </label>
         <div class="col-md-{{ widget_col }}">
             <p class="form-control input-sm">
@@ -19,10 +19,16 @@
 
 {% block account %}
 {% spaceless %}
+    {% do currency_configure(customer) %}
+
+    {% if currency_get_quote() != currency_get_base() -%}
+        {% set exchange_symbol = '<strong style="color:red">*</strong>' %}
+    {% else %}
+        {% set exchange_symbol = null %}
+    {% endif %}
     <h3>{{ 'ekyna_commerce.account.information.title'|trans }}</h3>
 
     <hr>
-
 
     <div class="form-horizontal">
         {{ macros.field('ekyna_core.field.email', customer.email, 3, 9) }}
@@ -63,21 +69,32 @@
             {% endif %}
         </div>
 
-        {% if customer.paymentTerm is not null %}
-            {{ macros.field('ekyna_commerce.payment_term.label.singular', customer.paymentTerm.title, 3, 9) }}
+        <hr>
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ macros.field('ekyna_core.field.currency', customer.currency, 6, 6) }}
+            </div>
+            <div class="col-md-6">
+                {{ macros.field('ekyna_core.field.locale', customer.locale|language|capitalize, 6, 6) }}
+            </div>
+        </div>
+
+        {% if businessCustomer.paymentTerm is not null %}
+            {{ macros.field('ekyna_commerce.payment_term.label.singular', businessCustomer.paymentTerm.title, 3, 9) }}
             <div class="row">
                 <div class="col-md-6">
                     {{ macros.field(
                         'ekyna_commerce.sale.field.outstanding_limit',
-                        customer.outstandingLimit|localizedcurrency(commerce_default_currency),
-                        6, 6
+                        businessCustomer.outstandingLimit|currency_base(null, true),
+                        6, 6, exchange_symbol
                     ) }}
                 </div>
                 <div class="col-md-6">
                     {{ macros.field(
                         'ekyna_commerce.customer.field.outstanding_balance',
-                        customer.outstandingBalance|localizedcurrency(commerce_default_currency),
-                        6, 6
+                        businessCustomer.outstandingBalance|currency_base(null, true),
+                        6, 6, exchange_symbol
                     ) }}
                 </div>
             </div>
@@ -88,22 +105,22 @@
             <div class="col-md-6">
                 {{ macros.field(
                     'ekyna_commerce.customer.field.credit_balance',
-                    customer.creditBalance|localizedcurrency(commerce_default_currency),
-                    6, 6
+                    customer.creditBalance|currency_base(null, true),
+                    6, 6, exchange_symbol
                 ) }}
             </div>
         </div>
         {% endif %}
-
-        <div class="row">
-            <div class="col-md-6">
-                {{ macros.field('ekyna_core.field.currency', customer.currency, 6, 6) }}
-            </div>
-            <div class="col-md-6">
-                {{ macros.field('ekyna_core.field.locale', customer.locale|language|capitalize, 6, 6) }}
-            </div>
-        </div>
     </div>
+
+    {% if currency_get_quote() != currency_get_base() -%}
+    <div class="alert alert-warning">
+        <p>
+            {{- exchange_symbol|raw }} : {{ 'ekyna_commerce.notice.exchange'|trans|raw }}
+            {{ 'ekyna_commerce.field.exchange_rate'|trans }}: {{ currency_rate(null, false, true) }}
+        </p>
+    </div>
+    {%- endif %}
 
     <hr>
 
@@ -112,5 +129,6 @@
             {{ 'ekyna_core.button.edit'|trans }}
         </a>
     </p>
+    {% do currency_configure() %}
 {% endspaceless %}
 {% endblock account %}

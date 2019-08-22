@@ -66,7 +66,7 @@ class ContextEventSubscriber implements EventSubscriberInterface
      *
      * @param ContextChangeEvent $event
      */
-    public function onContextChange(ContextChangeEvent $event)
+    public function onContextChange(ContextChangeEvent $event): void
     {
         if (!$this->cartProvider->hasCart()) {
             return;
@@ -88,6 +88,10 @@ class ContextEventSubscriber implements EventSubscriberInterface
             $changed |= $this->onCountryChange($country);
         }
 
+        if ($locale = $event->getLocale()) {
+            $changed |= $this->onLocaleChange($locale);
+        }
+
         if ($changed) {
             $this->cartProvider->saveCart();
         }
@@ -100,7 +104,7 @@ class ContextEventSubscriber implements EventSubscriberInterface
      *
      * @return bool
      */
-    private function onCurrencyChange(CurrencyInterface $currency)
+    private function onCurrencyChange(CurrencyInterface $currency): bool
     {
         $cart = $this->cartProvider->getCart();
 
@@ -120,7 +124,7 @@ class ContextEventSubscriber implements EventSubscriberInterface
      *
      * @return bool
      */
-    private function onCountryChange(CountryInterface $country)
+    private function onCountryChange(CountryInterface $country): bool
     {
         $cart = $this->cartProvider->getCart();
 
@@ -138,11 +142,31 @@ class ContextEventSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * On context locale change.
+     *
+     * @param string $locale
+     *
+     * @return bool
+     */
+    private function onLocaleChange(string $locale): bool
+    {
+        $cart = $this->cartProvider->getCart();
+
+        if ($cart->getLocale() === $locale) {
+            return false;
+        }
+
+        $cart->setLocale($locale);
+
+        return true;
+    }
+
+    /**
      * Context build event handler.
      *
      * @param ContextEvent $event
      */
-    public function onContextBuild(ContextEvent $event)
+    public function onContextBuild(ContextEvent $event): void
     {
         $context = $event->getContext();
 

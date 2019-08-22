@@ -58,6 +58,8 @@ class OrderInvoiceExporter extends BaseExporter
                 return $this->translator->trans('ekyna_commerce.customer.balance.due_date');
             case 'payment_term':
                 return $this->translator->trans('ekyna_commerce.payment_term.label.singular');
+            case 'payment_state':
+                return $this->translator->trans('ekyna_commerce.sale.field.payment_state');
         }
 
         return $name;

@@ -92,8 +92,31 @@
 {% macro render_voucher_number(subject) %}
 {% spaceless %}
     {% if subject.sale.voucherNumber is not empty -%}
-        <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</span>&nbsp;
+        <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+        {{- '&nbsp;' -}}
         <strong>{{ subject.sale.voucherNumber }}</strong>.
+    {%- endif %}
+{% endspaceless %}
+{% endmacro %}
+
+
+{% macro render_shipment_method(subject) %}
+{% spaceless %}
+    {% if subject.sale.shipmentLabel or subject.sale.shipmentMethod -%}
+        <span class="text-alt">{{ 'ekyna_commerce.shipment_method.label.singular'|trans|raw }}</span>
+        {{- '&nbsp;' -}}
+        <strong>
+        {%- if subject.sale.shipmentLabel -%}
+            {{ subject.sale.shipmentLabel }}
+        {%- else -%}
+            {{ subject.sale.shipmentMethod.translate(subject.locale).title }}
+        {%- endif -%}
+        {%- if 0 < subject.sale.shipmentWeight -%}
+            &nbsp;({{ subject.sale.shipmentWeight|localizednumber }}&nbsp;kg)
+        {%- elseif 0 < subject.sale.weightTotal -%}
+            &nbsp;({{ subject.sale.weightTotal|localizednumber }}&nbsp;kg)
+        {%- endif -%}
+        </strong>.
     {%- endif %}
 {% endspaceless %}
 {% endmacro %}
@@ -102,21 +125,46 @@
 {% macro render_payment_term(subject) %}
 {% spaceless %}
     {% if subject.sale.paymentTerm is not null -%}
-        <span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</span>&nbsp;
-        <strong>{{ subject.sale.paymentTerm }}</strong>.
+        <span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+        {{- '&nbsp;' -}}
+        <strong>{{ subject.sale.paymentTerm.translate(subject.locale).title }}</strong>.
         {% if subject is invoice_invoice and subject.dueDate is not null %}
-            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans }}</span>&nbsp;
-            <strong>{{ subject.dueDate|localizeddate('long', 'none', subject.sale.locale) }}</strong>.
+            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+            {{- '&nbsp;' -}}
+            <strong>{{ subject.dueDate|localizeddate('long', 'none', subject.locale) }}</strong>.
         {% elseif subject.sale.outstandingDate is not null %}
-            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans }}</span>&nbsp;
-            <strong>{{ subject.sale.outstandingDate|localizeddate('long', 'none', subject.sale.locale) }}</strong>.
+            <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+            {{- '&nbsp;' -}}
+            <strong>{{ subject.sale.outstandingDate|localizeddate('long', 'none', subject.locale) }}</strong>.
         {% endif %}
     {%- endif %}
     {% if 0 < subject.sale.depositTotal -%}
         <br>{{ 'ekyna_commerce.document.mention.deposit'|trans({
             '%percent%': (subject.sale.depositTotal / subject.sale.grandTotal)|localizednumber('percent'),
-            '%amount%': subject.sale.depositTotal|localizedcurrency(subject.currency, subject.sale.locale)
-        })|raw }}.
+            '%amount%': subject.sale.depositTotal|currency_quote
+        })|replace({' ': '&nbsp;'})|raw }}.
     {%- endif %}
+{% endspaceless %}
+{% endmacro %}
+
+
+{% macro render_exchange_rate(subject) %}
+{% spaceless %}
+    {% if subject.currency != commerce_default_currency %}
+        <span class="text-alt">{{ 'ekyna_commerce.field.exchange_rate'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+        {{- '&nbsp;' -}}
+        <strong>{{ subject.sale|currency_rate }}</strong>.
+    {% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+
+{% macro render_origin_customer(subject) %}
+{% spaceless %}
+    {% if subject.sale.originCustomer is defined and subject.sale.originCustomer is not null %}
+        <span class="text-alt">{{ 'ekyna_commerce.sale.field.origin_customer'|trans|raw }}</span>
+        {{- '&nbsp;' -}}
+        <strong>{{ subject.sale.originCustomer|identity }}</strong>.
+    {% endif %}
 {% endspaceless %}
 {% endmacro %}

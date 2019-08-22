@@ -4,8 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Widget;
 
 use Ekyna\Bundle\UserBundle\Service\Provider\UserProviderInterface;
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
-use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
-use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -18,8 +17,6 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class WidgetHelper
 {
-    use FormatterAwareTrait;
-
     /**
      * @var UserProviderInterface
      */
@@ -29,6 +26,11 @@ class WidgetHelper
      * @var ContextProviderInterface
      */
     private $contextProvider;
+
+    /**
+     * @var CurrencyRendererInterface
+     */
+    private $currencyRenderer;
 
     /**
      * @var UrlGeneratorInterface
@@ -51,7 +53,7 @@ class WidgetHelper
      *
      * @param UserProviderInterface    $userProvider
      * @param ContextProviderInterface $contextProvider
-     * @param FormatterFactory         $formatterFactory
+     * @param CurrencyRendererInterface $currencyRenderer
      * @param UrlGeneratorInterface    $urlGenerator
      * @param RequestStack             $requestStack
      * @param TranslatorInterface      $translator
@@ -59,14 +61,14 @@ class WidgetHelper
     public function __construct(
         UserProviderInterface $userProvider,
         ContextProviderInterface $contextProvider,
-        FormatterFactory $formatterFactory,
+        CurrencyRendererInterface $currencyRenderer,
         UrlGeneratorInterface $urlGenerator,
         RequestStack $requestStack,
         TranslatorInterface $translator
     ) {
         $this->userProvider = $userProvider;
         $this->contextProvider = $contextProvider;
-        $this->formatterFactory = $formatterFactory;
+        $this->currencyRenderer = $currencyRenderer;
         $this->urlGenerator = $urlGenerator;
         $this->requestStack = $requestStack;
         $this->translator = $translator;
@@ -204,11 +206,9 @@ class WidgetHelper
             $count = $cart->getItems()->count();
             $count = $this->translator->transChoice('ekyna_commerce.widget.cart.items', $count, ['%count%' => $count]);
 
-            $currency = $cart->getCurrency()->getCode();
             $total = $this
-                ->formatterFactory
-                ->create(null, $currency)
-                ->currency($cart->getGrandTotal(), $currency);
+                ->currencyRenderer
+                ->renderQuote($cart->getGrandTotal(), $cart);
 
             $data['label'] = $count . ' <strong>' . $total . '</strong>';
         }

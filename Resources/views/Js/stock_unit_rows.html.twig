@@ -11,7 +11,7 @@
         <td id="{{ stock_unit_id ~ '_soldQuantity' }}" class="text-right">{{ stock_unit.sold }}</td>
         <td id="{{ stock_unit_id ~ '_shippedQuantity' }}" class="text-right">{{ stock_unit.shipped }}</td>
         <td id="{{ stock_unit_id ~ '_estimatedDateOfArrival' }}">{{ stock_unit.eda|raw }}</td>
-        <td id="{{ stock_unit_id ~ '_netPrice' }}" class="text-right">{{ stock_unit.net_price }}</td>
+        <td id="{{ stock_unit_id ~ '_netPrice' }}" class="text-right">{{ stock_unit.net_price|raw }}</td>
         <td class="actions">
         {% for action in stock_unit.actions %}
             <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>

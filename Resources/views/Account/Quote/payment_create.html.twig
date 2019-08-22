@@ -9,7 +9,7 @@
 
     {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
         'sale': quote, 'customer': customer
-    } -%}
+    } only -%}
 
     <div class="row">
         <div class="col-md-8">
@@ -37,9 +37,9 @@
 
     <h3>{{ 'ekyna_commerce.account.quote.title'|trans|raw }}</h3>
     <hr>
-    {% include '@EkynaCommerce/Account/Quote/_list.html.twig' with {
+    {%- include '@EkynaCommerce/Account/Quote/_list.html.twig' with {
         'quotes': quotes, 'customer': customer
-    } only %}
+    } only -%}
 {% endspaceless %}
 {% endblock %}
 

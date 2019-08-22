@@ -42,13 +42,13 @@
                 <th>{{ 'ekyna_core.field.email'|trans }}</th>
                 <td>{{ customer.email }}</td>
             </tr>
-            {% if customer.description is not empty %}
+            {% if customer.description is not empty -%}
             <tr>
                 <th>{{ 'ekyna_commerce.field.description'|trans }}</th>
                 <td>{{ customer.description|nl2br }}</td>
             </tr>
-            {% endif %}
-            {% if customer.hasParent() %}
+            {%- endif %}
+            {% if customer.hasParent() -%}
             <tr>
                 <th>{{ 'ekyna_commerce.customer.field.parent'|trans }}</th>
                 <td>
@@ -57,18 +57,18 @@
                     </a>
                 </td>
             </tr>
-            {% endif %}
+            {%- endif %}
             {% set customerSource = customer.hasParent() ? customer.parent : customer %}
             <tr>
                 <th>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</th>
                 <td>
-                    {% if customerSource.paymentTerm is not null %}
+                    {% if customerSource.paymentTerm is not null -%}
                     <a href="{{ path('ekyna_commerce_payment_term_admin_show', {'paymentTermId': customerSource.paymentTerm.id}) }}">
                         {{- customerSource.paymentTerm|raw -}}
                     </a>
-                    {% else %}
+                    {%- else -%}
                         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-                    {% endif %}
+                    {%- endif %}
                 </td>
             </tr>
             <tr>

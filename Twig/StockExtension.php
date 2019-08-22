@@ -8,19 +8,18 @@ use Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
 use Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
 /**
  * Class StockExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class StockExtension extends \Twig_Extension
+class StockExtension extends AbstractExtension
 {
-    /**
-     * @var ConstantsHelper
-     */
-    private $constantHelper;
-
     /**
      * @var StockRenderer
      */
@@ -45,20 +44,17 @@ class StockExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ConstantsHelper             $constantHelper
      * @param StockRenderer               $stockRenderer
      * @param AvailabilityHelperInterface $availabilityHelper
      * @param StockPrioritizerInterface   $stockPrioritizer
      * @param WarehouseProviderInterface  $warehouseProvider
      */
     public function __construct(
-        ConstantsHelper $constantHelper,
         StockRenderer $stockRenderer,
         AvailabilityHelperInterface $availabilityHelper,
         StockPrioritizerInterface $stockPrioritizer,
         WarehouseProviderInterface $warehouseProvider
     ) {
-        $this->constantHelper = $constantHelper;
         $this->stockRenderer = $stockRenderer;
         $this->availabilityHelper = $availabilityHelper;
         $this->stockPrioritizer = $stockPrioritizer;
@@ -71,42 +67,42 @@ class StockExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_unit_state_label',
-                [$this->constantHelper, 'renderStockUnitStateLabel'],
+                [ConstantsHelper::class, 'renderStockUnitStateLabel'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_unit_state_badge',
-                [$this->constantHelper, 'renderStockUnitStateBadge'],
+                [ConstantsHelper::class, 'renderStockUnitStateBadge'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_subject_state_label',
-                [$this->constantHelper, 'renderStockSubjectStateLabel'],
+                [ConstantsHelper::class, 'renderStockSubjectStateLabel'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_subject_state_badge',
-                [$this->constantHelper, 'renderStockSubjectStateBadge'],
+                [ConstantsHelper::class, 'renderStockSubjectStateBadge'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_subject_mode_label',
-                [$this->constantHelper, 'renderStockSubjectModeLabel'],
+                [ConstantsHelper::class, 'renderStockSubjectModeLabel'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_subject_mode_badge',
-                [$this->constantHelper, 'renderStockSubjectModeBadge'],
+                [ConstantsHelper::class, 'renderStockSubjectModeBadge'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_subject_availability',
                 [$this->availabilityHelper, 'getAvailabilityMessage'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'stock_can_prioritize',
                 [$this->stockPrioritizer, 'canPrioritizeSale']
             ),
@@ -121,7 +117,7 @@ class StockExtension extends \Twig_Extension
         $tests = [];
 
         foreach (StockSubjectModes::getModes() as $constant) {
-            $tests[] = new \Twig_SimpleTest('stock_mode_' . $constant, function ($mode) use ($constant) {
+            $tests[] = new TwigTest('stock_mode_' . $constant, function ($mode) use ($constant) {
                 return $mode === $constant;
             });
         }
@@ -135,17 +131,17 @@ class StockExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'render_subject_stock_units',
                 [$this->stockRenderer, 'renderSubjectStockUnits'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'render_subjects_stock',
                 [$this->stockRenderer, 'renderSubjectsStock'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'commerce_warehouse',
                 [$this->warehouseProvider, 'getWarehouse']
             ),

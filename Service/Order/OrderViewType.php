@@ -32,12 +32,12 @@ class OrderViewType extends AbstractViewType
     private $stockRenderer;
 
     /**
-     * @var InvoiceCalculatorInterface
+     * @var InvoiceSubjectCalculatorInterface
      */
     private $invoiceCalculator;
 
     /**
-     * @var ShipmentCalculatorInterface
+     * @var ShipmentSubjectCalculatorInterface
      */
     private $shipmentCalculator;
 
@@ -70,9 +70,9 @@ class OrderViewType extends AbstractViewType
     /**
      * Sets the invoice calculator.
      *
-     * @param InvoiceCalculatorInterface $calculator
+     * @param InvoiceSubjectCalculatorInterface $calculator
      */
-    public function setInvoiceCalculator($calculator)
+    public function setInvoiceCalculator(InvoiceSubjectCalculatorInterface $calculator)
     {
         $this->invoiceCalculator = $calculator;
     }
@@ -80,9 +80,9 @@ class OrderViewType extends AbstractViewType
     /**
      * Sets the shipment calculator.
      *
-     * @param ShipmentCalculatorInterface $calculator
+     * @param ShipmentSubjectCalculatorInterface $calculator
      */
-    public function setShipmentCalculator($calculator)
+    public function setShipmentCalculator(ShipmentSubjectCalculatorInterface $calculator)
     {
         $this->shipmentCalculator = $calculator;
     }
@@ -285,6 +285,10 @@ class OrderViewType extends AbstractViewType
             }
         }
 
+        $locked = $item->isImmutable() ||
+            $this->invoiceCalculator->isInvoiced($item) ||
+            $this->shipmentCalculator->isShipped($item);
+
         // If no parent
         if (!$item->getParent()) {
             // Move up
@@ -314,11 +318,7 @@ class OrderViewType extends AbstractViewType
             }
 
             // If not immutable, invoiced or shipped
-            if (!(
-                $item->isImmutable() ||
-                $this->invoiceCalculator->isInvoiced($item) ||
-                $this->shipmentCalculator->isShipped($item)
-            )) {
+            if (!$locked) {
                 // Remove action
                 $removePath = $this->generateUrl('ekyna_commerce_order_item_admin_remove', [
                     'orderId'     => $item->getSale()->getId(),
@@ -334,20 +334,20 @@ class OrderViewType extends AbstractViewType
         }
 
         // Edit action
-        //if (!$item->isCompound()) {
-        $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
-            'orderId'     => $item->getSale()->getId(),
-            'orderItemId' => $item->getId(),
-        ]);
-        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
-            'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
-            'data-sale-modal' => null,
-            'class'           => 'text-warning',
-        ]));
-        //}
+        if (!$locked) {
+            $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
+                'orderId'     => $item->getSale()->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+                'title'           => $this->trans('ekyna_commerce.sale.button.item.edit'),
+                'data-sale-modal' => null,
+                'class'           => 'text-warning',
+            ]));
+        }
 
         // Configure action
-        if (!$item->isImmutable() && !$item->getParent()) {
+        if (!$locked && !$item->isImmutable() && !$item->getParent()) {
             if ($item->isConfigurable()) {
                 $configurePath = $this->generateUrl('ekyna_commerce_order_item_admin_configure', [
                     'orderId'     => $item->getSale()->getId(),

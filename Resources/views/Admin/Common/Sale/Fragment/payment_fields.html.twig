@@ -8,7 +8,7 @@
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.exchangeRate|localizednumber, 'text', {
+        {{ show_row(sale|currency_rate, 'text', {
             'label': 'ekyna_commerce.field.exchange_rate',
             'id': 'sale_exchange_rate',
             'label_col': 6
@@ -25,49 +25,55 @@
 {%- endif %}
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.grandTotal|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.grandTotal, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.ati_total',
             'class': 'sale-grand-total',
+            'subject': sale,
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.paidTotal|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.paidTotal, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.paid_total',
             'class': 'sale-paid-total',
+            'subject': sale,
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.depositTotal|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.depositTotal, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.deposit_total',
             'class': 'sale-deposit-total',
+            'subject': sale,
             'label_col': 6
         }) }}
     </div>
 </div>
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.outstandingAccepted|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.outstandingAccepted, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.outstanding_accepted',
             'id': 'sale_outstandingAccepted',
             'class': 'sale-outstanding-accepted',
+            'subject': sale,
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.outstandingExpired|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.outstandingExpired, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.outstanding_expired',
             'id': 'sale_outstandingExpired',
             'class': 'sale-outstanding-expired',
+            'subject': sale,
             'label_col': 6
         }) }}
     </div>
     <div class="col-md-4">
-        {{ show_row(sale.outstandingLimit|localizedcurrency(sale.currency.code), 'text', {
+        {{ show_row(sale.outstandingLimit, 'currency_subject_amount', {
             'label': 'ekyna_commerce.sale.field.outstanding_limit',
             'id': 'sale_outstandingLimit',
             'class': 'sale-outstanding-limit',
+            'subject': sale,
             'label_col': 6
         }) }}
     </div>

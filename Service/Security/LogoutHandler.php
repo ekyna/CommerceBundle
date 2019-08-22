@@ -43,16 +43,15 @@ class LogoutHandler implements LogoutHandlerInterface
      */
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
-        if ($this->cartProvider->hasCart() && $this->customerProvider->hasCustomer()) {
-            $cart = $this->cartProvider->getCart();
-            $customer = $this->customerProvider->getCustomer();
+        $this->customerProvider->clear();
 
-            if ($cart->getCustomer() === $customer) {
-                $this
-                    ->cartProvider
-                    ->clearInformation()
-                    ->saveCart();
-            }
+        if (!$this->cartProvider->hasCart()) {
+            return;
         }
+
+        $this
+            ->cartProvider
+            ->clearInformation()
+            ->saveCart();
     }
 }

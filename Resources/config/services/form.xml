@@ -58,6 +58,11 @@
         </service>
 
         <!-- Customer form types -->
+        <service id="ekyna_commerce.balance.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType">
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.customer.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType">
             <argument>%ekyna_commerce.customer.class%</argument>
@@ -107,6 +112,15 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType">
             <argument>%ekyna_commerce.genders.class%</argument>
             <tag name="form.type"/>
+        </service>
+
+        <!-- Money form type -->
+        <service id="ekyna_commerce.common.money.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType">
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+            <tag name="form.type"/>
+            <tag name="form.js" selector=".commerce-money" path="ekyna-commerce/form/money"/>
         </service>
 
         <!-- Notify form type -->
@@ -192,6 +206,11 @@
         </service>
 
         <!-- Payment form types -->
+        <service id="ekyna_commerce.checkout_balance_payment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType">
+            <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.checkout_payment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType">
             <argument type="service" id="translator"/>

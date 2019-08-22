@@ -9,6 +9,13 @@
     </div>
     <div class="table-responsive">
         <table class="table">
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.file'|trans }}</th>
+                <th>{{ 'ekyna_core.field.title'|trans }}</th>
+                <th></th>
+            </tr>
+            </thead>
             <tbody>
             {%- for attachment in sale|sale_attachments -%}
                 {%- set path = path(route_prefix ~ '_attachment_download', {'number': sale.number, 'id': attachment.id}) -%}

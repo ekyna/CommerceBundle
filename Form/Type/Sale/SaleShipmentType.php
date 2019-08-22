@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use libphonenumber\PhoneNumberType as PhoneType;
 use libphonenumber\PhoneNumberUtil;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -47,11 +47,27 @@ class SaleShipmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('shipmentAmount', NumberType::class, [
+            ->add('shipmentAmount', Type\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.shipping_cost',
+                'scale' => 5,
                 'required' => false,
                 'attr'     => [
                     'class' => 'sale-shipment-amount',
+                ],
+            ])
+            ->add('shipmentWeight', Type\NumberType::class, [
+                'label'    => 'ekyna_commerce.sale.field.weight_total',
+                'scale' => 3,
+                'required' => false,
+                'attr'     => [
+                    'class' => 'sale-shipment-weight',
+                ],
+            ])
+            ->add('shipmentLabel', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.sale.field.shipment_label',
+                'required' => false,
+                'attr'     => [
+                    'class' => 'sale-shipment-label',
                 ],
             ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

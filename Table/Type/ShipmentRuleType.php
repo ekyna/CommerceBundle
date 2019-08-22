@@ -62,12 +62,10 @@ class ShipmentRuleType extends ResourceTableType
             ])
             ->addColumn('baseTotal', BType\Column\PriceType::class, [
                 'label'    => 'ekyna_commerce.shipment_rule.field.base_total',
-                'currency' => 'EUR', // TODO
                 'position' => 80,
             ])
             ->addColumn('netPrice', BType\Column\PriceType::class, [
                 'label'    => 'ekyna_commerce.field.net_price',
-                'currency' => 'EUR', // TODO
                 'position' => 90,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [

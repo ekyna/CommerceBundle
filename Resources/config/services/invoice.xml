@@ -23,13 +23,10 @@
             <argument>%kernel.debug%</argument>
         </service>
 
-        <!-- Invoice calculator -->
-        <service id="ekyna_commerce.invoice.calculator"
-                 class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculator"
-                 lazy="true">
-            <call method="setShipmentCalculator">
-                <argument type="service" id="ekyna_commerce.shipment.calculator"/>
-            </call>
+        <!-- Invoice subject calculator -->
+        <service id="ekyna_commerce.invoice.subject_calculator"
+                 class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculator">
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
         </service>
 
         <!-- Invoice abstract listener -->
@@ -73,8 +70,8 @@
                  class="Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.sale_factory"/>
-            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <argument type="service" id="ekyna_resource.locale_provider"/>
             <argument type="service" id="libphonenumber.phone_number_util"/>
         </service>
@@ -83,13 +80,12 @@
         <service id="ekyna_commerce.invoice.payment_resolver"
                  class="Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolver">
             <argument type="service" id="ekyna_commerce.currency.converter"/>
-            <argument>%ekyna_commerce.default.currency%</argument>
         </service>
 
         <!-- Invoice subject state resolver -->
         <service id="ekyna_commerce.invoice.subject_state_resolver"
                  class="Ekyna\Component\Commerce\Invoice\Resolver\InvoiceSubjectStateResolver">
-            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
         </service>
 
     </services>

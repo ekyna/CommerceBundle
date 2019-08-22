@@ -15,11 +15,11 @@
         ]]></shipmentMethod>
 
         {% if sale is payment_subject -%}
-        <grandTotal><![CDATA[{{ sale.grandTotal|localizedcurrency(sale.currency.code) }}]]></grandTotal>
-        <paidTotal><![CDATA[{{ sale.paidTotal|localizedcurrency(sale.currency.code) }}]]></paidTotal>
-        <outstandingAccepted><![CDATA[{{ sale.outstandingAccepted|localizedcurrency(sale.currency.code) }}]]></outstandingAccepted>
-        <outstandingExpired><![CDATA[{{ sale.outstandingExpired|localizedcurrency(sale.currency.code) }}]]></outstandingExpired>
-        <outstandingLimit><![CDATA[{{ sale.outstandingLimit|localizedcurrency(sale.currency.code) }}]]></outstandingLimit>
+        <grandTotal><![CDATA[{{ sale.grandTotal|currency_quote(sale, true) }}]]></grandTotal>
+        <paidTotal><![CDATA[{{ sale.paidTotal|currency_quote(sale, true) }}]]></paidTotal>
+        <outstandingAccepted><![CDATA[{{ sale.outstandingAccepted|currency_quote(sale, true) }}]]></outstandingAccepted>
+        <outstandingExpired><![CDATA[{{ sale.outstandingExpired|currency_quote(sale, true) }}]]></outstandingExpired>
+        <outstandingLimit><![CDATA[{{ sale.outstandingLimit|currency_quote(sale, true) }}]]></outstandingLimit>
         <outstandingDate><![CDATA[
             {%- if sale.outstandingDate is empty -%}
                 <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
@@ -44,8 +44,8 @@
         {%- endif %}
 
         {% if sale is invoice_subject -%}
-        <invoiceTotal><![CDATA[{{ sale.invoiceTotal|localizedcurrency(sale.currency.code) }}]]></invoiceTotal>
-        <creditTotal><![CDATA[{{ sale.creditTotal|localizedcurrency(sale.currency.code) }}]]></creditTotal>
+        <invoiceTotal><![CDATA[{{ sale.invoiceTotal|currency_quote(sale, true) }}]]></invoiceTotal>
+        <creditTotal><![CDATA[{{ sale.creditTotal|currency_quote(sale, true) }}]]></creditTotal>
         <invoiceState><![CDATA[{{ sale.invoiceState|invoice_state_badge }}]]></invoiceState>
         {%- endif %}
     </fields>

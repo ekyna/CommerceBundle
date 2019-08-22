@@ -175,8 +175,6 @@ class SecurityListener implements EventSubscriberInterface
                 $cart->setCurrency($customer->getCurrency());
             }
 
-            $this->cartProvider->updateCustomerGroupAndCurrency();
-
             $this->cartProvider->saveCart();
 
             $this->redirect = true;

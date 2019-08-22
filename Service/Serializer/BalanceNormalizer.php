@@ -30,27 +30,19 @@ class BalanceNormalizer implements NormalizerInterface
      */
     protected $urlGenerator;
 
-    /**
-     * @var string
-     */
-    protected $currency;
-
 
     /**
      * Constructor.
      *
      * @param TranslatorInterface   $translator
      * @param UrlGeneratorInterface $urlGenerator
-     * @param string                $currency
      */
     public function __construct(
         TranslatorInterface $translator,
-        UrlGeneratorInterface $urlGenerator,
-        string $currency
+        UrlGeneratorInterface $urlGenerator
     ) {
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
-        $this->currency = $currency;
     }
 
     /**
@@ -73,9 +65,10 @@ class BalanceNormalizer implements NormalizerInterface
             return $date ? $date->format(DateUtil::DATE_FORMAT) : null;
         };
 
-        $fCurrency = function (float $amount) use ($formatter) {
-            return 0 !== Money::compare(0, $amount, $this->currency)
-                ? $formatter->currency($amount, $this->currency)
+        $currency = $object->getCurrency();
+        $fCurrency = function (float $amount) use ($formatter, $currency) {
+            return 0 !== Money::compare(0, $amount, $currency)
+                ? $formatter->currency($amount, $currency)
                 : null;
         };
 

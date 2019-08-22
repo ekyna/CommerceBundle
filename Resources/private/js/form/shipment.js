@@ -19,7 +19,6 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 $relayTab = $form.find('#toggle-relay-point'),
                 $toggle = $form.find('#toggle-quantities');
 
-
             var onMethodChange = function() {
                 var supportParcel = 0,
                     supportRelay = 0,
@@ -46,9 +45,22 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     $generalTab.trigger('click');
                 }
             };
-
             $method.on('change', onMethodChange);
             onMethodChange();
+
+            var onParcelsChange = function() {
+                $parcels.find('.parcel-index').each(function(index, element) {
+                    $(element).text(index + 1);
+                });
+            };
+            $parcels.on(
+                'ekyna-collection-field-added '
+                + 'ekyna-collection-field-removed '
+                + 'ekyna-collection-field-moved-up '
+                + 'ekyna-collection-field-moved-down',
+                onParcelsChange
+            );
+            onParcelsChange();
 
             /*$state.on('change', function() {
                 $shippedAt.prop('disabled', !($state.val() === 'shipped' || $state.val() === 'completed'));
@@ -64,7 +76,8 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 .on('change keyup', function() {
                     var $input = $(this),
                         quantity = parseInt($input.val()),
-                        $children = $quantities.find('[data-parent="' + $input.attr('id') + '"]');
+                        $children = $form
+                            .find('.shipment-items > tbody > tr input[data-parent="' + $input.attr('id') + '"]');
 
                     if (isNaN(quantity)) quantity = 0;
 

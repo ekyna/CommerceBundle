@@ -54,13 +54,13 @@ ekyna_commerce_order_admin_edit:
     requirements:
         orderId: \d+
 
-#ekyna_commerce_order_admin_toggle:
-#    path: /{orderId}/toggle/{field}
-#    defaults: { _controller: "ekyna_commerce.order.controller:toggleAction", field: enabled }
-#    methods: [GET]
-#    requirements:
-#        orderId: \d+
-#        field: \w+
+ekyna_commerce_order_admin_toggle:
+    path: /{orderId}/toggle/{field}
+    defaults: { _controller: "ekyna_commerce.order.controller:toggleAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        field: autoDiscount|autoShipping|autoNotify
 
 ekyna_commerce_order_admin_edit_shipment:
     path: /{orderId}/edit-shipment
@@ -106,11 +106,12 @@ ekyna_commerce_order_admin_transform:
         target: "[a-z]+"
 
 ekyna_commerce_order_admin_duplicate:
-    path: /{orderId}/duplicate
+    path: /{orderId}/duplicate/{target}
     defaults: { _controller: "ekyna_commerce.order.controller:duplicateAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+
+        target: "[a-z]+"
 
 ekyna_commerce_order_admin_notify:
     path: /{orderId}/notify
@@ -144,6 +145,13 @@ ekyna_commerce_order_admin_release:
     path: /{orderId}/release
     defaults: { _controller: "ekyna_commerce.order.controller:releaseAction" }
     methods: [GET|POST]
+    requirements:
+        orderId: \d+
+
+ekyna_commerce_order_admin_set_exchnage_rate:
+    path: /{orderId}/set-exchange-rate
+    defaults: { _controller: "ekyna_commerce.order.controller:setExchangeRateAction" }
+    methods: [GET]
     requirements:
         orderId: \d+
 

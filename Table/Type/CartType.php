@@ -72,10 +72,9 @@ class CartType extends ResourceTableType
                 'position'    => 20,
                 'time_format' => 'none',
             ])
-            ->addColumn('grandTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.sale.field.ati_total',
-                'currency_path' => 'currency.code',
-                'position'      => 50,
+            ->addColumn('grandTotal', Type\Column\CurrencyType::class, [
+                'label'    => 'ekyna_commerce.sale.field.ati_total',
+                'position' => 50,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

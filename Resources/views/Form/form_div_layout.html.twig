@@ -194,20 +194,6 @@
 {%- endblock ekyna_commerce_attachment_widget -%}
 
 
-{%- block ekyna_commerce_checkout_payment_widget -%}
-    <div class="row">
-        <div class="col-sm-3 hidden-xs">
-            {{- block('ekyna_commerce_checkout_payment_image') -}}
-        </div>
-        <div class="col-sm-9 commerce-payment-method">
-            <p>{{ payment.method.title }}</p>
-            {{- payment.method.description|raw -}}
-            {%- if form.submit is defined %}{{ form_row(form.submit) }}{% endif -%}
-        </div>
-    </div>
-{%- endblock ekyna_commerce_checkout_payment_widget -%}
-
-
 {%- block ekyna_commerce_checkout_attachment_widget -%}
     {{- bootstrap_set_sizing('sm') -}}
     {{- form_errors(form) -}}
@@ -215,6 +201,21 @@
     {{- form_row(form.title) -}}
     {{- form_rest(form) -}}
 {%- endblock ekyna_commerce_checkout_attachment_widget -%}
+
+
+{%- block ekyna_commerce_checkout_payment_widget -%}
+    <div class="row">
+        <div class="col-sm-3 hidden-xs">
+            {{- block('ekyna_commerce_checkout_payment_image') -}}
+        </div>
+        <div class="col-sm-9 commerce-payment-method">
+            <p>{{ payment.method.title }} - {{ payment.getAmount()|localizedcurrency(payment.currency.code) }}</p>
+            {{- payment.method.description|raw -}}
+            {%- if form.amount is defined %}{{ form_row(form.amount) }}{% endif -%}
+            {%- if form.submit is defined %}{{ form_row(form.submit) }}{% endif -%}
+        </div>
+    </div>
+{%- endblock ekyna_commerce_checkout_payment_widget -%}
 
 
 {%- block ekyna_commerce_checkout_balance_payment_widget -%}
@@ -225,6 +226,10 @@
         <div class="col-sm-9 commerce-payment-method">
             <p>{{ payment.method.title }}</p>
             {{- payment.method.description|raw -}}
+
+            {%- if payment_term -%}
+                {{- 'ekyna_commerce.payment_term.label.singular'|trans }}: <strong>{{ payment_term.title -}}</strong>
+            {%- endif -%}
 
             {%- if 0 >= available_amount -%}
                 <div class="alert alert-danger">
@@ -308,6 +313,38 @@
     {{- block('ekyna_commerce_method_choice_widget') -}}
 {%- endwith -%}
 {%- endblock ekyna_commerce_shipment_method_choice_widget -%}
+
+
+{%- block ekyna_commerce_money_widget -%}
+    {% if quote_config is defined -%}
+    <div class="input-group commerce-money" data-config='{{ config|json_encode_data }}' title="{{ title }}">
+    {%- if base_config.left -%}
+        <span class="input-group-addon">{{ base_config.symbol }}</span>
+        {{ block('form_widget_simple') }}
+    {%- else -%}
+        {{ block('form_widget_simple') }}
+        <span class="input-group-addon">{{ base_config.symbol }}</span>
+    {%- endif -%}
+    {%- if quote_config.left -%}
+        <span class="input-group-addon">{{ quote_config.symbol }}</span>
+        <input type="text" class="commerce-money-quote form-control" value="0"/>
+    {%- else -%}
+        <input type="text" class="commerce-money-quote form-control" value="0"/>
+        <span class="input-group-addon">{{ quote_config.symbol }}</span>
+    {%- endif -%}
+    </div>
+    {%- else -%}
+    <div class="input-group">
+        {%- if base_config.left -%}
+            <span class="input-group-addon">{{ base_config.symbol }}</span>
+            {{ block('form_widget_simple') }}
+        {%- else -%}
+            {{ block('form_widget_simple') }}
+            <span class="input-group-addon">{{ base_config.symbol }}</span>
+        {%- endif -%}
+    </div>
+    {%- endif -%}
+{%- endblock ekyna_commerce_money_widget -%}
 
 
 {%- block ekyna_commerce_method_choice_widget -%}
@@ -592,7 +629,10 @@
 {%- block ekyna_commerce_shipment_parcel_widget -%}
     {{- form_errors(form) -}}
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-1">
+            <span class="form-control text-center parcel-index"></span>
+        </div>
+        <div class="col-md-3">
             {{- form_widget(form.weight, {'sizing': 'sm'}) -}}
             {{- form_errors(form.weight) -}}
         </div>

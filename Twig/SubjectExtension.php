@@ -5,13 +5,16 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 use Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesserInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigTest;
 
 /**
  * Class SubjectExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SubjectExtension extends \Twig_Extension
+class SubjectExtension extends AbstractExtension
 {
     /**
      * @var SubjectHelperInterface
@@ -44,27 +47,27 @@ class SubjectExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'subject_get',
                 [$this, 'getSubject']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'subject_add_to_cart_url',
                 [$this->subjectHelper, 'generateAddToCartUrl']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'subject_add_to_cart_url',
                 [$this->subjectHelper, 'generateAddToCartUrl']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'subject_public_url',
                 [$this->subjectHelper, 'generatePublicUrl']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'subject_private_url',
                 [$this->subjectHelper, 'generatePrivateUrl']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'subject_purchase_cost',
                 [$this->purchaseCostGuesser, 'guess']
             ),
@@ -77,7 +80,7 @@ class SubjectExtension extends \Twig_Extension
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest(
+            new TwigTest(
                 'subject_set',
                 [$this->subjectHelper, 'hasSubject']
             ),

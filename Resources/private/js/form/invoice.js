@@ -10,8 +10,9 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
         this.each(function() {
 
-            var $quantities = $(this).find('.invoice-items > tbody > tr input'),
-                $toggle = $(this).find('#toggle-quantities');
+            var $invoice = $(this),
+                $quantities = $invoice.find('.invoice-items > tbody > tr input'),
+                $toggle = $invoice.find('#toggle-quantities');
 
             console.log('invoiceWidget', $quantities.length);
 
@@ -26,7 +27,8 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 .on('change keyup', function() {
                     var $input = $(this),
                         quantity = parseInt($input.val()),
-                        $children = $quantities.find('[data-parent="' + $input.attr('id') + '"]');
+                        $children = $invoice
+                            .find('.invoice-items > tbody > tr input[data-parent="' + $input.attr('id') + '"]');
 
                     if (isNaN(quantity)) quantity = 0;
 
@@ -37,8 +39,8 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     }
 
                     $children.each(function() {
-                        var $input = $(this);
-                        $input.val(quantity * $input.data('quantity')).trigger('change');
+                        var $child = $(this);
+                        $child.val(quantity * $child.data('quantity')).trigger('change');
                     });
                 })
                 .not(':disabled').trigger('change');

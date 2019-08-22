@@ -22,22 +22,9 @@
         </tr>
         </thead>
         <tbody>
-        {% if 0 < invoices|length %}
-            {% set goodsTotal = 0 %}
-            {% set shipmentTotal = 0 %}
-            {% set taxesTotal = 0 %}
-            {% set total = 0 %}
-
-            {% for invoice in invoices %}
-                {% set currency = invoice.currency %}
-
-                {# TODO currency conversion ! #}
-                {#{% set goodsTotal = goodsTotal + invoice.goodsBase %}
-                {% set shipmentTotal = shipmentTotal + invoice.shipmentBase %}
-                {% set taxesTotal = taxesTotal + invoice.taxesTotal %}
-                {% set total = total + invoice.grandTotal %}#}
-
-                {% set invoiceId = prefix ~ '_' ~ loop.index0 %}
+        {% for invoice in invoices %}
+            {% set currency = invoice.currency %}
+            {% set invoiceId = prefix ~ '_' ~ loop.index0 %}
             <tr data-id="{{ invoice.id }}" data-summary='{{ {
                 'route': 'ekyna_commerce_order_invoice_admin_summary',
                 'parameters': {
@@ -59,10 +46,18 @@
                 <td id="{{ invoiceId }}_goodsBase">{{ invoice.goodsBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
-                <td id="{{ invoiceId }}_grandTotal">{{ invoice.grandTotal|localizedcurrency(currency) }}</td>
+                <td id="{{ invoiceId }}_grandTotal">
+                    {{- invoice.grandTotal|localizedcurrency(currency) -}}
+                    {%- if currency != commerce_default_currency -%}
+                        &nbsp;({{- invoice.realGrandTotal|localizedcurrency(commerce_default_currency) -}})
+                    {%- endif -%}
+                </td>
                 {% if prefix != 'credit' -%}
                 <td id="{{ invoiceId }}_paidTotal"{% if invoice.paidTotal < invoice.grandTotal %} class="danger"{% endif %}>
                     {{- invoice.paidTotal|localizedcurrency(currency) -}}
+                    {%- if currency != commerce_default_currency -%}
+                        &nbsp;({{- invoice.realPaidTotal|localizedcurrency(commerce_default_currency) -}})
+                    {%- endif -%}
                 </td>
                 <td id="{{ invoiceId }}_dueDate"{# TODO add danger class if due date is past #}>
                     {{- invoice.dueDate ? invoice.dueDate|localizeddate('short', 'none') : '&dash;' -}}
@@ -114,26 +109,13 @@
                     </a>
                 </td>
             </tr>
-            {% endfor %}
-            {#<tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                {% if prefix == 'credit' %}<td>&nbsp;</td>{% endif %}
-                <td>{{ goodsTotal|localizedcurrency(currency) }}</td>
-                <td>{{ shipmentTotal|localizedcurrency(currency) }}</td>
-                <td>{{ taxesTotal|localizedcurrency(currency) }}</td>
-                <td>{{ total|localizedcurrency(currency) }}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>#}
         {% else %}
             <tr>
                 <td colspan="{{ prefix == 'credit' ? 10 : 11 }}" class="text-center">
                     <em>{{ 'ekyna_commerce.invoice.alert.no_item'|trans }}</em>
                 </td>
             </tr>
-        {% endif %}
+        {% endfor %}
         </tbody>
     </table>
 </div>

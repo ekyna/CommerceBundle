@@ -90,10 +90,10 @@
                 <argument type="service" id="ekyna_commerce.stock.stock_renderer"/>
             </call>
             <call method="setInvoiceCalculator">
-                <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+                <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             </call>
             <call method="setShipmentCalculator">
-                <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+                <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             </call>
             <call method="setShipmentPriceResolver">
                 <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>

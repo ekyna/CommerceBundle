@@ -11,6 +11,10 @@
         <property name="user">
             <constraint name="Valid"/>
         </property>
+        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
+            <option name="fields">user</option>
+            <option name="message">ekyna_commerce.customer.unique_user</option>
+        </constraint>
     </class>
 
     <!-- PaymentMethod -->

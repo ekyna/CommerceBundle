@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Column\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
@@ -31,21 +32,33 @@ class PaymentMethodType extends ResourceTableType
                 'route_parameters_map' => [
                     'paymentMethodId' => 'id',
                 ],
-                'position' => 10,
+                'position'             => 10,
             ])
             ->addColumn('enabled', CType\Column\BooleanType::class, [
                 'label'                => 'ekyna_core.field.enabled',
                 'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'enabled'],
                 'route_parameters_map' => ['paymentMethodId' => 'id'],
-                'position' => 20,
+                'position'             => 20,
             ])
             ->addColumn('available', CType\Column\BooleanType::class, [
                 'label'                => 'ekyna_commerce.field.front_office',
                 'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'available'],
                 'route_parameters_map' => ['paymentMethodId' => 'id'],
-                'position' => 30,
+                'position'             => 30,
+            ])
+            ->addColumn('defaultCurrency', CType\Column\BooleanType::class, [
+                'label'                => 'ekyna_commerce.payment_method.field.use_default_currency',
+                'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
+                'route_parameters'     => ['field' => 'defaultCurrency'],
+                'route_parameters_map' => ['paymentMethodId' => 'id'],
+                'position'             => 40,
+            ])
+            ->addColumn('currencies', EntityType::class, [
+                'label'        => 'ekyna_commerce.currency.label.plural',
+                'entity_label' => 'code',
+                'position'     => 50,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

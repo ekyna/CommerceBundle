@@ -8,6 +8,10 @@
     <mapped-superclass name="Ekyna\Bundle\CommerceBundle\Entity\Customer"
             table="commerce_customer">
 
+        <unique-constraints>
+            <unique-constraint columns="user_id" name="unique_commerce_customer_user"/>
+        </unique-constraints>
+
         <many-to-one target-entity="Ekyna\Bundle\UserBundle\Model\UserInterface" field="user">
             <join-column name="user_id" referenced-column-name="id" on-delete="RESTRICT" nullable="true"/>
         </many-to-one>

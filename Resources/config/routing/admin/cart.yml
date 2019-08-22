@@ -51,13 +51,13 @@ ekyna_commerce_cart_admin_edit_shipment:
     requirements:
         cartId: \d+
 
-#ekyna_commerce_cart_admin_toggle:
-#    path: /{cartId}/toggle/{field}
-#    defaults: { _controller: "ekyna_commerce.cart.controller:toggleAction", field: enabled }
-#    methods: [GET]
-#    requirements:
-#        cartId: \d+
-#        field: \w+
+ekyna_commerce_cart_admin_toggle:
+    path: /{cartId}/toggle/{field}
+    defaults: { _controller: "ekyna_commerce.cart.controller:toggleAction" }
+    methods: [GET]
+    requirements:
+        cartId: \d+
+        field: autoDiscount|autoShipping|autoNotify
 
 ekyna_commerce_cart_admin_remove:
     path: /{cartId}/remove
@@ -89,11 +89,12 @@ ekyna_commerce_cart_admin_transform:
         target: "[a-z]+"
 
 ekyna_commerce_cart_admin_duplicate:
-    path: /{cartId}/duplicate
+    path: /{cartId}/duplicate/{target}
     defaults: { _controller: "ekyna_commerce.cart.controller:duplicateAction" }
     methods: [GET|POST]
     requirements:
         cartId: \d+
+        target: "[a-z]+"
 
 ekyna_commerce_cart_admin_notify:
     path: /{cartId}/notify

@@ -27,6 +27,22 @@
 {%- endblock phone_widget -%}
 
 
+{%- block currency_subject_amount_widget -%}
+    {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
+    <div{{ block('widget_attributes') }}>
+        {%- if value is not empty -%}
+            {% if quote -%}
+                {{ value|currency_quote(subject, base) }}
+            {%- else -%}
+                {{ value|currency_base(subject, base) }}
+            {%- endif %}
+        {%- else -%}
+            &nbsp;&nbsp;
+        {%- endif -%}
+    </div>
+{%- endblock currency_subject_amount_widget -%}
+
+
 {%- block vat_display_mode_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>

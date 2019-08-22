@@ -11,6 +11,16 @@
     </div>
     <div class="table-responsive">
         <table class="table">
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.number'|trans }}</th>
+                <th>{{ 'ekyna_commerce.shipment_method.label.singular'|trans }}</th>
+                <th>{{ 'ekyna_commerce.shipment.field.tracking_number'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.status'|trans }}</th>
+                <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
+                <th></th>
+            </tr>
+            </thead>
             <tbody>
             {%- for shipment in shipments -%}
                 {%- set shipmentId = 'shipment_' ~ shipment.id -%}
@@ -50,11 +60,13 @@
                             </thead>
                             <tbody>
                             {%- for item in shipment.items -%}
+                                {%- if item.saleItem is null or not item.saleItem.private -%}
                                 <tr>
                                     <td>{{ item.saleItem.designation }}</td>{# TODO Public link #}
                                     <td>{{ item.saleItem.reference }}</td>
                                     <td>{{ item.quantity|localizednumber }}</td> {# TODO Packaging format #}
                                 </tr>
+                                {%- endif -%}
                             {%- endfor -%}
                             </tbody>
                         </table>

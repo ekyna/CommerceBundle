@@ -214,25 +214,31 @@
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customerSource.outstandingLimit|localizedcurrency(commerce_default_currency), 'text', {
+                        {{ show_row(customerSource.outstandingLimit, 'currency_subject_amount', {
                             'label': 'ekyna_commerce.sale.field.outstanding_limit',
                             'id': 'customer_outstanding_limit',
+                            'subject': customerSource,
+                            'quote': false,
                             'label_col': 4
                         }) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(customerSource.creditBalance|localizedcurrency(commerce_default_currency), 'text', {
+                        {{ show_row(customerSource.creditBalance, 'currency_subject_amount', {
                             'label': 'ekyna_commerce.customer.field.credit_balance',
-                            'id': 'customer_credit_balance',
+                            'id': 'customer_outstanding_limit',
+                            'subject': customerSource,
+                            'quote': false,
                             'label_col': 4
                         }) }}
                     </div>
                     <div class="col-md-6">
-                        {{ show_row(customerSource.outstandingBalance|localizedcurrency(commerce_default_currency), 'text', {
+                        {{ show_row(customerSource.outstandingBalance, 'currency_subject_amount', {
                             'label': 'ekyna_commerce.customer.field.outstanding_balance',
-                            'id': 'customer_outstanding_balance',
+                            'id': 'customer_outstanding_limit',
+                            'subject': customerSource,
+                            'quote': false,
                             'label_col': 4
                         }) }}
                     </div>

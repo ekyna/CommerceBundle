@@ -19,11 +19,7 @@
             'type': 'link',
             'path': admin_resource_path(cart, 'notify')
         }) }}#}
-        {{ ui_button('ekyna_core.button.duplicate', {
-            'theme': 'default',
-            'type': 'link',
-            'path': admin_resource_path(cart, 'duplicate')
-        }) }}
+        {{ sale_duplicate_btn(cart) }}
         {{ sale_transform_btn(cart) }}
         {{ admin_resource_btn(cart, 'edit', {'label': 'ekyna_core.button.edit'}) }}
         {{ admin_resource_btn(cart, 'remove', {'label': 'ekyna_core.button.remove'}) }}
@@ -176,5 +172,7 @@
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
     <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
+    {% if support_enabled() -%}
     <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+    {%- endif %}
 {% endblock javascripts %}

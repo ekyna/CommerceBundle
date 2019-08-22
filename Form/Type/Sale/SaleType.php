@@ -2,12 +2,12 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
@@ -16,6 +16,8 @@ use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -124,22 +126,23 @@ class SaleType extends ResourceFormType
             $sale = $event->getData();
             $form = $event->getForm();
 
-            if (null !== $currency = $sale->getCurrency()) {
-                $currency = $currency->getCode();
-            } else {
-                $currency = $this->defaultCurrency;
-            }
-
             $locked = $sale instanceof CartInterface;
+
+            $currencyLocked = $sale->hasPayments();
+            if ($sale instanceof ShipmentSubjectInterface && $sale->hasShipments()) {
+                $currencyLocked = true;
+            } elseif ($sale instanceof InvoiceSubjectInterface && $sale->hasInvoices()) {
+                $currencyLocked = true;
+            }
 
             $form
                 ->add('currency', CurrencyChoiceType::class, [
-                    'required' => !$locked,
-                    'disabled' => $locked,
+                    'required' => !($locked || $currencyLocked),
+                    'disabled' => $locked || $currencyLocked,
                 ])
                 ->add('locale', LocaleChoiceType::class, [
-                    'required' => !$locked,
-                    'disabled' => $locked,
+                    'required' => !($locked || $currencyLocked),
+                    'disabled' => $locked || $currencyLocked,
                 ])
                 ->add('autoShipping', Type\CheckboxType::class, [
                     'label'    => 'ekyna_commerce.sale.field.auto_shipping',
@@ -203,12 +206,12 @@ class SaleType extends ResourceFormType
                 ])
                 ->add('depositTotal', MoneyType::class, [
                     'label'    => 'ekyna_commerce.sale.field.deposit_total',
-                    'currency' => $currency,
+                    'subject'  => $sale,
                     'disabled' => $locked,
                 ])
                 ->add('outstandingLimit', MoneyType::class, [
                     'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
-                    'currency' => $currency,
+                    'subject'  => $sale,
                     'disabled' => $locked,
                 ])
                 ->add('relayPoint', RelayPointType::class, [

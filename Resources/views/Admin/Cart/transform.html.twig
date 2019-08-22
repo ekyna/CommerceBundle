@@ -1,7 +1,10 @@
 {% extends '@EkynaAdmin/Entity/Default/edit.html.twig' %}
 
 {% block title %}
-    <h1>{{ 'ekyna_commerce.cart.header.transform'|trans({'%number%': cart.number})|raw }}</h1>
+    <h1>{{ 'ekyna_commerce.cart.header.transform'|trans({
+        '%number%': cart.number,
+        '%target%': ('ekyna_commerce.' ~ target ~ '.label.singular')|trans|lower
+    })|raw }}</h1>
 {% endblock title %}
 
 {% block main %}

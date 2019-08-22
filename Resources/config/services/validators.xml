@@ -15,7 +15,7 @@
         <!-- Invoice line validator -->
         <service id="ekyna_commerce.invoice_item.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\InvoiceLineValidator">
-            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             <tag name="validator.constraint_validator" />
         </service>
 
@@ -36,7 +36,7 @@
         <!-- Shipment item validator -->
         <service id="ekyna_commerce.shipment_item.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentItemValidator">
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <tag name="validator.constraint_validator" />
         </service>
 
@@ -71,8 +71,8 @@
         </service>
         <service id="ekyna_commerce.sale_item.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemValidator">
-            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <tag name="validator.constraint_validator" />
         </service>
 

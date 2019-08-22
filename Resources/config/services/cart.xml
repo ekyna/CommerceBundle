@@ -30,6 +30,7 @@
             <argument type="service" id="ekyna_commerce.cart.operator"/>
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
             <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+            <argument type="service" id="Ekyna\Component\Resource\Locale\LocaleProviderInterface"/>
             <argument type="service" id="session"/>
         </service>
 

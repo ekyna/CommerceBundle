@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
-use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
@@ -51,10 +50,9 @@ class OrderPaymentType extends AbstractOrderListType
                 'property_path' => 'method.name',
                 'position'      => 30,
             ])
-            ->addColumn('amount', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_core.field.amount',
-                'currency_path' => 'currency.code',
-                'position'      => 40,
+            ->addColumn('amount', Column\CurrencyType::class, [
+                'label'    => 'ekyna_core.field.amount',
+                'position' => 40,
             ])
             ->addColumn('currency', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.currency',

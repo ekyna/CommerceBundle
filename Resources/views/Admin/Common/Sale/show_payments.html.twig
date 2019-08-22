@@ -15,15 +15,17 @@
         </thead>
         <tbody>
         {% for payment in sale.payments %}
+            {% do currency_configure(payment) %}{# Configure currency renderer #}
             {% set paymentId = 'payment_' ~ loop.index0 %}
             <tr data-id="{{ payment.id }}">
                 <td id="{{ paymentId }}_number">{{ payment.getNumber() }}</td>
                 <td id="{{ paymentId }}_method">{{ payment.getMethod() }}</td>
-                <td id="{{ paymentId }}_amount">{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
+                <td id="{{ paymentId }}_amount">{{ payment.getRealAmount()|currency_quote(null, true) }}</td>
                 <td id="{{ paymentId }}_currency">
-                    {{ payment.getCurrency().code|currency_symbol }}
                     {%- if payment.getCurrency().code != commerce_default_currency -%}
-                        &nbsp;({{ payment.getExchangeRate()|localizednumber }})
+                        {{ null|currency_rate }}
+                    {%- else -%}
+                        {{ payment.getCurrency().code }}
                     {%- endif -%}
                 </td>
                 <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
@@ -58,6 +60,7 @@
                 </td>
             </tr>
         {% endfor %}
+        {% do currency_configure() %}{# Reset currency renderer #}
         </tbody>
     </table>
 </div>

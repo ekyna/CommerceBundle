@@ -273,7 +273,7 @@ class SaleInvoiceController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function recalculateAction(Request $request)
     {
@@ -352,7 +352,7 @@ class SaleInvoiceController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function unlinkAction(Request $request)
     {
@@ -391,7 +391,7 @@ class SaleInvoiceController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function renderAction(Request $request)
     {
@@ -401,6 +401,24 @@ class SaleInvoiceController extends AbstractSaleController
         $invoice = $context->getResource();
 
         $this->isGranted('VIEW', $invoice);
+
+        if (null !== $currency = $request->query->get('currency')) {
+            $currency = strtoupper($currency);
+            if ($currency != $invoice->getCurrency()) {
+                $invoice = clone $invoice;
+                $invoice->setCurrency($currency);
+
+                $this->get('ekyna_commerce.document.calculator')->calculate($invoice);
+            }
+        }
+
+        if (null !== $locale = $request->query->get('locale')) {
+            $locale = strtolower($locale);
+            if ($locale != $invoice->getLocale()) {
+                $invoice = clone $invoice;
+                $invoice->setLocale($locale);
+            }
+        }
 
         $renderer = $this
             ->get('ekyna_commerce.document.renderer_factory')

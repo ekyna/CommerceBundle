@@ -30,7 +30,7 @@
                     {% set paymentId = 'payment_' ~ loop.index0 %}
                     <tr data-id="{{ payment.id }}">
                         <td id="{{ paymentId }}_method">{{ payment.getMethod() }}</td>
-                        <td id="{{ paymentId }}_amount">{{ payment.getAmount()|localizedcurrency(payment.getCurrency().code) }}</td>
+                        <td id="{{ paymentId }}_amount">{{ payment.getRealAmount()|currency_quote(payment, true) }}</td>
                         <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
                         {#<td class="actions">
                             TODO cancel button ?

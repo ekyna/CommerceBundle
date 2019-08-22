@@ -109,7 +109,7 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     /**
      * @inheritDoc
      */
-    public function isManual()
+    public function isManual(): bool
     {
         return $this->getFactoryName() === Offline::FACTORY_NAME;
     }
@@ -117,7 +117,7 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     /**
      * @inheritdoc
      */
-    public function isCredit()
+    public function isCredit(): bool
     {
         return $this->getFactoryName() === Credit::FACTORY_NAME;
     }
@@ -125,7 +125,7 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     /**
      * @inheritdoc
      */
-    public function isOutstanding()
+    public function isOutstanding(): bool
     {
         return $this->getFactoryName() === Outstanding::FACTORY_NAME;
     }

@@ -3,9 +3,13 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Component\Commerce\Customer\Balance\Balance;
+use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Intl\Intl;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -15,6 +19,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BalanceType extends AbstractType
 {
+    /**
+     * @var OrderRepositoryInterface
+     */
+    private $orderRepository;
+
+    /**
+     * Constructor.
+     *
+     * @param OrderRepositoryInterface $orderRepository
+     */
+    public function __construct(OrderRepositoryInterface $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
+
     /**
      * @inheritDoc
      */
@@ -44,6 +63,27 @@ class BalanceType extends AbstractType
                     'ekyna_commerce.customer.balance.befall_invoices' => Balance::FILTER_BEFALL_INVOICES,
                 ],
             ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            /** @var Balance $balance */
+            $balance = $event->getData();
+            $customer = $balance->getCustomer();
+
+            $currencies = $this->orderRepository->getCustomerCurrencies($customer);
+            $bundle = Intl::getCurrencyBundle();
+
+            $choices = [];
+            foreach ($currencies as $currency) {
+                $choices[ucfirst($bundle->getCurrencyName($currency))] = $currency;
+            }
+
+            $event->getForm()->add('currency', Type\ChoiceType::class, [
+                'label'    => 'ekyna_core.field.currency',
+                'required' => true,
+                'select2'  => false,
+                'choices'  => $choices,
+            ]);
+        });
     }
 
     /**

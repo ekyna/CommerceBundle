@@ -43,7 +43,7 @@ class PaymentController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function statusAction(Request $request)
     {

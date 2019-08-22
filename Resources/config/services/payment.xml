@@ -34,17 +34,34 @@
             <argument>%kernel.debug%</argument>
         </service>
 
-        <!-- Payment subject calculator -->
+        <!-- Payment calculator -->
         <service id="ekyna_commerce.payment.calculator"
                  class="Ekyna\Component\Commerce\Payment\Calculator\PaymentCalculator">
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.currency.converter"/>
+        </service>
+
+        <!-- Payment factory -->
+        <service id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"
+                 class="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdater">
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+        </service>
+
+        <!-- Payment factory -->
+        <service id="ekyna_commerce.payment.factory"
+                 class="Ekyna\Component\Commerce\Payment\Factory\PaymentFactory">
+            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
+            <argument type="service" id="ekyna_commerce.payment.calculator"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="ekyna_commerce.currency.repository"/>
         </service>
 
         <!-- Payment outstanding releaser -->
         <service id="ekyna_commerce.payment.outstanding_releaser"
                  class="Ekyna\Component\Commerce\Payment\Releaser\OutstandingReleaser">
-            <argument type="service" id="ekyna_commerce.payment.calculator"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
         </service>
 
         <!-- Outstanding watcher -->
@@ -73,11 +90,11 @@
             <call method="setKeyGenerator">
                 <argument type="service" id="ekyna_commerce.common.key_generator"/>
             </call>
+            <call method="setPaymentUpdater">
+                <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
+            </call>
             <call method="setCustomerUpdater">
                 <argument type="service" id="ekyna_commerce.customer.updater"/>
-            </call>
-            <call method="setCurrencyConverter">
-                <argument type="service" id="ekyna_commerce.currency.converter"/>
             </call>
         </service>
 
@@ -85,7 +102,7 @@
         <service id="ekyna_commerce.payment.checkout_manager"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager">
             <argument type="service" id="ekyna_commerce.payment_method.repository"/>
-            <argument type="service" id="ekyna_commerce.sale_factory"/>
+            <argument type="service" id="ekyna_commerce.payment.factory"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
 
@@ -93,8 +110,11 @@
         <service id="ekyna_commerce.payment.checkout_event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\PaymentCheckoutEventSubscriber">
             <argument type="service" id="form.factory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="router"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -132,7 +152,9 @@
         <!-- Payment subject state resolver -->
         <service id="ekyna_commerce.payment.subject_state_resolver"
                  class="Ekyna\Component\Commerce\Payment\Resolver\PaymentSubjectStateResolver">
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
         </service>
 
    </services>

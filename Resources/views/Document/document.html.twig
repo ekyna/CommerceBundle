@@ -10,14 +10,19 @@
         {{ subject.sale.number -}}
     </h1>
     <p>
-        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>&nbsp;
+        <span class="text-alt">{{ 'ekyna_core.field.date'|trans }}</span>
+        {{- '&nbsp;' -}}
         <strong>{{ date|localizeddate('long', 'none', locale) }}</strong>.
         {% if subject.sale.customer is not null -%}
-            <span class="text-alt">{{ 'ekyna_commerce.customer.label.singular'|trans }}</span>&nbsp;
+            <span class="text-alt">{{ 'ekyna_commerce.customer.label.singular'|trans }}</span>
+            {{- '&nbsp;' -}}
             <strong>{{ subject.sale.customer.number }}</strong>.
         {%- endif %}
+        {{ macro.render_origin_customer(subject) }}
         {{ macro.render_voucher_number(subject) }}
         {{ macro.render_payment_term(subject) }}
+        {{ macro.render_exchange_rate(subject) }}
+        {{ macro.render_shipment_method(subject) }}
     </p>
     {% if subject.comment is not empty -%}
     <p>{{ subject.comment|nl2br }}</p>
@@ -232,7 +237,14 @@
             <td colspan="{{ columns_count - 2 }}" rowspan="{{ subject.ati ? 2 : 3 }}">&nbsp;</td>
             {% if subject.ati -%}
             <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency, locale) }}</td>
+            <td class="total final text-right">
+                {% block grand_total %}
+                {{- subject.grandTotal|localizedcurrency(currency, locale) -}}
+                {% if subject.currency != commerce_default_currency -%}
+                    <br><em>({{- subject.realGrandTotal|localizedcurrency(commerce_default_currency, locale) -}})</em>
+                {%- endif %}
+                {% endblock grand_total %}
+            </td>
             {%- else -%}
             <th>{{ 'ekyna_commerce.sale.field.net_total'|trans }}</th>
             <td class="total text-right">
@@ -247,7 +259,9 @@
         {% if not subject.ati -%}
         <tr>
             <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            <td class="total final text-right">{{ subject.grandTotal|localizedcurrency(currency, locale) }}</td>
+            <td class="total final text-right">
+                {{ block('grand_total') }}
+            </td>
         </tr>
         {%- endif %}
     </tbody>

@@ -20,7 +20,6 @@
                  public="false">
             <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
             <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
-            <argument>%ekyna_commerce.default.currency%</argument>
             <call method="setFormatterFactory">
                 <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             </call>
@@ -60,7 +59,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\SaleNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.common.flag_renderer"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>
@@ -70,8 +69,8 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleItemNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
-            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
@@ -128,7 +127,8 @@
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
@@ -140,7 +140,7 @@
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
@@ -152,7 +152,7 @@
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
@@ -163,7 +163,7 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Helper\SubjectNormalizerHelper"
                  public="false" lazy="true">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <call method="setNormalizer">

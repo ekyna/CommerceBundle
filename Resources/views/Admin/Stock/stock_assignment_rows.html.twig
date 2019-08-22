@@ -20,7 +20,7 @@
             <strong{% if not assignment.ready %} class="text-danger"{% endif %}>[{{ assignment.shipped }}]</strong>
         </td>
         <td id="{{ assignment_id ~ '_estimatedDateOfArrival' }}">{{ assignment.unit.eda|raw }}</td>
-        <td id="{{ assignment_id ~ '_netPrice' }}" class="text-right">{{ assignment.unit.net_price }}</td>
+        <td id="{{ assignment_id ~ '_netPrice' }}" class="text-right">{{ assignment.unit.net_price|raw }}</td>
         <td class="actions">
             {% for action in assignment.actions %}
             <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal{% endif %}>

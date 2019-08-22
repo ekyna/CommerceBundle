@@ -3,13 +3,15 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\Support\TicketRenderer;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class SupportExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupportExtension extends \Twig_Extension
+class SupportExtension extends AbstractExtension
 {
     /**
      * @var TicketRenderer
@@ -42,16 +44,16 @@ class SupportExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'support_enabled',
                 [$this, 'isSupportEnabled']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'support_ticket',
                 [$this->renderer, 'renderTicket'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'support_tickets',
                 [$this->renderer, 'renderTickets'],
                 ['is_safe' => ['html']]

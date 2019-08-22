@@ -33,18 +33,26 @@
                         'label': 'ekyna_commerce.field.factory_name'
                     }) }}
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             {{ show_row(paymentMethod.enabled, 'boolean', {
                                 'label': 'ekyna_core.field.enabled',
-                                'label_col': 4,
+                                'label_col': 6,
                                 'color': true
                             }) }}
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             {{ show_row(paymentMethod.available, 'boolean', {
                                 'label': 'ekyna_commerce.field.front_office',
-                                'label_col': 4,
+                                'label_col': 6,
                                 'color': true
+                            }) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ show_row(paymentMethod.defaultCurrency, 'boolean', {
+                                'label': 'ekyna_commerce.payment_method.field.use_default_currency',
+                                'label_col': 6,
+                                'color': true,
+                                'false_class': 'label label-warning'
                             }) }}
                         </div>
                     </div>

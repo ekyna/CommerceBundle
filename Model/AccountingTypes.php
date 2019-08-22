@@ -26,6 +26,8 @@ final class AccountingTypes extends AbstractConstants
             Types::TYPE_TAX      => [$prefix.Types::TYPE_TAX],
             Types::TYPE_PAYMENT  => [$prefix.Types::TYPE_PAYMENT],
             Types::TYPE_UNPAID   => [$prefix.Types::TYPE_UNPAID],
+            Types::TYPE_EX_GAIN  => [$prefix.Types::TYPE_EX_GAIN],
+            Types::TYPE_EX_LOSS  => [$prefix.Types::TYPE_EX_LOSS],
         ];
     }
 

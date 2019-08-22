@@ -5,13 +5,15 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutEvent;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class CheckoutExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class CheckoutExtension extends \Twig_Extension
+class CheckoutExtension extends AbstractExtension
 {
     /**
      * @var EventDispatcherInterface
@@ -35,7 +37,7 @@ class CheckoutExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_Function(
+            new TwigFunction(
                 'cart_checkout_content',
                 [$this, 'renderCheckoutContent'],
                 ['is_safe' => ['html']]

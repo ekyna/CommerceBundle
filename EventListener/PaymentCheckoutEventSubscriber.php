@@ -6,10 +6,12 @@ use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
 use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Customer\Model\CustomerStates;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -28,6 +30,16 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
     private $formFactory;
 
     /**
+     * @var PaymentUpdaterInterface
+     */
+    private $paymentUpdater;
+
+    /**
+     * @var CurrencyConverterInterface
+     */
+    private $currencyConverter;
+
+    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -37,22 +49,36 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
      */
     private $urlGenerator;
 
+    /**
+     * @var string
+     */
+    private $defaultCurrency;
+
 
     /**
      * Constructor.
      *
-     * @param FormFactoryInterface  $formFactory
-     * @param TranslatorInterface   $translator
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param FormFactoryInterface       $formFactory
+     * @param PaymentUpdaterInterface    $paymentUpdater
+     * @param CurrencyConverterInterface $currencyConverter
+     * @param TranslatorInterface        $translator
+     * @param UrlGeneratorInterface      $urlGenerator
+     * @param string                     $defaultCurrency
      */
     public function __construct(
         FormFactoryInterface $formFactory,
+        PaymentUpdaterInterface $paymentUpdater,
+        CurrencyConverterInterface $currencyConverter,
         TranslatorInterface $translator,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
+        string $defaultCurrency
     ) {
         $this->formFactory = $formFactory;
+        $this->paymentUpdater = $paymentUpdater;
+        $this->currencyConverter = $currencyConverter;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
+        $this->defaultCurrency = $defaultCurrency;
     }
 
     /**
@@ -131,7 +157,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         }
         // Abort if deposit is not paid
         if (0 < $sale->getDepositTotal()) {
-            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $sale->getCurrency()->getCode())) {
+            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $this->defaultCurrency)) {
                 $event->stopPropagation();
 
                 return;
@@ -141,16 +167,18 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         $payment = $event->getPayment();
 
         // Customer available fund
-        $available = $customer->getCreditBalance();
+        $available = (float)$customer->getCreditBalance();
 
         // If customer available fund is lower than the payment amount
-        if ($available < $payment->getAmount()) {
+        if ($available < $payment->getRealAmount()) {
             // Limit to available fund
-            $payment->setAmount($available);
+            $this->paymentUpdater->updateRealAmount($payment, $available);
         }
 
+        $available = $this->currencyConverter->convertWithSubject($available, $payment);
+
         $options = $event->getFormOptions();
-        $options['available_amount'] = (float)$available;
+        $options['available_amount'] = $available;
 
         $form = $this
             ->formFactory
@@ -181,7 +209,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
             return;
         }
         // Abort if no payment term
-        if (null === $sale->getPaymentTerm()) {
+        if (null === $term = $sale->getPaymentTerm()) {
             $event->stopPropagation();
 
             return;
@@ -194,7 +222,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         }
         // Abort if deposit is not paid
         if (0 < $sale->getDepositTotal()) {
-            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $sale->getCurrency()->getCode())) {
+            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $this->defaultCurrency)) {
                 $event->stopPropagation();
 
                 return;
@@ -206,14 +234,14 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         // If sale has a customer limit
         if (0 < $limit = $sale->getOutstandingLimit()) {
             // Use sale's balance
-            $balance = - $sale->getOutstandingAccepted() - $sale->getOutstandingExpired();
+            $balance = -$sale->getOutstandingAccepted() - $sale->getOutstandingExpired();
         } else {
             // Use customer's limit and balance
             $limit = $customer->getOutstandingLimit();
             $balance = $customer->getOutstandingBalance();
         }
 
-        $available = $limit + $balance;
+        $available = (float)($limit + $balance);
         // Abort if non available fund
         if (0 >= $available) {
             $event->stopPropagation();
@@ -222,21 +250,25 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         }
 
         // If customer available fund is lower than the payment amount
-        if ($available < $payment->getAmount()) {
+        if ($available < $payment->getRealAmount()) {
             // Limit to available fund
-            $payment->setAmount($available);
+            $this->paymentUpdater->updateRealAmount($payment, $available);
         }
 
+        $available = $this->currencyConverter->convertWithSubject($available, $payment);
+
         $options = $event->getFormOptions();
-        $options['available_amount'] = (float)$available;
+        $options['available_amount'] = $available;
 
         if (!$options['admin_mode'] && $sale instanceof QuoteInterface && !$sale->hasVoucher()) {
             $options['lock_message'] = $this->translator->trans('ekyna_commerce.checkout.payment.voucher_mandatory', [
                 '%url%' => $this->urlGenerator->generate('ekyna_commerce_account_quote_voucher', [
                     'number' => $sale->getNumber(),
-                ])
+                ]),
             ]);
             $options['disabled'] = true;
+        } else {
+            $options['payment_term'] = $term;
         }
 
         $form = $this

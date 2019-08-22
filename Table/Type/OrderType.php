@@ -141,15 +141,13 @@ class OrderType extends ResourceTableType
                 'label'    => 'ekyna_commerce.sale.field.origin_number',
                 'position' => 50,
             ])
-            ->addColumn('grandTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.sale.field.ati_total',
-                'currency_path' => 'currency.code',
-                'position'      => 60,
+            ->addColumn('grandTotal', Type\Column\CurrencyType::class, [
+                'label'    => 'ekyna_commerce.sale.field.ati_total',
+                'position' => 60,
             ])
-            ->addColumn('paidTotal', BType\Column\PriceType::class, [
-                'label'         => 'ekyna_commerce.sale.field.paid_total',
-                'currency_path' => 'currency.code',
-                'position'      => 70,
+            ->addColumn('paidTotal', Type\Column\CurrencyType::class, [
+                'label'    => 'ekyna_commerce.sale.field.paid_total',
+                'position' => 70,
             ])
             ->addColumn('state', Type\Column\SaleStateType::class, [
                 'label'    => 'ekyna_commerce.field.status',
@@ -191,12 +189,12 @@ class OrderType extends ResourceTableType
                             'orderId' => 'id',
                         ],
                         'permission'           => 'edit',
-                        'filter' => function(RowInterface $row) {
+                        'filter'               => function (RowInterface $row) {
                             /** @var OrderInterface $order */
                             $order = $row->getData();
 
                             return ShipmentStates::isPreparableState($order->getShipmentState());
-                        }
+                        },
                     ],
                     [
                         'label'                => 'ekyna_commerce.sale.button.abort',
@@ -207,12 +205,12 @@ class OrderType extends ResourceTableType
                             'orderId' => 'id',
                         ],
                         'permission'           => 'edit',
-                        'filter' => function(RowInterface $row) {
+                        'filter'               => function (RowInterface $row) {
                             /** @var OrderInterface $order */
                             $order = $row->getData();
 
                             return $order->getShipmentState() === ShipmentStates::STATE_PREPARATION;
-                        }
+                        },
                     ],
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -233,12 +231,12 @@ class OrderType extends ResourceTableType
                             'orderId' => 'id',
                         ],
                         'permission'           => 'delete',
-                        'disable' => function(RowInterface $row) {
+                        'disable'              => function (RowInterface $row) {
                             /** @var OrderInterface $order */
                             $order = $row->getData();
 
                             return !OrderStates::isDeletableState($order->getState());
-                        }
+                        },
                     ],
                 ],
             ]);

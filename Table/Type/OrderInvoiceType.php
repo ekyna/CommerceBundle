@@ -41,10 +41,10 @@ class OrderInvoiceType extends AbstractOrderListType
                 'currency_path' => 'currency',
                 'position'      => 50,
             ])
-            ->addColumn('saleTotal', BType\Column\PriceType::class, [
+            ->addColumn('saleTotal', Column\CurrencyType::class, [
                 'label'         => 'ekyna_commerce.invoice.field.sale_total',
                 'property_path' => 'order.grandTotal',
-                'currency_path' => 'currency',
+                'subject_path'  => 'order',
                 'position'      => 60,
             ])
             ->addColumn('paidTotal', Column\InvoicePaidTotalType::class, [

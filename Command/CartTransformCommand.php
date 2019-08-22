@@ -104,7 +104,7 @@ class CartTransformCommand extends Command
 
         /** @var \Ekyna\Component\Commerce\Cart\Model\CartInterface $cart */
         $cart = $this->cartRepository->findOneBy(['number' => $number]);
-        if (null === $number) {
+        if (null === $cart) {
             $output->writeln("<error>Cart not found for number '$number'.</error>");
 
             return;

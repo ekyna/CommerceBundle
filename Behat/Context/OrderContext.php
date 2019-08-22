@@ -57,8 +57,8 @@ class OrderContext implements Context, KernelAwareContext
 
         $payment = $this
             ->getContainer()
-            ->get('ekyna_commerce.sale_factory')
-            ->createPaymentForSale($order);
+            ->get('ekyna_commerce.payment.factory')
+            ->createPayment($order);
 
         $payment
             ->setMethod($methods[0])
@@ -201,6 +201,7 @@ class OrderContext implements Context, KernelAwareContext
             }
 
             if (isset($row['shipmentMethod'])) {
+                /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface $method */
                 if (null === $method = $shipmentMethodRepository->findOneBy(['name' => $row['shipmentMethod']])) {
                     throw new \InvalidArgumentException("Failed to find the shipment method with name '{$row['shipmentMethod']}'.");
                 }

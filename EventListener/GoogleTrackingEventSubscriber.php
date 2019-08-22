@@ -89,14 +89,13 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
     public function onCheckoutConfirmation(CheckoutEvent $event)
     {
         // TODO Find a way to do this only once
-
         $sale = $event->getSale();
+        $currency = $this->calculator->getDefaultCurrency();
 
         $event = $this->buildTrackingEvent($sale, Event::PURCHASE);
 
-        $result = $sale->getFinalResult();
-        $shipping = $sale->getShipmentResult();
-        $currency = $sale->getCurrency()->getCode();
+        $result = $sale->getFinalResult($currency);
+        $shipping = $sale->getShipmentResult($currency);
 
         $event
             ->setTransactionId($sale->getNumber())
@@ -115,8 +114,10 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
      */
     private function buildTrackingEvent(SaleInterface $sale, string $type)
     {
-        if (!$sale->getFinalResult()) {
-            $this->calculator->calculateSale($sale);
+        $currency = $this->calculator->getDefaultCurrency();
+
+        if (!$sale->getFinalResult($currency)) {
+            $this->calculator->calculateSale($sale, $currency);
         }
 
         $trackEvent = new Event($type);
@@ -138,15 +139,17 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
      */
     private function buildTrackingItem(Event $trackEvent, SaleItemInterface $saleItem)
     {
+        $currency = $this->calculator->getDefaultCurrency();
+
         if (!($saleItem->isCompound() && !$saleItem->hasPrivateChildren())) {
-            if (!$saleItem->getResult()) {
-                $this->calculator->calculateSaleItem($saleItem);
+            if (!$saleItem->getResult($currency)) {
+                $this->calculator->calculateSaleItem($saleItem, null, $currency);
             }
 
-            $total = $saleItem->getResult()->getBase();
+            $total = $saleItem->getResult($currency)->getBase();
             $quantity = intval($saleItem->getTotalQuantity());
 
-            $price = (string)Money::round($total / $quantity, $saleItem->getSale()->getCurrency()->getCode());
+            $price = (string)Money::round($total / $quantity, $currency);
 
             $trackItem = new Product($saleItem->getReference(), $saleItem->getDesignation());
             $trackItem

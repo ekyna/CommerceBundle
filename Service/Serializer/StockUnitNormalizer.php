@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockUnitNormalizer as BaseNormalizer;
+use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 
@@ -30,16 +31,19 @@ class StockUnitNormalizer extends BaseNormalizer
     /**
      * Constructor.
      *
-     * @param FormatterFactory $formatterFactory
-     * @param ConstantsHelper  $constantHelper
-     * @param ResourceHelper   $resourceHelper
+     * @param FormatterFactory           $formatterFactory
+     * @param CurrencyConverterInterface $currencyConverter
+     * @param ConstantsHelper            $constantHelper
+     * @param ResourceHelper             $resourceHelper
      */
     public function __construct(
         FormatterFactory $formatterFactory,
+        CurrencyConverterInterface $currencyConverter,
         ConstantsHelper $constantHelper,
         ResourceHelper $resourceHelper
     ) {
-        $this->formatterFactory = $formatterFactory;
+        parent::__construct($formatterFactory, $currencyConverter);
+
         $this->constantHelper = $constantHelper;
         $this->resourceHelper = $resourceHelper;
     }

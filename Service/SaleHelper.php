@@ -118,7 +118,7 @@ class SaleHelper
      */
     public function recalculate(Model\SaleInterface $sale)
     {
-        return $this->saleUpdater->recalculate($sale, true);
+        return $this->saleUpdater->recalculate($sale);
     }
 
     /**

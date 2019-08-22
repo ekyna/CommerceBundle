@@ -3,13 +3,15 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Com\Tecnick\Barcode\Barcode;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class BarcodeExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class BarcodeExtension extends \Twig_Extension
+class BarcodeExtension extends AbstractExtension
 {
     /**
      * @inheritdoc
@@ -17,11 +19,11 @@ class BarcodeExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'barcode_datamatrix',
                 [$this, 'getBarcodeDatamatrix']
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'barcode_128',
                 [$this, 'getBarcode128']
             ),

@@ -31,11 +31,11 @@
         </service>
 
         <!-- Document rows builder -->
-        <service id="ekyna_commerce.document.page_builder"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder">
             <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <argument type="service" id="ekyna_commerce.shipment.calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <argument type="collection"/><!-- Replaced by DI extension -->
+            <tag name="twig.runtime"/>
         </service>
 
         <!-- Document generator -->

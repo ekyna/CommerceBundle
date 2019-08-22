@@ -6,8 +6,10 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
@@ -27,7 +29,7 @@ use Symfony\Component\Form\FormInterface;
 class CustomerType extends ResourceFormType
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -85,7 +87,7 @@ class CustomerType extends ResourceFormType
                 'required' => false,
             ]);
 
-        $formModifier = function (FormInterface $form, $hasParent) {
+        $formModifier = function (FormInterface $form, CustomerInterface $customer, $hasParent) {
             $form
                 ->add('customerGroup', CustomerGroupChoiceType::class, [
                     'allow_new' => true,
@@ -105,27 +107,28 @@ class CustomerType extends ResourceFormType
                 ->add('paymentTerm', PaymentTermChoiceType::class, [
                     'disabled' => $hasParent,
                 ])
-                ->add('outstandingLimit', Type\NumberType::class, [
+                ->add('outstandingLimit', MoneyType::class, [
                     'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
-                    'scale'    => 2,
+                    'quote'    => $customer->getCurrency(),
                     'disabled' => $hasParent,
                 ]);
         };
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier) {
-            /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+            /** @var CustomerInterface $customer */
             $customer = $event->getData();
 
-            $formModifier($event->getForm(), $customer->hasParent());
+            $formModifier($event->getForm(), $customer, $customer->hasParent());
         });
 
         $builder
             ->get('parent')
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($formModifier) {
-                /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+                $customer = $event->getForm()->getParent()->getData();
+                /** @var CustomerInterface $customer */
                 $parent = $event->getForm()->getData();
 
-                $formModifier($event->getForm()->getParent(), null !== $parent);
+                $formModifier($event->getForm()->getParent(), $customer, null !== $parent);
             });
     }
 }

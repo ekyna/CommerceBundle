@@ -24,10 +24,11 @@
         <service id="ekyna_commerce.twig.common_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\CommonExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
-            <argument type="service" id="ekyna_commerce.common.address_renderer"/>
-            <argument type="service" id="ekyna_commerce.common.button_renderer"/>
-            <argument type="service" id="ekyna_commerce.common.flag_renderer"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface"/>
             <tag name="twig.extension"/>
         </service>
 
@@ -44,7 +45,6 @@
         <service id="ekyna_commerce.twig.document_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\DocumentExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.document.page_builder"/>
             <tag name="twig.extension"/>
         </service>
 
@@ -52,8 +52,8 @@
         <service id="ekyna_commerce.twig.invoice_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\InvoiceExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
+            <argument type="service" id="ekyna_commerce.payment.due_date_resolver"/>
             <tag name="twig.extension"/>
         </service>
 
@@ -61,7 +61,7 @@
         <service id="ekyna_commerce.twig.payment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
+            <argument type="service" id="ekyna_commerce.payment.calculator"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <argument type="service" id="translator"/>
             <tag name="twig.extension"/>
@@ -71,7 +71,6 @@
         <service id="ekyna_commerce.twig.sale_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\SaleExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
             <argument type="service" id="ekyna_core.ui.renderer" />
@@ -83,7 +82,6 @@
         <service id="ekyna_commerce.twig.shipment_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\ShipmentExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.shipment_price.list_builder"/>
             <argument type="service" id="ekyna_commerce.shipment_helper"/>
             <argument>%ekyna_commerce.shipment_price.list_template%</argument>
@@ -94,7 +92,6 @@
         <service id="ekyna_commerce.twig.stock_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\StockExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.stock.stock_renderer"/>
             <argument type="service" id="ekyna_commerce.availability_helper"/>
             <argument type="service" id="ekyna_commerce.stock_prioritizer"/>
@@ -115,7 +112,6 @@
         <service id="ekyna_commerce.twig.supplier_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\SupplierExtension"
                  public="false">
-            <argument type="service" id="ekyna_commerce.constants_helper"/>
             <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
             <tag name="twig.extension"/>
         </service>

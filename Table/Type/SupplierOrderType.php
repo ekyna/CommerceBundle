@@ -4,9 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
-use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderPaymentType;
-use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderStateType;
-use Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderTrackingType;
+use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -87,7 +85,7 @@ class SupplierOrderType extends ResourceTableType
                 ],
                 'position'             => 40,
             ])
-            ->addColumn('state', SupplierOrderStateType::class, [
+            ->addColumn('state', Column\SupplierOrderStateType::class, [
                 'label'    => 'ekyna_commerce.field.status',
                 'position' => 50,
             ])
@@ -96,7 +94,7 @@ class SupplierOrderType extends ResourceTableType
                 'time_format' => 'none',
                 'position'    => 60,
             ])
-            ->addColumn('trackingUrls', SupplierOrderTrackingType::class, [
+            ->addColumn('trackingUrls', Column\SupplierOrderTrackingType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.tracking_urls',
                 'position' => 70,
             ])
@@ -105,7 +103,7 @@ class SupplierOrderType extends ResourceTableType
                 'currency_path' => 'currency.code',
                 'position'      => 80,
             ])
-            ->addColumn('paymentDate', SupplierOrderPaymentType::class, [
+            ->addColumn('paymentDate', Column\SupplierOrderPaymentType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
                 'prefix'   => 'payment',
                 'position' => 90,
@@ -115,7 +113,7 @@ class SupplierOrderType extends ResourceTableType
                 'currency_path' => 'currency.code',
                 'position'      => 100,
             ])
-            ->addColumn('forwarderDate', SupplierOrderPaymentType::class, [
+            ->addColumn('forwarderDate', Column\SupplierOrderPaymentType::class, [
                 'label'    => 'ekyna_commerce.supplier_order.field.forwarder_date',
                 'prefix'   => 'forwarder',
                 'position' => 110,

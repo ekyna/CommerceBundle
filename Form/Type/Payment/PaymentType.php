@@ -5,10 +5,11 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
+use Ekyna\Bundle\CommerceBundle\Model\PaymentStates as BStates;
 use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form;
@@ -98,7 +99,7 @@ class PaymentType extends ResourceFormType
                 ])
                 ->add('state', Type\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
-                    'choices'  => PaymentStates::getChoices(),
+                    'choices'  => BStates::getChoices(),
                     'disabled' => true,
                 ])
                 // TODO Use PaymentMethodChoiceType
@@ -123,6 +124,7 @@ class PaymentType extends ResourceFormType
                 ])
                 ->add('completedAt', Type\DateTimeType::class, [
                     'label'    => 'ekyna_core.field.completed_at',
+                    'required' => PaymentStates::isPaidState($payment->getState()),
                     'disabled' => $methodDisabled,
                 ])
                 ->add('description', Type\TextareaType::class, [

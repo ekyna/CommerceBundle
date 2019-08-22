@@ -72,6 +72,25 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form', 
         return false;
     });
 
+    $(document).on('click', '.sale-view [data-sale-toggle-all-children]', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var $link = $(e.currentTarget),
+            $saleView = $link.closest('.sale-view'),
+            $children = $saleView.find('tr[data-parent]'),
+            hidden = $children.filter(':not(:visible)').length,
+            visible = $children.filter(':visible').length;
+
+        if (hidden > visible) {
+            $children.show();
+        } else {
+            $children.hide();
+        }
+
+        return false;
+    });
+
     $(document).on('click', '.sale-view [data-sale-toggle-children]', function(e) {
         e.stopPropagation();
         e.preventDefault();

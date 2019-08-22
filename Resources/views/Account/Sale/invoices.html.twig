@@ -11,11 +11,21 @@
     </div>
     <div class="table-responsive">
         <table class="table">
+            <thead>
+            <tr>
+                <th>{{ 'ekyna_core.field.number'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
+                <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
+                <th>{{ 'ekyna_commerce.invoice.field.sale_paid'|trans }}</th>
+                <th>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</th>
+                <th></th>
+            </tr>
+            </thead>
             <tbody>
             {%- for invoice in invoices -%}
                 {%- set invoiceId = 'invoice_' ~ invoice.id -%}
                 {%- set path = path(route_prefix ~ '_invoice_download', {'number': sale.number, 'id': invoice.id}) -%}
-                <tr>
+                <tr{% if invoice is due_invoice %} class="danger"{% endif %}>
                     <td>
                         <a href="{{ path }}" target="_blank">
                             {{- invoice.number -}}
@@ -23,6 +33,8 @@
                     </td>
                     <td>{{ invoice.grandTotal|localizedcurrency(invoice.currency) }}</td>
                     <td>{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
+                    <td>{{ invoice.paidTotal|localizedcurrency(invoice.currency) }}</td>
+                    <td>{{ invoice.dueDate|localizeddate('short', 'none') }}</td>
                     <td class="actions text-right">
                         <a href="javascript:void(0)"
                            id="{{ invoiceId }}_toggle_details"
@@ -37,7 +49,7 @@
                 </tr>
                 <tr id="{{ invoiceId ~ '_details' }}" style="display:none;">
                     <td>&nbsp;</td>
-                    <td colspan="3">
+                    <td colspan="6">
                         <table class="table table-alt table-striped table-condensed">
                             <thead>
                             <tr>
@@ -48,11 +60,13 @@
                             </thead>
                             <tbody>
                             {%- for line in invoice.lines -%}
+                                {%- if line.saleItem is null or not line.saleItem.private -%}
                                 <tr>
                                     <td>{{ line.designation }}</td>{# TODO Public link #}
                                     <td>{{ line.reference }}</td>
                                     <td>{{ line.quantity|localizednumber }}</td> {# TODO Packaging format #}
                                 </tr>
+                                {%- endif -%}
                             {%- endfor -%}
                             </tbody>
                         </table>

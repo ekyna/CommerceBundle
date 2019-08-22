@@ -197,8 +197,6 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         $notify = $event->getNotify();
 
         if ($notify->getType() === NotificationTypes::MANUAL) {
-            $notify->setCustomMessage($this->translator->trans('ekyna_commerce.notify.type.manual.message'));
-
             return;
         }
 
@@ -214,9 +212,6 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         switch ($notify->getType()) {
             case NotificationTypes::CART_REMIND:
-                $notify->setIncludeView(Notify::VIEW_AFTER);
-                break;
-
             case NotificationTypes::QUOTE_REMIND:
                 $notify->setIncludeView(Notify::VIEW_AFTER);
                 break;

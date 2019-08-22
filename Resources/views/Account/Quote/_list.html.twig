@@ -37,7 +37,7 @@
                 {%- endif -%}
             </td>
             <td class="text-right">
-                {{- quote.grandTotal|localizedcurrency(quote.currency.code) -}}
+                {{- quote.grandTotal|currency_quote(quote) -}}
             </td>
             <td>
                 {{- quote|sale_state_badge -}}

@@ -2,11 +2,15 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -42,6 +46,36 @@ class SaleTransformType extends AbstractType
 
         if ($options['admin_mode']) {
             $builder
+                ->add('currency', CurrencyChoiceType::class)
+                ->add('locale', LocaleChoiceType::class)
+                ->add('autoShipping', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.auto_shipping',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('autoDiscount', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.auto_discount',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('autoNotify', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.auto_notify',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('taxExempt', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.tax_exempt',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
                 ->add('title', Type\TextType::class, [
                     'label'    => 'ekyna_core.field.title',
                     'required' => false,
@@ -67,6 +101,15 @@ class SaleTransformType extends AbstractType
 
             if ($options['admin_mode']) {
                 $customer = $sale->getCustomer();
+                if ($sale instanceof OrderInterface) {
+                    $form->add('sample', CheckboxType::class, [
+                        'label'    => 'ekyna_commerce.field.sample',
+                        'required' => false,
+                        'attr'     => [
+                            'align_with_widget' => true,
+                        ],
+                    ]);
+                }
                 if (null !== $customer) {
                     if ($customer->hasParent()) {
                         $choices = [$customer, $customer->getParent()];

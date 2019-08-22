@@ -135,22 +135,30 @@
         </service>
 
         <!-- Address renderer -->
-        <service id="ekyna_commerce.common.address_renderer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer">
             <argument type="service" id="templating"/>
+            <tag name="twig.runtime" />
         </service>
 
         <!-- Button renderer -->
-        <service id="ekyna_commerce.common.button_renderer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="ekyna_core.ui.renderer"/>
+            <tag name="twig.runtime" />
+        </service>
+
+        <!-- Currency renderer -->
+        <service id="Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface"
+                 class="Ekyna\Component\Commerce\Common\Currency\CurrencyRenderer">
+            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
+            <tag name="twig.runtime" />
         </service>
 
         <!-- Flag renderer -->
-        <service id="ekyna_commerce.common.flag_renderer"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer">
             <argument type="service" id="translator"/>
+            <tag name="twig.runtime" />
         </service>
 
     </services>

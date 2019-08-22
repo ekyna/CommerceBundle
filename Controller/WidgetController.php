@@ -210,7 +210,7 @@ class WidgetController
             $this
                 ->helper
                 ->getContextProvider()
-                ->changeCurrencyAndCountry($new['currency'], $new['country']);
+                ->changeCurrencyAndCountry($new['currency'], $new['country'], $new['locale']);
 
             if (!empty($new['route'])) {
                 $parameters = $new['param'] ?? [];

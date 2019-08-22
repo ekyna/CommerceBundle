@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
+use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
@@ -14,6 +15,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 
 /**
  * Class PaymentType
@@ -48,7 +50,18 @@ class PaymentType extends AbstractType
             $payment = $event->getData();
             $form = $event->getForm();
 
-            if (0 < $payment->getAmount()) {
+            if (0 < $max = $payment->getRealAmount()) {
+                if ($options['admin_mode']) {
+                    $form->add('amount', MoneyType::class, [
+                        'label'       => 'ekyna_core.field.amount',
+                        'currency'    => $payment->getCurrency()->getCode(),
+                        'disabled'    => !empty($options['lock_message']),
+                        'constraints' => [
+                            new LessThanOrEqual($max),
+                        ],
+                    ]);
+                }
+
                 $form->add('submit', SubmitType::class, [
                     'label'              => $this->translator->trans('ekyna_commerce.checkout.payment.pay_with', [
                         '%method%' => $payment->getMethod()->getTitle(),

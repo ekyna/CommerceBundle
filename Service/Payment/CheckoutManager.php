@@ -3,10 +3,10 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Payment\Factory\PaymentFactoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentMethodRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -28,9 +28,9 @@ class CheckoutManager
     private $methodRepository;
 
     /**
-     * @var SaleFactoryInterface
+     * @var PaymentFactoryInterface
      */
-    private $saleFactory;
+    private $paymentFactory;
 
     /**
      * @var EventDispatcherInterface
@@ -52,16 +52,16 @@ class CheckoutManager
      * Constructor.
      *
      * @param PaymentMethodRepositoryInterface $methodRepository
-     * @param SaleFactoryInterface             $saleFactory
+     * @param PaymentFactoryInterface          $paymentFactory
      * @param EventDispatcherInterface         $eventDispatcher
      */
     public function __construct(
         PaymentMethodRepositoryInterface $methodRepository,
-        SaleFactoryInterface $saleFactory,
+        PaymentFactoryInterface $paymentFactory,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->methodRepository = $methodRepository;
-        $this->saleFactory = $saleFactory;
+        $this->paymentFactory = $paymentFactory;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -73,7 +73,7 @@ class CheckoutManager
      * @param string        $action
      * @param bool          $admin
      */
-    public function initialize(SaleInterface $sale, $action, $admin = false)
+    public function initialize(SaleInterface $sale, $action, $admin = false): void
     {
         $this->forms = [];
 
@@ -89,7 +89,7 @@ class CheckoutManager
         }
 
         foreach ($methods as $method) {
-            $payment = $this->saleFactory->createPaymentForSale($sale);
+            $payment = $this->paymentFactory->createPayment($sale, $method);
 
             // Amount and currency have been set by the factory
             $payment->setMethod($method);

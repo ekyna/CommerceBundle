@@ -3,13 +3,16 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class WidgetExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class WidgetExtension extends \Twig_Extension
+class WidgetExtension extends AbstractExtension
 {
     /**
      * @var WidgetHelper
@@ -44,22 +47,22 @@ class WidgetExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'commerce_customer_widget',
                 [$this, 'renderCustomerWidget'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'commerce_cart_widget',
                 [$this, 'renderCartWidget'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'commerce_context_widget',
                 [$this, 'renderContextWidget'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'commerce_currency_widget',
                 [$this, 'renderCurrencyWidget'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
@@ -70,12 +73,12 @@ class WidgetExtension extends \Twig_Extension
     /**
      * Renders the customer widget.
      *
-     * @param \Twig_Environment $env
-     * @param array             $options
+     * @param Environment $env
+     * @param array       $options
      *
      * @return string
      */
-    public function renderCustomerWidget(\Twig_Environment $env, array $options = [])
+    public function renderCustomerWidget(Environment $env, array $options = [])
     {
         return $this->renderWidget($env, $this->widgetHelper->getCustomerWidgetData(), $options);
     }
@@ -83,12 +86,12 @@ class WidgetExtension extends \Twig_Extension
     /**
      * Renders the cart widget.
      *
-     * @param \Twig_Environment $env
-     * @param array             $options
+     * @param Environment $env
+     * @param array       $options
      *
      * @return string
      */
-    public function renderCartWidget(\Twig_Environment $env, array $options = [])
+    public function renderCartWidget(Environment $env, array $options = [])
     {
         return $this->renderWidget($env, $this->widgetHelper->getCartWidgetData(), $options);
     }
@@ -96,12 +99,12 @@ class WidgetExtension extends \Twig_Extension
     /**
      * Renders the context widget.
      *
-     * @param \Twig_Environment $env
-     * @param array             $options
+     * @param Environment $env
+     * @param array       $options
      *
      * @return string
      */
-    public function renderContextWidget(\Twig_Environment $env, array $options = [])
+    public function renderContextWidget(Environment $env, array $options = [])
     {
         return $this->renderWidget($env, $this->widgetHelper->getContextWidgetData(), $options);
     }
@@ -109,12 +112,12 @@ class WidgetExtension extends \Twig_Extension
     /**
      * Renders the currency widget.
      *
-     * @param \Twig_Environment $env
-     * @param array             $options
+     * @param Environment $env
+     * @param array       $options
      *
      * @return string
      */
-    public function renderCurrencyWidget(\Twig_Environment $env, array $options = [])
+    public function renderCurrencyWidget(Environment $env, array $options = [])
     {
         $data = $this->widgetHelper->getCurrencyWidgetData();
 
@@ -134,13 +137,13 @@ class WidgetExtension extends \Twig_Extension
     /**
      * Renders the widget.
      *
-     * @param \Twig_Environment $env
-     * @param array             $data
-     * @param array             $options
+     * @param Environment $env
+     * @param array       $data
+     * @param array       $options
      *
      * @return string
      */
-    private function renderWidget(\Twig_Environment $env, array $data, array $options)
+    private function renderWidget(Environment $env, array $data, array $options)
     {
         $data = array_replace([
             'template' => $this->config['widget_template'],

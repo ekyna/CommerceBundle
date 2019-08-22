@@ -48,7 +48,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function itemConfigureAction(Request $request)
     {
@@ -113,7 +113,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function itemRemoveAction(Request $request)
     {
@@ -163,7 +163,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function attachmentAddAction(Request $request)
     {
@@ -213,7 +213,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function attachmentRemoveAction(Request $request)
     {
@@ -254,7 +254,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function attachmentDownloadAction(Request $request)
     {
@@ -297,7 +297,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function informationAction(Request $request)
     {
@@ -317,7 +317,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function invoiceAddressAction(Request $request)
     {
@@ -338,7 +338,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function deliveryAddressAction(Request $request)
     {
@@ -360,7 +360,7 @@ class CartController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function commentAction(Request $request)
     {
@@ -384,7 +384,7 @@ class CartController extends AbstractController
      * @param string  $route
      * @param array   $options
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function handleForm(Request $request, $type, $title, $route, array $options = [])
     {
@@ -458,7 +458,7 @@ class CartController extends AbstractController
     /**
      * Returns the XHR cart view response.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     protected function buildXhrCartViewResponse()
     {

@@ -38,14 +38,26 @@
                 {{ current.revenue|localizedcurrency(commerce_default_currency) }}
                 {% if compare is not null -%}
                 <span class="compare">
-                    {%- set evolution = (current.revenue - compare.revenue) * 100 / compare.revenue -%}
-                    &nbsp;({{ evolution|round(1)|localizednumber }}%)
+                    &nbsp;(
+                    {%- if compare.revenue <= 0 -%}
+                        &infin;
+                    {%- else -%}
+                        {%- set evolution = (current.revenue - compare.revenue) * 100 / compare.revenue -%}
+                        {{ evolution|round(1)|localizednumber }}%
+                    {%- endif -%}
+                    )
                 </span>
                 {%- endif %}
                 {% if aggregate is not null -%}
                 <span class="aggregate" style="display:none">
-                    {%- set evolution = (current.revenue - aggregate.revenue) * 100 / aggregate.revenue -%}
-                    &nbsp;({{ evolution|round(1)|localizednumber }}%)
+                    &nbsp;(
+                    {%- if aggregate.revenue <= 0 -%}
+                        &infin;
+                    {%- else -%}
+                        {%- set evolution = (current.revenue - aggregate.revenue) * 100 / aggregate.revenue -%}
+                        {{ evolution|round(1)|localizednumber }}%
+                    {%- endif -%}
+                    )
                 </span>
                 {%- endif %}
             {%- endif -%}

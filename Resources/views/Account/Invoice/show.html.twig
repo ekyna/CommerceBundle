@@ -20,6 +20,7 @@
             </thead>
             <tbody>
             {% for line in invoice.lines %}
+                {%- if line.saleItem is null or not line.saleItem.private -%}
                 <tr>
                     <td>
                         {%- set url = null -%}
@@ -36,9 +37,10 @@
                         {%- endif -%}
                     </td>
                     <td>{{ line.reference }}</td>
-                    {#<td id="{{ lineId ~ '_netPrice' }}">{{ line.netUnit|localizedcurrency(invoice.currency.code) }}</td>#}
+                    {#<td id="{{ lineId ~ '_netPrice' }}">{{ line.netUnit|currency_quote(invoice.sale) }}</td>#}
                     <td>{{ line.quantity|localizednumber }}</td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

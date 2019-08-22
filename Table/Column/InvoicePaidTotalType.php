@@ -2,12 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
+use Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
-use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
+use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
@@ -23,15 +24,32 @@ class InvoicePaidTotalType extends AbstractColumnType
 {
     use FormatterAwareTrait;
 
+    /**
+     * @var CurrencyRendererInterface
+     */
+    private $renderer;
+
+    /**
+     * @var DueDateResolverInterface
+     */
+    private $resolver;
+
 
     /**
      * Constructor.
      *
      * @param FormatterFactory $formatterFactory
+     * @param CurrencyRendererInterface $renderer
+     * @param DueDateResolverInterface $resolver
      */
-    public function __construct(FormatterFactory $formatterFactory)
-    {
+    public function __construct(
+        FormatterFactory $formatterFactory,
+        CurrencyRendererInterface $renderer,
+        DueDateResolverInterface $resolver
+    ) {
         $this->formatterFactory = $formatterFactory;
+        $this->renderer = $renderer;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -51,20 +69,10 @@ class InvoicePaidTotalType extends AbstractColumnType
             return;
         }
 
-        $paid = $invoice->getPaidTotal();
+        $view->vars['value'] = $this->getFormatter()->currency($invoice->getPaidTotal(), $invoice->getCurrency());
+        //$view->vars['value'] = $this->renderer->renderQuote($invoice->getPaidTotal(), $invoice->getOrder(), false);
 
-        $view->vars['value'] = $this->getFormatter()->currency($paid, $invoice->getCurrency());
-
-        if (1 !== Money::compare($invoice->getGrandTotal(), $paid, $invoice->getCurrency())) {
-            return;
-        }
-
-        if (null === $date = $invoice->getDueDate()) {
-            return;
-        }
-
-        $diff = $date->diff((new \DateTime())->setTime(0, 0, 0, 0));
-        if (0 < $diff->days && !$diff->invert) {
+        if ($this->resolver->isInvoiceDue($invoice)) {
             $class = $view->vars['attr']['class'] ?? '';
             $view->vars['attr']['class'] = trim($class . ' danger');
         }

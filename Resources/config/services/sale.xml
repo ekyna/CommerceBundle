@@ -54,7 +54,7 @@
             <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
-            <argument type="service" id="ekyna_commerce.invoice.calculator"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             <argument type="service" id="ekyna_commerce.payment.outstanding_releaser"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
         </service>
@@ -162,6 +162,9 @@
             </call>
             <call method="setCurrencyConverter">
                 <argument type="service" id="ekyna_commerce.currency.converter"/>
+            </call>
+            <call method="setCurrencyProvider">
+                <argument type="service" id="ekyna_commerce.common.currency_provider"/>
             </call>
             <call method="setLocaleProvider">
                 <argument type="service" id="ekyna_resource.locale_provider"/>

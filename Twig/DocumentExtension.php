@@ -3,49 +3,35 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * Class DocumentExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class DocumentExtension extends \Twig_Extension
+class DocumentExtension extends AbstractExtension
 {
-    /**
-     * @var DocumentPageBuilder
-     */
-    private $documentPageBuilder;
-
-
-    /**
-     * Constructor.
-     *
-     * @param DocumentPageBuilder $documentPageBuilder
-     */
-    public function __construct(DocumentPageBuilder $documentPageBuilder)
-    {
-        $this->documentPageBuilder = $documentPageBuilder;
-    }
-
     /**
      * @inheritdoc
      */
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'document_pages',
-                [$this->documentPageBuilder, 'buildDocumentPages'],
+                [DocumentPageBuilder::class, 'buildDocumentPages'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_pages',
-                [$this->documentPageBuilder, 'buildShipmentPages'],
+                [DocumentPageBuilder::class, 'buildShipmentPages'],
                 ['is_safe' => ['html']]
             ),
-            new \Twig_SimpleFilter(
+            new TwigFilter(
                 'shipment_remaining_pages',
-                [$this->documentPageBuilder, 'buildShipmentRemainingPages'],
+                [DocumentPageBuilder::class, 'buildShipmentRemainingPages'],
                 ['is_safe' => ['html']]
             ),
         ];

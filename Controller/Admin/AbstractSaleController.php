@@ -18,7 +18,7 @@ abstract class AbstractSaleController extends ResourceController
      *
      * @param SaleInterface $sale
      *
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      */
     protected function buildRecalculateForm(SaleInterface $sale)
     {
