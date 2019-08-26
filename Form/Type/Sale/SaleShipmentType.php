@@ -49,15 +49,15 @@ class SaleShipmentType extends AbstractType
         $builder
             ->add('shipmentAmount', Type\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.shipping_cost',
-                'scale' => 5,
-                'required' => false,
+                'scale'    => 5,
+                'required' => true,
                 'attr'     => [
                     'class' => 'sale-shipment-amount',
                 ],
             ])
             ->add('shipmentWeight', Type\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.weight_total',
-                'scale' => 3,
+                'scale'    => 3,
                 'required' => false,
                 'attr'     => [
                     'class' => 'sale-shipment-weight',

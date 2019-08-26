@@ -61,7 +61,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             $this
                 .on('click', '.sale-shipment-amount-apply', applyAmountFromSelectedMethod)
                 .on('click', '.sale-shipment-amount-clear', function() {
-                    $amountInput.val('');
+                    $amountInput.val('0.00000');
                 });
 
             updateMobileState();

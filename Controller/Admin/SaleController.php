@@ -156,13 +156,6 @@ class SaleController extends AbstractSaleController
      */
     public function editShipmentAction(Request $request)
     {
-        /*
-         * Form with:
-         * - Delivery country
-         * - Estimated shipment price
-         * - Preferred shipment method choice
-         */
-
         $context = $this->loadContext($request);
         /** @var SaleInterface $sale */
         $sale = $context->getResource();
