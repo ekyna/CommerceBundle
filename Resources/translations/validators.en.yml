@@ -44,7 +44,6 @@ ekyna_commerce:
             not_null: Please select a payment method.
     invoice:
         hierarchy_integrity: Integrity error between the elements.
-        empty_good_lines: Please pick at least one product.
         null_credit_method: Please select a refund method.
     invoice_line:
         null_sale_item: This line must be linked to a product.

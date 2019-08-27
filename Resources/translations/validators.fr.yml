@@ -44,7 +44,6 @@ ekyna_commerce:
             not_null: Veuillez choisir un mode de paiement.
     invoice:
         hierarchy_integrity: Erreur d'intégrité entre les différents éléments.
-        empty_good_lines: Veuillez sélectionner au moins un article.
         null_credit_method: Veuillez sélectionner un mode de rembousement.
     invoice_line:
         null_sale_item: Cette ligne doit être liée à un article.

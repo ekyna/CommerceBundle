@@ -7,8 +7,8 @@
         <!-- Shipment rule repository -->
         <service id="ekyna_commerce.shipment_rule.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentRuleRepository">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>%ekyna_commerce.shipment_rule.class%</argument>
+            <argument type="service" id="ekyna_commerce.shipment_rule.manager"/>
+            <argument type="service" id="ekyna_commerce.shipment_rule.metadata"/>
             <call method="setContextProvider">
                 <argument type="service" id="ekyna_commerce.common.context_provider"/>
             </call>

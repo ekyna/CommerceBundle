@@ -8,8 +8,8 @@
         <!-- Country repository -->
         <service id="ekyna_commerce.country.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>%ekyna_commerce.country.class%</argument>
+            <argument type="service" id="ekyna_commerce.country.manager"/>
+            <argument type="service" id="ekyna_commerce.country.metadata"/>
             <call method="setDefaultCode">
                 <argument>%ekyna_commerce.default.country%</argument>
             </call>
@@ -22,8 +22,8 @@
         <!-- Currency repository -->
         <service id="ekyna_commerce.currency.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CurrencyRepository">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>%ekyna_commerce.currency.class%</argument>
+            <argument type="service" id="ekyna_commerce.currency.manager"/>
+            <argument type="service" id="ekyna_commerce.currency.metadata"/>
             <call method="setDefaultCode">
                 <argument>%ekyna_commerce.default.currency%</argument>
             </call>
@@ -33,8 +33,8 @@
         <!-- Customer group repository -->
         <service id="ekyna_commerce.customer_group.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerGroupRepository">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>%ekyna_commerce.customer_group.class%</argument>
+            <argument type="service" id="ekyna_commerce.customer_group.manager"/>
+            <argument type="service" id="ekyna_commerce.customer_group.metadata"/>
             <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
