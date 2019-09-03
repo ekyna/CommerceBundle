@@ -125,6 +125,85 @@
 {% endmacro show_end_of_life %}
 
 
+{%- macro show_weight(subject, options = {}) -%}
+    {{- show_row(subject.weight, 'number', {
+        'label': 'ekyna_core.field.weight',
+        'id': 'subject_weight',
+        'append': ' kg'
+    }|merge(options)) -}}
+{%- endmacro show_weight -%}
+
+
+{%- macro show_width(subject, options = {}) -%}
+    {{- show_row(subject.width, 'number', {
+        'label': 'ekyna_core.field.width',
+        'id': 'subject_width',
+        'append': ' mm'
+    }|merge(options)) -}}
+{%- endmacro show_width -%}
+
+
+{%- macro show_height(subject, options = {}) -%}
+    {{- show_row(subject.height, 'number', {
+        'label': 'ekyna_core.field.height',
+        'id': 'subject_height',
+        'append': ' mm'
+    }|merge(options)) -}}
+{%- endmacro show_height -%}
+
+
+{%- macro show_depth(subject, options = {}) -%}
+    {{- show_row(subject.depth, 'number', {
+        'label': 'ekyna_core.field.depth',
+        'id': 'subject_depth',
+        'append': ' mm'
+    }|merge(options)) -}}
+{%- endmacro show_depth -%}
+
+
+{%- macro show_unit(subject, options = {}) -%}
+    {{- show_row(subject.unit, 'unit', {
+        'label': 'ekyna_commerce.unit.label',
+        'id': 'subject_unit'
+    }|merge(options)) -}}
+{%- endmacro show_unit -%}
+
+
+{%- macro show_package_weight(subject, options = {}) -%}
+    {{- show_row(subject.packageWeight, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.package_weight',
+        'id': 'subject_package_weight',
+        'append': ' kg'
+    }|merge(options)) -}}
+{%- endmacro show_package_weight -%}
+
+
+{%- macro show_package_width(subject, options = {}) -%}
+    {{- show_row(subject.packageWidth, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.package_width',
+        'id': 'subject_package_width',
+        'append': ' mm'
+    }|merge(options)) -}}
+{%- endmacro show_package_width -%}
+
+
+{%- macro show_package_height(subject, options = {}) -%}
+    {{- show_row(subject.packageHeight, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.package_height',
+        'id': 'subject_package_height',
+        'append': ' mm'
+    }|merge(options)) -}}
+{%- endmacro show_package_height -%}
+
+
+{%- macro show_package_depth(subject, options = {}) -%}
+    {{- show_row(subject.packageDepth, 'number', {
+        'label': 'ekyna_commerce.stock_subject.field.package_depth',
+        'id': 'subject_package_depth',
+        'append': ' mm'
+    }|merge(options)) -}}
+{%- endmacro show_package_depth -%}
+
 {% macro show_stock_view(subject, prefix) %}
 {% spaceless %}
     {% import _self as macros %}
@@ -143,8 +222,108 @@
             }) }}
         </div>
         <div class="col-md-4">
+            {{ macros.show_unit(subject, {
+                'id': prefix ~'_unit',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
             {{ macros.show_geocode(subject, {
                 'id': prefix ~'_geocode',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_weight(subject, {
+                'id': prefix ~'_weight',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_package_weight(subject, {
+                'id': prefix ~'_package_weight',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ macros.show_stock_floor(subject, {
+                'id': prefix ~'_stockFloor',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_width(subject, {
+                'id': prefix ~'_width',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_package_width(subject, {
+                'id': prefix ~'_package_width',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ macros.show_replenishment_time(subject, {
+                'id': prefix ~'_replenishmentTime',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_height(subject, {
+                'id': prefix ~'_height',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_package_height(subject, {
+                'id': prefix ~'_package_height',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ macros.show_minimum_order_quantity(subject, {
+                'id': prefix ~'_minimumOrderQuantity',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_depth(subject, {
+                'id': prefix ~'_depth',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_package_depth(subject, {
+                'id': prefix ~'_package_depth',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ macros.show_eda(subject, {
+                'id': prefix ~'_estimatedDateOfArrival',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_quote_only(subject, {
+                'id': prefix ~'_quoteOnly',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_end_of_life(subject, {
+                'id': prefix ~'_endOfLife',
                 'label_col': 6
             }) }}
         </div>
@@ -165,46 +344,6 @@
         <div class="col-md-4">
             {{ macros.show_virtual_stock(subject, {
                 'id': prefix ~'_virtualStock',
-                'label_col': 6
-            }) }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ macros.show_stock_floor(subject, {
-                'id': prefix ~'_stockFloor',
-                'label_col': 6
-            }) }}
-        </div>
-        <div class="col-md-4">
-            {{ macros.show_replenishment_time(subject, {
-                'id': prefix ~'_replenishmentTime',
-                'label_col': 6
-            }) }}
-        </div>
-        <div class="col-md-4">
-            {{ macros.show_eda(subject, {
-                'id': prefix ~'_estimatedDateOfArrival',
-                'label_col': 6
-            }) }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ macros.show_minimum_order_quantity(subject, {
-                'id': prefix ~'_minimumOrderQuantity',
-                'label_col': 6
-            }) }}
-        </div>
-        <div class="col-md-4">
-            {{ macros.show_quote_only(subject, {
-                'id': prefix ~'_quoteOnly',
-                'label_col': 6
-            }) }}
-        </div>
-        <div class="col-md-4">
-            {{ macros.show_end_of_life(subject, {
-                'id': prefix ~'_endOfLife',
                 'label_col': 6
             }) }}
         </div>

@@ -1382,6 +1382,11 @@ ekyna_commerce:
             minimum_order_quantity: Min. order qty
             end_of_life: End of life
             quote_only: Quote only
+            package_weight: Package weight
+            # TODO rename width->length, height->width, depth->height
+            package_width: Package length
+            package_height: Package width
+            package_depth: Package height
         mode:
             disabled: Disabled
             manual: Manual

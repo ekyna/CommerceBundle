@@ -2,7 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\UnitChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\StockSubjectModes;
+use Ekyna\Component\Commerce\Common\Model\Units;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Extension\Core\Type as SF;
 
@@ -166,6 +168,214 @@ class StockSubjectFormBuilder
         ], $options);
 
         $this->form->add('stockFloor', SF\NumberType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the weight field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addWeightField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_core.field.weight',
+            'scale'    => 3,
+            'attr'     => [
+                'placeholder' => 'ekyna_core.field.weight',
+                'input_group' => ['append' => Units::getSymbol(Units::KILOGRAM)],
+            ],
+            'required' => !(isset($options['disabled']) && $options['disabled']),
+        ], $options);
+
+        $this->form->add('weight', SF\NumberType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the width field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addWidthField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_core.field.width',
+            'attr'     => [
+                'placeholder' => 'ekyna_core.field.width',
+                'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('width', SF\IntegerType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the height field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addHeightField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_core.field.height',
+            'attr'     => [
+                'placeholder' => 'ekyna_core.field.height',
+                'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('height', SF\IntegerType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the depth field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addDepthField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_core.field.depth',
+            'attr'     => [
+                'placeholder' => 'ekyna_core.field.depth',
+                'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('depth', SF\IntegerType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the quantity unit field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addUnitField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_commerce.unit.label',
+            'attr'     => [
+                'placeholder' => 'ekyna_commerce.unit.label',
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('unit', UnitChoiceType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the package weight field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addPackageWeightField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_commerce.stock_subject.field.package_weight',
+            'scale'    => 3,
+            'attr'     => [
+                'placeholder' => 'ekyna_commerce.stock_subject.field.package_weight',
+                'input_group' => ['append' => Units::getSymbol(Units::KILOGRAM)],
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('packageWeight', SF\NumberType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the package width field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addPackageWidthField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_commerce.stock_subject.field.package_width',
+            'attr'     => [
+                'placeholder' => 'ekyna_commerce.stock_subject.field.package_width',
+                'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('packageWidth', SF\IntegerType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the package height field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addPackageHeightField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_commerce.stock_subject.field.package_height',
+            'attr'     => [
+                'placeholder' => 'ekyna_commerce.stock_subject.field.package_height',
+                'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('packageHeight', SF\IntegerType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the package depth field.
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function addPackageDepthField(array $options = [])
+    {
+        $options = array_replace([
+            'label'    => 'ekyna_commerce.stock_subject.field.package_depth',
+            'attr'     => [
+                'placeholder' => 'ekyna_commerce.stock_subject.field.package_depth',
+                'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
+            ],
+            'required' => true,
+        ], $options);
+
+        $this->form->add('packageDepth', SF\IntegerType::class, $options);
 
         return $this;
     }

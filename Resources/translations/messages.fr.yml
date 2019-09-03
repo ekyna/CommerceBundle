@@ -1407,6 +1407,11 @@ ekyna_commerce:
             minimum_order_quantity: Qté Min Com
             end_of_life: Fin de vie
             quote_only: Sur devis uniquement
+            package_weight: Poids emballage
+            # TODO rename width->length, height->width, depth->height
+            package_width: Longueur emballage
+            package_height: Largeur emballage
+            package_depth: Hauteur emballage
         mode:
             disabled: Désactivé
             manual: Manuel

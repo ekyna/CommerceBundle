@@ -5,6 +5,7 @@
 
     <parameters>
         <parameter key="ekyna_commerce.stock_subject.form_type.builder.class">Ekyna\Bundle\CommerceBundle\Form\StockSubjectFormBuilder</parameter>
+        <parameter key="ekyna_commerce.subject.form_type.builder.class">Ekyna\Bundle\CommerceBundle\Form\SubjectFormBuilder</parameter>
     </parameters>
 
     <services>
@@ -336,6 +337,10 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\ShipmentMethodCreateFlow"
                  parent="craue.form.flow">
         </service>
+
+        <!-- Subject form type builder -->
+        <service id="ekyna_commerce.subject.form_type.builder"
+                 class="%ekyna_commerce.subject.form_type.builder.class%"/>
 
         <!-- Stock subject form type builder -->
         <service id="ekyna_commerce.stock_subject.form_type.builder"
