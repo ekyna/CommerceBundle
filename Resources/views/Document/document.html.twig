@@ -3,6 +3,14 @@
 
 {%- import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
+
+{# --- PRE --- #}
+{% block doc_pre -%}
+    {{ parent() }}
+    {% do currency_configure(subject.sale) %}
+{%- endblock doc_pre %}
+
+
 {# --- TITLE --- #}
 {%- block doc_title_content -%}
     <h1>
@@ -287,3 +295,10 @@
 </table>
 {%- endif %}
 {%- endblock doc_lines %}
+
+
+{# --- POST --- #}
+{% block doc_post -%}
+    {{ parent() }}
+    {% do currency_configure() %}
+{%- endblock doc_post %}
