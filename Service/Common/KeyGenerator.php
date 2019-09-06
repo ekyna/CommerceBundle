@@ -4,20 +4,17 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
-use Ekyna\Component\Commerce\Common\Generator\KeyGeneratorInterface;
-use Ekyna\Component\Commerce\Common\Model\KeySubjectInterface;
+use Ekyna\Component\Commerce\Common\Generator\GeneratorInterface;
+use Ekyna\Component\Commerce\Common\Generator\StorageInterface;
+use Ekyna\Component\Commerce\Exception\LogicException;
 
 /**
  * Class KeyGenerator
  * @package Ekyna\Bundle\CommerceBundle\Service\Common
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class KeyGenerator implements KeyGeneratorInterface
+class KeyGenerator implements GeneratorInterface
 {
-    const SELECT_QUERY = <<<DQL
-SELECT o.id FROM %s o WHERE o.key = :key
-DQL;
-
     /**
      * @var EntityManagerInterface
      */
@@ -35,21 +32,26 @@ DQL;
     }
 
     /**
+     * @inheritDoc
+     */
+    public function setStorage($storage, int $length = null): void
+    {
+        throw new LogicException("This generator does not need storage.");
+    }
+
+    /**
      * @inheritdoc
      */
-    public function generate(KeySubjectInterface $subject)
+    public function generate(object $subject): string
     {
-        if (null !== $subject->getKey()) {
-            return $this;
-        }
-
         // TODO Prevent usage of a deleted subject's number
         // $this->manager->getFilters()->disable('softdeleteable');
 
         $class = get_class($subject);
 
+        /** @noinspection SqlResolve */
         $query = $this->manager
-            ->createQuery(sprintf(static::SELECT_QUERY, $class))
+            ->createQuery(sprintf("SELECT o.id FROM %s o WHERE o.key = :key", $class))
             ->setMaxResults(1);
 
         do {
@@ -59,10 +61,8 @@ DQL;
                 ->getOneOrNullResult(Query::HYDRATE_SCALAR);
         } while (null !== $result);
 
-        $subject->setKey($key);
-
         // $this->manager->getFilters()->enable('softdeleteable');
 
-        return $this;
+        return $key;
     }
 }

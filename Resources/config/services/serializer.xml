@@ -127,7 +127,7 @@
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <tag name="serializer.normalizer"/>

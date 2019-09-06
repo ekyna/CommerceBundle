@@ -550,6 +550,7 @@ ekyna_commerce:
             shipments: Liste des expéditions
             create_user: Création de l'utilisateur
             balance: Solde de compte
+            export: Export client
         button:
             list: Liste des clients
             show: Détail du client
@@ -558,6 +559,7 @@ ekyna_commerce:
             remove: Supprimer le client
             create_user: Créer l'utilisateur
             balance: Solde de compte
+            export: Export client
         field:
             parent: Compte service achat
             in_charge: Responsable

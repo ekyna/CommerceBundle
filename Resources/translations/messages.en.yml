@@ -550,6 +550,7 @@ ekyna_commerce:
             shipments: Shipments list
             create_user: User creation
             balance: Account balance
+            export: Customers export
         button:
             list: Customers list
             show: Customer details
@@ -558,6 +559,7 @@ ekyna_commerce:
             remove: Remove the customer
             create_user: Create the user
             balance: Account balance
+            export: Customers export
         field:
             parent: Accountable service
             in_charge: In charge

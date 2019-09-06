@@ -7,26 +7,26 @@
 
         <!-- Invoice number generator -->
         <service id="ekyna_commerce.invoice.invoice_number_generator"
-                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+                 class="Ekyna\Component\Commerce\Common\Generator\DefaultGenerator">
             <argument>%kernel.data_dir%/invoice_number</argument>
-            <argument>I</argument>
             <argument>10</argument>
+            <argument>I</argument>
             <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Credit number generator -->
         <service id="ekyna_commerce.invoice.credit_number_generator"
-                 class="Ekyna\Component\Commerce\Common\Generator\DefaultNumberGenerator">
+                 class="Ekyna\Component\Commerce\Common\Generator\DefaultGenerator">
             <argument>%kernel.data_dir%/credit_number</argument>
-            <argument>C</argument>
             <argument>10</argument>
+            <argument>C</argument>
             <argument>%kernel.debug%</argument>
         </service>
 
         <!-- Invoice subject calculator -->
         <service id="ekyna_commerce.invoice.subject_calculator"
                  class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculator">
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
         <!-- Invoice abstract listener -->
@@ -79,7 +79,7 @@
         <!-- Invoice payment resolver -->
         <service id="ekyna_commerce.invoice.payment_resolver"
                  class="Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolver">
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
         <!-- Invoice subject state resolver -->

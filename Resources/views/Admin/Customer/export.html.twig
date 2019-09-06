@@ -1,0 +1,30 @@
+{% extends '@EkynaAdmin/Entity/sided.html.twig' %}
+
+{% block page_title %}{{ (trans_prefix ~ '.header.export')|trans|raw }} - {{ parent() }}{% endblock page_title %}
+
+{% block title %}
+    <h1>{{ (trans_prefix ~ '.header.export')|trans|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {{ admin_resource_btn(resource_id, 'list') }}
+{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.from, {'label_col': 6, 'widget_col': 6}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.to, {'label_col': 6, 'widget_col': 6}) }}
+            </div>
+        </div>
+        {{ form_row(form.groups, {'label_col': 3, 'widget_col': 9}) }}
+        {{ form_rest(form) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}

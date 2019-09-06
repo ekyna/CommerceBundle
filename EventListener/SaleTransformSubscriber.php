@@ -7,7 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Model\TaggedSaleInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Component\Commerce\Common\Event\SaleTransformEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleTransformEvents;
-use Ekyna\Component\Commerce\Common\Generator\NumberGeneratorInterface;
+use Ekyna\Component\Commerce\Common\Generator\GeneratorInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -22,12 +22,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class SaleTransformSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var NumberGeneratorInterface
+     * @var GeneratorInterface
      */
     protected $orderNumberGenerator;
 
     /**
-     * @var NumberGeneratorInterface
+     * @var GeneratorInterface
      */
     protected $quoteNumberGenerator;
 
@@ -45,14 +45,14 @@ class SaleTransformSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param NumberGeneratorInterface $orderNumberGenerator
-     * @param NumberGeneratorInterface $quoteNumberGenerator
-     * @param DocumentGenerator        $generator
-     * @param EntityManagerInterface   $manager
+     * @param GeneratorInterface     $orderNumberGenerator
+     * @param GeneratorInterface     $quoteNumberGenerator
+     * @param DocumentGenerator      $generator
+     * @param EntityManagerInterface $manager
      */
     public function __construct(
-        NumberGeneratorInterface $orderNumberGenerator,
-        NumberGeneratorInterface $quoteNumberGenerator,
+        GeneratorInterface $orderNumberGenerator,
+        GeneratorInterface $quoteNumberGenerator,
         DocumentGenerator $generator,
         EntityManagerInterface $manager
     ) {
@@ -102,7 +102,9 @@ class SaleTransformSubscriber implements EventSubscriberInterface
 
         if ($target instanceof OrderInterface) {
             // Number is needed for document filename, but may not have been generated
-            $this->orderNumberGenerator->generate($target);
+            if (empty($target->getNumber())) {
+                $target->setNumber($this->orderNumberGenerator->generate($target));
+            }
 
             $this->generateOrderConfirmation($target);
 
@@ -111,7 +113,9 @@ class SaleTransformSubscriber implements EventSubscriberInterface
 
         if ($target instanceof QuoteInterface) {
             // Number is needed for document filename, but may not have been generated
-            $this->quoteNumberGenerator->generate($target);
+            if (empty($target->getNumber())) {
+                $target->setNumber($this->quoteNumberGenerator->generate($target));
+            }
 
             $this->generateQuoteForm($target);
 

@@ -499,8 +499,10 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html'       => '@EkynaCommerce/Admin/Customer/_form.html',
+                                    'list.html'        => '@EkynaCommerce/Admin/Customer/list.html',
                                     'show.html'        => '@EkynaCommerce/Admin/Customer/show.html',
                                     'balance.html'     => '@EkynaCommerce/Admin/Customer/balance.html',
+                                    'export.html'      => '@EkynaCommerce/Admin/Customer/export.html',
                                     'create_user.html' => '@EkynaCommerce/Admin/Customer/create_user.html',
                                 ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Customer')->end()

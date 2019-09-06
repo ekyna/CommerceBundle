@@ -9,8 +9,8 @@
         <service id="ekyna_commerce.ticket.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
             <argument>%kernel.data_dir%/ticket_number</argument>
-            <argument>\Tym</argument>
             <argument>8</argument>
+            <argument>\Tym</argument>
             <argument>%kernel.debug%</argument>
         </service>
 

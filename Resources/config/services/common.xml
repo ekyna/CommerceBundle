@@ -84,8 +84,8 @@
         </service>
 
         <!-- Currency converter -->
-        <service id="ekyna_commerce.currency.converter"
-                 class="Ekyna\Component\Commerce\Bridge\Swap\SwapCurrencyConverter">
+        <service id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"
+                 class="Ekyna\Component\Commerce\Bridge\Swap\CurrencyConverter">
             <argument type="service" id="florianv_swap.swap"/>
             <argument>%ekyna_commerce.default.currency%</argument>
         </service>
@@ -150,7 +150,7 @@
         <!-- Currency renderer -->
         <service id="Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface"
                  class="Ekyna\Component\Commerce\Common\Currency\CurrencyRenderer">
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <tag name="twig.runtime" />
         </service>

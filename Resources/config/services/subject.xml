@@ -23,7 +23,7 @@
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="ekyna_commerce.supplier_order_item.repository"/>
             <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
         <!-- Subject label renderer -->

@@ -14,8 +14,8 @@
         <service id="ekyna_commerce.quote.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
             <argument>%kernel.data_dir%/quote_number</argument>
-            <argument>\Qym</argument>
             <argument>10</argument>
+            <argument>\Qym</argument>
             <argument>%kernel.debug%</argument>
         </service>
 

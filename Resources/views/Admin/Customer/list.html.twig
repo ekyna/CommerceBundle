@@ -1,0 +1,11 @@
+{% extends '@EkynaAdmin/Entity/Default/list.html.twig' %}
+
+{% block actions %}
+    {{ ui_button('ekyna_core.button.export', {
+        'type': 'link',
+        'path': path('ekyna_commerce_customer_admin_export'),
+        'theme': 'default',
+        'icon': 'download'
+    }) }}
+    {{ admin_resource_btn(resource_id, 'new') }}
+{% endblock actions %}

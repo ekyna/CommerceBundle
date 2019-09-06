@@ -2,14 +2,19 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
+use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\AdminBundle\Controller\Context;
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerExportType;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Customer\Balance\Balance;
 use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Ekyna\Component\Commerce\Customer\Export\CustomerExport;
+use Ekyna\Component\Commerce\Customer\Export\CustomerExporter;
+use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +29,7 @@ class CustomerController extends ResourceController
     /**
      * @inheritDoc
      */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request): Response
     {
         //$callback = $request->query->get('callback');
         $limit = intval($request->query->get('limit'));
@@ -56,12 +61,12 @@ class CustomerController extends ResourceController
     /**
      * @inheritDoc
      */
-    protected function createNew(Context $context)
+    protected function createNew(Context $context): CustomerInterface
     {
-        /** @var \Ekyna\Bundle\CommerceBundle\Entity\Customer $customer */
+        /** @var CustomerInterface $customer */
         $customer = parent::createNew($context);
 
-        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $parent */
+        /** @var CustomerInterface $parent */
         $parent = $this->getRepository()->find($context->getRequest()->query->get('parent'));
         if (null !== $parent) {
             $customer
@@ -83,14 +88,14 @@ class CustomerController extends ResourceController
      *
      * @return Response
      */
-    public function summaryAction(Request $request)
+    public function summaryAction(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
             throw $this->createNotFoundException();
         }
 
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerInterface $customer */
+        /** @var CustomerInterface $customer */
         $customer = $context->getResource();
 
         $this->isGranted('VIEW', $customer);
@@ -129,10 +134,10 @@ class CustomerController extends ResourceController
      *
      * @return Response
      */
-    public function balanceAction(Request $request)
+    public function balanceAction(Request $request): Response
     {
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        /** @var CustomerInterface $customer */
         $customer = $context->getResource();
 
         $balance = new Balance($customer);
@@ -140,18 +145,19 @@ class CustomerController extends ResourceController
 
         $form = $this
             ->createForm(BalanceType::class, $balance, [
-                'action' => $this->generateUrl('ekyna_commerce_customer_admin_balance', [
+                'action'     => $this->generateUrl('ekyna_commerce_customer_admin_balance', [
                     'customerId' => $customer->getId(),
                 ]),
-                'method' => 'POST',
+                'method'     => 'POST',
+                'admin_mode' => true,
             ])
-            ->add('submit', SubmitType::class, [
+            ->add('submit', Type\SubmitType::class, [
                 'label' => 'ekyna_core.button.apply',
             ])
-            ->add('notify', SubmitType::class, [
+            ->add('notify', Type\SubmitType::class, [
                 'label' => 'ekyna_core.button.notify',
             ])
-            ->add('export', SubmitType::class, [
+            ->add('export', Type\SubmitType::class, [
                 'label' => 'ekyna_core.button.export',
             ]);
 
@@ -166,7 +172,7 @@ class CustomerController extends ResourceController
                 $this->get(BalanceBuilder::class)->build($balance);
 
                 $lines = $this->get('serializer')->normalize($balance, 'csv');
-                $path = $this->createCsv($lines);
+                $path = $this->createCsv($lines, 'balance');
 
                 if ($export->isClicked()) {
                     return $this->file($path, 'balance.csv');
@@ -196,6 +202,11 @@ class CustomerController extends ResourceController
             return JsonResponse::create($data);
         }
 
+        $this->appendBreadcrumb(
+            sprintf('%s_balance', $this->config->getResourceName()),
+            'ekyna_commerce.customer.button.balance'
+        );
+
         return $this->render(
             $this->config->getTemplate('balance.html'),
             $context->getTemplateVars([
@@ -206,15 +217,84 @@ class CustomerController extends ResourceController
     }
 
     /**
+     * Export action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function exportAction(Request $request): Response
+    {
+        $context = $this->loadContext($request);
+
+        $data = new CustomerExport();
+        $data
+            ->setFrom(new \DateTime('first day of january'))
+            ->setTo(new \DateTime());
+
+        $form = $this
+            ->createForm(CustomerExportType::class, $data, [
+                'action'     => $this->generateUrl('ekyna_commerce_customer_admin_export'),
+                'method'     => 'POST',
+                'attr'       => ['class' => 'form-horizontal'],
+                'admin_mode' => true,
+            ])
+            ->add('actions', FormActionsType::class, [
+                'buttons' => [
+                    'submit' => [
+                        'type'    => Type\SubmitType::class,
+                        'options' => [
+                            'button_class' => 'primary',
+                            'label'        => 'ekyna_core.button.export',
+                            'attr'         => ['icon' => 'download'],
+                        ],
+                    ],
+                    'cancel' => [
+                        'type'    => Type\ButtonType::class,
+                        'options' => [
+                            'label'        => 'ekyna_core.button.cancel',
+                            'button_class' => 'default',
+                            'as_link'      => true,
+                            'attr'         => [
+                                'class' => 'form-cancel-btn',
+                                'icon'  => 'remove',
+                                'href'  => $this->generateUrl('ekyna_commerce_customer_admin_list'),
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->file($this->get(CustomerExporter::class)->export($data), 'customers.csv');
+        }
+
+        $this->appendBreadcrumb(
+            sprintf('%s_export', $this->config->getResourceName()),
+            'ekyna_commerce.customer.button.export'
+        );
+
+        return $this->render(
+            $this->config->getTemplate('export.html'),
+            $context->getTemplateVars([
+                'form' => $form->createView(),
+            ])
+        );
+    }
+
+    /**
      * Creates the CSV file.
      *
-     * @param array $lines
+     * @param array  $lines
+     * @param string $prefix
      *
      * @return string
      */
-    private function createCsv(array $lines): string
+    private function createCsv(array $lines, string $prefix): string
     {
-        $path = tempnam(sys_get_temp_dir(), 'balance');
+        $path = tempnam(sys_get_temp_dir(), $prefix);
 
         $handle = fopen($path, 'w');
         foreach ($lines as $line) {
@@ -235,7 +315,7 @@ class CustomerController extends ResourceController
     public function createUserAction(Request $request)
     {
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        /** @var CustomerInterface $customer */
         $customer = $context->getResource();
 
         $this->isGranted('EDIT', $customer);
@@ -295,7 +375,7 @@ class CustomerController extends ResourceController
     protected function buildShowData(array &$data, Context $context)
     {
         $request = $context->getRequest();
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        /** @var CustomerInterface $customer */
         $customer = $context->getResource();
 
         if (!$customer->hasParent()) {

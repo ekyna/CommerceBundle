@@ -14,8 +14,8 @@
         <service id="ekyna_commerce.order.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
             <argument>%kernel.data_dir%/order_number</argument>
-            <argument>\Oym</argument>
             <argument>10</argument>
+            <argument>\Oym</argument>
             <argument>%kernel.debug%</argument>
         </service>
 

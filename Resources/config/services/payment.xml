@@ -29,8 +29,8 @@
         <service id="ekyna_commerce.payment.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
             <argument>%kernel.data_dir%/payment_number</argument>
-            <argument>ym</argument>
             <argument>10</argument>
+            <argument>ym</argument>
             <argument>%kernel.debug%</argument>
         </service>
 
@@ -38,13 +38,13 @@
         <service id="ekyna_commerce.payment.calculator"
                  class="Ekyna\Component\Commerce\Payment\Calculator\PaymentCalculator">
             <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
         <!-- Payment factory -->
         <service id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"
                  class="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdater">
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
         <!-- Payment factory -->
@@ -53,7 +53,7 @@
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             <argument type="service" id="ekyna_commerce.currency.repository"/>
         </service>
 
@@ -111,7 +111,7 @@
                  class="Ekyna\Bundle\CommerceBundle\EventListener\PaymentCheckoutEventSubscriber">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="router"/>
             <argument>%ekyna_commerce.default.currency%</argument>
@@ -154,7 +154,7 @@
                  class="Ekyna\Component\Commerce\Payment\Resolver\PaymentSubjectStateResolver">
             <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
    </services>

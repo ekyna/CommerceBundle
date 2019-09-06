@@ -97,7 +97,7 @@
         <service id="ekyna_commerce.common.amount_calculator"
                  class="Ekyna\Component\Commerce\Common\Calculator\AmountCalculator">
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
         <!-- Sale weight calculator -->
@@ -113,7 +113,7 @@
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <argument type="service" id="ekyna_commerce.currency.converter"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             <argument type="service" id="ekyna_commerce.subject.purchase_cost_guesser"/>
         </service>
 
@@ -161,7 +161,7 @@
                 <argument type="service" id="ekyna_commerce.payment.due_date_resolver"/>
             </call>
             <call method="setCurrencyConverter">
-                <argument type="service" id="ekyna_commerce.currency.converter"/>
+                <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             </call>
             <call method="setCurrencyProvider">
                 <argument type="service" id="ekyna_commerce.common.currency_provider"/>
