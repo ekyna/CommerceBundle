@@ -4,7 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\UnitChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\StockSubjectModes;
+use Ekyna\Bundle\ProductBundle\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Common\Model\Units;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Extension\Core\Type as SF;
 
@@ -16,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type as SF;
 class StockSubjectFormBuilder
 {
     /**
-     * @var FormInterface
+     * @var FormInterface|FormBuilderInterface
      */
     protected $form;
 
@@ -24,11 +26,25 @@ class StockSubjectFormBuilder
     /**
      * Initializes the builder.
      *
-     * @param FormInterface $form
+     * @param FormInterface|FormBuilderInterface $form
      */
-    public function initialize(FormInterface $form)
+    public function initialize($form)
     {
+        if (!($form instanceof FormInterface || $form instanceof FormBuilderInterface)) {
+            throw new UnexpectedTypeException($form, [FormInterface::class,FormBuilderInterface::class]);
+        }
+
         $this->form = $form;
+    }
+
+    /**
+     * Returns the form.
+     *
+     * @return FormInterface|FormBuilderInterface
+     */
+    protected function getForm()
+    {
+        return $this->form;
     }
 
     /**
@@ -145,6 +161,7 @@ class StockSubjectFormBuilder
         $options = array_replace([
             'label'   => 'ekyna_commerce.stock_subject.field.mode',
             'choices' => StockSubjectModes::getChoices(),
+            'select2' => false,
         ], $options);
 
         $this->form->add('stockMode', SF\ChoiceType::class, $options);
@@ -280,6 +297,7 @@ class StockSubjectFormBuilder
                 'placeholder' => 'ekyna_commerce.unit.label',
             ],
             'required' => true,
+            'select2' => false,
         ], $options);
 
         $this->form->add('unit', UnitChoiceType::class, $options);

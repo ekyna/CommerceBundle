@@ -180,7 +180,7 @@ class OrderShipmentType extends AbstractOrderListType
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
         $shipment = $row->getData();
 
-        $view->vars['attr']['data-summary'] = json_encode([
+        $view->vars['attr']['data-side-detail'] = json_encode([
             'route'      => 'ekyna_commerce_order_shipment_admin_summary',
             'parameters' => [
                 'orderId'         => $shipment->getSale()->getId(),

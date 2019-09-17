@@ -1369,7 +1369,7 @@ ekyna_commerce:
             received_quantity: Qte reçue
             adjusted_quantity: Qte ajustée
             sold_quantity: Qte vendue
-            shipped_quantity: Qte expediée
+            shipped_quantity: Qte expédiée
         button:
             new: Créer une unité de stock
         alert:

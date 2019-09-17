@@ -148,7 +148,7 @@ class CartType extends ResourceTableType
      */
     public function buildRowView(View\RowView $view, RowInterface $row, array $options)
     {
-        $view->vars['attr']['data-summary'] = json_encode([
+        $view->vars['attr']['data-side-detail'] = json_encode([
             'route'      => 'ekyna_commerce_cart_admin_summary',
             'parameters' => ['cartId' => $row->getData('id')],
         ]);

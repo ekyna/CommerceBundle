@@ -7,7 +7,7 @@
     {%- endif %}
     {% do currency_configure(sale) %}{# Configure currency renderer #}
     <div class="panel-body">
-        <table class="table table-condensed">
+        <table class="table table-condensed table-alt-head">
         <tbody>
             {% if sale.currency.code != commerce_default_currency -%}
             <tr>

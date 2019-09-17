@@ -110,7 +110,7 @@ class OrderInvoiceType extends AbstractOrderListType
         /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
         $invoice = $row->getData();
 
-        $view->vars['attr']['data-summary'] = json_encode([
+        $view->vars['attr']['data-side-detail'] = json_encode([
             'route'      => 'ekyna_commerce_order_invoice_admin_summary',
             'parameters' => [
                 'orderId'        => $invoice->getSale()->getId(),

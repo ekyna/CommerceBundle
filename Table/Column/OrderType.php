@@ -66,7 +66,7 @@ class OrderType extends AbstractColumnType
             ]);
 
             $output .= sprintf(
-                '<a href="%s" data-summary=\'%s\'>%s</a> ',
+                '<a href="%s" data-dide-detail=\'%s\'>%s</a> ',
                 $href,
                 $summary,
                 $order->getNumber()

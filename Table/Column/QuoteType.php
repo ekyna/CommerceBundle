@@ -66,7 +66,7 @@ class QuoteType extends AbstractColumnType
             ]);
 
             $output .= sprintf(
-                '<a href="%s" data-summary=\'%s\'>%s</a> ',
+                '<a href="%s" data-side-detail=\'%s\'>%s</a> ',
                 $href,
                 $summary,
                 $quote->getNumber()

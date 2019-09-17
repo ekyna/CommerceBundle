@@ -214,7 +214,7 @@ class QuoteType extends ResourceTableType
      */
     public function buildRowView(View\RowView $view, RowInterface $row, array $options)
     {
-        $view->vars['attr']['data-summary'] = json_encode([
+        $view->vars['attr']['data-side-detail'] = json_encode([
             'route'      => 'ekyna_commerce_quote_admin_summary',
             'parameters' => ['quoteId' => $row->getData('id')],
         ]);

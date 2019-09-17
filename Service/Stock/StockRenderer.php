@@ -88,7 +88,7 @@ class StockRenderer
         $prefix = isset($options['prefix']) ? $options['prefix'] : 'stockAssignments';
         $id = isset($options['id']) ? $options['id'] : $prefix . '_' . uniqid();
 
-        $classes = ['table', 'table-striped', 'table-hover'];
+        $classes = ['table', 'table-striped', 'table-hover', 'table-alt-head'];
         if (isset($options['class'])) {
             $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
         }

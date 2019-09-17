@@ -366,7 +366,7 @@ class OrderType extends ResourceTableType
             $view->vars['attr']['class'] = 'success';
         }
 
-        $view->vars['attr']['data-summary'] = json_encode([
+        $view->vars['attr']['data-side-detail'] = json_encode([
             'route'      => 'ekyna_commerce_order_admin_summary',
             'parameters' => ['orderId' => $row->getData('id')],
         ]);
