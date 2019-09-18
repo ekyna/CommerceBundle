@@ -59,13 +59,10 @@ class CartType extends ResourceTableType
 
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
-            ->addColumn('number', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.number',
-                'route_name'           => 'ekyna_commerce_cart_admin_show',
-                'route_parameters_map' => [
-                    'cartId' => 'id',
-                ],
-                'position'             => 10,
+            ->addColumn('number', Type\Column\CartType::class, [
+                'label'         => 'ekyna_core.field.number',
+                'property_path' => false,
+                'position'      => 10,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.date',
@@ -141,17 +138,6 @@ class CartType extends ResourceTableType
                     'position' => 150,
                 ]);
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildRowView(View\RowView $view, RowInterface $row, array $options)
-    {
-        $view->vars['attr']['data-side-detail'] = json_encode([
-            'route'      => 'ekyna_commerce_cart_admin_summary',
-            'parameters' => ['cartId' => $row->getData('id')],
-        ]);
     }
 
     /**

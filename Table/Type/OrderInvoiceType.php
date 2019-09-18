@@ -7,10 +7,8 @@ use Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
-use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
-use Ekyna\Component\Table\View\RowView;
 
 /**
  * Class OrderInvoiceType
@@ -28,9 +26,10 @@ class OrderInvoiceType extends AbstractOrderListType
 
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
-            ->addColumn('number', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'position' => 10,
+            ->addColumn('number', Column\OrderInvoiceType::class, [
+                'label'         => 'ekyna_core.field.number',
+                'property_path' => false,
+                'position'      => 10,
             ])
             ->addColumn('type', Column\InvoiceTypeType::class, [
                 'label'    => 'ekyna_core.field.type',
@@ -99,23 +98,6 @@ class OrderInvoiceType extends AbstractOrderListType
 
         $builder->addAction('documents', InvoiceDocumentActionType::class, [
             'label' => 'Afficher les factures/avoirs', // TODO trans
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildRowView(RowView $view, RowInterface $row, array $options)
-    {
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
-        $invoice = $row->getData();
-
-        $view->vars['attr']['data-side-detail'] = json_encode([
-            'route'      => 'ekyna_commerce_order_invoice_admin_summary',
-            'parameters' => [
-                'orderId'        => $invoice->getSale()->getId(),
-                'orderInvoiceId' => $invoice->getId(),
-            ],
         ]);
     }
 }

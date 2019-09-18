@@ -9,10 +9,8 @@ use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
-use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
-use Ekyna\Component\Table\View\RowView;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -68,9 +66,10 @@ class OrderShipmentType extends AbstractOrderListType
 
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
-            ->addColumn('number', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'position' => 10,
+            ->addColumn('number', Column\OrderShipmentType::class, [
+                'label'         => 'ekyna_core.field.number',
+                'property_path' => false,
+                'position'      => 10,
             ])
             ->addColumn('return', CType\Column\BooleanType::class, [
                 'label'       => 'ekyna_commerce.shipment.field.return',
@@ -170,22 +169,5 @@ class OrderShipmentType extends AbstractOrderListType
                 'label' => 'ekyna_commerce.shipment.action.forms',
                 'type'  => 'form',
             ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildRowView(RowView $view, RowInterface $row, array $options)
-    {
-        /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
-        $shipment = $row->getData();
-
-        $view->vars['attr']['data-side-detail'] = json_encode([
-            'route'      => 'ekyna_commerce_order_shipment_admin_summary',
-            'parameters' => [
-                'orderId'         => $shipment->getSale()->getId(),
-                'orderShipmentId' => $shipment->getId(),
-            ],
-        ]);
     }
 }

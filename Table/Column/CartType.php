@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\ColumnType;
@@ -14,11 +14,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class OrderType
+ * Class CartType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderType extends AbstractColumnType
+class CartType extends AbstractColumnType
 {
     /**
      * @var UrlGeneratorInterface
@@ -41,58 +41,58 @@ class OrderType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $orders = $row->getData($column->getConfig()->getPropertyPath());
+        $carts = $row->getData($column->getConfig()->getPropertyPath());
 
-        if ($orders instanceof OrderInterface) {
-            $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $orders->getId(),
+        if ($carts instanceof CartInterface) {
+            $href = $this->urlGenerator->generate('ekyna_commerce_cart_admin_show', [
+                'cartId' => $carts->getId(),
             ]);
 
             $view->vars['value'] = sprintf(
                 '<a href="%s">%s</a> ',
                 $href,
-                $orders->getNumber()
+                $carts->getNumber()
             );
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
                 'data-side-detail' => json_encode([
-                    'route'      => 'ekyna_commerce_order_admin_summary',
+                    'route'      => 'ekyna_commerce_cart_admin_summary',
                     'parameters' => [
-                        'orderId' => $orders->getId(),
+                        'cartId' => $carts->getId(),
                     ],
                 ]),
             ]);
 
             return;
         }
-        
-        if ($orders instanceof Collection) {
-            $orders = $orders->toArray();
-        } elseif (!is_array($orders)) {
-            $orders = [$orders];
+
+        if ($carts instanceof Collection) {
+            $carts = $carts->toArray();
+        } elseif (!is_array($carts)) {
+            $carts = [$carts];
         }
 
         $output = '';
 
-        foreach ($orders as $order) {
-            if (!$order instanceof OrderInterface) {
+        foreach ($carts as $cart) {
+            if (!$cart instanceof CartInterface) {
                 continue;
             }
 
-            $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $order->getId(),
+            $href = $this->urlGenerator->generate('ekyna_commerce_cart_admin_show', [
+                'cartId' => $cart->getId(),
             ]);
 
             $summary = json_encode([
-                'route'      => 'ekyna_commerce_order_admin_summary',
-                'parameters' => ['orderId' => $order->getId()],
+                'route'      => 'ekyna_commerce_cart_admin_summary',
+                'parameters' => ['cartId' => $cart->getId()],
             ]);
 
             $output .= sprintf(
                 '<a href="%s" data-side-detail=\'%s\'>%s</a> ',
                 $href,
                 $summary,
-                $order->getNumber()
+                $cart->getNumber()
             );
         }
 
@@ -111,14 +111,14 @@ class OrderType extends AbstractColumnType
                     return $value;
                 }
 
-                return 'ekyna_commerce.order.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                return 'ekyna_commerce.cart.label.' . ($options['multiple'] ? 'plural' : 'singular');
             },
             'property_path' => function (Options $options, $value) {
                 if ($value) {
                     return $value;
                 }
 
-                return $options['multiple'] ? 'orders' : 'order';
+                return $options['multiple'] ? 'carts' : 'cart';
             },
         ]);
     }

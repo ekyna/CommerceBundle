@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\ColumnType;
@@ -14,11 +14,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class OrderType
+ * Class OrderInvoiceType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderType extends AbstractColumnType
+class OrderInvoiceType extends AbstractColumnType
 {
     /**
      * @var UrlGeneratorInterface
@@ -41,58 +41,62 @@ class OrderType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $orders = $row->getData($column->getConfig()->getPropertyPath());
+        $invoices = $row->getData($column->getConfig()->getPropertyPath());
 
-        if ($orders instanceof OrderInterface) {
+        if ($invoices instanceof OrderInvoiceInterface) {
             $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $orders->getId(),
+                'orderId' => $invoices->getOrder()->getId(),
             ]);
 
             $view->vars['value'] = sprintf(
                 '<a href="%s">%s</a> ',
                 $href,
-                $orders->getNumber()
+                $invoices->getNumber()
             );
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
                 'data-side-detail' => json_encode([
-                    'route'      => 'ekyna_commerce_order_admin_summary',
+                    'route'      => 'ekyna_commerce_order_invoice_admin_summary',
                     'parameters' => [
-                        'orderId' => $orders->getId(),
+                        'orderId'        => $invoices->getOrder()->getId(),
+                        'orderInvoiceId' => $invoices->getId(),
                     ],
                 ]),
             ]);
 
             return;
         }
-        
-        if ($orders instanceof Collection) {
-            $orders = $orders->toArray();
-        } elseif (!is_array($orders)) {
-            $orders = [$orders];
+
+        if ($invoices instanceof Collection) {
+            $invoices = $invoices->toArray();
+        } elseif (!is_array($invoices)) {
+            $invoices = [$invoices];
         }
 
         $output = '';
 
-        foreach ($orders as $order) {
-            if (!$order instanceof OrderInterface) {
+        foreach ($invoices as $invoice) {
+            if (!$invoice instanceof OrderInvoiceInterface) {
                 continue;
             }
 
             $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $order->getId(),
+                'orderId' => $invoice->getOrder()->getId(),
             ]);
 
             $summary = json_encode([
-                'route'      => 'ekyna_commerce_order_admin_summary',
-                'parameters' => ['orderId' => $order->getId()],
+                'route'      => 'ekyna_commerce_order_invoice_admin_summary',
+                'parameters' => [
+                    'orderId'        => $invoice->getOrder()->getId(),
+                    'orderInvoiceId' => $invoice->getId(),
+                ],
             ]);
 
             $output .= sprintf(
                 '<a href="%s" data-side-detail=\'%s\'>%s</a> ',
                 $href,
                 $summary,
-                $order->getNumber()
+                $invoice->getNumber()
             );
         }
 
@@ -111,14 +115,14 @@ class OrderType extends AbstractColumnType
                     return $value;
                 }
 
-                return 'ekyna_commerce.order.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                return 'ekyna_commerce.order_invoice.label.' . ($options['multiple'] ? 'plural' : 'singular');
             },
             'property_path' => function (Options $options, $value) {
                 if ($value) {
                     return $value;
                 }
 
-                return $options['multiple'] ? 'orders' : 'order';
+                return $options['multiple'] ? 'invoices' : 'invoice';
             },
         ]);
     }

@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\ColumnType;
@@ -14,11 +14,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class OrderType
+ * Class OrderShipmentType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderType extends AbstractColumnType
+class OrderShipmentType extends AbstractColumnType
 {
     /**
      * @var UrlGeneratorInterface
@@ -41,58 +41,62 @@ class OrderType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $orders = $row->getData($column->getConfig()->getPropertyPath());
+        $shipments = $row->getData($column->getConfig()->getPropertyPath());
 
-        if ($orders instanceof OrderInterface) {
+        if ($shipments instanceof OrderShipmentInterface) {
             $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $orders->getId(),
+                'orderId' => $shipments->getOrder()->getId(),
             ]);
 
             $view->vars['value'] = sprintf(
                 '<a href="%s">%s</a> ',
                 $href,
-                $orders->getNumber()
+                $shipments->getNumber()
             );
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
                 'data-side-detail' => json_encode([
-                    'route'      => 'ekyna_commerce_order_admin_summary',
+                    'route'      => 'ekyna_commerce_order_shipment_admin_summary',
                     'parameters' => [
-                        'orderId' => $orders->getId(),
+                        'orderId'        => $shipments->getOrder()->getId(),
+                        'orderShipmentId' => $shipments->getId(),
                     ],
                 ]),
             ]);
 
             return;
         }
-        
-        if ($orders instanceof Collection) {
-            $orders = $orders->toArray();
-        } elseif (!is_array($orders)) {
-            $orders = [$orders];
+
+        if ($shipments instanceof Collection) {
+            $shipments = $shipments->toArray();
+        } elseif (!is_array($shipments)) {
+            $shipments = [$shipments];
         }
 
         $output = '';
 
-        foreach ($orders as $order) {
-            if (!$order instanceof OrderInterface) {
+        foreach ($shipments as $shipment) {
+            if (!$shipment instanceof OrderShipmentInterface) {
                 continue;
             }
 
             $href = $this->urlGenerator->generate('ekyna_commerce_order_admin_show', [
-                'orderId' => $order->getId(),
+                'orderId' => $shipment->getOrder()->getId(),
             ]);
 
             $summary = json_encode([
-                'route'      => 'ekyna_commerce_order_admin_summary',
-                'parameters' => ['orderId' => $order->getId()],
+                'route'      => 'ekyna_commerce_order_shipment_admin_summary',
+                'parameters' => [
+                    'orderId'        => $shipment->getOrder()->getId(),
+                    'orderShipmentId' => $shipment->getId(),
+                ],
             ]);
 
             $output .= sprintf(
                 '<a href="%s" data-side-detail=\'%s\'>%s</a> ',
                 $href,
                 $summary,
-                $order->getNumber()
+                $shipment->getNumber()
             );
         }
 
@@ -111,14 +115,14 @@ class OrderType extends AbstractColumnType
                     return $value;
                 }
 
-                return 'ekyna_commerce.order.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                return 'ekyna_commerce.order_shipment.label.' . ($options['multiple'] ? 'plural' : 'singular');
             },
             'property_path' => function (Options $options, $value) {
                 if ($value) {
                     return $value;
                 }
 
-                return $options['multiple'] ? 'orders' : 'order';
+                return $options['multiple'] ? 'shipments' : 'shipment';
             },
         ]);
     }

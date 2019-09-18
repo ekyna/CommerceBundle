@@ -40,6 +40,12 @@
             <tag name="table.type"/>
         </service>
 
+        <!-- Cart(s) column type -->
+        <service id="Ekyna\Bundle\CommerceBundle\Table\Column\CartType">
+            <argument type="service" id="router"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Currency column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\CurrencyType">
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface"/>
@@ -66,6 +72,18 @@
 
         <!-- Order(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\OrderType">
+            <argument type="service" id="router"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Order invoice(s) column type -->
+        <service id="Ekyna\Bundle\CommerceBundle\Table\Column\OrderInvoiceType">
+            <argument type="service" id="router"/>
+            <tag name="table.column_type"/>
+        </service>
+
+        <!-- Order shipment(s) column type -->
+        <service id="Ekyna\Bundle\CommerceBundle\Table\Column\OrderShipmentType">
             <argument type="service" id="router"/>
             <tag name="table.column_type"/>
         </service>

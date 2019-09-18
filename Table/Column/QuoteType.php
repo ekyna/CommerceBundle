@@ -43,6 +43,29 @@ class QuoteType extends AbstractColumnType
     {
         $quotes = $row->getData($column->getConfig()->getPropertyPath());
 
+        if ($quotes instanceof QuoteInterface) {
+            $href = $this->urlGenerator->generate('ekyna_commerce_quote_admin_show', [
+                'quoteId' => $quotes->getId(),
+            ]);
+
+            $view->vars['value'] = sprintf(
+                '<a href="%s">%s</a> ',
+                $href,
+                $quotes->getNumber()
+            );
+
+            $view->vars['attr'] = array_replace($view->vars['attr'], [
+                'data-side-detail' => json_encode([
+                    'route'      => 'ekyna_commerce_quote_admin_summary',
+                    'parameters' => [
+                        'quoteId' => $quotes->getId(),
+                    ],
+                ]),
+            ]);
+
+            return;
+        }
+        
         if ($quotes instanceof Collection) {
             $quotes = $quotes->toArray();
         } elseif (!is_array($quotes)) {

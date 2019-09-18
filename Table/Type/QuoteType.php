@@ -65,13 +65,10 @@ class QuoteType extends ResourceTableType
                 'property_path' => false,
                 'position'      => 5,
             ])
-            ->addColumn('number', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.number',
-                'route_name'           => 'ekyna_commerce_quote_admin_show',
-                'route_parameters_map' => [
-                    'quoteId' => 'id',
-                ],
-                'position'             => 10,
+            ->addColumn('number', Type\Column\QuoteType::class, [
+                'label'         => 'ekyna_core.field.number',
+                'property_path' => false,
+                'position'      => 10,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.date',
@@ -207,17 +204,6 @@ class QuoteType extends ResourceTableType
                     'position' => 150,
                 ]);
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildRowView(View\RowView $view, RowInterface $row, array $options)
-    {
-        $view->vars['attr']['data-side-detail'] = json_encode([
-            'route'      => 'ekyna_commerce_quote_admin_summary',
-            'parameters' => ['quoteId' => $row->getData('id')],
-        ]);
     }
 
     /**

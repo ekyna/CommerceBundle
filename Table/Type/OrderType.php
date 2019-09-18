@@ -116,13 +116,10 @@ class OrderType extends ResourceTableType
                 'property_path' => false,
                 'position'      => 5,
             ])
-            ->addColumn('number', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.number',
-                'route_name'           => 'ekyna_commerce_order_admin_show',
-                'route_parameters_map' => [
-                    'orderId' => 'id',
-                ],
-                'position'             => 10,
+            ->addColumn('number', Type\Column\OrderType::class, [
+                'label'         => 'ekyna_core.field.number',
+                'property_path' => false,
+                'position'      => 10,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.date',
@@ -365,11 +362,6 @@ class OrderType extends ResourceTableType
         if ($order->isFirst()) {
             $view->vars['attr']['class'] = 'success';
         }
-
-        $view->vars['attr']['data-side-detail'] = json_encode([
-            'route'      => 'ekyna_commerce_order_admin_summary',
-            'parameters' => ['orderId' => $row->getData('id')],
-        ]);
     }
 
     /**
