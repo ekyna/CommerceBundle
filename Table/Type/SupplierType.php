@@ -44,6 +44,10 @@ class SupplierType extends ResourceTableType
                 'property_path' => 'currency.code',
                 'position'      => 40,
             ])
+            ->addColumn('locale', CType\Column\TextType::class, [
+                'label'    => 'ekyna_core.field.locale',
+                'position' => 50,
+            ])
             ->addColumn('tax', DType\Column\EntityType::class, [
                 'label'                => 'ekyna_commerce.tax.label.singular',
                 'entity_label'         => 'name',
@@ -51,7 +55,7 @@ class SupplierType extends ResourceTableType
                 'route_parameters_map' => [
                     'taxId' => 'id',
                 ],
-                'position'             => 50,
+                'position'             => 60,
             ])
             ->addColumn('carrier', DType\Column\EntityType::class, [
                 'label'                => 'ekyna_commerce.supplier_carrier.label.singular',
@@ -60,7 +64,7 @@ class SupplierType extends ResourceTableType
                 'route_parameters_map' => [
                     'supplierCarrierId' => 'id',
                 ],
-                'position'             => 60,
+                'position'             => 70,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

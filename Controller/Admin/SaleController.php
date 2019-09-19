@@ -135,7 +135,7 @@ class SaleController extends AbstractSaleController
                 '@EkynaCommerce/Admin/Common/Sale/summary.html.twig',
                 array_replace($content, [
                     'shipment' => $sale instanceof ShipmentSubjectInterface,
-                    'invoice'  => $sale instanceof InvoiceSubjectInterface,
+                    'invoice'  => $sale instanceof InvoiceSubjectInterface && !$sale->isSample(),
                 ])
             );
         } else {

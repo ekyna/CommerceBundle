@@ -9,17 +9,18 @@
         <td>{{ item.reference }}</td>
         <td class="text-right">{{ item.total_quantity|localizednumber }}</td>
         {% if shipment -%}
-        <td class="text-right">
+        <td class="text-right {{ item.shipment_class }}">
             {{ item.shipped|localizednumber }}
             {% if 0 < item.returned %} (-{{ item.returned|localizednumber }}){% endif -%}
         </td>
-        <td class="text-right">
+        <td class="text-right {{ item.availability_class }}">
             {{ item.available|localizednumber }}
             {% if 0 < item.in_stock %} ({{ item.in_stock|localizednumber }}){% endif -%}
         </td>
         {%- endif %}
         {% if invoice -%}
-        <td class="text-right">{{ item.invoiced|localizednumber }}
+        <td class="text-right {{ item.invoice_class }}">
+            {{ item.invoiced|localizednumber }}
             {% if 0 < item.credited %} (-{{ item.credited|localizednumber }}){% endif -%}
         </td>
         {%- endif %}
