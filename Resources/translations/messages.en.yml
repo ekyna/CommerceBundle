@@ -423,26 +423,59 @@ ekyna_commerce:
             free_shipping: Free
             mobile_required: This shipment method requires a mobile phone number.
 
-        country:
-            label:
-                singular: Country
-                plural: Countries
-            header:
-                list: Countries <small>List of countries</small>
-                show: Country details <small>%name%</small>
-                new: Create a new country
-                edit: Edit the country <small>%name%</small>
-                remove: Remove the country <small>%name%</small>
-            button:
-                list: Countries list
-                show: Country details
-                new: New country
-                edit: Edit the country
-                remove: Remove the country
-            message:
-                all: All countries
-            alert:
-                no_item: No country configured
+    country:
+        label:
+            singular: Country
+            plural: Countries
+        header:
+            list: Countries <small>List of countries</small>
+            show: Country details <small>%name%</small>
+            new: Create a new country
+            edit: Edit the country <small>%name%</small>
+            remove: Remove the country <small>%name%</small>
+        button:
+            list: Countries list
+            show: Country details
+            new: New country
+            edit: Edit the country
+            remove: Remove the country
+        message:
+            all: All countries
+        alert:
+            no_item: No country configured
+
+    coupon:
+        label:
+            singular: Coupon code
+            plural: Coupon codes
+        header:
+            list: Coupon code <small>Liste of codes</small>
+            show: Coupon code details <small>%name%</small>
+            new: Create a new coupon code
+            edit: Edit the coupon code <small>%name%</small>
+            remove: Remove the coupon code <small>%name%</small>
+        button:
+            list: Coupon codes list
+            show: Coupon code details
+            new: New coupon code
+            edit: Edit the coupon code
+            remove: Remove the coupon code
+        field:
+            limit: Limit
+            usage: Usage
+            min_gross: Min. gross total
+            cumulative: Can be combined
+        message:
+            not_found: Unknown coupon code.
+            usage: This coupon code is no longer available.
+            start_at: This coupon code will be available from %date%.
+            end_at: This coupon code is no longer available %date%.
+            designation: Coupon code %code%
+        help:
+            cumulative: Whether this coupon can be applied to a sale with autmatic item discount(s).
+        alert:
+            immutable_code: This code cannot be changed
+            no_item: No coupon code configured
 
     context:
         field:
@@ -1143,6 +1176,7 @@ ekyna_commerce:
             outstanding_expired: Expired outstanding
             outstanding_limit: Outstanding limit
             outstanding_date: Limit Date
+            coupon_code: Coupon code
             voucher_number: Voucher number
             origin_number: Origin number
             gross_totals: Gross total

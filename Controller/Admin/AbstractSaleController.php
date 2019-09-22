@@ -20,7 +20,7 @@ abstract class AbstractSaleController extends ResourceController
      *
      * @return FormInterface
      */
-    protected function buildRecalculateForm(SaleInterface $sale)
+    protected function buildQuantitiesForm(SaleInterface $sale)
     {
         $config = $this->config;
         while (null !== $parentId = $config->getParentConfigurationId()) {
@@ -40,21 +40,25 @@ abstract class AbstractSaleController extends ResourceController
      * Builds the sale view.
      *
      * @param SaleInterface $sale
-     * @param FormInterface $form The recalculate form
+     * @param FormInterface $form The quantities form
      *
      * @return \Ekyna\Component\Commerce\Common\View\SaleView
      */
     protected function buildSaleView(SaleInterface $sale, FormInterface $form = null)
     {
-        if (null === $form) {
-            $form = $this->buildRecalculateForm($sale);
-        }
+        $editable = !($sale->isReleased() && !$this->getParameter('kernel.debug'));
 
         $view = $this->getSaleHelper()->buildView($sale, [
             'private'  => true,
-            'editable' => !($sale->isReleased() && !$this->getParameter('kernel.debug')),
+            'editable' => $editable,
         ]);
-        $view->vars['form'] = $form->createView();
+
+        if ($editable) {
+            if (null === $form) {
+                $form = $this->buildQuantitiesForm($sale);
+            }
+            $view->vars['quantities_form'] = $form->createView();
+        }
 
         return $view;
     }
@@ -63,7 +67,7 @@ abstract class AbstractSaleController extends ResourceController
      * Returns the XHR cart view response.
      *
      * @param SaleInterface $sale
-     * @param FormInterface $form The recalculate form
+     * @param FormInterface $form The quantities form
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -75,8 +79,8 @@ abstract class AbstractSaleController extends ResourceController
         $this->getOperator()->refresh($sale);
 
         $response = $this->render('@EkynaCommerce/Admin/Common/Sale/response.xml.twig', [
-            'sale'          => $sale,
-            'sale_view'     => $this->buildSaleView($sale, $form),
+            'sale'      => $sale,
+            'sale_view' => $this->buildSaleView($sale, $form),
         ]);
 
         $response->headers->set('Content-type', 'application/xml');

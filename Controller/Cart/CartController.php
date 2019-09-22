@@ -6,7 +6,13 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout as CheckoutType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale as SaleType;
 use Ekyna\Bundle\CoreBundle\Modal;
+use Ekyna\Component\Commerce\Common\Helper\CouponHelper;
+use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
+use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Features;
 use League\Flysystem\Filesystem;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -21,6 +27,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class CartController extends AbstractController
 {
     /**
+     * @var CouponHelper
+     */
+    private $couponSetter;
+
+    /**
      * @var Modal\Renderer
      */
     private $modalRenderer;
@@ -34,13 +45,92 @@ class CartController extends AbstractController
     /**
      * Constructor.
      *
+     * @param CouponHelper   $couponSetter
      * @param Modal\Renderer $modalRenderer
      * @param Filesystem     $fileSystem
      */
-    public function __construct(Modal\Renderer $modalRenderer, Filesystem $fileSystem)
-    {
+    public function __construct(
+        CouponHelper $couponSetter,
+        Modal\Renderer $modalRenderer,
+        Filesystem $fileSystem
+    ) {
+        $this->couponSetter = $couponSetter;
         $this->modalRenderer = $modalRenderer;
         $this->fileSystem = $fileSystem;
+    }
+
+    /**
+     * Coupon set action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function couponSet(Request $request): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented');
+        }
+
+        if (!$this->features->isEnabled(Features::COUPON)) {
+            throw new LogicException("Coupon feature is disabled");
+        }
+
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
+        }
+
+        $form = $this->createCouponForm($cart);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $this->couponSetter->set($cart, $form->get('code')->getData());
+
+                $this->getCartHelper()->getCartProvider()->saveCart();
+
+                $form = null;
+            } catch (CommerceExceptionInterface $e) {
+                $form->get('code')->addError(new FormError($e->getMessage()));
+            }
+        }
+
+        return $this->buildXhrCartViewResponse(null, $form);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     * @throws LogicException
+     */
+    public function couponClear(Request $request): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented');
+        }
+
+        if (!$this->features->isEnabled(Features::COUPON)) {
+            throw new LogicException("Coupon feature is disabled");
+        }
+
+        if (null === $cart = $this->getCart()) {
+            throw new NotFoundHttpException('Cart not found.');
+        }
+
+        if ($cart->isLocked()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
+        }
+
+        $this->couponSetter->clear($cart);
+
+        $this->getCartHelper()->getCartProvider()->saveCart();
+
+        return $this->buildXhrCartViewResponse();
     }
 
     /**
@@ -50,7 +140,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function itemConfigureAction(Request $request)
+    public function itemConfigure(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
             throw new NotFoundHttpException('Not yet implemented');
@@ -115,7 +205,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function itemRemoveAction(Request $request)
+    public function itemRemove(Request $request): Response
     {
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
@@ -148,12 +238,12 @@ class CartController extends AbstractController
         return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
     }
 
-    public function itemAdjustmentRemoveAction()
+    public function itemAdjustmentRemove(): Response
     {
         throw new \Exception('Not yet implemented.'); // TODO
     }
 
-    public function adjustmentRemoveAction()
+    public function adjustmentRemove(): Response
     {
         throw new \Exception('Not yet implemented.'); // TODO
     }
@@ -165,7 +255,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function attachmentAddAction(Request $request)
+    public function attachmentAdd(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
             throw new NotFoundHttpException('Not yet implemented');
@@ -215,7 +305,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function attachmentRemoveAction(Request $request)
+    public function attachmentRemove(Request $request): Response
     {
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
@@ -256,7 +346,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function attachmentDownloadAction(Request $request)
+    public function attachmentDownload(Request $request): Response
     {
         if (null === $cart = $this->getCart()) {
             throw new NotFoundHttpException('Cart not found.');
@@ -299,7 +389,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function informationAction(Request $request)
+    public function information(Request $request): Response
     {
         return $this->handleForm(
             $request,
@@ -319,7 +409,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function invoiceAddressAction(Request $request)
+    public function invoiceAddress(Request $request): Response
     {
         return $this->handleForm(
             $request,
@@ -340,7 +430,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function deliveryAddressAction(Request $request)
+    public function deliveryAddress(Request $request): Response
     {
         return $this->handleForm(
             $request,
@@ -362,7 +452,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function commentAction(Request $request)
+    public function comment(Request $request): Response
     {
         return $this->handleForm(
             $request,
@@ -386,7 +476,7 @@ class CartController extends AbstractController
      *
      * @return Response
      */
-    public function handleForm(Request $request, $type, $title, $route, array $options = [])
+    public function handleForm(Request $request, $type, $title, $route, array $options = []): Response
     {
         if (!$request->isXmlHttpRequest()) {
             throw new NotFoundHttpException('Not yet implemented.');
@@ -432,7 +522,7 @@ class CartController extends AbstractController
      *
      * @return Modal\Modal
      */
-    protected function createModal($title, $content = null, $buttons = [])
+    protected function createModal($title, $content = null, $buttons = []): Modal\Modal
     {
         if (empty($buttons)) {
             $buttons = [
@@ -458,26 +548,32 @@ class CartController extends AbstractController
     /**
      * Returns the XHR cart view response.
      *
+     * @param FormInterface $quantities
+     * @param FormInterface $coupon
+     *
      * @return Response
      */
-    protected function buildXhrCartViewResponse()
-    {
+    protected function buildXhrCartViewResponse(
+        FormInterface $quantities = null,
+        FormInterface $coupon = null
+    ): Response {
         $parameters = [];
 
         // Cart
         $parameters['cart'] = $cart = $this->getCart();
 
         if (null !== $cart) {
-            $saleHelper = $this->getSaleHelper();
-
-            $form = $saleHelper->createQuantitiesForm($cart, [
-                'method'            => 'post',
-                'action'            => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
-                'validation_groups' => ['Calculation', 'Availability'],
-            ]);
-
             $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
-            $view->vars['form'] = $form->createView();
+
+            $view->vars['quantities_form'] = $quantities
+                ? $quantities->createView()
+                : $this->createQuantitiesForm($cart)->createView();
+
+            if ($this->features->isEnabled(Features::COUPON)) {
+                $view->vars['coupon_form'] = $coupon
+                    ? $coupon->createView()
+                    : $this->createCouponForm($cart)->createView();
+            }
 
             $parameters['view'] = $view;
         }

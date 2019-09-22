@@ -42,7 +42,7 @@ class AdjustmentType extends ResourceFormType
             ])
             ->add('mode', Type\ChoiceType::class, [
                 'label'             => 'ekyna_core.field.mode',
-                'choices'           => AdjustmentModes::getChoices($options['modes'], AdjustmentTypes::FILTER_RESTRICT),
+                'choices'           => AdjustmentModes::getChoices($options['modes'], AdjustmentModes::FILTER_RESTRICT),
                 'preferred_choices' => [AM::MODE_PERCENT],
                 'select2'           => false,
                 'attr'              => [

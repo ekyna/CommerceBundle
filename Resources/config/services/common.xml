@@ -5,6 +5,11 @@
 
     <services>
 
+        <!-- Features -->
+        <service id="Ekyna\Component\Commerce\Features">
+            <argument type="collection"/><!-- Replaced by DI extension -->
+        </service>
+
         <!-- Country repository -->
         <service id="ekyna_commerce.country.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository">
@@ -95,6 +100,16 @@
                  class="Ekyna\Component\Commerce\Common\Util\FormatterFactory">
             <argument type="service" id="ekyna_resource.locale_provider"/>
             <argument type="service" id="ekyna_commerce.common.currency_provider"/>
+        </service>
+
+        <!-- Coupon setter -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Common\CouponHelper">
+            <argument type="service" id="ekyna_commerce.coupon.repository"/>
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
+            <call method="setFormatterFactory">
+                <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
+            </call>
         </service>
 
         <!-- In charge resolver -->

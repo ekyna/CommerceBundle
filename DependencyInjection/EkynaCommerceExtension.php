@@ -7,6 +7,7 @@ use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Cart;
 use Ekyna\Component\Commerce\Customer;
+use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order;
 use Ekyna\Component\Commerce\Quote;
 use Ekyna\Component\Commerce\Pricing\Api;
@@ -32,6 +33,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureCache($config['cache'], $container);
         $this->configureDefaults($config['default'], $container);
         $this->configureDocument($config['document'], $container);
+        $this->configureFeatures($config['feature'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
         $this->configureSupport($config['support'], $container);
@@ -106,6 +108,20 @@ class EkynaCommerceExtension extends AbstractExtension
                 'logo_path'               => '%ekyna_commerce.company_logo%',
                 'debug'                   => '%kernel.debug%',
             ]);
+    }
+
+    /**
+     * Configures the features.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureFeatures(array $config, ContainerBuilder $container)
+    {
+        // Set features parameter
+        $container->setParameter('ekyna_commerce.features', $config);
+        // Set service config
+        $container->getDefinition(Features::class)->replaceArgument(0, $config);
     }
 
     /**

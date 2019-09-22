@@ -1,23 +1,39 @@
+ekyna_commerce_cart_coupon_set:
+    path: /coupon/set
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::couponSet
+    methods: POST
+    requirements:
+        itemId: \d+
+    options: { i18n: false }
+
+ekyna_commerce_cart_coupon_clear:
+    path: /coupon/clear
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::couponClear
+    methods: POST
+    requirements:
+        itemId: \d+
+    options: { i18n: false }
+
 ekyna_commerce_cart_item_configure:
     path: /items/{itemId}/configure
-    defaults: { _controller: "ekyna_commerce.controller.cart:itemConfigureAction" }
-    methods: [GET, POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::itemConfigure
+    methods: GET|POST
     requirements:
         itemId: \d+
     options: { i18n: false }
 
 ekyna_commerce_cart_item_remove:
     path: /items/{itemId}/remove
-    defaults: { _controller: "ekyna_commerce.controller.cart:itemRemoveAction" }
-    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::itemRemove
+    methods: POST
     requirements:
         itemId: \d+
     options: { i18n: false }
 
 ekyna_commerce_cart_item_adjustment_remove:
     path: /items/{itemId}/adjustments/{adjustmentId}/remove
-    defaults: { _controller: "ekyna_commerce.controller.cart:itemAdjustmentRemoveAction" }
-    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::itemAdjustmentRemove
+    methods: POST
     requirements:
         itemId: \d+
         adjustmentId: \d+
@@ -25,54 +41,54 @@ ekyna_commerce_cart_item_adjustment_remove:
 
 ekyna_commerce_cart_adjustment_remove:
     path: /adjustments/{adjustmentId}/remove
-    defaults: { _controller: "ekyna_commerce.controller.cart:adjustmentRemoveAction" }
-    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::adjustmentRemove
+    methods: POST
     requirements:
         adjustmentId: \d+
     options: { i18n: false }
 
 ekyna_commerce_cart_attachment_add:
     path: /attachments/add
-    defaults: { _controller: "ekyna_commerce.controller.cart:attachmentAddAction" }
-    methods: [GET, POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::attachmentAdd
+    methods: GET|POST
     options: { i18n: false }
 
 ekyna_commerce_cart_attachment_remove:
     path: /attachments/{attachmentId}/remove
-    defaults: { _controller: "ekyna_commerce.controller.cart:attachmentRemoveAction" }
-    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::attachmentRemove
+    methods: POST
     requirements:
         adjustmentId: \d+
     options: { i18n: false }
 
 ekyna_commerce_cart_attachment_download:
     path: /attachments/{attachmentId}/download
-    defaults: { _controller: "ekyna_commerce.controller.cart:attachmentDownloadAction" }
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::attachmentDownload
+    methods: GET
     requirements:
         adjustmentId: \d+
     options: { i18n: false }
 
 ekyna_commerce_cart_information:
     path: /information
-    defaults: { _controller: "ekyna_commerce.controller.cart:informationAction" }
-    methods: [GET, POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::information
+    methods: GET|POST
     options: { i18n: false }
 
 ekyna_commerce_cart_invoice_address:
     path: /invoice-address
-    defaults: { _controller: "ekyna_commerce.controller.cart:invoiceAddressAction" }
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::invoiceAddress
     methods: [GET, POST]
     options: { i18n: false }
 
 ekyna_commerce_cart_delivery_address:
     path: /delivery-address
-    defaults: { _controller: "ekyna_commerce.controller.cart:deliveryAddressAction" }
-    methods: [GET, POST]
+    defaults: { _controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::deliveryAddress }
+    methods: GET|POST
     options: { i18n: false }
 
 ekyna_commerce_cart_comment:
     path: /comment
-    defaults: { _controller: "ekyna_commerce.controller.cart:commentAction" }
-    methods: [GET, POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController::comment
+    methods: GET|POST
     options: { i18n: false }

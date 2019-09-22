@@ -6,7 +6,9 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form', 
             trigger: 'hover',
             placement: 'top',
             html: true
-        })
+        });
+
+        // TODO Toggle recalculate disabled on quantity change
     }
 
     function parseResponse(response, $saleView) {
@@ -128,12 +130,12 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-ui', 'jquery/form', 
         return false;
     });
 
-    $(document).on('submit', '.sale-view', function(e) {
+    $(document).on('submit', '.sale-view form', function(e) {
         e.preventDefault();
 
         var $saleView = $(e.target).closest('.sale-view').loadingSpinner();
 
-        $saleView.ajaxSubmit({
+        $(e.target).closest('form').ajaxSubmit({
             dataType: 'xml',
             success: function(response) {
                 parseResponse(response, $saleView);

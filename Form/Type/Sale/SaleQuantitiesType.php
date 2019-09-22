@@ -6,6 +6,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -33,7 +34,12 @@ class SaleQuantitiesType extends AbstractType
                 $sale = $event->getData();
                 $form = $event->getForm();
 
-                $createItemQuantityForm = function (SaleItemInterface $item, $path = 'items') use ($form, $options, &$createItemQuantityForm) {
+                $createItemQuantityForm = function (SaleItemInterface $item, $path = 'items') use (
+                    $form,
+                    $options,
+                    &
+                    $createItemQuantityForm
+                ) {
                     if (!$item->isImmutable()) {
                         $constraints = [
                             new Constraints\NotBlank(),
@@ -57,6 +63,13 @@ class SaleQuantitiesType extends AbstractType
                     $createItemQuantityForm($item);
                 }
             });
+
+        $builder->add('submit', SubmitType::class, [
+            'label' => 'ekyna_core.button.recalculate',
+            'attr'  => [
+                'class' => 'btn-sm',
+            ],
+        ]);
     }
 
     /**

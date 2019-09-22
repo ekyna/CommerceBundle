@@ -138,6 +138,12 @@
             </call>
         </service>
 
+        <!-- Sale discount listener -->
+        <service id="Ekyna\Component\Commerce\Common\EventListener\SaleDiscountListener">
+            <argument type="service" id="ekyna_commerce.coupon.repository"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <!-- Sale abstract listener -->
         <service id="ekyna_commerce.sale.abstract_listener"
                  class="Ekyna\Component\Commerce\Common\EventListener\AbstractSaleListener"

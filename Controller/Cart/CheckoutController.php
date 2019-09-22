@@ -12,6 +12,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
@@ -19,6 +20,7 @@ use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -92,9 +94,9 @@ class CheckoutController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function indexAction(Request $request)
+    public function index(Request $request): Response
     {
         $parameters = [];
 
@@ -103,16 +105,12 @@ class CheckoutController extends AbstractController
         if (null !== $cart) {
             $saleHelper = $this->getSaleHelper();
 
-            $saleForm = $saleHelper->createQuantitiesForm($cart, [
-                'method'            => 'post',
-                'action'            => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
-                'validation_groups' => ['Calculation', 'Availability'],
-            ]);
+            $form = $this->createQuantitiesForm($cart);
 
             if (!$cart->isLocked()) {
-                $saleForm->handleRequest($request);
+                $form->handleRequest($request);
 
-                if ($saleForm->isSubmitted() && $saleForm->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
                     $this->getCartHelper()->getCartProvider()->updateCustomerGroupAndCurrency();
 
                     $saleHelper->recalculate($cart);
@@ -122,7 +120,12 @@ class CheckoutController extends AbstractController
             }
 
             $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
-            $view->vars['form'] = $saleForm->createView();
+
+            $view->vars['quantities_form'] = $form->createView();
+
+            if ($this->features->isEnabled(Features::COUPON)) {
+                $view->vars['coupon_form'] = $this->createCouponForm($cart)->createView();
+            }
 
             // Default shipment method and price message
             if (null !== $shipmentLine = $view->getShipment()) {
@@ -160,9 +163,9 @@ class CheckoutController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function quoteAction(Request $request)
+    public function quote(Request $request): Response
     {
         if (null === $cart = $this->getCart()) {
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
@@ -249,9 +252,9 @@ class CheckoutController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function shipmentAction(Request $request)
+    public function shipment(Request $request): Response
     {
         if (null === $cart = $this->getCart()) {
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
@@ -293,9 +296,9 @@ class CheckoutController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function paymentAction(Request $request)
+    public function payment(Request $request): Response
     {
         if (null === $cart = $this->getCart()) {
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
@@ -333,9 +336,9 @@ class CheckoutController extends AbstractController
     /**
      * Unlock action.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function unlockAction()
+    public function unlock(): Response
     {
         if (null === $cart = $this->getCart()) {
             return $this->redirect($this->generateUrl('ekyna_commerce_cart_checkout_index'));
@@ -368,7 +371,7 @@ class CheckoutController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function statusAction(Request $request)
+    public function status(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException("XHR is not supported.");
@@ -400,9 +403,9 @@ class CheckoutController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function confirmationAction(Request $request)
+    public function confirmation(Request $request): Response
     {
         $order = $this->orderRepository->findOneByKey($request->attributes->get('orderKey'));
 

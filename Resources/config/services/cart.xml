@@ -103,6 +103,9 @@
         <service id="ekyna_commerce.controller.cart.abstract"
                  class="Ekyna\Bundle\CommerceBundle\Controller\Cart\AbstractController"
                  abstract="true">
+            <call method="setFeatures">
+                <argument type="service" id="Ekyna\Component\Commerce\Features"/>
+            </call>
             <call method="setTemplating">
                 <argument type="service" id="templating"/>
             </call>
@@ -127,16 +130,15 @@
         </service>
 
         <!-- Cart controller -->
-        <service id="ekyna_commerce.controller.cart"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController"
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Cart\CartController"
                  parent="ekyna_commerce.controller.cart.abstract">
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\CouponHelper"/>
             <argument type="service" id="ekyna_core.modal"/>
             <argument type="service" id="local_commerce_filesystem"/>
         </service>
 
         <!-- Checkout cart controller -->
-        <service id="ekyna_commerce.controller.cart_checkout"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController"
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController"
                  parent="ekyna_commerce.controller.cart.abstract">
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="ekyna_commerce.quote.repository"/>

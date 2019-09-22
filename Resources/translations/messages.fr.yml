@@ -444,6 +444,41 @@ ekyna_commerce:
         alert:
             no_item: Aucun pays configuré
 
+    coupon:
+        label:
+            singular: Code promotion
+            plural: Codes promotions
+        header:
+            list: Codes promotions <small>Liste des codes</small>
+            show: Détail du code promotion <small>%name%</small>
+            new: Créer un code promotion
+            edit: Modifier le code promotion <small>%name%</small>
+            remove: Supprimer le code promotion <small>%name%</small>
+        button:
+            list: Liste des codes promotions
+            show: Détail du code promotion
+            new: Nouveau code promotion
+            edit: Modifier le code promotion
+            remove: Supprimer le code promotion
+        field:
+            limit: Limite
+            usage: Utilisation
+            min_gross: Sous-total minimum
+            cumulative: Cumulable
+        message:
+            designation: Code promo %code%
+            not_found: Code promotion inconnu.
+            usage: Ce code promotion n'est plus disponible.
+            start_at: Ce code promotion sera disponible depuis le %date%.
+            end_at: Ce code promotion n'est plus disponible depuis le %date%.
+            min_gross: Ce code promotion nécéssite un total d'articles hors taxes supérieur ou égal à %gross%.
+            cumulative: Ce code promotion n'est pas cumulable avec des remises sur les articles.
+        help:
+            cumulative: Applicable à une vente avec des remises automatiques sur les lignes produit.
+        alert:
+            immutable_code: Ce code ne pourra plus être modifié
+            no_item: Aucun code promotion configuré
+
     context:
         field:
             delivery_country: Pays de livraison
@@ -1168,6 +1203,7 @@ ekyna_commerce:
             outstanding_expired: Encours expiré
             outstanding_limit: Limite d'encours
             outstanding_date: Date limite
+            coupon_code: Code promotion
             voucher_number: N° bon d'achat
             origin_number: N° d'origine
             gross_totals: Sous-total

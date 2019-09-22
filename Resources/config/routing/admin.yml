@@ -10,6 +10,10 @@ ekyna_commerce_country_admin:
     resource: "admin/country.yml"
     prefix:   /countries
 
+ekyna_commerce_coupon_admin:
+    resource: "admin/coupon.yml"
+    prefix:   /coupons
+
 ekyna_commerce_currency_admin:
     resource: "admin/currency.yml"
     prefix:   /currencies

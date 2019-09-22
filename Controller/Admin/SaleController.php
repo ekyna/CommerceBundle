@@ -324,7 +324,7 @@ class SaleController extends AbstractSaleController
     }
 
     /**
-     * Recalculate (updates the items quantities).
+     * Recalculate action (updates the items quantities).
      *
      * @param Request $request
      *
@@ -340,7 +340,7 @@ class SaleController extends AbstractSaleController
         /** @var SaleInterface $sale */
         $sale = $context->getResource();
 
-        $form = $this->buildRecalculateForm($sale);
+        $form = $this->buildQuantitiesForm($sale);
 
         $form->handleRequest($request);
 

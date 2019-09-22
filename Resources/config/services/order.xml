@@ -38,6 +38,9 @@
             <call method="setOrderRepository">
                 <argument type="service" id="ekyna_commerce.order.repository"/>
             </call>
+            <call method="setCouponRepository">
+                <argument type="service" id="ekyna_commerce.coupon.repository"/>
+            </call>
             <call method="setInvoicePaymentResolver">
                 <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             </call>

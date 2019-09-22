@@ -1,0 +1,88 @@
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(coupon, 'edit') }}
+    {{ admin_resource_btn(coupon, 'remove') }}
+</div>
+<div class="show show-with-tabs" data-tab-key="{{ resource_id }}">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#coupon-general" id="toggle-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="coupon-general">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(coupon.code, 'text', {
+                            'label': 'ekyna_core.field.code',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {% set usage = 0 < coupon.limit ? (coupon.usage ~ '/' ~ coupon.limit) : coupon.usage %}
+                        {{ show_row(usage, 'text', {
+                            'label': 'ekyna_commerce.coupon.field.usage',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(coupon.mode|adjustment_mode_label, 'text', {
+                            'label': 'ekyna_core.field.mode',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(coupon.amount, 'number', {
+                            'label': 'ekyna_core.field.value',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(coupon.startAt, 'datetime', {
+                            'label': 'ekyna_core.field.from_date',
+                            'time': false,
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(coupon.endAt, 'datetime', {
+                            'label': 'ekyna_core.field.to_date',
+                            'time': false,
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(coupon.minGross|localizedcurrency(commerce_default_currency), 'text', {
+                            'label': 'ekyna_commerce.coupon.field.min_gross',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(coupon.cumulative, 'boolean', {
+                            'label': 'ekyna_commerce.coupon.field.cumulative',
+                            'label_col': 4,
+                            'color': true,
+                            'true_class': 'label label-warning',
+                            'false_class': 'label label-success'
+                        }) }}
+                    </div>
+                </div>
+                {{ show_row(coupon.designation, 'text', {
+                    'label': 'ekyna_core.field.designation'
+                }) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

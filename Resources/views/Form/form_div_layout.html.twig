@@ -194,6 +194,15 @@
 {%- endblock ekyna_commerce_attachment_widget -%}
 
 
+{%- block ekyna_commerce_sale_coupon_widget -%}
+    {{- form_label(form.code) -}}
+    {{- form_widget(form.code) -}}
+    {{- form_widget(form.submit) -}}
+    {{- form_errors(form.code) -}}
+    {{- form_rest(form) -}}
+{%- endblock ekyna_commerce_sale_coupon_widget -%}
+
+
 {%- block ekyna_commerce_checkout_attachment_widget -%}
     {{- bootstrap_set_sizing('sm') -}}
     {{- form_errors(form) -}}

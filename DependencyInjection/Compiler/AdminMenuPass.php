@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler;
 
+use Ekyna\Component\Commerce\Features;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -20,6 +21,8 @@ class AdminMenuPass implements CompilerPassInterface
         if (!$container->hasDefinition('ekyna_admin.menu.pool')) {
             return;
         }
+
+        $features = new Features($container->getParameter('ekyna_commerce.features'));
 
         $pool = $container->getDefinition('ekyna_admin.menu.pool');
 
@@ -84,6 +87,7 @@ class AdminMenuPass implements CompilerPassInterface
             'resource' => 'ekyna_commerce_order_shipment',
             'position' => 22,
         ]]);
+        // TODO if ($features->isEnabled(Features::SUPPORT)) {
         if ($container->getParameter('ekyna_commerce.support.enabled')) {
             $pool->addMethodCall('createEntry', ['sales', [
                 'name'     => 'tickets',
@@ -91,6 +95,15 @@ class AdminMenuPass implements CompilerPassInterface
                 'label'    => 'ekyna_commerce.ticket.label.plural',
                 'resource' => 'ekyna_commerce_ticket',
                 'position' => 23,
+            ]]);
+        }
+        if ($features->isEnabled(Features::COUPON)) {
+            $pool->addMethodCall('createEntry', ['sales', [
+                'name'     => 'coupons',
+                'route'    => 'ekyna_commerce_coupon_admin_list',
+                'label'    => 'ekyna_commerce.coupon.label.plural',
+                'resource' => 'ekyna_commerce_coupon',
+                'position' => 24,
             ]]);
         }
 

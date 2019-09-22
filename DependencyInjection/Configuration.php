@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
+use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -28,6 +29,7 @@ class Configuration implements ConfigurationInterface
         $this->addAccountingSection($rootNode);
         $this->addCacheSection($rootNode);
         $this->addDocumentSection($rootNode);
+        $this->addFeatureSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
         $this->addSupportSection($rootNode);
@@ -180,6 +182,26 @@ class Configuration implements ConfigurationInterface
                         ->integerNode('title_height')->defaultValue(130)->end()
                         ->integerNode('footer_height')->defaultValue(91)->end()
                         ->booleanNode('shipment_remaining_date')->defaultTrue()->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `feature` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addFeatureSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('feature')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode(Features::COUPON)
+                            ->canBeEnabled()
+                        ->end()
                     ->end()
                 ->end()
             ->end();
@@ -459,6 +481,23 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository')->end()
                                 ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryType')->end()
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CountryType')->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('event')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('coupon')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html' => '@EkynaCommerce/Admin/Coupon/_form.html',
+                                    'show.html'  => '@EkynaCommerce/Admin/Coupon/show.html',
+                                ])->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Common\Entity\Coupon')->end()
+                                ->scalarNode('controller')->end()
+                                ->scalarNode('operator')->end()
+                                ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CouponRepository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Common\CouponType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CouponType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->end()
                             ->end()

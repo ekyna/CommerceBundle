@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleCouponType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleQuantitiesType;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model;
@@ -9,7 +10,6 @@ use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
-use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -144,12 +144,19 @@ class SaleHelper
      */
     public function createQuantitiesForm(Model\SaleInterface $sale, array $options = [])
     {
-        return $this
-            ->formFactory
-            ->create(SaleQuantitiesType::class, $sale, $options)
-            ->add('submit', Type\SubmitType::class, [
-                'label' => 'ekyna_commerce.sale.button.recalculate',
-            ]);
+        return $this->formFactory->create(SaleQuantitiesType::class, $sale, $options);
+    }
+
+    /**
+     * Creates the coupon code form.
+     *
+     * @param array $options
+     *
+     * @return FormInterface
+     */
+    public function createCouponForm(array $options = [])
+    {
+        return $this->formFactory->create(SaleCouponType::class, null, $options);
     }
 
     /**

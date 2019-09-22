@@ -1,6 +1,6 @@
 ekyna_commerce_cart_checkout_index:
     path: ""
-    controller: "ekyna_commerce.controller.cart_checkout:indexAction"
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::index
     methods: [GET, POST]
     options:
         _cms:
@@ -12,7 +12,7 @@ ekyna_commerce_cart_checkout_index:
 
 ekyna_commerce_cart_checkout_quote:
     path: /transform-to-quote
-    controller: "ekyna_commerce.controller.cart_checkout:quoteAction"
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::quote
     methods: [GET, POST]
     options:
         _cms:
@@ -26,7 +26,7 @@ ekyna_commerce_cart_checkout_quote:
 
 ekyna_commerce_cart_checkout_shipment:
     path: /shipment
-    controller: "ekyna_commerce.controller.cart_checkout:shipmentAction"
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::shipment
     methods: [GET, POST]
     options:
         _cms:
@@ -40,7 +40,7 @@ ekyna_commerce_cart_checkout_shipment:
 
 ekyna_commerce_cart_checkout_payment:
     path: /payment
-    controller: "ekyna_commerce.controller.cart_checkout:paymentAction"
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::payment
     methods: [GET, POST]
     options:
         _cms:
@@ -54,17 +54,17 @@ ekyna_commerce_cart_checkout_payment:
 
 ekyna_commerce_cart_checkout_unlock:
     path: /unlock
-    controller: "ekyna_commerce.controller.cart_checkout:unlockAction"
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::unlock
     methods: [GET]
 
 ekyna_commerce_cart_checkout_status:
     path: /status
-    controller: "ekyna_commerce.controller.cart_checkout:statusAction"
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::status
     methods: [GET]
 
 ekyna_commerce_cart_checkout_confirmation:
     path: /confirmation/{orderKey}
-    controller: "ekyna_commerce.controller.cart_checkout:confirmationAction"
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Cart\CheckoutController::confirmation
     methods: [GET]
     requirements:
         orderKey: "[a-zA-Z0-9]+"

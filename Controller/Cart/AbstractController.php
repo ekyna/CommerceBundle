@@ -8,7 +8,9 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
+use Ekyna\Component\Commerce\Features;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +25,11 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 class AbstractController
 {
+    /**
+     * @var Features
+     */
+    protected $features;
+
     /**
      * @var EngineInterface
      */
@@ -58,6 +65,16 @@ class AbstractController
      */
     protected $stepValidator;
 
+
+    /**
+     * Sets the features.
+     *
+     * @param Features $features
+     */
+    public function setFeatures(Features $features)
+    {
+        $this->features = $features;
+    }
 
     /**
      * Sets the templating.
@@ -266,6 +283,46 @@ class AbstractController
         if (!empty($messages)) {
             $flashes->add('danger', implode('<br>', $messages));
         }
+    }
+
+    /**
+     * Creates the cart items quantities form.
+     *
+     * @param CartInterface $cart
+     *
+     * @return FormInterface
+     */
+    protected function createQuantitiesForm(CartInterface $cart): FormInterface
+    {
+        return $this->getSaleHelper()->createQuantitiesForm($cart, [
+            'method'            => 'post',
+            'action'            => $this->generateUrl('ekyna_commerce_cart_checkout_index'),
+            'validation_groups' => ['Calculation', 'Availability'],
+        ]);
+    }
+
+    /**
+     * Creates the cart coupon code form.
+     *
+     * @param CartInterface $cart
+     *
+     * @return FormInterface
+     */
+    protected function createCouponForm(CartInterface $cart): FormInterface
+    {
+        if ($coupon = $cart->getCoupon()) {
+            $action = $this->generateUrl('ekyna_commerce_cart_coupon_clear');
+            $code = $coupon->getCode();
+        } else {
+            $action = $this->generateUrl('ekyna_commerce_cart_coupon_set');
+            $code = null;
+        }
+
+        return $this->getSaleHelper()->createCouponForm([
+            'method' => 'post',
+            'action' => $action,
+            'code'   => $code,
+        ]);
     }
 
     /**
