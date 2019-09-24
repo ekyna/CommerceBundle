@@ -99,20 +99,15 @@
                             {% for message in shipmentMethod.messages %}
                                 <div class="tab-pane{% if loop.first %} active{% endif %}"
                                      id="shipment-method-state-{{ message.state }}">
-                                    <div class="row show-row">
-                                        <div class="col-md-2 show-label">
-                                            {{ 'ekyna_core.field.content'|trans }}
-                                        </div>
-                                        <div class="col-md-10">
-                                            <div class="show-widget show-widget-block" id="shipment_method_message_{{ message.state }}_content">
-                                                {% if message.content is empty %}
-                                                    <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-                                                {% else %}
-                                                    {{ message.content|raw }}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {{- show_row(message.translations, 'translations', {
+                                        'fields': {
+                                            'content': {
+                                                'label': 'ekyna_core.field.content',
+                                                'type': 'textarea',
+                                                'options': {'html': true}
+                                            }
+                                        }
+                                    }) -}}
                                 </div>
                             {% endfor %}
                         </div>

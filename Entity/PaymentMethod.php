@@ -2,17 +2,22 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\MediaBundle\Model\MediaSubjectTrait;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
 use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Payment\Entity\PaymentMethod as BaseMethod;
+use Ekyna\Component\Commerce\Payment\Entity\PaymentMethodTranslation;
 
 /**
  * Class PaymentMethod
  * @package Ekyna\Bundle\CommerceBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @method PaymentMethodTranslation translate($locale = null, $create = false)
+ * @method ArrayCollection|PaymentMethodTranslation[] getTranslations()
  */
 class PaymentMethod extends BaseMethod implements PaymentMethodInterface
 {

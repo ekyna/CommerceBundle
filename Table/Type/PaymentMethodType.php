@@ -48,17 +48,26 @@ class PaymentMethodType extends ResourceTableType
                 'route_parameters_map' => ['paymentMethodId' => 'id'],
                 'position'             => 30,
             ])
+            ->addColumn('private', CType\Column\BooleanType::class, [
+                'label'                => 'ekyna_commerce.payment_method.field.private',
+                'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
+                'route_parameters'     => ['field' => 'private'],
+                'route_parameters_map' => ['paymentMethodId' => 'id'],
+                'true_class'           => 'label-success',
+                'false_class'          => 'label-warning',
+                'position'             => 40,
+            ])
             ->addColumn('defaultCurrency', CType\Column\BooleanType::class, [
                 'label'                => 'ekyna_commerce.payment_method.field.use_default_currency',
                 'route_name'           => 'ekyna_commerce_payment_method_admin_toggle',
                 'route_parameters'     => ['field' => 'defaultCurrency'],
                 'route_parameters_map' => ['paymentMethodId' => 'id'],
-                'position'             => 40,
+                'position'             => 50,
             ])
             ->addColumn('currencies', EntityType::class, [
                 'label'        => 'ekyna_commerce.currency.label.plural',
                 'entity_label' => 'code',
-                'position'     => 50,
+                'position'     => 60,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [

@@ -41,6 +41,22 @@
         <dd>{{ outstanding_limit|localizedcurrency(commerce_default_currency) }}</dd>
         <dt>{{ 'ekyna_commerce.customer.field.outstanding_balance'|trans }}</dt>
         <dd>{{ outstanding_balance|localizedcurrency(commerce_default_currency) }}</dd>
+        <dt>{{ 'ekyna_commerce.customer.field.outstanding_overflow'|trans }}</dt>
+        <dd>
+            {%- if outstanding_overflow -%}
+            <span class="label label-warning">{{ 'ekyna_core.value.yes'|trans }}</span>
+            {%- else -%}
+            <span class="label label-success">{{ 'ekyna_core.value.no'|trans }}</span>
+            {%- endif -%}
+        </dd>
+        {%- endif %}
+        {% if default_payment_method is not empty -%}
+        <dt>{{ 'ekyna_commerce.customer.field.default_payment_method'|trans }}</dt>
+        <dd>{{ default_payment_method }}</dd>
+        {%- endif %}
+        {% if payment_methods is not empty -%}
+        <dt>{{ 'ekyna_commerce.customer.field.payment_methods'|trans }}</dt>
+        <dd>{{ payment_methods }}</dd>
         {%- endif %}
 
         <dt>{{ 'ekyna_commerce.customer.field.credit_balance'|trans }}</dt>

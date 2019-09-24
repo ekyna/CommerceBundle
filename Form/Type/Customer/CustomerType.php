@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
@@ -107,10 +108,42 @@ class CustomerType extends ResourceFormType
                 ->add('paymentTerm', PaymentTermChoiceType::class, [
                     'disabled' => $hasParent,
                 ])
+                ->add('defaultPaymentMethod', PaymentMethodChoiceType::class, [
+                    'label'       => 'ekyna_commerce.customer.field.default_payment_method',
+                    'required'    => false,
+                    'private'     => false,
+                    'credit'      => false,
+                    'outstanding' => false,
+                    'disabled'    => $hasParent,
+                    'attr'        => [
+                        'help_text' => 'ekyna_commerce.customer.help.default_payment_method',
+                    ],
+                ])
+                ->add('paymentMethods', PaymentMethodChoiceType::class, [
+                    'label'       => 'ekyna_commerce.customer.field.payment_methods',
+                    'required'    => false,
+                    'multiple'    => true,
+                    'private'     => false,
+                    'credit'      => false,
+                    'outstanding' => false,
+                    'disabled'    => $hasParent,
+                    'attr'        => [
+                        'help_text' => 'ekyna_commerce.customer.help.payment_methods',
+                    ],
+                ])
                 ->add('outstandingLimit', MoneyType::class, [
                     'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
                     'quote'    => $customer->getCurrency(),
                     'disabled' => $hasParent,
+                ])
+                ->add('outstandingOverflow', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.outstanding_overflow',
+                    'required' => false,
+                    'disabled' => $hasParent,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                        'help_text'         => 'ekyna_commerce.customer.help.outstanding_overflow',
+                    ],
                 ]);
         };
 

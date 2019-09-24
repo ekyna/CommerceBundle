@@ -20,14 +20,14 @@ class MethodTranslationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
-                'label'        => 'ekyna_core.field.title',
-//                'admin_helper' => 'CMS_PAGE_TITLE',
-            ))
-            ->add('description', TinymceType::class, array(
-                'label'        => 'ekyna_core.field.description',
-//                'admin_helper' => 'CMS_PAGE_CONTENT',
-                'theme'        => 'front'
-            ));
+            ->add('title', TextType::class, [
+                'label' => 'ekyna_core.field.title',
+                //'admin_helper' => 'CMS_PAGE_TITLE',
+            ])
+            ->add('description', TinymceType::class, [
+                'label' => 'ekyna_core.field.description',
+                'theme' => 'front'
+                //'admin_helper' => 'CMS_PAGE_CONTENT',
+            ]);
     }
 }

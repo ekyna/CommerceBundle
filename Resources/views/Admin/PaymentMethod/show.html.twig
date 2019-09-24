@@ -1,123 +1,143 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
-{% block main %}
+{% block main -%}
     <div class="actions">
-        {{ admin_resource_btn(paymentMethod, 'edit') }}
-        {{ admin_resource_btn(paymentMethod, 'remove') }}
+        {{- admin_resource_btn(paymentMethod, 'edit') -}}
+        {{- admin_resource_btn(paymentMethod, 'remove') -}}
     </div>
     <div class="show show-with-tabs">
         <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
             <li class="active">
                 <a href="#payment-method-general" id="toggle-general" data-toggle="tab">
-                    {{ 'ekyna_core.field.general'|trans }}
+                    {{- 'ekyna_core.field.general'|trans -}}
                 </a>
             </li>
             <li>
                 <a href="#payment-method-content" id="toggle-content" data-toggle="tab">
-                    {{ 'ekyna_core.field.content'|trans }}
+                    {{- 'ekyna_core.field.content'|trans -}}
                 </a>
             </li>
             <li>
                 <a href="#payment-method-messages" id="toggle-messages" data-toggle="tab">
-                    {{ 'ekyna_commerce.message.label.plural'|trans }}
+                    {{- 'ekyna_commerce.message.label.plural'|trans -}}
                 </a>
             </li>
         </ul>
         <div class="show-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="payment-method-general">
-                    {{ show_row(paymentMethod.name, 'text', {
+                    {{- show_row(paymentMethod.name, 'text', {
                         'label': 'ekyna_core.field.name'
-                    }) }}
-                    {{ show_row(paymentMethod.factoryName, 'text', {
+                    }) -}}
+                    {{- show_row(paymentMethod.factoryName, 'text', {
                         'label': 'ekyna_commerce.field.factory_name'
-                    }) }}
+                    }) -}}
                     <div class="row">
-                        <div class="col-md-4">
-                            {{ show_row(paymentMethod.enabled, 'boolean', {
+                        <div class="col-md-6">
+                            {{- show_row(paymentMethod.enabled, 'boolean', {
                                 'label': 'ekyna_core.field.enabled',
-                                'label_col': 6,
+                                'label_col': 4,
                                 'color': true
-                            }) }}
+                            }) -}}
                         </div>
-                        <div class="col-md-4">
-                            {{ show_row(paymentMethod.available, 'boolean', {
+                        <div class="col-md-6">
+                            {{- show_row(paymentMethod.available, 'boolean', {
                                 'label': 'ekyna_commerce.field.front_office',
-                                'label_col': 6,
+                                'label_col': 4,
                                 'color': true
-                            }) }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ show_row(paymentMethod.defaultCurrency, 'boolean', {
-                                'label': 'ekyna_commerce.payment_method.field.use_default_currency',
-                                'label_col': 6,
-                                'color': true,
-                                'false_class': 'label label-warning'
-                            }) }}
+                            }) -}}
                         </div>
                     </div>
-                    {{ show_row(paymentMethod.currencies, 'entity', {
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{- show_row(paymentMethod.defaultCurrency, 'boolean', {
+                                'label': 'ekyna_commerce.payment_method.field.use_default_currency',
+                                'label_col': 4,
+                                'color': true,
+                                'false_class': 'label label-warning'
+                            }) -}}
+                        </div>
+                        <div class="col-md-6">
+                            {{- show_row(paymentMethod.private, 'boolean', {
+                                'label': 'ekyna_commerce.payment_method.field.private',
+                                'label_col': 4,
+                                'color': true,
+                                'true_class': 'label label-warning',
+                                'false_class': 'label label-success'
+                            }) -}}
+                        </div>
+                    </div>
+                    {{- show_row(paymentMethod.currencies, 'entity', {
                         'label': 'ekyna_commerce.currency.label.plural',
                         'route': 'ekyna_commerce_currency_admin_show',
                         'route_parameters_map': {'currencyId': 'id'}
-                    }) }}
-                    {% if paymentMethod.config is not empty %}
+                    }) -}}
+                    {% if paymentMethod.config is not empty -%}
                         <div class="row show-row">
                             <div class="col-md-2 show-label">{{ 'ekyna_core.field.config'|trans }}</div>
                             <div class="col-md-10">
                                 <div class="show-widget show-widget-block">
-                                    {{ paymentMethod|payment_method_config }}
+                                    {{- paymentMethod|payment_method_config -}}
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
+                    {%- endif %}
                 </div>
                 <div class="tab-pane" id="payment-method-content">
-                    {{ show_row(paymentMethod.media, 'media', {
+                    {{- show_row(paymentMethod.media, 'media', {
                         'label': 'ekyna_core.field.image'
-                    }) }}
-                    <div class="row show-row">
-                        <div class="col-md-2 show-label">
-                            {{ 'ekyna_core.field.translations'|trans }}
-                        </div>
-                        <div class="col-md-10">
-                            {% include '@EkynaCommerce/Admin/Common/Method/translations.html.twig' with {
-                                'method': paymentMethod
-                            } %}
-                        </div>
-                    </div>
+                    }) -}}
+                    {{- show_row(paymentMethod.translations, 'translations', {
+                        'fields': {
+                            'title': {'label': 'ekyna_core.field.title'},
+                            'description': {
+                                'label': 'ekyna_core.field.description',
+                                'type': 'textarea',
+                                'options': {'html': true}
+                            },
+                            'mention': {
+                                'label': 'ekyna_commerce.payment_method.field.mention',
+                                'type': 'textarea',
+                                'options': {'html': true}
+                            },
+                            'footer': {
+                                'label': 'ekyna_commerce.payment_method.field.footer',
+                                'type': 'textarea',
+                                'options': {'html': true}
+                            }
+                        }
+                    }) -}}
                 </div>
                 <div class="tab-pane" id="payment-method-messages">
                     <ul class="nav nav-tabs">
-                        {% for message in paymentMethod.messages %}
+                        {% for message in paymentMethod.messages -%}
                             <li{% if loop.first %} class="active"{% endif %}>
                                 <a href="#payment-method-state-{{ message.state }}" data-toggle="tab">
-                                    {{ message.state|payment_state_label }}
+                                    {{- message.state|payment_state_label -}}
                                 </a>
                             </li>
-                        {% endfor %}
+                        {%- endfor %}
                     </ul>
                     <div class="panel-body" style="border: 1px solid #ddd; border-top: none; padding:15px 15px 1px 15px; margin-bottom: 15px;">
                         <div class="tab-content">
-                            {% for message in paymentMethod.messages %}
+                            {% for message in paymentMethod.messages -%}
                                 <div class="tab-pane{% if loop.first %} active{% endif %}"
                                      id="payment-method-state-{{ message.state }}">
-                                    <div class="row show-row">
-                                        <div class="col-md-2 show-label">
-                                            {{ 'ekyna_core.field.translations'|trans }}
-                                        </div>
-                                        <div class="col-md-10">
-                                            {% include '@EkynaCommerce/Admin/Common/Message/translations.html.twig' with {
-                                                'message': message
-                                            } %}
-                                        </div>
-                                    </div>
+                                    {{- show_row(message.translations, 'translations', {
+                                        'fields': {
+                                            'content': {
+                                                'label': 'ekyna_core.field.content',
+                                                'type': 'textarea',
+                                                'options': {'html': true}
+                                            }
+                                        }
+                                    }) -}}
                                 </div>
-                            {% endfor %}
+                            {%- endfor %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock main %}
+{%- endblock main %}

@@ -32,5 +32,7 @@
 
 {# --- DOC MISC --- #}
 {% block doc_misc -%}
-    {{ subject|invoice_notices }}
+    {% for notice in subject|invoice_notices %}
+        {{ notice|raw }}
+    {% endfor %}
 {%- endblock doc_misc %}

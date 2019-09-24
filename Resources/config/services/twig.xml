@@ -45,6 +45,7 @@
         <service id="ekyna_commerce.twig.document_extension"
                  class="Ekyna\Bundle\CommerceBundle\Twig\DocumentExtension"
                  public="false">
+            <argument type="service" id="Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface"/>
             <tag name="twig.extension"/>
         </service>
 

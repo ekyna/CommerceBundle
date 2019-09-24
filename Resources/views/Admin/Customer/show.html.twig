@@ -243,6 +243,29 @@
                         }) }}
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customerSource.defaultPaymentMethod, 'entity', {
+                            'label': 'ekyna_commerce.customer.field.default_payment_method',
+                            'id': 'customer_default_payment_method',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ show_row(customerSource.outstandingOverflow, 'boolean', {
+                            'label': 'ekyna_commerce.customer.field.outstanding_overflow',
+                            'id': 'customer_outstanding_overflow',
+                            'color': true,
+                            'true_class': 'label label-warning',
+                            'false_class': 'label label-success',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
+                {{ show_row(customerSource.paymentMethods, 'entity', {
+                    'label': 'ekyna_commerce.customer.field.payment_methods',
+                    'id': 'customer_payment_methods'
+                }) }}
             </div>
             <div class="tab-pane" id="customer-addresses">
                 <div class="actions">

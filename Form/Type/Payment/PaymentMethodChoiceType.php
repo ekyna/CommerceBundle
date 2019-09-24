@@ -59,6 +59,9 @@ class PaymentMethodChoiceType extends AbstractType
                     if ($options['available']) {
                         $qb->andWhere($e->eq('m.available', true));
                     }
+                    if ($options['private']) {
+                        $qb->andWhere($e->eq('m.private', true));
+                    }
                     $exclude = [];
                     if (!$options['offline']) {
                         $exclude[] = $e->literal(Offline::FACTORY_NAME);
@@ -80,9 +83,16 @@ class PaymentMethodChoiceType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'label'             => 'ekyna_commerce.payment_method.label.singular',
-                'enabled'           => false, // Whether to exclude disabled factories
-                'available'         => false, // Whether to exclude unavailable factories
+                'label'             => function(Options $options, $value) {
+                    if ($value) {
+                        return $value;
+                    }
+
+                    return 'ekyna_commerce.payment_method.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                },
+                'enabled'           => false, // Whether to exclude disabled methods
+                'available'         => false, // Whether to exclude unavailable methods
+                'private'           => true, // Whether to exclude private methods
                 'offline'           => true,  // Whether to include offline factories
                 'credit'            => true,  // Whether to include credit factory
                 'outstanding'       => true,  // Whether to include outstanding factory

@@ -599,11 +599,21 @@ ekyna_commerce:
             parent: Compte service achat
             in_charge: Responsable
             children: Commerciaux
+            outstanding_overflow: Dépassement d'encours autorisé
             outstanding_balance: Solde d'encours
             credit_balance: Solde avoirs
+            default_payment_method: Mode de paiement par défaut
+            payment_methods: Modes de paiement autorisés
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
+            outstanding_overflow: >
+                Possibilité de saisir une limite d'encours par vente
+            default_payment_method: >
+                Détermine les mention et pied de page des documents
+            payment_methods: >
+                Restreint les modes de paiment utilisables.
+                Le mode de paiment par défaut sélectionné ci-dessus est inclus dans ces restrictions.
         notify:
             admin_link: Voir la fiche client dans l'administration
             registration:
@@ -986,6 +996,9 @@ ekyna_commerce:
             choose: "Régler par %gateway_name%"
         field:
             use_default_currency: Devise par défaut
+            private: Privée
+            mention: Mention document
+            footer: Pied de page document
         alert:
             empty_list: Aucun mode de paiement configuré
 

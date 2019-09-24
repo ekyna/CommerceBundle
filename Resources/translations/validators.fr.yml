@@ -25,10 +25,15 @@ ekyna_commerce:
         non_zero_balance: Ce client a un solde d'encours ou d'avoir non nul et ne peut être rattaché à un contact facturation.
         parent_company_is_mandatory: Le contact facturation doit avoir un nom d'entreprise.
         company_is_mandatory: Veuillez saisir votre nom de votre entreprise.
-        vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
         phone_or_mobile_is_mandatory: Veuillez saisir un numéro de téléphone ou de mobile.
         term_required_for_outstanding: Vous devez sélectionner une condition de paiement si vous souahaitez définir une limite d'encours.
         outstanding_required_for_term: Vous devez saisir une limite d'encours si vous souahaitez sélectionner une condition de paiement.
+        default_payment_method_must_be_null: Un commercial ne peut avoir de mode de paiement par défaut (à configurer sur le service achat).
+        payment_methods_must_be_empty: Un commercial ne peut avoir de restrictions sur les modes de paiement (à configurer sur le service achat).
+        duplicate_payment_method: N'ajoutez pas le mode de paiement par défaut aux modes de paiement autorisés.
+        default_payment_method_is_mandatory: Veuillez configurer un mode de paiment par défaut si vous souhaitez configurer des restrictions sur les modes de paiement.
+        unexpected_payment_method: Mode de paiement inattendu.
+        vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
         unique_user: Cet utilisateur est déjà attribué à un autre client.
     gender:
         invalid: Ce titre n'est pas un titre valide.
@@ -79,9 +84,9 @@ ekyna_commerce:
         invoice_address_must_be_set: Veuillez saisir une adresse de facturation.
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
-        shipment_method_require_mobile: >
-            Le mode de livraison sélectionné nécéssite un numéro de téléphone mobile pour l'adresse de livraison.
+        shipment_method_require_mobile: Le mode de livraison sélectionné nécéssite un numéro de téléphone mobile pour l'adresse de livraison.
         voucher_must_be_set: Veuillez saisir votre bon d'achat.
+        outstanding_overflow_is_forbidden: Les dépassement d'encours ne sont pas autorisés pour ce client.
         outstanding_limit_require_term: Veuillez choisir une condition de payment pour définir une limite d'encours.
         deposit_greater_than_grand_total: L'acompte doit être inférieur au total TTC.
     sale_item:

@@ -598,10 +598,19 @@ ekyna_commerce:
             in_charge: In charge
             children: Sales manager
             outstanding_balance: Outstanding balance
+            outstanding_overflow: Outstanding overflow allowed
             credit_balance: Credit balance
+            default_payment_method: Default payment method
+            payment_methods: Authorized payment methods
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Accountable&nbsp;service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Sales&nbsp;manager
+            outstanding_overflow: >
+                Whether setting custom outstanding limit on sales is allowed
+            default_payment_method: >
+                Used to determine document mention and footer
+            payment_methods: >
+                Restrict allowed payment methods. The default payment selected above is included in this restriction.
         notify:
             admin_link: See the customer sheet in backoffice
             registration:
@@ -962,6 +971,9 @@ ekyna_commerce:
             choose: "Pay by %gateway_name%"
         field:
             use_default_currency: Default curerency
+            private: Private
+            mention: Document mention
+            footer: Document footer
         alert:
             empty_list: No payment method available
 

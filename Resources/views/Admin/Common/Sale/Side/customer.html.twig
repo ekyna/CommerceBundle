@@ -42,6 +42,18 @@
                 <th>{{ 'ekyna_core.field.email'|trans }}</th>
                 <td>{{ customer.email }}</td>
             </tr>
+            {% if customer.phone is not empty %}
+            <tr>
+                <th>{{ 'ekyna_core.field.phone'|trans }}</th>
+                <td>{{ customer.phone|phone_number_format }}</td>
+            </tr>
+            {% endif %}
+            {% if customer.mobile is not empty %}
+            <tr>
+                <th>{{ 'ekyna_core.field.mobile'|trans }}</th>
+                <td>{{ customer.mobile|phone_number_format }}</td>
+            </tr>
+            {% endif %}
             {% if customer.description is not empty -%}
             <tr>
                 <th>{{ 'ekyna_commerce.field.description'|trans }}</th>
@@ -80,9 +92,35 @@
                 <td>{{ customerSource.outstandingBalance|localizedcurrency(commerce_default_currency) }}</td>
             </tr>
             <tr>
+                <th>{{ 'ekyna_commerce.customer.field.outstanding_overflow'|trans }}</th>
+                <td>
+                    {%- if customerSource.outstandingOverflow -%}
+                        <span class="label label-warning">{{ 'ekyna_core.value.yes'|trans }}</span>
+                    {%- else -%}
+                        <span class="label label-success">{{ 'ekyna_core.value.no'|trans }}</span>
+                    {%- endif -%}
+                </td>
+            </tr>
+            <tr>
                 <th>{{ 'ekyna_commerce.customer.field.credit_balance'|trans }}</th>
                 <td>{{ customerSource.creditBalance|localizedcurrency(commerce_default_currency) }}</td>
             </tr>
+            {%- if customerSource.defaultPaymentMethod is not null -%}
+            <tr>
+                <th>{{ 'ekyna_commerce.customer.field.default_payment_method'|trans }}</th>
+                <td>{{ customerSource.defaultPaymentMethod }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.customer.field.payment_methods'|trans }}</th>
+                <td>
+                    {%- for method in customerSource.paymentMethods -%}
+                        {{- method -}}
+                        {%- if not loop.last %}, {% endif %}
+                    {%- else -%}
+                    {%- endfor -%}
+                </td>
+            </tr>
+            {%- endif -%}
         </tbody>
         </table>
     </div>

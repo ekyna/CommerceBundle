@@ -25,10 +25,15 @@ ekyna_commerce:
         non_zero_balance: This customer has a non zero outstanding or credit balance and cannot be attached to accountable service.
         parent_company_is_mandatory: The accountable service must have a company name.
         company_is_mandatory: Please enter your company name.
-        vat_number_is_mandatory: Please enter your VAT umber.
         phone_or_mobile_is_mandatory: Please enter a phone or mobile phone number.
         term_required_for_outstanding: You must select payment term if you want to define the outstanding limit.
         outstanding_required_for_term: You must define the outstanding limit if you want to select a payment term.
+        default_payment_method_must_be_null: A sales manager can't have a default payment method (but his accountable service can).
+        payment_methods_must_be_empty: A sales manager can't have restrictions on payment methods (but his accountable service can).
+        duplicate_payment_method: Do not add the default payment method to the authorized payment methods.
+        default_payment_method_is_mandatory: Please configure a default payment method if you wish to configure restricted payment methods.
+        unexpected_payment_method: Unexpected payment method.
+        vat_number_is_mandatory: Please enter your VAT umber.
         unique_user: This user is already assigned to another customer.
     gender:
         invalid: This title is not valid
@@ -79,9 +84,9 @@ ekyna_commerce:
         invoice_address_must_be_set: Please fill in the billing address.
         delivery_address_must_be_set: Please fill in the delivery address.
         shipment_method_must_be_set: Please select the shipment method.
-        shipment_method_require_mobile: >
-            The select shipment method requires a mobile phone number.
+        shipment_method_require_mobile:  The select shipment method requires a mobile phone number.
         voucher_must_be_set: Please fill in your voucher number.
+        outstanding_overflow_is_forbidden: Outstanding overflow is forbidden for this customer.
         outstanding_limit_require_term: Please select a payment term to define an outstanding limit.
         deposit_greater_than_grand_total: The deposit amount must be lower the the grand total.
     sale_item:

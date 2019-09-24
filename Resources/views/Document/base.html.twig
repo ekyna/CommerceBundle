@@ -98,7 +98,7 @@
 {% block doc_footer -%}
 <div class="bloc footer">
     {% block doc_footer_content %}
-        {{- get_setting('commerce.invoice_footer', locale)|raw -}}
+        {{ subject|document_footer }}
     {% endblock doc_footer_content %}
 </div>
 {%- endblock doc_footer %}

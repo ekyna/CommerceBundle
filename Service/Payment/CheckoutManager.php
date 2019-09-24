@@ -9,6 +9,8 @@ use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Factory\PaymentFactoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentMethodRepositoryInterface;
+use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
+use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -77,13 +79,7 @@ class CheckoutManager
     {
         $this->forms = [];
 
-        $currency = $sale->getCurrency();
-
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface[] $methods */
-        $methods = $admin
-            ? $this->methodRepository->findEnabled($currency)
-            : $this->methodRepository->findAvailable($currency);
-
+        $methods = $this->getMethods($sale, $admin);
         if (empty($methods)) {
             throw new RuntimeException("No payment method available.");
         }
@@ -111,6 +107,44 @@ class CheckoutManager
         }
 
         $this->initialized = true;
+    }
+
+    /**
+     * Returns the available payment methods for the given sale.
+     *
+     * @param SaleInterface $sale
+     * @param bool          $admin
+     *
+     * @return \Ekyna\Component\Commerce\Payment\Model\PaymentMethodInterface[]
+     */
+    protected function getMethods(SaleInterface $sale, $admin = false)
+    {
+        if ($customer = $sale->getCustomer()) {
+            if ($customer->hasParent()) {
+                $customer = $customer->getParent();
+            }
+
+            if ($default = $customer->getDefaultPaymentMethod()) {
+                $methods = $customer->getPaymentMethods()->toArray();
+                $methods[] = $default;
+
+                if ($sale->getPaymentTerm()) {
+                    array_unshift($methods, $this->methodRepository->findOneByFactoryName(Outstanding::FACTORY_NAME));
+                }
+
+                if (0 < $customer->getCreditBalance()) {
+                    array_unshift($methods, $this->methodRepository->findOneByFactoryName(Credit::FACTORY_NAME));
+                }
+
+                return $methods;
+            }
+        }
+
+        $currency = $sale->getCurrency();
+
+        return $admin
+            ? $this->methodRepository->findEnabled($currency)
+            : $this->methodRepository->findAvailable($currency);
     }
 
     /**

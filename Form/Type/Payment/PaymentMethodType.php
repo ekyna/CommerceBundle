@@ -7,7 +7,6 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\PaymentMethodTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MessagesType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MethodTranslationType;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
 use Ekyna\Component\Commerce\Payment\Entity;
@@ -60,7 +59,7 @@ class PaymentMethodType extends ResourceFormType
                 'types' => MediaTypes::IMAGE,
             ])
             ->add('translations', TranslationsFormsType::class, [
-                'form_type'      => MethodTranslationType::class,
+                'form_type'      => PaymentMethodTranslationType::class,
                 'form_options'   => [
                     'data_class' => Entity\PaymentMethodTranslation::class,
                 ],
@@ -80,6 +79,13 @@ class PaymentMethodType extends ResourceFormType
             ])
             ->add('available', Type\CheckboxType::class, [
                 'label'    => 'ekyna_commerce.field.front_office',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
+            ->add('private', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.payment_method.field.private',
                 'required' => false,
                 'attr'     => [
                     'align_with_widget' => true,
