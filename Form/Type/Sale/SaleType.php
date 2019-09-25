@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
@@ -128,11 +129,12 @@ class SaleType extends ResourceFormType
 
             $locked = $sale instanceof CartInterface;
 
-            $currencyLocked = $sale->hasPayments();
-            if ($sale instanceof ShipmentSubjectInterface && $sale->hasShipments()) {
-                $currencyLocked = true;
-            } elseif ($sale instanceof InvoiceSubjectInterface && $sale->hasInvoices()) {
-                $currencyLocked = true;
+            if (!$currencyLocked = $sale->hasPayments()) {
+                if ($sale instanceof ShipmentSubjectInterface && $sale->hasShipments()) {
+                    $currencyLocked = true;
+                } elseif ($sale instanceof InvoiceSubjectInterface && $sale->hasInvoices()) {
+                    $currencyLocked = true;
+                }
             }
 
             $form
@@ -179,6 +181,19 @@ class SaleType extends ResourceFormType
                 ->add('shipmentMethod', ShipmentMethodPickType::class, [
                     'disabled'  => $locked,
                     'available' => !$options['admin_mode'],
+                ])
+                ->add('paymentMethod', PaymentMethodChoiceType::class, [
+                    'disabled'    => $locked,
+                    'required'    => false,
+                    'enabled'     => !$options['admin_mode'],
+                    'available'   => !$options['admin_mode'],
+                    'private'     => !$options['admin_mode'],
+                    'offline'     => true,
+                    'credit'      => false,
+                    'outstanding' => false,
+                    'attr'        => [
+                        'help_text' => 'ekyna_commerce.customer.help.default_payment_method',
+                    ],
                 ])
                 ->add('paymentTerm', PaymentTermChoiceType::class, [
                     'required' => false,

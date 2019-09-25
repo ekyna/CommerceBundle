@@ -3,14 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
+use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
+use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Factory\PaymentFactoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentMethodRepositoryInterface;
-use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
-use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -119,25 +119,18 @@ class CheckoutManager
      */
     protected function getMethods(SaleInterface $sale, $admin = false)
     {
-        if ($customer = $sale->getCustomer()) {
-            if ($customer->hasParent()) {
-                $customer = $customer->getParent();
+        if ($default = $sale->getPaymentMethod()) {
+            $methods = [$default];
+
+            if ($sale->getPaymentTerm()) {
+                array_unshift($methods, $this->methodRepository->findOneByFactoryName(Outstanding::FACTORY_NAME));
             }
 
-            if ($default = $customer->getDefaultPaymentMethod()) {
-                $methods = $customer->getPaymentMethods()->toArray();
-                $methods[] = $default;
-
-                if ($sale->getPaymentTerm()) {
-                    array_unshift($methods, $this->methodRepository->findOneByFactoryName(Outstanding::FACTORY_NAME));
-                }
-
-                if (0 < $customer->getCreditBalance()) {
-                    array_unshift($methods, $this->methodRepository->findOneByFactoryName(Credit::FACTORY_NAME));
-                }
-
-                return $methods;
+            if (($customer = $sale->getCustomer()) && (0 < $customer->getCreditBalance())) {
+                array_unshift($methods, $this->methodRepository->findOneByFactoryName(Credit::FACTORY_NAME));
             }
+
+            return $methods;
         }
 
         $currency = $sale->getCurrency();

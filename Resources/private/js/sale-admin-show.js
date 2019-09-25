@@ -13,6 +13,7 @@ define(['jquery', 'ekyna-dispatcher'], function ($, Dispatcher) {
         'paymentState': '.sale-payment-state',
         'weightTotal': '.sale-weight-total',
         'shipmentMethod': '.sale-shipment-method',
+        'paymentMethod': '.sale-payment-method',
         'shipmentState': '.sale-shipment-state',
         'invoiceTotal': '.sale-invoice-total',
         'creditTotal': '.sale-credit-total',

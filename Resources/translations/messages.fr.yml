@@ -610,7 +610,7 @@ ekyna_commerce:
             outstanding_overflow: >
                 Possibilité de saisir une limite d'encours par vente
             default_payment_method: >
-                Détermine les mention et pied de page des documents
+                Détermine les mentions et pied de page des documents
             payment_methods: >
                 Restreint les modes de paiment utilisables.
                 Le mode de paiment par défaut sélectionné ci-dessus est inclus dans ces restrictions.

@@ -13,6 +13,15 @@
                 }) }}" class="show-entity">{{ sale.shipmentMethod }}</a>
             {%- endif -%}
         ]]></shipmentMethod>
+        <paymentMethod><![CDATA[
+            {%- if sale.paymentMethod is null -%}
+                <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+            {%- else -%}
+                <a href="{{ path('ekyna_commerce_payment_method_admin_show', {
+                    'paymentMethodId': sale.paymentMethod.id
+                }) }}" class="show-entity">{{ sale.paymentMethod }}</a>
+            {%- endif -%}
+        ]]></paymentMethod>
 
         {% if sale is payment_subject -%}
         <grandTotal><![CDATA[{{ sale.grandTotal|currency_quote(sale, true) }}]]></grandTotal>

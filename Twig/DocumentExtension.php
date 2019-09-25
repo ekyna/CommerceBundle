@@ -72,17 +72,11 @@ class DocumentExtension extends AbstractExtension
         $locale = $document->getLocale();
         $sale = $document->getSale();
 
-        if ($customer = $sale->getCustomer()) {
-            if ($customer->hasParent()) {
-                $customer = $customer->getParent();
-            }
+        if ($method = $sale->getPaymentMethod()) {
+            $translation = $method->translate($locale);
 
-            if ($method = $customer->getDefaultPaymentMethod()) {
-                $translation = $method->translate($locale);
-
-                if (!empty($footer = $translation->getFooter())) {
-                    return $footer;
-                }
+            if (!empty($footer = $translation->getFooter())) {
+                return $footer;
             }
         }
 

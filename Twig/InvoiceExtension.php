@@ -113,21 +113,15 @@ class InvoiceExtension extends AbstractExtension
         $locale = $invoice->getLocale();
         $sale = $invoice->getSale();
 
-        if (null !== $rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
+        if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
             $notices[] = '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';
         }
 
-        if ($customer = $sale->getCustomer()) {
-            if ($customer->hasParent()) {
-                $customer = $customer->getParent();
-            }
+        if ($method = $sale->getPaymentMethod()) {
+            $translation = $method->translate($locale);
 
-            if ($method = $customer->getDefaultPaymentMethod()) {
-                $translation = $method->translate($locale);
-
-                if (!empty($mention = $translation->getMention())) {
-                    $notices[] = $mention;
-                }
+            if (!empty($mention = $translation->getMention())) {
+                $notices[] = $mention;
             }
         }
 

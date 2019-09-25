@@ -11,7 +11,7 @@
         </a>
     </li>
     <li>
-        <a href="#order-informations" id="toggle-informations" data-toggle="tab">
+        <a href="#order-information" id="toggle-information" data-toggle="tab">
             {{ 'ekyna_core.field.informations'|trans }}
         </a>
     </li>
@@ -67,27 +67,32 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.autoShipping, {'label_col': 6, 'widget_col': 6}) }}
+                <div class="col-md-6">
+                    {{ form_row(form.shipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
-                <div class="col-md-4">
-                    {{ form_row(form.autoDiscount, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.autoNotify, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.taxExempt, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.sample, {'label_col': 6, 'widget_col': 6}) }}
+                <div class="col-md-6">
+                    {{ form_row(form.paymentMethod, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
+                    {{ form_row(form.autoShipping, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.depositTotal, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.autoDiscount, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
                     {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.autoNotify, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.outstandingLimit, {'label_col': 4, 'widget_col': 8}) }}
@@ -95,10 +100,10 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.shipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.sample, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.depositTotal, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.taxExempt, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <hr>
@@ -111,7 +116,7 @@
             <hr>
             {{ form_row(form.relayPoint) }}
         </div>
-        <div class="tab-pane" id="order-informations">
+        <div class="tab-pane" id="order-information">
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.voucherNumber, {'label_col': 4, 'widget_col': 8}) }}
