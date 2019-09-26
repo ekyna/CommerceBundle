@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -63,16 +64,22 @@ class DocumentExtension extends AbstractExtension
     /**
      * Returns the document footer.
      *
-     * @param DocumentInterface $document
+     * @param object $document
      *
      * @return string
      */
-    public function getDocumentFooter(DocumentInterface $document): string
+    public function getDocumentFooter(object $document): string
     {
-        $locale = $document->getLocale();
-        $sale = $document->getSale();
+        $sale = $locale = null;
+        if ($document instanceof DocumentInterface) {
+            $locale = $document->getLocale();
+            $sale = $document->getSale();
+        } elseif ($document instanceof ShipmentInterface) {
+            $locale = $document->getLocale();
+            $sale = $document->getSale();
+        }
 
-        if ($method = $sale->getPaymentMethod()) {
+        if ($sale && ($method = $sale->getPaymentMethod())) {
             $translation = $method->translate($locale);
 
             if (!empty($footer = $translation->getFooter())) {
