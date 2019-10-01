@@ -32,7 +32,9 @@
 
 {# --- DOC MISC --- #}
 {% block doc_misc -%}
+    <div class="unbreakable">
     {% for notice in subject|invoice_notices %}
         {{ notice|raw }}
     {% endfor %}
+    </div>
 {%- endblock doc_misc %}

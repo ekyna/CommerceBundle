@@ -149,10 +149,10 @@ abstract class AbstractRenderer implements RendererInterface
 
         if ($format !== RendererInterface::FORMAT_HTML) {
             $options = [
-                'margin-top'    => "0",
-                'margin-right'  => "0",
-                'margin-bottom' => "0",
-                'margin-left'   => "0",
+                'margin-top'    => "6mm",
+                'margin-right'  => "6mm",
+                'margin-bottom' => "6mm",
+                'margin-left'   => "6mm",
             ];
             if ($format === RendererInterface::FORMAT_PDF) {
                 return $this->pdfGenerator->getOutputFromHtml($content, $options);
