@@ -34,13 +34,6 @@
             <argument type="collection"/> <!-- Api providers, replaced by the PricingApiPass -->
         </service>
 
-        <!-- Pricing API controller -->
-        <service id="ekyna_commerce.controller.api.pricing"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Api\PricingController">
-            <argument type="service" id="ekyna_commerce.pricing.api" />
-            <argument type="service" id="templating" />
-        </service>
-
     </services>
 
 </container>

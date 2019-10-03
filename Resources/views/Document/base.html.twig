@@ -97,9 +97,9 @@
 {# --- FOOTER --- #}
 {% block doc_footer -%}
 <div class="bloc footer">
-    {% block doc_footer_content %}
+    {% block doc_footer_content -%}
         {{ subject|document_footer }}
-    {% endblock doc_footer_content %}
+    {%- endblock doc_footer_content %}
 </div>
 {%- endblock doc_footer %}
 

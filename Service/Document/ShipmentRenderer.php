@@ -62,11 +62,9 @@ class ShipmentRenderer extends AbstractRenderer
     }
 
     /**
-     * Returns the document's content.
-     *
-     * @return string
+     * @inheritDoc
      */
-    protected function getContent()
+    protected function getContent(string $format): string
     {
         if ($this->type === static::TYPE_FORM) {
             return $this->templating->render('@EkynaCommerce/Document/shipment_form.html.twig', [
@@ -74,7 +72,7 @@ class ShipmentRenderer extends AbstractRenderer
             ]);
         }
 
-        return parent::getContent();
+        return parent::getContent($format);
     }
 
     /**

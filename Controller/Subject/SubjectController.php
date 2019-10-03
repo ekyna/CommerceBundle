@@ -44,7 +44,7 @@ class SubjectController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addToCartAction(Request $request)
+    public function addToCart(Request $request)
     {
         $provider = $request->attributes->get('provider');
         $identifier = $request->attributes->get('identifier');

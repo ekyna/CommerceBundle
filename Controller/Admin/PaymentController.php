@@ -45,7 +45,7 @@ class PaymentController
      *
      * @return RedirectResponse
      */
-    public function statusAction(Request $request)
+    public function status(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException("XHR is not supported.");

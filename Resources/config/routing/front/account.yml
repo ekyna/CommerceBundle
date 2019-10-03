@@ -28,8 +28,8 @@ ekyna_commerce_account_invoice:
 
 ekyna_commerce_account_payment_status:
     path: /payment/status
-    defaults: { _controller: "ekyna_commerce.controller.account.payment:statusAction" }
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\PaymentController::status
+    methods: GET
 
 ekyna_commerce_account_loader:
     resource: .

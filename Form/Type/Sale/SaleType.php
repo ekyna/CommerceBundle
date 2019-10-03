@@ -187,7 +187,7 @@ class SaleType extends ResourceFormType
                     'required'    => false,
                     'enabled'     => !$options['admin_mode'],
                     'available'   => !$options['admin_mode'],
-                    'private'     => !$options['admin_mode'],
+                    'public'      => !$options['admin_mode'],
                     'offline'     => true,
                     'credit'      => false,
                     'outstanding' => false,

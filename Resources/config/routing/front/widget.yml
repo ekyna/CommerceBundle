@@ -1,55 +1,47 @@
 ekyna_commerce_widget_customer_widget:
     path: /customer/widget
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:customerWidgetAction"
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::customerWidget
+    methods: GET
     options: { i18n: false }
 
 ekyna_commerce_widget_customer_dropdown:
     path: /customer/dropdown
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:customerDropdownAction"
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::customerDropdown
+    methods: GET
     options: { i18n: false }
         
 ekyna_commerce_widget_cart_widget:
     path: /cart/widget
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:cartWidgetAction"
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::cartWidget
+    methods: GET
     options: { i18n: false }
 
 ekyna_commerce_widget_cart_dropdown:
     path: /cart/dropdown
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:cartDropdownAction"
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::cartDropdown
+    methods: GET
     options: { i18n: false }
 
 ekyna_commerce_widget_context_widget:
     path: /context/widget
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:contextWidgetAction"
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::contextWidget
+    methods: GET
     options: { i18n: false }
 
 ekyna_commerce_widget_context_dropdown:
     path: /context/dropdown
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:contextDropdownAction"
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::contextDropdown
+    methods: GET
     options: { i18n: false }
 
 ekyna_commerce_widget_context_change:
     path: /context/change
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:contextChangeAction"
-    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::contextChange
+    methods: POST
     options: { i18n: false }
 
 ekyna_commerce_widget_currency_change:
     path: /currency/change
-    defaults:
-        _controller: "ekyna_commerce.controller.widget:currencyChangeAction"
-    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\WidgetController::currencyChange
+    methods: POST
     options: { i18n: false }

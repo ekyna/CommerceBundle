@@ -176,12 +176,6 @@
             <tag name="ekyna_commerce.shipment.gateway_platform"/>
         </service>
 
-        <!-- API Shipment gateway controller -->
-        <service id="ekyna_commerce.controller.api.shipment_gateway"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Api\ShipmentGatewayController">
-            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
-        </service>
-
     </services>
 
 </container>

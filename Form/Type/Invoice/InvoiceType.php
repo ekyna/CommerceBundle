@@ -56,8 +56,8 @@ class InvoiceType extends ResourceFormType
                 'disabled' => true,
             ])
             ->add('createdAt', Type\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.date',
-                'required' => false,
+                'label'      => 'ekyna_core.field.date',
+                'required'   => false,
                 'empty_data' => (new \DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
             ])
             ->add('comment', Type\TextareaType::class, [
@@ -114,6 +114,7 @@ class InvoiceType extends ResourceFormType
                         'label'       => 'ekyna_commerce.invoice.field.payment_method',
                         'required'    => $required,
                         'invoice'     => $invoice,
+                        'public'      => false,
                         'outstanding' => false,
                     ]);
                 }

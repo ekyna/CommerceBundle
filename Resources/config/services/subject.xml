@@ -5,13 +5,6 @@
 
     <services>
 
-        <!-- Subject controller -->
-        <service id="ekyna_commerce.controller.subject"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Subject\SubjectController">
-            <argument type="service" id="ekyna_core.modal"/>
-            <argument type="service" id="ekyna_commerce.cart_helper"/>
-        </service>
-
         <!-- Subject providers registry-->
         <service id="ekyna_commerce.subject.provider_registry"
                  class="Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry"/>

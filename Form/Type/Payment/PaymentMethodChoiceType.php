@@ -4,8 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
+use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
@@ -59,7 +59,7 @@ class PaymentMethodChoiceType extends AbstractType
                     if ($options['available']) {
                         $qb->andWhere($e->eq('m.available', true));
                     }
-                    if ($options['private']) {
+                    if ($options['public']) {
                         $qb->andWhere($e->eq('m.private', true));
                     }
                     $exclude = [];
@@ -83,7 +83,7 @@ class PaymentMethodChoiceType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'label'             => function(Options $options, $value) {
+                'label'             => function (Options $options, $value) {
                     if ($value) {
                         return $value;
                     }
@@ -92,7 +92,7 @@ class PaymentMethodChoiceType extends AbstractType
                 },
                 'enabled'           => false, // Whether to exclude disabled methods
                 'available'         => false, // Whether to exclude unavailable methods
-                'private'           => true, // Whether to exclude private methods
+                'public'            => true,  // Whether to exclude private methods
                 'offline'           => true,  // Whether to include offline factories
                 'credit'            => true,  // Whether to include credit factory
                 'outstanding'       => true,  // Whether to include outstanding factory

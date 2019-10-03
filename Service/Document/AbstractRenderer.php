@@ -101,7 +101,7 @@ abstract class AbstractRenderer implements RendererInterface
      *
      * @param GeneratorInterface $generator
      */
-    public function setImageGenerator($generator)
+    public function setImageGenerator(GeneratorInterface $generator)
     {
         $this->imageGenerator = $generator;
     }
@@ -123,7 +123,7 @@ abstract class AbstractRenderer implements RendererInterface
     {
         $this->validateFormat($format);
 
-        $content = $this->getContent();
+        $content = $this->getContent($format);
 
         $path = sys_get_temp_dir() . '/' . uniqid() . '.' . $format;
 
@@ -145,7 +145,7 @@ abstract class AbstractRenderer implements RendererInterface
     {
         $this->validateFormat($format);
 
-        $content = $this->getContent();
+        $content = $this->getContent($format);
 
         if ($format !== RendererInterface::FORMAT_HTML) {
             $options = [
@@ -221,12 +221,15 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * Returns the document's content.
      *
+     * @param string $format
+     *
      * @return string
      */
-    protected function getContent()
+    protected function getContent(string $format): string
     {
         return $this->templating->render('@EkynaCommerce/Document/render.html.twig', array_replace([
             'debug'     => $this->config['debug'],
+            'format'    => $format,
             'logo_path' => $this->config['logo_path'],
             'subjects'  => $this->subjects,
             'template'  => $this->getTemplate(),

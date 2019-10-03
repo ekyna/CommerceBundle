@@ -99,7 +99,7 @@
     {% for page in pages %}
 
     {# Page break#}
-    {% if loop.index0 > 0 %}
+    {% if format == 'pdf' and loop.index0 > 0 %}
     </tbody>
 </table>
 {{ block('doc_footer') }}

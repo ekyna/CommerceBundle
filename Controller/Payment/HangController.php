@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class HangController extends PayumController
 {
-    public function doAction(Request $request)
+    public function hang(Request $request)
     {
         $token = $this->getPayum()->getHttpRequestVerifier()->verify($request);
 

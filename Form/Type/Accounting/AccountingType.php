@@ -49,6 +49,7 @@ class AccountingType extends ResourceFormType
                 'required' => false,
             ])
             ->add('paymentMethod', PaymentMethodChoiceType::class, [
+                'public'      => false,
                 'outstanding' => false,
                 'required'    => false,
             ])

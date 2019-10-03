@@ -1,39 +1,39 @@
 ekyna_commerce_payment_capture:
     path: /capture/{payum_token}
-    defaults: { _controller: PayumBundle:Capture:do }
+    controller: Payum\Bundle\PayumBundle\Controller\CaptureController::doAction
     options: { i18n: false }
 
 ekyna_commerce_payment_authorize:
     path: /authorize/{payum_token}
-    defaults: { _controller: PayumBundle:Authorize:do }
+    controller: Payum\Bundle\PayumBundle\Controller\AuthorizeController::doAction
     options: { i18n: false }
 
 ekyna_commerce_payment_cancel:
     path: /cancel/{payum_token}
-    defaults: { _controller: PayumBundle:Cancel:do }
+    controller: Payum\Bundle\PayumBundle\Controller\CancelController::doAction
     options: { i18n: false }
 
 ekyna_commerce_payment_refund:
     path: /refund/{payum_token}
-    defaults: { _controller: PayumBundle:Refund:do }
+    controller: Payum\Bundle\PayumBundle\Controller\RefundController::doAction
     options: { i18n: false }
 
 ekyna_commerce_payment_sync:
     path: /sync/{payum_token}
-    defaults: { _controller: PayumBundle:Sync:do }
+    controller: Payum\Bundle\PayumBundle\Controller\SyncController::doAction
     options: { i18n: false }
 
 ekyna_commerce_payment_notify:
     path: /notify/{payum_token}
-    defaults: { _controller: "ekyna_commerce.controller.payment_notify:doAction" }
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\NotifyController::notify
     options: { i18n: false }
 
 ekyna_commerce_payment_accept:
     path: /accept/{payum_token}
-    defaults: { _controller: EkynaCommerceBundle:Payment\Accept:do }
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\AcceptController::accept
     options: { i18n: false }
 
 ekyna_commerce_payment_hang:
     path: /hang/{payum_token}
-    defaults: { _controller: EkynaCommerceBundle:Payment\Hang:do }
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\HangController::hang
     options: { i18n: false }

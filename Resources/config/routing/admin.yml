@@ -104,24 +104,24 @@ ekyna_commerce_export_admin:
 
 ekyna_commerce_payment_admin_status:
     path: /payment/status
-    defaults: { _controller: "ekyna_commerce.controller.admin.payment:statusAction" }
-    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\PaymentController::status
+    methods: GET
 
 ekyna_commerce_admin_order_list_payment:
     path: /order-payments
-    methods: [GET]
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:payment }
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderListController::payment
 
 ekyna_commerce_admin_order_list_shipment:
     path: /order-shipments
-    methods: [GET]
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipment }
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderListController::shipment
 
 ekyna_commerce_admin_order_list_shipment_document:
     path: /order-shipments/documents/{type}.{_format}
-    methods: [GET]
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderListController::shipmentDocument
     defaults:
-        _controller: EkynaCommerceBundle:Admin/OrderList:shipmentDocument
         _format: pdf
     requirements:
         type: form|bill
@@ -129,19 +129,19 @@ ekyna_commerce_admin_order_list_shipment_document:
 
 ekyna_commerce_admin_order_list_shipment_platform:
     path: /order-shipments/platform/{name}/{action}
-    methods: [GET|POST]
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:shipmentPlatform }
+    methods: GET|POST
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderListController::shipmentPlatform
 
 ekyna_commerce_admin_order_list_invoice:
     path: /order-invoices
-    methods: [GET]
-    defaults: { _controller: EkynaCommerceBundle:Admin/OrderList:invoice }
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderListController::invoice
 
 ekyna_commerce_admin_order_list_invoice_document:
     path: /order-invoices/documents.{_format}
-    methods: [GET]
+    methods: GET
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderListController::invoiceDocument
     defaults:
-        _controller: EkynaCommerceBundle:Admin/OrderList:invoiceDocument
         _format: pdf
     requirements:
         _format: pdf|html|jpg

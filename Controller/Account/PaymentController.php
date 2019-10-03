@@ -46,9 +46,9 @@ class PaymentController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
-    public function statusAction(Request $request)
+    public function status(Request $request): RedirectResponse
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException("XHR is not supported.");

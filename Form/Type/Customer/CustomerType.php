@@ -111,7 +111,7 @@ class CustomerType extends ResourceFormType
                 ->add('defaultPaymentMethod', PaymentMethodChoiceType::class, [
                     'label'       => 'ekyna_commerce.customer.field.default_payment_method',
                     'required'    => false,
-                    'private'     => false,
+                    'public'      => false,
                     'credit'      => false,
                     'outstanding' => false,
                     'disabled'    => $hasParent,
@@ -123,7 +123,7 @@ class CustomerType extends ResourceFormType
                     'label'       => 'ekyna_commerce.customer.field.payment_methods',
                     'required'    => false,
                     'multiple'    => true,
-                    'private'     => false,
+                    'public'      => false,
                     'credit'      => false,
                     'outstanding' => false,
                     'disabled'    => $hasParent,

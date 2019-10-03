@@ -39,7 +39,7 @@ class ShipmentGatewayController extends Controller
      *
      * @return JsonResponse
      */
-    public function listRelayPointsAction(Request $request)
+    public function listRelayPoints(Request $request): JsonResponse
     {
         $gateway = $this->getGateway($request->attributes->get('gateway'));
 
@@ -68,7 +68,7 @@ class ShipmentGatewayController extends Controller
      *
      * @return JsonResponse
      */
-    public function getRelayPointAction(Request $request)
+    public function getRelayPoint(Request $request): JsonResponse
     {
         $gateway = $this->getGateway($request->attributes->get('gateway'));
         $number = $request->query->get('number');

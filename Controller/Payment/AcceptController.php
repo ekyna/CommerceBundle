@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AcceptController extends PayumController
 {
-    public function doAction(Request $request)
+    public function accept(Request $request)
     {
         $token = $this->getPayum()->getHttpRequestVerifier()->verify($request);
 

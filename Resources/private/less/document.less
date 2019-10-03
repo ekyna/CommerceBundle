@@ -1,26 +1,25 @@
 @font-size: 14px;
+@line-height: 18px;
 @text-color: #333333;
 @head-color: #999999;
 @border-color: #dddddd;
 @background-alt-color: #f2f2f2;
 @margin: 30px;
-//@width: 1032px;
-//@height: 1459px;
-@width: 972px;
-@height: 1399px;
+@width: 972px; //@width: 1032px;
+@height: 1393px; //@height: 1459px;
 
 html,
 body {
     margin: 0;
-    padding: @margin;
+    padding: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: @font-size;
+    line-height: @line-height;
+    color: @text-color;
 }
 
 .wrapper {
     position: relative;
-    font-family: Herlvetica, Arial, sans-serif;
-    font-size: @font-size;
-    line-height: 21px;
-    color: @text-color;
     max-width: 1200px;
     margin: auto;
 }
@@ -31,10 +30,13 @@ a {
 }
 
 h1 {
+    padding: 0;
+    margin: 0 0 20px 0;
     font-variant: small-caps;
     font-weight: normal;
     color: @head-color;
     font-size: @font-size * 2.2;
+    line-height: @font-size * 2.2;
 }
 
 .text-right {
@@ -91,7 +93,7 @@ table.header {
 
 .footer {
     border-top: 1px dotted @border-color;
-    margin: @margin;
+    margin-top: @margin;
     text-align: center;
 }
 
@@ -261,24 +263,27 @@ table.header {
     }
 
     .page-break {
+        margin: 0;
+        padding: 0;
+        border: none;
         page-break-after: always;
     }
 
     .wrapper {
         page-break-after: always;
-        overflow: hidden;
-        padding: 0 0 @margin*4 0;
         box-sizing: border-box;
         width: @width;
-        height: auto;
+        height: @height;
+        //overflow: hidden;
+        //background: mistyrose;
+    }
 
-        .footer {
-            position: absolute;
-            margin: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
+    .footer {
+        position: absolute;
+        margin: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
 
     .unbreakable {

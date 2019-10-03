@@ -5,26 +5,6 @@
 
     <services>
 
-        <!-- Payment notify controller -->
-        <service id="ekyna_commerce.controller.payment_notify"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Payment\NotifyController">
-            <argument type="service" id="ekyna_commerce.payment_helper"/>
-        </service>
-
-        <!-- Payment account controller -->
-        <service id="ekyna_commerce.controller.account.payment"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Account\PaymentController">
-            <argument type="service" id="ekyna_commerce.payment_helper"/>
-            <argument type="service" id="router"/>
-        </service>
-
-        <!-- Payment admin controller -->
-        <service id="ekyna_commerce.controller.admin.payment"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\Admin\PaymentController">
-            <argument type="service" id="ekyna_commerce.payment_helper"/>
-            <argument type="service" id="ekyna_admin.helper.resource_helper"/>
-        </service>
-
         <!-- Payment number generator -->
         <service id="ekyna_commerce.payment.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">

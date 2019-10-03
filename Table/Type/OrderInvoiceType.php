@@ -60,6 +60,43 @@ class OrderInvoiceType extends AbstractOrderListType
                 'label'       => 'ekyna_core.field.created_at',
                 'time_format' => 'none',
                 'position'    => 90,
+            ])
+            ->addColumn('actions', BType\Column\ActionsType::class, [
+                'buttons' => [
+                    [
+                        'label'                => 'ekyna_core.button.download',
+                        'icon'                 => 'download',
+                        'class'                => 'primary',
+                        'route_name'           => 'ekyna_commerce_order_invoice_admin_render',
+                        'route_parameters_map' => [
+                            'orderId'        => 'order.id',
+                            'orderInvoiceId' => 'id',
+                        ],
+                        //'permission' => 'EDIT', // TODO see admin actions type extension
+                    ],
+                    [
+                        'label'                => 'ekyna_core.button.edit',
+                        'icon'                 => 'pencil',
+                        'class'                => 'warning',
+                        'route_name'           => 'ekyna_commerce_order_invoice_admin_edit',
+                        'route_parameters_map' => [
+                            'orderId'        => 'order.id',
+                            'orderInvoiceId' => 'id',
+                        ],
+                        //'permission' => 'EDIT', // TODO see admin actions type extension
+                    ],
+                    [
+                        'label'                => 'ekyna_core.button.remove',
+                        'icon'                 => 'trash',
+                        'class'                => 'danger',
+                        'route_name'           => 'ekyna_commerce_order_invoice_admin_remove',
+                        'route_parameters_map' => [
+                            'orderId'        => 'order.id',
+                            'orderInvoiceId' => 'id',
+                        ],
+                        //'permission' => 'EDIT', // TODO see admin actions type extension
+                    ],
+                ],
             ]);
 
         if ($options['order'] || $options['customer']) {

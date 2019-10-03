@@ -85,7 +85,7 @@ class WidgetController
      *
      * @return JsonResponse
      */
-    public function customerWidgetAction(Request $request)
+    public function customerWidget(Request $request)
     {
         $this->assertXhr($request);
 
@@ -99,7 +99,7 @@ class WidgetController
      *
      * @return Response
      */
-    public function customerDropdownAction(Request $request)
+    public function customerDropdown(Request $request)
     {
         $this->assertXhr($request);
 
@@ -120,7 +120,7 @@ class WidgetController
      *
      * @return JsonResponse
      */
-    public function cartWidgetAction(Request $request)
+    public function cartWidget(Request $request)
     {
         $this->assertXhr($request);
 
@@ -134,7 +134,7 @@ class WidgetController
      *
      * @return Response
      */
-    public function cartDropdownAction(Request $request)
+    public function cartDropdown(Request $request)
     {
         $this->assertXhr($request);
 
@@ -157,7 +157,7 @@ class WidgetController
      *
      * @return JsonResponse
      */
-    public function contextWidgetAction(Request $request)
+    public function contextWidget(Request $request)
     {
         $this->assertXhr($request);
 
@@ -171,7 +171,7 @@ class WidgetController
      *
      * @return Response
      */
-    public function contextDropdownAction(Request $request)
+    public function contextDropdown(Request $request)
     {
         $this->assertXhr($request);
 
@@ -194,7 +194,7 @@ class WidgetController
      *
      * @return RedirectResponse
      */
-    public function contextChangeAction(Request $request)
+    public function contextChange(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException();
@@ -232,7 +232,7 @@ class WidgetController
      *
      * @return RedirectResponse
      */
-    public function currencyChangeAction(Request $request)
+    public function currencyChange(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException();

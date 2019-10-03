@@ -5,17 +5,6 @@
 
     <services>
 
-        <!-- Widget controller -->
-        <service id="ekyna_commerce.controller.widget"
-                 class="Ekyna\Bundle\CommerceBundle\Controller\WidgetController">
-            <argument type="service" id="ekyna_commerce.widget_helper"/>
-            <argument type="service" id="templating"/>
-            <argument type="service" id="form.factory"/>
-            <argument type="service" id="router"/>
-            <argument>%ekyna_cms.home_route%</argument>
-            <argument>%ekyna_cms.public_locales%</argument>
-        </service>
-
         <!-- Widget helper -->
         <service id="ekyna_commerce.widget_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper">

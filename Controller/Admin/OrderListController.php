@@ -20,7 +20,7 @@ class OrderListController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function invoiceAction(Request $request)
+    public function invoice(Request $request)
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order');
 
@@ -54,7 +54,7 @@ class OrderListController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function invoiceDocumentAction(Request $request)
+    public function invoiceDocument(Request $request)
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_invoice');
 
@@ -87,7 +87,7 @@ class OrderListController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function paymentAction(Request $request)
+    public function payment(Request $request)
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_payment');
 
@@ -121,7 +121,7 @@ class OrderListController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function shipmentAction(Request $request)
+    public function shipment(Request $request)
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_shipment');
 
@@ -155,7 +155,7 @@ class OrderListController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function shipmentDocumentAction(Request $request)
+    public function shipmentDocument(Request $request)
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_shipment');
 
@@ -181,7 +181,7 @@ class OrderListController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function shipmentPlatformAction(Request $request)
+    public function shipmentPlatform(Request $request)
     {
         $platformName = $request->attributes->get('name');
         $actionName = $request->attributes->get('action');

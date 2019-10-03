@@ -1,6 +1,5 @@
 ekyna_commerce_subject_add_to_cart:
     path: /add-to-cart/{provider}/{identifier}
-    defaults:
-        _controller: "ekyna_commerce.controller.subject:addToCartAction"
-    methods: [GET,POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Subject\SubjectController:addToCart
+    methods: GET|POST
     options: { i18n: false }

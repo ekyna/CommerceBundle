@@ -37,7 +37,7 @@ class NotifyController
      *
      * @return Response
      */
-    public function doAction(Request $request)
+    public function notify(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException("XHR is not supported.");

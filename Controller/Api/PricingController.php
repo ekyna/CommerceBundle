@@ -45,7 +45,7 @@ class PricingController
      *
      * @return JsonResponse
      */
-    public function validateVatNumberAction(Request $request)
+    public function validateVatNumber(Request $request)
     {
         // TODO authorisation / throttle
 
