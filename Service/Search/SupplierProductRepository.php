@@ -14,11 +14,13 @@ class SupplierProductRepository extends ResourceRepository
     /**
      * @inheritdoc
      */
-    protected function getDefaultMatchFields()
+    protected function getDefaultMatchFields(): array
     {
         return [
+            'reference^2',
+            'reference.analyzed',
             'designation',
-            'reference',
+            'designation.analyzed',
         ];
     }
 }

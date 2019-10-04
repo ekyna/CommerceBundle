@@ -14,14 +14,19 @@ class SaleRepository extends ResourceRepository
     /**
      * @inheritdoc
      */
-    protected function getDefaultMatchFields()
+    protected function getDefaultMatchFields(): array
     {
         return [
+            'company^3',
+            'company.analyzed',
+            'last_name^2',
+            'last_name.analyzed',
+            'first_name^2',
+            'first_name.analyzed',
             'number',
-            'company',
+            'number.analyzed',
             'email',
-            'first_name',
-            'last_name',
+            'email.analyzed',
         ];
     }
 }

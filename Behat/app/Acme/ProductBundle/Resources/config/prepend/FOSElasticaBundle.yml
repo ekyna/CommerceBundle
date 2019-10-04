@@ -1,14 +1,17 @@
 fos_elastica:
     indexes:
-        search:
+        acme_product_product:
             types:
-                acme_product_product:
+                doc:
                     serializer:
                         groups: [Search]
+                    properties:
+                        id: { type: integer }
+                        text: { type: text }
                     dynamic_templates:
                         default:
                             match_mapping_type: string
-                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                            mapping: {type: text}
                     persistence:
                         driver: orm
                         model: Acme\Product\Entity\Product

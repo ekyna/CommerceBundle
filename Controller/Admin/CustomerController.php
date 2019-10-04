@@ -27,61 +27,6 @@ use Symfony\Component\HttpFoundation\Response;
 class CustomerController extends ResourceController
 {
     /**
-     * @inheritDoc
-     */
-    public function searchAction(Request $request): Response
-    {
-        //$callback = $request->query->get('callback');
-        $limit = intval($request->query->get('limit'));
-        $query = trim($request->query->get('query'));
-        $parent = intval($request->query->get('parent', 0));
-
-        $repository = $this->get('fos_elastica.manager')->getRepository($this->config->getResourceClass());
-        if (!$repository instanceOf CustomerRepository) {
-            throw new \RuntimeException('Expected instance of ' . CustomerRepository::class);
-        }
-
-        if (0 < $parent) {
-            $results = $repository->searchAvailableParents($query, $limit);
-        } else {
-            $results = $repository->defaultSearch($query, $limit);
-        }
-
-        $data = $this->container->get('serializer')->serialize([
-            'results'     => $results,
-            'total_count' => count($results),
-        ], 'json', ['groups' => ['Search']]);
-
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'text/javascript');
-
-        return $response;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function createNew(Context $context): CustomerInterface
-    {
-        /** @var CustomerInterface $customer */
-        $customer = parent::createNew($context);
-
-        /** @var CustomerInterface $parent */
-        $parent = $this->getRepository()->find($context->getRequest()->query->get('parent'));
-        if (null !== $parent) {
-            $customer
-                ->setParent($parent)
-                ->setCustomerGroup($parent->getCustomerGroup());
-        } else {
-            $customer->setCustomerGroup(
-                $this->get('ekyna_commerce.customer_group.repository')->findDefault()
-            );
-        }
-
-        return $customer;
-    }
-
-    /**
      * Sale summary action.
      *
      * @param Request $request
@@ -285,34 +230,13 @@ class CustomerController extends ResourceController
     }
 
     /**
-     * Creates the CSV file.
-     *
-     * @param array  $lines
-     * @param string $prefix
-     *
-     * @return string
-     */
-    private function createCsv(array $lines, string $prefix): string
-    {
-        $path = tempnam(sys_get_temp_dir(), $prefix);
-
-        $handle = fopen($path, 'w');
-        foreach ($lines as $line) {
-            fputcsv($handle, $line, ';');
-        }
-        fclose($handle);
-
-        return $path;
-    }
-
-    /**
      * Create user action.
      *
      * @param Request $request
      *
      * @return Response
      */
-    public function createUserAction(Request $request)
+    public function createUserAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         /** @var CustomerInterface $customer */
@@ -367,6 +291,45 @@ class CustomerController extends ResourceController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function createSearchQuery(Request $request): \Elastica\Query
+    {
+        $repository = $this->get('fos_elastica.manager')->getRepository($this->config->getResourceClass());
+        if (!$repository instanceOf CustomerRepository) {
+            throw new \RuntimeException('Expected instance of ' . CustomerRepository::class);
+        }
+
+        $query = trim($request->query->get('query'));
+        $parent = (bool)intval($request->query->get('parent', 0));
+
+        return $repository->createSearchQuery($query, $parent);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function createNew(Context $context): CustomerInterface
+    {
+        /** @var CustomerInterface $customer */
+        $customer = parent::createNew($context);
+
+        /** @var CustomerInterface $parent */
+        $parent = $this->getRepository()->find($context->getRequest()->query->get('parent'));
+        if (null !== $parent) {
+            $customer
+                ->setParent($parent)
+                ->setCustomerGroup($parent->getCustomerGroup());
+        } else {
+            $customer->setCustomerGroup(
+                $this->get('ekyna_commerce.customer_group.repository')->findDefault()
+            );
+        }
+
+        return $customer;
     }
 
     /**
@@ -430,5 +393,26 @@ class CustomerController extends ResourceController
         }
 
         return null;
+    }
+
+    /**
+     * Creates the CSV file.
+     *
+     * @param array  $lines
+     * @param string $prefix
+     *
+     * @return string
+     */
+    private function createCsv(array $lines, string $prefix): string
+    {
+        $path = tempnam(sys_get_temp_dir(), $prefix);
+
+        $handle = fopen($path, 'w');
+        foreach ($lines as $line) {
+            fputcsv($handle, $line, ';');
+        }
+        fclose($handle);
+
+        return $path;
     }
 }

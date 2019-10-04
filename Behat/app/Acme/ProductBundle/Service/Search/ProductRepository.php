@@ -11,8 +11,5 @@ use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
  */
 class ProductRepository extends ResourceRepository
 {
-    public function defaultSearch($expression, $limit = null)
-    {
-        return $this->find($expression);
-    }
+
 }

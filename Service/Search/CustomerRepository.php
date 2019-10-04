@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Search;
 
 use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
 use Elastica\Query;
-use Elastica\Filter;
 
 /**
  * Class CustomerRepository
@@ -14,41 +13,51 @@ use Elastica\Filter;
 class CustomerRepository extends ResourceRepository
 {
     /**
-     * Search available parents.
+     * Creates the search query.
      *
      * @param string $expression
-     * @param int    $limit
+     * @param bool   $parent
      *
-     * @return \Ekyna\Bundle\ProductBundle\Model\ProductInterface[]
+     * @return Query
      */
-    public function searchAvailableParents($expression, $limit = 10)
+    public function createSearchQuery(string $expression, bool $parent = false): Query
     {
-        $filteredQuery = new Query\Filtered();
+        $match = new Query\MultiMatch();
+        $match
+            ->setQuery($expression)
+            ->setType(Query\MultiMatch::TYPE_CROSS_FIELDS)
+            ->setFields($this->getDefaultMatchFields());
 
-        $matchQuery = new Query\MultiMatch();
-        $matchQuery->setQuery($expression)->setFields($this->getDefaultMatchFields());
-        $filteredQuery->setQuery($matchQuery);
+        if (!$parent) {
+            return Query::create($match);
+        }
 
-        $boolFilter = new Filter\BoolFilter();
-        $boolFilter->addMustNot(new Filter\Exists('parent'));
-        $boolFilter->addMust(new Filter\Exists('company'));
-        $boolFilter->addMust(new Filter\Term(['vatValid' => true]));
+        $bool = new Query\BoolQuery();
+        $bool
+            ->addMust($match)
+            ->addMustNot(new Query\Exists('parent'))
+            ->addMust(new Query\Exists('company'))
+            ->addMust(new Query\Term(['vatValid' => true]));
 
-        $filteredQuery->setFilter($boolFilter);
-
-        return $this->find($filteredQuery, $limit);
+        return Query::create($bool);
     }
 
     /**
      * @inheritdoc
      */
-    protected function getDefaultMatchFields()
+    protected function getDefaultMatchFields(): array
     {
         return [
+            'company^3',
+            'company.analyzed',
+            'last_name^2',
+            'last_name.analyzed',
+            'first_name^2',
+            'first_name.analyzed',
+            'number',
+            'number.analyzed',
             'email',
-            'first_name',
-            'last_name',
-            'company',
+            'email.analyzed',
         ];
     }
 }

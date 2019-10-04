@@ -1,64 +1,134 @@
 fos_elastica:
     indexes:
-        search:
+        ekyna_commerce_customer:
+            settings:
+                index:
+                    analysis:
+                        filter:
+                            email_capture: { type: pattern_capture, preserve_original: true, patterns: ["([^@]+)", "(\\p{L}+)", "(\\d+)", "@(.+)"] }
+                            email_edge: { type: edge_ngram, min_gram: 3, max_gram: 10 }
+                        tokenizer:
+                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
+                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
+                        analyzer:
+                            ngram: { tokenizer: ngram, filter: [icu_folding] }
+                            edge: { tokenizer: edge, filter: [icu_folding] }
+                            email: { tokenizer: uax_url_email, filter: [email_capture, lowercase, stop, email_edge] }
+                            search: { tokenizer: standard, filter: [icu_folding] }
             types:
-                ekyna_commerce_customer:
+                doc:
                     serializer:
                         groups: [Search]
-                    dynamic_templates:
-                        default:
-                            match_mapping_type: string
-                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                    properties:
+                        id: { type: integer }
+                        text: { type: text }
+                        number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                        email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
+                        company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        parent: { type: integer }
+                        currency: { type: keyword }
+                        locale: { type: keyword }
                     persistence:
                         driver: orm
                         model: "%ekyna_commerce.customer.class%"
-                        provider:
-                            batch_size: 25
+                        provider: { batch_size: 25 }
                         listener: ~
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository
-                ekyna_commerce_order:
+        ekyna_commerce_order:
+            settings:
+                index:
+                    analysis:
+                        filter:
+                            email_capture: { type: pattern_capture, preserve_original: true, patterns: ["([^@]+)", "(\\p{L}+)", "(\\d+)", "@(.+)"] }
+                            email_edge: { type: edge_ngram, min_gram: 3, max_gram: 10 }
+                        tokenizer:
+                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
+                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
+                        analyzer:
+                            ngram: { tokenizer: ngram, filter: [icu_folding] }
+                            edge: { tokenizer: edge, filter: [icu_folding] }
+                            search: { tokenizer: standard, filter: [icu_folding] }
+                            email: { tokenizer: uax_url_email, filter: [email_capture, lowercase, stop, email_edge] }
+            types:
+                doc:
                     serializer:
                         groups: [Search]
-                    dynamic_templates:
-                        default:
-                            match_mapping_type: string
-                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                    properties:
+                        id: { type: integer }
+                        text: { type: text }
+                        number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                        email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
+                        company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                     persistence:
                         driver: orm
                         model: "%ekyna_commerce.order.class%"
-                        provider:
-                            batch_size: 25
+                        provider: { batch_size: 25 }
                         listener: ~
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\SaleRepository
-                ekyna_commerce_quote:
+        ekyna_commerce_quote:
+            settings:
+                index:
+                    analysis:
+                        filter:
+                            email_capture: { type: pattern_capture, preserve_original: true, patterns: ["([^@]+)", "(\\p{L}+)", "(\\d+)", "@(.+)"] }
+                            email_edge: { type: edge_ngram, min_gram: 3, max_gram: 10 }
+                        tokenizer:
+                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
+                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
+                        analyzer:
+                            ngram: { tokenizer: ngram, filter: [icu_folding] }
+                            edge: { tokenizer: edge, filter: [icu_folding] }
+                            search: { tokenizer: standard, filter: [icu_folding] }
+                            email: { tokenizer: uax_url_email, filter: [email_capture, lowercase, stop, email_edge] }
+            types:
+                doc:
                     serializer:
                         groups: [Search]
-                    dynamic_templates:
-                        default:
-                            match_mapping_type: string
-                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                    properties:
+                        id: { type: integer }
+                        text: { type: text }
+                        number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                        email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
+                        company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                     persistence:
                         driver: orm
                         model: "%ekyna_commerce.quote.class%"
-                        provider:
-                            batch_size: 25
+                        provider: { batch_size: 25 }
                         listener: ~
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\SaleRepository
-                ekyna_commerce_supplier_product:
+        ekyna_commerce_supplier_product:
+            settings:
+                index:
+                    analysis:
+                        tokenizer:
+                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
+                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
+                        analyzer:
+                            ngram: { tokenizer: ngram, filter: [icu_folding] }
+                            edge: { tokenizer: edge, filter: [icu_folding] }
+                            search: { tokenizer: standard, filter: [icu_folding] }
+            types:
+                doc:
                     serializer:
                         groups: [Search]
-                    dynamic_templates:
-                        default:
-                            match_mapping_type: string
-                            mapping: {type: string, search_analyzer: search, index_analyzer: index}
+                    properties:
+                        id: { type: integer }
+                        text: { type: text }
+                        reference: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                        designation: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                     persistence:
                         driver: orm
                         model: "%ekyna_commerce.supplier_product.class%"
-                        provider:
-                            batch_size: 25
+                        provider: { batch_size: 25 }
                         listener: ~
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\SupplierProductRepository
