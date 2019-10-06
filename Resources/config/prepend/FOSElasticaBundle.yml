@@ -1,27 +1,10 @@
 fos_elastica:
     indexes:
         ekyna_commerce_customer:
-            settings:
-                index:
-                    analysis:
-                        filter:
-                            email_capture: { type: pattern_capture, preserve_original: true, patterns: ["([^@]+)", "(\\p{L}+)", "(\\d+)", "@(.+)"] }
-                            email_edge: { type: edge_ngram, min_gram: 3, max_gram: 10 }
-                        tokenizer:
-                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
-                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
-                        analyzer:
-                            ngram: { tokenizer: ngram, filter: [icu_folding] }
-                            edge: { tokenizer: edge, filter: [icu_folding] }
-                            email: { tokenizer: uax_url_email, filter: [email_capture, lowercase, stop, email_edge] }
-                            search: { tokenizer: standard, filter: [icu_folding] }
             types:
                 doc:
-                    serializer:
-                        groups: [Search]
+                    serializer: { groups: [Search] }
                     properties:
-                        id: { type: integer }
-                        text: { type: text }
                         number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                         email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
                         company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
@@ -38,27 +21,10 @@ fos_elastica:
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository
         ekyna_commerce_order:
-            settings:
-                index:
-                    analysis:
-                        filter:
-                            email_capture: { type: pattern_capture, preserve_original: true, patterns: ["([^@]+)", "(\\p{L}+)", "(\\d+)", "@(.+)"] }
-                            email_edge: { type: edge_ngram, min_gram: 3, max_gram: 10 }
-                        tokenizer:
-                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
-                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
-                        analyzer:
-                            ngram: { tokenizer: ngram, filter: [icu_folding] }
-                            edge: { tokenizer: edge, filter: [icu_folding] }
-                            search: { tokenizer: standard, filter: [icu_folding] }
-                            email: { tokenizer: uax_url_email, filter: [email_capture, lowercase, stop, email_edge] }
             types:
                 doc:
-                    serializer:
-                        groups: [Search]
+                    serializer: { groups: [Search] }
                     properties:
-                        id: { type: integer }
-                        text: { type: text }
                         number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                         email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
                         company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
@@ -72,27 +38,10 @@ fos_elastica:
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\SaleRepository
         ekyna_commerce_quote:
-            settings:
-                index:
-                    analysis:
-                        filter:
-                            email_capture: { type: pattern_capture, preserve_original: true, patterns: ["([^@]+)", "(\\p{L}+)", "(\\d+)", "@(.+)"] }
-                            email_edge: { type: edge_ngram, min_gram: 3, max_gram: 10 }
-                        tokenizer:
-                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
-                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
-                        analyzer:
-                            ngram: { tokenizer: ngram, filter: [icu_folding] }
-                            edge: { tokenizer: edge, filter: [icu_folding] }
-                            search: { tokenizer: standard, filter: [icu_folding] }
-                            email: { tokenizer: uax_url_email, filter: [email_capture, lowercase, stop, email_edge] }
             types:
                 doc:
-                    serializer:
-                        groups: [Search]
+                    serializer: { groups: [Search] }
                     properties:
-                        id: { type: integer }
-                        text: { type: text }
                         number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                         email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
                         company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
@@ -106,23 +55,10 @@ fos_elastica:
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\SaleRepository
         ekyna_commerce_supplier_product:
-            settings:
-                index:
-                    analysis:
-                        tokenizer:
-                            ngram: { type: ngram, min_gram: 3, max_gram: 8, token_chars: [digit] }
-                            edge: { type: edge_ngram, min_gram: 3, max_gram: 10, token_chars: [letter, digit] }
-                        analyzer:
-                            ngram: { tokenizer: ngram, filter: [icu_folding] }
-                            edge: { tokenizer: edge, filter: [icu_folding] }
-                            search: { tokenizer: standard, filter: [icu_folding] }
             types:
                 doc:
-                    serializer:
-                        groups: [Search]
+                    serializer: { groups: [Search] }
                     properties:
-                        id: { type: integer }
-                        text: { type: text }
                         reference: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                         designation: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                     persistence:
