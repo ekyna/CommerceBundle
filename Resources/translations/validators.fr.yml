@@ -154,6 +154,8 @@ ekyna_commerce:
         order_item_miss_match:
             Cette ligne ne correspond à aucune ligne de la commande fournisseur.
     supplier_delivery:
+        unexpected_order_state: |
+            L'état de la commande ne permet pas de saisir des livraisons.
         duplicate_order_item: |
             Chaque ligne de la livraison doit correspondre à une ligne de commande fournisseur unique.
     supplier_product:

@@ -1,0 +1,43 @@
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
+
+{% import '@EkynaCommerce/Admin/macros.html.twig' as macros %}
+
+{% block main %}
+<div class="actions">
+    {{ admin_resource_btn(supplierTemplate, 'edit') }}
+    {{ admin_resource_btn(supplierTemplate, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+        <li class="active">
+            <a href="#supplier-template-general" id="toggle-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="supplier-template-general">
+                {{ show_row(supplierTemplate.title, 'text', {
+                    'id': 'supplierTemplate_title',
+                    'label': 'ekyna_core.field.title'
+                }) }}
+                {{ show_row(supplierTemplate.translations, 'translations', {
+                    'id': 'supplierTemplate_translations',
+                    'fields': {
+                        'subject': {
+                            'label': 'ekyna_core.field.subject',
+                            'type': 'text'
+                        },
+                        'message': {
+                            'label': 'ekyna_core.field.message',
+                            'type': 'textarea',
+                            'options': {'html': true}
+                        },
+                    }
+                }) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

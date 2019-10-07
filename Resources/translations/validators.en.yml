@@ -122,11 +122,11 @@ ekyna_commerce:
             Please leave the weight field empty if you wish use parcels.
         valorization_or_parcels_but_not_both: |
             Please leave the valorization field empty if you wish to use parcels.
-        at_least_two_parcels_or_none:
+        at_least_two_parcels_or_none: |
             Please fill in at least 2 parcels or none.
-        credit_method_is_required:
+        credit_method_is_required: |
             Please select a refund method.
-        credit_method_must_be_null:
+        credit_method_must_be_null: |
             Please leave the refund method field empty.
     shipment_item:
         returnable_overflow: |
@@ -151,9 +151,11 @@ ekyna_commerce:
     supplier_delivery_item:
         quantity_must_be_lower_than_or_equal_ordered: |
             The received quantity must be lower than or equal to the ordered quantity (%min%).
-        order_item_miss_match:
+        order_item_miss_match: |
             This line does not match any line of the supplier order.
     supplier_delivery:
+        unexpected_order_state: |
+            L'état de la commande ne permet pas de saisir des livraisons.
         duplicate_order_item: |
             Each lines of the delivery must match a unique supplier order line.
     supplier_product:

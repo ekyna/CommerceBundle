@@ -92,6 +92,9 @@ class SupplierExtension extends AbstractExtension
             new TwigTest('ordered_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_ORDERED;
             }),
+            new TwigTest('validated_supplier_order', function (SupplierOrderInterface $order) {
+                return $order->getState() === SupplierOrderStates::STATE_VALIDATED;
+            }),
             new TwigTest('partial_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_PARTIAL;
             }),
@@ -103,6 +106,15 @@ class SupplierExtension extends AbstractExtension
             }),
             new TwigTest('completed_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_COMPLETED;
+            }),
+            new TwigTest('cancelable_supplier_order', function (SupplierOrderInterface $order) {
+                return SupplierOrderStates::isCancelableState($order);
+            }),
+            new TwigTest('deleteable_supplier_order', function (SupplierOrderInterface $order) {
+                return SupplierOrderStates::isDeletableState($order);
+            }),
+            new TwigTest('stockable_supplier_order', function (SupplierOrderInterface $order) {
+                return SupplierOrderStates::isStockableState($order);
             }),
         ];
     }

@@ -46,6 +46,7 @@ ekyna_commerce:
         new: New
         none: None
         ordered: Ordered
+        validated: Validated
         partial: Partiel
         pending: Pending
         preparation: Preparation
@@ -1574,28 +1575,12 @@ ekyna_commerce:
             tracking_urls: Tracking
             send_email: Send email to supplier
             send_labels: Attach products labels
+            template: Template
+        placeholder:
+            template: Pick a template
         alert:
             no_item: No supplier order configured
             empty: No item configured
-        template:
-            label: Template
-            placeholder: Pick a template
-            estimated_date_of_arrival:
-                label: Estimated date of arrival
-                subject: EDA request for order %number%
-                message: >
-                    <p>Hi,</p>
-                    <p>Could you please provide us the estimated delivery date
-                    for the order <strong>%number%</strong> attached to this mail, ordered %date% ?</p>
-                    <p>Regards,</p>
-            tracking_information:
-                label: Information de suivi
-                subject: Tracking information request for order %number%
-                message: >
-                    <p>Hi,</p>
-                    <p>Could you please provide us the tracking number and the carrier's name
-                    for the order <strong>%number%</strong> attached to this mail, ordered %date% ?</p>
-                    <p>Regards,</p>
         dashboard:
             title: Supplier orders to process
             none: No supplier orders to process
@@ -1657,6 +1642,29 @@ ekyna_commerce:
             remove: Remove the forwarder
         alert:
             no_item: No forwarder configured
+
+    supplier_template:
+        label:
+            singular: Supplier template
+            plural: Supplier templates
+        header:
+            list: Supplier template <small>List of templates</small>
+            show: Template details <small>%name%</small>
+            new: Create a new template
+            edit: Edit the template <small>%name%</small>
+            remove: Remove the template <small>%name%</small>
+        button:
+            list: Templates list
+            show: Template detail
+            new: New template
+            edit: Edit the template
+            remove: Remove the template
+        help:
+            message: |
+                Use &laquo; <strong>%number%</strong> &raquo; and &laquo; <strong>%date%</strong> &raquo;
+                to insert order number and date.
+        alert:
+            no_item: No supplier template configured
 
     state:
         label:

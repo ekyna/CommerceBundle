@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderTemplateType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierTemplateChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\Notify;
@@ -318,7 +318,7 @@ class NotifyType extends AbstractType
     protected function addSupplierOrderFields(FormBuilderInterface $builder, SupplierOrderInterface $order)
     {
         $builder
-            ->add('template', SupplierOrderTemplateType::class, [
+            ->add('template', SupplierTemplateChoiceType::class, [
                 'order' => $order,
             ])
             ->add('attachments', EntityType::class, [

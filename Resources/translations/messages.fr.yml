@@ -46,6 +46,7 @@ ekyna_commerce:
         new: Nouveau
         none: Aucun
         ordered: Commandé
+        validated: Validé
         partial: Partiel
         pending: En attente
         preparation: Préparation
@@ -1602,30 +1603,12 @@ ekyna_commerce:
             tracking_urls: Tracking
             send_email: Envoyer l'email au fournisseur
             send_labels: Envoyer les étiquettes
+            template: Modèle
+        placeholder:
+            template: Choisissez un modèle
         alert:
             no_item: Aucune commande fournisseur configuré
             empty: Aucun article configuré
-        template:
-            label: Modèle
-            placeholder: Choisissez un modèle
-            estimated_date_of_arrival:
-                label: Délai de livraison
-                subject: Demande de délai de livraison pour la commande %number%
-                message: >
-                    <p>Bonjour,</p>
-                    <p>Pourriez-vous s'il vous plait nous fournir un délai de livraison
-                    pour la commande <strong>%number%</strong> en pièce jointe, et
-                    passée le %date% ?</p>
-                    <p>Cordialement,</p>
-            tracking_information:
-                label: Information de suivi
-                subject: Demande d'information de suivi pour la commande %number%
-                message: >
-                    <p>Bonjour,</p>
-                    <p>Pourriez-vous s'il vous plait nous communiquer le numéro de suivi
-                    et le nom du transporteur pour la commande <strong>%number%</strong>
-                    en pièce jointe, et passée le %date% ?</p>
-                    <p>Cordialement,</p>
         dashboard:
             title: Commandes fournisseur à traiter
             none: Aucune commande fournisseur à traiter
@@ -1687,6 +1670,29 @@ ekyna_commerce:
             remove: Supprimer le transitaire
         alert:
             no_item: Aucun transitaire configuré
+
+    supplier_template:
+        label:
+            singular: Modèle fournisseur
+            plural: Modèles fournisseur
+        header:
+            list: Modèles fournisseur <small>Liste des modèles</small>
+            show: Détail du modèle <small>%name%</small>
+            new: Créer un nouveau modèle
+            edit: Modifier le modèle <small>%name%</small>
+            remove: Supprimer le modèle <small>%name%</small>
+        button:
+            list: Liste des modèles
+            show: Détail du modèle
+            new: Nouveau modèle
+            edit: Modifier le modèle
+            remove: Supprimer le modèle
+        help:
+            message: >
+                Utilisez &laquo; <strong>%number%</strong> &raquo; et &laquo; <strong>%date%</strong> &raquo;
+                pour insérer respectivement le numéro et la date de la commande.
+        alert:
+            no_item: Aucun modèle fournisseur configuré
 
     state:
         label:

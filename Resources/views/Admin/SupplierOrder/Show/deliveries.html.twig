@@ -1,6 +1,6 @@
 {% spaceless %}
 <div class="actions">
-    {%- if supplierOrder is ordered_supplier_order or supplierOrder is partial_supplier_order -%}
+    {%- if supplierOrder is validated_supplier_order or supplierOrder is partial_supplier_order -%}
         {{- ui_button('ekyna_commerce.supplier_delivery.button.new', {
             'type': 'link',
             'path': path('ekyna_commerce_supplier_delivery_admin_new', {

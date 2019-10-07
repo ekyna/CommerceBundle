@@ -433,14 +433,14 @@
             <tag name="form.js" selector=".commerce-supplier-submit" path="ekyna-commerce/form/supplier-order"/>
         </service>
         <!-- Supplier order template form type -->
-        <service id="ekyna_commerce.supplier_order_template.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderTemplateType">
+        <service id="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierTemplateChoiceType">
+            <argument>%ekyna_commerce.supplier_template.class%</argument>
+            <argument>%locales%</argument>
             <tag name="form.type"/>
-            <tag name="form.js" selector=".commerce-supplier-order-template" path="ekyna-commerce/form/supplier-order-template"/>
+            <tag name="form.js" selector=".commerce-supplier-template" path="ekyna-commerce/form/supplier-template-choice"/>
         </service>
         <!-- Warehouse form type -->
-        <service id="ekyna_commerce.warehouse.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType">
+        <service id="Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType">
             <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface"/>
             <argument>%ekyna_commerce.warehouse.class%</argument>
             <tag name="form.type"/>

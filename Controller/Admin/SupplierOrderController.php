@@ -236,7 +236,7 @@ class SupplierOrderController extends ResourceController
         /** @var SupplierOrderInterface $resource */
         $resource = $context->getResource($resourceName);
 
-        if ($resource->getState() === SupplierOrderStates::STATE_ORDERED) {
+        if (SupplierOrderStates::isCancelableState($resource)) {
             $resource->setState(SupplierOrderStates::STATE_CANCELED);
 
             //$dispatcher = $this->get('ekyna_resource.event_dispatcher');
@@ -454,24 +454,30 @@ class SupplierOrderController extends ResourceController
 
         $this->isGranted('VIEW', $order);
 
-        $translator = $this->get('translator');
+        /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierTemplateInterface $template */
+        $template = $this
+            ->get('ekyna_commerce.supplier_template.repository')
+            ->find($request->attributes->get('id'));
+        if (!$template) {
+            throw $this->createNotFoundException("Template not found");
+        }
+
         $formatter = $this
             ->get('ekyna_commerce.util.formatter_factory')
             ->create(null, $order->getCurrency()->getCode());
 
-        $parameters = [
+        $replacements = [
             '%number%' => $order->getNumber(),
             '%date%'   => $formatter->date($order->getOrderedAt()),
         ];
 
-        $name = $request->attributes->get('name');
         $locale = $request->query->get('_locale', 'en');
 
-        $id = 'ekyna_commerce.supplier_order.template.%s.%s';
+        $translation = $template->translate($locale);
 
         return new JsonResponse([
-            'subject' => $translator->trans(sprintf($id, $name, 'subject'), $parameters, null, $locale),
-            'message' => $translator->trans(sprintf($id, $name, 'message'), $parameters, null, $locale),
+            'subject' => strtr($translation->getSubject(), $replacements),
+            'message' => strtr($translation->getMessage(), $replacements),
         ]);
     }
 

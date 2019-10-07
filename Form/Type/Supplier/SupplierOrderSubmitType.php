@@ -9,6 +9,7 @@ use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Symfony\Component\Form;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormInterface;
@@ -118,7 +119,7 @@ class SupplierOrderSubmitType extends Form\AbstractType
                 ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.field.estimated_date_of_arrival',
                     'format'   => 'dd/MM/yyyy', // TODO localised configurable format
-                    'required' => true,
+                    'required' => SupplierOrderStates::isStockableState($order),
                 ])
                 ->add('carrier', ResourceType::class, [
                     'label'     => 'ekyna_commerce.supplier_carrier.label.singular',

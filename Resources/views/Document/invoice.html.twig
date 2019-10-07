@@ -23,6 +23,7 @@
         {%- endif %}
         {{ macro.render_exchange_rate(subject) }}
         {{ macro.render_shipment_method(subject) }}
+        {# TODO Customer VAT number #}
     </p>
     {% if subject.comment is not empty -%}
         <p>{{ subject.comment|nl2br }}</p>

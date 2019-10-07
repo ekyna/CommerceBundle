@@ -22,7 +22,7 @@ define(['jquery', 'routing', 'tinymce'], function ($, router) {
                 $.getJSON(
                     router.generate('ekyna_commerce_supplier_order_admin_template', {
                         'supplierOrderId': $this.data('order-id'),
-                        'name': $template.val(),
+                        'id': $template.val(),
                         '_locale': $locale.val()
                     }),
                     function (data) {

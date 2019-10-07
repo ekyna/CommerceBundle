@@ -65,12 +65,13 @@ ekyna_commerce_supplier_order_admin_notify:
         supplierOrderId: \d+
 
 ekyna_commerce_supplier_order_admin_template:
-    path: /{supplierOrderId}/template/{name}
+    path: /{supplierOrderId}/template/{id}
     defaults:
         _controller: "ekyna_commerce.supplier_order.controller:templateAction"
     methods: [GET]
     requirements:
         supplierOrderId: \d+
+        id: \d+
     options:
         expose: true
 
