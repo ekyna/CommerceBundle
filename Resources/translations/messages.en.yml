@@ -1037,6 +1037,8 @@ ekyna_commerce:
             remove: Remove quote
             transform: Transform quote
             notify: Notify quote
+        field:
+            editable: Editable by the customer
         alert:
             no_item: No quote configured
         message:

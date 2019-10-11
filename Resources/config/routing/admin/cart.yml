@@ -103,6 +103,13 @@ ekyna_commerce_cart_admin_notify:
     requirements:
         cartId: \d+
 
+ekyna_commerce_cart_admin_export:
+    path: /{cartId}/export
+    defaults: { _controller: "ekyna_commerce.cart.controller:exportAction" }
+    methods: GET
+    requirements:
+        cartId: \d+
+
 ekyna_commerce_cart_admin_document_generate:
     path: /{cartId}/document/generate/{type}
     defaults:

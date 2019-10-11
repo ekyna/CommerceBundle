@@ -5,16 +5,16 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 use Ekyna\Bundle\CommerceBundle\Model\InvoiceStates;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
-use Ekyna\Component\Commerce\Order\Export\OrderExporter as BaseExporter;
+use Ekyna\Component\Commerce\Order\Export\OrderListExporter as BaseExporter;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class OrderExporter
+ * Class OrdersExporter
  * @package Ekyna\Bundle\CommerceBundle\Service\Order
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderExporter extends BaseExporter
+class OrderListExporter extends BaseExporter
 {
     /**
      * @var TranslatorInterface

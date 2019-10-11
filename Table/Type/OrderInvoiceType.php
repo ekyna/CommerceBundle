@@ -72,6 +72,7 @@ class OrderInvoiceType extends AbstractOrderListType
                             'orderId'        => 'order.id',
                             'orderInvoiceId' => 'id',
                         ],
+                        'target'               => '_blank',
                         //'permission' => 'EDIT', // TODO see admin actions type extension
                     ],
                     [

@@ -3,11 +3,13 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType;
+use Ekyna\Bundle\CommerceBundle\Service\Order\OrderListExporter;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
@@ -21,10 +23,10 @@ class ExportController extends Controller
      * Accounting export action
      *
      * @param Request $request
-     *                        
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @return Response
      */
-    public function accountingAction(Request $request)
+    public function accountingAction(Request $request): Response
     {
         $form = $this->createForm(ExportType::class);
 
@@ -58,9 +60,9 @@ class ExportController extends Controller
     /**
      * Due invoices export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function dueInvoicesAction()
+    public function dueInvoicesAction(): Response
     {
         try {
             $path = $this
@@ -84,9 +86,9 @@ class ExportController extends Controller
     /**
      * Fall invoices export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function fallInvoicesAction()
+    public function fallInvoicesAction(): Response
     {
         try {
             $path = $this
@@ -110,13 +112,13 @@ class ExportController extends Controller
     /**
      * Remaining orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function remainingOrdersAction()
+    public function remainingOrdersAction(): Response
     {
         try {
             $path = $this
-                ->get('ekyna_commerce.order.exporter')
+                ->get(OrderListExporter::class)
                 ->exportRemainingOrders();
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
@@ -136,13 +138,13 @@ class ExportController extends Controller
     /**
      * Due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function dueOrdersAction()
+    public function dueOrdersAction(): Response
     {
         try {
             $path = $this
-                ->get('ekyna_commerce.order.exporter')
+                ->get(OrderListExporter::class)
                 ->exportDueOrders();
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
@@ -162,13 +164,13 @@ class ExportController extends Controller
     /**
      * All due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function allDueOrdersAction()
+    public function allDueOrdersAction(): Response
     {
         try {
             $path = $this
-                ->get('ekyna_commerce.order.exporter')
+                ->get(OrderListExporter::class)
                 ->exportAllDueOrders();
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
@@ -188,13 +190,13 @@ class ExportController extends Controller
     /**
      * Regular due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function regularDueOrdersAction()
+    public function regularDueOrdersAction(): Response
     {
         try {
             $path = $this
-                ->get('ekyna_commerce.order.exporter')
+                ->get(OrderListExporter::class)
                 ->exportRegularDueOrders();
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
@@ -214,13 +216,13 @@ class ExportController extends Controller
     /**
      * Outstanding expired due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function outstandingExpiredDueOrdersAction()
+    public function outstandingExpiredDueOrdersAction(): Response
     {
         try {
             $path = $this
-                ->get('ekyna_commerce.order.exporter')
+                ->get(OrderListExporter::class)
                 ->exportOutstandingExpiredDueOrders();
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
@@ -240,13 +242,13 @@ class ExportController extends Controller
     /**
      * Outstanding fall due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function outstandingFallDueOrdersAction()
+    public function outstandingFallDueOrdersAction(): Response
     {
         try {
             $path = $this
-                ->get('ekyna_commerce.order.exporter')
+                ->get(OrderListExporter::class)
                 ->exportOutstandingFallDueOrders();
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
@@ -266,13 +268,13 @@ class ExportController extends Controller
     /**
      * Outstanding pending due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function outstandingPendingDueOrdersAction()
+    public function outstandingPendingDueOrdersAction(): Response
     {
         try {
             $path = $this
-                ->get('ekyna_commerce.order.exporter')
+                ->get(OrderListExporter::class)
                 ->exportOutstandingPendingDueOrders();
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
@@ -292,9 +294,9 @@ class ExportController extends Controller
     /**
      * Suppliers expired due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function suppliersExpiredDueOrdersAction()
+    public function suppliersExpiredDueOrdersAction(): Response
     {
         try {
             $path = $this
@@ -318,9 +320,9 @@ class ExportController extends Controller
     /**
      * Suppliers fall due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function suppliersFallDueOrdersAction()
+    public function suppliersFallDueOrdersAction(): Response
     {
         try {
             $path = $this
@@ -344,9 +346,9 @@ class ExportController extends Controller
     /**
      * Forwarders expired due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function forwardersExpiredDueOrdersAction()
+    public function forwardersExpiredDueOrdersAction(): Response
     {
         try {
             $path = $this
@@ -370,9 +372,9 @@ class ExportController extends Controller
     /**
      * Forwarders fall due orders export.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function forwardersFallDueOrdersAction()
+    public function forwardersFallDueOrdersAction(): Response
     {
         try {
             $path = $this
@@ -399,9 +401,9 @@ class ExportController extends Controller
      * @param string $path
      * @param string $filename
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    protected function doRespond($path, $filename)
+    protected function doRespond($path, $filename): Response
     {
         clearstatcache(true, $path);
 
@@ -417,9 +419,9 @@ class ExportController extends Controller
     /**
      * Builds and return the redirection.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    protected function doRedirect()
+    protected function doRedirect(): Response
     {
         return $this->redirectToReferer($this->generateUrl('ekyna_admin_dashboard'));
     }

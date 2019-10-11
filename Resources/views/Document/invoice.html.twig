@@ -20,10 +20,14 @@
         {{ macro.render_voucher_number(subject) }}
         {% if subject is invoice_invoice -%}
         {{ macro.render_payment_term(subject) }}
+        {% if subject.sale.customer and subject.sale.customer.vatNumber -%}
+            <span class="text-alt">{{ 'ekyna_commerce.pricing.field.vat_number'|trans }}</span>
+            {{- '&nbsp;' -}}
+            <strong>{{ subject.sale.customer.vatNumber }}</strong>.
+        {%- endif %}
         {%- endif %}
         {{ macro.render_exchange_rate(subject) }}
         {{ macro.render_shipment_method(subject) }}
-        {# TODO Customer VAT number #}
     </p>
     {% if subject.comment is not empty -%}
         <p>{{ subject.comment|nl2br }}</p>

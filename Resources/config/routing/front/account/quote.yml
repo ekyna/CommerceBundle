@@ -20,8 +20,35 @@ ekyna_commerce_account_quote_show:
         _controller: EkynaCommerceBundle:Account/Quote:show
     requirements:
         number: "[a-zA-Z0-9]+"
-    methods: [GET]
+    methods: GET
     options: {expose: true}
+
+ekyna_commerce_account_quote_export:
+    path: /{number}/export
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:export
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: GET
+    options: {i18n: false}
+
+ekyna_commerce_account_quote_refresh:
+    path: /{number}/refresh
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:refresh
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: GET
+    options: {i18n: false}
+
+ekyna_commerce_account_quote_recalculate:
+    path: /{number}/recalculate
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:recalculate
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: GET|POST
+    options: {i18n: false}
 
 ekyna_commerce_account_quote_voucher:
     path: /{number}/voucher
@@ -64,3 +91,26 @@ ekyna_commerce_account_quote_attachment_download:
         number: "[a-zA-Z0-9]+"
         id: \d+
     methods: [GET]
+
+ekyna_commerce_account_quote_invoice_address:
+    path: /{number}/invoice-address
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:invoiceAddress
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [GET, POST]
+
+ekyna_commerce_account_quote_delivery_address:
+    path: /{number}/delivery-address
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Quote:deliveryAddress
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [GET, POST]
+
+ekyna_commerce_account_quote_item:
+    resource: quote_item.yml
+    prefix: /{number}/item
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    options: {i18n: false}

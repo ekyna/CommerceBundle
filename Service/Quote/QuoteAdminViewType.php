@@ -10,11 +10,11 @@ use Ekyna\Component\Commerce\Quote\Model as Quote;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 
 /**
- * Class QuoteViewType
+ * Class QuoteAdminViewType
  * @package Ekyna\Bundle\CommerceBundle\Service\Quote
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class QuoteViewType extends AbstractViewType
+class QuoteAdminViewType extends AbstractViewType
 {
     /**
      * @var ShipmentPriceResolverInterface
@@ -323,6 +323,6 @@ class QuoteViewType extends AbstractViewType
      */
     public function getName()
     {
-        return 'ekyna_commerce_quote';
+        return 'ekyna_commerce_quote_admin';
     }
 }

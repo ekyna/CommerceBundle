@@ -20,8 +20,17 @@ ekyna_commerce_account_order_show:
         _controller: EkynaCommerceBundle:Account/Order:show
     requirements:
         number: "[a-zA-Z0-9]+"
-    methods: [GET]
+    methods: GET
     options: {expose: true}
+
+ekyna_commerce_account_order_export:
+    path: /{number}/export
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Order:export
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: GET
+    options: {i18n: false}
 
 ekyna_commerce_account_order_payment_create:
     path: /{number}/payments/create

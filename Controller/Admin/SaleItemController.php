@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemModalEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemPrioritizeType;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
 use Symfony\Component\Form\FormError;
@@ -68,7 +69,7 @@ class SaleItemController extends AbstractSaleController
 
         $context->addResource($resourceName, $item);
 
-        $flow = $this->get('ekyna_commerce.sale_item_create.form_flow');
+        $flow = $this->get(SaleItemCreateFlow::class);
         $flow->setGenericFormOptions([
             'action'            => $this->generateResourcePath($item, 'add', $context->getIdentifiers()),
             'method'            => 'POST',
@@ -106,14 +107,16 @@ class SaleItemController extends AbstractSaleController
                     }
 
                     return $this->redirect($this->generateResourcePath($sale));
-                } elseif ($isXhr) {
+                }
+
+                if ($isXhr) {
                     // TODO all event messages should be bound to XHR response
                     foreach ($event->getErrors() as $error) {
                         $form->addError(new FormError($error->getMessage()));
                     }
+                } else {
+                    return $this->redirect($this->generateResourcePath($sale));
                 }
-
-                return $this->redirect($this->generateResourcePath($sale));
             }
         }
 

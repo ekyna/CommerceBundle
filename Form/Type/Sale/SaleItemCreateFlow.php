@@ -23,7 +23,6 @@ class SaleItemCreateFlow extends FormFlow
                 'form_type'    => Type\Sale\SaleItemSubjectType::class,
                 'form_options' => [
                     'required'          => true,
-                    'admin_mode'        => true,
                     'validation_groups' => [
                         'sale_item_create_flow_choice',
                     ],
@@ -33,7 +32,6 @@ class SaleItemCreateFlow extends FormFlow
                 'label'        => 'configure',
                 'form_type'    => Type\Sale\SaleItemConfigureType::class,
                 'form_options' => [
-                    'admin_mode'        => true,
                     'validation_groups' => [
                         'sale_item_create_flow_configure',
                         'Default',

@@ -69,13 +69,20 @@
             <tag name="ekyna_commerce.view_type"/>
         </service>
 
-        <!-- Quote view type -->
-        <service id="ekyna_commerce.quote.view_type"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteViewType"
+        <!-- Quote admin view type -->
+        <service id="ekyna_commerce.quote.admin_view_type"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteAdminViewType"
                  parent="ekyna_commerce.abstract_view_type">
             <call method="setShipmentPriceResolver">
                 <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             </call>
+            <tag name="ekyna_commerce.view_type"/>
+        </service>
+
+        <!-- Quote account view type -->
+        <service id="ekyna_commerce.quote.account_view_type"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteAccountViewType"
+                 parent="ekyna_commerce.abstract_view_type">
             <tag name="ekyna_commerce.view_type"/>
         </service>
 

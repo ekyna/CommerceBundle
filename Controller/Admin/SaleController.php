@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
+use Ekyna\Component\Commerce\Common\Export\SaleExporter;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -18,6 +19,7 @@ use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
+use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -26,8 +28,11 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteStates;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -563,6 +568,46 @@ class SaleController extends AbstractSaleController
                 'form' => $form->createView(),
             ])
         );
+    }
+
+    /**
+     * Export (single) action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function exportAction(REquest $request): Response
+    {
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+        /** @var SaleInterface $sale */
+        $sale = $context->getResource($resourceName);
+
+        try {
+            $path = $this->get(SaleExporter::class)->export($sale);
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->redirect($this->generateResourcePath($sale));
+        }
+
+        clearstatcache(true, $path);
+
+        $response = new BinaryFileResponse(new Stream($path));
+
+        $disposition = $response
+            ->headers
+            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $sale->getNumber() . '.csv');
+
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $response;
     }
 
     /**

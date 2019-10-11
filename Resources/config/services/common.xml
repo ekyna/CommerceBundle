@@ -176,6 +176,11 @@
             <tag name="twig.runtime" />
         </service>
 
+        <!-- Sale exporter -->
+        <service id="Ekyna\Component\Commerce\Common\Export\SaleExporter">
+            <argument type="service" id="ekyna_commerce.common.view_builder"/>
+        </service>
+
     </services>
 
 </container>

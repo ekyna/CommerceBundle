@@ -103,6 +103,13 @@ ekyna_commerce_quote_admin_notify:
     requirements:
         quoteId: \d+
 
+ekyna_commerce_quote_admin_export:
+    path: /{quoteId}/export
+    defaults: { _controller: "ekyna_commerce.quote.controller:exportAction" }
+    methods: GET
+    requirements:
+        quoteId: \d+
+
 ekyna_commerce_quote_admin_set_exchnage_rate:
     path: /{quoteId}/set-exchange-rate
     defaults: { _controller: "ekyna_commerce.quote.controller:setExchangeRateAction" }

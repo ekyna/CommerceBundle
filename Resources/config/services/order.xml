@@ -119,9 +119,8 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
-        <!-- Order exporter -->
-        <service id="ekyna_commerce.order.exporter"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Order\OrderExporter">
+        <!-- Order list exporter -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Order\OrderListExporter">
             <argument type="service" id="ekyna_commerce.order.repository"/>
             <argument type="service" id="translator"/>
         </service>

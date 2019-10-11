@@ -447,8 +447,7 @@
         </service>
 
         <!-- Sale add item form flow -->
-        <service id="ekyna_commerce.sale_item_create.form_flow"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow"
+        <service id="Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow"
                  parent="craue.form.flow"/>
 
         <!-- Sale item subject form type -->

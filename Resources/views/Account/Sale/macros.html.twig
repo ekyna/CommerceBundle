@@ -1,0 +1,49 @@
+{%- macro sale_header(sale) -%}
+    <dl class="dl-horizontal">
+        <dt>{{ 'ekyna_commerce.field.status'|trans }}</dt>
+        <dd>{{ sale|sale_state_badge }}</dd>
+
+        <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>
+        <dd>{{ sale.createdAt|localizeddate('short', 'none') }}</dd>
+
+        {% if sale is sale_quote and not sale.editable -%}
+        <dt>{{ 'ekyna_core.field.expires_at'|trans }}</dt>
+        <dd>{{ sale.expiresAt|localizeddate('short', 'none') }}</dd>
+        {%- endif %}
+
+        {% if sale.voucherNumber is not empty -%}
+        <dt>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</dt>
+        <dd>{{ sale.voucherNumber }}</dd>
+        {%- endif %}
+
+        {% if sale.paymentTerm -%}
+        <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
+        <dd>{{ sale.paymentTerm.title }}</dd>
+        {%- endif %}
+
+        {% if sale.currency.code != commerce_default_currency -%}
+            <dt>{{ 'ekyna_commerce.field.exchange_rate'|trans }}</dt>
+            <dd>{{ sale|currency_rate }}</dd>.
+        {%- endif %}
+
+        <dt>{{ 'ekyna_commerce.customer.label.singular'|trans }}:
+        <dd>{% if sale.customer %}{{ sale.customer|identity }}{% else %}{{ sale|identity }}{% endif %}</dd>
+
+        {% if sale is sale_order and sale.originCustomer -%}
+        <dt>{{ 'ekyna_commerce.sale.field.origin_customer'|trans }}</dt>
+        <dd>{{ sale.originCustomer|identity }}</dd>
+        {%- endif %}
+    </dl>
+
+{%- endmacro sale_header -%}
+
+{%- macro sale_delivery_address(sale) -%}
+    {%- if sale.relayPoint is not null -%}
+        <em>({{ 'ekyna_commerce.relay_point.label.singular'|trans }})</em><br>
+        {{- sale.relayPoint|address -}}
+    {%- elseif sale.sameAddress -%}
+        <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
+    {%- else -%}
+        {{- sale.deliveryAddress|address -}}
+    {%- endif -%}
+{%- endmacro sale_delivery_address -%}

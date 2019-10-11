@@ -224,6 +224,7 @@ class CheckoutController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // New quote
             $quote = $this->quoteRepository->createNew();
+            $quote->setEditable(true);
             // Initialize transformation
             $this->saleTransformer->initialize($cart, $quote);
             // Transform

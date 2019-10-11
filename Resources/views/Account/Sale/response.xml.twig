@@ -1,0 +1,13 @@
+{% import '@EkynaCommerce/Account/Sale/macros.html.twig' as macros -%}
+
+{%- spaceless -%}
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+    <fields>
+        <header><![CDATA[{{ macros.sale_header(sale) }}]]></header>
+        <invoiceAddress><![CDATA[{{ sale.invoiceAddress|address }}]]></invoiceAddress>
+        <deliveryAddress><![CDATA[{{ macros.sale_delivery_address(sale) }}]]></deliveryAddress>
+    </fields>
+    <view><![CDATA[{{ render_sale_view(sale_view) }}]]></view>
+</response>
+{%- endspaceless -%}

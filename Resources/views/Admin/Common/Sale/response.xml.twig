@@ -1,6 +1,6 @@
 {% spaceless %}
 <?xml version="1.0" encoding="utf-8"?>
-<repsonse>
+<response>
     <fields>
         <state><![CDATA[{{ sale|sale_state_badge }}]]></state>
         <weightTotal><![CDATA[{{ (sale.weightTotal|localizednumber ~ '&nbsp;kg')|raw }}]]></weightTotal>
@@ -61,5 +61,5 @@
     <view>
         <![CDATA[{{ render_sale_view(sale_view) }}]]>
     </view>
-</repsonse>
+</response>
 {% endspaceless %}

@@ -6,9 +6,13 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
+use Ekyna\Component\Commerce\Common\Export\SaleExporter;
+use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -64,6 +68,47 @@ class OrderController extends AbstractController
             'orders'       => $orders,
             'route_prefix' => 'ekyna_commerce_account_order',
         ]);
+    }
+
+    /**
+     * Order export.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function exportAction(Request $request): Response
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        try {
+            $path = $this->get(SaleExporter::class)->export($order);
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_account_order_show', [
+                'number' => $order->getNumber(),
+            ]));
+        }
+
+        clearstatcache(true, $path);
+
+        $response = new BinaryFileResponse(new Stream($path));
+
+        $disposition = $response
+            ->headers
+            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $order->getNumber() . '.csv');
+
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $response;
     }
 
     /**

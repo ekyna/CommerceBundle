@@ -1062,6 +1062,8 @@ ekyna_commerce:
             remove: Supprimer le devis
             transform: Transformer le devis
             notify: Notifier le devis
+        field:
+            editable: Modifiable par le client
         alert:
             no_item: Aucun devis configuré
         message:

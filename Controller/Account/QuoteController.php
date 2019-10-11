@@ -3,19 +3,30 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Account\QuoteVoucherType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAttachmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteVoucher;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
+use Ekyna\Component\Commerce\Common\Export\SaleExporter;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
+use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -23,7 +34,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class QuoteController extends AbstractController
+class QuoteController extends AbstractSaleController
 {
     /**
      * Quote index action.
@@ -55,9 +66,7 @@ class QuoteController extends AbstractController
 
         $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
 
-        $quoteView = $this->get('ekyna_commerce.common.view_builder')->buildSaleView($quote, [
-            'taxes_view' => false,
-        ]);
+        $quoteView = $this->buildSaleView($quote);
 
         $quotes = $this->findQuotesByCustomer($customer);
 
@@ -68,6 +77,106 @@ class QuoteController extends AbstractController
             'quotes'       => $quotes,
             'route_prefix' => 'ekyna_commerce_account_quote',
         ]);
+    }
+
+    /**
+     * Quote export.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function exportAction(Request $request): Response
+    {
+        $customer = $this->getCustomerOrRedirect();
+
+        $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        try {
+            $path = $this->get(SaleExporter::class)->export($quote);
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->redirect($this->generateUrl('ekyna_commerce_account_quote_show', [
+                'number' => $quote->getNumber(),
+            ]));
+        }
+
+        clearstatcache(true, $path);
+
+        $response = new BinaryFileResponse(new Stream($path));
+
+        $disposition = $response
+            ->headers
+            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $quote->getNumber() . '.csv');
+
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $response;
+    }
+
+    /**
+     * Refresh quote.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function refreshAction(Request $request): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException("Not yet implemented");
+        }
+
+        $customer = $this->getCustomerOrRedirect();
+
+        $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        return $this->buildXhrSaleViewResponse($quote);
+    }
+
+    /**
+     * Recalculate quote.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function recalculateAction(Request $request): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException("Not yet implemented");
+        }
+
+        $customer = $this->getCustomerOrRedirect();
+
+        $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        $form = $this->buildQuantitiesForm($quote);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // TODO recalculate may return false if nothing changed even if quantities are different (sample case)
+            if ($this->get('ekyna_commerce.sale_updater')->recalculate($quote)) {
+                $event = $this->get('ekyna_commerce.quote.operator')->update($quote);
+
+                // TODO Some important information to display may have changed (state, etc)
+
+                if ($event->hasErrors()) {
+                    foreach ($event->getErrors() as $error) {
+                        $form->addError(new FormError($error->getMessage()));
+                    }
+                }
+            }
+        }
+
+        return $this->buildXhrSaleViewResponse($quote, $form);
     }
 
     /**
@@ -346,6 +455,107 @@ class QuoteController extends AbstractController
     }
 
     /**
+     * Change invoice address.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function invoiceAddressAction(Request $request): Response
+    {
+        return $this->handleForm(
+            $request,
+            SaleAddressType::class,
+            'ekyna_commerce.checkout.button.edit_invoice',
+            'ekyna_commerce_account_quote_invoice_address',
+            [
+                'address_type'      => QuoteAddressType::class,
+                'validation_groups' => ['Address'],
+            ]
+        );
+    }
+
+    /**
+     * Change delivery address.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function deliveryAddressAction(Request $request): Response
+    {
+        return $this->handleForm(
+            $request,
+            SaleAddressType::class,
+            'ekyna_commerce.checkout.button.edit_invoice',
+            'ekyna_commerce_account_quote_delivery_address',
+            [
+                'address_type'      => QuoteAddressType::class,
+                'validation_groups' => ['Address'],
+                'delivery'          => true,
+            ]
+        );
+    }
+
+    /**
+     * Handle form.
+     *
+     * @param Request $request
+     * @param string  $type
+     * @param string  $title
+     * @param string  $route
+     * @param array   $options
+     *
+     * @return Response
+     */
+    public function handleForm(
+        Request $request,
+        string $type,
+        string $title,
+        string $route,
+        array $options = []
+    ): Response {
+        if (!$request->isXmlHttpRequest()) {
+            throw new NotFoundHttpException('Not yet implemented.');
+        }
+
+        $customer = $this->getCustomerOrRedirect();
+
+        $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
+
+        if (!$quote->isEditable()) {
+            throw new AccessDeniedHttpException('Cart is locked for payment.');
+        }
+
+        $form = $this
+            ->createForm($type, $quote, array_replace([
+                'method' => 'post',
+                'action' => $this->generateUrl($route, ['number' => $quote->getNumber()]),
+                'attr'   => [
+                    'class' => 'form-horizontal',
+                ],
+            ], $options));
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $event = $this->get('ekyna_commerce.quote.operator')->update($quote);
+
+            if (!$event->hasErrors()) {
+                return $this->buildXhrSaleViewResponse($quote);
+            }
+
+            foreach ($event->getErrors() as $error) {
+                $form->addError(new FormError($error->getMessage()));
+            }
+        }
+
+        $modal = $this->createModal($title, $form->createView());
+
+        return $this->get('ekyna_core.modal')->render($modal);
+    }
+
+    /**
      * Finds the customer quotes.
      *
      * @param CustomerInterface $customer
@@ -426,5 +636,21 @@ class QuoteController extends AbstractController
         }
 
         return $attachment;
+    }
+
+    /**
+     * Builds the recalculate form.
+     *
+     * @param SaleInterface $sale
+     *
+     * @return FormInterface
+     */
+    protected function buildQuantitiesForm(SaleInterface $sale): FormInterface
+    {
+        return $this->getSaleHelper()->createQuantitiesForm($sale, [
+            'method' => 'post',
+            'action' => $this->generateUrl('ekyna_commerce_account_quote_recalculate',
+                ['number' => $sale->getNumber()]),
+        ]);
     }
 }

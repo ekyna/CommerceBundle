@@ -36,7 +36,9 @@ class SaleItemSubjectType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        FormUtil::addClass($view, 'commerce-sale-item-subject');
+        if ($options['admin_mode']) {
+            FormUtil::addClass($view, 'commerce-sale-item-subject');
+        }
     }
 
     /**

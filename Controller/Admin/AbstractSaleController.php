@@ -91,7 +91,7 @@ abstract class AbstractSaleController extends ResourceController
     /**
      * Returns the sale helper.
      *
-     * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper|object
+     * @return \Ekyna\Bundle\CommerceBundle\Service\SaleHelper
      */
     protected function getSaleHelper()
     {

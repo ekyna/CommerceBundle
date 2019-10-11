@@ -1,3 +1,5 @@
+{% import '@EkynaCommerce/Account/Sale/macros.html.twig' as macros %}
+
 {% spaceless %}
 <div class="row">
     <div class="col-md-6">
@@ -8,7 +10,13 @@
         </p>
         <div class="panel panel-default">
             <div class="panel-body">
-                {{- sale.invoiceAddress|address -}}
+                <p id="account-sale-invoice">{{ sale.invoiceAddress|address }}</p>
+                {% if sale is sale_quote and sale.editable -%}
+                <p><a href="{{ path('ekyna_commerce_account_quote_invoice_address', {'number': sale.number}) }}"
+                      id="account-sale-invoice-button" class="btn btn-xs btn-primary" data-account-modal>
+                    {{- 'ekyna_core.button.edit'|trans -}}
+                </a></p>
+                {%- endif %}
             </div>
         </div>
     </div>
@@ -20,14 +28,13 @@
         </p>
         <div class="panel panel-default">
             <div class="panel-body">
-            {%- if sale.relayPoint is not null -%}
-                <em>({{ 'ekyna_commerce.relay_point.label.singular'|trans }})</em><br>
-                {{- sale.relayPoint|address -}}
-            {%- elseif sale.sameAddress -%}
-                <em>{{ 'ekyna_commerce.sale.field.same_address'|trans }}</em>
-            {%- else -%}
-                {{- sale.deliveryAddress|address -}}
-            {%- endif -%}
+                <p id="account-sale-delivery">{{ macros.sale_delivery_address(sale) }}</p>
+                {% if sale is sale_quote and sale.editable -%}
+                <p><a href="{{ path('ekyna_commerce_account_quote_delivery_address', {'number': sale.number}) }}"
+                      id="account-sale-delivery-button" class="btn btn-xs btn-primary" data-account-modal>
+                    {{- 'ekyna_core.button.edit'|trans -}}
+                </a></p>
+                {%- endif %}
             </div>
         </div>
     </div>

@@ -14,9 +14,16 @@
     <div class="actions">
         {{ sale_custom_buttons(cart) }}
         {# TODO permission ? #}
+        {#{{ ui_button('ekyna_core.button.export', {
+            'theme': 'default',
+            'type': 'link',
+            'icon': 'download',
+            'path': admin_resource_path(cart, 'export')
+        }) }}#}
         {#{{ ui_button('ekyna_core.button.notify', {
             'theme': 'default',
             'type': 'link',
+            'icon': 'envelope',
             'path': admin_resource_path(cart, 'notify')
         }) }}#}
         {{ sale_duplicate_btn(cart) }}
