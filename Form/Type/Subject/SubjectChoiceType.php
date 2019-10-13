@@ -184,6 +184,7 @@ class SubjectChoiceType extends AbstractType
             ->setAllowedValues('context', [
                 SubjectProviderInterface::CONTEXT_ITEM,
                 SubjectProviderInterface::CONTEXT_SALE,
+                SubjectProviderInterface::CONTEXT_ACCOUNT,
                 SubjectProviderInterface::CONTEXT_SUPPLIER,
             ]);
     }

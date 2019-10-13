@@ -25,7 +25,9 @@ class SaleItemSubjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('subjectIdentity', SubjectChoiceType::class, [
-            'context'   => SubjectProviderInterface::CONTEXT_ITEM,
+            'context'   => $options['admin_mode']
+                ? SubjectProviderInterface::CONTEXT_ITEM
+                : SubjectProviderInterface::CONTEXT_ACCOUNT,
             'lock_mode' => true,
             'required'  => $options['required'],
         ]);

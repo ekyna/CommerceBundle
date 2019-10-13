@@ -329,15 +329,13 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
-    <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+    {% if support_enabled() %}<link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>{% endif %}
 {% endblock stylesheets %}
 
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
     <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
-    {% if support_enabled() -%}
-    <script type="text/javascript">require(['ekyna-commerce/support']);</script>
-    {%- endif %}
+    {% if support_enabled() %}<script type="text/javascript">require(['ekyna-commerce/support']);</script>{% endif %}
 {% endblock javascripts %}
 

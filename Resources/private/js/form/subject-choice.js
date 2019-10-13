@@ -1,4 +1,4 @@
-define(['jquery', 'routing', 'select2'], function($, router) {
+define(['jquery', 'select2'], function($) {
     "use strict";
 
     /**

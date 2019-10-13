@@ -1,4 +1,4 @@
-define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router) {
+define(['jquery', 'ekyna-commerce/form/address'], function($) {
     "use strict";
 
     /**
