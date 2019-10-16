@@ -1,6 +1,7 @@
 fos_elastica:
     indexes:
         ekyna_commerce_customer:
+            index_name: "%elasticsearch.name%_commerce_customer"
             types:
                 doc:
                     serializer: { groups: [Search] }
@@ -21,6 +22,7 @@ fos_elastica:
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository
         ekyna_commerce_order:
+            index_name: "%elasticsearch.name%_commerce_order"
             types:
                 doc:
                     serializer: { groups: [Search] }
@@ -38,6 +40,7 @@ fos_elastica:
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\SaleRepository
         ekyna_commerce_quote:
+            index_name: "%elasticsearch.name%_commerce_quote"
             types:
                 doc:
                     serializer: { groups: [Search] }
@@ -55,6 +58,7 @@ fos_elastica:
                         finder: ~
                         repository: Ekyna\Bundle\CommerceBundle\Service\Search\SaleRepository
         ekyna_commerce_supplier_product:
+            index_name: "%elasticsearch.name%_commerce_supplier_product"
             types:
                 doc:
                     serializer: { groups: [Search] }
