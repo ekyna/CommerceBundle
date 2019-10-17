@@ -657,11 +657,15 @@ ekyna_commerce:
             new: New address
             edit: Edit the address
             remove: Remove the address
+            import: Import addresses
             invoice_default: Set as default billing address
             delivery_default: Set as default shipping address
         field:
             invoice_default: Default billing address
             delivery_default: Default shipping address
+            import_from: First line
+            import_to: Last line
+            default_country: Default country
         message:
             cant_be_deleted: Default billing and shipping addresses can't be deleted.
         alert:

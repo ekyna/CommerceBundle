@@ -522,7 +522,14 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('customer_address')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue('EkynaCommerceBundle:Admin/CustomerAddress')->end()
+                                ->variableNode('templates')->defaultValue([
+                                    '_form.html'  => '@EkynaCommerce/Admin/CustomerAddress/_form.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/CustomerAddress/edit.html',
+                                    'import.html' => '@EkynaCommerce/Admin/CustomerAddress/import.html',
+                                    'new.html'    => '@EkynaCommerce/Admin/CustomerAddress/new.html',
+                                    'remove.html' => '@EkynaCommerce/Admin/CustomerAddress/remove.html',
+                                    'show.html'   => '@EkynaCommerce/Admin/CustomerAddress/show.html',
+                                ])->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerAddress')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerAddressController')->end()
                                 ->scalarNode('operator')->end()
@@ -1008,7 +1015,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('supplier_delivery')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue('EkynaCommerceBundle:Admin/SupplierDelivery')->end()
+                                ->variableNode('templates')->defaultValue('@EkynaCommerce/Admin/SupplierDelivery')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierDelivery')->end()
                                 ->scalarNode('controller')->end()
                                 ->scalarNode('operator')->end()
@@ -1078,7 +1085,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('supplier_product')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue('EkynaCommerceBundle:Admin/SupplierProduct')->end()
+                                ->variableNode('templates')->defaultValue('@EkynaCommerce/Admin/SupplierProduct')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Supplier\Entity\SupplierProduct')->end()
                                 ->scalarNode('controller')->end()
                                 ->scalarNode('operator')->end()

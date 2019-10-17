@@ -19,6 +19,13 @@ ekyna_commerce_customer_address_admin_new:
     requirements:
         customerId: \d+
 
+ekyna_commerce_customer_address_admin_import:
+    path: /import
+    defaults: { _controller: "ekyna_commerce.customer_address.controller:importAction" }
+    methods: [GET|POST]
+    requirements:
+        customerId: \d+
+
 ekyna_commerce_customer_address_admin_show:
     path: /{customerAddressId}/show
     defaults: { _controller: "ekyna_commerce.customer_address.controller:showAction" }

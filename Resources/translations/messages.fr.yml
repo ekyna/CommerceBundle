@@ -660,11 +660,15 @@ ekyna_commerce:
             new: Nouvelle adresse
             edit: Modifier l'adresse
             remove: Supprimer l'adresse
+            import: Importer des adresses
             invoice_default: Definir par défaut pour la facturation
             delivery_default: Definir par défaut pour la livraison
         field:
             invoice_default: Par défaut pour la facturation
             delivery_default: Par défaut pour la livraison
+            import_from: Première ligne
+            import_to: Dernière ligne
+            default_country: Pays par défaut
         message:
             cant_be_deleted: Les adresses par défaut pour la facturation ou la livraison ne peut être supprimées.
         alert:

@@ -33,6 +33,17 @@
             <argument>%ekyna_commerce.order.class%</argument>
         </service>
 
+        <!-- Customer address importer -->
+        <service id="Ekyna\Component\Commerce\Customer\Import\AddressImporter">
+            <argument type="service" id="ekyna_commerce.customer_address.repository"/>
+            <argument type="service" id="ekyna_commerce.country.repository"/>
+            <argument type="service" id="libphonenumber\PhoneNumberUtil"/>
+            <argument type="service" id="Symfony\Component\Validator\Validator\ValidatorInterface"/>
+            <argument type="service" id="ekyna_commerce.customer_address.manager"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\EventListener\CustomerAddressEventSubscriber"/>
+            <tag name="kernel.event_listener" event="kernel.terminate" method="flush"/>
+        </service>
+
         <!-- Customer security provider -->
         <service id="ekyna_commerce.customer.security_provider"
                  class="Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider">
@@ -59,8 +70,7 @@
             <tag name="resource.event_subscriber"/>
         </service>
         <!-- Customer address event listener -->
-        <service id="ekyna_commerce.customer_address.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\CustomerAddressEventSubscriber">
+        <service id="Ekyna\Bundle\CommerceBundle\EventListener\CustomerAddressEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.customer_address.repository"/>
             <tag name="resource.event_subscriber"/>

@@ -277,6 +277,14 @@
                             'customerId': customer.id
                         })
                     }) }}
+                    {{ ui_button('ekyna_commerce.customer_address.button.import', {
+                        'type': 'link',
+                        'icon': 'import',
+                        'theme': 'default',
+                        'path': path('ekyna_commerce_customer_address_admin_import', {
+                            'customerId': customer.id
+                        })
+                    }) }}
                 </div>
                 {% for address in customer.addresses %}
                     {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}

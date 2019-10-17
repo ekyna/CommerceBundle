@@ -1,0 +1,31 @@
+{% extends '@EkynaAdmin/Entity/sided.html.twig' %}
+
+{% block page_title %}{{ (trans_prefix ~ '.button.import')|trans|raw }} - {{ parent() }}{% endblock page_title %}
+
+{% block title %}
+    <h1>{{ (trans_prefix ~ '.button.import')|trans|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ form_errors(form) }}
+        {{ form_row(form.file) }}
+        {{ form_row(form.columns) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.from, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.to, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.defaultCountry) }}
+        {{ form_rest(form) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}
