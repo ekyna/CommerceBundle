@@ -27,20 +27,4 @@ interface TicketMessageInterface extends BaseInterface
      * @return $this|TicketMessageInterface
      */
     public function setAdmin(UserInterface $admin = null);
-
-    /**
-     * Returns whether to notify the customer or admin.
-     *
-     * @return bool
-     */
-    public function isNotify();
-
-    /**
-     * Sets whether to notify the customer or admin.
-     *
-     * @param bool $notify
-     *
-     * @return $this|TicketMessageInterface
-     */
-    public function setNotify(bool $notify);
 }

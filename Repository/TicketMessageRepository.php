@@ -24,10 +24,15 @@ class TicketMessageRepository extends ResourceRepository
         $ex = $qb->expr();
 
         return $qb
+            ->join('m.ticket', 't')
+            ->join('t.customer', 'c')
             ->andWhere($ex->isNull('m.notifiedAt'))
+            ->andWhere($ex->isNotNull('c.user'))
             ->andWhere($ex->isNotNull('m.admin'))
+            ->andWhere($ex->eq('m.notify', ':notify'))
             ->getQuery()
             ->useQueryCache(true)
+            ->setParameter('notify', true)
             ->getResult();
     }
 
@@ -47,10 +52,14 @@ class TicketMessageRepository extends ResourceRepository
             ->join('m.ticket', 't')
             ->andWhere($ex->isNull('m.notifiedAt'))
             ->andWhere($ex->isNull('m.admin'))
+            ->andWhere($ex->eq('m.notify', ':notify'))
             ->andWhere($ex->eq('t.inCharge', ':in_charge'))
             ->getQuery()
             ->useQueryCache(true)
-            ->setParameter('in_charge', $inCharge)
+            ->setParameters([
+                'in_charge' => $inCharge,
+                'notify'    => true,
+            ])
             ->getResult();
     }
 
@@ -68,9 +77,11 @@ class TicketMessageRepository extends ResourceRepository
             ->join('m.ticket', 't')
             ->andWhere($ex->isNull('m.notifiedAt'))
             ->andWhere($ex->isNull('m.admin'))
+            ->andWhere($ex->eq('m.notify', ':notify'))
             ->andWhere($ex->isNull('t.inCharge'))
             ->getQuery()
             ->useQueryCache(true)
+            ->setParameter('notify', true)
             ->getResult();
     }
 }

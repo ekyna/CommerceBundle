@@ -164,3 +164,6 @@ ekyna_commerce:
     tax_rule:
         at_least_customer_or_business: |
             Please select at least 'Customer' or 'Business'.
+    ticket:
+        orphan: A ticket must be linked to at least a customer, an order or a quote.
+        customers_integrity: Customers don't match.

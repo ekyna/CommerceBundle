@@ -3,6 +3,9 @@
     <a aria-controls="#toggle-ticket-{{ ticket.id }}" aria-expanded="true" data-parent="#support-tickets"
        data-toggle="collapse" href="#toggle-ticket-{{ ticket.id }}" role="button">
     {% endif -%}
+        {% if ticket.internal -%}
+            <i class="fa fa-lock"></i>&nbsp;
+        {%- endif %}
         {{ ticket.state_badge|raw }}
         <span>{{ ticket.number }}</span>
         <strong>{{ ticket.subject }}</strong>

@@ -33,7 +33,7 @@ class TicketMessageEventSubscriber extends BaseSubscriber
      *
      * @param UserProviderInterface $provider
      */
-    public function setUserProvider(UserProviderInterface $provider)
+    public function setUserProvider(UserProviderInterface $provider): void
     {
         $this->userProvider = $provider;
     }
@@ -43,7 +43,7 @@ class TicketMessageEventSubscriber extends BaseSubscriber
      *
      * @param SettingsManager $settings
      */
-    public function setSettings(SettingsManager $settings)
+    public function setSettings(SettingsManager $settings): void
     {
         $this->settings = $settings;
     }
@@ -51,7 +51,7 @@ class TicketMessageEventSubscriber extends BaseSubscriber
     /**
      * @inheritDoc
      */
-    public function onInsert(ResourceEventInterface $event)
+    public function onInsert(ResourceEventInterface $event): void
     {
         $message = $this->getMessageFromEvent($event);
 
@@ -68,8 +68,43 @@ class TicketMessageEventSubscriber extends BaseSubscriber
             $message->setAuthor($customer->getFirstName() . ' ' . $customer->getLastName());
         }
 
-        $this->persistenceHelper->persistAndRecompute($message, false);
+        $this->updateMessage($message);
 
         parent::onInsert($event);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onUpdate(ResourceEventInterface $event): void
+    {
+        $message = $this->getMessageFromEvent($event);
+
+        $this->updateMessage($message);
+
+        parent::onUpdate($event);
+    }
+
+    /**
+     * Updates the message (do not notify without customer and user).
+     *
+     * @param TicketMessageInterface $message
+     */
+    protected function updateMessage(TicketMessageInterface $message): void
+    {
+        if ($message->getTicket()->isInternal()) {
+            $message
+                ->setInternal(true)
+                ->setNotify(false);
+        } else {
+            /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+            if (!$customer = $message->getTicket()->getCustomer()) {
+                $message->setNotify(false);
+            } elseif (!$customer->getUser()) {
+                $message->setNotify(false);
+            }
+        }
+
+        $this->persistenceHelper->persistAndRecompute($message, false);
     }
 }

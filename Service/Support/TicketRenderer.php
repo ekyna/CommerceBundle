@@ -76,12 +76,14 @@ class TicketRenderer
      */
     public function renderTickets($source, array $config = [])
     {
+        $config = array_replace(self::CONFIG_DEFAULTS, $config);
+
         if ($source instanceof CustomerInterface) {
-            $tickets = $this->repository->findByCustomer($source);
+            $tickets = $this->repository->findByCustomer($source, $config['admin']);
         } elseif ($source instanceof OrderInterface) {
-            $tickets = $this->repository->findByOrder($source);
+            $tickets = $this->repository->findByOrder($source, $config['admin']);
         } elseif ($source instanceof QuoteInterface) {
-            $tickets = $this->repository->findByQuote($source);
+            $tickets = $this->repository->findByQuote($source, $config['admin']);
         } else {
             throw new UnexpectedValueException(sprintf(
                 'Expected instance of %s, %s or %s.',
@@ -91,7 +93,6 @@ class TicketRenderer
             ));
         }
 
-        $config = array_replace(self::CONFIG_DEFAULTS, $config);
         $this->addRoutes($config);
 
         return $this->templating->render('@EkynaCommerce/Js/support.html.twig', [
@@ -112,7 +113,9 @@ class TicketRenderer
     public function renderTicket(TicketInterface $ticket, array $config = [])
     {
         $config = array_replace(self::CONFIG_DEFAULTS, $config);
+
         $this->addRoutes($config);
+
         $config['standalone'] = true;
 
         return $this->templating->render('@EkynaCommerce/Js/ticket.html.twig', [

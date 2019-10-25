@@ -50,7 +50,7 @@ class TicketNormalizer extends BaseNormalizer
                 'message'     => $this->isGranted(Actions::CREATE, (new TicketMessage())->setTicket($ticket)),
                 'edit'        => $this->isGranted(Actions::EDIT, $ticket),
                 'remove'      => $this->isGranted(Actions::DELETE, $ticket),
-                'in_charge' => null,
+                'in_charge'   => null,
             ]);
 
             $inCharge = $ticket->getInCharge();

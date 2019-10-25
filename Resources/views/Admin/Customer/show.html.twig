@@ -409,7 +409,7 @@
             <div class="tab-pane" id="customer-tickets">
                 {{- support_tickets(customer, {
                     'admin': true,
-                    'new': path('ekyna_commerce_ticket_admin_new')
+                    'new': path('ekyna_commerce_ticket_admin_new', {'customer': customer.number})
                 }) -}}
             </div>
             {%- endif %}

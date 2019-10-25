@@ -31,6 +31,9 @@
             <call method="setQuoteRepository">
                 <argument type="service" id="ekyna_commerce.quote.repository"/>
             </call>
+            <call method="setCustomerRepository">
+                <argument type="service" id="ekyna_commerce.customer.repository"/>
+            </call>
             <tag name="resource.event_subscriber"/>
         </service>
         <service id="ekyna_commerce.ticket_message.event_subscriber"

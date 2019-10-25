@@ -1,6 +1,11 @@
 <div class="form-body borderless">
-    {{ form_widget(form.content, {'label_col': 0, 'widget_col': 0}) }}
-    {% if form.notify is defined %}
-        {{ form_widget(form.notify, {'label_col': 0, 'widget_col': 0}) }}
-    {% endif %}
+    {{ form_widget(form.content, {'label_col': 0, 'widget_col': 12}) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.internal, {'label_col': 0, 'widget_col': 12}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.notify, {'label_col': 0, 'widget_col': 12}) }}
+        </div>
+    </div>
 </div>

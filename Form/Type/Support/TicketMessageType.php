@@ -24,14 +24,22 @@ class TicketMessageType extends ResourceFormType
             'theme' => $options['admin_mode'] ? 'advanced' : 'front',
         ]);
 
-        /*if ($options['admin_mode']) {
-            $builder->add('notify', CheckboxType::class, [
-                'label'    => 'ekyna_core.button.notify',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget',
-                ],
-            ]);
-        }*/
+        if ($options['admin_mode']) {
+            $builder
+                ->add('internal', CheckboxType::class, [
+                    'label'    => 'ekyna_commerce.attachment.field.internal',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('notify', CheckboxType::class, [
+                    'label'    => 'ekyna_core.button.notify',
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ]);
+        }
     }
 }

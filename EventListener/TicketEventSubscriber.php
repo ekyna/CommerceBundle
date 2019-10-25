@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\TicketEventSubscriber as BaseSubscriber;
+use Ekyna\Component\Commerce\Customer\Repository\CustomerRepositoryInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Ekyna\Component\Commerce\Support\Event\TicketEvents;
@@ -40,13 +41,18 @@ class TicketEventSubscriber extends BaseSubscriber
      */
     protected $quoteRepository;
 
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    protected $customerRepository;
+
 
     /**
      * Sets the 'in charge' resolver.
      *
      * @param InChargeResolver $resolver
      */
-    public function setInChargeResolver(InChargeResolver $resolver)
+    public function setInChargeResolver(InChargeResolver $resolver): void
     {
         $this->inChargeResolver = $resolver;
     }
@@ -56,7 +62,7 @@ class TicketEventSubscriber extends BaseSubscriber
      *
      * @param RequestStack $stack
      */
-    public function setRequestStack(RequestStack $stack)
+    public function setRequestStack(RequestStack $stack): void
     {
         $this->requestStack = $stack;
     }
@@ -66,7 +72,7 @@ class TicketEventSubscriber extends BaseSubscriber
      *
      * @param OrderRepositoryInterface $repository
      */
-    public function setOrderRepository(OrderRepositoryInterface $repository)
+    public function setOrderRepository(OrderRepositoryInterface $repository): void
     {
         $this->orderRepository = $repository;
     }
@@ -76,18 +82,27 @@ class TicketEventSubscriber extends BaseSubscriber
      *
      * @param QuoteRepositoryInterface $repository
      */
-    public function setQuoteRepository(QuoteRepositoryInterface $repository)
+    public function setQuoteRepository(QuoteRepositoryInterface $repository): void
     {
         $this->quoteRepository = $repository;
     }
 
+    /**
+     * Sets the customerRepository.
+     *
+     * @param CustomerRepositoryInterface $repository
+     */
+    public function setCustomerRepository(CustomerRepositoryInterface $repository): void
+    {
+        $this->customerRepository = $repository;
+    }
 
     /**
      * Ticket initialize event handler.
      *
      * @param ResourceEventInterface $event
      */
-    public function onInitialize(ResourceEventInterface $event)
+    public function onInitialize(ResourceEventInterface $event): void
     {
         $ticket = $this->getTicketFromEvent($event);
 
@@ -99,6 +114,8 @@ class TicketEventSubscriber extends BaseSubscriber
             $this->setTicketOrder($ticket, $number);
         } elseif ($number = $request->query->get('quote')) {
             $this->setTicketQuote($ticket, $number);
+        } elseif ($number = $request->query->get('customer')) {
+            $this->setTicketCustomer($ticket, $number);
         }
     }
 
@@ -107,7 +124,7 @@ class TicketEventSubscriber extends BaseSubscriber
      *
      * @param \Ekyna\Bundle\CommerceBundle\Model\TicketInterface $ticket
      */
-    protected function handleInsert(TicketInterface $ticket)
+    protected function handleInsert(TicketInterface $ticket): bool
     {
         $changed = parent::handleInsert($ticket);
 
@@ -121,7 +138,7 @@ class TicketEventSubscriber extends BaseSubscriber
      *
      * @param \Ekyna\Bundle\CommerceBundle\Model\TicketInterface $ticket
      */
-    protected function handleUpdate(TicketInterface $ticket)
+    protected function handleUpdate(TicketInterface $ticket): bool
     {
         $changed = parent::handleUpdate($ticket);
 
@@ -136,7 +153,7 @@ class TicketEventSubscriber extends BaseSubscriber
      * @param TicketInterface $ticket
      * @param string          $number
      */
-    private function setTicketOrder(TicketInterface $ticket, $number)
+    private function setTicketOrder(TicketInterface $ticket, $number): void
     {
         $order = $this->orderRepository->findOneByNumber($number);
 
@@ -144,16 +161,13 @@ class TicketEventSubscriber extends BaseSubscriber
             return;
         }
 
+        $ticket->addOrder($order);
+
         /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
         if (null === $customer = $order->getCustomer()) {
             return;
         }
 
-        if (null === $customer->getUser()) {
-            return;
-        }
-
-        $ticket->addOrder($order);
         $ticket->setCustomer($customer);
     }
 
@@ -163,7 +177,7 @@ class TicketEventSubscriber extends BaseSubscriber
      * @param TicketInterface $ticket
      * @param string          $number
      */
-    private function setTicketQuote(TicketInterface $ticket, $number)
+    private function setTicketQuote(TicketInterface $ticket, $number): void
     {
         $quote = $this->quoteRepository->findOneByNumber($number);
 
@@ -171,16 +185,30 @@ class TicketEventSubscriber extends BaseSubscriber
             return;
         }
 
+        $ticket->addQuote($quote);
+
         /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
         if (null === $customer = $quote->getCustomer()) {
             return;
         }
 
-        if (null === $customer->getUser()) {
+        $ticket->setCustomer($customer);
+    }
+
+    /**
+     * Sets the ticket quote.
+     *
+     * @param TicketInterface $ticket
+     * @param string          $number
+     */
+    private function setTicketCustomer(TicketInterface $ticket, $number)
+    {
+        $customer = $this->customerRepository->findOneByNumber($number);
+
+        if (null === $customer) {
             return;
         }
 
-        $ticket->addQuote($quote);
         $ticket->setCustomer($customer);
     }
 

@@ -18,13 +18,6 @@ class TicketMessage extends BaseTicket implements TicketMessageInterface
      */
     protected $admin;
 
-    /**
-     * (non-mapped)
-     *
-     * @var bool
-     */
-    protected $notify = true;
-
 
     /**
      * @inheritdoc
@@ -40,30 +33,6 @@ class TicketMessage extends BaseTicket implements TicketMessageInterface
     public function setAdmin(UserInterface $admin = null)
     {
         $this->admin = $admin;
-
-        return $this;
-    }
-
-    /**
-     * Returns whether to notify the customer or admin.
-     *
-     * @return bool
-     */
-    public function isNotify()
-    {
-        return $this->notify;
-    }
-
-    /**
-     * Sets whether to notify the customer or admin.
-     *
-     * @param bool $notify
-     *
-     * @return TicketMessage
-     */
-    public function setNotify(bool $notify)
-    {
-        $this->notify = $notify;
 
         return $this;
     }

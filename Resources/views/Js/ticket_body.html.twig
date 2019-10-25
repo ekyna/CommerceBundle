@@ -1,37 +1,38 @@
 <p class="controls">
     {% if ticket.edit -%}
     <button type="button" class="btn btn-xs btn-warning ticket-edit">
-        <i class="fa fa-pencil"></i> {{ trans.edit }}
+        <i class="fa fa-pencil"></i>&nbsp;{{ trans.edit }}
     </button>
     {%- endif %}
     {% if ticket.remove -%}
     <button type="button" class="btn btn-xs btn-danger ticket-remove">
-        <i class="fa fa-trash"></i> {{ trans.remove }}
+        <i class="fa fa-trash"></i>&nbsp;{{ trans.remove }}
     </button>
     {%- endif %}
 </p>
 <p class="info">
     {% if config.admin -%}
+    {% if ticket.customer is not null -%}
     <span class="field">{{ trans.customer }}</span>
     <a href="javascript:void(0)"
         class="btn btn-xs btn-default customer-show"
         data-summary='{"route": "ekyna_commerce_customer_admin_summary", "parameters": {"customerId": {{ ticket.customer.id }}}}'
         data-id="{{ ticket.customer.id }}">
         {% if ticket.customer.company is not empty -%}
-            <em>{{ ticket.customer.company }}</em> {{ ticket.customer.first_name }} {{ ticket.customer.last_name }}
+            <em>{{ ticket.customer.company }}</em>&nbsp;{{ ticket.customer.first_name }}&nbsp;{{ ticket.customer.last_name }}
         {%- else -%}
-            {{ ticket.customer.first_name }} {{ ticket.customer.last_name }}
+            {{ ticket.customer.first_name }}&nbsp;{{ ticket.customer.last_name }}
         {%- endif %}
-    </a>
-    {% if ticket.in_charge is not empty -%}
-        <br><span class="field">{{ trans.in_charge }}</span> {{ ticket.in_charge }}
+    </a><br>
     {%- endif %}
-    <br>
-    {% endif %}
+    {% if ticket.in_charge is not empty -%}
+        <span class="field">{{ trans.in_charge }}</span>{{ ticket.in_charge }}<br>
+    {%- endif %}
+    {%- endif %}
     <span class="date">
         <span class="field">{{ trans.created_at }}</span>{{ ticket.f_created_at }}
         {% if ticket.updated_at > ticket.created_at -%}
-            (<span class="field">{{ trans.updated_at }}</span> {{ ticket.f_updated_at }})
+            &nbsp;(<span class="field">{{ trans.updated_at }}</span>{{ ticket.f_updated_at }})
         {%- endif %}
     </span>
     {% if ticket.orders is not empty -%}
