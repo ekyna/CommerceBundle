@@ -96,7 +96,7 @@ class TicketRenderer
         $this->addRoutes($config);
 
         return $this->templating->render('@EkynaCommerce/Js/support.html.twig', [
-            'tickets' => $this->normalize($tickets),
+            'tickets' => $this->normalize($tickets, $config['admin']),
             'trans'   => $this->getTranslations(),
             'config'  => $config,
         ]);
@@ -119,7 +119,7 @@ class TicketRenderer
         $config['standalone'] = true;
 
         return $this->templating->render('@EkynaCommerce/Js/ticket.html.twig', [
-            'ticket' => $this->normalize($ticket),
+            'ticket' => $this->normalize($ticket, $config['admin']),
             'trans'  => $this->getTranslations(),
             'config' => $config,
         ]);
@@ -158,12 +158,16 @@ class TicketRenderer
      * Normalizes the given data.
      *
      * @param mixed $data
+     * @param bool  $admin
      *
      * @return array
      */
-    private function normalize($data)
+    private function normalize($data, bool $admin)
     {
-        return $this->normalizer->normalize($data, 'json', ['groups' => ['Default', 'Ticket']]);
+        return $this->normalizer->normalize($data, 'json', [
+            'groups' => ['Default', 'Ticket'],
+            'admin' => $admin
+        ]);
     }
 
     /**

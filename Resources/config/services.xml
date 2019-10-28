@@ -26,8 +26,8 @@
         <import resource="services/stock.xml"/>
         <import resource="services/subject.xml"/>
         <import resource="services/supplier.xml"/>
+        <import resource="services/support.xml"/>
         <import resource="services/table.xml"/>
-        <import resource="services/ticket.xml"/>
         <import resource="services/twig.xml"/>
         <import resource="services/validators.xml"/>
         <import resource="services/view.xml"/>

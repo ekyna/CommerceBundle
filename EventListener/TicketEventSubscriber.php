@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Quote\Repository\QuoteRepositoryInterface;
 use Ekyna\Component\Commerce\Support\Event\TicketEvents;
 use Ekyna\Component\Commerce\Support\Model\TicketInterface;
+use Ekyna\Component\Commerce\Support\Repository\TicketMessageRepositoryInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -45,6 +46,11 @@ class TicketEventSubscriber extends BaseSubscriber
      * @var CustomerRepositoryInterface
      */
     protected $customerRepository;
+
+    /**
+     * @var TicketMessageRepositoryInterface
+     */
+    protected $messageRepository;
 
 
     /**
@@ -88,13 +94,23 @@ class TicketEventSubscriber extends BaseSubscriber
     }
 
     /**
-     * Sets the customerRepository.
+     * Sets the customer repository.
      *
      * @param CustomerRepositoryInterface $repository
      */
     public function setCustomerRepository(CustomerRepositoryInterface $repository): void
     {
         $this->customerRepository = $repository;
+    }
+
+    /**
+     * Sets the message repository.
+     *
+     * @param TicketMessageRepositoryInterface $repository
+     */
+    public function setMessageRepository(TicketMessageRepositoryInterface $repository): void
+    {
+        $this->messageRepository = $repository;
     }
 
     /**
@@ -117,6 +133,8 @@ class TicketEventSubscriber extends BaseSubscriber
         } elseif ($number = $request->query->get('customer')) {
             $this->setTicketCustomer($ticket, $number);
         }
+
+        $ticket->addMessage($this->messageRepository->createNew());
     }
 
     /**

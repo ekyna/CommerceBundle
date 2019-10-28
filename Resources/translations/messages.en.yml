@@ -23,6 +23,7 @@ ekyna_commerce:
         status: Status
         front_office: Front office
         factory_name: Gateway
+        internal: Internal
 
     notice:
         exchange: >
@@ -57,6 +58,8 @@ ekyna_commerce:
         returned: Returned
         shipped: Shipped
         valid: Validated
+        opened: Opened
+        internal: Internal
 
     unit:
         label: Unit
@@ -300,8 +303,6 @@ ekyna_commerce:
             remove: Remove the attachment
             archive: Archive
             update: Update
-        field:
-            internal: Internal
         alert:
             no_item: Not attachment configured
         message:
@@ -1763,10 +1764,9 @@ ekyna_commerce:
             open: Open a new ticket
             close: Close the ticket
             answer: Add an answer
-        status:
-            opened: Opened
-            pending: Pending
-            closed: Closed
+        field:
+            created_at: Created at
+            updated_at: Updated at
         alert:
             no_item: No ticket configured.
         message:
@@ -1784,10 +1784,12 @@ ekyna_commerce:
         notify:
             customer:
                 subject: "Support %site_name% : answer to your ticket"
-                content: >
-                    <p>You have a new message for your ticket <strong>%number%</strong> &laquo;<em>%subject%<em>&raquo;.
-                    Click on the following link to read the message:</p>
-                    <p style="text-align:center"><a href="%url%">See the message</a>.</p>
+                content_head: >
+                    <p>You have a new message for your ticket <strong>%number%</strong>
+                    &laquo;<em>%subject%<em>&raquo;.</p>
+                content_foot: >
+                    <p>Click on the following link to reply to this message:</p>
+                    <p style="text-align:center"><a href="%url%" class="message-reply">Reply to this message</a>.</p>
                     <p>You can reply to this message in your customer area.
                     <u>Do not reply to this email</u>.</p>
             admin:

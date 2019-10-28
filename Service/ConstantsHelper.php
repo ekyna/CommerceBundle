@@ -5,8 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\Service;
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
-use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
@@ -707,10 +707,11 @@ class ConstantsHelper extends AbstractConstantsHelper
      * Renders the ticket state badge.
      *
      * @param Support\TicketInterface|string $stateOrTicket
+     * @param bool                           $admin
      *
      * @return string
      */
-    public function renderTicketStateBadge($stateOrTicket)
+    public function renderTicketStateBadge($stateOrTicket, bool $admin = false)
     {
         if ($stateOrTicket instanceof Support\TicketInterface) {
             $stateOrTicket = $stateOrTicket->getState();
@@ -718,7 +719,7 @@ class ConstantsHelper extends AbstractConstantsHelper
 
         $theme = 'default';
         if (Model\TicketStates::isValid($stateOrTicket)) {
-            $theme = Model\TicketStates::getTheme($stateOrTicket);
+            $theme = Model\TicketStates::getTheme($stateOrTicket, $admin);
         }
 
         return $this->renderBadge($this->renderTicketStateLabel($stateOrTicket), $theme);

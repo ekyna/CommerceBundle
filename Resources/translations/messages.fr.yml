@@ -23,6 +23,7 @@ ekyna_commerce:
         status: Statut
         front_office: Partie publique
         factory_name: Passerelle
+        internal: Interne
 
     notice:
         exchange: >
@@ -57,6 +58,8 @@ ekyna_commerce:
         returned: Retourné
         shipped: Expédié
         valid: Validé
+        opened: Ouvert
+        internal: Interne
 
     unit:
         label: Unité
@@ -301,8 +304,6 @@ ekyna_commerce:
             remove: Supprimer la pièce jointe
             archive: Archiver
             update: Ré-éditer
-        field:
-            internal: Interne
         alert:
             no_item: Aucune pièce jointe configuré
         message:
@@ -1791,10 +1792,6 @@ ekyna_commerce:
             open: Ouvrir un nouveau ticket
             close: Fermer le ticket
             answer: Ajouter une réponse
-        status:
-            opened: Ouvert
-            pending: En attente
-            closed: Fermé
         field:
             created_at: Créé le
             updated_at: Modifié le
@@ -1815,10 +1812,12 @@ ekyna_commerce:
         notify:
             customer:
                 subject: "Service client %site_name%"
-                content: >
+                content_head: >
                     <p>Vous avez reçu un nouveau message pour votre ticket <strong>%number%</strong>
-                    &laquo;<em>%subject%<em>&raquo;. Cliquez sur le lien suivant pour voir le message :</p>
-                    <p style="text-align:center"><a href="%url%" class="read-message">Voir le message</a>.</p>
+                    &laquo;<em>%subject%<em>&raquo;.</p>
+                content_foot: >
+                    <p>Cliquez sur le lien suivant pour répondre à ce message :</p>
+                    <p style="text-align:center"><a href="%url%" class="message-reply">Répondre au message</a>.</p>
                     <p>Pour répondre à ce message, rendez-vous dans votre espace client.
                     <u>Ne répondez pas à cet email</u>.</p>
             admin:

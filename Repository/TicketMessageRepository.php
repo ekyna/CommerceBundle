@@ -4,14 +4,17 @@ namespace Ekyna\Bundle\CommerceBundle\Repository;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
+use Ekyna\Component\Commerce\Support\Repository\TicketMessageRepositoryInterface;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepository;
 
 /**
  * Class TicketMessageRepository
  * @package Ekyna\Bundle\CommerceBundle\Repository
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @method TicketMessageInterface createNew()
  */
-class TicketMessageRepository extends ResourceRepository
+class TicketMessageRepository extends ResourceRepository implements TicketMessageRepositoryInterface
 {
     /**
      * Finds admin messages to notify to customers.
@@ -29,10 +32,13 @@ class TicketMessageRepository extends ResourceRepository
             ->andWhere($ex->isNull('m.notifiedAt'))
             ->andWhere($ex->isNotNull('c.user'))
             ->andWhere($ex->isNotNull('m.admin'))
+            ->andWhere($ex->eq('t.internal', ':internal'))
+            ->andWhere($ex->eq('t.internal', ':internal'))
             ->andWhere($ex->eq('m.notify', ':notify'))
             ->getQuery()
             ->useQueryCache(true)
             ->setParameter('notify', true)
+            ->setParameter('internal', false)
             ->getResult();
     }
 

@@ -14,11 +14,15 @@
             <argument>%kernel.debug%</argument>
         </service>
 
+        <!-- Ticket state resolver -->
+        <service id="Ekyna\Component\Commerce\Support\Resolver\TicketStateResolver"/>
+
         <!-- Ticket event subscriber -->
         <service id="ekyna_commerce.ticket.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\TicketEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.ticket.number_generator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Support\Resolver\TicketStateResolver"/>
             <call method="setInChargeResolver">
                 <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
             </call>
@@ -33,6 +37,9 @@
             </call>
             <call method="setCustomerRepository">
                 <argument type="service" id="ekyna_commerce.customer.repository"/>
+            </call>
+            <call method="setMessageRepository">
+                <argument type="service" id="ekyna_commerce.ticket_message.repository"/>
             </call>
             <tag name="resource.event_subscriber"/>
         </service>

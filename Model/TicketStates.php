@@ -17,12 +17,14 @@ final class TicketStates extends AbstractConstants
      */
     static public function getConfig()
     {
-        $prefix = 'ekyna_commerce.ticket.status.';
+        $prefix = 'ekyna_commerce.status.';
 
-        return [
-            States::STATE_OPENED  => [$prefix . States::STATE_OPENED,  'success'],
-            States::STATE_PENDING => [$prefix . States::STATE_PENDING, 'warning'],
-            States::STATE_CLOSED  => [$prefix . States::STATE_CLOSED,  'default'],
+        return [                                                        // User       Admin
+            States::STATE_NEW      => [$prefix . States::STATE_NEW,      'brown',   'brown'],
+            States::STATE_OPENED   => [$prefix . States::STATE_OPENED,   'success', 'warning'], // Waiting for admin reply
+            States::STATE_PENDING  => [$prefix . States::STATE_PENDING,  'warning', 'success'], // Waiting for customer reply
+            States::STATE_INTERNAL => [$prefix . States::STATE_INTERNAL, 'purple',  'purple'],
+            States::STATE_CLOSED   => [$prefix . States::STATE_CLOSED,   'default', 'default'],
         ];
     }
 
@@ -30,14 +32,15 @@ final class TicketStates extends AbstractConstants
      * Returns the theme for the given state.
      *
      * @param string $state
+     * @param bool   $admin
      *
      * @return string
      */
-    static public function getTheme($state)
+    static public function getTheme(string $state, bool $admin = false)
     {
         static::isValid($state, true);
 
-        return static::getConfig()[$state][1];
+        return static::getConfig()[$state][$admin ? 2 : 1];
     }
 
     /**

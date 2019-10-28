@@ -45,8 +45,9 @@ class TicketNormalizer extends BaseNormalizer
         $data = parent::normalize($ticket, $format, $context);
 
         if ($this->contextHasGroup(['Default', 'Ticket'], $context)) {
+            $admin = isset($context['admin']) ? $context['admin'] : false;
             $data = array_replace($data, [
-                'state_badge' => $this->buildStateBadge($ticket->getState()),
+                'state_badge' => $this->buildStateBadge($ticket->getState(), $admin),
                 'message'     => $this->isGranted(Actions::CREATE, (new TicketMessage())->setTicket($ticket)),
                 'edit'        => $this->isGranted(Actions::EDIT, $ticket),
                 'remove'      => $this->isGranted(Actions::DELETE, $ticket),
@@ -76,14 +77,15 @@ class TicketNormalizer extends BaseNormalizer
      * Builds the state badge.
      *
      * @param string $state
+     * @param bool   $admin
      *
      * @return string
      */
-    private function buildStateBadge($state)
+    private function buildStateBadge($state, bool $admin = false)
     {
         return sprintf(
             '<span class="label label-%s">%s</span>',
-            TicketStates::getTheme($state),
+            TicketStates::getTheme($state, $admin),
             $this->translator->trans(TicketStates::getLabel($state))
         );
     }

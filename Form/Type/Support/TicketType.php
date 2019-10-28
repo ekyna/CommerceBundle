@@ -10,8 +10,6 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteSearchType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 /**
  * Class TicketType
@@ -43,7 +41,7 @@ class TicketType extends ResourceFormType
                     'required' => false,
                 ])
                 ->add('internal', CheckboxType::class, [
-                    'label'    => 'ekyna_commerce.attachment.field.internal',
+                    'label'    => 'ekyna_commerce.field.internal',
                     'required' => false,
                     'attr'     => [
                         'align_with_widget' => true,
@@ -55,28 +53,10 @@ class TicketType extends ResourceFormType
             ->add('subject', TextType::class, [
                 'label' => 'ekyna_core.field.subject',
             ])
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($builder, $options) {
-                /** @var \Ekyna\Bundle\CommerceBundle\Model\TicketInterface $ticket */
-                $ticket = $event->getData();
-
-                if (0 < $ticket->getMessages()->count()) {
-                    return;
-                }
-
-                $field = $builder
-                    ->create('message', TicketMessageType::class, [
-                        'property_path'   => 'messages[0]',
-                        'auto_initialize' => false,
-                        'admin_mode'      => $options['admin_mode'],
-                    ])
-                    ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($ticket) {
-                        /** @var \Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface $message */
-                        $message = $event->getForm()->getData();
-                        $message->setTicket($ticket);
-                    }, 2048)
-                    ->getForm();
-
-                $event->getForm()->add($field);
-            });
+            ->add('message', TicketMessageType::class, [
+                'property_path'   => 'messages[0]',
+                'auto_initialize' => false,
+                'admin_mode'      => $options['admin_mode'],
+            ]);
     }
 }

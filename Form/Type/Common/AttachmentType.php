@@ -24,7 +24,7 @@ class AttachmentType extends ResourceFormType
     {
         if ($options['admin_mode']) {
             $builder->add('internal', CheckboxType::class, [
-                'label'    => 'ekyna_commerce.attachment.field.internal',
+                'label'    => 'ekyna_commerce.field.internal',
                 'required' => false,
                 'attr'     => ['align_with_widget' => true],
             ]);

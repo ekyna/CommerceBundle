@@ -8,6 +8,7 @@ use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TicketStateType
@@ -37,7 +38,17 @@ class TicketStateType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        $view->vars['value'] = $this->constantHelper->renderTicketStateBadge($view->vars['value']);
+        $view->vars['value'] = $this
+            ->constantHelper
+            ->renderTicketStateBadge($view->vars['value'], $options['admin_mode']);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('admin_mode', true);
     }
 
     /**
