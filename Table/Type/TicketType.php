@@ -73,9 +73,9 @@ class TicketType extends ResourceTableType
                     [
                         'label'                => 'ekyna_core.button.remove',
                         'class'                => 'danger',
-                        'route_name'           => 'ekyna_commerce_supplier_order_admin_remove',
+                        'route_name'           => 'ekyna_commerce_ticket_admin_remove',
                         'route_parameters_map' => [
-                            'supplierOrderId' => 'id',
+                            'ticketId' => 'id',
                         ],
                         'permission'           => 'delete',
                     ],
