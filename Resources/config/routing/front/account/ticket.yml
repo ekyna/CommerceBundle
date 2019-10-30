@@ -40,6 +40,13 @@ ekyna_commerce_account_ticket_close:
     requirements: { ticketId: \d+ }
     options: { expose: true }
 
+ekyna_commerce_account_ticket_open:
+    path: /{ticketId}/open
+    methods: [GET|POST]
+    defaults: { _controller: EkynaCommerceBundle:Account/Ticket:open }
+    requirements: { ticketId: \d+ }
+    options: { expose: true }
+
 # Message
 ekyna_commerce_account_ticket_message_new:
     path: /{ticketId}/messages/new

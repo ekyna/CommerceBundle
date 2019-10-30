@@ -1781,7 +1781,7 @@ ekyna_commerce:
             new: Créer un nouveau ticket
             edit: Modifier le ticket
             remove: Supprimer le ticket
-            open: Ouvrir un nouveau ticket
+            open: Réouvrir le ticket
             close: Fermer le ticket
         button:
             list: Liste des tickets
@@ -1789,7 +1789,7 @@ ekyna_commerce:
             new: Nouveau ticket
             edit: Modifier le ticket
             remove: Supprimer le ticket
-            open: Ouvrir un nouveau ticket
+            open: Réouvrir le ticket
             close: Fermer le ticket
             answer: Ajouter une réponse
         field:
@@ -1798,8 +1798,9 @@ ekyna_commerce:
         alert:
             no_item: Aucun ticket configuré
         message:
-            close_confirm: Confirmer la clôture du ticket.
-            remove_confirm: Confirmer la suppression du ticket.
+            close_confirm: Confirmer la clôture du ticket ?
+            open_confirm: Confirmer la réouverture du ticket ?
+            remove_confirm: Confirmer la suppression du ticket ?
 
     ticket_message:
         label:

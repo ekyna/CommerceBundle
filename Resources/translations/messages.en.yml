@@ -1753,7 +1753,7 @@ ekyna_commerce:
             new: Create a new ticket
             edit: Edit the ticket
             remove: Edit the ticket
-            open: Open a new ticket
+            open: Reopen the ticket
             close: Close the ticket
         button:
             list: Tickets list
@@ -1761,7 +1761,7 @@ ekyna_commerce:
             new: New ticket
             edit: Edit the ticket
             remove: Remove the ticket
-            open: Open a new ticket
+            open: Reopen the ticket
             close: Close the ticket
             answer: Add an answer
         field:
@@ -1770,8 +1770,9 @@ ekyna_commerce:
         alert:
             no_item: No ticket configured.
         message:
-            close_confirm: Confirm the ticket closing.
-            remove_confirm: Confirmer the ticket removal.
+            close_confirm: Confirm the ticket closing ?
+            open_confirm: Confirm the ticket reopening ?
+            remove_confirm: Confirm the ticket removal ?
 
     ticket_message:
         label:

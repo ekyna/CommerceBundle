@@ -1,7 +1,11 @@
-{%- if ticket.state != 'closed' -%}
 <div class="panel-footer">
     <p class="text-center">
-        <button type="button" class="btn btn-sm btn-warning ticket-close">
+    {%- if ticket.state == 'closed' -%}
+        <button type="button" class="btn btn-sm btn-warning ticket-open">
+            <i class="fa fa-check"></i>&nbsp;{{ trans.open }}
+        </button>
+    {%- else -%}
+        <button type="button" class="btn btn-sm btn-primary ticket-close">
             <i class="fa fa-close"></i>&nbsp;{{ trans.close }}
         </button>
         {% if ticket.message -%}
@@ -9,6 +13,6 @@
             <i class="fa fa-comment"></i>&nbsp;{{ trans.answer }}
         </button>
         {%- endif %}
+    {%- endif -%}
     </p>
 </div>
-{%- endif -%}

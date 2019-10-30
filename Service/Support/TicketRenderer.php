@@ -166,7 +166,7 @@ class TicketRenderer
     {
         return $this->normalizer->normalize($data, 'json', [
             'groups' => ['Default', 'Ticket'],
-            'admin' => $admin
+            'admin'  => $admin,
         ]);
     }
 
@@ -184,6 +184,7 @@ class TicketRenderer
             'download'   => $this->translator->trans('ekyna_core.button.download'),
             'attachment' => $this->translator->trans('ekyna_commerce.attachment.button.new'),
             'close'      => $this->translator->trans('ekyna_commerce.ticket.button.close'),
+            'open'       => $this->translator->trans('ekyna_commerce.ticket.button.open'),
             'answer'     => $this->translator->trans('ekyna_commerce.ticket.button.answer'),
             'no_ticket'  => $this->translator->trans('ekyna_commerce.ticket.alert.no_item'),
             'customer'   => $this->translator->trans('ekyna_commerce.customer.label.singular'),

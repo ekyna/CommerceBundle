@@ -197,6 +197,7 @@ class Ticket {
         this.$element.on('click', '.ticket-edit', () => this.edit());
         this.$element.on('click', '.ticket-remove', () => this.remove());
         this.$element.on('click', '.ticket-close', () => this.close());
+        this.$element.on('click', '.ticket-open', () => this.open());
 
         this.$element.on('click', '.customer-show', (e: JQueryMouseEventObject) => Ticket.showCustomer(e));
         this.$element.on('click', '.order-show', (e: JQueryMouseEventObject) => Ticket.showOrder(e));
@@ -286,6 +287,14 @@ class Ticket {
                 this.support.removeTicket(this.id);
                 this.delete();
             }
+        );
+    }
+
+    private open() {
+        this.support.request(
+            Router.generate(config.routes.ticket + '_open', {
+                'ticketId': this.id
+            })
         );
     }
 

@@ -5,7 +5,10 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketType;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Support\Model\TicketInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketStates;
+use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Model\Actions;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +21,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketController extends AbstractTicketController
 {
+    private const REMOVE = 'remove';
+    private const CLOSE = 'close';
+    private const OPEN = 'open';
+
     /**
      * Ticket index action.
      *
@@ -187,55 +194,9 @@ class TicketController extends AbstractTicketController
      */
     public function removeAction(Request $request)
     {
-        if (!$request->isXmlHttpRequest()) {
-            throw $this->createNotFoundException("Only XHR is supported.");
-        }
-
-        $ticket = $this->findTicket($request);
-
-        $this->denyAccessUnlessGranted(Actions::DELETE, $ticket);
-
-        $form = $this->createForm(ConfirmType::class, null, [
-            'action'  => $this->generateUrl('ekyna_commerce_account_ticket_remove', [
-                'ticketId' => $ticket->getId(),
-            ]),
-            'method'  => 'POST',
-            'attr'    => [
-                'class' => 'form-horizontal',
-            ],
-            'message' => 'ekyna_commerce.ticket.message.remove_confirm',
-            'buttons' => false,
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->get('ekyna_commerce.ticket.operator')->delete($ticket);
-
-            if (!$event->hasErrors()) {
-                $data = [
-                    'success' => true,
-                ];
-
-                $response = new Response($this->serialize($data));
-                $response->headers->set('Content-Type', 'application/json');
-
-                return $response;
-            }
-
-            foreach ($event->getErrors() as $error) {
-                $form->addError(new FormError($error->getMessage()));
-            }
-        }
-
-        $modal = $this
-            ->createModal('ekyna_commerce.ticket.header.remove', $form->createView(), 'confirm')
-            ->setSize(Modal::SIZE_NORMAL)
-            ->setVars([
-                'form_template' => '@EkynaCommerce/Account/Ticket/form_confirm.html.twig',
-            ]);
-
-        return $this->get('ekyna_core.modal')->render($modal);
+        return $this->handleConfirmation($request, self::REMOVE, function(TicketInterface $ticket) {
+            return $this->get('ekyna_commerce.ticket.operator')->delete($ticket);
+        });
     }
 
     /**
@@ -247,6 +208,44 @@ class TicketController extends AbstractTicketController
      */
     public function closeAction(Request $request)
     {
+        return $this->handleConfirmation($request, self::CLOSE, function(TicketInterface $ticket) {
+            $ticket->setState(TicketStates::STATE_CLOSED);
+
+            return $this->get('ekyna_commerce.ticket.operator')->update($ticket);
+        });
+    }
+
+    /**
+     * Ticket (re)open action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function openAction(Request $request)
+    {
+        return $this->handleConfirmation($request, self::OPEN, function(TicketInterface $ticket) {
+            $ticket->setState(TicketStates::STATE_NEW);
+
+            return $this->get('ekyna_commerce.ticket.operator')->update($ticket);
+        });
+    }
+
+    /**
+     * Handles the confirmation form.
+     *
+     * @param Request  $request
+     * @param string   $action
+     * @param callable $onConfirmed
+     *
+     * @return Response
+     */
+    public function handleConfirmation(Request $request, string $action, callable $onConfirmed): Response
+    {
+        if (!in_array($action, [self::OPEN, self::CLOSE, self::OPEN, true])) {
+            throw new RuntimeException("Unexpected action");
+        }
+
         if (!$request->isXmlHttpRequest()) {
             throw $this->createNotFoundException("Only XHR is supported.");
         }
@@ -256,22 +255,22 @@ class TicketController extends AbstractTicketController
         $this->denyAccessUnlessGranted(Actions::EDIT, $ticket);
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'action'  => $this->generateUrl('ekyna_commerce_account_ticket_close', [
+            'action'  => $this->generateUrl(sprintf('ekyna_commerce_account_ticket_%s', $action), [
                 'ticketId' => $ticket->getId(),
             ]),
             'method'  => 'POST',
             'attr'    => [
                 'class' => 'form-horizontal',
             ],
-            'message' => 'ekyna_commerce.ticket.message.close_confirm',
+            'message' => sprintf('ekyna_commerce.ticket.message.%s_confirm', $action),
             'buttons' => false,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $ticket->setState(TicketStates::STATE_CLOSED);
-            $event = $this->get('ekyna_commerce.ticket.operator')->update($ticket);
+            /** @var ResourceEventInterface $event */
+            $event = $onConfirmed($ticket);
 
             if (!$event->hasErrors()) {
                 $data = [
@@ -290,7 +289,7 @@ class TicketController extends AbstractTicketController
         }
 
         $modal = $this
-            ->createModal('ekyna_commerce.ticket.header.close', $form->createView(), 'confirm')
+            ->createModal(sprintf('ekyna_commerce.ticket.header.%s', $action), $form->createView(), 'confirm')
             ->setSize(Modal::SIZE_NORMAL)
             ->setVars([
                 'form_template' => '@EkynaCommerce/Account/Ticket/form_confirm.html.twig',

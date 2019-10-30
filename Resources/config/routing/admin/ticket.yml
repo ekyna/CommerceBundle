@@ -29,6 +29,14 @@ ekyna_commerce_ticket_admin_edit:
         ticketId: \d+
     options: { expose: true }
 
+ekyna_commerce_ticket_admin_open:
+    path: /{ticketId}/open
+    defaults: { _controller: "ekyna_commerce.ticket.controller:openAction" }
+    methods: [GET|POST]
+    requirements:
+        ticketId: \d+
+    options: { expose: true }
+
 ekyna_commerce_ticket_admin_close:
     path: /{ticketId}/close
     defaults: { _controller: "ekyna_commerce.ticket.controller:closeAction" }
