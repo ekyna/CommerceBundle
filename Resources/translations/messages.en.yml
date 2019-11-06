@@ -1560,10 +1560,6 @@ ekyna_commerce:
             submit:
                 success: Order form has been sent to the supplier.
                 failure: Failed to send order form to the supplier.
-                default: >
-                    <p>Hi,</p>
-                    <p>Please see order form %number% attached to this mail.</p>
-                    <p>Regards,</p>
         field:
             shipping_cost: Shipping cost ex-tax
             discount_total: Discount total

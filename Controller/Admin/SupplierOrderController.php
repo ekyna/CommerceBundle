@@ -123,15 +123,7 @@ class SupplierOrderController extends ResourceController
         $resource = $context->getResource($resourceName);
 
         $submit = new SupplierOrderSubmit($resource);
-        $submit
-            ->setEmails([$resource->getSupplier()->getEmail()])
-            ->setMessage(
-                $this->getTranslator()->trans(
-                    'ekyna_commerce.supplier_order.message.submit.default', [
-                        '%number%' => $resource->getNumber(),
-                    ]
-                )
-            );
+        $submit->setEmails([$resource->getSupplier()->getEmail()]);
 
         $form = $this->createForm(SupplierOrderSubmitType::class, $submit, [
             'attr' => [
@@ -468,7 +460,7 @@ class SupplierOrderController extends ResourceController
 
         $replacements = [
             '%number%' => $order->getNumber(),
-            '%date%'   => $formatter->date($order->getOrderedAt()),
+            '%date%'   => $order->getOrderedAt() ? $formatter->date($order->getOrderedAt()) : null,
         ];
 
         $locale = $request->query->get('_locale', 'en');

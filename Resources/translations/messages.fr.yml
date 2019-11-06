@@ -1588,10 +1588,6 @@ ekyna_commerce:
             submit:
                 success: Le bon de commande a bien été envoyé au fournisseur.
                 failure: Erreur lors de l'envoi du bon de commande au fournisseur.
-                default: >
-                    <p>Bonjour,</p>
-                    <p>Veuillez trouver en pièce jointe le bon de commande %number%.</p>
-                    <p>Cordialement,</p>
         field:
             shipping_cost: Frais transport HT
             discount_total: Total remise

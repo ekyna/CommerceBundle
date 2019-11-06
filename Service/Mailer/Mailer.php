@@ -246,16 +246,11 @@ class Mailer
         $fromEmail = $this->settingsManager->getParameter('notification.from_email');
         $fromName = $this->settingsManager->getParameter('notification.from_name');
 
-        $subject = $this
-            ->translator
-            ->trans('ekyna_commerce.supplier_order_attachment.type.form', [], null, $order->getLocale());
-        $subject .= ' ' . $order->getNumber();
-
         $message = new \Swift_Message();
         $message
-            ->setSubject($subject)
             ->setFrom($fromEmail, $fromName)
             ->setTo($submit->getEmails())
+            ->setSubject($submit->getSubject())
             ->setBody($submit->getMessage(), 'text/html');
 
         // Form attachment

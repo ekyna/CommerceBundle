@@ -70,9 +70,20 @@ class SupplierOrderSubmitType extends Form\AbstractType
                     ],
                 ],
             ])
+            ->add('subject', Type\TextType::class, [
+                'label'    => 'ekyna_core.field.subject',
+                'required' => true,
+                'attr'     => [
+                    'class' => 'notify-subject',
+                ],
+            ])
             ->add('message', TinymceType::class, [
                 'label'    => 'ekyna_core.field.message',
-                'required' => false,
+                'theme'    => 'front',
+                'required' => true,
+                'attr'     => [
+                    'class' => 'notify-message',
+                ],
             ])
             ->add('confirm', Type\CheckboxType::class, [
                 'label' => 'ekyna_core.message.action_confirm',
@@ -115,6 +126,9 @@ class SupplierOrderSubmitType extends Form\AbstractType
             $hasCarrier = null !== $order->getCarrier();
 
             $form
+                ->add('template', SupplierTemplateChoiceType::class, [
+                    'order' => $order,
+                ])
                 ->get('order')
                 ->add('estimatedDateOfArrival', Type\DateTimeType::class, [
                     'label'    => 'ekyna_commerce.field.estimated_date_of_arrival',

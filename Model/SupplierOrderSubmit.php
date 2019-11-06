@@ -25,6 +25,11 @@ class SupplierOrderSubmit
     /**
      * @var string
      */
+    private $subject;
+
+    /**
+     * @var string
+     */
     private $message;
 
     /**
@@ -90,6 +95,30 @@ class SupplierOrderSubmit
     public function setEmails(array $emails)
     {
         $this->emails = $emails;
+
+        return $this;
+    }
+
+    /**
+     * Returns the subject.
+     *
+     * @return string
+     */
+    public function getSubject(): ?string
+    {
+        return $this->subject;
+    }
+
+    /**
+     * Sets the subject.
+     *
+     * @param string $subject
+     *
+     * @return SupplierOrderSubmit
+     */
+    public function setSubject(string $subject): self
+    {
+        $this->subject = $subject;
 
         return $this;
     }
