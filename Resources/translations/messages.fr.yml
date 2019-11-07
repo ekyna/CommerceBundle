@@ -12,6 +12,7 @@ ekyna_commerce:
         max_quantity: Quantité max
         net_price: Prix HT
         buy_net_price: Prix d'achat HT
+        vat: TVA
         exchange_rate: Taux de change
         exchange_date: Date de change
         geocode: Geocode

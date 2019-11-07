@@ -104,11 +104,12 @@ ekyna_commerce_cart_admin_notify:
         cartId: \d+
 
 ekyna_commerce_cart_admin_export:
-    path: /{cartId}/export
+    path: /{cartId}/export.{_format}
     defaults: { _controller: "ekyna_commerce.cart.controller:exportAction" }
     methods: GET
     requirements:
         cartId: \d+
+        _format: csv|xls
 
 ekyna_commerce_cart_admin_document_generate:
     path: /{cartId}/document/generate/{type}

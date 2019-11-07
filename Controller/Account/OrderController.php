@@ -6,8 +6,10 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
-use Ekyna\Component\Commerce\Common\Export\SaleExporter;
+use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
+use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
@@ -83,8 +85,17 @@ class OrderController extends AbstractController
 
         $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
 
+        $format = $request->getRequestFormat('csv');
+        if ($format === 'csv') {
+            $exporter = $this->get(SaleCsvExporter::class);
+        } elseif ($format === 'xls') {
+            $exporter = $this->get(SaleXlsExporter::class);
+        } else {
+            throw new InvalidArgumentException("Unexpected format '$format'");
+        }
+
         try {
-            $path = $this->get(SaleExporter::class)->export($order);
+            $path = $exporter->export($order);
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
                 throw $e;

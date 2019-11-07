@@ -6,10 +6,16 @@
 {% spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
     <hr>
-    <a href="{{ path('ekyna_commerce_account_order_export', {'number': order.number}) }}"
-       class="btn btn-sm btn-default pull-right">
-        {{- 'ekyna_core.button.export'|trans -}}
-    </a>
+    <div class="pull-right">
+    {{- ui_dropdown({
+        'CSV': path('ekyna_commerce_account_order_export', {'number': order.number, '_format': 'csv'}),
+        'Excel': path('ekyna_commerce_account_order_export', {'number': order.number, '_format': 'xls'})
+    }, {
+        'label': 'ekyna_core.button.export'|trans,
+        'icon': 'download',
+        'right': true
+    }) -}}
+    </div>
     <div class="account-sale">
         <div id="account-sale-header">
             {{- macros.sale_header(order) -}}

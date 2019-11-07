@@ -247,6 +247,12 @@ class SaleExtension extends AbstractExtension
                 [$this, 'renderSaleDuplicateButton'],
                 ['is_safe' => ['html']]
             ),
+            // Renders the sale export button
+            new TwigFunction(
+                'sale_export_btn',
+                [$this, 'renderSaleExportButton'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
@@ -605,6 +611,45 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
+     * Renders the sale export button.
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return string
+     */
+    public function renderSaleExportButton(Common\SaleInterface $sale)
+    {
+        $actions = [];
+
+        $formats = ['CSV' => 'csv', 'Excel' => 'xls'];
+
+        if ($sale instanceof CartInterface) {
+            $type = 'cart';
+        } elseif ($sale instanceof QuoteInterface) {
+            $type = 'quote';
+        } elseif ($sale instanceof Order\OrderInterface) {
+            $type = 'order';
+        } else {
+            throw new InvalidArgumentException("Unsupported sale type.");
+        }
+
+        foreach ($formats as $name => $format) {
+            $actions[$name] =
+                $this->urlGenerator->generate("ekyna_commerce_{$type}_admin_export", [
+                    "{$type}Id" => $sale->getId(),
+                    '_format'   => $format,
+                ]);
+        }
+
+        return $this
+            ->uiRenderer
+            ->renderDropdown($actions, [
+                'label' => 'ekyna_core.button.export',
+                'icon'  => 'download',
+            ]);
+    }
+
+    /**
      * Renders the sale operation button.
      *
      * @param Common\SaleInterface $sale
@@ -650,6 +695,10 @@ class SaleExtension extends AbstractExtension
 
         return $this
             ->uiRenderer
-            ->renderButtonDropdown('ekyna_core.button.' . $operation, $actions);
+            ->renderDropdown($actions, [
+                'label'   => 'ekyna_core.button.' . $operation,
+                'icon'    => $operation === 'duplicate' ? 'clone' : 'magic',
+                'fa_icon' => true,
+            ]);
     }
 }

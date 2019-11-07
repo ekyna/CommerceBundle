@@ -10,7 +10,8 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
-use Ekyna\Component\Commerce\Common\Export\SaleExporter;
+use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
+use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -577,15 +578,24 @@ class SaleController extends AbstractSaleController
      *
      * @return Response
      */
-    public function exportAction(REquest $request): Response
+    public function exportAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
+        $format = $request->getRequestFormat('csv');
+        if ($format === 'csv') {
+            $exporter = $this->get(SaleCsvExporter::class);
+        } elseif($format === 'xls') {
+            $exporter = $this->get(SaleXlsExporter::class);
+        } else {
+            throw new InvalidArgumentException("Unexpected format '$format'");
+        }
+
         try {
-            $path = $this->get(SaleExporter::class)->export($sale);
+            $path = $exporter->export($sale);
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
                 throw $e;
@@ -602,7 +612,7 @@ class SaleController extends AbstractSaleController
 
         $disposition = $response
             ->headers
-            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $sale->getNumber() . '.csv');
+            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $sale->getNumber() . '.' . $format);
 
         $response->headers->set('Content-Disposition', $disposition);
         $response->headers->set('Content-Type', 'text/csv');

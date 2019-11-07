@@ -121,11 +121,12 @@ ekyna_commerce_order_admin_notify:
         orderId: \d+
 
 ekyna_commerce_order_admin_export:
-    path: /{orderId}/export
+    path: /{orderId}/export.{_format}
     defaults: { _controller: "ekyna_commerce.order.controller:exportAction" }
     methods: GET
     requirements:
         orderId: \d+
+        _format: csv|xls
 
 ekyna_commerce_order_admin_prepare:
     path: /{orderId}/prepare

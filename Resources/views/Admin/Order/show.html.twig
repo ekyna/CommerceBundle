@@ -39,18 +39,13 @@
     <div class="actions">
         {{ sale_custom_buttons(order) }}
         {# TODO permission ? #}
-        {{ ui_button('ekyna_core.button.export', {
-            'theme': 'default',
-            'type': 'link',
-            'icon': 'download',
-            'path': admin_resource_path(order, 'export')
-        }) }}
         {{ ui_button('ekyna_core.button.notify', {
             'theme': 'default',
             'type': 'link',
             'icon': 'envelope',
             'path': admin_resource_path(order, 'notify')
         }) }}
+        {{ sale_export_btn(order) }}
         {{ sale_duplicate_btn(order) }}
         {{ sale_transform_btn(order) }}
         {% if order is sale_preparable %}

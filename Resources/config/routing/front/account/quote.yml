@@ -24,11 +24,12 @@ ekyna_commerce_account_quote_show:
     options: {expose: true}
 
 ekyna_commerce_account_quote_export:
-    path: /{number}/export
+    path: /{number}/export.{_format}
     defaults:
         _controller: EkynaCommerceBundle:Account/Quote:export
     requirements:
         number: "[a-zA-Z0-9]+"
+        _format: "csv|xls"
     methods: GET
     options: {i18n: false}
 

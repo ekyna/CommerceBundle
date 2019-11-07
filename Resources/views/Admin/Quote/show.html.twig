@@ -31,18 +31,13 @@
     <div class="actions">
         {{ sale_custom_buttons(quote) }}
         {# TODO permission ? #}
-        {{ ui_button('ekyna_core.button.export', {
-            'theme': 'default',
-            'type': 'link',
-            'icon': 'download',
-            'path': admin_resource_path(quote, 'export')
-        }) }}
         {{ ui_button('ekyna_core.button.notify', {
             'theme': 'default',
             'type': 'link',
             'icon': 'envelope',
             'path': admin_resource_path(quote, 'notify')
         }) }}
+        {{ sale_export_btn(quote) }}
         {{ sale_duplicate_btn(quote) }}
         {{ sale_transform_btn(quote) }}
         {{ admin_resource_btn(quote, 'edit', {'label': 'ekyna_core.button.edit'}) }}

@@ -176,9 +176,16 @@
             <tag name="twig.runtime" />
         </service>
 
-        <!-- Sale exporter -->
-        <service id="Ekyna\Component\Commerce\Common\Export\SaleExporter">
+        <!-- Sale CSV exporter -->
+        <service id="Ekyna\Component\Commerce\Common\Export\SaleCsvExporter">
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
+        </service>
+
+        <!-- Sale XLS exporter -->
+        <service id="Ekyna\Component\Commerce\Common\Export\SaleXlsExporter">
+            <argument type="service" id="ekyna_commerce.common.view_builder"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
         </service>
 
     </services>

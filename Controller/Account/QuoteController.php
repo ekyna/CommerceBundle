@@ -11,10 +11,12 @@ use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteVoucher;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
-use Ekyna\Component\Commerce\Common\Export\SaleExporter;
+use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
+use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
@@ -92,8 +94,17 @@ class QuoteController extends AbstractSaleController
 
         $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
 
+        $format = $request->getRequestFormat('csv');
+        if ($format === 'csv') {
+            $exporter = $this->get(SaleCsvExporter::class);
+        } elseif ($format === 'xls') {
+            $exporter = $this->get(SaleXlsExporter::class);
+        } else {
+            throw new InvalidArgumentException("Unexpected format '$format'");
+        }
+
         try {
-            $path = $this->get(SaleExporter::class)->export($quote);
+            $path = $exporter->export($quote);
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
                 throw $e;

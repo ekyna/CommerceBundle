@@ -104,11 +104,12 @@ ekyna_commerce_quote_admin_notify:
         quoteId: \d+
 
 ekyna_commerce_quote_admin_export:
-    path: /{quoteId}/export
+    path: /{quoteId}/export/{_format}
     defaults: { _controller: "ekyna_commerce.quote.controller:exportAction" }
     methods: GET
     requirements:
         quoteId: \d+
+        _format: csv|xls
 
 ekyna_commerce_quote_admin_set_exchnage_rate:
     path: /{quoteId}/set-exchange-rate
