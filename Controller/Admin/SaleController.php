@@ -351,16 +351,15 @@ class SaleController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->get('ekyna_commerce.sale_updater')->recalculate($sale)) {
-                $event = $this->getOperator()->createResourceEvent($sale);
-                $this->getOperator()->update($event);
+            $this->get('ekyna_commerce.sale_updater')->recalculate($sale);
+            $event = $this->getOperator()->createResourceEvent($sale);
+            $this->getOperator()->update($event);
 
-                // TODO Some important information to display may have changed (state, etc)
+            // TODO Some important information to display may have changed (state, etc)
 
-                if ($event->hasErrors()) {
-                    foreach ($event->getErrors() as $error) {
-                        $form->addError(new FormError($error->getMessage()));
-                    }
+            if ($event->hasErrors()) {
+                foreach ($event->getErrors() as $error) {
+                    $form->addError(new FormError($error->getMessage()));
                 }
             }
         }
