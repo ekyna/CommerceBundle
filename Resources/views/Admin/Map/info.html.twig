@@ -1,0 +1,13 @@
+<p>
+    {% if customer.company -%}
+        <strong>{{ customer.company }}</strong><br>
+        {{ customer|identity }}
+    {%- else -%}
+        <strong>{{ customer|identity }}</strong>
+    {%- endif -%}
+</p>
+<p>{{ customer.defaultInvoiceAddress|address }}</p>
+<p>
+    <a href="mailto: {{ customer.email }}">{{ customer.email }}</a><br>
+    <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}" target="_blank">Fiche</a>
+</p>

@@ -25,6 +25,7 @@ ekyna_commerce:
         front_office: Front office
         factory_name: Gateway
         internal: Internal
+        revenue: Revenue
 
     notice:
         exchange: >

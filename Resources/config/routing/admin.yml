@@ -30,6 +30,10 @@ ekyna_commerce_inventory_admin:
     resource: "admin/inventory.yml"
     prefix:   /inventory
 
+ekyna_commerce_map:
+    resource: "admin/map.yml"
+    prefix:   /map
+
 ekyna_commerce_notify_model:
     resource: "admin/notify_model.yml"
     prefix:   /notify-models

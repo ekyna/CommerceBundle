@@ -25,6 +25,7 @@ ekyna_commerce:
         front_office: Partie publique
         factory_name: Passerelle
         internal: Interne
+        revenue: Chiffre d'affaire
 
     notice:
         exchange: >

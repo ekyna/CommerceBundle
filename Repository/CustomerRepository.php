@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
-use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerRepository as BaseRepository;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
+use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerRepository as BaseRepository;
 
 /**
  * Class CustomerRepository

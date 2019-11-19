@@ -2,3 +2,10 @@ ekyna_admin:
     show:
         templates:
             - '@EkynaCommerce/Show/show_div_layout.html.twig'
+    navbar:
+        buttons:
+            commerce_map:
+                route: ekyna_commerce_admin_map
+                icon: globe
+                title: ekyna_core.button.map
+                position: 90
