@@ -3,18 +3,19 @@ define(['jquery', 'routing'], function ($, Router) {
     var initCount, map, cluster, heatmap, $form, busy = false,
     infoWindow, infoXhr;
 
-    function init() {
-        if (!window.hasOwnProperty('google') || !google.hasOwnProperty('maps')) {
-            initCount++;
-            if (10 > initCount) {
-                setTimeout(function () {
-                    init()
-                }, 200);
+    function check() {
+        var check = true;
+        ['commerceMap', 'commerceMarkerCluster', 'commerceHeatmap'].forEach(function(name) {
+            if (!(window.hasOwnProperty(name) && typeof window[name] !== "undefined")) {
+                check = false;
+                return false;
             }
+        });
 
-            return;
-        }
+        return check;
+    }
 
+    function init() {
         map = window.commerceMap;
         cluster = window.commerceMarkerCluster;
         heatmap = window.commerceHeatmap;
@@ -29,10 +30,21 @@ define(['jquery', 'routing'], function ($, Router) {
             return false;
         });
 
+        initAutoComplete();
+        loadMarkers();
+    }
+
+    function initAutoComplete() {
         var input = document.getElementById('map_search');
-        var autoComplete = new google.maps.places.Autocomplete(input, {
-            types: ['(regions)']
-        });
+        try {
+            var autoComplete = new google.maps.places.Autocomplete(input, {
+                types: ['(regions)']
+            });
+        } catch (e) {
+            console.log('Failed to load autocomplete');
+            return;
+        }
+
         autoComplete.bindTo('bounds', map);
         autoComplete.addListener('place_changed', function() {
             var place = autoComplete.getPlace();
@@ -41,18 +53,10 @@ define(['jquery', 'routing'], function ($, Router) {
                 return;
             }
 
-            /*var result = place.name;
-            if (place.formatted_address) {
-                result = place.formatted_address;
-            }*/
-
             map.setCenter(place.geometry.location);
         });
-
-        loadMarkers();
-
-        //google.maps.event.addListener(map, 'idle', onMapBoundsChanged);
     }
+
 
     function loadMarkers() {
         if (busy) {
@@ -156,7 +160,12 @@ define(['jquery', 'routing'], function ($, Router) {
         heatmap.setMap(map);
     }
 
-    init();
+    var i = setInterval(function() {
+        if (check()) {
+            clearInterval(i);
+            init();
+        }
+    }, 250);
 
     var markerMapStyles = [
         {

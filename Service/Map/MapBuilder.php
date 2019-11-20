@@ -6,7 +6,6 @@ use Ekyna\Bundle\AdminBundle\Model\SiteAddress;
 use Ekyna\Bundle\CommerceBundle\Form\Type\MapType;
 use Ekyna\Bundle\CommerceBundle\Model\MapConfig;
 use Ekyna\Bundle\CommerceBundle\Repository\CustomerAddressRepository;
-use Ekyna\Bundle\CommerceBundle\Repository\CustomerRepository;
 use Ekyna\Bundle\CommerceBundle\Repository\OrderRepository;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
