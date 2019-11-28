@@ -54,6 +54,7 @@ class OrderType extends ResourceTableType
                     ->join($alias . '.items', 'i')
                     ->leftJoin('i.children', 'c')
                     ->leftJoin('c.children', 'sc')
+                    ->leftJoin('sc.children', 'ssc')
                     ->andWhere($qb->expr()->orX(
                         $qb->expr()->andX(
                             $qb->expr()->eq('i.subjectIdentity.provider', ':provider'),
@@ -66,6 +67,10 @@ class OrderType extends ResourceTableType
                         $qb->expr()->andX(
                             $qb->expr()->eq('sc.subjectIdentity.provider', ':provider'),
                             $qb->expr()->eq('sc.subjectIdentity.identifier', ':identifier')
+                        ),
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('ssc.subjectIdentity.provider', ':provider'),
+                            $qb->expr()->eq('ssc.subjectIdentity.identifier', ':identifier')
                         )
                     ))
                     ->setParameter('provider', $subject::getProviderName())
