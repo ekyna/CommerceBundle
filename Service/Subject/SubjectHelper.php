@@ -40,38 +40,20 @@ class SubjectHelper extends BaseHelper
     /**
      * @inheritDoc
      */
-    public function generateAddToCartUrl($subject, $path = true)
+    public function generateAddToCartUrl($subject, $path = true): ?string
     {
         $subject = $this->resolveSubject($subject);
 
         $type = $path ? UrlGeneratorInterface::ABSOLUTE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
-        return $this->resourceHelper->getUrlGenerator()->generate('ekyna_commerce_subject_add_to_cart', [
-            'provider'   => $subject::getProviderName(),
-            'identifier' => $subject->getIdentifier(),
-        ], $type);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function generatePrivateUrl($subject, $path = true)
-    {
-        $subject = $this->resolveSubject($subject);
-
-        return $this->resourceHelper->generateResourcePath($subject, 'show', [], !$path);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function generatePublicUrl($subject, $path = true)
-    {
-        if (null === $subject = $this->resolveSubject($subject)) {
-            return null;
-        }
-
-        return $this->resourceHelper->generatePublicUrl($subject, !$path);
+        return $this->resourceHelper->getUrlGenerator()->generate(
+            'ekyna_commerce_subject_add_to_cart',
+            [
+                'provider'   => $subject::getProviderName(),
+                'identifier' => $subject->getIdentifier(),
+            ],
+            $type
+        );
     }
 
     /**
@@ -90,9 +72,43 @@ class SubjectHelper extends BaseHelper
         }
 
         if (!$subject instanceof SubjectInterface) {
-            throw new InvalidArgumentException("Expected instance of " . SubjectInterface::class);
+            throw new InvalidArgumentException("Expected instance of ".SubjectInterface::class);
         }
 
         return $subject;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function generatePublicUrl($subject, bool $path = true): ?string
+    {
+        if (null === $subject = $this->resolveSubject($subject)) {
+            return null;
+        }
+
+        return $this->resourceHelper->generatePublicUrl($subject, !$path);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function generateImageUrl($subject, bool $path = true): ?string
+    {
+        if (null === $subject = $this->resolveSubject($subject)) {
+            return null;
+        }
+
+        return $this->resourceHelper->generateImageUrl($subject, !$path);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function generatePrivateUrl($subject, bool $path = true): ?string
+    {
+        $subject = $this->resolveSubject($subject);
+
+        return $this->resourceHelper->generateResourcePath($subject, 'show', [], !$path);
     }
 }
