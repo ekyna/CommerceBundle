@@ -74,6 +74,13 @@
                             'label_col': 6
                         }) }}
                     </div>
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder.orderedAt, 'datetime', {
+                            'label': 'ekyna_commerce.supplier_order.field.ordered_at',
+                            'id': 'order_orderedAt',
+                            'label_col': 6
+                        }) }}
+                    </div>
                 </div>
                 {% if currency != commerce_default_currency -%}
                     <div class="row">
@@ -275,4 +282,11 @@
     </div>
 </div>
 {% endspaceless %}
+{% endblock %}
+
+{% block side %}
+    {{ parent() }}
+    {% if supplierOrder.supplier is not null %}
+        {% include '@EkynaCommerce/Admin/Supplier/_side.html.twig' with {'supplier': supplierOrder.supplier } %}
+    {% endif %}
 {% endblock %}

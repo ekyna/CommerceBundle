@@ -1042,6 +1042,7 @@ class Configuration implements ConfigurationInterface
                                 ->variableNode('templates')->defaultValue([
                                     '_form.html'  => '@EkynaCommerce/Admin/SupplierOrder/_form.html',
                                     'new.html'    => '@EkynaCommerce/Admin/SupplierOrder/new.html',
+                                    'edit.html'   => '@EkynaCommerce/Admin/SupplierOrder/edit.html',
                                     'show.html'   => '@EkynaCommerce/Admin/SupplierOrder/show.html',
                                     'submit.html' => '@EkynaCommerce/Admin/SupplierOrder/submit.html',
                                     'notify.html' => '@EkynaCommerce/Admin/SupplierOrder/notify.html',

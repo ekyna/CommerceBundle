@@ -31,3 +31,11 @@
 
     {{ form_end(form) }}
 {% endblock main %}
+
+
+{% block side %}
+    {{ parent() }}
+    {% if supplierOrder.supplier is not null %}
+        {% include '@EkynaCommerce/Admin/Supplier/_side.html.twig' with {'supplier': supplierOrder.supplier } %}
+    {% endif %}
+{% endblock %}

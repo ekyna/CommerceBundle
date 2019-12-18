@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
+use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Component\Commerce\Supplier\Repository\SupplierProductRepositoryInterface;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
@@ -42,7 +43,7 @@ class SupplierType extends ResourceFormType
         parent::__construct($supplierClass);
 
         $this->supplierProductRepository = $repository;
-        $this->carrierClass = $carrierClass;
+        $this->carrierClass              = $carrierClass;
     }
 
     /**
@@ -77,8 +78,9 @@ class SupplierType extends ResourceFormType
                 'label'    => 'ekyna_core.field.address',
                 'required' => false,
             ])
-            ->add('description', Symfony\TextareaType::class, [
+            ->add('description', TinymceType::class, [
                 'label'    => 'ekyna_core.field.description',
+                'theme'    => 'simple',
                 'required' => false,
             ])
             ->add('locale', LocaleChoiceType::class);

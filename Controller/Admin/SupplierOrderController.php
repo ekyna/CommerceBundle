@@ -40,7 +40,7 @@ class SupplierOrderController extends ResourceController
         $context = $this->loadContext($request);
 
         /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $resource */
-        $resource = $this->createNew($context);
+        $resource     = $this->createNew($context);
         $resourceName = $this->config->getResourceName();
         $context->addResource($resourceName, $resource);
 
@@ -99,8 +99,9 @@ class SupplierOrderController extends ResourceController
         return $this->render(
             $this->config->getTemplate('new.html'),
             $context->getTemplateVars([
-                'flow' => $flow,
-                'form' => $form->createView(),
+                'flow'          => $flow,
+                'form'          => $form->createView(),
+                'supplierOrder' => $resource,
             ])
         );
     }
@@ -166,7 +167,7 @@ class SupplierOrderController extends ResourceController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $dispatcher = $this->get('ekyna_resource.event_dispatcher');
-            $event = $dispatcher->createResourceEvent($resource);
+            $event      = $dispatcher->createResourceEvent($resource);
             $dispatcher->dispatch(SupplierOrderEvents::PRE_SUBMIT, $event);
 
             if (!$event->hasErrors()) {
@@ -341,7 +342,7 @@ class SupplierOrderController extends ResourceController
             return 0 < $id;
         });
 
-        $helper = $this->get('ekyna_commerce.subject_helper');
+        $helper   = $this->get('ekyna_commerce.subject_helper');
         $subjects = [];
 
         foreach ($order->getItems() as $item) {
@@ -362,7 +363,7 @@ class SupplierOrderController extends ResourceController
             $labels[0]->setGeocode($geocode);
         }
 
-        $date = $order->getOrderedAt() ?? new \DateTime();
+        $date  = $order->getOrderedAt() ?? new \DateTime();
         $extra = sprintf('%s (%s)', $order->getNumber(), $date->format('Y-m-d'));
         foreach ($labels as $label) {
             $label->setExtra($extra);
@@ -388,7 +389,7 @@ class SupplierOrderController extends ResourceController
             throw $this->createNotFoundException('Not yet supported.');
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SupplierOrderInterface $resource */
         $resource = $context->getResource($resourceName);
