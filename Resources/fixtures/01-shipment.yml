@@ -1,19 +1,16 @@
 Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface:
-#    shipment_method_gls:
-#        __factory: { '@ekyna_commerce.shipment_method.repository::createNew': [] }
-#        name: GLS
-#        media: <randomImage()>
-#        taxGroup: <defaultTaxGroup()>
-#        platformName: GLS
-#        gatewayConfig:
-#            deposit_number: FR0035
-#            customer_code: 2500035741
-#            contact_id: 2504915901
-#            service: BP
-#        enabled: true
-#        available: true
-#        title: GLS
-#        description: "<identity('<p>GLS.</p>')>"
+    shipment_method_dpd:
+        __factory: { '@ekyna_commerce.shipment_method.repository::createNew': [] }
+        name: GLS
+        media: <randomImage()>
+        taxGroup: <defaultTaxGroup()>
+        platformName: noop
+#       TODO: platformName: DPD
+#       TODO: gatewayConfig: ~
+        enabled: true
+        available: true
+        title: DPD
+        description: "<identity('<p>DPD.</p>')>"
     shipment_method_colissimo:
         __factory: { '@ekyna_commerce.shipment_method.repository::createNew': [] }
         name: Colissimo
@@ -33,55 +30,55 @@ Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface:
             - <countryByCode('FR')>
 
 Ekyna\Component\Commerce\Shipment\Model\ShipmentPriceInterface:
-    # GLS
-#    shipment_price_gls_1:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 2
-#        netPrice: 8.5
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
-#    shipment_price_gls_2:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 5
-#        netPrice: 12.5
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
-#    shipment_price_gls_3:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 10
-#        netPrice: 18.5
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
-#    shipment_price_gls_4:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 20
-#        netPrice: 22.3
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
-#    shipment_price_gls_5:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 30
-#        netPrice: 26.5
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
-#    shipment_price_gls_6:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 50
-#        netPrice: 38.8
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
-#    shipment_price_gls_7:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 80
-#        netPrice: 65.3
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
-#    shipment_price_gls_8:
-#        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
-#        weight: 100
-#        netPrice: 77.6
-#        zone: '@shipment_zone_fr'
-#        method: '@shipment_method_gls'
+    # DPD
+    shipment_price_dpd_1:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 2
+        netPrice: 8.5
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
+    shipment_price_dpd_2:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 5
+        netPrice: 12.5
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
+    shipment_price_dpd_3:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 10
+        netPrice: 18.5
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
+    shipment_price_dpd_4:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 20
+        netPrice: 22.3
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
+    shipment_price_dpd_5:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 30
+        netPrice: 26.5
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
+    shipment_price_dpd_6:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 50
+        netPrice: 38.8
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
+    shipment_price_dpd_7:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 80
+        netPrice: 65.3
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
+    shipment_price_dpd_8:
+        __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }
+        weight: 100
+        netPrice: 77.6
+        zone: '@shipment_zone_fr'
+        method: '@shipment_method_dpd'
     # Colissimo
     shipment_price_coli_8:
         __factory: { '@ekyna_commerce.shipment_price.repository::createNew': [] }

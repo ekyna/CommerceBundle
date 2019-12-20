@@ -1,0 +1,120 @@
+Ekyna\Component\Commerce\Supplier\Model\SupplierCarrierInterface:
+    supplier_tnt:
+        __factory: { '@ekyna_commerce.supplier_carrier.repository::createNew': [] }
+        name: TNT
+
+Ekyna\Component\Commerce\Supplier\Model\SupplierInterface:
+    supplier_techdata:
+        __factory: { '@ekyna_commerce.supplier.repository::createNew': [] }
+        name: TechData
+        gender: 'mr'
+        firstName: <firstName()>
+        lastName: <lastName()>
+        email: <safeEmail()>
+        customerCode: SOME-CODE
+        address: <generateAddress(@self)>
+        currency: <currencyByCode('EUR')>
+        #tax: TODO
+        carrier: '@supplier_tnt'
+
+Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface:
+    supplier_product_nfcr:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('NFCR')>)>
+    supplier_product_musb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('MUSB')>)>
+    supplier_product_typc:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('TYPC')>)>
+    supplier_product_bk9:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('BK9')>)>
+    supplier_product_bk11:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('BK11')>)>
+    supplier_product_hub:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('HUB')>)>
+    supplier_product_taba:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('TABA')>)>
+    supplier_product_tabbw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('TABB-W')>)>
+    supplier_product_tabbb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('TABB-B')>)>
+    supplier_product_tabcw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('TABC-W')>)>
+    supplier_product_tabcb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('TABC-B')>)>
+    supplier_product_kesw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('KES-W')>)>
+    supplier_product_kesb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('KES-B')>)>
+    supplier_product_swcw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('SWC-W')>)>
+    supplier_product_swcb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('SWC-B')>)>
+    supplier_product_rocw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('ROC-W')>)>
+    supplier_product_rocb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('ROC-B')>)>
+    supplier_product_kdbw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('KDB-W')>)>
+    supplier_product_kdbb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('KDB-B')>)>
+    supplier_product_ksbw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('KSB-W')>)>
+    supplier_product_ksbb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('KSB-B')>)>
+    supplier_product_shaw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('SHA-W')>)>
+    supplier_product_shab:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('SHA-B')>)>
+    supplier_product_shbw:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('SHB-W')>)>
+    supplier_product_shbb:
+        __factory: { '@ekyna_commerce.supplier_product.repository::createNew': [] }
+        supplier: '@supplier_techdata'
+        subjectIdentity: <subjectIdentity(<getProduct('SHB-B')>)>

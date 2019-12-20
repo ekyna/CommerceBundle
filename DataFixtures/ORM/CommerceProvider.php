@@ -5,14 +5,12 @@ namespace Ekyna\Bundle\CommerceBundle\DataFixtures\ORM;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CoreBundle\DataFixtures\ORM\Fixtures;
-use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\CountryInterface;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
 use Ekyna\Component\Commerce\Common\Model\IdentityInterface;
 use Ekyna\Component\Commerce\Common\Repository\CountryRepositoryInterface;
 use Ekyna\Component\Commerce\Common\Repository\CurrencyRepositoryInterface;
 use Ekyna\Component\Commerce\Customer\Entity\CustomerAddress;
-use Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerAddressRepositoryInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterface;
@@ -149,46 +147,6 @@ class CommerceProvider
 
         throw new \RuntimeException('Customer group not found.');
     }
-
-    /**
-     * Creates the customer address.
-     *
-     * @param CustomerInterface $customer
-     * @param bool              $ownerIdentity
-     *
-     * @return CustomerAddressInterface
-     */
-//    public function createCustomerAddress(CustomerInterface $customer, $ownerIdentity = false): CustomerAddressInterface
-//    {
-//        /** @var CustomerAddressInterface $address */
-//        $address = $this->customerAddressRepository->createNew();
-//
-//        $this->generateAddress($address, $ownerIdentity ? $customer : null);
-//
-//        if ($ownerIdentity) {
-//            $address
-//                ->setInvoiceDefault(true)
-//                ->setDeliveryDefault(true);
-//        }
-//
-//        return $address;
-//    }
-
-    /**
-     * Creates the supplier address.
-     *
-     * @param SupplierInterface $supplier
-     *
-     * @return AddressInterface
-     */
-//    public function createSupplierAddress(SupplierInterface $supplier)
-//    {
-//        $address = new SupplierAddress();
-//
-//        $this->generateAddress($address, $supplier);
-//
-//        return $address;
-//    }
 
     /**
      * Generates an address.
