@@ -28,12 +28,15 @@ ekyna_commerce_shipment_method_admin_edit:
         shipmentMethodId: \d+
 
 #ekyna_commerce_shipment_method_admin_tinymce:
-#    path: /{shipmentMethodId}/tinymce
-#    defaults: { _controller: "ekyna_commerce.shipment_method.controller:tinymceAction", field: description }
+#    path: /{shipmentMethodId}/tinymce/{_locale}/{field}
+#    controller: "ekyna_commerce.shipment_method.controller:tinymceAction"
 #    methods: [GET]
 #    requirements:
 #        shipmentMethodId: \d+
 #        field: "[a-zA-Z0-9]+"
+#    defaults:
+#        _locale: "%locale%"
+#        field: description
 
 ekyna_commerce_shipment_method_admin_move_up:
     path: /{shipmentMethodId}/moveup

@@ -167,70 +167,71 @@ define(['jquery', 'routing'], function ($, Router) {
         }
     }, 250);
 
+    /** @see https://snazzymaps.com/editor */
     var markerMapStyles = [
         {
             "featureType": "all",
-            "elementType": "geometry.fill",
+            "elementType": "labels.text.fill",
             "stylers": [
                 {
-                    "weight": "2.00"
+                    "saturation": 36
+                },
+                {
+                    "color": "#333333"
+                },
+                {
+                    "lightness": 40
                 }
             ]
         },
         {
             "featureType": "all",
-            "elementType": "geometry.stroke",
-            "stylers": [
-                {
-                    "color": "#9c9c9c"
-                }
-            ]
-        },
-        {
-            "featureType": "all",
-            "elementType": "labels.text",
-            "stylers": [
-                {
-                    "visibility": "on"
-                }
-            ]
-        },
-        {
-            "featureType": "administrative",
-            "elementType": "all",
-            "stylers": [
-                {
-                    "visibility": "off"
-                }
-            ]
-        },
-        {
-            "featureType": "administrative.country",
-            "elementType": "geometry",
-            "stylers": [
-                {
-                    "visibility": "on"
-                }
-            ]
-        },
-        {
-            "featureType": "administrative.country",
-            "elementType": "labels",
+            "elementType": "labels.text.stroke",
             "stylers": [
                 {
                     "visibility": "on"
                 },
                 {
-                    "lightness": "50"
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 16
                 }
             ]
         },
         {
-            "featureType": "administrative.province",
-            "elementType": "all",
+            "featureType": "all",
+            "elementType": "labels.icon",
             "stylers": [
                 {
                     "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#fefefe"
+                },
+                {
+                    "lightness": 20
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#fefefe"
+                },
+                {
+                    "lightness": 17
+                },
+                {
+                    "weight": 1.2
                 }
             ]
         },
@@ -240,36 +241,33 @@ define(['jquery', 'routing'], function ($, Router) {
             "stylers": [
                 {
                     "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.locality",
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "on"
                 },
                 {
-                    "lightness": "60"
+                    "color": "#b6b6b6"
+                },
+                {
+                    "weight": "0.20"
                 }
             ]
         },
         {
             "featureType": "landscape",
-            "elementType": "all",
-            "stylers": [
-                {
-                    "color": "#f2f2f2"
-                }
-            ]
-        },
-        {
-            "featureType": "landscape",
-            "elementType": "geometry.fill",
+            "elementType": "geometry",
             "stylers": [
                 {
                     "color": "#ffffff"
-                }
-            ]
-        },
-        {
-            "featureType": "landscape.man_made",
-            "elementType": "geometry.fill",
-            "stylers": [
+                },
                 {
-                    "color": "#ffffff"
+                    "lightness": 20
                 }
             ]
         },
@@ -283,98 +281,74 @@ define(['jquery', 'routing'], function ($, Router) {
             ]
         },
         {
-            "featureType": "road",
-            "elementType": "all",
-            "stylers": [
-                {
-                    "saturation": -100
-                },
-                {
-                    "lightness": 45
-                }
-            ]
-        },
-        {
-            "featureType": "road",
-            "elementType": "geometry",
+            "featureType": "poi.park",
+            "elementType": "labels",
             "stylers": [
                 {
                     "visibility": "off"
-                }
-            ]
-        },
-        {
-            "featureType": "road",
-            "elementType": "geometry.fill",
-            "stylers": [
-                {
-                    "color": "#eeeeee"
-                }
-            ]
-        },
-        {
-            "featureType": "road",
-            "elementType": "labels.text.fill",
-            "stylers": [
-                {
-                    "color": "#7b7b7b"
-                }
-            ]
-        },
-        {
-            "featureType": "road",
-            "elementType": "labels.text.stroke",
-            "stylers": [
-                {
-                    "color": "#ffffff"
                 }
             ]
         },
         {
             "featureType": "road.highway",
-            "elementType": "all",
+            "elementType": "geometry.fill",
             "stylers": [
                 {
-                    "visibility": "off"
+                    "color": "#dedede"
+                },
+                {
+                    "lightness": 17
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#dedede"
+                },
+                {
+                    "lightness": 29
+                },
+                {
+                    "weight": 0.2
                 }
             ]
         },
         {
             "featureType": "road.arterial",
-            "elementType": "labels.icon",
+            "elementType": "geometry",
             "stylers": [
                 {
-                    "visibility": "off"
-                }
-            ]
-        },
-        {
-            "featureType": "transit",
-            "elementType": "all",
-            "stylers": [
-                {
-                    "visibility": "off"
-                }
-            ]
-        },
-        {
-            "featureType": "water",
-            "elementType": "all",
-            "stylers": [
-                {
-                    "color": "#46bcec"
+                    "lightness": 18
                 },
                 {
-                    "visibility": "on"
+                    "color": "#dedede"
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#e3e3e3"
+                },
+                {
+                    "lightness": 16
                 }
             ]
         },
         {
             "featureType": "water",
-            "elementType": "geometry.fill",
+            "elementType": "geometry",
             "stylers": [
                 {
-                    "color": "#c8d7d4"
+                    "color": "#a0d6d1"
+                },
+                {
+                    "lightness": 17
                 }
             ]
         },
@@ -383,28 +357,7 @@ define(['jquery', 'routing'], function ($, Router) {
             "elementType": "labels",
             "stylers": [
                 {
-                    "visibility": "on"
-                }
-            ]
-        },
-        {
-            "featureType": "water",
-            "elementType": "labels.text.fill",
-            "stylers": [
-                {
-                    "color": "#000000"
-                },
-                {
-                    "lightness": "60"
-                }
-            ]
-        },
-        {
-            "featureType": "water",
-            "elementType": "labels.text.stroke",
-            "stylers": [
-                {
-                    "color": "#ffffff"
+                    "visibility": "off"
                 }
             ]
         }
@@ -508,6 +461,15 @@ define(['jquery', 'routing'], function ($, Router) {
             ]
         },
         {
+            "featureType": "administrative.locality",
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "color": "#737373"
+                }
+            ]
+        },
+        {
             "featureType": "landscape",
             "elementType": "geometry",
             "stylers": [
@@ -542,22 +504,13 @@ define(['jquery', 'routing'], function ($, Router) {
         },
         {
             "featureType": "road.highway",
-            "elementType": "all",
-            "stylers": [
-                {
-                    "visibility": "off"
-                }
-            ]
-        },
-        {
-            "featureType": "road.highway",
             "elementType": "geometry.fill",
             "stylers": [
                 {
-                    "color": "#000000"
+                    "lightness": 17
                 },
                 {
-                    "lightness": 17
+                    "color": "#3c3c3c"
                 }
             ]
         },
@@ -566,20 +519,11 @@ define(['jquery', 'routing'], function ($, Router) {
             "elementType": "geometry.stroke",
             "stylers": [
                 {
-                    "color": "#000000"
-                },
-                {
                     "lightness": 29
                 },
                 {
                     "weight": 0.2
-                }
-            ]
-        },
-        {
-            "featureType": "road.arterial",
-            "elementType": "all",
-            "stylers": [
+                },
                 {
                     "visibility": "off"
                 }
@@ -590,19 +534,10 @@ define(['jquery', 'routing'], function ($, Router) {
             "elementType": "geometry",
             "stylers": [
                 {
-                    "color": "#000000"
+                    "lightness": 18
                 },
                 {
-                    "lightness": 18
-                }
-            ]
-        },
-        {
-            "featureType": "road.local",
-            "elementType": "all",
-            "stylers": [
-                {
-                    "visibility": "off"
+                    "color": "#393939"
                 }
             ]
         },
@@ -657,6 +592,9 @@ define(['jquery', 'routing'], function ($, Router) {
             "stylers": [
                 {
                     "lightness": "0"
+                },
+                {
+                    "visibility": "off"
                 }
             ]
         },
