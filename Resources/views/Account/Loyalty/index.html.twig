@@ -1,0 +1,12 @@
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
+
+{% block account %}
+{% spaceless %}
+    <h3>{{ 'ekyna_commerce.account.loyalty.title'|trans|raw }} : {{ customer.loyaltyPoints }} pts</h3>
+    <hr>
+    <h4>{{ 'ekyna_commerce.customer.field.loyalty_logs'|trans }}</h4>
+    {{ customer_loyalty_logs(customer) }}
+    <h4>{{ 'ekyna_commerce.coupon.label.plural'|trans }}</h4>
+    {{ customer_coupons(customer) }}
+{% endspaceless %}
+{% endblock account %}

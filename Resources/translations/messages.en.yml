@@ -196,6 +196,11 @@ ekyna_commerce:
                 invoice_name: Billing full name
                 invoice_email: Billing email
                 invoice_phone: Billing phone number
+                newsletter: I want to receive news et promotionnal offers
+        marketing:
+            engage: >
+                You wish to receive <strong>news</strong> about us and <strong>exclusive promotionnal offers</strong>?
+            newsletter: Subscribe
         ticket:
             title: My tickets
             go_to_sale_details: >
@@ -470,11 +475,14 @@ ekyna_commerce:
             min_gross: Min. gross total
             cumulative: Can be combined
         message:
+            designation: Coupon code %code%
             not_found: Unknown coupon code.
             usage: This coupon code is no longer available.
             start_at: This coupon code will be available from %date%.
             end_at: This coupon code is no longer available %date%.
-            designation: Coupon code %code%
+            min_gross: This coupon code requires gross total to be greater than or equal %gross%.
+            cumulative: This coupon code is not cumulative product discounts.
+            owner: This coupon code is owned by another customer account.
         help:
             cumulative: Whether this coupon can be applied to a sale with autmatic item discount(s).
         alert:
@@ -606,6 +614,9 @@ ekyna_commerce:
             credit_balance: Credit balance
             default_payment_method: Default payment method
             payment_methods: Authorized payment methods
+            loyalty_points: Loyalty points
+            loyalty_logs: Loyalty logs
+            loyalty_origin: Reason
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Accountable&nbsp;service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Sales&nbsp;manager

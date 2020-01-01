@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Bundle\UserBundle\Event\MenuEvent;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
+use Ekyna\Component\Commerce\Features;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -19,23 +20,21 @@ class AccountMenuSubscriber implements EventSubscriberInterface
     protected $customerProvider;
 
     /**
-     * @var array
+     * @var Features
      */
-    protected $config;
+    protected $features;
 
 
     /**
      * Constructor.
      *
      * @param CustomerProviderInterface $customerProvider
-     * @param array                     $config
+     * @param Features                  $features
      */
-    public function __construct(CustomerProviderInterface $customerProvider, array $config = [])
+    public function __construct(CustomerProviderInterface $customerProvider, Features $features)
     {
         $this->customerProvider = $customerProvider;
-        $this->config = array_replace([
-            'support' => true,
-        ], $config);
+        $this->features = $features;
     }
 
     /**
@@ -85,8 +84,15 @@ class AccountMenuSubscriber implements EventSubscriberInterface
             'route' => 'ekyna_commerce_account_address_index',
         ]);
 
-        // Tickets
-        if ($this->config['support']) {
+        // Loyalty
+        if ($this->features->isEnabled(Features::LOYALTY)) {
+            $menu->addChild('ekyna_commerce.account.loyalty.title', [
+                'route' => 'ekyna_commerce_account_loyalty_index',
+            ]);
+        }
+
+        // Support
+        if ($this->features->isEnabled(Features::SUPPORT)) {
             $menu->addChild('ekyna_commerce.account.ticket.title', [
                 'route' => 'ekyna_commerce_account_ticket_index',
             ]);

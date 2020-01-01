@@ -23,6 +23,21 @@
                     {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            {% if form.birthday is defined or form.newsletter is defined %}
+            <div class="row">
+                {% if form.birthday is defined %}
+                    <div class="col-md-6">
+                        {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
+                    </div>
+                {% endif %}
+                {% if form.newsletter is defined %}
+                    <div class="col-md-6">
+                        {{ form_row(form.newsletter, {'label_col': 4, 'widget_col': 8}) }}
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
             {{ form_row(form.description) }}
             <hr>
             <div class="row">

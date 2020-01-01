@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
+use Ekyna\Component\Commerce\Features;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -24,6 +25,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class InformationType extends AbstractType
 {
     /**
+     * @var Features
+     */
+    private $features;
+
+    /**
      * @var string
      */
     private $customerClass;
@@ -37,13 +43,13 @@ class InformationType extends AbstractType
     /**
      * Constructor.
      *
-     * @param string $customerClass
-     * @param array  $config
+     * @param string   $customerClass
+     * @param Features $features
      */
-    public function __construct($customerClass, array $config)
+    public function __construct(Features $features, string $customerClass)
     {
+        $this->features = $features;
         $this->customerClass = $customerClass;
-        $this->config = $config;
     }
 
     /**
@@ -103,13 +109,23 @@ class InformationType extends AbstractType
                 ],
             ]);
 
-        if ($this->config['birthday']) {
+        if ($this->features->isEnabled(Features::BIRTHDAY)) {
             $builder->add('birthday', Type\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.birthday',
                 'required' => false,
                 'format'   => 'dd/MM/yyyy', // TODO localized format
                 'attr'     => [
                     'autocomplete' => 'bday',
+                ],
+            ]);
+        }
+
+        if ($this->features->isEnabled(Features::NEWSLETTER)) {
+            $builder->add('newsletter', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.account.marketing.newsletter',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
                 ],
             ]);
         }

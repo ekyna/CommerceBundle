@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
+use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
@@ -32,7 +33,6 @@ class Configuration implements ConfigurationInterface
         $this->addFeatureSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
-        $this->addSupportSection($rootNode);
         $this->addPoolsSection($rootNode);
 
         return $treeBuilder;
@@ -75,12 +75,6 @@ class Configuration implements ConfigurationInterface
                             ->validate()
                             ->ifNotInArray(VatDisplayModes::getModes())
                                 ->thenInvalid('Invalid VAT display mode %s')
-                            ->end()
-                        ->end()
-                        ->arrayNode('customer')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->booleanNode('birthday')->defaultTrue()->end()
                             ->end()
                         ->end()
                         ->arrayNode('expiration')
@@ -194,12 +188,84 @@ class Configuration implements ConfigurationInterface
      */
     private function addFeatureSection(ArrayNodeDefinition $node)
     {
+        // Must be kept in sync with:
+        /** @see \Ekyna\Component\Commerce\Features */
         $node
             ->children()
                 ->arrayNode('feature')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->arrayNode(Features::BIRTHDAY)
+                            ->canBeEnabled()
+                        ->end()
+                        ->arrayNode(Features::NEWSLETTER)
+                            ->canBeEnabled()
+                        ->end()
                         ->arrayNode(Features::COUPON)
+                            ->canBeEnabled()
+                        ->end()
+                        ->arrayNode(Features::LOYALTY)
+                            ->canBeEnabled()
+                            ->children()
+                                ->integerNode('credit_rate')
+                                    ->min(0)
+                                    ->defaultValue(1)
+                                ->end()
+                                ->arrayNode('credit')
+                                    ->useAttributeAsKey('name')
+                                    ->prototype('integer')->min(0)->end()
+                                    ->validate()
+                                        ->ifTrue(function($value) {
+                                            foreach (array_keys($value) as $key) {
+                                                if (!in_array($key, [Features::BIRTHDAY, Features::NEWSLETTER], true)) {
+                                                    return true;
+                                                }
+                                            }
+                                            return false;
+                                        })
+                                        ->thenInvalid('Invalid loyalty credit config.')
+                                    ->end()
+                                ->end()
+                                ->arrayNode('coupons')
+                                    ->useAttributeAsKey('name')
+                                    ->prototype('array')
+                                        ->children()
+                                            ->scalarNode('mode')
+                                                ->defaultValue(AdjustmentModes::MODE_PERCENT)
+                                                ->validate()
+                                                    ->ifNotInArray([AdjustmentModes::MODE_PERCENT, AdjustmentModes::MODE_FLAT])
+                                                    ->thenInvalid('Invalid loyalty coupon mode.')
+                                                ->end()
+                                            ->end()
+                                            ->integerNode('amount')
+                                                ->isRequired()
+                                                ->validate()
+                                                    ->ifTrue(function($value) {
+                                                        return 0 >= $value;
+                                                    })
+                                                    ->thenInvalid('Invalid loyalty coupon amount.')
+                                                ->end()
+                                            ->end()
+                                            ->scalarNode('period')
+                                                ->defaultValue('+2 months')
+                                                ->validate()
+                                                    ->ifTrue(function($value) {
+                                                        try {
+                                                            new \DateTime($value);
+                                                        } catch(\Exception $e) {
+                                                            return true;
+                                                        }
+                                                        return false;
+                                                    })
+                                                    ->thenInvalid('Invalid loyalty coupon period.')
+                                                ->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode(Features::SUPPORT)
                             ->canBeEnabled()
                         ->end()
                     ->end()
@@ -302,21 +368,6 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                ->end()
-            ->end();
-    }
-
-    /**
-     * Adds `support` section.
-     *
-     * @param ArrayNodeDefinition $node
-     */
-    private function addSupportSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('support')
-                    ->canBeDisabled()
                 ->end()
             ->end();
     }

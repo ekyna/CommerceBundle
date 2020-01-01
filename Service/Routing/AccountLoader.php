@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Routing;
 
+use Ekyna\Component\Commerce\Features;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -13,26 +14,24 @@ use Symfony\Component\Routing\RouteCollection;
 class AccountLoader extends Loader
 {
     /**
+     * @var Features
+     */
+    private $features;
+
+    /**
      * @var bool
      */
     private $loaded = false;
-
-    /**
-     * @var array
-     */
-    private $config;
 
 
     /**
      * Constructor.
      *
-     * @param array $config
+     * @param Features $feature
      */
-    public function __construct(array $config)
+    public function __construct(Features $feature)
     {
-        $this->config = array_replace([
-            'support' => true,
-        ], $config);
+        $this->features = $feature;
     }
 
     /**
@@ -46,7 +45,14 @@ class AccountLoader extends Loader
 
         $collection = new RouteCollection();
 
-        if ($this->config['support']) {
+        if ($this->features->isEnabled(Features::LOYALTY)) {
+            $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/account/loyalty.yml', 'yaml');
+            $routes->addPrefix('/loyalty');
+
+            $collection->addCollection($routes);
+        }
+
+        if ($this->features->isEnabled(Features::SUPPORT)) {
             $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/account/ticket.yml', 'yaml');
             $routes->addPrefix('/tickets');
 

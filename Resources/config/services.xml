@@ -133,9 +133,7 @@
         <!-- Routing loader -->
         <service id="ekyna_commerce.routing.account_loader"
                  class="Ekyna\Bundle\CommerceBundle\Service\Routing\AccountLoader">
-            <argument type="collection">
-                <argument key="support">%ekyna_commerce.support.enabled%</argument>
-            </argument>
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <tag name="routing.loader"/>
         </service>
 

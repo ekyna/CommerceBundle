@@ -71,6 +71,13 @@
                 {{ 'ekyna_commerce.shipment.label.plural'|trans }}
             </a>
         </li>
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::LOYALTY')) -%}
+        <li>
+            <a href="#customer-loyalty" id="toggle-tickets" data-toggle="tab">
+                {{ 'ekyna_commerce.customer.field.loyalty_points'|trans }}
+            </a>
+        </li>
+        {%- endif %}
         {% if support_enabled() -%}
         <li>
             <a href="#customer-tickets" id="toggle-tickets" data-toggle="tab">
@@ -134,6 +141,29 @@
                             'label_col': 4
                         }) }}
                     </div>
+                </div>
+                <div class="row">
+                    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
+                    <div class="col-md-6">
+                        {{ show_row(customer.birthday, 'datetime', {
+                            'label': 'ekyna_core.field.birthday',
+                            'id': 'customer_birthday',
+                            'time': false,
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    {%- endif %}
+                    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
+                    <div class="col-md-6">
+                        {{ show_row(customer.newsletter, 'boolean', {
+                            'label': 'ekyna_core.field.newsletter',
+                            'id': 'customer_newsletter',
+                            'color': true,
+                            'false_class': 'label label-default',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    {%- endif %}
                 </div>
                 {{ show_row(customer.description, 'textarea', {
                     'label': 'ekyna_commerce.field.description',
@@ -405,6 +435,40 @@
                 </div>
                 {{ ekyna_table_render(customer_shipments) }}
             </div>
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::LOYALTY')) -%}
+            <div class="tab-pane" id="customer-loyalty">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ show_row(customer.loyaltyPoints, 'number', {
+                            'label': 'ekyna_commerce.customer.field.loyalty_points',
+                            'id': 'customer_loyaltyPoints',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                </div>
+                <div class="row show-row">
+                    <div class="col-md-2 show-label" title="{{ 'ekyna_commerce.customer.field.loyalty_logs'|trans }}">
+                        {{- 'ekyna_commerce.customer.field.loyalty_logs'|trans -}}
+                    </div>
+                    <div class="col-md-10">
+                        <div id="customer_loyaltyLogs" class="show-widget show-widget-block">
+                            {{- customer_loyalty_logs(customer) -}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row show-row">
+                    <div class="col-md-2 show-label" title="{{ 'ekyna_commerce.coupon.label.plural'|trans }}">
+                        {{- 'ekyna_commerce.coupon.label.plural'|trans -}}
+                    </div>
+                    <div class="col-md-10">
+                        <div id="customer_coupons" class="show-widget show-widget-block">
+                            {{- customer_coupons(customer) -}}
+                        </div>
+                    </div>
+                </div>
+                {# TODO Customer's coupons table (use table type) #}
+            </div>
+            {%- endif %}
             {% if support_enabled() -%}
             <div class="tab-pane" id="customer-tickets">
                 {{- support_tickets(customer, {

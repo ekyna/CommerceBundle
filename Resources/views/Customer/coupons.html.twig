@@ -1,0 +1,32 @@
+{% spaceless %}
+<table class="table table-alt-head">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.code'|trans }}</th>
+        <th>{{ 'ekyna_core.field.amount'|trans }}</th>
+        <th>{{ 'ekyna_core.field.start_date'|trans }}</th>
+        <th>{{ 'ekyna_core.field.end_date'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for coupon in coupons %}
+        <tr>
+            <td data-clipboard-copy="{{ coupon.code }}">{{ coupon.code }}</td>
+            <td>
+                {%- if coupon.mode == constant('Ekyna\\Component\\Commerce\\Common\\Model\\AdjustmentModes::MODE_PERCENT') -%}
+                    -{{ (coupon.amount / 100)|localizednumber('percent') }}
+                {%- else -%}
+                    -{{ coupon.amount|localizedcurrency(commerce_default_currency) }}
+                {%- endif -%}
+            </td>
+            <td>{{ coupon.startAt|localizeddate('short', 'none') }}</td>
+            <td>{{ coupon.endAt|localizeddate('short', 'none') }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">{{ 'ekyna_core.value.no_item'|trans }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endspaceless %}

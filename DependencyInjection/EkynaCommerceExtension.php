@@ -36,7 +36,6 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureFeatures($config['feature'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
-        $this->configureSupport($config['support'], $container);
         $this->configureSaleFactory($container);
 
         if (in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
@@ -53,16 +52,13 @@ class EkynaCommerceExtension extends AbstractExtension
      */
     private function configureDefaults(array $config, ContainerBuilder $container)
     {
-        // TODO 'ekyna_commerce.default.*' for all
-        $container->setParameter('ekyna_commerce.company_logo', $config['company_logo']);
+        $container->setParameter('ekyna_commerce.default.company_logo', $config['company_logo']);
         $container->setParameter('ekyna_commerce.default.country', $config['country']);
         $container->setParameter('ekyna_commerce.default.currency', $config['currency']);
         $container->setParameter('ekyna_commerce.default.vat_display_mode', $config['vat_display_mode']);
-        $container->setParameter('ekyna_commerce.default.customer', $config['customer']);
         $container->setParameter('ekyna_commerce.default.fraud', $config['fraud']);
-
-        $container->setParameter('ekyna_commerce.expiration.cart', $config['expiration']['cart']);
-        $container->setParameter('ekyna_commerce.expiration.quote', $config['expiration']['quote']);
+        $container->setParameter('ekyna_commerce.default.expiration.cart', $config['expiration']['cart']);
+        $container->setParameter('ekyna_commerce.default.expiration.quote', $config['expiration']['quote']);
     }
 
     /**
@@ -105,7 +101,7 @@ class EkynaCommerceExtension extends AbstractExtension
             ->getDefinition('ekyna_commerce.document.renderer_factory')
             ->replaceArgument(3, [
                 'shipment_remaining_date' => $config['shipment_remaining_date'],
-                'logo_path'               => '%ekyna_commerce.company_logo%',
+                'logo_path'               => '%ekyna_commerce.default.company_logo%',
                 'debug'                   => '%kernel.debug%',
             ]);
     }
@@ -174,21 +170,6 @@ class EkynaCommerceExtension extends AbstractExtension
         $container
             ->getDefinition('ekyna_commerce.availability_helper')
             ->replaceArgument(2, $config['availability']['in_stock_limit']);
-    }
-
-    /**
-     * Configures the support.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureSupport(array $config, ContainerBuilder $container)
-    {
-        $container->setParameter('ekyna_commerce.support.enabled', $config['enabled']);
-
-        $container
-            ->getDefinition('ekyna_commerce.twig.support_extension')
-            ->replaceArgument(1, $config);
     }
 
     /**

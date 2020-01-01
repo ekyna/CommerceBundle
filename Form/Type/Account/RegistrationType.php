@@ -15,6 +15,7 @@ use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Features;
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
@@ -42,31 +43,32 @@ class RegistrationType extends AbstractType
     private $tokenStorage;
 
     /**
+     * @var Features
+     */
+    private $features;
+
+    /**
      * @var string
      */
     private $customerClass;
-
-    /**
-     * @var array
-     */
-    private $config;
 
 
     /**
      * Constructor.
      *
      * @param TokenStorageInterface $tokenStorage
+     * @param Features              $features
      * @param string                $customerClass
-     * @param array                 $config
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
-        $customerClass,
-        array $config
-    ) {
+        Features $features,
+        string $customerClass
+    )
+    {
         $this->tokenStorage = $tokenStorage;
         $this->customerClass = $customerClass;
-        $this->config = $config;
+        $this->features = $features;
     }
 
     /**
@@ -216,45 +218,6 @@ class RegistrationType extends AbstractType
     }
 
     /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
-    {
-        $view->vars['user'] = null;
-        $view->vars['user_owner'] = null;
-
-        /** @var Registration $registration */
-        $registration = $form->getData();
-        $customer = $registration->getCustomer();
-
-        if (null === $user = $customer->getUser()) {
-            return;
-        }
-
-        $view->vars['user'] = $user;
-
-        if (null === $token = $this->tokenStorage->getToken()) {
-            return;
-        }
-
-        if ($token instanceof OAuthToken) {
-            $view->vars['user_owner'] = $token->getResourceOwnerName();
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class'        => Registration::class,
-            'csrf_token_id'     => 'registration',
-            'validation_groups' => ['Registration'],
-        ]);
-    }
-
-    /**
      * Creates the customer form.
      *
      * @param FormBuilderInterface $builder
@@ -266,7 +229,7 @@ class RegistrationType extends AbstractType
         $form = $builder->create('customer', null, [
             'data_class' => CustomerInterface::class,
             'compound'   => true,
-            'required' => true,
+            'required'   => true,
         ]);
 
         $form
@@ -300,13 +263,22 @@ class RegistrationType extends AbstractType
             ->add('currency', CurrencyChoiceType::class)
             ->add('locale', LocaleChoiceType::class);
 
-        if ($this->config['birthday']) {
+        if ($this->features->isEnabled(Features::BIRTHDAY)) {
             $form->add('birthday', Type\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.birthday',
                 'required' => false,
                 'format'   => 'dd/MM/yyyy', // TODO localized format
                 'attr'     => [
                     'autocomplete' => 'bday',
+                ],
+            ]);
+        }
+        if ($this->features->isEnabled(Features::NEWSLETTER)) {
+            $form->add('newsletter', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.account.marketing.newsletter',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
                 ],
             ]);
         }
@@ -349,5 +321,44 @@ class RegistrationType extends AbstractType
             ]);
 
         return $form;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['user'] = null;
+        $view->vars['user_owner'] = null;
+
+        /** @var Registration $registration */
+        $registration = $form->getData();
+        $customer = $registration->getCustomer();
+
+        if (null === $user = $customer->getUser()) {
+            return;
+        }
+
+        $view->vars['user'] = $user;
+
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return;
+        }
+
+        if ($token instanceof OAuthToken) {
+            $view->vars['user_owner'] = $token->getResourceOwnerName();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class'        => Registration::class,
+            'csrf_token_id'     => 'registration',
+            'validation_groups' => ['Registration'],
+        ]);
     }
 }

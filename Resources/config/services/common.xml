@@ -8,6 +8,7 @@
         <!-- Features -->
         <service id="Ekyna\Component\Commerce\Features">
             <argument type="collection"/><!-- Replaced by DI extension -->
+            <tag name="twig.runtime"/>
         </service>
 
         <!-- Country repository -->

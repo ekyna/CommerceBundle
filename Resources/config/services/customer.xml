@@ -20,6 +20,43 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
+        <!-- TODO Configure through compiler pass if Loyalty feature is enabled (commands too !) -->
+        <!-- Loyalty log repository -->
+        <service id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository">
+            <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"/>
+        </service>
+        <!-- Loyalty logger -->
+        <service id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyLogger">
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository"/>
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+        </service>
+        <!-- Loyalty updater -->
+        <service id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyLogger"/>
+        </service>
+        <!-- Loyalty coupon generator -->
+        <service id="Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator">
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater"/>
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
+            <argument type="service" id="ekyna_commerce.coupon.repository"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+        </service>
+        <!-- Loyalty listener -->
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\LoyaltyEventSubscriber">
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+        <!-- Loyalty renderer -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Customer\LoyaltyRenderer">
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository"/>
+            <argument type="service" id="ekyna_commerce.coupon.repository"/>
+            <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
+            <tag name="twig.runtime"/>
+        </service>
+
         <!-- Customer balance builder -->
         <service id="Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
@@ -58,6 +95,7 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.customer.number_generator"/>
             <argument type="service" id="ekyna_commerce.pricing.updater"/>
+            <argument type="service" id="ekyna_resource.event_dispatcher"/>
             <call method="setInChargeResolver">
                 <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
             </call>
@@ -87,9 +125,7 @@
         <service id="ekyna_commerce.account.menu_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\AccountMenuSubscriber">
             <argument type="service" id="ekyna_commerce.customer.security_provider"/>
-            <argument type="collection">
-                <argument key="support">%ekyna_commerce.support.enabled%</argument>
-            </argument>
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

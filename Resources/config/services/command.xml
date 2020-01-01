@@ -26,6 +26,28 @@
             <tag name="console.command"/>
         </service>
 
+        <!-- Customer birthday command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\CustomerBirthdayCommand">
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
+            <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Order watch command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\OrderWatchCommand">
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- loyalty coupons command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\LoyaltyCouponsCommand">
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator"/>
+            <tag name="console.command"/>
+        </service>
+
         <!-- Invoice due date update command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>

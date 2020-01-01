@@ -15,6 +15,7 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
+use Ekyna\Component\Commerce\Features;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,6 +30,25 @@ use Symfony\Component\Form\FormInterface;
  */
 class CustomerType extends ResourceFormType
 {
+    /**
+     * @var Features
+     */
+    private $features;
+
+
+    /**
+     * CustomerType constructor.
+     *
+     * @param Features $features
+     * @param string   $customerClass
+     */
+    public function __construct(Features $features, string $customerClass)
+    {
+        parent::__construct($customerClass);
+
+        $this->features = $features;
+    }
+
     /**
      * @inheritDoc
      */
@@ -87,6 +107,27 @@ class CustomerType extends ResourceFormType
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
             ]);
+
+        if ($this->features->isEnabled(Features::BIRTHDAY)) {
+            $builder->add('birthday', Type\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.birthday',
+                'required' => false,
+                'format'   => 'dd/MM/yyyy', // TODO localized format
+                'attr'     => [
+                    'autocomplete' => 'bday',
+                ],
+            ]);
+        }
+
+        if ($this->features->isEnabled(Features::NEWSLETTER)) {
+            $builder->add('newsletter', Type\CheckboxType::class, [
+                'label'    => 'ekyna_core.field.newsletter',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ]);
+        }
 
         $formModifier = function (FormInterface $form, CustomerInterface $customer, $hasParent) {
             $form

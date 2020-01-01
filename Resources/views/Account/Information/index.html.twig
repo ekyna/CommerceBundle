@@ -34,21 +34,42 @@
         {{ macros.field('ekyna_core.field.email', customer.email, 3, 9) }}
         {{ macros.field('ekyna_core.field.identity', customer|identity, 3, 9) }}
 
-        {% if customer.birthday is not empty %}
-            {{ macros.field('ekyna_core.field.birthday', customer.birthday|localizeddate('short', 'none'), 3, 9) }}
-        {% endif %}
+        <div class="row">
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
+            <div class="col-md-6">
+                {{- macros.field(
+                    'ekyna_core.field.birthday',
+                    customer.birthday ? customer.birthday|localizeddate('short', 'none') : 'ekyna_core.value.undefined'|trans,
+                    6, 6
+                ) -}}
+            </div>
+            {%- endif %}
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
+            <div class="col-md-6">
+                {{- macros.field(
+                    'ekyna_core.field.newsletter',
+                    (customer.newsletter ? 'ekyna_core.value.yes' : 'ekyna_core.value.no')|trans,
+                    6, 6
+                ) -}}
+            </div>
+            {%- endif %}
+        </div>
 
         <div class="row">
-            {% if customer.phone is not empty %}
-                <div class="col-md-6">
-                    {{ macros.field('ekyna_core.field.phone', phone_number_format(customer.phone), 6, 6) }}
-                </div>
-            {% endif %}
-            {% if customer.mobile is not empty %}
-                <div class="col-md-6">
-                    {{ macros.field('ekyna_core.field.mobile', phone_number_format(customer.mobile), 6, 6) }}
-                </div>
-            {% endif %}
+            <div class="col-md-6">
+                {{- macros.field(
+                    'ekyna_core.field.phone',
+                    customer.phone ? phone_number_format(customer.phone) : 'ekyna_core.value.undefined'|trans,
+                    6, 6
+                ) -}}
+            </div>
+            <div class="col-md-6">
+                {{- macros.field(
+                    'ekyna_core.field.mobile',
+                    customer.mobile ? phone_number_format(customer.mobile) : 'ekyna_core.value.undefined'|trans,
+                    6, 6
+                ) -}}
+            </div>
         </div>
 
         {% set businessCustomer = customer %}
@@ -60,23 +81,25 @@
         {% endif %}
         <div class="row">
             <div class="col-md-6">
-                {{ macros.field('ekyna_core.field.company', businessCustomer.company, 6, 6) }}
+                {{- macros.field('ekyna_core.field.company', businessCustomer.company, 6, 6) -}}
             </div>
-            {% if businessCustomer.vatNumber is not empty %}
             <div class="col-md-6">
-                {{ macros.field('ekyna_commerce.pricing.field.vat_number', businessCustomer.vatNumber, 6, 6) }}
+                {{- macros.field(
+                    'ekyna_commerce.pricing.field.vat_number',
+                    businessCustomer.vatNumber ?? 'ekyna_core.value.undefined'|trans,
+                    6, 6
+                ) -}}
             </div>
-            {% endif %}
         </div>
 
         <hr>
 
         <div class="row">
             <div class="col-md-6">
-                {{ macros.field('ekyna_core.field.currency', customer.currency, 6, 6) }}
+                {{- macros.field('ekyna_core.field.currency', customer.currency, 6, 6) -}}
             </div>
             <div class="col-md-6">
-                {{ macros.field('ekyna_core.field.locale', customer.locale|language|capitalize, 6, 6) }}
+                {{- macros.field('ekyna_core.field.locale', customer.locale|language|capitalize, 6, 6) -}}
             </div>
         </div>
 
@@ -84,18 +107,18 @@
             {{ macros.field('ekyna_commerce.payment_term.label.singular', businessCustomer.paymentTerm.title, 3, 9) }}
             <div class="row">
                 <div class="col-md-6">
-                    {{ macros.field(
+                    {{- macros.field(
                         'ekyna_commerce.sale.field.outstanding_limit',
                         businessCustomer.outstandingLimit|currency_base(null, true),
                         6, 6, exchange_symbol
-                    ) }}
+                    ) -}}
                 </div>
                 <div class="col-md-6">
-                    {{ macros.field(
+                    {{- macros.field(
                         'ekyna_commerce.customer.field.outstanding_balance',
                         businessCustomer.outstandingBalance|currency_base(null, true),
                         6, 6, exchange_symbol
-                    ) }}
+                    ) -}}
                 </div>
             </div>
         {% endif %}
@@ -103,11 +126,11 @@
         {% if not customer.hasParent() %}
         <div class="row">
             <div class="col-md-6">
-                {{ macros.field(
+                {{- macros.field(
                     'ekyna_commerce.customer.field.credit_balance',
                     customer.creditBalance|currency_base(null, true),
                     6, 6, exchange_symbol
-                ) }}
+                ) -}}
             </div>
         </div>
         {% endif %}
@@ -126,7 +149,7 @@
 
     <p style="text-align:center">
         <a href="{{ path('ekyna_commerce_account_information_edit') }}" class="btn btn-primary">
-            {{ 'ekyna_core.button.edit'|trans }}
+            {{- 'ekyna_core.button.edit'|trans -}}
         </a>
     </p>
     {% do currency_configure() %}

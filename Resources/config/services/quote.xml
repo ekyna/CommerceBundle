@@ -36,7 +36,7 @@
                 <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
             </call>
             <call method="setExpirationDelay">
-                <argument>%ekyna_commerce.expiration.quote%</argument>
+                <argument>%ekyna_commerce.default.expiration.quote%</argument>
             </call>
             <tag name="resource.event_subscriber"/>
         </service>

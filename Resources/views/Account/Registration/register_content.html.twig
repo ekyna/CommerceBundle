@@ -65,13 +65,6 @@
         </div>
         {{ form_row(form.customer.identity) }}
 
-        {% if form.customer.birthday is defined %}
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.customer.birthday, {'label_col': 4, 'widget_col': 8}) }}
-            </div>
-        </div>
-        {% endif %}
         <div class="row">
             <div class="col-md-6">
                 {{ form_row(form.customer.phone, {'label_col': 4, 'widget_col': 8}) }}
@@ -115,6 +108,8 @@
         {{ form_row(form.invoiceAddress, {'widget_col': 12}) }}
 
         <hr>
+
+        {% include "@EkynaCommerce/Account/Common/_form_marketing.html.twig" with {'form': form.customer} only %}
 
         {{ form_row(form.comment) }}
         <div class="row">

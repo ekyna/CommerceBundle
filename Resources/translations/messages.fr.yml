@@ -197,6 +197,13 @@ ekyna_commerce:
                 invoice_name: Contact facturation
                 invoice_email: Email facturation
                 invoice_phone: Téléphone facturation
+        marketing:
+            engage: >
+                Vous souhaitez vous tenir informé de notre <strong>actualité</strong> et
+                recevoir des <strong>offres promotionnelles exclusives</strong>, c'est par ici !
+            newsletter: Je m'abonne
+        loyalty:
+            title: Mes points fidélité
         ticket:
             title: Mes tickets
             go_to_sale_details: >
@@ -477,6 +484,7 @@ ekyna_commerce:
             end_at: Ce code promotion n'est plus disponible depuis le %date%.
             min_gross: Ce code promotion nécéssite un total d'articles hors taxes supérieur ou égal à %gross%.
             cumulative: Ce code promotion n'est pas cumulable avec des remises sur les articles.
+            owner: Ce code promotion appartient à un autre compte client.
         help:
             cumulative: Applicable à une vente avec des remises automatiques sur les lignes produit.
         alert:
@@ -608,6 +616,9 @@ ekyna_commerce:
             credit_balance: Solde avoirs
             default_payment_method: Mode de paiement par défaut
             payment_methods: Modes de paiement autorisés
+            loyalty_points: Points de fidélité
+            loyalty_logs: Historique fidélité
+            loyalty_origin: Raison
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial

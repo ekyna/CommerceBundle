@@ -1,0 +1,15 @@
+ekyna_commerce_account_loyalty_index:
+    path: ""
+    defaults:
+        _controller: EkynaCommerceBundle:Account/Loyalty:index
+    methods: [GET]
+    options:
+        _cms:
+            name: Points de fidélité
+            parent: ekyna_user_account_index
+            position: 10
+            locked: true
+            advanced: false
+            seo:
+                follow: false
+                index: false

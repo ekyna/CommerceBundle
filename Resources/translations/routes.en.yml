@@ -39,4 +39,5 @@ ekyna_commerce_account_invoice_index: /my-account/invoices
 ekyna_commerce_account_invoice_show: /my-account/invoices/{number}
 ekyna_commerce_account_invoice_download: /my-account/invoices/{number}/download.{_format}
 
+ekyna_commerce_account_loyalty_index: /mon-compte/loyalty
 ekyna_commerce_account_ticket_index: /my-account/tickets

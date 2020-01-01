@@ -66,6 +66,7 @@
         </service>
         <service id="ekyna_commerce.customer.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType">
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector="form[name=customer]" path="ekyna-commerce/form/customer"/>
@@ -91,15 +92,15 @@
         <service id="ekyna_commerce.account.registration.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Account\RegistrationType">
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <argument>%ekyna_commerce.customer.class%</argument>
-            <argument>%ekyna_commerce.default.customer%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector="form[name=registration]" path="ekyna-commerce/form/registration"/>
         </service>
         <service id="ekyna_commerce.account.information.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Account\InformationType">
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <argument>%ekyna_commerce.customer.class%</argument>
-            <argument>%ekyna_commerce.default.customer%</argument>
             <tag name="form.type"/>
         </service>
 

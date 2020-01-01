@@ -87,8 +87,7 @@ class AdminMenuPass implements CompilerPassInterface
             'resource' => 'ekyna_commerce_order_shipment',
             'position' => 22,
         ]]);
-        // TODO if ($features->isEnabled(Features::SUPPORT)) {
-        if ($container->getParameter('ekyna_commerce.support.enabled')) {
+        if ($features->isEnabled(Features::SUPPORT)) {
             $pool->addMethodCall('createEntry', ['sales', [
                 'name'     => 'tickets',
                 'route'    => 'ekyna_commerce_ticket_admin_list',
