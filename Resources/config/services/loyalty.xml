@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Loaded by EkynaCommerceExtension::configureFeatures if loyalty feature is enabled -->
+
+        <!-- Loyalty log repository -->
+        <service id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository">
+            <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"/>
+        </service>
+
+        <!-- Loyalty logger -->
+        <service id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyLogger">
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository"/>
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+        </service>
+
+        <!-- Loyalty updater -->
+        <service id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyLogger"/>
+        </service>
+
+        <!-- Loyalty coupon generator -->
+        <service id="Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator">
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater"/>
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
+            <argument type="service" id="ekyna_commerce.coupon.repository"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+        </service>
+
+        <!-- Loyalty listener -->
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\LoyaltyEventSubscriber">
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Loyalty renderer -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Customer\LoyaltyRenderer">
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository"/>
+            <argument type="service" id="ekyna_commerce.coupon.repository"/>
+            <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <!-- loyalty coupons command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\LoyaltyCouponsCommand">
+            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator"/>
+            <argument type="service" id="ekyna_commerce.mailer"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Loyalty twig extension -->
+        <service id="Ekyna\Bundle\CommerceBundle\Twig\LoyaltyExtension" public="false">
+            <tag name="twig.extension"/>
+        </service>
+
+    </services>
+
+</container>

@@ -76,7 +76,7 @@
                 {{ 'ekyna_core.field.informations'|trans }}
             </a>
         </li>
-        {% if support_enabled() -%}
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
         <li>
             <a href="#quote-tickets" id="toggle-tickets" data-toggle="tab">
                 {{ 'ekyna_commerce.ticket.label.plural'|trans }}
@@ -171,7 +171,7 @@
                     'notifications': quote.notifications
                 } %}
             </div>
-            {% if support_enabled() -%}
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
             <div class="tab-pane" id="quote-tickets">
                 {{- support_tickets(quote, {
                     'admin': true,
@@ -194,12 +194,16 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ asset('bundles/ekynacommerce/css/sale-view.css') }}" type="text/css" rel="stylesheet"/>
-    {% if support_enabled() %}<link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>{% endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+        <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+    {%- endif %}
 {% endblock stylesheets %}
 
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">require(['ekyna-commerce/sale-view']);</script>
     <script type="text/javascript">require(['ekyna-commerce/sale-admin-show']);</script>
-    {% if support_enabled() %}<script type="text/javascript">require(['ekyna-commerce/support']);</script>{% endif %}
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
+        <script type="text/javascript">require(['ekyna-commerce/support']);</script>
+    {%- endif %}
 {% endblock javascripts %}

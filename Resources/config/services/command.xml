@@ -42,12 +42,6 @@
             <tag name="console.command"/>
         </service>
 
-        <!-- loyalty coupons command -->
-        <service id="Ekyna\Bundle\CommerceBundle\Command\LoyaltyCouponsCommand">
-            <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator"/>
-            <tag name="console.command"/>
-        </service>
-
         <!-- Invoice due date update command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
@@ -114,15 +108,6 @@
         <!-- TODO <service id="Ekyna\Bundle\CommerceBundle\Command\StockIntegrityCommand">
             <tag name="console.command"/>
         </service>-->
-
-        <!-- Ticket message notify command -->
-        <service id="Ekyna\Bundle\CommerceBundle\Command\SupportNotifyCommand">
-            <argument type="service" id="ekyna_commerce.ticket_message.repository"/>
-            <argument type="service" id="ekyna_admin.user.repository"/>
-            <argument type="service" id="ekyna_commerce.ticket_message.manager"/>
-            <argument type="service" id="ekyna_commerce.mailer"/>
-            <tag name="console.command"/>
-        </service>
 
     </services>
 

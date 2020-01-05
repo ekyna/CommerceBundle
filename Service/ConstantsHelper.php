@@ -38,7 +38,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      * @param TranslatorInterface $translator
      * @param string              $gendersClass
      */
-    public function __construct(TranslatorInterface $translator, $gendersClass)
+    public function __construct(TranslatorInterface $translator, string $gendersClass)
     {
         parent::__construct($translator);
 
@@ -52,7 +52,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderAccountingTypeLabel($accountingOrType)
+    public function renderAccountingTypeLabel($accountingOrType): string
     {
         if ($accountingOrType instanceof AccountingInterface) {
             $accountingOrType = $accountingOrType->getType();
@@ -68,7 +68,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderCustomerStateLabel($stateOrCustomer)
+    public function renderCustomerStateLabel($stateOrCustomer): string
     {
         if ($stateOrCustomer instanceof CustomerInterface) {
             $stateOrCustomer = $stateOrCustomer->getState();
@@ -88,7 +88,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderCustomerStateBadge($stateOrCustomer)
+    public function renderCustomerStateBadge($stateOrCustomer): string
     {
         if ($stateOrCustomer instanceof CustomerInterface) {
             $stateOrCustomer = $stateOrCustomer->getState();
@@ -109,7 +109,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderOrderStateLabel($stateOrOrder)
+    public function renderOrderStateLabel($stateOrOrder): string
     {
         if ($stateOrOrder instanceof OrderInterface) {
             $stateOrOrder = $stateOrOrder->getState();
@@ -129,7 +129,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderOrderStateBadge($stateOrOrder)
+    public function renderOrderStateBadge($stateOrOrder): string
     {
         if ($stateOrOrder instanceof OrderInterface) {
             $stateOrOrder = $stateOrOrder->getState();
@@ -150,7 +150,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderQuoteStateLabel($stateOrQuote)
+    public function renderQuoteStateLabel($stateOrQuote): string
     {
         if ($stateOrQuote instanceof QuoteInterface) {
             $stateOrQuote = $stateOrQuote->getState();
@@ -170,7 +170,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderQuoteStateBadge($stateOrQuote)
+    public function renderQuoteStateBadge($stateOrQuote): string
     {
         if ($stateOrQuote instanceof QuoteInterface) {
             $stateOrQuote = $stateOrQuote->getState();
@@ -191,7 +191,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderCartStateLabel($stateOrCart)
+    public function renderCartStateLabel($stateOrCart): string
     {
         if ($stateOrCart instanceof CartInterface) {
             $stateOrCart = $stateOrCart->getState();
@@ -211,7 +211,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderCartStateBadge($stateOrCart)
+    public function renderCartStateBadge($stateOrCart): string
     {
         if ($stateOrCart instanceof CartInterface) {
             $stateOrCart = $stateOrCart->getState();
@@ -232,7 +232,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderSaleStateLabel(Common\SaleInterface $sale)
+    public function renderSaleStateLabel(Common\SaleInterface $sale): string
     {
         if ($sale instanceof OrderInterface) {
             return $this->renderOrderStateLabel($sale);
@@ -252,7 +252,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderSaleStateBadge(Common\SaleInterface $sale)
+    public function renderSaleStateBadge(Common\SaleInterface $sale): string
     {
         if ($sale instanceof OrderInterface) {
             return $this->renderOrderStateBadge($sale);
@@ -272,7 +272,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderInvoiceTypeLabel($typeOrInvoice)
+    public function renderInvoiceTypeLabel($typeOrInvoice): string
     {
         if ($typeOrInvoice instanceof Invoice\InvoiceInterface) {
             $typeOrInvoice = $typeOrInvoice->getType();
@@ -292,7 +292,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderInvoiceTypeBadge($typeOrInvoice)
+    public function renderInvoiceTypeBadge($typeOrInvoice): string
     {
         if ($typeOrInvoice instanceof Invoice\InvoiceInterface) {
             $typeOrInvoice = $typeOrInvoice->getType();
@@ -313,7 +313,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderInvoiceStateLabel($stateOrSubject)
+    public function renderInvoiceStateLabel($stateOrSubject): string
     {
         if ($stateOrSubject instanceof Invoice\InvoiceSubjectInterface) {
             $stateOrSubject = $stateOrSubject->getInvoiceState();
@@ -333,7 +333,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderInvoiceStateBadge($stateOrSubject)
+    public function renderInvoiceStateBadge($stateOrSubject): string
     {
         if ($stateOrSubject instanceof Invoice\InvoiceSubjectInterface) {
             $stateOrSubject = $stateOrSubject->getInvoiceState();
@@ -354,7 +354,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderNotifyTypeLabel(string $type)
+    public function renderNotifyTypeLabel(string $type): string
     {
         if (Model\NotificationTypes::isValid($type)) {
             return $this->renderLabel(Model\NotificationTypes::getLabel($type));
@@ -370,7 +370,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderPaymentStateLabel($stateOrPayment)
+    public function renderPaymentStateLabel($stateOrPayment): string
     {
         if ($stateOrPayment instanceof Payment\PaymentInterface) {
             $stateOrPayment = $stateOrPayment->getState();
@@ -392,7 +392,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderPaymentStateBadge($stateOrPayment)
+    public function renderPaymentStateBadge($stateOrPayment): string
     {
         if ($stateOrPayment instanceof Payment\PaymentInterface) {
             $stateOrPayment = $stateOrPayment->getState();
@@ -415,7 +415,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderPaymentTermTriggerLabel($termOrTrigger)
+    public function renderPaymentTermTriggerLabel($termOrTrigger): string
     {
         if ($termOrTrigger instanceof Payment\PaymentTermInterface) {
             $termOrTrigger = $termOrTrigger->getTrigger();
@@ -435,7 +435,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderShipmentStateLabel($stateOrShipment)
+    public function renderShipmentStateLabel($stateOrShipment): string
     {
         if ($stateOrShipment instanceof Shipment\ShipmentInterface) {
             $stateOrShipment = $stateOrShipment->getState();
@@ -457,7 +457,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderShipmentStateBadge($stateOrShipment)
+    public function renderShipmentStateBadge($stateOrShipment): string
     {
         if ($stateOrShipment instanceof Shipment\ShipmentInterface) {
             $stateOrShipment = $stateOrShipment->getState();
@@ -480,7 +480,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockSubjectStateLabel($stateOrStockSubject)
+    public function renderStockSubjectStateLabel($stateOrStockSubject): string
     {
         if ($stateOrStockSubject instanceof Stock\StockSubjectInterface) {
             $stateOrStockSubject = $stateOrStockSubject->getStockState();
@@ -500,7 +500,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockSubjectStateBadge($stateOrStockSubject)
+    public function renderStockSubjectStateBadge($stateOrStockSubject): string
     {
         if ($stateOrStockSubject instanceof Stock\StockSubjectInterface) {
             $stateOrStockSubject = $stateOrStockSubject->getStockState();
@@ -521,7 +521,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockSubjectModeLabel($modeOrStockSubject)
+    public function renderStockSubjectModeLabel($modeOrStockSubject): string
     {
         if ($modeOrStockSubject instanceof Stock\StockSubjectInterface) {
             $modeOrStockSubject = $modeOrStockSubject->getStockMode();
@@ -541,7 +541,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockSubjectModeBadge($modeOrStockSubject)
+    public function renderStockSubjectModeBadge($modeOrStockSubject): string
     {
         if ($modeOrStockSubject instanceof Stock\StockSubjectInterface) {
             $modeOrStockSubject = $modeOrStockSubject->getStockMode();
@@ -562,7 +562,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockUnitStateLabel($stateOrStockUnit)
+    public function renderStockUnitStateLabel($stateOrStockUnit): string
     {
         if ($stateOrStockUnit instanceof Stock\StockUnitInterface) {
             $stateOrStockUnit = $stateOrStockUnit->getState();
@@ -582,7 +582,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockUnitStateBadge($stateOrStockUnit)
+    public function renderStockUnitStateBadge($stateOrStockUnit): string
     {
         if ($stateOrStockUnit instanceof Stock\StockUnitInterface) {
             $stateOrStockUnit = $stateOrStockUnit->getState();
@@ -603,7 +603,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockAdjustmentReasonLabel($adjustmentOrReason)
+    public function renderStockAdjustmentReasonLabel($adjustmentOrReason): string
     {
         if ($adjustmentOrReason instanceof Stock\StockAdjustmentInterface) {
             $adjustmentOrReason = $adjustmentOrReason->getReason();
@@ -619,7 +619,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockAdjustmentTypeLabel(Stock\StockAdjustmentInterface $adjustment)
+    public function renderStockAdjustmentTypeLabel(Stock\StockAdjustmentInterface $adjustment): string
     {
         $debit = Stock\StockAdjustmentReasons::isDebitReason($adjustment->getReason());
 
@@ -633,7 +633,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderStockAdjustmentTypeBadge(Stock\StockAdjustmentInterface $adjustment)
+    public function renderStockAdjustmentTypeBadge(Stock\StockAdjustmentInterface $adjustment): string
     {
         $debit = Stock\StockAdjustmentReasons::isDebitReason($adjustment->getReason());
 
@@ -649,7 +649,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderSupplierOrderStateLabel($stateOrSupplierOrder)
+    public function renderSupplierOrderStateLabel($stateOrSupplierOrder): string
     {
         if ($stateOrSupplierOrder instanceof Supplier\SupplierOrderInterface) {
             $stateOrSupplierOrder = $stateOrSupplierOrder->getState();
@@ -669,7 +669,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderSupplierOrderStateBadge($stateOrSupplierOrder)
+    public function renderSupplierOrderStateBadge($stateOrSupplierOrder): string
     {
         if ($stateOrSupplierOrder instanceof Supplier\SupplierOrderInterface) {
             $stateOrSupplierOrder = $stateOrSupplierOrder->getState();
@@ -690,7 +690,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderTicketStateLabel($stateOrTicket)
+    public function renderTicketStateLabel($stateOrTicket): string
     {
         if ($stateOrTicket instanceof Support\TicketInterface) {
             $stateOrTicket = $stateOrTicket->getState();
@@ -711,7 +711,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderTicketStateBadge($stateOrTicket, bool $admin = false)
+    public function renderTicketStateBadge($stateOrTicket, bool $admin = false): string
     {
         if ($stateOrTicket instanceof Support\TicketInterface) {
             $stateOrTicket = $stateOrTicket->getState();
@@ -732,7 +732,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderSupplierOrderAttachmentType($typeOrAttachment)
+    public function renderSupplierOrderAttachmentType($typeOrAttachment): string
     {
         if ($typeOrAttachment instanceof Supplier\SupplierOrderAttachmentInterface) {
             $typeOrAttachment = $typeOrAttachment->getType();
@@ -752,7 +752,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderVatDisplayModeBadge($vatDisplayMode)
+    public function renderVatDisplayModeBadge($vatDisplayMode): string
     {
         if (null !== $vatDisplayMode) {
             $label = Model\VatDisplayModes::getLabel($vatDisplayMode);
@@ -773,7 +773,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function renderIdentity(Common\IdentityInterface $identity, $long = false)
+    public function renderIdentity(Common\IdentityInterface $identity, $long = false): string
     {
         if (0 == strlen($identity->getFirstName()) && 0 == $identity->getLastName()) {
             return sprintf('<em>%s</em>', $this->translator->trans('ekyna_core.value.undefined'));
@@ -793,7 +793,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function getAdjustmentTypeLabel($type)
+    public function getAdjustmentTypeLabel($type): string
     {
         if (Model\AdjustmentTypes::isValid($type)) {
             return $this->renderLabel(Model\AdjustmentTypes::getLabel($type));
@@ -809,7 +809,7 @@ class ConstantsHelper extends AbstractConstantsHelper
      *
      * @return string
      */
-    public function getAdjustmentModeLabel($mode)
+    public function getAdjustmentModeLabel($mode): string
     {
         if (Model\AdjustmentModes::isValid($mode)) {
             return $this->renderLabel(Model\AdjustmentModes::getLabel($mode));

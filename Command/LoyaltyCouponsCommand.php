@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
 use Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,17 +22,24 @@ class LoyaltyCouponsCommand extends Command
      */
     private $generator;
 
+    /**
+     * @var Mailer
+     */
+    private $mailer;
+
 
     /**
      * Constructor.
      *
      * @param CouponGenerator $generator
+     * @param Mailer          $mailer
      */
-    public function __construct(CouponGenerator $generator)
+    public function __construct(CouponGenerator $generator, Mailer $mailer)
     {
         parent::__construct();
 
         $this->generator = $generator;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -47,6 +55,14 @@ class LoyaltyCouponsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->generator->generate();
+        $result = $this->generator->generate();
+
+        if (empty($result)) {
+            return;
+        }
+
+        foreach ($result as $data) {
+            $this->mailer->sendCustomerCoupons($data['customer'], $data['coupons']);
+        }
     }
 }

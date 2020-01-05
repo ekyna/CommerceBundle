@@ -5,6 +5,8 @@
 
     <services>
 
+        <!-- Loaded by EkynaCommerceExtension::configureFeatures if support feature is enabled -->
+
         <!-- Ticket number generator -->
         <service id="ekyna_commerce.ticket.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
@@ -68,7 +70,25 @@
             <argument type="service" id="serializer"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="templating"/>
+            <tag name="twig.runtime"/>
         </service>
+
+        <!-- Ticket message notify command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\SupportNotifyCommand">
+            <argument type="service" id="ekyna_commerce.ticket_message.repository"/>
+            <argument type="service" id="ekyna_admin.user.repository"/>
+            <argument type="service" id="ekyna_commerce.ticket_message.manager"/>
+            <argument type="service" id="ekyna_commerce.mailer"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Support extension -->
+        <service id="ekyna_commerce.twig.support_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SupportExtension"
+                 public="false">
+            <tag name="twig.extension"/>
+        </service>
+
     </services>
 
 </container>

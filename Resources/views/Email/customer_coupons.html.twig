@@ -1,0 +1,54 @@
+{% extends "email.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style type="text/css">
+    table { border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; width: 100% }
+    td, th { font-size: 13px; padding: 2px 4px; border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
+    p { margin-bottom: 10px; }
+    table.coupons { width: auto; margin: 16px auto; padding: 10px; border-spacing: 12px; border: 1px solid #ddd; border-radius: 6px; }
+    table.coupons td { border: none; vertical-align: center; padding: 10px; }
+    table.coupons p { margin: 0; background-color: #337ab7; color: white; border-radius: 12px; padding: 10px 16px; text-align: center; }
+    table.coupons p strong { font-family: "Source Code Pro", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 20px; line-height: 24px; letter-spacing: 1px; }
+</style>
+{% endblock stylesheets %}
+
+{% block subject %}{{ subject|raw }}{% endblock subject %}
+
+{% block body %}
+{% spaceless %}
+    {% do trans_set_locale(locale) %}
+    {% if coupons|length > 1 %}
+        {{- 'ekyna_commerce.coupon.notify.customer.content_multiple'|trans|raw -}}
+    {% else %}
+        {{- 'ekyna_commerce.coupon.notify.customer.content_single'|trans|raw -}}
+    {% endif %}
+    <table class="coupons">
+    <tbody>
+    {% for coupon in coupons %}
+        <tr>
+            <td>
+                <p>
+                    <strong>{{ coupon.code }}</strong><br>
+                    {{- 'ekyna_commerce.coupon.field.value'|trans({
+                        '%amount%': coupon.mode == constant('Ekyna\\Component\\Commerce\\Common\\Model\\AdjustmentModes::MODE_FLAT')
+                            ? coupon.amount|localizedcurrency(commerce_default_currency)
+                            : (coupon.amount / 100)|localizednumber('percent')
+                    }) -}}
+                </p>
+            </td>
+            <td>
+                {{ 'ekyna_commerce.coupon.field.valid_until'|trans({'%date%': coupon.endAt|localizeddate('full', 'none') }) }}.
+                {% if not coupon.cumulative %}<br>{{ 'ekyna_commerce.coupon.help.not_cumulative'|trans }}{% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {{- 'ekyna_commerce.coupon.notify.customer.content_foot'|trans({
+        '%url%': absolute_url(path('ekyna_commerce_account_loyalty_index'))
+    })|raw -}}
+    {{- get_setting('commerce.email_signature', locale)|raw -}}
+    {% do trans_revert_locale() %}
+{% endspaceless %}
+{% endblock body %}

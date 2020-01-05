@@ -6,7 +6,6 @@ use Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Customer\LoyaltyRenderer;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyRenderer;
 use Ekyna\Component\Commerce\Features;
 use Twig\Extension\AbstractExtension;
@@ -119,16 +118,6 @@ class CommonExtension extends AbstractExtension
             new TwigFunction(
                 'currency_rate',
                 [CurrencyRenderer::class, 'renderRate'],
-                ['is_safe' => ['html']]
-            ),
-            new TwigFunction(
-                'customer_loyalty_logs',
-                [LoyaltyRenderer::class, 'renderLogs'],
-                ['is_safe' => ['html']]
-            ),
-            new TwigFunction(
-                'customer_coupons',
-                [LoyaltyRenderer::class, 'renderCoupons'],
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(

@@ -2,31 +2,28 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\Support\TicketRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Customer\LoyaltyRenderer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
- * Class SupportExtension
+ * Class LoyaltyExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
- * @author  Etienne Dauvergne <contact@ekyna.com>
+ * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class SupportExtension extends AbstractExtension
+class LoyaltyExtension extends AbstractExtension
 {
-    /**
-     * @inheritdoc
-     */
     public function getFunctions()
     {
         return [
             new TwigFunction(
-                'support_ticket',
-                [TicketRenderer::class, 'renderTicket'],
+                'customer_loyalty_logs',
+                [LoyaltyRenderer::class, 'renderLogs'],
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
-                'support_tickets',
-                [TicketRenderer::class, 'renderTickets'],
+                'customer_coupons',
+                [LoyaltyRenderer::class, 'renderCoupons'],
                 ['is_safe' => ['html']]
             ),
         ];

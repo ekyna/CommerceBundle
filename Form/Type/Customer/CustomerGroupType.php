@@ -49,6 +49,13 @@ class CustomerGroupType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
+            ->add('loyalty', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.customer.field.loyalty_points',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('vatDisplayMode', VatDisplayModeType::class)
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => CustomerGroupTranslationType::class,

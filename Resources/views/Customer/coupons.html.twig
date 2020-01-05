@@ -6,6 +6,7 @@
         <th>{{ 'ekyna_core.field.amount'|trans }}</th>
         <th>{{ 'ekyna_core.field.start_date'|trans }}</th>
         <th>{{ 'ekyna_core.field.end_date'|trans }}</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -21,6 +22,7 @@
             </td>
             <td>{{ coupon.startAt|localizeddate('short', 'none') }}</td>
             <td>{{ coupon.endAt|localizeddate('short', 'none') }}</td>
+            <td>{% if not coupon.cumulative %}{{ 'ekyna_commerce.coupon.help.not_cumulative'|trans }}{% endif %}</td>
         </tr>
     {% else %}
         <tr>

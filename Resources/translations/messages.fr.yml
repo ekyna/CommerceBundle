@@ -476,6 +476,8 @@ ekyna_commerce:
             usage: Utilisation
             min_gross: Sous-total minimum
             cumulative: Cumulable
+            valid_until: "Valable jusqu'au %date%"
+            value: "%amount% de remise"
         message:
             designation: Code promo %code%
             not_found: Code promotion inconnu.
@@ -485,8 +487,21 @@ ekyna_commerce:
             min_gross: Ce code promotion nécéssite un total d'articles hors taxes supérieur ou égal à %gross%.
             cumulative: Ce code promotion n'est pas cumulable avec des remises sur les articles.
             owner: Ce code promotion appartient à un autre compte client.
+        notify:
+            customer:
+                subject: "Pour votre fidélité à %site_name%"
+                content_single: >
+                    <p>Pour vous remercier de votre fidélité à notre boutique, nous
+                    voulions vous adresser ce bon de réduction en guise de cadeau !</p>
+                content_multiple: >
+                    <p>Pour vous remercier de votre fidélité à notre boutique, nous
+                    voulions vous adresser ces bons de réduction en guise de cadeau !</p>
+                content_foot: >
+                    <p>Retrouvez toutes les informations sur vos points de
+                    fidélité dans <a href="%url%">votre espace client</a>.</p>
         help:
             cumulative: Applicable à une vente avec des remises automatiques sur les lignes produit.
+            not_cumulative: Non cumulable avec d'autres remises.
         alert:
             immutable_code: Ce code ne pourra plus être modifié
             no_item: Aucun code promotion configuré

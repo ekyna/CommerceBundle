@@ -14,6 +14,7 @@
         <import resource="services/form.xml"/>
         <import resource="services/helper.xml"/>
         <import resource="services/invoice.xml"/>
+        <import resource="services/loyalty.xml"/>
         <import resource="services/map.xml"/>
         <import resource="services/notify.xml"/>
         <import resource="services/order.xml"/>

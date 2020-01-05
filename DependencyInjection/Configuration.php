@@ -206,18 +206,24 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->arrayNode(Features::LOYALTY)
                             ->canBeEnabled()
+                            ->addDefaultsIfNotSet()
                             ->children()
                                 ->integerNode('credit_rate')
                                     ->min(0)
                                     ->defaultValue(1)
                                 ->end()
                                 ->arrayNode('credit')
+                                    ->defaultValue([
+                                        'birthday'   => 0,
+                                        'newsletter' => 0,
+                                        'review'     => 0,
+                                    ])
                                     ->useAttributeAsKey('name')
                                     ->prototype('integer')->min(0)->end()
                                     ->validate()
                                         ->ifTrue(function($value) {
                                             foreach (array_keys($value) as $key) {
-                                                if (!in_array($key, [Features::BIRTHDAY, Features::NEWSLETTER], true)) {
+                                                if (!in_array($key, ['birthday', 'newsletter', 'review'], true)) {
                                                     return true;
                                                 }
                                             }
@@ -227,8 +233,10 @@ class Configuration implements ConfigurationInterface
                                     ->end()
                                 ->end()
                                 ->arrayNode('coupons')
+                                    ->defaultValue([])
                                     ->useAttributeAsKey('name')
                                     ->prototype('array')
+                                        ->addDefaultsIfNotSet()
                                         ->children()
                                             ->scalarNode('mode')
                                                 ->defaultValue(AdjustmentModes::MODE_PERCENT)
@@ -259,6 +267,9 @@ class Configuration implements ConfigurationInterface
                                                     })
                                                     ->thenInvalid('Invalid loyalty coupon period.')
                                                 ->end()
+                                            ->end()
+                                            ->booleanNode('final')
+                                                ->defaultValue(false)
                                             ->end()
                                         ->end()
                                     ->end()

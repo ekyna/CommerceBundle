@@ -483,8 +483,22 @@ ekyna_commerce:
             min_gross: This coupon code requires gross total to be greater than or equal %gross%.
             cumulative: This coupon code is not cumulative product discounts.
             owner: This coupon code is owned by another customer account.
+        notify:
+            customer:
+                subject: "For your loyalty to %site_name%"
+                coupon: "%amount% discount"
+                content_single: >
+                    <p>To thank you for your fidelity to our shop, we would like to to give you
+                    this discount coupon code, as a gist !</p>
+                content_multiple: >
+                    <p>To thank you for your fidelity to our shop, we would like to to give you
+                    these discount coupon codes, as a gist !</p>
+                content_foot: >
+                    <p>Find all details about your fidelity points in
+                    <a href="%url%">your customer area</a>.</p>
         help:
             cumulative: Whether this coupon can be applied to a sale with autmatic item discount(s).
+            not_cumulative: can't be combined with any other discount.
         alert:
             immutable_code: This code cannot be changed
             no_item: No coupon code configured

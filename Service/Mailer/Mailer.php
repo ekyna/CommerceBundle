@@ -15,6 +15,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer as ShipmentLabelR
 use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer as SubjectLabelRenderer;
 use Ekyna\Bundle\CoreBundle\Service\SwiftMailer\ImapCopyPlugin;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -132,35 +133,7 @@ class Mailer
 
         $subject = $this->translator->trans('ekyna_commerce.customer.notify.fraudster.subject');
 
-        return $this->sendEmail($body, $subject);
-    }
-
-    /**
-     * Sends the email.
-     *
-     * @param string $body
-     * @param string $toEmail
-     * @param string $subject
-     *
-     * @return int
-     */
-    protected function sendEmail($body, $subject, $toEmail = null)
-    {
-        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
-        $fromName = $this->settingsManager->getParameter('notification.from_name');
-
-        if (null === $toEmail) {
-            $toEmail = $this->settingsManager->getParameter('notification.to_emails');
-        }
-
-        $message = new \Swift_Message();
-        $message
-            ->setSubject($subject)
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($toEmail)
-            ->setBody($body, 'text/html');
-
-        return $this->mailer->send($message);
+        return $this->mailer->send($this->createMessage($subject, $body));
     }
 
     /**
@@ -178,7 +151,7 @@ class Mailer
 
         $subject = $this->translator->trans('ekyna_commerce.customer.notify.registration.subject');
 
-        return $this->sendEmail($body, $subject);
+        return $this->mailer->send($this->createMessage($subject, $body));
     }
 
     /**
@@ -198,9 +171,6 @@ class Mailer
 
         $locale = $customer->getLocale();
 
-        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
-        $fromName = $this->settingsManager->getParameter('notification.from_name');
-
         $subject = $this
             ->translator
             ->trans('ekyna_commerce.notify.type.balance.subject', [], null, $locale);
@@ -212,12 +182,9 @@ class Mailer
             'balance'  => $balance,
         ]);
 
-        $message = new \Swift_Message();
-        $message
-            ->setSubject($subject)
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($customer->getEmail())
-            ->setBody($body, 'text/html');
+        $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
+
+        $message = $this->createMessage($subject, $body, $to);
 
         // CSV attachment if any
         if (!empty($csvPath) && is_file($csvPath)) {
@@ -226,7 +193,7 @@ class Mailer
             );
         }
 
-        // Trigger imap copy
+        // Trigger IMAP copy
         $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
 
         return 0 < $this->mailer->send($message);
@@ -243,15 +210,7 @@ class Mailer
     {
         $order = $submit->getOrder();
 
-        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
-        $fromName = $this->settingsManager->getParameter('notification.from_name');
-
-        $message = new \Swift_Message();
-        $message
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($submit->getEmails())
-            ->setSubject($submit->getSubject())
-            ->setBody($submit->getMessage(), 'text/html');
+        $message = $this->createMessage($submit->getSubject(), $submit->getMessage(), $submit->getEmails());
 
         // Form attachment
         $renderer = $this->rendererFactory->createRenderer($order);
@@ -306,11 +265,6 @@ class Mailer
             return 0;
         }
 
-        if (empty($fromEmail = $this->settingsManager->getParameter('notification.no_reply'))) {
-            $fromEmail = $this->settingsManager->getParameter('notification.from_email');
-        }
-        $fromName = $this->settingsManager->getParameter('notification.from_name');
-
         $customer = $message->getTicket()->getCustomer();
         $locale = $customer->getLocale();
 
@@ -324,25 +278,20 @@ class Mailer
             'locale'  => $locale,
         ]);
 
-        $email = new \Swift_Message();
-        $email
-            ->setSubject($subject)
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName())
-            ->setBody($body, 'text/html');
+        $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
 
-        return 0 < $this->mailer->send($email);
+        return 0 < $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
      * Notifies the administrator about the ticket message creation or update.
      *
-     * @param array         $messages
-     * @param UserInterface $admin
+     * @param TicketMessageInterface[] $messages
+     * @param UserInterface            $admin
      *
-     * @return int
+     * @return bool
      */
-    public function sendTicketMessagesToAdmin(array $messages, UserInterface $admin = null)
+    public function sendTicketMessagesToAdmin(array $messages, UserInterface $admin): bool
     {
         foreach ($messages as $message) {
             if (!$message instanceof TicketMessageInterface) {
@@ -353,11 +302,6 @@ class Mailer
             }
         }
 
-        // TODO Translate with user's locale
-
-        $fromEmail = $this->settingsManager->getParameter('notification.from_email');
-        $fromName = $this->settingsManager->getParameter('notification.from_name');
-
         $subject = $this->translator->trans('ekyna_commerce.ticket_message.notify.admin.subject');
 
         $body = $this->templating->render('@EkynaCommerce/Email/admin_ticket_message.html.twig', [
@@ -365,14 +309,45 @@ class Mailer
             'messages' => $messages,
         ]);
 
-        $email = new \Swift_Message();
-        $email
-            ->setSubject($subject)
-            ->setFrom($fromEmail, $fromName)
-            ->setTo($admin->getEmail(), $admin->getFullName() ? $admin->getFullName() : null)
-            ->setBody($body, 'text/html');
+        $to = [$admin->getEmail() => $admin->hasFullName() ? $admin->getFullName() : null];
 
-        return 0 < $this->mailer->send($email);
+        return 0 < $this->mailer->send($this->createMessage($subject, $body, $to, false));
+    }
+
+    /**
+     * Notifies the customer about the generated coupons.
+     *
+     * @param CustomerInterface $customer
+     * @param CouponInterface[] $coupons
+     *
+     * @return bool
+     */
+    public function sendCustomerCoupons(CustomerInterface $customer, array $coupons): bool
+    {
+        foreach ($coupons as $coupon) {
+            if (!$coupon instanceof CouponInterface) {
+                throw new UnexpectedValueException("Expected instance of " . CouponInterface::class);
+            }
+            if ($customer !== $coupon->getCustomer()) {
+                throw new LogicException("Unexpected coupon owner");
+            }
+        }
+
+        $locale = $customer->getLocale();
+
+        $subject = $this->translator->trans('ekyna_commerce.coupon.notify.customer.subject', [
+            '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
+        ], null, $locale);
+
+        $body = $this->templating->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
+            'subject' => $subject,
+            'coupons' => $coupons,
+            'locale'  => $locale,
+        ]);
+
+        $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
+
+        return 0 < $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
@@ -519,12 +494,52 @@ class Mailer
 
         $notify->setReport($report);
 
-        // Trigger imap copy
+        // Trigger IMAP copy
         if (!$notify->isTest()) {
             $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
         }
 
         return $this->mailer->send($message);
+    }
+
+    /**
+     * Sends the email.
+     *
+     * @param string            $subject
+     * @param string            $body
+     * @param string|array      $to
+     * @param string|array|bool $from
+     *
+     * @return \Swift_Message
+     */
+    protected function createMessage(
+        string $subject,
+        string $body,
+        $to = null,
+        $from = null
+    ): \Swift_Message {
+        if (empty($to)) {
+            $to = $this->settingsManager->getParameter('notification.to_emails');
+        }
+
+        if (false === $from) {
+            $from = $this->settingsManager->getParameter('notification.no_reply');
+        }
+
+        if (empty($from)) {
+            $from = [
+                $this->settingsManager->getParameter('notification.from_email') =>
+                    $this->settingsManager->getParameter('notification.from_name')
+            ];
+        }
+
+        $message = new \Swift_Message();
+
+        return $message
+            ->setSubject($subject)
+            ->setBody($body, 'text/html')
+            ->setTo($to)
+            ->setFrom($from);
     }
 
     /**

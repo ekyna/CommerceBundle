@@ -60,6 +60,13 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
+                        {{ show_row(customerGroup.loyalty, 'boolean', {
+                            'label': 'ekyna_commerce.customer.field.loyalty_points',
+                            'id': 'customerGroup_loyalty',
+                            'label_col': 4
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
                         {{ show_row(customerGroup.vatDisplayMode, 'vat_display_mode', {
                             'id': 'customerGroup_vatDisplayMode',
                             'label_col': 4

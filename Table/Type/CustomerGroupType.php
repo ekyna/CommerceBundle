@@ -44,7 +44,7 @@ class CustomerGroupType extends ResourceTableType
                 'route_parameters_map' => ['customerGroupId' => 'id'],
                 'true_class'           => 'label-primary',
                 'false_class'          => 'label-default',
-                //'disable_property_path' => 'default',
+                'disable_property_path' => 'default',
                 'position'             => 30,
             ])
             ->addColumn('quoteAllowed', CType\Column\BooleanType::class, [
@@ -56,6 +56,15 @@ class CustomerGroupType extends ResourceTableType
                 'false_class'           => 'label-default',
                 'disable_property_path' => 'default',
                 'position'              => 40,
+            ])
+            ->addColumn('loyalty', CType\Column\BooleanType::class, [
+                'label'                 => 'ekyna_commerce.customer.field.loyalty_points',
+                'route_name'            => 'ekyna_commerce_customer_group_admin_toggle',
+                'route_parameters'      => ['field' => 'loyalty'],
+                'route_parameters_map'  => ['customerGroupId' => 'id'],
+                'true_class'            => 'label-success',
+                'false_class'           => 'label-default',
+                'position'              => 50,
             ])
             ->addColumn('vatDisplayMode', VatDisplayModeType::class, [
                 'position' => 60,
