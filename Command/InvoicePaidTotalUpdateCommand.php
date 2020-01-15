@@ -5,9 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Component\Commerce\Common\Util\Money;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -18,6 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InvoicePaidTotalUpdateCommand extends Command
 {
+    protected static $defaultName = 'ekyna:commerce:invoice:update-paid-total';
+
     /**
      * @var EntityRepository
      */
@@ -32,6 +34,16 @@ class InvoicePaidTotalUpdateCommand extends Command
      * @var EntityManagerInterface
      */
     private $manager;
+
+    /**
+     * @var \Doctrine\DBAL\Driver\Statement
+     */
+    private $updateTotal;
+
+    /**
+     * @var \Doctrine\DBAL\Driver\Statement
+     */
+    private $updateRealTotal;
 
 
     /**
@@ -49,8 +61,8 @@ class InvoicePaidTotalUpdateCommand extends Command
         parent::__construct();
 
         $this->repository = $repository;
-        $this->resolver = $resolver;
-        $this->manager = $manager;
+        $this->resolver   = $resolver;
+        $this->manager    = $manager;
     }
 
     /**
@@ -59,8 +71,8 @@ class InvoicePaidTotalUpdateCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('ekyna:commerce:invoice:update-paid-total')
-            ->setDescription('Updates the invoices paid total');
+            ->setDescription('Updates the invoices paid total')
+            ->addArgument('id', InputArgument::OPTIONAL, 'To update a single order\'s invoices', 0);
     }
 
     /**
@@ -71,75 +83,104 @@ class InvoicePaidTotalUpdateCommand extends Command
         $output->writeln('Updating invoices due dates');
         $output->writeln('');
 
-        $qb = $this->repository->createQueryBuilder('i');
-
         $metadata = $this->manager->getClassMetadata($this->repository->getClassName());
         $metadata->getTableName();
 
         /** @noinspection SqlResolve */
-        $updateCurrent = $this->manager->getConnection()->prepare(
+        $this->updateTotal = $this->manager->getConnection()->prepare(
             "UPDATE {$metadata->getTableName()} SET paid_total=:total WHERE id=:id LIMIT 1"
         );
         /** @noinspection SqlResolve */
-        $updateReal = $this->manager->getConnection()->prepare(
+        $this->updateRealTotal = $this->manager->getConnection()->prepare(
             "UPDATE {$metadata->getTableName()} SET real_paid_total=:total WHERE id=:id LIMIT 1"
         );
 
+        $qb = $this->repository->createQueryBuilder('i');
+
+        // Single order invoices case
+        if (0 < $orderId = (int)$input->getArgument('id')) {
+            $invoices = $qb
+                ->andWhere($qb->expr()->eq('IDENTITY(i.order)', ':order_id'))
+                ->addOrderBy('i.id', 'ASC')
+                ->getQuery()
+                ->setParameter('order_id', $orderId)
+                ->getResult();
+
+            $this->updateInvoices($invoices, $output);
+
+            $output->writeln('');
+
+            return 0;
+        }
+
+        // All invoices case
         $limit = 30;
-        $page = 0;
+        $page  = 0;
 
         $select = $qb
-            ->andWhere($qb->expr()->eq('i.type', ':type'))
             ->addOrderBy('i.id', 'ASC')
             ->getQuery()
-            ->setParameter('type', InvoiceTypes::TYPE_INVOICE)
             ->setMaxResults($limit);
 
         do {
             $invoices = $select->setFirstResult($page * $limit)->execute();
-            $page++;
-
-            /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
-            foreach ($invoices as $invoice) {
-                $number = $invoice->getNumber();
-
-                $output->write(sprintf(
-                    '- <comment>%s</comment> %s ',
-                    $number,
-                    str_pad('.', 44 - mb_strlen($number), '.', STR_PAD_LEFT)
-                ));
-
-                $done = false;
-
-                $total = $this->resolver->getPaidTotal($invoice);
-                if (0 !== Money::compare($total, $invoice->getPaidTotal(), $invoice->getCurrency())) {
-                    if (!$updateCurrent->execute(['total' => $total, 'id' => $invoice->getId()])) {
-                        $output->writeln('<error>failure</error>');
-                        continue;
-                    }
-                    $done = true;
-                }
-
-                $total = $this->resolver->getRealPaidTotal($invoice);
-                if (0 !== Money::compare($total, $invoice->getRealPaidTotal(), $invoice->getCurrency())) {
-                    if (!$updateReal->execute(['total' => $total, 'id' => $invoice->getId()])) {
-                        $output->writeln('<error>failure</error>');
-                        continue;
-                    }
-                    $done = true;
-                }
-
-                if ($done) {
-                    $output->writeln('<info>done</info>');
-                    continue;
-                }
-
-                $output->writeln('<comment>skipped</comment>');
+            if (empty($invoices)) {
+                break;
             }
 
-            $this->manager->clear();
+            $this->updateInvoices($invoices, $output);
+
+            $page++;
         } while (!empty($invoices));
 
         $output->writeln('');
+
+        return 0;
+    }
+
+    /**
+     * @param \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface[] $invoices
+     * @param OutputInterface                                            $output
+     */
+    private function updateInvoices(array $invoices, OutputInterface $output): void
+    {
+        foreach ($invoices as $invoice) {
+            $number = $invoice->getNumber();
+
+            $output->write(sprintf(
+                '- <comment>%s</comment> %s ',
+                $number,
+                str_pad('.', 44 - mb_strlen($number), '.', STR_PAD_LEFT)
+            ));
+
+            $done = false;
+
+            $total = $this->resolver->getPaidTotal($invoice);
+            if (0 !== Money::compare($total, $invoice->getPaidTotal(), $invoice->getCurrency())) {
+                if (!$this->updateTotal->execute(['total' => $total, 'id' => $invoice->getId()])) {
+                    $output->writeln('<error>failure</error>');
+                    continue;
+                }
+                $done = true;
+            }
+
+            $total = $this->resolver->getRealPaidTotal($invoice);
+            if (0 !== Money::compare($total, $invoice->getRealPaidTotal(), $invoice->getCurrency())) {
+                if (!$this->updateRealTotal->execute(['total' => $total, 'id' => $invoice->getId()])) {
+                    $output->writeln('<error>failure</error>');
+                    continue;
+                }
+                $done = true;
+            }
+
+            if ($done) {
+                $output->writeln('<info>done</info>');
+                continue;
+            }
+
+            $output->writeln('<comment>skipped</comment>');
+        }
+
+        $this->manager->clear();
     }
 }

@@ -28,9 +28,9 @@
         {%- endif %}
         {{ macro.render_origin_customer(subject) }}
         {{ macro.render_voucher_number(subject) }}
-        {{ macro.render_payment_term(subject) }}
         {{ macro.render_exchange_rate(subject) }}
         {{ macro.render_shipment_method(subject) }}
+        {{ macro.render_payment_term(subject) }}
     </p>
     {% if subject.comment is not empty -%}
     <p>{{ subject.comment|nl2br }}</p>
@@ -277,7 +277,7 @@
 
 {# Taxes details #}
 {% if subject.taxesDetails is not empty -%}
-<table class="table taxes">
+<table class="bloc table taxes">
     <thead>
         <tr>
             <th>{{ 'ekyna_commerce.tax.label.singular'|trans }}</th>

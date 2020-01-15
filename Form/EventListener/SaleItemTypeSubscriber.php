@@ -115,12 +115,12 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'error_bubbling' => true,
             ])
             ->add('taxGroup', TaxGroupChoiceType::class, [
-                'label'    => 'ekyna_commerce.sale_item.field.tax_group',
+                'label'    => 'ekyna_commerce.field.tax_group',
                 'required' => false,
                 'disabled' => $hasChildren || $hasParent || $hasSubject,
                 'select2'  => false,
                 'attr'     => [
-                    'placeholder' => 'ekyna_commerce.sale_item.field.tax_group',
+                    'placeholder' => 'ekyna_commerce.field.tax_group',
                 ],
                 'error_bubbling' => true,
             ])
@@ -134,7 +134,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'error_bubbling' => true,
             ])
             ->add('private', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.sale_item.field.private',
+                'label'    => 'ekyna_commerce.field.private',
                 'disabled' => $item->hasPublicChildren(),
                 'required' => false,
             ])

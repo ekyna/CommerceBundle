@@ -331,12 +331,12 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         }
 
         // Payment message
-        if ($model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
-            $this->addPaymentMessage($notify, $sale->getPayments()->last());
+        if ($model->isPaymentMessage() && !$sale->getPayments(true)->isEmpty()) {
+            $this->addPaymentMessage($notify, $sale->getPayments(true)->last());
         }
 
         // Shipment message
-        if ($model->isShipmentMessage() && 0 < $sale->getShipments(true)->count()) {
+        if ($model->isShipmentMessage() && !$sale->getShipments(true)->isEmpty()) {
             $this->addShipmentMessage($notify, $sale->getShipments(true)->last());
         }
 
@@ -449,8 +449,8 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         }
 
         // Payment message
-        if ($model->isPaymentMessage() && 0 < $sale->getPayments()->count()) {
-            $this->addPaymentMessage($notify, $sale->getPayments()->last());
+        if ($model->isPaymentMessage() && !$sale->getPayments(true)->isEmpty()) {
+            $this->addPaymentMessage($notify, $sale->getPayments(true)->last());
         }
 
         // Shipment message

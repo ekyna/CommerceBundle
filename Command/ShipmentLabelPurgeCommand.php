@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Order\Entity\OrderShipmentLabel;
 use Symfony\Component\Console\Command\Command;
@@ -60,7 +60,7 @@ class ShipmentLabelPurgeCommand extends Command
             ->set('l.content', ':value')
             ->where($qb->expr()->lt('l.updatedAt', ':date'))
             ->getQuery()
-            ->setParameter('date', $date, Type::DATETIME)
+            ->setParameter('date', $date, Types::DATETIME_MUTABLE)
             ->setParameter('value', null)
             ->execute();
 

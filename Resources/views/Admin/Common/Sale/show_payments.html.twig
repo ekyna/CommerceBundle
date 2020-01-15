@@ -14,9 +14,9 @@
         </tr>
         </thead>
         <tbody>
-        {% for payment in sale.payments %}
+        {% for payment in payments %}
             {% do currency_configure(payment) %}{# Configure currency renderer #}
-            {% set paymentId = 'payment_' ~ loop.index0 %}
+            {% set paymentId = prefix ~ '_' ~ loop.index0 %}
             <tr data-id="{{ payment.id }}">
                 <td id="{{ paymentId }}_number">{{ payment.getNumber() }}</td>
                 <td id="{{ paymentId }}_method">{{ payment.getMethod() }}</td>
@@ -30,7 +30,13 @@
                 </td>
                 <td id="{{ paymentId }}_state">{{ payment|payment_state_badge }}</td>
                 <td id="{{ paymentId }}_createdAt">{{ payment.getCreatedAt()|localizeddate('short', 'short') }}</td>
-                <td id="{{ paymentId }}_completedAt">{{ payment.getCompletedAt()|localizeddate('short', 'short') }}</td>
+                <td id="{{ paymentId }}_completedAt">
+                    {%- if payment.getCompletedAt() is not null -%}
+                        {{ payment.getCompletedAt()|localizeddate('short', 'short') }}
+                    {%- else -%}
+                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    {%- endif -%}
+                </td>
                 <td class="actions">
                     {{ payment_admin_actions(payment) }}
                     {% if payment.getDescription() is not empty -%}

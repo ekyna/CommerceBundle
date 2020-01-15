@@ -58,17 +58,10 @@
                     {{ form_row(form.trackingNumber, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {% if form.creditMethod is defined or form.autoInvoice is defined -%}
+            {% if form.autoInvoice is defined -%}
             <div class="row">
                 <div class="col-md-6">
-                {% if form.creditMethod is defined -%}
-                    {{ form_row(form.creditMethod, {'label_col': 4, 'widget_col': 8}) }}
-                {%- endif %}
-                </div>
-                <div class="col-md-6">
-                {% if form.autoInvoice is defined -%}
                     {{ form_row(form.autoInvoice, {'label_col': 4, 'widget_col': 8}) }}
-                {%- endif %}
                 </div>
             </div>
             {%- endif %}

@@ -9,6 +9,9 @@ ekyna_commerce:
         shipped: Shipped
         expected: Expected
         available: Available
+        invoiced: Invoiced
+        tax_group: Tax group
+        private: Hidden
         max_quantity: Max quantity
         net_price: Price ex-tax
         buy_net_price: Purchase price
@@ -414,7 +417,8 @@ ekyna_commerce:
         payment:
             last_step: >
                 Clicking on the button &laquo;Pay by&hellip;&raquo; <strong>will confirm your order</strong>.
-            pay_with: "Pay by %method%"
+            pay_by: "Pay by %method%"
+            refund_by: "Refund by %method%"
             grand_total: >
                 Order total amount: <strong>%amount%</strong>
             deposit_amount: >
@@ -531,11 +535,15 @@ ekyna_commerce:
             shipment_form: Shipment form
             shipment_bill: Shipment bill
             return_bill: Return bill
+            invoice: Invoice
+            credit: Credit
         mention:
+            cash_payment: Cash payment
             due_date: Due date
             remaining_unknown: The following products will be shipped later.
             remaining_with_date: The following products will be shipped from %date%.
-            deposit: <strong>%percent%</strong> deposit resulting in an amount of <strong>%amount%</strong>
+            deposit: "%percent% deposit resulting in an amount of %amount%"
+            deposit_remaining: The rest after receipt of the goods
 
     invoice:
         tab: Invoices and credits
@@ -551,10 +559,8 @@ ekyna_commerce:
             edit: Edit the invoice
             remove: Remove the invoice
             recalculate: Recalculate
+            synchronize: Synchronize with shipment
             unlink: Unlink
-        type:
-            invoice: Invoice
-            credit: Credit
         field:
             lines: Lines
             goods_base: Goods ex-tax
@@ -566,7 +572,11 @@ ekyna_commerce:
         message:
             remove_confirm: Are you sure you want to delete this invoice ?
             recalculate_confirm: Are you sure you want to recalculate this invoice ? (Non-reversible operation).
-            unlink_confirm: Are you sure you want to break the link with shipment %number% ? (Non-reversible operation).
+            synchronize_confirm: >
+                Are you sure you want to synchronize this invoice with its linked shipment ?
+                (Non-reversible operation).
+            unlink_confirm: >
+                Are you sure you want to break the link with shipment %number% ? (Non-reversible operation).
             cant_be_deleted: This invoice can't be deleted.
         alert:
             no_item: No invoice configured
@@ -621,6 +631,7 @@ ekyna_commerce:
             export: Customers export
         field:
             parent: Accountable service
+            company_number: Registry number
             in_charge: In charge
             children: Sales manager
             outstanding_balance: Outstanding balance
@@ -661,7 +672,6 @@ ekyna_commerce:
         balance:
             debit: Debit
             credit: Credit
-            balance: Balance
             forward: Carry forwards
             all: All
             due_invoices: Due invoices
@@ -1085,6 +1095,14 @@ ekyna_commerce:
         label:
             singular: Refund
             plural: Refunds
+        header:
+            new: Create a new refund
+            edit: Edit the refund
+            remove: Delete the refund
+        button:
+            new: New refund
+            edit: Edit the refund
+            remove: Remove the refund
 
     relay_point:
         label:
@@ -1217,6 +1235,7 @@ ekyna_commerce:
             tax_total: VAT total
             adjustment_total: Discounts total
             paid_total: Paid total
+            refunded_total: Refunded total
             invoice_total: Invoices total
             credit_total: Credits total
             outstanding_accepted: Accepted outstanding
@@ -1247,16 +1266,11 @@ ekyna_commerce:
             payment_state: Payment
             shipment_state: Shipment
             invoice_state: Invoice
+
     sale_item:
         label:
             singular: Line
             plural: Lines
-        field:
-            tax_group: Tax group
-            shipped: Shipped
-            available: Available
-            invoiced: Invoiced
-            private: Hidden
 
     setting:
         invoice_footer: Documents footer

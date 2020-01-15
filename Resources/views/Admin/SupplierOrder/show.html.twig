@@ -17,7 +17,7 @@
             'theme': 'warning',
             'icon': 'remove'
         }, {
-            'onclick': ('return confirm(\'' ~ ('ekyna_commerce.supplier_order.message.confirm_cancel'|trans) ~ '\')')
+            'onclick': ('return confirm(\'' ~ ('ekyna_commerce.supplier_order.message.confirm_cancel'|trans|escape('js')) ~ '\')')
         }) -}}
     {% endif -%}
     {% if supplierOrder is not new_supplier_order -%}

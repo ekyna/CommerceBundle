@@ -6,7 +6,6 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -51,10 +50,12 @@ class InvoiceLineType extends ResourceFormType
     {
         /** @var InvoiceLineInterface $line */
         $line = $form->getData();
+        /** @var InvoiceInterface $invoice */
+        $invoice = $options['invoice'];
 
         $view->vars['line'] = $line;
         $view->vars['level'] = $options['level'];
-        $view->vars['credit_mode'] = InvoiceTypes::isCredit($options['invoice']->getType());
+        $view->vars['credit_mode'] = $invoice->isCredit();
 
         $view->children['quantity']->vars['attr']['data-max'] = $line->getAvailable();
 

@@ -25,6 +25,7 @@
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <argument type="service" id="ekyna_commerce.order_payment.repository"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="ekyna_commerce.payment.due_date_resolver"/>
         </service>
 
         <!-- Customer exporter -->

@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
+use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
-use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes as BInvoiceTypes;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes as CInvoiceTypes;
+use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,12 +58,9 @@ class SaleInvoiceController extends AbstractSaleController
         $invoice = $this->createNew($context);
         $context->addResource('resource', $invoice);
 
-        $type = $request->attributes->get('type');
-        if (!CInvoiceTypes::isValidType($type)) {
-            throw $this->createNotFoundException("Unexpected type");
-        }
+        $credit = (bool)$request->query->get('credit');
 
-        $invoice->setType($type);
+        $invoice->setCredit($credit);
 
         /*if (0 < $shipmentId = $request->query->get('shipmentId', 0)) {
             // TODO find and assign shipment
@@ -77,7 +74,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         $form = $this->createNewResourceForm($context, !$isXhr, [
             'action' => $this->generateResourcePath($invoice, 'new', [
-                'type' => $invoice->getType(),
+                'credit' => $credit ? 1 : 0,
             ]),
             'attr'   => [
                 'class' => 'form-horizontal',
@@ -298,7 +295,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         $path = $renderer->create();
 
-        $this->getTranslator()->trans(BInvoiceTypes::getLabel($invoice->getType()));
+        $this->getTranslator()->trans(DocumentTypes::getLabel($invoice->getType()));
 
         /** @var \Ekyna\Component\Resource\Configuration\ConfigurationInterface $config */
         $config = $this->get(str_replace('invoice', 'attachment', $this->config->getResourceId()) . '.configuration');
@@ -309,7 +306,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         $title = sprintf(
             '[archived] %s %s',
-            $this->getTranslator()->trans(BInvoiceTypes::getLabel($invoice->getType())),
+            $this->getTranslator()->trans(DocumentTypes::getLabel($invoice->getType())),
             $invoice->getNumber()
         );
 
@@ -330,6 +327,11 @@ class SaleInvoiceController extends AbstractSaleController
             $event->toFlashes($this->getFlashBag());
 
             return $this->redirect($this->generateResourcePath($sale));
+        }
+
+        // Synchronizes with shipment
+        if ($shipment = $invoice->getShipment()) {
+            $this->get(InvoiceSynchronizer::class)->synchronize($shipment, true);
         }
 
         // Recalculate

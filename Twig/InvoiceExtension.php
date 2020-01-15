@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
+use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
 use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Twig\Extension\AbstractExtension;
@@ -29,17 +29,27 @@ class InvoiceExtension extends AbstractExtension
      */
     private $dueDateResolver;
 
+    /**
+     * @var InvoicePaymentResolverInterface
+     */
+    private $paymentResolver;
+
 
     /**
      * Constructor.
      *
-     * @param TaxResolverInterface     $taxResolver
-     * @param DueDateResolverInterface $dueDateResolver
+     * @param TaxResolverInterface            $taxResolver
+     * @param DueDateResolverInterface        $dueDateResolver
+     * @param InvoicePaymentResolverInterface $paymentResolver
      */
-    public function __construct(TaxResolverInterface $taxResolver, DueDateResolverInterface $dueDateResolver)
-    {
-        $this->taxResolver = $taxResolver;
+    public function __construct(
+        TaxResolverInterface $taxResolver,
+        DueDateResolverInterface $dueDateResolver,
+        InvoicePaymentResolverInterface $paymentResolver
+    ) {
+        $this->taxResolver     = $taxResolver;
         $this->dueDateResolver = $dueDateResolver;
+        $this->paymentResolver = $paymentResolver;
     }
 
     /**
@@ -72,6 +82,14 @@ class InvoiceExtension extends AbstractExtension
                 'invoice_notices',
                 [$this, 'getInvoiceNotices']
             ),
+            new TwigFilter(
+                'invoice_payments',
+                [$this->paymentResolver, 'resolve']
+            ),
+            new TwigFilter(
+                'invoice_paid_total',
+                [$this->paymentResolver, 'getPaidTotal']
+            ),
         ];
     }
 
@@ -84,14 +102,6 @@ class InvoiceExtension extends AbstractExtension
             new TwigTest('invoice_subject', function ($subject) {
                 return $subject instanceof InvoiceSubjectInterface;
             }),
-            new TwigTest(
-                'invoice_invoice',
-                [InvoiceTypes::class, 'isInvoice']
-            ),
-            new TwigTest(
-                'invoice_credit',
-                [InvoiceTypes::class, 'isCredit']
-            ),
             new TwigTest(
                 'due_invoice',
                 [$this->dueDateResolver, 'isInvoiceDue']
@@ -111,7 +121,7 @@ class InvoiceExtension extends AbstractExtension
         $notices = [];
 
         $locale = $invoice->getLocale();
-        $sale = $invoice->getSale();
+        $sale   = $invoice->getSale();
 
         if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
             $notices[] = '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';

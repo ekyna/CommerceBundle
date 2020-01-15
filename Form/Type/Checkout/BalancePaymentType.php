@@ -46,18 +46,21 @@ class BalancePaymentType extends AbstractType
                 ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                     /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
                     $payment = $event->getData();
-                    $form = $event->getForm();
+                    $form    = $event->getForm();
 
-                    $max = min($options['available_amount'], $payment->getAmount());
+                    $fieldOptions = [
+                        'label'    => 'ekyna_core.field.amount',
+                        'currency' => $payment->getCurrency()->getCode(),
+                        'disabled' => !empty($options['lock_message']),
+                    ];
 
-                    $form->add('amount', MoneyType::class, [
-                        'label'       => 'ekyna_core.field.amount',
-                        'currency'    => $payment->getCurrency()->getCode(),
-                        'disabled'    => !empty($options['lock_message']),
-                        'constraints' => [
-                            new LessThanOrEqual($max),
-                        ],
-                    ]);
+                    if (!$payment->isRefund()) {
+                        $fieldOptions['constraints'] = [
+                            new LessThanOrEqual(min($options['available_amount'], $payment->getAmount())),
+                        ];
+                    }
+
+                    $form->add('amount', MoneyType::class, $fieldOptions);
                 })
                 ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
                     /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
@@ -77,8 +80,8 @@ class BalancePaymentType extends AbstractType
         $payment = $form->getData();
 
         $view->vars['currency_code'] = $payment->getCurrency()->getCode();
+        $view->vars['payment_term']  = $options['payment_term'];
         $view->vars['available_amount'] = $options['available_amount'];
-        $view->vars['payment_term'] = $options['payment_term'];
     }
 
     /**
@@ -87,8 +90,10 @@ class BalancePaymentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired('available_amount')
-            ->setDefault('payment_term', null)
+            ->setDefaults([
+                'available_amount' => 0,
+                'payment_term'     => null,
+            ])
             ->setAllowedTypes('available_amount', ['int', 'float'])
             ->setAllowedTypes('payment_term', [PaymentTermInterface::class, 'null']);
     }

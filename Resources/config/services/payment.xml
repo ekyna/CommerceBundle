@@ -132,7 +132,6 @@
         <!-- Payment subject state resolver -->
         <service id="ekyna_commerce.payment.subject_state_resolver"
                  class="Ekyna\Component\Commerce\Payment\Resolver\PaymentSubjectStateResolver">
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>

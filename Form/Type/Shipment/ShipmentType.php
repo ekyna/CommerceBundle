@@ -4,7 +4,6 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates as BShipStates;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
@@ -60,9 +59,9 @@ class ShipmentType extends ResourceFormType
     ) {
         parent::__construct($dataClass);
 
-        $this->shipmentBuilder = $shipmentBuilder;
+        $this->shipmentBuilder      = $shipmentBuilder;
         $this->authorizationChecker = $authorizationChecker;
-        $this->defaultCurrency = $defaultCurrency;
+        $this->defaultCurrency      = $defaultCurrency;
     }
 
     /**
@@ -71,11 +70,6 @@ class ShipmentType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            /*->add('number', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.number',
-                'required' => false,
-                'disabled' => true,
-            ])*/
             ->add('shippedAt', Type\DateTimeType::class, [
                 'label'    => 'ekyna_commerce.shipment.field.shipped_at',
                 'required' => false,
@@ -97,30 +91,10 @@ class ShipmentType extends ResourceFormType
                 }
 
                 $privileged = $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
-                $locked = !$privileged && ShipmentStates::isStockableState($shipment->getState());
+                $locked     = !$privileged && ShipmentStates::isStockableState($shipment->getState());
 
                 if (!$locked) {
                     $this->shipmentBuilder->build($shipment);
-                }
-
-                if (!$sale->isSample() && $shipment->isReturn()) {
-                    $autoInvoiceLabel = 'ekyna_commerce.shipment.field.auto_credit';
-
-                    if (null === $shipment->getInvoice()) {
-                        $form->add('creditMethod', PaymentMethodChoiceType::class, [
-                            'label'       => 'ekyna_commerce.invoice.field.payment_method',
-                            'required'    => false,
-                            'public'      => false,
-                            'outstanding' => false,
-                            'invoice'     => $shipment->getInvoice(),
-                            // TODO preferred choices
-                            'attr'        => [
-                                'help_text' => 'ekyna_commerce.shipment.message.credit_method',
-                            ],
-                        ]);
-                    }
-                } else {
-                    $autoInvoiceLabel = 'ekyna_commerce.shipment.field.auto_invoice';
                 }
 
                 $form
@@ -198,7 +172,9 @@ class ShipmentType extends ResourceFormType
 
                 if (!$sale->isSample()) {
                     $form->add('autoInvoice', Type\CheckboxType::class, [
-                        'label'    => $autoInvoiceLabel,
+                        'label'    => $shipment->isReturn()
+                            ? 'ekyna_commerce.shipment.field.auto_credit'
+                            : 'ekyna_commerce.shipment.field.auto_invoice',
                         'disabled' => $locked || null !== $shipment->getInvoice(),
                         'required' => false,
                         'attr'     => [
@@ -219,7 +195,7 @@ class ShipmentType extends ResourceFormType
 
         // For items layout
         $view->vars['return_mode'] = $shipment->isReturn();
-        $view->vars['privileged'] = ShipmentStates::isStockableState($shipment->getState())
+        $view->vars['privileged']  = ShipmentStates::isStockableState($shipment->getState())
             && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
         FormUtil::addClass($view, 'shipment');

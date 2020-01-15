@@ -111,8 +111,8 @@ class PaymentExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
-                'payment_remaining_total',
-                [$this->paymentCalculator, 'calculateRemainingTotal']
+                'payment_expected_amount',
+                [$this->paymentCalculator, 'calculateExpectedPaymentAmount']
             ),
         ];
     }

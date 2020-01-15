@@ -151,22 +151,40 @@
                 {# --------------- PAYMENTS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
-                    {%- if not order.paid -%}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {
                         'orderId': order.id
                     }) }}"
                        class="btn btn-primary btn-xs pull-right">
                         {{- 'ekyna_commerce.payment.button.new'|trans -}}
                     </a>
-                    {%- endif -%}
                 </div>
                 <h4 class="sub-header">
                     {{- 'ekyna_commerce.payment.label.plural'|trans -}}
                 </h4>
                 {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {
-                    'sale': order
+                    'payments': order.getPayments(true),
+                    'prefix': 'payment'
                 } %}
                 <hr>
+                {# --------------- REFUNDS --------------- #}
+                <div class="actions">
+                    {# TODO Permission #}
+                    <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'new', {
+                        'orderId': order.id, 'refund': 1
+                    }) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'ekyna_commerce.refund.button.new'|trans -}}
+                    </a>
+                </div>
+                <h4 class="sub-header">
+                    {{- 'ekyna_commerce.refund.label.plural'|trans -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {
+                    'payments': order.getPayments(false),
+                    'prefix': 'refund'
+                } %}
+                <hr>
+                {# --------------- PAYMENT FIELDS --------------- #}
                 {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {
                     'sale': order
                 } %}
@@ -213,6 +231,7 @@
                     'prefix': 'return'
                 } %}
                 <hr>
+                {# --------------- SHIPMENT FIELDS --------------- #}
                 {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/shipment_fields.html.twig' with {
                     'sale': order
                 } %}
@@ -223,7 +242,7 @@
                 <div class="actions">
                     {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {
-                        'orderId': order.id, 'type': 'invoice'
+                        'orderId': order.id
                     }) }}"
                        class="btn btn-primary btn-xs pull-right"
                        style="margin-left:16px">
@@ -242,7 +261,7 @@
                 <div class="actions">
                     {# TODO Permission #}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {
-                        'orderId': order.id, 'type': 'credit'
+                        'orderId': order.id, 'credit': 1
                     }) }}"
                        class="btn btn-primary btn-xs pull-right"
                        style="margin-left:16px">
@@ -257,6 +276,7 @@
                     'prefix': 'credit'
                 } %}
                 <hr>
+                {# --------------- INVOICE FIELDS --------------- #}
                 {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/invoice_fields.html.twig' with {
                     'sale': order
                 } %}

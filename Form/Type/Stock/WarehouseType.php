@@ -26,6 +26,7 @@ class WarehouseType extends ResourceFormType
      * Constructor.
      *
      * @param AuthorizationCheckerInterface $authorization
+     * @param string                        $dataClass
      */
     public function __construct(AuthorizationCheckerInterface $authorization, string $dataClass)
     {

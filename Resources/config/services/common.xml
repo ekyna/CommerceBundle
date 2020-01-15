@@ -89,12 +89,39 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <!-- Currency converter -->
-        <service id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"
-                 class="Ekyna\Component\Commerce\Bridge\Swap\CurrencyConverter">
+        <!-- Swap exchange rate provider -->
+        <service id="Ekyna\Component\Commerce\Bridge\Swap\ExchangeRateProvider" public="false">
             <argument type="service" id="florianv_swap.swap"/>
             <argument>%ekyna_commerce.default.currency%</argument>
         </service>
+
+        <!-- Doctrine exchange rate provider -->
+        <service id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Provider\ExchangeRateProvider" public="false">
+            <argument type="service" id="Doctrine\DBAL\Driver\Connection"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Swap\ExchangeRateProvider"/>
+        </service>
+
+        <!-- Cache exchange rate provider -->
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\Currency\CachedExchangeRateProvider" public="false">
+            <argument type="service" id="ekyna_commerce.cache"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Provider\ExchangeRateProvider"/>
+        </service>
+
+        <!-- Array exchange rate provider -->
+        <service id="Ekyna\Component\Commerce\Common\Currency\ArrayExchangeRateProvider" public="false">
+            <argument type="collection"/><!-- Empty rate list -->
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\Currency\CachedExchangeRateProvider"/>
+        </service>
+        <service id="Ekyna\Component\Commerce\Common\Currency\ExchangeRateProviderInterface"
+                 alias="Ekyna\Component\Commerce\Common\Currency\ArrayExchangeRateProvider"/>
+
+        <!-- Currency converter -->
+        <service id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverter" public="false">
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\ExchangeRateProviderInterface"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
+        </service>
+        <service id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"
+                 alias="Ekyna\Component\Commerce\Common\Currency\CurrencyConverter"/>
 
         <!-- Formatter factory -->
         <service id="ekyna_commerce.util.formatter_factory"

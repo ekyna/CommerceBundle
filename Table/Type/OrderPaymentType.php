@@ -45,6 +45,14 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
+            ->addColumn('refund', CType\Column\BooleanType::class, [
+                'label'       => 'ekyna_core.field.type',
+                'true_label'  => 'ekyna_commerce.refund.label.singular',
+                'false_label' => 'ekyna_commerce.payment.label.singular',
+                'true_class'  => 'label-warning',
+                'false_class' => 'label-success',
+                'position'    => 20,
+            ])
             ->addColumn('method', CType\Column\TextType::class, [
                 'label'         => 'ekyna_core.field.method',
                 'property_path' => 'method.name',
@@ -54,30 +62,22 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.amount',
                 'position' => 40,
             ])
-            ->addColumn('currency', CType\Column\TextType::class, [
-                'label'         => 'ekyna_core.field.currency',
-                'property_path' => 'currency.name',
-                'position'      => 50,
-            ])
             ->addColumn('state', Column\PaymentStateType::class, [
                 'label'    => 'ekyna_core.field.status',
-                'position' => 60,
+                'position' => 50,
             ])
-            ->addColumn('outstandingDate', CType\Column\DateTimeType::class, [
-                'label'         => 'ekyna_commerce.sale.field.outstanding_date',
-                'property_path' => 'order.outstandingDate',
-                'time_format'   => 'none',
-                'position'      => 70,
+            ->addColumn('outstandingDate', Column\PaymentOutstandingDateType::class, [
+                'position' => 60,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',
                 'time_format' => 'none',
-                'position'    => 80,
+                'position'    => 70,
             ])
             ->addColumn('completedAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.completed_at',
                 'time_format' => 'none',
-                'position'    => 90,
+                'position'    => 80,
             ]);
 
         if ($options['order'] || $options['customer']) {

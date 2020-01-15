@@ -88,7 +88,7 @@
 
 {%- block ekyna_commerce_adjustments_widget -%}
     {%- set attr = attr|merge({'class': 'ekyna-collection' }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -218,9 +218,22 @@
             {{- block('ekyna_commerce_checkout_payment_image') -}}
         </div>
         <div class="col-sm-9 commerce-payment-method">
-            <p>{{ payment.method.title }} - {{ payment.getAmount()|localizedcurrency(payment.currency.code) }}</p>
+            <p>
+                {{ payment.method.title }}
+                {% if not payment.refund -%}
+                &nbsp;&dash;&nbsp;{{ payment.getAmount()|localizedcurrency(payment.currency.code) }}
+                {%- endif %}
+            </p>
             {{- payment.method.description|raw -}}
-            {%- if form.amount is defined %}{{ form_row(form.amount) }}{% endif -%}
+            {% if form.vars.extended -%}
+            <div class="row">
+                <div class="col-md-6">{{ form_row(form.amount) }}</div>
+                {%- if form.completedAt is defined -%}
+                <div class="col-md-6">{{ form_row(form.completedAt) }}</div>
+                {%- endif -%}
+            </div>
+            {%- if form.description is defined %}{{ form_row(form.description) }}{% endif -%}
+            {%- endif %}
             {%- if form.submit is defined %}{{ form_row(form.submit) }}{% endif -%}
         </div>
     </div>
@@ -240,18 +253,21 @@
                 {{- 'ekyna_commerce.payment_term.label.singular'|trans }}: <strong>{{ payment_term.title -}}</strong>
             {%- endif -%}
 
-            {%- if 0 >= available_amount -%}
-                <div class="alert alert-danger">
-                    {{- 'ekyna_commerce.checkout.payment.insuffisant_fund'|trans|raw -}}
-                </div>
-            {%- else -%}
-                <p>
-                    {{- 'ekyna_commerce.checkout.payment.available_fund'|trans({
-                        '%amount%': available_amount|localizedcurrency(currency_code)
-                    })|raw -}}
-                </p>
-                {{- form_row(form.amount) -}}
+            {%- if not payment.refund -%}
+                {%- if 0 >= available_amount -%}
+                    <div class="alert alert-danger">
+                        {{- 'ekyna_commerce.checkout.payment.insuffisant_fund'|trans|raw -}}
+                    </div>
+                {%- else -%}
+                    <p>
+                        {{- 'ekyna_commerce.checkout.payment.available_fund'|trans({
+                            '%amount%': available_amount|localizedcurrency(currency_code)
+                        })|raw -}}
+                    </p>
+                {%- endif -%}
             {%- endif -%}
+
+            {{- form_row(form.amount) -}}
 
             {%- if form.submit is defined %}{{ form_row(form.submit) }}{% endif -%}
 
@@ -427,7 +443,7 @@
 
 {%- block ekyna_commerce_sale_items_widget -%}
     {%- set attr = attr|merge({'class': 'ekyna-collection' }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -462,9 +478,9 @@
                     <th>{{ 'ekyna_core.field.reference'|trans }}</th>
                     <th>{{ 'ekyna_core.field.weight'|trans }}</th>
                     <th>{{ 'ekyna_commerce.field.net_price'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.sale_item.field.tax_group'|trans }}</th>
+                    <th>{{ 'ekyna_commerce.field.tax_group'|trans }}</th>
                     <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.sale_item.field.private'|trans }}</th>
+                    <th>{{ 'ekyna_commerce.field.private'|trans }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -564,12 +580,12 @@
             <tr>
                 <th>{{ 'ekyna_core.field.designation'|trans }}</th>
                 <th>{{ 'ekyna_core.field.reference'|trans }}</th>
-                <th width="15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                <th style="width:15%">{{ 'ekyna_core.field.quantity'|trans }}</th>
                 {%- if form.parent.vars.return_mode -%}
                     <th>{{ 'ekyna_commerce.field.shipped'|trans }}</th>
                 {%- else -%}
-                    <th>{{ 'ekyna_commerce.field.available'|trans }}</th>
-                    <th>{{ 'ekyna_commerce.field.expected'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.available'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.expected'|trans }}</th>
                 {%- endif -%}
                 <th>{{ 'ekyna_commerce.field.geocode'|trans }}</th>
             </tr>
@@ -781,7 +797,7 @@
 {%- block ekyna_commerce_shipment_prices_widget -%}
     {%- set class = attr.class|default('') -%}
     {%- set attr = attr|merge({'class': ('ekyna-collection ' ~ class)|trim }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -958,7 +974,7 @@
     {%- if errors|length > 0 -%}
         {%- set attr = attr|merge({'class': ('has-error ' ~ class)|trim }) -%}
     {%- endif -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -1103,7 +1119,7 @@
     {%- if errors|length > 0 -%}
         {%- set attr = attr|merge({'class': ('has-error ' ~ class)|trim }) -%}
     {%- endif -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}

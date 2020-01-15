@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerFactory;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
+use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
@@ -435,6 +436,8 @@ class Mailer
             $report .= "Attachment: $filename\n";
         }
 
+        $source = $notify->getSource();
+
         // Attachments
         foreach ($notify->getAttachments() as $attachment) {
             if (!$this->filesystem->has($path = $attachment->getPath())) {
@@ -448,7 +451,11 @@ class Mailer
             $message->attach(new \Swift_Attachment($file->read(), $filename, $file->getMimetype()));
 
             if (!empty($type = $attachment->getType())) {
-                $attachments[$filename] = $this->translator->trans(DocumentTypes::getLabel($type));
+                if ($source instanceof SupplierOrderInterface) {
+                    $attachments[$filename] = $this->translator->trans(SupplierOrderAttachmentTypes::getLabel($type));
+                } else {
+                    $attachments[$filename] = $this->translator->trans(DocumentTypes::getLabel($type));
+                }
             } else {
                 $attachments[$filename] = $attachment->getTitle();
             }
@@ -460,7 +467,6 @@ class Mailer
         $report .= "Subject: {$notify->getSubject()}\n";
 
         // CONTENT
-        $source = $notify->getSource();
         if ($source instanceof SupplierOrderInterface) {
             // Supplier order form
             if ($notify->isIncludeForm()) {

@@ -15,18 +15,33 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 final class DocumentTypes extends AbstractConstants
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     static public function getConfig()
     {
-        $prefix = 'ekyna_commerce.document.type.';
+        $document = 'ekyna_commerce.document.type.';
 
         return [
-            Types::TYPE_FORM         => [$prefix . types::TYPE_FORM,         'default', CartInterface::class],
-            Types::TYPE_VOUCHER      => [$prefix . types::TYPE_VOUCHER,      'default', QuoteInterface::class],
-            Types::TYPE_QUOTE        => [$prefix . types::TYPE_QUOTE,        'default', QuoteInterface::class],
-            types::TYPE_PROFORMA     => [$prefix . types::TYPE_PROFORMA,     'default', OrderInterface::class],
-            types::TYPE_CONFIRMATION => [$prefix . types::TYPE_CONFIRMATION, 'default', OrderInterface::class],
+            Types::TYPE_FORM         => [$document . Types::TYPE_FORM,         'default', CartInterface::class],
+            Types::TYPE_VOUCHER      => [$document . Types::TYPE_VOUCHER,      'default', QuoteInterface::class],
+            Types::TYPE_QUOTE        => [$document . Types::TYPE_QUOTE,        'default', QuoteInterface::class],
+            Types::TYPE_PROFORMA     => [$document . Types::TYPE_PROFORMA,     'default', OrderInterface::class],
+            Types::TYPE_CONFIRMATION => [$document . Types::TYPE_CONFIRMATION, 'default', OrderInterface::class],
+            Types::TYPE_INVOICE      => [$document . Types::TYPE_INVOICE,      'success', OrderInterface::class],
+            Types::TYPE_CREDIT       => [$document . Types::TYPE_CREDIT,       'warning', OrderInterface::class],
+        ];
+    }
+
+    /**
+     * Returns the invoice types choices.
+     *
+     * @return array
+     */
+    public static function getInvoiceChoices(): array
+    {
+        return [
+            'ekyna_commerce.document.type.' . Types::TYPE_INVOICE => Types::TYPE_INVOICE,
+            'ekyna_commerce.document.type.' . Types::TYPE_CREDIT  => Types::TYPE_CREDIT,
         ];
     }
 

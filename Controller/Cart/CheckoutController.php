@@ -351,7 +351,7 @@ class CheckoutController extends AbstractController
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-        foreach ($cart->getPayments() as $payment) {
+        foreach ($cart->getPayments(true) as $payment) {
             $method = $payment->getMethod();
             if ($method->isManual() || $method->isOutstanding() || $method->isCredit()) {
                 continue;

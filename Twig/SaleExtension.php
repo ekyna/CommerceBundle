@@ -94,6 +94,10 @@ class SaleExtension extends AbstractExtension
                 [$this, 'isSaleWithPayment']
             ),
             new TwigTest(
+                'sale_with_refund',
+                [$this, 'isSaleWithRefund']
+            ),
+            new TwigTest(
                 'sale_with_shipment',
                 [$this, 'isSaleWithShipment']
             ),
@@ -182,22 +186,6 @@ class SaleExtension extends AbstractExtension
             new TwigFilter(
                 'sale_payments',
                 [$this, 'getSalePayments']
-            ),
-            new TwigFilter(
-                'sale_shipments',
-                [$this, 'getSaleShipments']
-            ),
-            new TwigFilter(
-                'sale_returns',
-                [$this, 'getSaleReturns']
-            ),
-            new TwigFilter(
-                'sale_invoices',
-                [$this, 'getSaleInvoices']
-            ),
-            new TwigFilter(
-                'sale_credits',
-                [$this, 'getSaleCredits']
             ),
             new TwigFilter(
                 'sale_attachments',
@@ -321,7 +309,29 @@ class SaleExtension extends AbstractExtension
             return false;
         }
 
-        foreach ($sale->getPayments() as $payment) {
+        foreach ($sale->getPayments(true) as $payment) {
+            if ($payment->getState() !== Payment\PaymentStates::STATE_NEW) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether or not the sale has at least one refund (which is not 'new').
+     *
+     * @param Common\SaleInterface $sale
+     *
+     * @return bool
+     */
+    public function isSaleWithRefund(Common\SaleInterface $sale)
+    {
+        if (!$sale instanceof Payment\PaymentSubjectInterface) {
+            return false;
+        }
+
+        foreach ($sale->getPayments(false) as $payment) {
             if ($payment->getState() !== Payment\PaymentStates::STATE_NEW) {
                 return true;
             }
@@ -343,11 +353,7 @@ class SaleExtension extends AbstractExtension
             return false;
         }
 
-        foreach ($sale->getShipments() as $shipment) {
-            if ($shipment->isReturn()) {
-                continue;
-            }
-
+        foreach ($sale->getShipments(true) as $shipment) {
             if ($shipment->getState() !== Shipment\ShipmentStates::STATE_NEW) {
                 return true;
             }
@@ -369,11 +375,7 @@ class SaleExtension extends AbstractExtension
             return false;
         }
 
-        foreach ($sale->getShipments() as $shipment) {
-            if (!$shipment->isReturn()) {
-                continue;
-            }
-
+        foreach ($sale->getShipments(false) as $shipment) {
             if ($shipment->getState() !== Shipment\ShipmentStates::STATE_NEW) {
                 return true;
             }
@@ -395,13 +397,7 @@ class SaleExtension extends AbstractExtension
             return false;
         }
 
-        foreach ($sale->getInvoices() as $invoice) {
-            if (Invoice\InvoiceTypes::isInvoice($invoice)) {
-                return true;
-            }
-        }
-
-        return false;
+        return !$sale->getInvoices(true)->isEmpty();
     }
 
     /**
@@ -417,13 +413,7 @@ class SaleExtension extends AbstractExtension
             return false;
         }
 
-        foreach ($sale->getInvoices() as $invoice) {
-            if (Invoice\InvoiceTypes::isCredit($invoice)) {
-                return true;
-            }
-        }
-
-        return false;
+        return !$sale->getInvoices(false)->isEmpty();
     }
 
     /**
@@ -495,42 +485,6 @@ class SaleExtension extends AbstractExtension
 
         return $sale->getShipments()->filter(function (Shipment\ShipmentInterface $shipment) {
             return $shipment->isReturn() && $shipment->getState() !== Shipment\ShipmentStates::STATE_NEW;
-        })->toArray();
-    }
-
-    /**
-     * Returns the sale's invoices (which are not credits).
-     *
-     * @param Common\SaleInterface $sale
-     *
-     * @return array
-     */
-    public function getSaleInvoices(Common\SaleInterface $sale)
-    {
-        if (!$sale instanceof Invoice\InvoiceSubjectInterface) {
-            return [];
-        }
-
-        return $sale->getInvoices()->filter(function (Invoice\InvoiceInterface $invoice) {
-            return Invoice\InvoiceTypes::isInvoice($invoice);
-        })->toArray();
-    }
-
-    /**
-     * Returns the sale's credits.
-     *
-     * @param Common\SaleInterface $sale
-     *
-     * @return array
-     */
-    public function getSaleCredits(Common\SaleInterface $sale)
-    {
-        if (!$sale instanceof Invoice\InvoiceSubjectInterface) {
-            return [];
-        }
-
-        return $sale->getInvoices()->filter(function (Invoice\InvoiceInterface $invoice) {
-            return Invoice\InvoiceTypes::isCredit($invoice);
         })->toArray();
     }
 

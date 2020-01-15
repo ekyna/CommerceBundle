@@ -18,16 +18,12 @@
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.number }}</strong>.
         {{ macro.render_voucher_number(subject) }}
-        {% if subject is invoice_invoice -%}
-        {{ macro.render_payment_term(subject) }}
-        {% if subject.sale.customer and subject.sale.customer.vatNumber -%}
-            <span class="text-alt">{{ 'ekyna_commerce.pricing.field.vat_number'|trans }}</span>
-            {{- '&nbsp;' -}}
-            <strong>{{ subject.sale.customer.vatNumber }}</strong>.
-        {%- endif %}
-        {%- endif %}
+        {{ macro.render_customer_vat_number(subject) }}
         {{ macro.render_exchange_rate(subject) }}
         {{ macro.render_shipment_method(subject) }}
+        {% if not subject.credit -%}
+            {{ macro.render_payment_term(subject) }}
+        {%- endif %}
     </p>
     {% if subject.comment is not empty -%}
         <p>{{ subject.comment|nl2br }}</p>
@@ -37,9 +33,10 @@
 
 {# --- DOC MISC --- #}
 {% block doc_misc -%}
+    {{- macro.render_invoice_payments(subject) -}}
     <div class="unbreakable">
-    {% for notice in subject|invoice_notices %}
+    {% for notice in subject|invoice_notices -%}
         {{ notice|raw }}
-    {% endfor %}
+    {%- endfor %}
     </div>
 {%- endblock doc_misc %}

@@ -6,7 +6,6 @@ use Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
@@ -61,12 +60,6 @@ class InvoicePaidTotalType extends AbstractColumnType
 
         if (!$invoice instanceof OrderInvoiceInterface) {
             throw new UnexpectedValueException("Expected instance of " . OrderInvoiceInterface::class);
-        }
-
-        if ($invoice->getType() === InvoiceTypes::TYPE_CREDIT) {
-            $view->vars['value'] = '';
-
-            return;
         }
 
         $view->vars['value'] = $this->getFormatter()->currency($invoice->getPaidTotal(), $invoice->getCurrency());

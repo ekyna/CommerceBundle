@@ -48,9 +48,6 @@
             <call method="setInvoiceCalculator">
                 <argument type="service" id="ekyna_commerce.document.calculator"/>
             </call>
-            <call method="setCustomerUpdater">
-                <argument type="service" id="ekyna_commerce.customer.updater"/>
-            </call>
         </service>
 
         <!-- Invoice line abstract listener -->

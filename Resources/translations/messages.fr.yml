@@ -9,6 +9,9 @@ ekyna_commerce:
         shipped: Expedié
         expected: Attendu
         available: Disponible
+        invoiced: Facturé
+        tax_group: Groupe
+        private: Masqué
         max_quantity: Quantité max
         net_price: Prix HT
         buy_net_price: Prix d'achat HT
@@ -170,8 +173,7 @@ ekyna_commerce:
             message:
                 expired: Ce devis est expiré, veuillez nous contacter pour l'actualiser.
                 voucher_required: >
-                    Avant de procéder au réglement du devis, nous vous prions
-                    de bien vouloir ajouter votre bon d'achat.
+                    Avant de procéder au réglement du devis, nous vous prions de bien vouloir ajouter votre bon d'achat.
                 voucher_denied: Contactez votre service d'achat pour la gestion du bon d'achat.
                 payment_denied: Contactez votre service d'achat pour le réglement de ce devis.
         invoice:
@@ -415,7 +417,8 @@ ekyna_commerce:
         payment:
             last_step: >
                 Cliquer sur un bouton &laquo;Régler par&hellip;&raquo; <strong>validera votre commande</strong>.
-            pay_with: "Régler par %method%"
+            pay_by: "Régler par %method%"
+            refund_by: "Rembourser par %method%"
             grand_total: >
                 Montant total de la commande : <strong>%amount%</strong>
             deposit_amount: >
@@ -534,11 +537,15 @@ ekyna_commerce:
             shipment_form: Bon de préparation
             shipment_bill: Bon de livraison
             return_bill: Bon de retour
+            invoice: Facture
+            credit: Avoir
         mention:
+            cash_payment: Paiment comptant à la commande
             due_date: Date d'échéance
             remaining_unknown: Les éléments suivants vous seront livrés ultérieurement.
             remaining_with_date: Les éléments suivants vous seront livrés à partir du %date%.
-            deposit: Acompte de <strong>%percent%</strong> d'un montant de <strong>%amount%</strong>
+            deposit: "Acompte de %percent% d'un montant de %amount%"
+            deposit_remaining: Le reste à réception de la marchandise
 
     invoice:
         tab: Factures et avoirs
@@ -554,10 +561,8 @@ ekyna_commerce:
             edit: Modifier la facture
             remove: Supprimer la facture
             recalculate: Recalculer
+            synchronize: Synchroniser avec l'expédition
             unlink: Délier
-        type:
-            invoice: Facture
-            credit: Avoir
         field:
             lines: Lignes
             goods_base: Marchandises HT
@@ -569,7 +574,11 @@ ekyna_commerce:
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
             recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
-            unlink_confirm: Êtes-vous sûr de vouloir supprimer le lien avec l\'expédition %number% ? (Opération non réversible).
+            synchronize_confirm: >
+                Êtes-vous sûr de vouloir synchroniser cette facture avec l'expédition qui lui est liée ?
+                (Opération non réversible).
+            unlink_confirm: >
+                Êtes-vous sûr de vouloir supprimer le lien avec l'expédition %number% ? (Opération non réversible).
             cant_be_deleted: Cette facture ne peut pas être supprimée.
         alert:
             no_item: Aucune facture configuré
@@ -624,6 +633,7 @@ ekyna_commerce:
             export: Export client
         field:
             parent: Compte service achat
+            company_number: N° Siret
             in_charge: Responsable
             children: Commerciaux
             outstanding_overflow: Dépassement d'encours autorisé
@@ -665,7 +675,6 @@ ekyna_commerce:
         balance:
             debit: Débit
             credit: Crédit
-            balance: Solde
             all: Tout
             forward: À nouveau
             due_invoices: Factures échues
@@ -1111,6 +1120,14 @@ ekyna_commerce:
         label:
             singular: Remboursement
             plural: Remboursements
+        header:
+            new: Créer un nouveau remboursement
+            edit: Modifier le remboursement
+            remove: Supprimer le remboursement
+        button:
+            new: Nouveau remboursement
+            edit: Modifier le remboursement
+            remove: Supprimer le remboursement
 
     relay_point:
         label:
@@ -1246,6 +1263,7 @@ ekyna_commerce:
             tax_total: Total TVA
             adjustment_total: Total remises
             paid_total: Total réglé
+            refunded_total: Total remboursé
             invoice_total: Total factures
             credit_total: Total avoirs
             outstanding_accepted: Encours accepté
@@ -1276,16 +1294,11 @@ ekyna_commerce:
             payment_state: Paiement
             shipment_state: Livraison
             invoice_state: Facturation
+
     sale_item:
         label:
             singular: Ligne
             plural: Lignes
-        field:
-            tax_group: Groupe
-            shipped: Expédié
-            available: Disponible
-            invoiced: Facturé
-            private: Masqué
 
     setting:
         invoice_footer: Pied de page documents

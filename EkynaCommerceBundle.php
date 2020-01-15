@@ -31,9 +31,10 @@ class EkynaCommerceBundle extends AbstractBundle
         $container->addCompilerPass(new ComponentPass\ShipmentGatewayRegistryPass());
         $container->addCompilerPass(new ComponentPass\TwigPathCompilerPass());
 
-        $container->addCompilerPass(new BundlePass\PayumPass());
         $container->addCompilerPass(new BundlePass\AdminMenuPass());
+        $container->addCompilerPass(new BundlePass\PayumPass());
         $container->addCompilerPass(new BundlePass\SecurityPass());
+        $container->addCompilerPass(new BundlePass\SwapPass());
     }
 
     /**

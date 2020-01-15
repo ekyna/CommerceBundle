@@ -21,7 +21,7 @@
         }, {
             'onclick': ('return confirm(\'' ~ ('ekyna_user.user.alert.use_session'|trans({
                 '{email}': customer.user.email
-            })) ~ '\')'),
+            })|escape('js')) ~ '\')'),
             'target': '_blank'
         }) }}
     {% endif %}

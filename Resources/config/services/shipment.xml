@@ -63,7 +63,7 @@
                 <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
             </call>
             <call method="setInvoiceSynchronizer">
-                <argument type="service" id="ekyna_commerce.shipment.invoice_synchronizer"/>
+                <argument type="service" id="Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer"/>
             </call>
         </service>
 
@@ -95,8 +95,7 @@
         </service>
 
         <!-- Shipment invoice synchronizer -->
-        <service id="ekyna_commerce.shipment.invoice_synchronizer"
-                 class="Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer">
+        <service id="Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer">
             <argument type="service" id="ekyna_commerce.invoice.builder"/>
             <argument type="service" id="ekyna_commerce.document.calculator"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
@@ -118,6 +117,7 @@
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
         <!-- Shipment address resolver -->

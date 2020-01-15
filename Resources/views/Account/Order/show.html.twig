@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    {% set remaining = order|payment_remaining_total(order.currency.code) %}
+    {% set remaining = order|payment_expected_amount %}
     {% if 0 < remaining %}
         {% if customer.id == order.customer.id %}
         <div class="text-center" style="margin-bottom: 40px;">
@@ -49,7 +49,14 @@
     {# Payments #}
     {%- if order is sale_with_payment -%}
         {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
-            'sale': order, 'customer': customer
+            'sale': order, 'customer': customer, 'refund': false
+        } only -%}
+    {%- endif -%}
+
+    {# Refunds #}
+    {%- if order is sale_with_refund -%}
+        {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
+            'sale': order, 'customer': customer, 'refund': true
         } only -%}
     {%- endif -%}
 

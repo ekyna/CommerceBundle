@@ -1,13 +1,13 @@
 {% spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        {%- if credit -%}
-            {%- set invoices = sale|sale_credits -%}
-            {{- 'ekyna_commerce.credit.label.plural'|trans|raw -}}
-        {%- else -%}
-            {%- set invoices = sale|sale_invoices -%}
-            {{- 'ekyna_commerce.invoice.label.plural'|trans|raw -}}
-        {%- endif -%}
+    {%- if credit -%}
+        {%- set invoices = sale.getInvoices(false) -%}
+        {{- 'ekyna_commerce.credit.label.plural'|trans|raw -}}
+    {%- else -%}
+        {%- set invoices = sale.getInvoices(true) -%}
+        {{- 'ekyna_commerce.invoice.label.plural'|trans|raw -}}
+    {%- endif -%}
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -70,6 +70,12 @@
                             {%- endfor -%}
                             </tbody>
                         </table>
+                    </td>
+                </tr>
+            {%- else -%}
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <em>{{- 'ekyna_core.value.no_item'|trans -}}</em>
                     </td>
                 </tr>
             {%- endfor -%}

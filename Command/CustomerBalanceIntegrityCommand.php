@@ -183,35 +183,26 @@ class CustomerBalanceIntegrityCommand extends Command
 
         $customers = $this->connection->query('SELECT id, email, credit_balance FROM commerce_customer');
 
-        $creditQuery = $this->connection->prepare(
-            'SELECT SUM(i.grand_total) ' .
-            'FROM commerce_order_invoice AS i ' .
-            'JOIN commerce_order AS o ON o.id=i.order_id ' .
-            'JOIN commerce_payment_method AS m ON m.id=i.payment_method_id ' .
-            'WHERE o.customer_id=:customer_id ' .
-            'AND i.type=\'credit\' '.
-            'AND m.factory_name=\'credit_balance\''
-        );
-
         $paymentQuery = $this->connection->prepare(
             'SELECT SUM(p.amount) ' .
             'FROM commerce_order_payment AS p ' .
             'JOIN commerce_order AS o ON o.id=p.order_id ' .
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
-            'AND p.state IN (\'captured\') ' .
+            'AND p.state IN (\'captured\', \'authorized\') ' .
             'AND m.factory_name=\'credit_balance\''
         );
 
-        // TODO payment refund type implementation
         $refundQuery = $this->connection->prepare(
             'SELECT SUM(p.amount) ' .
             'FROM commerce_order_payment AS p ' .
             'JOIN commerce_order AS o ON o.id=p.order_id ' .
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
-            'AND p.state IN (\'refunded\') ' .
-            'AND m.factory_name=\'credit_balance\''
+            'AND ( ' .
+            '    (p.refund=0 AND p.state IN (\'refunded\')) ' .
+            '    OR (p.refund=1 AND p.state IN (\'captured\', \'authorized\')) ' .
+            ') AND m.factory_name=\'credit_balance\''
         );
 
         $fixQuery = $this->connection->prepare(
@@ -220,7 +211,7 @@ class CustomerBalanceIntegrityCommand extends Command
             'WHERE id=:customer_id LIMIT 1'
         );
 
-        $headers = ['ID', 'Email', 'Actual', 'Expected', 'Credits', 'Payments', 'Refunds'];
+        $headers = ['ID', 'Email', 'Actual', 'Expected', 'Payments', 'Refunds'];
         if ($this->fix) {
             $headers[] = 'Fix';
         }
@@ -236,16 +227,11 @@ class CustomerBalanceIntegrityCommand extends Command
             $actual = floatval($customer['credit_balance']);
             $expected = 0;
 
-            $creditQuery->execute(['customer_id' => $customer['id']]);
-            $expected += $credits = floatval($creditQuery->fetchColumn(0));
-
             $paymentQuery->execute(['customer_id' => $customer['id']]);
             $expected -= $payments = floatval($paymentQuery->fetchColumn(0));
 
-            $refunds = 0;
-            // TODO payment refund type implementation
-//            $refundQuery->execute(['customer_id' => $customer['id']]);
-//            $expected += $refunds = floatval($refundQuery->fetchColumn(0));
+            $refundQuery->execute(['customer_id' => $customer['id']]);
+            $expected += $refunds = floatval($refundQuery->fetchColumn(0));
 
             if (0 != bccomp($actual, $expected, 3)) {
                 $row = [
@@ -253,14 +239,14 @@ class CustomerBalanceIntegrityCommand extends Command
                     $customer['email'],
                     number_format($actual, 3),
                     number_format($expected, 3),
-                    number_format($credits, 3),
                     number_format($payments, 3),
                     number_format($refunds, 3),
                 ];
 
                 if ($this->fix) {
                     if (-1 === bccomp($expected, 0, 3)) {
-                        $row[] = '<comment>Missing credits/payments</comment>';
+                        $success = $fixQuery->execute(['balance' => 0, 'customer_id' => $customer['id']]);
+                        $row[] = ($success ? $tick : $cross) . '<comment>Missing credits/payments</comment>';
                     } else {
                         $success = $fixQuery->execute(['balance' => $expected, 'customer_id' => $customer['id']]);
                         $row[] = $success ? $tick : $cross;

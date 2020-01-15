@@ -1,10 +1,9 @@
 ekyna_commerce_order_invoice_admin_new:
-    path: /new/{type}
+    path: /new
     defaults: { _controller: "ekyna_commerce.order_invoice.controller:newAction" }
     methods: [GET|POST]
     requirements:
         orderId: \d+
-        type: "[a-z]+"
 
 ekyna_commerce_order_invoice_admin_edit:
     path: /{orderInvoiceId}/edit

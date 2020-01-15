@@ -135,7 +135,7 @@ class AntiFraudEventSubscriber implements EventSubscriberInterface
         $level = 0;
 
         /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface[] $failedPayments */
-        foreach ($sale->getPayments() as $p) {
+        foreach ($sale->getPayments(true) as $p) {
             if ($p->getState() !== PaymentStates::STATE_FAILED) {
                 continue;
             }

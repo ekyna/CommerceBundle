@@ -131,6 +131,11 @@ class CustomerType extends ResourceFormType
 
         $formModifier = function (FormInterface $form, CustomerInterface $customer, $hasParent) {
             $form
+                ->add('companyNumber', Type\TextType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.company_number',
+                    'required' => false,
+                    'disabled' => $hasParent,
+                ])
                 ->add('customerGroup', CustomerGroupChoiceType::class, [
                     'allow_new' => true,
                     'disabled'  => $hasParent,

@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    {% set remaining = quote|payment_remaining_total %}
+    {% set remaining = quote|payment_expected_amount %}
     {% if quote.expired %}
         <div class="alert alert-warning">
             {{ 'ekyna_commerce.account.quote.message.expired'|trans }}
@@ -68,7 +68,14 @@
     {# Payments #}
     {%- if quote is sale_with_payment -%}
         {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
-            'sale': quote, 'customer': customer
+            'sale': quote, 'customer': customer, 'refund': false
+        } only -%}
+    {%- endif -%}
+
+    {# Refunds #}
+    {%- if quote is sale_with_refund -%}
+        {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
+            'sale': quote, 'customer': customer, 'refund': true
         } only -%}
     {%- endif -%}
 

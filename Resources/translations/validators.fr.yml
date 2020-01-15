@@ -124,10 +124,6 @@ ekyna_commerce:
             Veuillez laisser le champ valorisation vide si vous saisissez un colisage.
         at_least_two_parcels_or_none:
             Veuillez saisir au moins 2 colisages ou aucun.
-        credit_method_is_required:
-            Veuillez sélectionner un mode de remboursement.
-        credit_method_must_be_null:
-            Aucun mode de remboursement ne doit être sélectionné.
     shipment_item:
         returnable_overflow: |
             La quantité retournée doit être inférieure ou égale à %max%.

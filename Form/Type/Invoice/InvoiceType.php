@@ -3,13 +3,10 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceTypes;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
-use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -91,33 +88,6 @@ class InvoiceType extends ResourceFormType
                     'entry_type' => $options['line_type'],
                     'disabled'   => $disabledLines,
                 ]);
-
-                if (InvoiceTypes::isCredit($invoice)) {
-                    $required = false;
-                    $states = [
-                        PaymentStates::STATE_CAPTURED,
-                        PaymentStates::STATE_AUTHORIZED,
-                        PaymentStates::STATE_REFUNDED,
-                    ];
-                    foreach ($sale->getPayments() as $payment) {
-                        // Ignore outstanding payments
-                        if ($payment->getMethod()->isOutstanding()) {
-                            continue;
-                        }
-                        if (in_array($payment->getState(), $states, true)) {
-                            $required = true;
-                            break;
-                        }
-                    }
-
-                    $form->add('paymentMethod', PaymentMethodChoiceType::class, [
-                        'label'       => 'ekyna_commerce.invoice.field.payment_method',
-                        'required'    => $required,
-                        'invoice'     => $invoice,
-                        'public'      => false,
-                        'outstanding' => false,
-                    ]);
-                }
             });
     }
 
@@ -129,7 +99,7 @@ class InvoiceType extends ResourceFormType
         /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
         $invoice = $form->getData();
 
-        $view->vars['credit_mode'] = InvoiceTypes::isCredit($invoice->getType());
+        $view->vars['credit_mode'] = $invoice->isCredit();
 
         FormUtil::addClass($view, 'invoice');
     }

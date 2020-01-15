@@ -12,7 +12,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
             var $form = $(this),
                 name = $form.attr('name'),
-                $quantities = $form.find('.shipment-items > tbody > tr input'),
+                $quantities = $form.find('.shipment-items > tbody > tr input.quantity'),
                 $method = $form.find('[name="' + name + '[method]"]'),
                 $parcels = $form.find('#shipment-parcels'),
                 $generalTab = $form.find('#toggle-general'),

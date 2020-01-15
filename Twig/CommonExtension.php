@@ -84,11 +84,6 @@ class CommonExtension extends AbstractExtension
                 [CurrencyRenderer::class, 'renderRate'],
                 ['is_safe' => ['html']]
             ),
-            new TwigFilter(
-                'currency_convert',
-                [CurrencyRenderer::class, 'renderConvert'],
-                ['is_safe' => ['html']]
-            ),
         ];
     }
 

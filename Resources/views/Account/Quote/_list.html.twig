@@ -8,12 +8,10 @@
         {% if show_customer -%}
         <th>{{ 'ekyna_commerce.sale.field.origin_customer'|trans }}</th>
         {%- endif %}
+        <th>{{ 'ekyna_core.field.title'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</th>
         <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-        <th>{{ 'ekyna_commerce.field.status'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
         <th>{{ 'ekyna_core.field.date'|trans }}</th>
-        <th>{{ 'ekyna_core.field.expires_at'|trans }}</th>
         <th></th>
     </tr>
     </thead>
@@ -29,6 +27,7 @@
                 {{- quote.customer|identity -}}
             </td>
             {% endif -%}
+            <td>{{ quote.title }}</td>
             <td>
                 {%- if quote.voucherNumber is not empty -%}
                     {{ quote.voucherNumber }}
@@ -40,18 +39,7 @@
                 {{- quote.grandTotal|currency_quote(quote) -}}
             </td>
             <td>
-                {{- quote|sale_state_badge -}}
-            </td>
-            <td>
-                {{- quote.paymentState|payment_state_badge -}}
-            </td>
-            <td>
                 {{- quote.createdAt|localizeddate('short', 'none') -}}
-            </td>
-            <td>
-                {%- if quote.expiresAt is not null -%}
-                    {{- quote.expiresAt|localizeddate('short', 'none') -}}
-                {%- endif -%}
             </td>
             <td class="text-right">
                 <a href="{{ path }}" class="btn btn-xs btn-default">
@@ -61,7 +49,7 @@
         </tr>
     {% else %}
         <tr>
-            <td colspan="{{ show_customer ? 8 : 7 }}">
+            <td colspan="{{ show_customer ? 6 : 5 }}">
                 <em>{{ 'ekyna_commerce.account.quote.empty_list'|trans }}</em>
             </td>
         </tr>

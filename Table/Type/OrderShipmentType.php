@@ -52,8 +52,8 @@ class OrderShipmentType extends AbstractOrderListType
     ) {
         parent::__construct($class);
 
-        $this->shipmentHelper = $shipmentHelper;
-        $this->translator = $translator;
+        $this->shipmentHelper      = $shipmentHelper;
+        $this->translator          = $translator;
         $this->shipmentMethodClass = $shipmentMethodClass;
     }
 

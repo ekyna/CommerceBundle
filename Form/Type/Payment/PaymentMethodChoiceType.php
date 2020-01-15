@@ -151,10 +151,9 @@ class PaymentMethodChoiceType extends AbstractType
 
         $methodIds = [];
         $preferredChoices = [];
-        $states = [PaymentStates::STATE_CAPTURED, PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_REFUNDED];
-        foreach ($sale->getPayments() as $payment) {
+        foreach ($sale->getPayments(true) as $payment) {
             $method = $payment->getMethod();
-            if (in_array($payment->getState(), $states, true)) {
+            if (PaymentStates::isPaidState($payment, true)) {
                 $preferredChoices[] = $method;
                 break;
             } elseif ($method->isManual() && $payment->getState() === PaymentStates::STATE_PENDING) {

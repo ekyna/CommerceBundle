@@ -1,4 +1,0 @@
-florianv_swap:
-    cache:
-        ttl: 3600
-        type: apcu

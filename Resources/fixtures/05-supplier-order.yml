@@ -4,24 +4,8 @@ Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface:
         supplier: '@supplier_techdata'
         carrier: '@supplier_tnt'
         currency: <currencyByCode('EUR')>
-#       TODO paymentTotal: 1100
         state: 'validated'
         orderedAt: <datetime('now')>
-#    supplier_order_2:
-#        __factory: { '@ekyna_commerce.supplier_order.repository::createNew': [] }
-#        supplier: '@supplier_techdata'
-#        carrier: '@supplier_tnt'
-#        currency: <currencyByCode('EUR')>
-##       TODO paymentTotal: 2150
-#        estimatedDateOfArrival: <datetime('+2 week')>
-#        state: 'validated'
-#        orderedAt: <datetime('now')>
-#    supplier_order_3:
-#        __factory: { '@ekyna_commerce.supplier_order.repository::createNew': [] }
-#        supplier: '@supplier_techdata'
-#        carrier: '@supplier_tnt'
-#        currency: <currencyByCode('EUR')>
-#        paymentTotal: 800
 
 Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface:
     supplier_order_item_1_1:
@@ -72,7 +56,7 @@ Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface:
     supplier_order_item_1_10:
         __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
         order: '@supplier_order_1'
-        product: '@supplier_product_kesw'
+        product: '@supplier_product_kesb'
         quantity: 30
     supplier_order_item_1_11:
         __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
@@ -107,7 +91,7 @@ Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface:
     supplier_order_item_1_17:
         __factory: { '@ekyna_commerce.supplier_order_item.repository::createNew': [] }
         order: '@supplier_order_1'
-        product: '@supplier_product_shbw'
+        product: '@supplier_product_shbb'
         quantity: 34
 
 Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface:

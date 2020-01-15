@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
 use Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
@@ -31,9 +30,13 @@ class OrderInvoiceType extends AbstractOrderListType
                 'property_path' => false,
                 'position'      => 10,
             ])
-            ->addColumn('type', Column\InvoiceTypeType::class, [
-                'label'    => 'ekyna_core.field.type',
-                'position' => 20,
+            ->addColumn('credit', CType\Column\BooleanType::class, [
+                'label'       => 'ekyna_core.field.type',
+                'true_label'  => 'ekyna_commerce.credit.label.singular',
+                'false_label' => 'ekyna_commerce.invoice.label.singular',
+                'true_class'  => 'label-warning',
+                'false_class' => 'label-success',
+                'position'    => 20,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => 'ekyna_commerce.sale.field.ati_total',
@@ -109,12 +112,10 @@ class OrderInvoiceType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
-            ->addFilter('type', CType\Filter\ChoiceType::class, [
-                'label'    => 'ekyna_core.field.type',
-                'choices'  => InvoiceTypes::getChoices(),
+            ->addFilter('credit', CType\Filter\BooleanType::class, [
+                'label'    => 'ekyna_commerce.credit.label.singular',
                 'position' => 20,
             ])
-            // TODO Customer
             ->addFilter('grandTotal', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.ati_total',
                 'position' => 50,

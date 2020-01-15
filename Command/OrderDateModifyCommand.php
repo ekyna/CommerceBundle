@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\NumberSubjectInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
@@ -36,14 +36,14 @@ class OrderDateModifyCommand extends Command
      * Constructor.
      *
      * @param OrderRepositoryInterface $repository
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface   $manager
      */
     public function __construct(OrderRepositoryInterface $repository, EntityManagerInterface $manager)
     {
         parent::__construct();
 
         $this->repository = $repository;
-        $this->manager = $manager;
+        $this->manager    = $manager;
     }
 
     /**
@@ -146,10 +146,11 @@ class OrderDateModifyCommand extends Command
         }
 
         $output->writeln('<error>This is a dangerous operation.</error>');
+        $output->writeln('<comment>All dates (order, invoices, payments and shipments) will be changed.</comment>');
 
-        $helper = $this->getHelper('question');
+        $helper   = $this->getHelper('question');
         $question = new ConfirmationQuestion(
-            "Change order $number date to '$modifier' ?", false
+            "Change order $number dates to '$modifier' ?", false
         );
         if (!$helper->ask($input, $output, $question)) {
             return;
@@ -175,24 +176,24 @@ class OrderDateModifyCommand extends Command
 
             foreach ($payments as $payment) {
                 $this->updateDates($payment, $modifier, [
-                    'createdAt'       => $payment->getCreatedAt(),
-                    'updatedAt'       => $payment->getUpdatedAt(),
-                    'completedAt'     => $payment->getCompletedAt(),
+                    'createdAt'   => $payment->getCreatedAt(),
+                    'updatedAt'   => $payment->getUpdatedAt(),
+                    'completedAt' => $payment->getCompletedAt(),
                 ]);
             }
 
             foreach ($shipments as $shipment) {
                 $this->updateDates($shipment, $modifier, [
-                    'createdAt'       => $shipment->getCreatedAt(),
-                    'updatedAt'       => $shipment->getUpdatedAt(),
-                    'completedAt'     => $shipment->getCompletedAt(),
+                    'createdAt'   => $shipment->getCreatedAt(),
+                    'updatedAt'   => $shipment->getUpdatedAt(),
+                    'completedAt' => $shipment->getCompletedAt(),
                 ]);
             }
 
             foreach ($invoices as $invoice) {
                 $this->updateDates($invoice, $modifier, [
-                    'createdAt'       => $invoice->getCreatedAt(),
-                    'updatedAt'       => $invoice->getUpdatedAt(),
+                    'createdAt' => $invoice->getCreatedAt(),
+                    'updatedAt' => $invoice->getUpdatedAt(),
                 ]);
             }
 
@@ -214,13 +215,13 @@ class OrderDateModifyCommand extends Command
      */
     private function updateDates(NumberSubjectInterface $object, $modifier, array $dates)
     {
-        $couples = [];
+        $couples    = [];
         $parameters = [];
 
         foreach ($dates as $field => $date) {
             if (null !== $date) {
-                $date = clone $date;
-                $couples[] = "o.$field = :$field";
+                $date               = clone $date;
+                $couples[]          = "o.$field = :$field";
                 $parameters[$field] = $date->modify($modifier);
             }
         }
@@ -235,7 +236,7 @@ class OrderDateModifyCommand extends Command
             "WHERE o.number = :number"
         );
         foreach ($parameters as $field => $date) {
-            $query->setParameter($field, $date, Type::DATETIME);
+            $query->setParameter($field, $date, Types::DATETIME_MUTABLE);
         }
 
         $query

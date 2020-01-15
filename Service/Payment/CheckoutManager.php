@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
+use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
@@ -63,29 +64,37 @@ class CheckoutManager
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->methodRepository = $methodRepository;
-        $this->paymentFactory = $paymentFactory;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->paymentFactory   = $paymentFactory;
+        $this->eventDispatcher  = $eventDispatcher;
     }
 
     /**
-     * Initializes from the given sale by creating a form
-     * for each available payment methods.
+     * Initializes from the given sale by creating a form for each available payment methods.
      *
      * @param SaleInterface $sale
      * @param string        $action
+     * @param bool          $refund
      * @param bool          $admin
      */
-    public function initialize(SaleInterface $sale, $action, $admin = false): void
+    public function initialize(SaleInterface $sale, string $action, bool $refund = false, bool $admin = false): void
     {
+        if ($refund && !$admin) {
+            throw new RuntimeException("Refund can't be initialized without admin mode.");
+        }
+
         $this->forms = [];
 
-        $methods = $this->getMethods($sale, $admin);
+        $methods = $this->getMethods($sale, $refund, $admin);
         if (empty($methods)) {
             throw new RuntimeException("No payment method available.");
         }
 
         foreach ($methods as $method) {
-            $payment = $this->paymentFactory->createPayment($sale, $method);
+            if ($refund) {
+                $payment = $this->paymentFactory->createRefund($sale, $method);
+            } else {
+                $payment = $this->paymentFactory->createPayment($sale, $method);
+            }
 
             // Amount and currency have been set by the factory
             $payment->setMethod($method);
@@ -113,21 +122,45 @@ class CheckoutManager
      * Returns the available payment methods for the given sale.
      *
      * @param SaleInterface $sale
+     * @param bool          $refund
      * @param bool          $admin
      *
      * @return \Ekyna\Component\Commerce\Payment\Model\PaymentMethodInterface[]
      */
-    protected function getMethods(SaleInterface $sale, $admin = false)
+    protected function getMethods(SaleInterface $sale, bool $refund = false , bool $admin = false)
     {
+        if ($refund) {
+            // TODO Methods that support payum refund action
+            $methods = $this->methodRepository->findByFactoryName(Offline::FACTORY_NAME, !$admin);
+
+            if ($sale->getPaymentTerm()) {
+                foreach ($this->methodRepository->findByFactoryName(Outstanding::FACTORY_NAME, !$admin) as $method) {
+                    $methods[] = $method;
+                }
+            }
+
+            if ($customer = $sale->getCustomer()) {
+                foreach ($this->methodRepository->findByFactoryName(Credit::FACTORY_NAME, !$admin) as $method) {
+                    $methods[] = $method;
+                }
+            }
+
+            return $methods;
+        }
+
         if ($default = $sale->getPaymentMethod()) {
             $methods = [$default];
 
             if ($sale->getPaymentTerm()) {
-                array_unshift($methods, $this->methodRepository->findOneByFactoryName(Outstanding::FACTORY_NAME));
+                foreach ($this->methodRepository->findByFactoryName(Outstanding::FACTORY_NAME, !$admin) as $method) {
+                    $methods[] = $method;
+                }
             }
 
             if (($customer = $sale->getCustomer()) && (0 < $customer->getCreditBalance())) {
-                array_unshift($methods, $this->methodRepository->findOneByFactoryName(Credit::FACTORY_NAME));
+                foreach ($this->methodRepository->findByFactoryName(Credit::FACTORY_NAME, !$admin) as $method) {
+                    $methods[] = $method;
+                }
             }
 
             return $methods;
@@ -159,7 +192,6 @@ class CheckoutManager
         foreach ($this->forms as $form) {
             $form->handleRequest($request);
 
-            /** @noinspection PhpUndefinedMethodInspection */
             if ($form->isSubmitted() && $form->isValid() && $form->get('submit')->isClicked()) {
                 return $form->getData();
             }

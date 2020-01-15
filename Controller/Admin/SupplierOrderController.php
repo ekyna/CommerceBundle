@@ -171,6 +171,7 @@ class SupplierOrderController extends ResourceController
             $dispatcher->dispatch(SupplierOrderEvents::PRE_SUBMIT, $event);
 
             if (!$event->hasErrors()) {
+                $resource->setState(SupplierOrderStates::STATE_ORDERED);
                 // TODO use ResourceManager
                 $event = $this->getOperator()->update($resource);
 

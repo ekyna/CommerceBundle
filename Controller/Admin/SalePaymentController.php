@@ -52,7 +52,7 @@ class SalePaymentController extends AbstractSaleController
 
         $this->isGranted('CREATE');
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sale */
         $sale = $this->getParentResource($context);
@@ -62,7 +62,7 @@ class SalePaymentController extends AbstractSaleController
         $stepValidator = $this->get('ekyna_commerce.sale_step_validator');
 
         if (!$stepValidator->validate($sale, SaleStepValidatorInterface::PAYMENT_STEP)) {
-            $list = $stepValidator->getViolationList();
+            $list     = $stepValidator->getViolationList();
             $messages = [];
 
             /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
@@ -77,11 +77,15 @@ class SalePaymentController extends AbstractSaleController
             return $this->redirect($this->generateResourcePath($sale));
         }
 
+        $refund = (bool)$request->query->get('refund');
+
         $checkoutManager = $this->get('ekyna_commerce.payment.checkout_manager');
 
-        $action = $this->generateResourcePath($this->config->getResourceId(), 'new', $context->getIdentifiers());
+        $action = $this->generateResourcePath($this->config->getResourceId(), 'new', array_merge($context->getIdentifiers(), [
+            'refund' => $refund ? 1 : 0,
+        ]));
 
-        $model = $checkoutManager->initialize($sale, $action, true);
+        $checkoutManager->initialize($sale, $action, $refund, true);
 
         if (null !== $payment = $checkoutManager->handleRequest($request)) {
             $sale->addPayment($payment);
@@ -109,9 +113,9 @@ class SalePaymentController extends AbstractSaleController
         return $this->render(
             $this->config->getTemplate('new.html'),
             $context->getTemplateVars([
-                'payment' => $model,
-                'sale'    => $sale,
-                'forms'   => $checkoutManager->getFormsViews(),
+                'refund' => $refund,
+                'sale'   => $sale,
+                'forms'  => $checkoutManager->getFormsViews(),
             ])
         );
     }
@@ -121,7 +125,7 @@ class SalePaymentController extends AbstractSaleController
      */
     public function editAction(Request $request)
     {
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
         /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
@@ -197,7 +201,7 @@ class SalePaymentController extends AbstractSaleController
         $this->isGranted('DELETE', $resource);
 
         $isXhr = $request->isXmlHttpRequest();
-        $form = $this->createRemoveResourceForm($context, null, !$isXhr);
+        $form  = $this->createRemoveResourceForm($context, null, !$isXhr);
 
         $form->handleRequest($request);
 
@@ -226,7 +230,7 @@ class SalePaymentController extends AbstractSaleController
 
         if ($isXhr) {
             $modal = $this->createModal('remove');
-            $vars = $context->getTemplateVars();
+            $vars  = $context->getTemplateVars();
             unset($vars['form_template']);
             $modal
                 ->setSize(Modal::SIZE_NORMAL)
@@ -258,7 +262,7 @@ class SalePaymentController extends AbstractSaleController
             throw $this->createNotFoundException("XHR is not yet supported.");
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
         /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */

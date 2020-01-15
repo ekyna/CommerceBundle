@@ -5,15 +5,12 @@
         <tr>
             <th>{{ 'ekyna_core.field.number'|trans }}</th>
             <th>{{ 'ekyna_core.field.type'|trans }}</th>
-            {% if prefix == 'credit' -%}
-                <th>{{ 'ekyna_core.field.mode'|trans }}</th>
-            {%- endif %}
             <th>{{ 'ekyna_commerce.invoice.field.goods_base'|trans }}</th>
             <th>{{ 'ekyna_commerce.sale.field.shipment_net_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.field.taxes_total'|trans }}</th>
             <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-            {% if prefix != 'credit' -%}
             <th>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</th>
+            {% if prefix != 'credit' -%}
             <th>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</th>
             {% endif %}
             <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
@@ -34,15 +31,6 @@
             }|json_encode }}'>
                 <td id="{{ invoiceId }}_number">{{ invoice.number }}</td>
                 <td id="{{ invoiceId }}_type">{{ invoice|invoice_type_badge }}</td>
-                {% if prefix == 'credit' -%}
-                <td id="{{ invoiceId }}_mode">
-                    {%- if invoice.paymentMethod is null -%}
-                        {{ 'ekyna_core.value.none'|trans }}
-                    {%- else -%}
-                        {{ invoice.paymentMethod.title }}
-                    {%- endif -%}
-                </td>
-                {%- endif %}
                 <td id="{{ invoiceId }}_goodsBase">{{ invoice.goodsBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>
@@ -52,13 +40,13 @@
                         &nbsp;({{- invoice.realGrandTotal|localizedcurrency(commerce_default_currency) -}})
                     {%- endif -%}
                 </td>
-                {% if prefix != 'credit' -%}
                 <td id="{{ invoiceId }}_paidTotal"{% if invoice.paidTotal < invoice.grandTotal %} class="danger"{% endif %}>
                     {{- invoice.paidTotal|localizedcurrency(currency) -}}
                     {%- if currency != commerce_default_currency -%}
                         &nbsp;({{- invoice.realPaidTotal|localizedcurrency(commerce_default_currency) -}})
                     {%- endif -%}
                 </td>
+                {% if prefix != 'credit' -%}
                 <td id="{{ invoiceId }}_dueDate"{# TODO add danger class if due date is past #}>
                     {{- invoice.dueDate ? invoice.dueDate|localizeddate('short', 'none') : '&dash;' -}}
                 </td>
@@ -73,7 +61,7 @@
                            title="{{ 'ekyna_commerce.invoice.button.unlink'|trans }}"
                            onclick="return confirm('{{ 'ekyna_commerce.invoice.message.unlink_confirm'|trans({
                                '%number%': invoice.shipment.number
-                           }) }}');">
+                           })|escape('js') }}');">
                             <span class="fa fa-unlink"></span>
                         </a>
                     {% endif -%}
@@ -89,8 +77,13 @@
                     <a href="{{ admin_resource_path(invoice, 'recalculate') }}"
                        id="{{ invoiceId }}_recalculate"
                        class="btn btn-warning btn-xs"
+                       {% if invoice.shipment -%}
+                       title="{{ 'ekyna_commerce.invoice.button.synchronize'|trans }}"
+                       onclick="return confirm('{{ 'ekyna_commerce.invoice.message.synchronize_confirm'|trans|escape('js') }}');"
+                       {%- else -%}
                        title="{{ 'ekyna_commerce.invoice.button.recalculate'|trans }}"
-                       onclick="return confirm('{{ 'ekyna_commerce.invoice.message.recalculate_confirm'|trans }}');">
+                       onclick="return confirm('{{ 'ekyna_commerce.invoice.message.recalculate_confirm'|trans|escape('js') }}');"
+                       {%- endif %}>
                         <span class="fa fa-refresh"></span>
                     </a>
                     {% if invoice.shipment is null -%}

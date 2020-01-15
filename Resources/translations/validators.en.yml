@@ -124,10 +124,6 @@ ekyna_commerce:
             Please leave the valorization field empty if you wish to use parcels.
         at_least_two_parcels_or_none: |
             Please fill in at least 2 parcels or none.
-        credit_method_is_required: |
-            Please select a refund method.
-        credit_method_must_be_null: |
-            Please leave the refund method field empty.
     shipment_item:
         returnable_overflow: |
             The returned quantity must be lower than ot equal to %max%.

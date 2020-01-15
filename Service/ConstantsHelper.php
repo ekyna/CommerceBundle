@@ -278,8 +278,8 @@ class ConstantsHelper extends AbstractConstantsHelper
             $typeOrInvoice = $typeOrInvoice->getType();
         }
 
-        if (Model\InvoiceTypes::isValid($typeOrInvoice)) {
-            return $this->renderLabel(Model\InvoiceTypes::getLabel($typeOrInvoice));
+        if (Model\DocumentTypes::isValid($typeOrInvoice)) {
+            return $this->renderLabel(Model\DocumentTypes::getLabel($typeOrInvoice));
         }
 
         return $this->renderLabel();
@@ -299,8 +299,8 @@ class ConstantsHelper extends AbstractConstantsHelper
         }
 
         $theme = 'default';
-        if (Model\InvoiceTypes::isValid($typeOrInvoice)) {
-            $theme = Model\InvoiceTypes::getTheme($typeOrInvoice);
+        if (Model\DocumentTypes::isValid($typeOrInvoice)) {
+            $theme = Model\DocumentTypes::getTheme($typeOrInvoice);
         }
 
         return $this->renderBadge($this->renderInvoiceTypeLabel($typeOrInvoice), $theme);

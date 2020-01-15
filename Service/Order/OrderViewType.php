@@ -209,9 +209,9 @@ class OrderViewType extends AbstractViewType
                 $shipped = $this->formatter->number($shipped);
             }
 
-            $lines['ekyna_commerce.sale_item.field.shipped'] = $shipped;
+            $lines['ekyna_commerce.field.shipped'] = $shipped;
 
-            $lines['ekyna_commerce.sale_item.field.available'] = $this->formatter->number(
+            $lines['ekyna_commerce.field.available'] = $this->formatter->number(
                 $this->shipmentCalculator->calculateAvailableQuantity($item)
             );
 
@@ -226,7 +226,7 @@ class OrderViewType extends AbstractViewType
                     $invoiced = $this->formatter->number($invoiced);
                 }
 
-                $lines['ekyna_commerce.sale_item.field.invoiced'] = $invoiced;
+                $lines['ekyna_commerce.field.invoiced'] = $invoiced;
             }
 
             $popover = '<dl class="dl-horizontal" style="font-size:13px">';

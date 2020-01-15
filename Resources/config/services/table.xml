@@ -64,12 +64,6 @@
             <tag name="table.column_type"/>
         </service>
 
-        <!-- Invoice type column type -->
-        <service id="Ekyna\Bundle\CommerceBundle\Table\Column\InvoiceTypeType">
-            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
-            <tag name="table.column_type"/>
-        </service>
-
         <!-- Order(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\OrderType">
             <argument type="service" id="router"/>

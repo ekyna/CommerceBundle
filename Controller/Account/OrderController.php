@@ -425,7 +425,8 @@ class OrderController extends AbstractController
     {
         $payment = $this
             ->get('ekyna_commerce.order_payment.repository')
-            ->findOneBy([ // TODO repository method
+            // TODO repository method
+            ->findOneBy([
                 'order' => $order,
                 'key'   => $key,
             ]);

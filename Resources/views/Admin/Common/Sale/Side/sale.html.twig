@@ -20,23 +20,49 @@
                 <td>{{ sale.grandTotal|currency_quote(null, true) }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</th>
-                <td>{{ sale.paidTotal|currency_quote(null, true) }}</td>
+                <th>{{ 'ekyna_commerce.sale.field.shipment_state'|trans }}</th>
+                <td>{{ sale.shipmentState|shipment_state_badge }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.invoice_state'|trans }}</th>
+                <td>{{ sale.invoiceState|invoice_state_badge }}</td>
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
                 <td>{{ sale.paymentState|payment_state_badge }}</td>
             </tr>
+            <tr><th colspan="2">&nbsp;</th></tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.invoice_total'|trans }}</th>
+                <td>{{ sale.invoiceTotal|currency_quote(null, true) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.credit_total'|trans }}</th>
+                <td>{{ sale.creditTotal|currency_quote(null, true) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</th>
+                <td>{{ sale.paidTotal|currency_quote(null, true) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.sale.field.refunded_total'|trans }}</th>
+                <td>{{ sale.refundedTotal|currency_quote(null, true) }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'ekyna_commerce.field.balance'|trans }}</th>
+                <td>{{ (sale.invoiceTotal - sale.creditTotal - sale.paidTotal + sale.refundedTotal)|currency_quote(null, true) }}</td>
+            </tr>
+            <tr><th colspan="2">&nbsp;</th></tr>
             <tr>
                 <th>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</th>
                 <td>
-                    {% if sale.paymentTerm is not null %}
+                    {%- if sale.paymentTerm is not null -%}
                         <a href="{{ path('ekyna_commerce_payment_term_admin_show', {'paymentTermId': sale.paymentTerm.id}) }}">
                             {{ sale.paymentTerm|raw }}
                         </a>
-                    {% else %}
+                    {%- else -%}
                         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
-                    {% endif %}
+                    {%- endif -%}
                 </td>
             </tr>
             <tr>
@@ -49,7 +75,13 @@
             </tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</th>
-                <td>{{ sale.outstandingDate|localizeddate('short', 'none') }}</td>
+                <td>
+                    {%- if sale.outstandingDate is not null -%}
+                        {{ sale.outstandingDate|localizeddate('short', 'none') }}
+                    {%- else -%}
+                        <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
+                    {%- endif -%}
+                </td>
             </tr>
         </tbody>
         </table>

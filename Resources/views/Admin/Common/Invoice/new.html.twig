@@ -1,7 +1,7 @@
 {% extends '@EkynaAdmin/Entity/Default/new.html.twig' %}
 
 {% block title %}
-    <h1>{{ ('ekyna_commerce.' ~ (resource is invoice_credit ? 'credit' : 'invoice') ~ '.header.new')|trans|raw }}</h1>
+    <h1>{{ ('ekyna_commerce.' ~ (resource.credit ? 'credit' : 'invoice') ~ '.header.new')|trans|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}

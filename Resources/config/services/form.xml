@@ -441,7 +441,8 @@
             <tag name="form.js" selector=".commerce-supplier-template" path="ekyna-commerce/form/supplier-template-choice"/>
         </service>
         <!-- Warehouse form type -->
-        <service id="Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType">
+        <service id="ekyna_commerce.warehouse.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType">
             <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface"/>
             <argument>%ekyna_commerce.warehouse.class%</argument>
             <tag name="form.type"/>

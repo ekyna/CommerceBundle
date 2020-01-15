@@ -1,7 +1,9 @@
-<?xml version="1.0" ?>
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<?xml version="1.0" encoding="UTF-8"  ?>
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services
+                            http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
         <import resource="services/accounting.xml"/>
@@ -49,6 +51,11 @@
     <!-- TODO remove parameters (some are defined by configuration, other are useless : view builders) -->
 
     <services>
+
+        <!-- Cache -->
+        <service id="ekyna_commerce.cache" parent="cache.app" public="false">
+            <tag name="cache.pool" clearer="cache.default_clearer"/>
+        </service>
 
         <!-- Settings Schema -->
         <service id="ekyna_commerce.settings"
@@ -136,6 +143,18 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Routing\AccountLoader">
             <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <tag name="routing.loader"/>
+        </service>
+
+        <!-- Credits to Refunds migrator -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Migration\CreditToRefundMigrator" public="false">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="ekyna_commerce.payment_method.repository"/>
+            <argument type="service" id="ekyna_commerce.payment.factory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
+            <argument type="service" id="ekyna_commerce.customer.updater"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="ekyna_commerce.notify.queue"/>
+            <argument>%ekyna_commerce.order.class%</argument>
         </service>
 
     </services>

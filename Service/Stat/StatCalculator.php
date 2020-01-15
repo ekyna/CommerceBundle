@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Stat;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
@@ -60,7 +60,7 @@ class StatCalculator implements StatCalculatorInterface
      */
     public function __construct(RegistryInterface $registry, $orderClass)
     {
-        $this->registry = $registry;
+        $this->registry   = $registry;
         $this->orderClass = $orderClass;
     }
 
@@ -156,8 +156,8 @@ class StatCalculator implements StatCalculatorInterface
             ->andWhere($ex->in('o.state', ':state'))
             ->getQuery()
             ->useQueryCache(true)
-            ->setParameter('from', $from, Type::DATETIME)
-            ->setParameter('to', $to, Type::DATETIME)
+            ->setParameter('from', $from, Types::DATETIME_MUTABLE)
+            ->setParameter('to', $to, Types::DATETIME_MUTABLE)
             ->setParameter('sample', false)
             ->setParameter('state', [
                 OrderStates::STATE_COMPLETED,
@@ -177,7 +177,7 @@ class StatCalculator implements StatCalculatorInterface
                 'details'  => [],
             ];
 
-            $qb = $this->getOrderRepository()->createQueryBuilder('o');
+            $qb    = $this->getOrderRepository()->createQueryBuilder('o');
             $query = $qb
                 ->select([
                     'SUM(o.netTotal) as net',
@@ -192,8 +192,8 @@ class StatCalculator implements StatCalculatorInterface
 
             foreach (SaleSources::getSources() as $source) {
                 $data = $query
-                    ->setParameter('from', $from, Type::DATETIME)
-                    ->setParameter('to', $to, Type::DATETIME)
+                    ->setParameter('from', $from, Types::DATETIME_MUTABLE)
+                    ->setParameter('to', $to, Types::DATETIME_MUTABLE)
                     ->setParameter('source', $source)
                     ->setParameter('sample', false)
                     ->setParameter('state', [

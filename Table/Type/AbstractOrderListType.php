@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Bundle\CommerceBundle\Table\Filter;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
@@ -79,25 +80,34 @@ abstract class AbstractOrderListType extends ResourceTableType
                         'property_path' => 'order.number',
                         'position'      => 15,
                     ])
+                    ->addFilter('customer', Filter\CustomerType::class, [
+                        'property_path' => 'order.customer',
+                        'position'      => 30,
+                    ])
                     ->addFilter('email', CType\Filter\TextType::class, [
                         'label'         => 'ekyna_core.field.email',
                         'property_path' => 'order.email',
-                        'position'      => 30,
+                        'position'      => 31,
                     ])
                     ->addFilter('company', CType\Filter\TextType::class, [
                         'label'         => 'ekyna_core.field.company',
                         'property_path' => 'order.company',
-                        'position'      => 31,
+                        'position'      => 32,
                     ])
                     ->addFilter('firstName', CType\Filter\TextType::class, [
                         'label'         => 'ekyna_core.field.first_name',
                         'property_path' => 'order.firstName',
-                        'position'      => 32,
+                        'position'      => 33,
                     ])
                     ->addFilter('lastName', CType\Filter\TextType::class, [
                         'label'         => 'ekyna_core.field.last_name',
                         'property_path' => 'order.lastName',
-                        'position'      => 33,
+                        'position'      => 34,
+                    ])
+                    ->addFilter('companyNumber', CType\Filter\TextType::class, [
+                        'label'         => 'ekyna_commerce.customer.field.company_number',
+                        'property_path' => 'order.customer.companyNumber',
+                        'position'      => 35,
                     ]);
             }
 

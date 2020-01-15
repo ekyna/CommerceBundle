@@ -1,9 +1,13 @@
 {% spaceless %}
-{% set payments = sale|sale_payments %}
-{% if payments is not empty %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        {{- 'ekyna_commerce.payment.label.plural'|trans|raw -}}
+    {%- if refund -%}
+        {%- set payments = sale.getPayments(false) -%}
+        {{- 'ekyna_commerce.refund.label.plural'|trans -}}
+    {%- else -%}
+        {%- set payments = sale.getPayments(true) -%}
+        {{- 'ekyna_commerce.payment.label.plural'|trans -}}
+    {%- endif -%}
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -21,7 +25,7 @@
             </tr>
             </thead>
             <tbody>
-            {%- for payment in sale|sale_payments -%}
+            {%- for payment in payments -%}
                 <tr>
                     <td>{{ payment.getNumber() }}</td>
                     <td>{{ payment.getMethod() }}</td>
@@ -41,10 +45,15 @@
                     </td>
                     {%- endif %}
                 </tr>
+            {%- else -%}
+                <tr>
+                    <td colspan="{{ customer.hasParent() ? 6 : 7 }}" class="text-center">
+                        <em>{{- 'ekyna_core.value.no_item'|trans -}}</em>
+                    </td>
+                </tr>
             {%- endfor -%}
             </tbody>
         </table>
     </div>
 </div>
-{% endif %}
 {% endspaceless %}

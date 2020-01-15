@@ -149,36 +149,42 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
             return;
         }
-        // Abort if customer has no fund
-        if (0 >= $customer->getCreditBalance()) {
-            $event->stopPropagation();
 
-            return;
-        }
-        // Abort if deposit is not paid
-        if (0 < $sale->getDepositTotal()) {
-            if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $this->defaultCurrency)) {
+        $payment = $event->getPayment();
+        $options = $event->getFormOptions();
+
+        // If not refund, check customer balance
+        if ($payment->isRefund()) {
+            $options['available_amount'] = INF;
+        } else {
+            // Abort if customer has no fund
+            if (0 >= $customer->getCreditBalance()) {
                 $event->stopPropagation();
 
                 return;
             }
+            // Abort if deposit is not paid
+            if (0 < $sale->getDepositTotal()) {
+                if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $this->defaultCurrency)) {
+                    $event->stopPropagation();
+
+                    return;
+                }
+            }
+
+            // Customer available fund
+            $available = (float)$customer->getCreditBalance();
+
+            // If customer available fund is lower than the payment amount
+            if ($available < $payment->getRealAmount()) {
+                // Limit to available fund
+                $this->paymentUpdater->updateRealAmount($payment, $available);
+            }
+
+            $available = $this->currencyConverter->convertWithSubject($available, $payment);
+
+            $options['available_amount'] = $available;
         }
-
-        $payment = $event->getPayment();
-
-        // Customer available fund
-        $available = (float)$customer->getCreditBalance();
-
-        // If customer available fund is lower than the payment amount
-        if ($available < $payment->getRealAmount()) {
-            // Limit to available fund
-            $this->paymentUpdater->updateRealAmount($payment, $available);
-        }
-
-        $available = $this->currencyConverter->convertWithSubject($available, $payment);
-
-        $options = $event->getFormOptions();
-        $options['available_amount'] = $available;
 
         $form = $this
             ->formFactory
@@ -194,6 +200,12 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
      */
     protected function buildOutstandingForm(CheckoutPaymentEvent $event)
     {
+        $payment = $event->getPayment();
+        // Abort if refund
+        if ($payment->isRefund()) {
+            return;
+        }
+
         $sale = $event->getSale();
 
         // Abort if no customer
@@ -228,8 +240,6 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
                 return;
             }
         }
-
-        $payment = $event->getPayment();
 
         // If sale has a customer limit
         if (0 < $limit = $sale->getOutstandingLimit()) {

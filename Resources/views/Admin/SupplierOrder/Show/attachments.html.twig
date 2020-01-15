@@ -68,7 +68,7 @@
                     {%- if attachment.type is not null -%}
                     <a href="{{ admin_resource_path(attachment, 'archive') }}"
                        class="btn btn-default btn-xs"
-                       onclick="return confirm('{{ 'ekyna_commerce.attachment.message.archive_confirm'|trans }}')"
+                       onclick="return confirm('{{ 'ekyna_commerce.attachment.message.archive_confirm'|trans|escape('js') }}')"
                        title="{{ 'ekyna_commerce.attachment.button.archive'|trans }}">
                         <span class="fa fa-archive"></span>
                     </a>

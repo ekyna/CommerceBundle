@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierTemplateChoiceType;
-use Ekyna\Bundle\CommerceBundle\Model\InvoiceTypes;
+use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
@@ -210,7 +210,7 @@ class NotifyType extends AbstractType
                     },
                     'choice_label'  => function ($value) {
                         /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $value */
-                        return $this->translator->trans(InvoiceTypes::getLabel($value->getType())) . ' ' . $value->getNumber();
+                        return $this->translator->trans(DocumentTypes::getLabel($value->getType())) . ' ' . $value->getNumber();
                     },
                     'multiple'      => true,
                     'expanded'      => true,

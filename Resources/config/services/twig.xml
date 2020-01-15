@@ -38,6 +38,7 @@
         <service id="Ekyna\Bundle\CommerceBundle\Twig\InvoiceExtension" public="false">
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
             <argument type="service" id="ekyna_commerce.payment.due_date_resolver"/>
+            <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             <tag name="twig.extension"/>
         </service>
 

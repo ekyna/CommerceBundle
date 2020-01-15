@@ -9,6 +9,9 @@ Feature: Create customers
 
     Scenario: Create a customer
         When I go to "ekyna_commerce_customer_admin_new" route
+        And I wait for Select2 initialization on "customer[paymentMethods][]"
+        And I wait for phone number initialization on "customer[phone]"
+        And I wait for phone number initialization on "customer[mobile]"
         And I fill in "customer[email]" with "contact@dupont.com"
         And I fill in "customer[company]" with "Dupont et fils"
         And I select "Mr" from "customer[identity][gender]"

@@ -613,7 +613,8 @@ class QuoteController extends AbstractSaleController
     {
         $payment = $this
             ->get('ekyna_commerce.quote_payment.repository')
-            ->findOneBy([ // TODO repository method
+            // TODO repository method
+            ->findOneBy([
                 'quote' => $quote,
                 'key'   => $key,
             ]);

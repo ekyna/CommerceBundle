@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
+use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -71,6 +72,10 @@ class SupplierExtension extends AbstractExtension
             new TwigFilter(
                 'supplier_order_items_total',
                 [$this->calculator, 'calculateItemsTotal']
+            ),
+            new TwigFilter(
+                'supplier_order_item_received_quantity',
+                [SupplierUtil::class, 'calculateReceivedQuantity']
             ),
             new TwigFilter(
                 'supplier_order_attachment_type_label',

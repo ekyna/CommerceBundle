@@ -1,13 +1,13 @@
 {% spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        {%- if return -%}
-            {%- set shipments = sale|sale_returns -%}
-            {{- 'ekyna_commerce.return.label.plural'|trans -}}
-        {%- else -%}
-            {%- set shipments = sale|sale_shipments -%}
-            {{- 'ekyna_commerce.shipment.label.plural'|trans -}}
-        {%- endif -%}
+    {%- if return -%}
+        {%- set shipments = sale.getShipments(false) -%}
+        {{- 'ekyna_commerce.return.label.plural'|trans -}}
+    {%- else -%}
+        {%- set shipments = sale.getShipments(true) -%}
+        {{- 'ekyna_commerce.shipment.label.plural'|trans -}}
+    {%- endif -%}
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -89,6 +89,12 @@
                             </tbody>
                         </table>
                         {% endif %}
+                    </td>
+                </tr>
+            {%- else -%}
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <em>{{- 'ekyna_core.value.no_item'|trans -}}</em>
                     </td>
                 </tr>
             {%- endfor -%}
