@@ -74,7 +74,7 @@
         </service>
 
         <!-- Ticket message notify command -->
-        <service id="Ekyna\Bundle\CommerceBundle\Command\SupportNotifyCommand">
+        <service id="Ekyna\Bundle\CommerceBundle\Command\SupportNotifyCommand" public="false">
             <argument type="service" id="ekyna_commerce.ticket_message.repository"/>
             <argument type="service" id="ekyna_admin.user.repository"/>
             <argument type="service" id="ekyna_commerce.ticket_message.manager"/>

@@ -5,6 +5,8 @@
 
     <services>
 
+        <defaults autoconfigure="false" autowire="false" public="false" />
+
         <!-- Cart purge command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\CartPurgeCommand">
             <argument type="service" id="ekyna_commerce.cart.repository"/>

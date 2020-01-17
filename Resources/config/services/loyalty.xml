@@ -10,6 +10,7 @@
         <!-- Loyalty log repository -->
         <service id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository">
             <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"/>
+            <tag name="doctrine.repository_service"/>
         </service>
 
         <!-- Loyalty logger -->
@@ -49,7 +50,7 @@
         </service>
 
         <!-- loyalty coupons command -->
-        <service id="Ekyna\Bundle\CommerceBundle\Command\LoyaltyCouponsCommand">
+        <service id="Ekyna\Bundle\CommerceBundle\Command\LoyaltyCouponsCommand" public="false">
             <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator"/>
             <argument type="service" id="ekyna_commerce.mailer"/>
             <tag name="console.command"/>
