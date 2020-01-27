@@ -191,7 +191,7 @@ class CustomerBalanceIntegrityCommand extends Command
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
             'AND p.refund=0 ' .
-            'AND p.state IN (\'captured\', \'authorized\') ' .
+            'AND p.state IN (\'captured\', \'authorized\', \'refunded\') ' .
             'AND m.factory_name=\'credit_balance\''
         );
 

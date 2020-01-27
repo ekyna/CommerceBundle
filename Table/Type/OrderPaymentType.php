@@ -89,6 +89,10 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.number',
                 'position' => 10,
             ])
+            ->addFilter('refund', CType\Filter\BooleanType::class, [
+                'label'    => 'ekyna_commerce.refund.label.singular',
+                'position' => 20,
+            ])
             ->addFilter('method', EntityType::class, [
                 'label'    => 'ekyna_core.field.method',
                 'class'    => $this->paymentMethodClass,
