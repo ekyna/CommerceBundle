@@ -111,6 +111,7 @@ class CustomerBalanceIntegrityCommand extends Command
             'JOIN commerce_order AS o ON o.id=p.order_id ' .
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
+            'AND p.refund=0 ' .
             'AND p.state IN (\'captured\', \'expired\') ' .
             'AND m.factory_name=\'outstanding_balance\''
         );
@@ -189,6 +190,7 @@ class CustomerBalanceIntegrityCommand extends Command
             'JOIN commerce_order AS o ON o.id=p.order_id ' .
             'JOIN commerce_payment_method AS m ON m.id=p.method_id ' .
             'WHERE o.customer_id=:customer_id ' .
+            'AND p.refund=0 ' .
             'AND p.state IN (\'captured\', \'authorized\') ' .
             'AND m.factory_name=\'credit_balance\''
         );
