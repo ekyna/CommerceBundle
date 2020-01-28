@@ -19,6 +19,7 @@
                 <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
                 <td>{{ sale.grandTotal|currency_quote(null, true) }}</td>
             </tr>
+            {% if sale is sale_order -%}
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.shipment_state'|trans }}</th>
                 <td>{{ sale.shipmentState|shipment_state_badge }}</td>
@@ -27,10 +28,12 @@
                 <th>{{ 'ekyna_commerce.sale.field.invoice_state'|trans }}</th>
                 <td>{{ sale.invoiceState|invoice_state_badge }}</td>
             </tr>
+            {%- endif %}
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</th>
                 <td>{{ sale.paymentState|payment_state_badge }}</td>
             </tr>
+            {% if sale is sale_order -%}
             <tr><th colspan="2">&nbsp;</th></tr>
             <tr>
                 <th>{{ 'ekyna_commerce.sale.field.invoice_total'|trans }}</th>
@@ -53,6 +56,7 @@
                 <td>{{ (sale.invoiceTotal - sale.creditTotal - sale.paidTotal + sale.refundedTotal)|currency_quote(null, true) }}</td>
             </tr>
             <tr><th colspan="2">&nbsp;</th></tr>
+            {%- endif %}
             <tr>
                 <th>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</th>
                 <td>

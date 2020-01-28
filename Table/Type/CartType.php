@@ -130,6 +130,11 @@ class CartType extends ResourceTableType
                     'label'    => 'ekyna_core.field.last_name',
                     'position' => 33,
                 ])
+                ->addFilter('companyNumber', CType\Filter\TextType::class, [
+                    'label'         => 'ekyna_commerce.customer.field.company_number',
+                    'property_path' => 'customer.companyNumber',
+                    'position'      => 34,
+                ])
                 ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
                     'position' => 35,
                 ])

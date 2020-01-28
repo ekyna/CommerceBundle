@@ -136,7 +136,11 @@ class CustomerType extends ResourceTableType
                 ])
                 ->addFilter('lastName', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.last_name',
-                    'position' => 25,
+                    'position' => 23,
+                ])
+                ->addFilter('companyNumber', CType\Filter\TextType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.company_number',
+                    'position' => 26,
                 ])
                 ->addFilter('email', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.email',
@@ -179,17 +183,14 @@ class CustomerType extends ResourceTableType
                 ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 110,
                 ])
-                ->addFilter('state', Type\Filter\InChargeType::class, [
-                    'position' => 120,
-                ])
                 ->addFilter('state', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'choices'  => CustomerStates::getChoices(),
-                    'position' => 130,
+                    'position' => 120,
                 ])
                 ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                     'label'    => 'ekyna_core.field.created_at',
-                    'position' => 140,
+                    'position' => 130,
                 ]);
         }
     }
