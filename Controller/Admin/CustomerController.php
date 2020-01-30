@@ -8,12 +8,12 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerExportType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Customer\Balance\Balance;
 use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
 use Ekyna\Component\Commerce\Customer\Export\CustomerExport;
 use Ekyna\Component\Commerce\Customer\Export\CustomerExporter;
+use Ekyna\Component\Resource\Search\Request as SearchRequest;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +49,7 @@ class CustomerController extends ResourceController
         $response->setVary(['Accept', 'Accept-Encoding']);
         $response->setExpires(new \DateTime('+5 min'));
 
-        $html = false;
+        $html   = false;
         $accept = $request->getAcceptableContentTypes();
 
         if (in_array('application/json', $accept, true)) {
@@ -117,7 +117,7 @@ class CustomerController extends ResourceController
                 $this->get(BalanceBuilder::class)->build($balance);
 
                 $lines = $this->get('serializer')->normalize($balance, 'csv');
-                $path = $this->createCsv($lines, 'balance');
+                $path  = $this->createCsv($lines, 'balance');
 
                 if ($export->isClicked()) {
                     return $this->file($path, 'balance.csv');
@@ -296,17 +296,13 @@ class CustomerController extends ResourceController
     /**
      * @inheritDoc
      */
-    protected function createSearchQuery(Request $request): \Elastica\Query
+    protected function createSearchRequest(Request $request): SearchRequest
     {
-        $repository = $this->get('fos_elastica.manager')->getRepository($this->config->getResourceClass());
-        if (!$repository instanceOf CustomerRepository) {
-            throw new \RuntimeException('Expected instance of ' . CustomerRepository::class);
-        }
+        $searchRequest = parent::createSearchRequest($request);
 
-        $query = trim($request->query->get('query'));
-        $parent = (bool)intval($request->query->get('parent', 0));
+        $searchRequest->setParameter('parent', (bool)intval($request->query->get('parent', 0)));
 
-        return $repository->createSearchQuery($query, $parent);
+        return $searchRequest;
     }
 
     /**

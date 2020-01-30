@@ -5,6 +5,14 @@
 
     <services>
 
+        <!-- Quote search -->
+        <service id="ekyna_commerce.quote.search"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Search\QuoteRepository">
+            <argument type="service" id="fos_elastica.index.ekyna_commerce_quote.doc"/>
+            <argument type="service" id="fos_elastica.elastica_to_model_transformer.ekyna_commerce_quote.doc"/>
+            <tag name="ekyna_resource.search" resource="ekyna_commerce.quote"/>
+        </service>
+
         <!-- Quote state resolver -->
         <service id="ekyna_commerce.quote.state_resolver"
                  class="Ekyna\Component\Commerce\Quote\Resolver\QuoteStateResolver"

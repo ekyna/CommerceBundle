@@ -14,7 +14,7 @@ class SupplierProductRepository extends ResourceRepository
     /**
      * @inheritdoc
      */
-    protected function getDefaultMatchFields(): array
+    protected function getDefaultFields(): array
     {
         return [
             'reference^2',

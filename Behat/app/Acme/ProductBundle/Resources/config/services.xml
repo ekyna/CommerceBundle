@@ -7,6 +7,14 @@
 
     <services>
 
+        <!-- Product search -->
+        <service id="acme_product.product.search"
+                 class="Acme\ProductBundle\Service\Search\ProductRepository">
+            <argument type="service" id="fos_elastica.index.acme_product_product.doc"/>
+            <argument type="service" id="fos_elastica.elastica_to_model_transformer.acme_product_product.doc"/>
+            <tag name="ekyna_resource.search" resource="acme_product.product"/>
+        </service>
+
         <!-- Product subject provider -->
         <service id="acme_product.product.subject_provider"
                  class="Acme\Product\Provider\ProductProvider">

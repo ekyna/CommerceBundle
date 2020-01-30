@@ -34,6 +34,14 @@
             <argument>%ekyna_commerce.order.class%</argument>
         </service>
 
+        <!-- Customer search -->
+        <service id="ekyna_commerce.customer.search"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Search\CustomerRepository">
+            <argument type="service" id="fos_elastica.index.ekyna_commerce_customer.doc"/>
+            <argument type="service" id="fos_elastica.elastica_to_model_transformer.ekyna_commerce_customer.doc"/>
+            <tag name="ekyna_resource.search" resource="ekyna_commerce.customer"/>
+        </service>
+
         <!-- Customer address importer -->
         <service id="Ekyna\Component\Commerce\Customer\Import\AddressImporter">
             <argument type="service" id="ekyna_commerce.customer_address.repository"/>

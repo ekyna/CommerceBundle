@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Search;
 
 use Ekyna\Component\Resource\Search\Elastica\ResourceRepository;
+use Ekyna\Component\Resource\Search\Request;
+use Ekyna\Component\Resource\Search\Result;
 use Elastica\Query;
 
 /**
@@ -13,39 +15,48 @@ use Elastica\Query;
 class CustomerRepository extends ResourceRepository
 {
     /**
-     * Creates the search query.
-     *
-     * @param string $expression
-     * @param bool   $parent
-     *
-     * @return Query
+     * @inheritDoc
      */
-    public function createSearchQuery(string $expression, bool $parent = false): Query
+    protected function createQuery(Request $request): Query\AbstractQuery
     {
-        $match = new Query\MultiMatch();
-        $match
-            ->setQuery($expression)
-            ->setType(Query\MultiMatch::TYPE_CROSS_FIELDS)
-            ->setFields($this->getDefaultMatchFields());
+        $query = parent::createQuery($request);
 
-        if (!$parent) {
-            return Query::create($match);
+        if (empty($parent = $request->getParameter('parent'))) {
+            return $query;
         }
 
         $bool = new Query\BoolQuery();
         $bool
-            ->addMust($match)
+            ->addMust($query)
             ->addMustNot(new Query\Exists('parent'))
             ->addMust(new Query\Exists('company'))
             ->addMust(new Query\Term(['vatValid' => true]));
 
-        return Query::create($bool);
+        return $bool;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function createResult($source, Request $request): ?Result
+    {
+        if (!$request->isPrivate()) {
+            return null;
+        }
+
+        $result = new Result();
+
+        return $result
+            ->setTitle($source['text'])
+            ->setIcon('fa fa-user')
+            ->setRoute('ekyna_commerce_customer_admin_show')
+            ->setParameters(['customerId' => $source['id']]);
     }
 
     /**
      * @inheritdoc
      */
-    protected function getDefaultMatchFields(): array
+    protected function getDefaultFields(): array
     {
         return [
             'company^3',
@@ -56,6 +67,8 @@ class CustomerRepository extends ResourceRepository
             'first_name.analyzed',
             'number',
             'number.analyzed',
+            'company_number',
+            'company_number.analyzed',
             'email',
             'email.analyzed',
         ];

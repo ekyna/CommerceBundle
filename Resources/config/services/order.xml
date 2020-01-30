@@ -5,6 +5,14 @@
 
     <services>
 
+        <!-- Order search -->
+        <service id="ekyna_commerce.order.search"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Search\OrderRepository">
+            <argument type="service" id="fos_elastica.index.ekyna_commerce_order.doc"/>
+            <argument type="service" id="fos_elastica.elastica_to_model_transformer.ekyna_commerce_order.doc"/>
+            <tag name="ekyna_resource.search" resource="ekyna_commerce.order"/>
+        </service>
+
         <!-- Order state resolver -->
         <service id="ekyna_commerce.order.state_resolver"
                  class="Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver"
