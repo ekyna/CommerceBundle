@@ -95,21 +95,46 @@
                 {{ render_sale_view(sale_view) }}
             </div>
             <div class="tab-pane" id="cart-payments">
+                {# --------------- PAYMENTS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
-                    {%- if not cart.paid -%}
-                    <a href="{{ admin_resource_path('ekyna_commerce.cart_payment', 'new', {'cartId': cart.id}) }}"
+                    <a href="{{ admin_resource_path('ekyna_commerce.cart_payment', 'new', {
+                        'cartId': cart.id
+                    }) }}"
                        class="btn btn-primary btn-xs pull-right">
-                        {{ 'ekyna_commerce.payment.button.new'|trans }}
+                        {{- 'ekyna_commerce.payment.button.new'|trans -}}
                     </a>
-                    {%- endif -%}
                 </div>
                 <h4 class="sub-header">
-                    {{ 'ekyna_commerce.payment.label.plural'|trans }}
+                    {{- 'ekyna_commerce.payment.label.plural'|trans -}}
                 </h4>
-                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {'sale': cart} %}
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {
+                    'payments': cart.getPayments(true),
+                    'prefix': 'payment'
+                } %}
                 <hr>
-                {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {'sale': cart} %}
+                {# --------------- REFUNDS --------------- #}
+                <div class="actions">
+                    {# TODO Permission #}
+                    <a href="{{ admin_resource_path('ekyna_commerce.cart_payment', 'new', {
+                        'cartId': cart.id, 'refund': 1
+                    }) }}"
+                       class="btn btn-primary btn-xs pull-right">
+                        {{- 'ekyna_commerce.refund.button.new'|trans -}}
+                    </a>
+                </div>
+                <h4 class="sub-header">
+                    {{- 'ekyna_commerce.refund.label.plural'|trans -}}
+                </h4>
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_payments.html.twig' with {
+                    'payments': cart.getPayments(false),
+                    'prefix': 'refund'
+                } %}
+                <hr>
+                {# --------------- PAYMENT FIELDS --------------- #}
+                {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {
+                    'sale': cart
+                } %}
             </div>
             <div class="tab-pane" id="cart-attachments">
                 <div class="actions">

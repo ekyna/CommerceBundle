@@ -187,8 +187,8 @@ class CartViewType extends AbstractViewType
             return;
         }
 
-        $editPath = $this->generateUrl('ekyna_commerce_quote_admin_edit_shipment', [
-            'quoteId' => $sale->getId(),
+        $editPath = $this->generateUrl('ekyna_commerce_cart_admin_edit_shipment', [
+            'cartId' => $sale->getId(),
         ]);
         $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('ekyna_commerce.sale.button.shipment.edit'),

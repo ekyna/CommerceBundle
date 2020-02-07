@@ -7,6 +7,14 @@
 
         <defaults autoconfigure="false" autowire="false" public="false" />
 
+        <!-- Accouting export command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\AccountingExportCommand">
+            <argument type="service" id="ekyna_commerce.accounting.exporter"/>
+            <argument type="service" id="Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface"/>
+            <argument type="service" id="Swift_Mailer"/>
+            <tag name="console.command"/>
+        </service>
+
         <!-- Cart purge command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\CartPurgeCommand">
             <argument type="service" id="ekyna_commerce.cart.repository"/>
@@ -63,6 +71,7 @@
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <argument type="service" id="ekyna_commerce.document.calculator"/>
             <argument type="service" id="ekyna_commerce.order_invoice.manager"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="console.command"/>
         </service>
 
@@ -116,7 +125,7 @@
 
         <!-- Stat update command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand">
-            <argument type="service" id="ekyna_commerce.stat.updater"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Stat\StatUpdater"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <tag name="console.command"/>
         </service>

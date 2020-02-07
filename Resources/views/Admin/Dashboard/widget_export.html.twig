@@ -5,10 +5,11 @@
             <div class="commerce-panel">
                 <h3>{{ 'ekyna_commerce.dashboard.export.title'|trans }}</h3>
                 {{ form_start(form) }}
-                <table width="100%">
+                <table style="width:100%">
                     <tr>
-                        <td>{{ form_label(form.date) }}</td>
-                        <td>{{ form_widget(form.date) }}</td>
+                        <td>{{ form_label(form.year) }}</td>
+                        <td>{{ form_widget(form.year) }}</td>
+                        <td>{{ form_widget(form.month) }}</td>
                         <td>{{ form_widget(form.submit) }}</td>
                     </tr>
                 </table>

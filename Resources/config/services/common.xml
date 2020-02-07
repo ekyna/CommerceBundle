@@ -11,6 +11,9 @@
             <tag name="twig.runtime"/>
         </service>
 
+        <!-- Region provider -->
+        <service id="Ekyna\Component\Commerce\Common\Export\RegionProvider" />
+
         <!-- Country repository -->
         <service id="ekyna_commerce.country.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CountryRepository">

@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderListExporter;
+use Ekyna\Bundle\CommerceBundle\Service\Stat\StatExporter;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -36,12 +37,18 @@ class ExportController extends Controller
             return $this->redirectToReferer($this->generateUrl('ekyna_admin_dashboard'));
         }
 
-        $date = $form->get('date')->getData();
+        $year = $form->get('year')->getData();
+        $month = $form->get('month')->getData();
+
+        // TODO if month is null, schedule background task
+        if (is_null($month)) {
+
+        }
 
         try {
             $path = $this
                 ->get('ekyna_commerce.accounting.exporter')
-                ->export(new \DateTime($date));
+                ->export($year, $month);
         } catch (CommerceExceptionInterface $e) {
             if ($this->getParameter('kernel.debug')) {
                 throw $e;
@@ -52,7 +59,7 @@ class ExportController extends Controller
             return $this->doRedirect();
         }
 
-        $filename = sprintf('accounting_%s.zip', $date);
+        $filename = sprintf('accounting_%s.zip', $year . ($month ? '-' : '') . $month);
 
         return $this->doRespond($path, $filename);
     }
@@ -391,6 +398,64 @@ class ExportController extends Controller
         }
 
         $filename = sprintf('forwarders-fall-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Regions order statistics export.
+     *
+     * @return Response
+     */
+    public function regionsOrdersStatsAction(): Response
+    {
+        $from = new \DateTime('2019-01-01');
+        $to = new \DateTime('2019-12-31');
+
+        try {
+            $path = $this
+                ->get(StatExporter::class)
+                ->exportByMonths($from, $to);
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('orders-stats_%s_%s.csv', $from->format('Y-m'), $to->format('Y-m'));
+
+        return $this->doRespond($path, $filename);
+    }
+
+    /**
+     * Regions invoices stats export.
+     *
+     * @return Response
+     */
+    public function regionsInvoicesStatsAction(): Response
+    {
+        $from = new \DateTime('2019-01-01');
+        $to = new \DateTime('2019-12-31');
+
+        try {
+            $path = $this
+                ->get('ekyna_commerce.order_invoice.exporter')
+                ->exportRegionsInvoices($from, $to);
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('invoices-stats_%s_%s.csv', $from->format('Y-m'), $to->format('Y-m'));
 
         return $this->doRespond($path, $filename);
     }

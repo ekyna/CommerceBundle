@@ -13,9 +13,10 @@
         <!-- TODO remove forms defined by resources di builder -->
 
         <!-- Accounting form type -->
-        <service id="ekyna_commerce.accounting_export.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType">
+        <service id="Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType" public="false">
             <argument type="service" id="ekyna_resource.locale_provider"/>
+            <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
             <tag name="form.type"/>
         </service>
 

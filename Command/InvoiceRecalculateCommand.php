@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Common\Util\Money;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,6 +35,11 @@ class InvoiceRecalculateCommand extends Command
      */
     private $invoiceManager;
 
+    /**
+     * @var string
+     */
+    private $defaultCurrency;
+
 
     /**
      * Constructor.
@@ -41,15 +47,18 @@ class InvoiceRecalculateCommand extends Command
      * @param OrderInvoiceRepositoryInterface $invoiceRepository
      * @param DocumentCalculatorInterface     $invoiceCalculator
      * @param EntityManagerInterface          $invoiceManager
+     * @param string                          $defaultCurrency
      */
     public function __construct(
         OrderInvoiceRepositoryInterface $invoiceRepository,
         DocumentCalculatorInterface $invoiceCalculator,
-        EntityManagerInterface $invoiceManager
+        EntityManagerInterface $invoiceManager,
+        string $defaultCurrency
     ) {
         $this->invoiceRepository = $invoiceRepository;
         $this->invoiceCalculator = $invoiceCalculator;
-        $this->invoiceManager = $invoiceManager;
+        $this->invoiceManager    = $invoiceManager;
+        $this->defaultCurrency   = $defaultCurrency;
 
         parent::__construct();
     }
@@ -80,7 +89,7 @@ class InvoiceRecalculateCommand extends Command
             }
 
             $invoices = [$invoice];
-        } elseif (null !== $month = $this->createDate($input->getArgument('month'))) {
+        } elseif (null !== $month = $input->getOption('month')) {
             if (false === $date = \DateTime::createFromFormat('Y-m-d', $month . '-01')) {
                 $output->writeln("<error>Failed to parse '$month'</error>");
 
@@ -90,21 +99,25 @@ class InvoiceRecalculateCommand extends Command
             $invoices = $this->invoiceRepository->findByMonth($date);
         }
 
-        // Confirmation
+        // Confirmations
         $output->writeln('<error>This is a dangerous operation.</error>');
-        $count = count($invoices);
-        $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion(
-            "Recalculate $count invoices ?", false
-        );
+        $count    = count($invoices);
+        $helper   = $this->getHelper('question');
+        $question = new ConfirmationQuestion("Recalculate $count invoices ?", false);
         if (!$helper->ask($input, $output, $question)) {
             return;
         }
 
-        $confirm = function($number, $old, $new) use ($helper, $input, $output) {
-            $question = new ConfirmationQuestion(
-                "Update invoice $number total from $old to $new ?", false
-            );
+        $confirm = function (string $number, array $diff) use ($helper, $input, $output) {
+            $output->writeln('');
+            $output->writeln('  Diffs:');
+
+            foreach ($diff as $key => $amounts) {
+                $output->writeln(sprintf('   * %s : %f => %f', $key, $amounts[0], $amounts[1]));
+            }
+
+            $question = new ConfirmationQuestion("  Confirm invoice $number update ?", false);
+
             return $helper->ask($input, $output, $question);
         };
 
@@ -112,25 +125,27 @@ class InvoiceRecalculateCommand extends Command
         $count = 0;
         foreach ($invoices as $invoice) {
             $output->write(sprintf(
-                '<comment>[%d] %s</comment> ... ',
+                '<comment>[%s - %d] %s</comment> ... ',
+                $invoice->getSale()->getId(),
                 $invoice->getId(),
                 $invoice->getNumber()
             ));
 
-            $oldTotal = $invoice->getGrandTotal();
-
+            $oldAmounts = $this->getAmounts($invoice);
             $this->invoiceCalculator->calculate($invoice);
+            $newAmounts = $this->getAmounts($invoice);
 
-            $newTotal = $invoice->getGrandTotal();
+            if (empty($diff = $this->getDiff($oldAmounts, $newAmounts, $invoice->getCurrency()))) {
+                $output->writeln('<comment>up to date</comment>');
 
-            $currency = $invoice->getCurrency();
+                continue;
+            } elseif (!$confirm($invoice->getNumber(), $diff)) {
+                $output->writeln(' ... <error>abort</error>');
 
-            if (0 !== Money::compare($oldTotal, $newTotal, $currency)) {
-                if (!$confirm($invoice->getNumber(), $oldTotal, $newTotal)) {
-                    $output->writeln('<comment>abort</comment>');
+                $this->invoiceManager->flush();
+                $this->invoiceManager->clear();
 
-                    return;
-                }
+                continue;
             }
 
             $this->invoiceManager->persist($invoice);
@@ -149,18 +164,56 @@ class InvoiceRecalculateCommand extends Command
     }
 
     /**
-     * Creates the date from the given string.
+     * Extracts the invoice amounts.
      *
-     * @param string $date
+     * @param InvoiceInterface $invoice
      *
-     * @return bool
+     * @return array
      */
-    private function createDate(string $date = null)
+    private function getAmounts(InvoiceInterface $invoice)
     {
-        if ($date = \DateTime::createFromFormat('Y-m-d', $date . '-01')) {
-            return $date;
+        return [
+            'goodsBase'      => $invoice->getGoodsBase(),
+            'discountBase'   => $invoice->getDiscountBase(),
+            'shipmentBase'   => $invoice->getShipmentBase(),
+            'taxesTotal'     => $invoice->getTaxesTotal(),
+            'grandTotal'     => $invoice->getGrandTotal(),
+            'realGrandTotal' => $invoice->getRealPaidTotal(),
+            'paidTotal'      => $invoice->getPaidTotal(),
+            'realPaidTotal'  => $invoice->getRealPaidTotal(),
+        ];
+    }
+
+    /**
+     * Returns the invoice's amounts diff.
+     *
+     * @param array  $a
+     * @param array  $b
+     * @param string $currency
+     *
+     * @return array
+     */
+    private function getDiff(array $a, array $b, string $currency): array
+    {
+        $keys = [
+            'goodsBase'      => $currency,
+            'discountBase'   => $currency,
+            'shipmentBase'   => $currency,
+            'taxesTotal'     => $currency,
+            'grandTotal'     => $currency,
+            'realGrandTotal' => $this->defaultCurrency,
+            'paidTotal'      => $currency,
+            'realPaidTotal'  => $this->defaultCurrency,
+        ];
+
+        $diff = [];
+
+        foreach ($keys as $key => $c) {
+            if (0 !== Money::compare($a[$key], $b[$key], $c)) {
+                $diff[$key] = [$a[$key], $b[$key]];
+            }
         }
 
-        return null;
+        return $diff;
     }
 }

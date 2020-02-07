@@ -70,6 +70,8 @@ class StatUpdateCommand extends Command
         $this->force = $input->getOption('force');
         $this->flush = false;
 
+        $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
+
         $this->updateStockStat($output);
 
         $this->updateOrderStat($output);

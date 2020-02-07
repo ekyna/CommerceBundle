@@ -137,7 +137,8 @@
         <service id="ekyna_commerce.order_invoice.exporter"
                  class="Ekyna\Bundle\CommerceBundle\Service\Order\OrderInvoiceExporter">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
-            <argument type="service" id="translator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Export\RegionProvider"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
         </service>
 
     </services>

@@ -67,3 +67,13 @@ ekyna_commerce_export_admin_forwarders_fall_due_orders:
     path: /forwarders-fall-due-orders
     methods: [GET]
     defaults: { _controller: EkynaCommerceBundle:Admin\Export:forwardersFallDueOrders }
+
+ekyna_commerce_export_admin_regions_orders_stats:
+    path: /regions-orders-stats
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:regionsOrdersStats }
+
+ekyna_commerce_export_admin_regions_invoices_stats:
+    path: /regions-invoices-stats
+    methods: [GET]
+    defaults: { _controller: EkynaCommerceBundle:Admin\Export:regionsInvoicesStats }
