@@ -41,7 +41,6 @@ class ShipmentMethodController extends Controller\ResourceController
             'action'            => $this->generateResourcePath($resource, 'new'),
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal form-with-tabs'],
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
         $flow->bind($resource);

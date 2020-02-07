@@ -237,7 +237,6 @@ class SaleController extends AbstractSaleController
             'action'            => $action,
             'attr'              => ['class' => 'form-horizontal'],
             'method'            => 'POST',
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
 
@@ -910,7 +909,6 @@ class SaleController extends AbstractSaleController
                 'action'            => $action,
                 'attr'              => ['class' => 'form-horizontal'],
                 'method'            => 'POST',
-                'admin_mode'        => true,
                 '_redirect_enabled' => true,
                 'message'           => $message,
             ])
@@ -960,7 +958,6 @@ class SaleController extends AbstractSaleController
             'action'            => $action,
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal form-with-tabs'],
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
 
@@ -1022,7 +1019,6 @@ class SaleController extends AbstractSaleController
             'action'            => $action,
             'attr'              => ['class' => 'form-horizontal'],
             'method'            => 'POST',
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
 

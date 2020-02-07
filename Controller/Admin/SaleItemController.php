@@ -74,7 +74,6 @@ class SaleItemController extends AbstractSaleController
             'action'            => $this->generateResourcePath($item, 'add', $context->getIdentifiers()),
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal'],
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
         $flow->bind($item);
@@ -276,7 +275,6 @@ class SaleItemController extends AbstractSaleController
         $form = $this->createForm(SaleItemConfigureType::class, $item, [
             'method'     => 'post',
             'action'     => $action,
-            'admin_mode' => true,
             'attr'       => [
                 'class' => 'form-horizontal',
             ],
@@ -524,7 +522,6 @@ class SaleItemController extends AbstractSaleController
         $form = $this->createForm(SaleItemPrioritizeType::class, $data, [
             'method'       => 'post',
             'action'       => $action,
-            'admin_mode'   => true,
             'attr'         => [
                 'class' => 'form-horizontal',
             ],

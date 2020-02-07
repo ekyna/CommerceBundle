@@ -62,7 +62,6 @@ class NotifyModelController extends ResourceController
                 //'action'            => $action,
                 'attr'              => ['class' => 'form-horizontal'],
                 'method'            => 'POST',
-                'admin_mode'        => true,
                 '_redirect_enabled' => true,
             ])
             ->add('email', Type\EmailType::class, [
@@ -163,17 +162,17 @@ class NotifyModelController extends ResourceController
             case NotificationTypes::PAYMENT_EXPIRED:
                 $source = $this
                     ->get('ekyna_commerce.order_payment.repository')
-                    ->findOneBy(['state' => PaymentStates::STATE_EXPIRED], ['id' => 'DESC'], 1);
+                    ->findOneBy(['state' => PaymentStates::STATE_EXPIRED], ['id' => 'DESC']);
                 break;
 
             case NotificationTypes::PAYMENT_CAPTURED:
                 $method = $this
                     ->get('ekyna_commerce.payment_method.repository')
-                    ->findOneBy(['factoryName' => 'offline'], [], 1);
+                    ->findOneBy(['factoryName' => 'offline'], []);
                 if (null !== $method) {
                     $source = $this
                         ->get('ekyna_commerce.order_payment.repository')
-                        ->findOneBy(['state' => PaymentStates::STATE_CAPTURED, 'method' => $method], ['id' => 'DESC'], 1);
+                        ->findOneBy(['state' => PaymentStates::STATE_CAPTURED, 'method' => $method], ['id' => 'DESC']);
                 }
                 break;
 
@@ -181,31 +180,31 @@ class NotifyModelController extends ResourceController
                 // TODO Partial ...
                 $source = $this
                     ->get('ekyna_commerce.order_shipment.repository')
-                    ->findOneBy(['return' => false, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC'], 1);
+                    ->findOneBy(['return' => false, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC']);
                 break;
 
             case NotificationTypes::SHIPMENT_SHIPPED:
                 $source = $this
                     ->get('ekyna_commerce.order_shipment.repository')
-                    ->findOneBy(['return' => false, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC'], 1);
+                    ->findOneBy(['return' => false, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC']);
                 break;
 
             case NotificationTypes::RETURN_PENDING:
                 $source = $this
                     ->get('ekyna_commerce.order_shipment.repository')
-                    ->findOneBy(['return' => true, 'state' => ShipmentStates::STATE_PENDING], ['id' => 'DESC'], 1);
+                    ->findOneBy(['return' => true, 'state' => ShipmentStates::STATE_PENDING], ['id' => 'DESC']);
                 break;
 
             case NotificationTypes::RETURN_RECEIVED:
                 $source = $this
                     ->get('ekyna_commerce.order_shipment.repository')
-                    ->findOneBy(['return' => true, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC'], 1);
+                    ->findOneBy(['return' => true, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC']);
                 break;
 
             default:
                 $source = $this
                     ->get('ekyna_commerce.order.repository')
-                    ->findOneBy(['state' => OrderStates::STATE_ACCEPTED], ['id' => 'DESC'], 1);
+                    ->findOneBy(['state' => OrderStates::STATE_ACCEPTED], ['id' => 'DESC']);
         }
 
         if (null !== $source) {

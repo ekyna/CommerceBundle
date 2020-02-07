@@ -47,7 +47,6 @@ class CustomerAddressController extends ResourceController
                     'class' => 'form-horizontal',
                 ],
                 'method'     => 'POST',
-                'admin_mode' => true,
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [

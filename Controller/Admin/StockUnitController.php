@@ -183,7 +183,6 @@ class StockUnitController extends ResourceController
                 )),
                 'attr'              => ['class' => 'form-horizontal'],
                 'method'            => 'POST',
-                'admin_mode'        => true,
                 '_redirect_enabled' => true,
             ])
             ->add('confirm', Type\CheckboxType::class, [
@@ -240,7 +239,6 @@ class StockUnitController extends ResourceController
         $form = $this->createForm($config->getFormType(), $stockAdjustment, array_merge([
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal form-with-tabs'],
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ], $options));
 

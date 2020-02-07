@@ -41,7 +41,6 @@ class TicketAttachmentController extends ResourceController
         $form = $this->createForm($this->config->getFormType(), $attachment, [
             'action'     => $this->generateResourcePath($attachment, 'new'),
             'method'     => 'POST',
-            'admin_mode' => true,
             'attr'       => [
                 'class' => 'form-horizontal',
             ],
@@ -103,7 +102,6 @@ class TicketAttachmentController extends ResourceController
         $form = $this->createForm($this->config->getFormType(), $attachment, [
             'action'     => $this->generateResourcePath($attachment, 'edit'),
             'method'     => 'POST',
-            'admin_mode' => true,
             'attr'       => [
                 'class' => 'form-horizontal',
             ],
@@ -166,7 +164,6 @@ class TicketAttachmentController extends ResourceController
         $form = $this->createForm(ConfirmType::class, null, [
             'action'     => $this->generateResourcePath($attachment, 'remove'),
             'method'     => 'POST',
-            'admin_mode' => true,
             'attr'       => [
                 'class' => 'form-horizontal',
             ],

@@ -94,7 +94,6 @@ class CustomerController extends ResourceController
                     'customerId' => $customer->getId(),
                 ]),
                 'method'     => 'POST',
-                'admin_mode' => true,
             ])
             ->add('submit', Type\SubmitType::class, [
                 'label' => 'ekyna_core.button.apply',
@@ -182,7 +181,6 @@ class CustomerController extends ResourceController
                 'action'     => $this->generateUrl('ekyna_commerce_customer_admin_export'),
                 'method'     => 'POST',
                 'attr'       => ['class' => 'form-horizontal'],
-                'admin_mode' => true,
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [

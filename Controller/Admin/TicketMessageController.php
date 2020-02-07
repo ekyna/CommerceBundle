@@ -54,7 +54,6 @@ class TicketMessageController extends ResourceController
         $form = $this->createForm($this->config->getFormType(), $message, [
             'action'     => $this->generateResourcePath($message, 'new'),
             'method'     => 'POST',
-            'admin_mode' => true,
             'attr'       => [
                 'class' => 'form-horizontal',
             ],
@@ -112,7 +111,6 @@ class TicketMessageController extends ResourceController
         $form = $this->createForm($this->config->getFormType(), $message, [
             'action'     => $this->generateResourcePath($message, 'edit'),
             'method'     => 'POST',
-            'admin_mode' => true,
             'attr'       => [
                 'class' => 'form-horizontal',
             ],
@@ -171,7 +169,6 @@ class TicketMessageController extends ResourceController
         $form = $this->createForm(ConfirmType::class, null, [
             'action'     => $this->generateResourcePath($message, 'remove'),
             'method'     => 'POST',
-            'admin_mode' => true,
             'attr'       => [
                 'class' => 'form-horizontal',
             ],

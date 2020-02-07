@@ -61,7 +61,6 @@ class SupplierOrderController extends ResourceController
             'action'            => $this->generateResourcePath($resource, 'new', $actionParams),
             'method'            => 'POST',
             'attr'              => ['class' => 'form-horizontal form-with-tabs'],
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
 
@@ -493,7 +492,6 @@ class SupplierOrderController extends ResourceController
             'action'            => $action,
             'attr'              => ['class' => 'form-horizontal'],
             'method'            => 'POST',
-            'admin_mode'        => true,
             '_redirect_enabled' => true,
         ]);
 

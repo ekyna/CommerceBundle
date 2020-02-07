@@ -56,7 +56,6 @@ class TicketType extends ResourceFormType
             ->add('message', TicketMessageType::class, [
                 'property_path'   => 'messages[0]',
                 'auto_initialize' => false,
-                'admin_mode'      => $options['admin_mode'],
             ]);
     }
 }
