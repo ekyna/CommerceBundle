@@ -13,9 +13,9 @@ use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes as Modes;
 final class StockSubjectModes extends AbstractConstants
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.stock_subject.mode.';
 
@@ -25,28 +25,5 @@ final class StockSubjectModes extends AbstractConstants
             Modes::MODE_AUTO         => [$prefix . Modes::MODE_AUTO,         'teal'],
             Modes::MODE_JUST_IN_TIME => [$prefix . Modes::MODE_JUST_IN_TIME, 'purple'],
         ];
-    }
-
-    /**
-     * Returns the theme for the given mode.
-     *
-     * @param string $mode
-     *
-     * @return string
-     */
-    static public function getTheme($mode)
-    {
-        static::isValid($mode, true);
-
-        return static::getConfig()[$mode][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

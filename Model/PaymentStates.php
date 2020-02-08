@@ -15,7 +15,7 @@ final class PaymentStates extends AbstractConstants
     /**
      * {@inheritdoc}
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.payment.state.';
         $suffix = '.label';
@@ -36,28 +36,5 @@ final class PaymentStates extends AbstractConstants
             States::STATE_DEPOSIT     => [$prefix.States::STATE_DEPOSIT.$suffix,     'purple'],
             States::STATE_COMPLETED   => [$prefix.States::STATE_COMPLETED.$suffix,   'teal'],
         ];
-    }
-
-    /**
-     * Returns the theme for the given state.
-     *
-     * @param string $state
-     *
-     * @return string
-     */
-    static public function getTheme($state)
-    {
-        static::isValid($state, true);
-
-        return static::getConfig()[$state][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

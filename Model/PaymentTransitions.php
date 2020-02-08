@@ -13,9 +13,9 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions as Transitions;
 final class PaymentTransitions extends AbstractConstants
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.payment.transition.';
         $suffix = '.label';
@@ -41,28 +41,5 @@ final class PaymentTransitions extends AbstractConstants
         static::isValid($transition, true);
 
         return sprintf('ekyna_commerce.payment.transition.%s.confirm', $transition);
-    }
-
-    /**
-     * Returns the theme for the given transition.
-     *
-     * @param string $transition
-     *
-     * @return string
-     */
-    static public function getTheme($transition)
-    {
-        static::isValid($transition, true);
-
-        return static::getConfig()[$transition][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

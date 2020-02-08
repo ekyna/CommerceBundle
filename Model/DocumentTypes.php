@@ -17,7 +17,7 @@ final class DocumentTypes extends AbstractConstants
     /**
      * @inheritDoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $document = 'ekyna_commerce.document.type.';
 
@@ -43,28 +43,5 @@ final class DocumentTypes extends AbstractConstants
             'ekyna_commerce.document.type.' . Types::TYPE_INVOICE => Types::TYPE_INVOICE,
             'ekyna_commerce.document.type.' . Types::TYPE_CREDIT  => Types::TYPE_CREDIT,
         ];
-    }
-
-    /**
-     * Returns the theme for the given type.
-     *
-     * @param string $type
-     *
-     * @return string
-     */
-    static public function getTheme($type)
-    {
-        static::isValid($type, true);
-
-        return static::getConfig()[$type][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

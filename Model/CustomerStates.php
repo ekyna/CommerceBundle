@@ -13,9 +13,9 @@ use Ekyna\Component\Commerce\Customer\Model\CustomerStates as States;
 final class CustomerStates extends AbstractConstants
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.status.';
 
@@ -24,28 +24,5 @@ final class CustomerStates extends AbstractConstants
             States::STATE_VALID     => [$prefix . States::STATE_VALID,     'light-green'],
             States::STATE_FRAUDSTER => [$prefix . States::STATE_FRAUDSTER, 'red'],
         ];
-    }
-
-    /**
-     * Returns the theme for the given state.
-     *
-     * @param string $state
-     *
-     * @return string
-     */
-    static public function getTheme($state)
-    {
-        static::isValid($state, true);
-
-        return static::getConfig()[$state][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

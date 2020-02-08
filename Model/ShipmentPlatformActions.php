@@ -15,7 +15,7 @@ class ShipmentPlatformActions extends AbstractConstants
     /**
      * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $labelPrefix = 'ekyna_commerce.shipment.action.';
 
@@ -29,29 +29,13 @@ class ShipmentPlatformActions extends AbstractConstants
     }
 
     /**
-     * Returns the theme for the given action.
-     *
-     * @param string $action
-     *
-     * @return string
-     */
-    public static function getTheme($action)
-    {
-        if (static::isValid($action)) {
-            return static::getConfig()[$action][1];
-        }
-
-        return 'default';
-    }
-
-    /**
      * Returns the confirmation message for the given action.
      *
      * @param $action
      *
      * @return string|null
      */
-    public static function getConfirm($action)
+    public static function getConfirm(string $action): ?string
     {
         if (static::isValid($action)) {
             return static::getConfig()[$action][2];

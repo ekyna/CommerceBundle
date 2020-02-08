@@ -38,6 +38,7 @@
         <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\LoyaltyEventSubscriber">
             <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <argument type="service" id="Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater"/>
+            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
             <tag name="resource.event_subscriber"/>
         </service>
 

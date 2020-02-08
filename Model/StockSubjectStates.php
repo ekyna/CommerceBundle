@@ -13,9 +13,9 @@ use Ekyna\Component\Commerce\Stock\Model\StockSubjectStates as States;
 final class StockSubjectStates extends AbstractConstants
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.stock_subject.state.';
 
@@ -24,28 +24,5 @@ final class StockSubjectStates extends AbstractConstants
             States::STATE_PRE_ORDER    => [$prefix . States::STATE_PRE_ORDER,    'orange'],
             States::STATE_OUT_OF_STOCK => [$prefix . States::STATE_OUT_OF_STOCK, 'red'],
         ];
-    }
-
-    /**
-     * Returns the theme for the given state.
-     *
-     * @param string $state
-     *
-     * @return string
-     */
-    static public function getTheme($state)
-    {
-        static::isValid($state, true);
-
-        return static::getConfig()[$state][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

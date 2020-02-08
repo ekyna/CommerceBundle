@@ -21,7 +21,7 @@ final class Units extends AbstractConstants
     /**
      * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         if (null !== static::$config) {
             return static::$config;
@@ -41,15 +41,23 @@ final class Units extends AbstractConstants
     }
 
     /**
+     * @inheritDoc
+     */
+    public static function getTheme(string $unit): ?string
+    {
+        return null;
+    }
+
+    /**
      * Returns the symbol for the given unit.
      *
      * @param string $unit
      *
-     * @return int
+     * @return string
      *
      * @see Constants::getSymbol()
      */
-    public static function getSymbol($unit)
+    public static function getSymbol(string $unit): string
     {
         return Constants::getSymbol($unit);
     }
@@ -63,7 +71,7 @@ final class Units extends AbstractConstants
      *
      * @see Constants::getPrecision()
      */
-    public static function getPrecision($unit)
+    public static function getPrecision(string $unit): int
     {
         return Constants::getPrecision($unit);
     }
@@ -77,7 +85,7 @@ final class Units extends AbstractConstants
      *
      * @see Constants::getSymbol()
      */
-    public static function getFormat($unit)
+    public static function getFormat(string $unit): string
     {
         Constants::isValid($unit, true);
 
@@ -93,9 +101,9 @@ final class Units extends AbstractConstants
      *
      * @param string $unit
      *
-     * @return string[]
+     * @return bool
      */
-    public static function hasTranslatableFormat($unit)
+    public static function hasTranslatableFormat(string $unit): bool
     {
         Constants::isValid($unit, true);
 
@@ -105,15 +113,6 @@ final class Units extends AbstractConstants
             Constants::DAY,
             Constants::HOUR,
             Constants::MINUTE
-        ]);
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
+        ], true);
     }
 }

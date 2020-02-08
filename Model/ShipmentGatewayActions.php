@@ -15,7 +15,7 @@ class ShipmentGatewayActions extends AbstractConstants
     /**
      * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $prefix = 'ekyna_commerce.shipment.action.';
 
@@ -32,29 +32,13 @@ class ShipmentGatewayActions extends AbstractConstants
     }
 
     /**
-     * Returns the theme for the given action.
-     *
-     * @param string $action
-     *
-     * @return string
-     */
-    public static function getTheme($action)
-    {
-        if (static::isValid($action)) {
-            return static::getConfig()[$action][1];
-        }
-
-        return 'primary';
-    }
-
-    /**
      * Returns the icon for the given action.
      *
      * @param string $action
      *
      * @return string
      */
-    public static function getIcon($action)
+    public static function getIcon(string $action): string
     {
         switch ($action) {
             case Act::PRINT_LABEL:
@@ -77,18 +61,17 @@ class ShipmentGatewayActions extends AbstractConstants
      *
      * @return string
      */
-    public static function getConfirm($action)
+    public static function getConfirm(string $action): ?string
     {
         $prefix = 'ekyna_commerce.shipment.confirm.';
 
         switch ($action) {
             case Act::CANCEL:
-                return $prefix . $action;
             case Act::COMPLETE:
                 return $prefix . $action;
+            default:
+                return null;
         }
-
-        return null;
     }
 
     /**
@@ -98,7 +81,7 @@ class ShipmentGatewayActions extends AbstractConstants
      *
      * @return string
      */
-    public static function getTarget($action)
+    public static function getTarget(string $action): ?string
     {
         switch ($action) {
             case Act::PRINT_LABEL:

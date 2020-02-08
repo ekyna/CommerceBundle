@@ -15,7 +15,7 @@ class PaymentTermTriggers extends AbstractConstants
     /**
      * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $prefix = 'ekyna_commerce.payment_term.trigger.';
 
@@ -28,11 +28,10 @@ class PaymentTermTriggers extends AbstractConstants
     }
 
     /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    final private function __construct()
+    public static function getTheme(string $constant): ?string
     {
+        return null;
     }
 }

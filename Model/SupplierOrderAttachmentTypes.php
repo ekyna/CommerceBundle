@@ -15,7 +15,7 @@ final class SupplierOrderAttachmentTypes extends AbstractConstants
     /**
      * {@inheritdoc}
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.supplier_order_attachment.type.';
 
@@ -30,11 +30,10 @@ final class SupplierOrderAttachmentTypes extends AbstractConstants
     }
 
     /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    final private function __construct()
+    public static function getTheme(string $constant): ?string
     {
+        return null;
     }
 }

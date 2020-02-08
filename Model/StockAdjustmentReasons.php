@@ -15,7 +15,7 @@ class StockAdjustmentReasons extends AbstractConstants
     /**
      * @inheritdoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.stock_adjustment.reason.';
 
@@ -26,5 +26,13 @@ class StockAdjustmentReasons extends AbstractConstants
             Reasons::REASON_CREDIT   => [$prefix . Reasons::REASON_CREDIT],
             Reasons::REASON_FOUND    => [$prefix . Reasons::REASON_FOUND],
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getTheme(string $constant): ?string
+    {
+        return null;
     }
 }

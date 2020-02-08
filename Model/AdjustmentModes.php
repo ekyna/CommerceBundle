@@ -15,7 +15,7 @@ final class AdjustmentModes extends AbstractConstants
     /**
      * {@inheritdoc}
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.adjustment.mode.';
 
@@ -28,17 +28,16 @@ final class AdjustmentModes extends AbstractConstants
     /**
      * @return string
      */
-    static public function getDefaultChoice()
+    static public function getDefaultChoice(): string
     {
         return Modes::MODE_PERCENT;
     }
 
     /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    final private function __construct()
+    public static function getTheme(string $constant): ?string
     {
+        return null;
     }
 }

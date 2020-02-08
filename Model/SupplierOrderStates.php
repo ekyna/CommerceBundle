@@ -15,7 +15,7 @@ final class SupplierOrderStates extends AbstractConstants
     /**
      * {@inheritdoc}
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.status.';
 
@@ -28,28 +28,5 @@ final class SupplierOrderStates extends AbstractConstants
             States::STATE_COMPLETED => [$prefix . States::STATE_COMPLETED, 'teal'],
             States::STATE_CANCELED  => [$prefix . States::STATE_CANCELED,  'default'],
         ];
-    }
-
-    /**
-     * Returns the theme for the given state.
-     *
-     * @param string $state
-     *
-     * @return string
-     */
-    static public function getTheme($state)
-    {
-        static::isValid($state, true);
-
-        return static::getConfig()[$state][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

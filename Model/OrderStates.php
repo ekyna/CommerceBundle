@@ -13,9 +13,9 @@ use Ekyna\Component\Commerce\Order\Model\OrderStates as States;
 final class OrderStates extends AbstractConstants
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.status.';
 
@@ -28,28 +28,5 @@ final class OrderStates extends AbstractConstants
             States::STATE_REFUNDED  => [$prefix . States::STATE_REFUNDED,  'indigo',      true],
             States::STATE_CANCELED  => [$prefix . States::STATE_CANCELED,  'default',     false],
         ];
-    }
-
-    /**
-     * Returns the theme for the given state.
-     *
-     * @param string $state
-     *
-     * @return string
-     */
-    static public function getTheme($state)
-    {
-        static::isValid($state, true);
-
-        return static::getConfig()[$state][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

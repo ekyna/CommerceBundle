@@ -13,9 +13,9 @@ use Ekyna\Component\Commerce\Stock\Model\StockUnitStates as States;
 final class StockUnitStates extends AbstractConstants
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.status.';
 
@@ -25,28 +25,5 @@ final class StockUnitStates extends AbstractConstants
             States::STATE_READY   => [$prefix . States::STATE_READY,   'teal',    false],
             States::STATE_CLOSED  => [$prefix . States::STATE_CLOSED,  'default', false],
         ];
-    }
-
-    /**
-     * Returns the theme for the given state.
-     *
-     * @param string $state
-     *
-     * @return string
-     */
-    static public function getTheme($state)
-    {
-        static::isValid($state, true);
-
-        return static::getConfig()[$state][1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

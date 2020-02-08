@@ -15,7 +15,7 @@ class NotificationTypes extends AbstractConstants
     /**
      * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $prefix = 'ekyna_commerce.notify.type.';
         $suffix = '.label';
@@ -32,5 +32,13 @@ class NotificationTypes extends AbstractConstants
             //Types::QUOTE_REMIND     => [$prefix . Types::QUOTE_REMIND . $suffix],
             //Types::CART_REMIND      => [$prefix . Types::CART_REMIND . $suffix],
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getTheme(string $constant): ?string
+    {
+        return null;
     }
 }

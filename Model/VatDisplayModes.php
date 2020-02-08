@@ -15,7 +15,7 @@ final class VatDisplayModes extends AbstractConstants
     /**
      * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $prefix = 'ekyna_commerce.pricing.vat_display_mode.';
 
@@ -23,26 +23,5 @@ final class VatDisplayModes extends AbstractConstants
             Modes::MODE_NET => [$prefix.Modes::MODE_NET, 'default'],
             Modes::MODE_ATI => [$prefix.Modes::MODE_ATI, 'primary'],
         ];
-    }
-
-    /**
-     * Returns the theme for the given mode.
-     *
-     * @param string $mode
-     *
-     * @return string
-     */
-    static public function getTheme($mode)
-    {
-        static::isValid($mode, true);
-
-        return static::getConfig()[$mode][1];
-    }
-
-    /**
-     * Disabled constructor.
-     */
-    private function __construct()
-    {
     }
 }

@@ -15,7 +15,7 @@ final class TicketStates extends AbstractConstants
     /**
      * {@inheritdoc}
      */
-    static public function getConfig()
+    static public function getConfig(): array
     {
         $prefix = 'ekyna_commerce.status.';
 
@@ -36,19 +36,10 @@ final class TicketStates extends AbstractConstants
      *
      * @return string
      */
-    static public function getTheme(string $state, bool $admin = false)
+    static public function getTheme(string $state, bool $admin = false): ?string
     {
         static::isValid($state, true);
 
         return static::getConfig()[$state][$admin ? 2 : 1];
-    }
-
-    /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
-     */
-    final private function __construct()
-    {
     }
 }

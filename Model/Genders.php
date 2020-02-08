@@ -13,9 +13,9 @@ use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
 final class Genders extends AbstractConstants
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $short = 'ekyna_commerce.gender.short.';
         $long  = 'ekyna_commerce.gender.long.';
@@ -32,9 +32,10 @@ final class Genders extends AbstractConstants
      *
      * @param mixed $constant
      * @param bool  $long
+     *
      * @return string
      */
-    public static function getLabel($constant, $long = false)
+    public static function getLabel(string $constant, bool $long = false): string
     {
         static::isValid($constant, true);
 
@@ -42,11 +43,10 @@ final class Genders extends AbstractConstants
     }
 
     /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    final private function __construct()
+    public static function getTheme(string $constant): ?string
     {
+        return null;
     }
 }

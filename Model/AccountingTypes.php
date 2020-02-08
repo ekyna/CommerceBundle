@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
-use Ekyna\Component\Commerce\Accounting\Model\AccountingTypes as Types;
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
+use Ekyna\Component\Commerce\Accounting\Model\AccountingTypes as Types;
 
 /**
  * Class AccountingTypes
@@ -15,28 +15,27 @@ final class AccountingTypes extends AbstractConstants
     /**
      * @inheritDoc
      */
-    public static function getConfig()
+    public static function getConfig(): array
     {
         $prefix = 'ekyna_commerce.accounting.type.';
 
         return [
-            Types::TYPE_GOOD     => [$prefix.Types::TYPE_GOOD],
+            Types::TYPE_GOOD     => [$prefix . Types::TYPE_GOOD],
             //Types::TYPE_SERVICE  => [$prefix . Types::TYPE_SERVICE],
-            Types::TYPE_SHIPPING => [$prefix.Types::TYPE_SHIPPING],
-            Types::TYPE_TAX      => [$prefix.Types::TYPE_TAX],
-            Types::TYPE_PAYMENT  => [$prefix.Types::TYPE_PAYMENT],
-            Types::TYPE_UNPAID   => [$prefix.Types::TYPE_UNPAID],
-            Types::TYPE_EX_GAIN  => [$prefix.Types::TYPE_EX_GAIN],
-            Types::TYPE_EX_LOSS  => [$prefix.Types::TYPE_EX_LOSS],
+            Types::TYPE_SHIPPING => [$prefix . Types::TYPE_SHIPPING],
+            Types::TYPE_TAX      => [$prefix . Types::TYPE_TAX],
+            Types::TYPE_PAYMENT  => [$prefix . Types::TYPE_PAYMENT],
+            Types::TYPE_UNPAID   => [$prefix . Types::TYPE_UNPAID],
+            Types::TYPE_EX_GAIN  => [$prefix . Types::TYPE_EX_GAIN],
+            Types::TYPE_EX_LOSS  => [$prefix . Types::TYPE_EX_LOSS],
         ];
     }
 
     /**
-     * Disabled constructor.
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    final private function __construct()
+    public static function getTheme(string $constant): ?string
     {
+        return null;
     }
 }
