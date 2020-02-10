@@ -738,7 +738,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             $typeOrAttachment = $typeOrAttachment->getType();
         }
 
-        if (Model\SupplierOrderAttachmentTypes::isValid($typeOrAttachment)) {
+        if ($typeOrAttachment && Model\SupplierOrderAttachmentTypes::isValid($typeOrAttachment)) {
             return $this->renderLabel(Model\SupplierOrderAttachmentTypes::getLabel($typeOrAttachment));
         }
 
