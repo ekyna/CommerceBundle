@@ -59,6 +59,38 @@ fos_elastica:
                         provider: { batch_size: 25 }
                         listener: ~
                         finder: ~
+        ekyna_commerce_supplier:
+            index_name: "%elasticsearch.name%_commerce_supplier"
+            types:
+                doc:
+                    serializer: { groups: [Search] }
+                    properties:
+                        name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        description: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                    persistence:
+                        driver: orm
+                        model: "%ekyna_commerce.supplier.class%"
+                        provider: { batch_size: 25 }
+                        listener: ~
+                        finder: ~
+        ekyna_commerce_supplier_order:
+            index_name: "%elasticsearch.name%_commerce_supplier_order"
+            types:
+                doc:
+                    serializer: { groups: [Search] }
+                    properties:
+                        number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                        supplier.id: { type: integer }
+                        supplier.name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        carrier.id: { type: integer }
+                        carrier.name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        description: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                    persistence:
+                        driver: orm
+                        model: "%ekyna_commerce.supplier_order.class%"
+                        provider: { batch_size: 25 }
+                        listener: ~
+                        finder: ~
         ekyna_commerce_supplier_product:
             index_name: "%elasticsearch.name%_commerce_supplier_product"
             types:
@@ -67,6 +99,7 @@ fos_elastica:
                     properties:
                         reference: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                         designation: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                        supplier.name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                     persistence:
                         driver: orm
                         model: "%ekyna_commerce.supplier_product.class%"

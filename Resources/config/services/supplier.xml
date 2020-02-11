@@ -5,6 +5,22 @@
 
     <services>
 
+        <!-- Supplier search -->
+        <service id="ekyna_commerce.supplier.search"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Search\SupplierRepository">
+            <argument type="service" id="fos_elastica.index.ekyna_commerce_supplier.doc"/>
+            <argument type="service" id="fos_elastica.elastica_to_model_transformer.ekyna_commerce_supplier.doc"/>
+            <tag name="ekyna_resource.search" resource="ekyna_commerce.supplier"/>
+        </service>
+
+        <!-- Supplier order search -->
+        <service id="ekyna_commerce.supplier_order.search"
+                 class="Ekyna\Bundle\CommerceBundle\Service\Search\SupplierOrderRepository">
+            <argument type="service" id="fos_elastica.index.ekyna_commerce_supplier_order.doc"/>
+            <argument type="service" id="fos_elastica.elastica_to_model_transformer.ekyna_commerce_supplier_order.doc"/>
+            <tag name="ekyna_resource.search" resource="ekyna_commerce.supplier_order"/>
+        </service>
+
         <!-- Supplier product search -->
         <service id="ekyna_commerce.supplier_product.search"
                  class="Ekyna\Bundle\CommerceBundle\Service\Search\SupplierProductRepository">

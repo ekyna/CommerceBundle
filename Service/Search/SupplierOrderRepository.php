@@ -7,11 +7,11 @@ use Ekyna\Component\Resource\Search\Request;
 use Ekyna\Component\Resource\Search\Result;
 
 /**
- * Class SupplierProductRepository
+ * Class SupplierOrderRepository
  * @package Ekyna\Bundle\CommerceBundle\Service\Search
- * @author  Étienne Dauvergne <contact@ekyna.com>
+ * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SupplierProductRepository extends ResourceRepository
+class SupplierOrderRepository extends ResourceRepository
 {
     /**
      * @inheritDoc
@@ -23,12 +23,9 @@ class SupplierProductRepository extends ResourceRepository
         }
 
         return $result
-            ->setIcon('fa fa-cubes')
-            ->setRoute('ekyna_commerce_supplier_product_admin_show')
-            ->setParameters([
-                'supplierId'        => $source['supplier']['id'],
-                'supplierProductId' => $source['id'],
-            ]);
+            ->setIcon('fa fa-list')
+            ->setRoute('ekyna_commerce_supplier_order_admin_show')
+            ->setParameters(['supplierOrderId' => $source['id']]);
     }
 
     /**
@@ -37,8 +34,12 @@ class SupplierProductRepository extends ResourceRepository
     protected function getDefaultFields(): array
     {
         return [
-            'reference^2',
-            'reference.analyzed',
+            'number^2',
+            'number.analyzed',
+            'supplier.name',
+            'supplier.name.analyzed',
+            'carrier.name',
+            'carrier.name.analyzed',
             'designation',
             'designation.analyzed',
         ];
