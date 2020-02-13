@@ -131,9 +131,19 @@
         </service>
 
         <!-- Stock integrity command -->
-        <!-- TODO <service id="Ekyna\Bundle\CommerceBundle\Command\StockIntegrityCommand">
+        <service id="Ekyna\Bundle\CommerceBundle\Command\StockIntegrityCommand">
+            <argument type="service" id="doctrine.dbal.default_connection"/>
+            <argument type="service" id="ekyna_commerce.stock_subject_updater"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <tag name="console.command"/>
-        </service>-->
+        </service>
+
+        <!-- Stock unit overflow command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\StockUnitFixOverflowCommand">
+            <argument type="service" id="Ekyna\Component\Commerce\Stock\Overflow\OverflowHandler"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <tag name="console.command"/>
+        </service>
 
     </services>
 

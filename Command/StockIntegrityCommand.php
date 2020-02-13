@@ -1,9 +1,11 @@
-<?php
+<?php /** @noinspection SqlAggregates */
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,8 +17,10 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class StockIntegrityCommand extends ContainerAwareCommand
+class StockIntegrityCommand extends Command
 {
+    protected static $defaultName = 'ekyna:commerce:stock:integrity';
+
     /**
      * @var InputInterface
      */
@@ -42,6 +46,36 @@ class StockIntegrityCommand extends ContainerAwareCommand
      */
     private $connection;
 
+    /**
+     * @var StockSubjectUpdaterInterface
+     */
+    private $subjectUpdater;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+
+    /**
+     * Constructor.
+     *
+     * @param \Doctrine\DBAL\Connection    $connection
+     * @param StockSubjectUpdaterInterface $subjectUpdater
+     * @param EntityManagerInterface       $entityManager
+     */
+    public function __construct(
+        \Doctrine\DBAL\Connection $connection,
+        StockSubjectUpdaterInterface $subjectUpdater,
+        EntityManagerInterface $entityManager
+    ) {
+        parent::__construct();
+
+        $this->connection     = $connection;
+        $this->subjectUpdater = $subjectUpdater;
+        $this->entityManager  = $entityManager;
+    }
+
 
     /**
      * @inheritDoc
@@ -49,7 +83,6 @@ class StockIntegrityCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ekyna:commerce:stock:integrity')
             ->setDescription('Checks the stock integrity.')
             ->addOption('fix', 'f', InputOption::VALUE_NONE);
     }
@@ -59,11 +92,9 @@ class StockIntegrityCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
+        $this->input  = $input;
         $this->output = $output;
-        $this->fix = $input->getOption('fix');
-
-        $this->connection = $this->getContainer()->get('doctrine.dbal.default_connection');
+        $this->fix    = $input->getOption('fix');
 
         $this->unitIds = [];
 
@@ -84,7 +115,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
             LEFT JOIN commerce_order_item AS i3 ON i3.id=i2.parent_id
             LEFT JOIN commerce_order_item AS i4 ON i4.id=i3.parent_id
             LEFT JOIN commerce_order_item AS i5 ON i5.id=i4.parent_id
-            JOIN commerce_order AS o ON (o.id=i1.order_id OR o.id=i2.order_id OR o.id=i3.order_id OR o.id=i4.order_id OR o.id=i5.order_id) 
+            JOIN commerce_order AS o ON (o.id=i1.order_id OR o.id=i2.order_id OR o.id=i3.order_id OR o.id=i4.order_id OR o.id=i5.order_id)
             LEFT JOIN commerce_order_invoice AS invoice ON (invoice.order_id=o.id AND invoice.type=\'credit\')
             LEFT JOIN commerce_order_invoice_line AS line ON line.invoice_id=invoice.id
             GROUP BY a.id
@@ -134,14 +165,14 @@ class StockIntegrityCommand extends ContainerAwareCommand
                     [$result['sold_sum'], $result['id']]
                 );
             },
-            function($result) {
+            function ($result) {
                 if ($result['is_released']) {
                     $result['sold_sum'] = min($result['sold_qty'], $result['shipped_qty']);
                 }
 
                 return $result;
             },
-            function($result) {
+            function ($result) {
                 return $result['sold_sum'] != $result['sold_qty'];
             }
         );
@@ -382,8 +413,14 @@ class StockIntegrityCommand extends ContainerAwareCommand
      *
      * @return array
      */
-    private function check($title, $sql, array $map, callable $fixer = null, callable $normalizer = null, callable $filter = null)
-    {
+    private function check(
+        $title,
+        $sql,
+        array $map,
+        callable $fixer = null,
+        callable $normalizer = null,
+        callable $filter = null
+    ) {
         $fixes = [];
 
         $this->output->write($title . ': ');
@@ -442,7 +479,7 @@ class StockIntegrityCommand extends ContainerAwareCommand
             return;
         }
 
-        $helper = $this->getHelper('question');
+        $helper   = $this->getHelper('question');
         $question = new ConfirmationQuestion('<question>Would you like to apply fixes ?</question>', false);
         if (!$helper->ask($this->input, $this->output, $question)) {
             return;
@@ -487,11 +524,8 @@ class StockIntegrityCommand extends ContainerAwareCommand
             return;
         }
 
-        $updater = $this->getContainer()->get('ekyna_commerce.stock_subject_updater');
-        $manager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-
         /** @var AbstractStockUnit[] $units */
-        $units = $manager
+        $units = $this->entityManager
             ->getRepository(AbstractStockUnit::class)
             ->findBy(['id' => $this->unitIds]);
 
@@ -500,15 +534,15 @@ class StockIntegrityCommand extends ContainerAwareCommand
 
             $this->output->write((string)$subject . ' ... ');
 
-            if ($updater->update($subject)) {
-                $manager->persist($subject);
+            if ($this->subjectUpdater->update($subject)) {
+                $this->entityManager->persist($subject);
                 $this->output->writeln('<info>updated</info>');
             } else {
                 $this->output->writeln('ok');
             }
         }
 
-        $manager->flush();
+        $this->entityManager->flush();
     }
 }
 
@@ -549,9 +583,9 @@ class Fix extends Action
     {
         parent::__construct($label);
 
-        $this->query = $query;
+        $this->query      = $query;
         $this->parameters = $parameters;
-        $this->unitId = $unitId;
+        $this->unitId     = $unitId;
     }
 
     /**

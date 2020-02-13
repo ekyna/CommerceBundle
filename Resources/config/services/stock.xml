@@ -87,7 +87,6 @@
         <!-- Stock assignment updater -->
         <service id="ekyna_commerce.stock_assignment.updater"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockAssignmentUpdater">
-            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
         </service>
@@ -143,6 +142,7 @@
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
             <argument type="service" id="ekyna_commerce.stock_unit.manager"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
             <argument type="service" id="ekyna_commerce.stock.logger"/>
         </service>
