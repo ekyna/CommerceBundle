@@ -5,6 +5,7 @@
         <h3>{{ 'ekyna_commerce.account.invoice.title'|trans|raw }}</h3>
         <hr>
         {% include '@EkynaCommerce/Account/Invoice/_list.html.twig' with {
+            'customer': customer,
             'invoices': invoices
         } only %}
     {% endspaceless %}

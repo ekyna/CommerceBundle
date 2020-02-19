@@ -8,8 +8,14 @@
     </p>
 
     {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
-        'sale': order, 'customer': customer
+        'sale': order, 'customer': customer, 'refund': false
     } only -%}
+
+    {%- if order is sale_with_refund -%}
+        {%- include '@EkynaCommerce/Account/Sale/payments.html.twig' with {
+            'sale': order, 'customer': customer, 'refund': true
+        } only -%}
+    {%- endif -%}
 
     {{ bootstrap_set_style('horizontal') }}
     {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}

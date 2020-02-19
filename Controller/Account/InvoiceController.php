@@ -51,10 +51,6 @@ class InvoiceController extends AbstractController
 
         $invoice = $this->findInvoiceByCustomerAndNumber($customer, $request->attributes->get('number'));
 
-        /*$orderView = $this->get('ekyna_commerce.common.view_builder')->buildSaleView($order, [
-            'taxes_view' => false,
-        ]);*/
-
         $invoices = $this->findInvoicesByCustomer($customer);
 
         return $this->render('@EkynaCommerce/Account/Invoice/show.html.twig', [

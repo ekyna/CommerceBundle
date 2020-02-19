@@ -142,6 +142,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                 );
                 $widget
                     ->setParameters([
+                        'customer' => $customer,
                         'invoices' => $invoices,
                     ])
                     ->setPriority(800)

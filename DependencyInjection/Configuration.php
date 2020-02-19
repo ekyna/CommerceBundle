@@ -907,7 +907,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('repository')->end()
                                         ->arrayNode('fields')
                                             ->prototype('scalar')->end()
-                                            ->defaultValue(['title', 'description'])
+                                            ->defaultValue(['title', 'description', 'notice', 'mention', 'footer'])
                                         ->end()
                                     ->end()
                                 ->end()

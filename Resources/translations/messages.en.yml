@@ -1017,6 +1017,7 @@ ekyna_commerce:
         field:
             use_default_currency: Default curerency
             private: Private
+            notice: Order notice
             mention: Document mention
             footer: Document footer
         alert:

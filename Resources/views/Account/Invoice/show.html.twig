@@ -4,11 +4,10 @@
     {% spaceless %}
         <h3>{{ 'ekyna_commerce.account.invoice.show'|trans({'%number%': invoice.number})|raw }}</h3>
         <p>
-            Créée le <em>{{ invoice.createdAt|localizeddate('short', 'none') }}</em>. {# TODO translations #}
+            {{ 'ekyna_core.field.created_at'|trans }} <em>{{ invoice.createdAt|localizeddate('short', 'none') }}</em>.
         </p>
+        {{ invoice|payment_method_notice }}
         <hr>
-
-
         <table class="table table-condensed table-alt table-striped">
             <thead>
             <tr>
@@ -56,6 +55,7 @@
         <h3>{{ 'ekyna_commerce.account.invoice.title'|trans|raw }}</h3>
         <hr>
         {% include '@EkynaCommerce/Account/Invoice/_list.html.twig' with {
+            'customer': customer,
             'invoices': invoices
         } only %}
 

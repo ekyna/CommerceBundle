@@ -3,9 +3,8 @@
 {% block account %}
 {% spaceless %}
     <h3>{{ 'ekyna_commerce.account.balance.title'|trans }}</h3>
-
     <hr>
-
+    {{ customer|payment_method_notice }}
     {% include "@EkynaCommerce/Customer/balance.html.twig" with {
         'balance': balance,
         'form': form

@@ -20,6 +20,11 @@ class PaymentMethodTranslationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('notice', TinymceType::class, [
+                'label' => 'ekyna_commerce.payment_method.field.notice',
+                'theme' => 'front',
+                //'admin_helper' => 'CMS_PAGE_CONTENT',
+            ])
             ->add('mention', TinymceType::class, [
                 'label' => 'ekyna_commerce.payment_method.field.mention',
                 'theme' => 'front',

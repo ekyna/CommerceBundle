@@ -23,11 +23,6 @@ class StatWidget extends AbstractWidgetType
     protected $registry;
 
     /**
-     * @var string
-     */
-    protected $orderClass;
-
-    /**
      * @var \Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface
      */
     protected $orderStatRepository;

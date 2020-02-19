@@ -6,7 +6,10 @@ use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions as BTransitions;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Payment\Calculator\PaymentCalculatorInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
@@ -98,6 +101,11 @@ class PaymentExtension extends AbstractExtension
             new TwigFilter(
                 'payment_term_trigger_label',
                 [ConstantsHelper::class, 'renderPaymentTermTriggerLabel'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
+                'payment_method_notice',
+                [$this, 'renderPaymentMethodNotice'],
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
@@ -279,6 +287,39 @@ class PaymentExtension extends AbstractExtension
         $output .= '</dl>';
 
         return $output;
+    }
+
+    /**
+     * Renders the payment method notice.
+     *
+     * @param object $subject
+     *
+     * @return string|null
+     */
+    public function renderPaymentMethodNotice(object $subject)
+    {
+        if ($subject instanceof InvoiceInterface) {
+            $subject = $subject->getSale();
+        }
+
+        if ($subject instanceof SaleInterface) {
+            $subject = $subject->getPaymentMethod();
+        } elseif ($subject instanceof CustomerInterface) {
+            if ($subject->hasParent()) {
+                $subject = $subject->getParent();
+            }
+            $subject = $subject->getDefaultPaymentMethod();
+        }
+
+        if (!$subject instanceof PaymentMethodInterface) {
+            return null;
+        }
+
+        if (empty($notice = $subject->getNotice())) {
+            return null;
+        }
+
+        return sprintf('<div class="alert alert-warning">%s</div>', $notice);
     }
 
     /**

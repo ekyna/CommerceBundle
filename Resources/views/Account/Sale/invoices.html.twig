@@ -9,6 +9,7 @@
         {{- 'ekyna_commerce.invoice.label.plural'|trans|raw -}}
     {%- endif -%}
     </div>
+    {{ sale|payment_method_notice }}
     <div class="table-responsive">
         <table class="table">
             <thead>
