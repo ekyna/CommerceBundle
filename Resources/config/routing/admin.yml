@@ -2,6 +2,10 @@ ekyna_commerce_accounting_admin:
     resource: "admin/accounting.yml"
     prefix:   /accounting
 
+ekyna_commerce_audience_admin:
+    resource: "admin/audience.yml"
+    prefix:   /audiences
+
 ekyna_commerce_cart_admin:
     resource: "admin/cart.yml"
     prefix:   /carts
@@ -33,6 +37,10 @@ ekyna_commerce_inventory_admin:
 ekyna_commerce_map:
     resource: "admin/map.yml"
     prefix:   /map
+
+ekyna_commerce_member_admin:
+    resource: "admin/member.yml"
+    prefix:   /members
 
 ekyna_commerce_notify_model:
     resource: "admin/notify_model.yml"

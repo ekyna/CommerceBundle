@@ -1,0 +1,34 @@
+<div id="newsletter-subscription" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">{{ 'ekyna_core.field.email_address'|trans }}</label>
+        <div class="col-sm-9">
+            {% if customer -%}
+            <p class="form-control" id="email">{{ email }}</p>
+            <input type="hidden" name="customer" value="{{ customer }}"/>
+            {%- else -%}
+            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{ email }}">
+            {%- endif %}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="email" class="col-sm-3 control-label">
+            {{ 'ekyna_commerce.account.newsletter.subscriptions'|trans }}
+        </label>
+        <div class="col-sm-9">
+            {% for audience in audiences -%}
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="audiences[]" value="{{ audience.key }}"{% if audience.subscribed %} checked{% endif %}>
+                    {{ audience.title }}
+                </label>
+            </div>
+            {%- endfor %}
+        </div>
+    </div>
+    {# TODO Csrf protection #}
+</div>
+<script type="text/javascript">
+    require(['ekyna-commerce/newsletter-subscription'], function(Newsletter) {
+        Newsletter.init('#newsletter-subscription');
+    });
+</script>

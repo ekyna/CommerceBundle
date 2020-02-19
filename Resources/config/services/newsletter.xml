@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <defaults autowire="false" autoconfigure="false" public="false"/>
+
+        <!-- Logger -->
+        <service id="Ekyna\Component\Commerce\Newsletter\Logger">
+            <argument type="service" id="logger"/>
+            <tag name="monolog.logger" channel="newsletter"/>
+        </service>
+
+        <!-- Audience repository -->
+        <service id="ekyna_commerce.audience.repository"
+                 class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\AudienceRepository">
+            <argument type="service" id="ekyna_commerce.audience.manager"/>
+            <argument type="service" id="ekyna_commerce.audience.metadata"/>
+            <call method="setLocaleProvider">
+                <argument type="service" id="Ekyna\Component\Resource\Locale\LocaleProviderInterface"/>
+            </call>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
+        </service>
+
+        <!-- Gateway registry -->
+        <!--suppress XmlServiceArgumentInspection -->
+        <service id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry">
+            <!-- Service locator injected my compiler pass -->
+            <!-- Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\NewsletterGatewayRegistryPass -->
+        </service>
+
+        <!-- Synchronizer registry -->
+        <!--suppress XmlServiceArgumentInspection -->
+        <service id="Ekyna\Component\Commerce\Newsletter\Synchronizer\SynchronizerRegistry">
+            <!-- Service locator injected my compiler pass -->
+            <!-- Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\NewsletterGatewayRegistryPass -->
+        </service>
+
+        <!-- Webhook handler registry -->
+        <!--suppress XmlServiceArgumentInspection -->
+        <service id="Ekyna\Component\Commerce\Newsletter\Webhook\HandlerRegistry">
+            <!-- Service locator injected my compiler pass -->
+            <!-- Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\NewsletterGatewayRegistryPass -->
+        </service>
+
+        <!-- Subscription controller -->
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\SubscriptionController">
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper"/>
+            <tag name="controller.service_arguments"/><!-- TODO try to remove -->
+        </service>
+
+        <!-- Webhook controller -->
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\WebhookController">
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Webhook\HandlerRegistry"/>
+            <tag name="controller.service_arguments"/><!-- TODO try to remove -->
+        </service>
+
+        <!-- Audience updater -->
+        <service id="Ekyna\Component\Commerce\Newsletter\Updater\AudienceUpdater">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.audience.repository"/>
+            <argument type="service" id="ekyna_commerce.common.key_generator"/>
+        </service>
+
+        <!-- Resources event subscribers -->
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\AudienceEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Updater\AudienceUpdater"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\MemberEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Listeners toggler -->
+        <service id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerToggler">
+            <argument type="collection">
+                <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\AudienceEventSubscriber"/>
+                <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\MemberEventSubscriber"/>
+            </argument>
+        </service>
+
+        <!-- Form types -->
+        <service id="ekyna_commerce.audience.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\AudienceType">
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
+            <argument>%ekyna_commerce.audience.class%</argument>
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Table types -->
+        <service id="ekyna_commerce.member.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\MemberType" public="true">
+            <argument>%ekyna_commerce.member.class%</argument>
+            <argument>%ekyna_commerce.audience.class%</argument>
+            <tag name="table.type"/>
+        </service>
+
+        <!-- Synchronize command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\NewsletterSynchronizeCommand">
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Synchronizer\SynchronizerRegistry"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Subscription helper -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper">
+            <argument type="service" id="ekyna_commerce.audience.repository"/>
+            <argument type="service" id="ekyna_commerce.member.repository"/>
+            <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            <argument type="service" id="Symfony\Component\Validator\Validator\ValidatorInterface"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <!-- Twig extension -->
+        <service id="Ekyna\Bundle\CommerceBundle\Twig\NewsletterExtension">
+            <tag name="twig.extension"/>
+        </service>
+
+    </services>
+
+</container>

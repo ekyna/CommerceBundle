@@ -90,6 +90,13 @@
             </a>
         </li>
         {%- endif %}
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
+        <li>
+            <a href="#customer-newsletter" id="toggle-newsletter" data-toggle="tab">
+                {{ 'ekyna_commerce.customer.field.newsletter'|trans }}
+            </a>
+        </li>
+        {%- endif %}
         {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
         <li>
             <a href="#customer-tickets" id="toggle-tickets" data-toggle="tab">
@@ -539,6 +546,11 @@
                     </div>
                 </div>
                 {# TODO Customer's coupons table (use table type) #}
+            </div>
+            {%- endif %}
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
+            <div class="tab-pane" id="customer-newsletter">
+                {{ newsletter_subscription({'customer': customer, 'public': false}) }}
             </div>
             {%- endif %}
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}

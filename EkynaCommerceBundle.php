@@ -29,6 +29,7 @@ class EkynaCommerceBundle extends AbstractBundle
         $container->addCompilerPass(new ComponentPass\PricingApiPass());
         $container->addCompilerPass(new ComponentPass\PayumBuilderPass());
         $container->addCompilerPass(new ComponentPass\ShipmentGatewayRegistryPass());
+        $container->addCompilerPass(new ComponentPass\NewsletterRegistriesPass());
         $container->addCompilerPass(new ComponentPass\TwigPathCompilerPass());
 
         $container->addCompilerPass(new BundlePass\AdminMenuPass());
@@ -48,6 +49,8 @@ class EkynaCommerceBundle extends AbstractBundle
             Commerce\Customer\Model\CustomerInterface::class         => 'ekyna_commerce.customer.class',
             Commerce\Customer\Model\CustomerGroupInterface::class    => 'ekyna_commerce.customer_group.class',
             Commerce\Customer\Model\CustomerAddressInterface::class  => 'ekyna_commerce.customer_address.class',
+            Commerce\Newsletter\Model\AudienceInterface::class       => 'ekyna_commerce.audience.class',
+            Commerce\Newsletter\Model\MemberInterface::class         => 'ekyna_commerce.member.class',
             Commerce\Order\Model\OrderInterface::class               => 'ekyna_commerce.order.class',
             Commerce\Order\Model\OrderAddressInterface::class        => 'ekyna_commerce.order_address.class',
             Commerce\Payment\Model\PaymentMethodInterface::class     => 'ekyna_commerce.payment_method.class',

@@ -204,10 +204,33 @@ ekyna_commerce:
             engage: >
                 You wish to receive <strong>news</strong> about us and <strong>exclusive promotionnal offers</strong>?
             newsletter: Subscribe
+        newsletter:
+            title: Newsletter
         ticket:
             title: My tickets
             go_to_sale_details: >
                 To create a new ticket, please go to the details of an order or a quote.
+
+    audience:
+        label:
+            singular: Audience
+            plural: Audiences
+        header:
+            list: Audiences <small>Audiences list</small>
+            show: Audience details <small>%name%</small>
+            new: Create a new audience
+            edit: Edit the audience <small>%name%</small>
+            remove: Remove the audience <small>%name%</small>
+        button:
+            list: Audiences list
+            show: Audience details
+            new: New audience
+            edit: Edit audience
+            remove: Remove audience
+        field:
+            public: Available for subscription
+        alert:
+            empty_list: No audience configured
 
     dashboard:
         export:
@@ -644,6 +667,7 @@ ekyna_commerce:
             loyalty_origin: Reason
             graphics: Design
             document_types: Use for
+            newsletter: Newsletter
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Accountable&nbsp;service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Sales&nbsp;manager
@@ -746,6 +770,31 @@ ekyna_commerce:
             mr: Mister
             mrs: Mistress
             miss: Miss
+
+    marketing:
+        title: Marketing
+
+    member:
+        label:
+            singular: Member
+            plural: Members
+        header:
+            list: Members <small>List of members</small>
+            show: Member details <small>%name%</small>
+            new: Create a new member
+            edit: Edit the member <small>%name%</small>
+            remove: Remove the member <small>%name%</small>
+        button:
+            list: Members list
+            show: Member details
+            new: New member
+            edit: Edit member
+            remove: Remove member
+        status:
+            subscribed: Subscribed
+            unsubscribed: Unsubscribed
+        alert:
+            empty_list: No member configured
 
     message:
         label:

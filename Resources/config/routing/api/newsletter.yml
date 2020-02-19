@@ -1,0 +1,25 @@
+ekyna_commerce_api_newsletter_webhook:
+    path: /webhook/{name}/{key}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\WebhookController
+    methods: [GET, POST]
+    requirements:
+        name: '[0-9A-Za-z]+'
+        key: '[0-9A-Za-z]{32}'
+
+ekyna_commerce_api_newsletter_subscribe:
+    path: /subscribe/{key}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\SubscriptionController::subscribe
+    methods: [POST]
+    requirements:
+        key: '[0-9A-Za-z]{32}'
+    options:
+        expose: true
+
+ekyna_commerce_api_newsletter_unsubscribe:
+    path: /unsubscribe/{key}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\SubscriptionController::unsubscribe
+    methods: [POST]
+    requirements:
+        key: '[0-9A-Za-z]{32}'
+    options:
+        expose: true

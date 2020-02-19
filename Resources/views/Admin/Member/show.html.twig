@@ -1,0 +1,38 @@
+{% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
+
+{% block main %}
+{% apply spaceless %}
+<div class="actions">
+    {{ admin_resource_btn(member, 'edit') }}
+    {{ admin_resource_btn(member, 'remove') }}
+</div>
+<div class="show show-with-tabs">
+    <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+        <li class="active">
+            <a href="#member-general" data-toggle="tab">
+                {{ 'ekyna_core.field.general'|trans }}
+            </a>
+        </li>
+    </ul>
+    <div class="show-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="member-general">
+                {{ show_row(member.audience, 'entity', {
+                    'label': 'ekyna_commerce.audience.label.singular',
+                    'id': 'member_audience',
+                    'route': 'ekyna_commerce_audience_admin_show',
+                    'route_parameters_map': {'audienceId': 'id'}
+                }) }}
+                {{ show_row(member.email, 'text', {
+                    'label': 'ekyna_core.field.email_address'
+                }) }}
+                {{ show_row(member.status, 'constant_choice', {
+                    'class': 'Ekyna\\Component\\Commerce\\Newsletter\\Model\\MemberStatuses',
+                    'theme': true
+                }) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endapply %}
+{% endblock %}

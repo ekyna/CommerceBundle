@@ -52,6 +52,13 @@ class AccountLoader extends Loader
             $collection->addCollection($routes);
         }
 
+        if ($this->features->isEnabled(Features::NEWSLETTER)) {
+            $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/account/newsletter.yml', 'yaml');
+            $routes->addPrefix('/newsletter');
+
+            $collection->addCollection($routes);
+        }
+
         if ($this->features->isEnabled(Features::SUPPORT)) {
             $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/account/ticket.yml', 'yaml');
             $routes->addPrefix('/tickets');

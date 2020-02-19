@@ -204,12 +204,37 @@ ekyna_commerce:
                 Vous souhaitez vous tenir informé de notre <strong>actualité</strong> et
                 recevoir des <strong>offres promotionnelles exclusives</strong>, c'est par ici !
             newsletter: Je m'abonne
+        newsletter:
+            title: Newsletter
+            subscriptions: Liste de diffusions
         loyalty:
             title: Mes points fidélité
         ticket:
             title: Mes tickets
             go_to_sale_details: >
                 Pour créer un nouveau ticket, veuillez vous rendre sur le détail d'une commande ou d'un devis.
+
+    audience:
+        label:
+            singular: Audience
+            plural: Audiences
+        header:
+            list: Audiences <small>Liste des audiences</small>
+            show: Détail de l'audience <small>%name%</small>
+            new: Créer une nouvelle audience
+            edit: Modifier l'audience <small>%name%</small>
+            remove: Supprimer l'audience <small>%name%</small>
+        button:
+            list: Liste des audiences
+            show: Détail de l'audience
+            new: Nouvelle audience
+            edit: Modifier l'audience
+            remove: Supprimer l'audience
+            synchronize: Synchronizer depuis MailChimp
+        field:
+            public: Disponible pour inscription
+        alert:
+            empty_list: Aucune audience configuré
 
     dashboard:
         export:
@@ -646,6 +671,7 @@ ekyna_commerce:
             loyalty_origin: Raison
             graphics: Design
             document_types: Utiliser pour
+            newsletter: Newsletter
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
@@ -750,6 +776,9 @@ ekyna_commerce:
             mrs: Madame
             miss: Mademoiselle
 
+    marketing:
+        title: Marketing
+
     marketplace:
         label:
             singular: Marketplace
@@ -773,6 +802,28 @@ ekyna_commerce:
             remove: Supprimer le produit
         alert:
             no_item: Aucun produit configuré
+
+    member:
+        label:
+            singular: Membre
+            plural: Membres
+        header:
+            list: Membres <small>Liste des membres</small>
+            show: Détail du membre <small>%name%</small>
+            new: Créer un nouveau membre
+            edit: Modifier le membre <small>%name%</small>
+            remove: Supprimer le membre <small>%name%</small>
+        button:
+            list: Liste des membres
+            show: Détail du membre
+            new: Nouveau membre
+            edit: Modifier le membre
+            remove: Supprimer le membre
+        status:
+            subscribed: Inscrit
+            unsubscribed: Désinscrit
+        alert:
+            empty_list: Aucun membre configuré
 
     message:
         label:

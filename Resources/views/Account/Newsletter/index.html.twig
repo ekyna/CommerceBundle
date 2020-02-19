@@ -1,0 +1,9 @@
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
+
+{% block account %}
+{% spaceless %}
+    <h3>{{ 'ekyna_commerce.account.newsletter.title'|trans|raw }}</h3>
+    <hr>
+    {{ newsletter_subscription({'customer': customer}) }}
+{% endspaceless %}
+{% endblock account %}

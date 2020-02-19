@@ -2,6 +2,10 @@ ekyna_commerce_api_customer:
     resource: "api/customer.yml"
     prefix: /customer
 
+ekyna_commerce_api_newsletter:
+    resource: "api/newsletter.yml"
+    prefix: /newsletter
+
 ekyna_commerce_api_pricing:
     resource: "api/pricing.yml"
     prefix: /pricing

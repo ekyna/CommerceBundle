@@ -6,15 +6,15 @@ use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
+use Ekyna\Component\Commerce\Bridge\Mailchimp;
 use Ekyna\Component\Commerce\Cart;
 use Ekyna\Component\Commerce\Customer;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order;
 use Ekyna\Component\Commerce\Pricing\Api;
 use Ekyna\Component\Commerce\Quote;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
 
 /**
  * Class EkynaCommerceExtension
@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 class EkynaCommerceExtension extends AbstractExtension
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -40,8 +40,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureSaleFactory($container);
 
         if (in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
-            $loader = new XmlFileLoader($container, new FileLocator($this->getConfigurationDirectory()));
-            $loader->load('services_dev_test.xml');
+            $this->loader->load('services_dev_test.xml');
         }
     }
 
@@ -124,6 +123,38 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.features', $config);
         // Set service config
         $container->getDefinition(Features::class)->replaceArgument(0, $config);
+
+        if ($config[Features::NEWSLETTER]['enabled']) {
+            $this->loader->load('services/newsletter.xml');
+
+            $this->configureMailchimp($config[Features::NEWSLETTER]['mailchimp'], $container);
+        }
+    }
+
+    /**
+     * Configures mailchimp newsletter gateway.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureMailchimp(array $config, ContainerBuilder $container): void
+    {
+        if (empty($config['api_key'])) {
+            return;
+        }
+
+        if (!class_exists('DrewM\\MailChimp\\MailChimp')) {
+            throw new LogicException(
+                "To use mailchimp newsletter gateway, you must install drewm/mailchimp-api first.\n" .
+                "Please run: composer require drewm/mailchimp-api"
+            );
+        }
+
+        $this->loader->load('services/newsletter/mailchimp.xml');
+
+        $container
+            ->getDefinition(Mailchimp\Api::class)
+            ->replaceArgument(1, $config['api_key']);
     }
 
     /**

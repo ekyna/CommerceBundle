@@ -1,6 +1,8 @@
 ekyna_commerce_api:
     resource: "routing/api.yml"
     prefix:   /api/commerce
+    options:
+        i18n: false
 
 # TODO split commerce / settings
 ekyna_commerce_admin:

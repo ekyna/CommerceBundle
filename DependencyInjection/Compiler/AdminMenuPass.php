@@ -96,15 +96,6 @@ class AdminMenuPass implements CompilerPassInterface
                 'position' => 23,
             ]]);
         }
-        if ($features->isEnabled(Features::COUPON)) {
-            $pool->addMethodCall('createEntry', ['sales', [
-                'name'     => 'coupons',
-                'route'    => 'ekyna_commerce_coupon_admin_list',
-                'label'    => 'ekyna_commerce.coupon.label.plural',
-                'resource' => 'ekyna_commerce_coupon',
-                'position' => 24,
-            ]]);
-        }
 
         // ------------------------------------------------------------
 
@@ -159,6 +150,45 @@ class AdminMenuPass implements CompilerPassInterface
             'resource' => 'ekyna_commerce_warehouse',
             'position' => 5,
         ]]);
+
+        // ------------------------------------------------------------
+
+        $pool->addMethodCall('createGroup', [[
+            'name'     => 'marketing',
+            'label'    => 'ekyna_commerce.marketing.title',
+            'icon'     => 'tags',
+            'position' => 12,
+        ]]);
+
+        if ($features->isEnabled(Features::NEWSLETTER)) {
+            // Audience
+            $pool->addMethodCall('createEntry', ['marketing', [
+                'name'     => 'audience',
+                'route'    => 'ekyna_commerce_audience_admin_list',
+                'label'    => 'ekyna_commerce.audience.label.plural',
+                'resource' => 'ekyna_commerce_audience',
+                'position' => 1,
+            ]]);
+
+            // Member
+            $pool->addMethodCall('createEntry', ['marketing', [
+                'name'     => 'member',
+                'route'    => 'ekyna_commerce_member_admin_list',
+                'label'    => 'ekyna_commerce.member.label.plural',
+                'resource' => 'ekyna_commerce_member',
+                'position' => 2,
+            ]]);
+        }
+
+        if ($features->isEnabled(Features::COUPON)) {
+            $pool->addMethodCall('createEntry', ['marketing', [
+                'name'     => 'coupons',
+                'route'    => 'ekyna_commerce_coupon_admin_list',
+                'label'    => 'ekyna_commerce.coupon.label.plural',
+                'resource' => 'ekyna_commerce_coupon',
+                'position' => 3,
+            ]]);
+        }
 
         // ------------------------------------------------------------
 
