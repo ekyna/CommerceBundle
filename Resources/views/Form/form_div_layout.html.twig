@@ -63,6 +63,11 @@
         </div>
     </div>
 
+    {# Sale address specific #}
+    {%- if form.information is defined -%}
+        {{- form_row(form.information) -}}
+    {%- endif -%}
+
     {# Customer address specific #}
     {%- if form.invoiceDefault is defined and form.deliveryDefault is defined -%}
     <div class="row">

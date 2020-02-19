@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
@@ -13,9 +14,6 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
  */
 class ShipmentRenderer extends AbstractRenderer
 {
-    const TYPE_BILL = 'bill';
-    const TYPE_FORM = 'form';
-
     /**
      * @var string
      */
@@ -27,11 +25,11 @@ class ShipmentRenderer extends AbstractRenderer
      */
     public function __construct($subjects, $type)
     {
-        if (!in_array($type, [static::TYPE_BILL, static::TYPE_FORM], true)) {
+        if (!in_array($type, DocumentTypes::getShipmentTypes(), true)) {
             throw new InvalidArgumentException("Unexpected shipment document type '$type'.");
         }
 
-        if ($type === static::TYPE_FORM) {
+        if ($type === DocumentTypes::TYPE_SHIPMENT_FORM) {
             $subjects = array_filter($subjects, function (ShipmentInterface $shipment) {
                 return !$shipment->isReturn();
             });
@@ -66,7 +64,7 @@ class ShipmentRenderer extends AbstractRenderer
      */
     protected function getContent(string $format): string
     {
-        if ($this->type === static::TYPE_FORM) {
+        if ($this->type === DocumentTypes::TYPE_SHIPMENT_FORM) {
             return $this->templating->render('@EkynaCommerce/Document/shipment_form.html.twig', [
                 'subjects' => $this->subjects,
             ]);

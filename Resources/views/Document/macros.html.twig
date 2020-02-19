@@ -80,6 +80,9 @@
         <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address['mobile'] -}}
     {%- endif -%}
 </p>
+{% if address['information'] is defined and address['information'] is not empty -%}
+<p>{{ address['information']|nl2br }}</p>
+{%- endif %}
 {%- endmacro -%}
 
 
@@ -113,7 +116,7 @@
 
 
 {%- macro render_payment_term(subject) -%}
-    <br><span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans|replace({' ': '&nbsp;'})|raw }}</span>
+    <span class="text-alt">{{ 'ekyna_commerce.payment_term.label.singular'|trans|replace({' ': '&nbsp;'})|raw }}</span>
     {{- '&nbsp;' -}}
     {%- if 0 < subject.sale.depositTotal -%}
         <strong>
@@ -125,7 +128,7 @@
     {%- endif %}
     {% if subject.sale.paymentTerm is not null -%}
         <strong>{{ subject.sale.paymentTerm.translate(subject.locale).title }}</strong>.
-        {% if not subject.credit and subject.dueDate is not null -%}
+        {% if subject.credit is defined and not subject.credit and subject.dueDate is not null -%}
             <span class="text-alt">{{ 'ekyna_commerce.document.mention.due_date'|trans|replace({' ': '&nbsp;'})|raw }}</span>
             {{- '&nbsp;' -}}
             <strong>{{ subject.dueDate|localizeddate('long', 'none', subject.locale) }}</strong>.

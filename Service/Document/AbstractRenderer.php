@@ -230,7 +230,6 @@ abstract class AbstractRenderer implements RendererInterface
         return $this->templating->render('@EkynaCommerce/Document/render.html.twig', array_replace([
             'debug'     => $this->config['debug'],
             'format'    => $format,
-            'logo_path' => $this->config['logo_path'],
             'subjects'  => $this->subjects,
             'template'  => $this->getTemplate(),
         ], $this->getParameters()));

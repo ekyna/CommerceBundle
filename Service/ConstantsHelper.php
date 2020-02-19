@@ -7,6 +7,7 @@ use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
+use Ekyna\Component\Commerce\Document\Model as Document;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
@@ -278,7 +279,7 @@ class ConstantsHelper extends AbstractConstantsHelper
             $typeOrInvoice = $typeOrInvoice->getType();
         }
 
-        if (Model\DocumentTypes::isValid($typeOrInvoice)) {
+        if (Document\DocumentTypes::isValidInvoiceType($typeOrInvoice)) {
             return $this->renderLabel(Model\DocumentTypes::getLabel($typeOrInvoice));
         }
 
@@ -299,7 +300,7 @@ class ConstantsHelper extends AbstractConstantsHelper
         }
 
         $theme = 'default';
-        if (Model\DocumentTypes::isValid($typeOrInvoice)) {
+        if (Document\DocumentTypes::isValidInvoiceType($typeOrInvoice)) {
             $theme = Model\DocumentTypes::getTheme($typeOrInvoice);
         }
 

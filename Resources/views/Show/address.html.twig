@@ -1,13 +1,15 @@
 {% spaceless %}
-
+{%- if config.locale is not null -%}
+    {%- do trans_set_locale(config.locale) -%}
+{%- endif -%}
 {% if address.company is not empty -%}
     <strong><em>{{ address.company }}</em></strong><br>
 {%- endif %}
 
 {% if address.lastName is not empty and address.firstName is not empty -%}
     <strong>{{ address|identity }}</strong><br>
-{%- elseif address.company is empty and attribute(address, 'customer') is defined and address.customer is not null -%}
-    <strong>{{ address.customer|identity }}</strong><br>
+{%- elseif address.company is empty and attribute(address, 'customer') is defined and attribute(address, 'customer') is not null -%}
+    <strong>{{ attribute(address, 'customer')|identity }}</strong><br>
 {%- endif %}
 
 {{- address.street -}}
@@ -38,7 +40,7 @@
     {%- endif %}
 {% endif %}
 
-{% if display_phones -%}
+{% if config.display_phones -%}
     {% if address.phone is not empty -%}
         <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address.phone|phone_number_format -}}
     {%- endif %}
@@ -46,4 +48,12 @@
         <br><abbr title="{{ 'ekyna_core.field.mobile'|trans }}">M:</abbr> {{ address.mobile|phone_number_format -}}
     {%- endif %}
 {%- endif %}
+
+{%- if attribute(address, 'information') is defined and attribute(address, 'information') is not empty -%}
+    <hr>{{ attribute(address, 'information')|nl2br }}
+{%- endif -%}
+
+{%- if config.locale is not null -%}
+    {% do trans_revert_locale() %}
+{% endif %}
 {% endspaceless %}

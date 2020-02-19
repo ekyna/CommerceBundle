@@ -2,12 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
+use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
-use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * Class DocumentExtension
@@ -35,18 +36,29 @@ class DocumentExtension extends AbstractExtension
     /**
      * @inheritdoc
      */
+    public function getFunctions()
+    {
+        return [
+            new TwigFunction(
+                'document_type_choices',
+                [DocumentTypes::class, 'getChoices']
+            ),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getFilters()
     {
         return [
             new TwigFilter(
-                'document_pages',
-                [DocumentPageBuilder::class, 'buildDocumentPages'],
-                ['is_safe' => ['html']]
+                'document_design',
+                [DocumentHelper::class, 'getDocumentDesign']
             ),
             new TwigFilter(
-                'document_footer',
-                [$this, 'getDocumentFooter'],
-                ['is_safe' => ['html']]
+                'document_pages',
+                [DocumentPageBuilder::class, 'buildDocumentPages']
             ),
             new TwigFilter(
                 'shipment_pages',
@@ -59,34 +71,5 @@ class DocumentExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
         ];
-    }
-
-    /**
-     * Returns the document footer.
-     *
-     * @param object $document
-     *
-     * @return string
-     */
-    public function getDocumentFooter(object $document): string
-    {
-        $sale = $locale = null;
-        if ($document instanceof DocumentInterface) {
-            $locale = $document->getLocale();
-            $sale = $document->getSale();
-        } elseif ($document instanceof ShipmentInterface) {
-            $locale = $document->getLocale();
-            $sale = $document->getSale();
-        }
-
-        if ($sale && ($method = $sale->getPaymentMethod())) {
-            $translation = $method->translate($locale);
-
-            if (!empty($footer = $translation->getFooter())) {
-                return $footer;
-            }
-        }
-
-        return $this->settings->getParameter('commerce.invoice_footer', $locale);
     }
 }

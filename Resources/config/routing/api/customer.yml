@@ -1,0 +1,4 @@
+ekyna_commerce_api_customer_logo:
+    path: /{customerNumber}/logo
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\CustomerController::logo
+    methods: GET

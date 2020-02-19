@@ -79,7 +79,7 @@ class NotifyModelType extends ResourceFormType
             ])
             ->add('documentTypes', Type\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.notify_model.field.document_types',
-                'choices'  => DocumentTypes::getChoices(),
+                'choices'  => DocumentTypes::getSaleChoices(),
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
@@ -109,7 +109,7 @@ class NotifyModelType extends ResourceFormType
             /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
             $model = $event->getData();
 
-            /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModelTranslation $translation */
+            /** @var NotifyModelTranslation $translation */
             foreach ($model->getTranslations() as $translation) {
                 if (empty($translation->getSubject()) && empty($translation->getMessage())) {
                     $model->removeTranslation($translation);

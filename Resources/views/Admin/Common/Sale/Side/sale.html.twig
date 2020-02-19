@@ -52,7 +52,7 @@
                 <td>{{ sale.refundedTotal|currency_quote(null, true) }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.field.balance'|trans }}</th>
+                <th>{{ 'ekyna_commerce.customer.button.balance'|trans }}</th>
                 <td>{{ (sale.invoiceTotal - sale.creditTotal - sale.paidTotal + sale.refundedTotal)|currency_quote(null, true) }}</td>
             </tr>
             <tr><th colspan="2">&nbsp;</th></tr>

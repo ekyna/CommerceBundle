@@ -12,7 +12,11 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
+use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
+use Ekyna\Bundle\CoreBundle\Form\Type\ColorPickerType;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
 use Ekyna\Component\Commerce\Features;
@@ -107,6 +111,32 @@ class CustomerType extends ResourceFormType
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
             ]);
+
+        if ($this->features->isEnabled(Features::CUSTOMER_GRAPHIC)) {
+            $builder
+                ->add('brandLogo', CustomerLogoType::class, [
+                    'required' => false,
+                ])
+                ->add('brandColor', ColorPickerType::class, [
+                    'label'    => 'ekyna_core.field.color',
+                    'required' => false,
+                ])
+                ->add('brandUrl', Type\UrlType::class, [
+                    'label'    => 'ekyna_core.field.url',
+                    'required' => false,
+                ])
+                ->add('documentFooter', TinymceType::class, [
+                    'label'    => 'ekyna_commerce.sale.field.document_footer',
+                    'theme'    => 'simple',
+                    'required' => false,
+                ])
+                ->add('documentTypes', ConstantChoiceType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.document_types',
+                    'class'    => DocumentTypes::class,
+                    'multiple' => true,
+                    'required' => false,
+                ]);
+        }
 
         if ($this->features->isEnabled(Features::BIRTHDAY)) {
             $builder->add('birthday', Type\DateTimeType::class, [

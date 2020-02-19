@@ -78,7 +78,7 @@
                     </a>
                     {%- endif %}
                     {# Bill document #}
-                    <a href="{{ admin_resource_path(shipment, 'render', {'type': 'bill'}) }}"
+                    <a href="{{ admin_resource_path(shipment, 'render', {'type': constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_SHIPMENT_BILL')}) }}"
                        id="{{ shipmentId }}_render"
                        class="btn btn-primary btn-xs"
                        title="{{ ('ekyna_commerce.document.type.' ~ (shipment.return ? 'return' : 'shipment') ~ '_bill')|trans }}"
@@ -88,7 +88,7 @@
                     {% if not shipment.sale.released %}
                     {# Form document #}
                     {%- if not shipment.return -%}
-                    <a href="{{ admin_resource_path(shipment, 'render', {'type': 'form'}) }}"
+                    <a href="{{ admin_resource_path(shipment, 'render', {'type': constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_SHIPMENT_FORM')}) }}"
                        id="{{ shipmentId }}_render"
                        class="btn btn-primary btn-xs"
                        title="{{ 'ekyna_commerce.document.type.shipment_form'|trans }}"

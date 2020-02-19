@@ -72,8 +72,8 @@
             </a>
         </li>
         <li>
-            <a href="#quote-informations" id="toggle-informations" data-toggle="tab">
-                {{ 'ekyna_core.field.informations'|trans }}
+            <a href="#quote-information" id="toggle-information" data-toggle="tab">
+                {{ 'ekyna_core.field.information'|trans }}
             </a>
         </li>
         {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
@@ -186,8 +186,8 @@
                     'attachments': quote.attachments
                 } %}
             </div>
-            <div class="tab-pane" id="quote-informations">
-                {% include '@EkynaCommerce/Admin/Common/Sale/show_informations.html.twig' with {'sale': quote} %}
+            <div class="tab-pane" id="quote-information">
+                {% include '@EkynaCommerce/Admin/Common/Sale/show_information.html.twig' with {'sale': quote} %}
                 <h4 class="sub-header">
                     {{- 'ekyna_commerce.notification.label.plural'|trans -}}
                 </h4>

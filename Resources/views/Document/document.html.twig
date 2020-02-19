@@ -117,7 +117,7 @@
         {% set baseTotal = baseTotal + row.base %}
         <tr{% if row.virtual %} class="virtual"{% endif %}>
             <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
-                {%- if row.url is not empty -%}
+                {%- if design.addLinks and row.url is not empty -%}
                     <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
                 {%- else -%}
                     <span title="{{ row.designation }}">{{ row.designation -}}</span>

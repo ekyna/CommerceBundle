@@ -17,6 +17,12 @@
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
         </service>
 
+        <!-- API customer controller -->
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Api\CustomerController">
+            <argument type="service" id="ekyna_commerce.customer.repository" />
+            <argument type="service" id="local_commerce_filesystem" />
+        </service>
+
         <!-- API pricing controller -->
         <service id="Ekyna\Bundle\CommerceBundle\Controller\Api\PricingController">
             <argument type="service" id="ekyna_commerce.pricing.api" />

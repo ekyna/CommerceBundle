@@ -127,6 +127,10 @@ class InvoiceExtension extends AbstractExtension
             $notices[] = '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';
         }
 
+        if ($invoice->isCredit()) {
+            return $notices;
+        }
+
         if ($method = $sale->getPaymentMethod()) {
             $translation = $method->translate($locale);
 

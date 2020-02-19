@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
@@ -9,8 +10,8 @@ use Ekyna\Component\Commerce\Cart;
 use Ekyna\Component\Commerce\Customer;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order;
-use Ekyna\Component\Commerce\Quote;
 use Ekyna\Component\Commerce\Pricing\Api;
+use Ekyna\Component\Commerce\Quote;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -94,6 +95,12 @@ class EkynaCommerceExtension extends AbstractExtension
     private function configureDocument(array $config, ContainerBuilder $container)
     {
         $container
+            ->getDefinition(DocumentHelper::class)
+            ->replaceArgument(4, array_replace([
+                'logo_path' => '%ekyna_commerce.default.company_logo%',
+            ], $config));
+
+        $container
             ->getDefinition(DocumentPageBuilder::class)
             ->replaceArgument(2, $config);
 
@@ -101,7 +108,6 @@ class EkynaCommerceExtension extends AbstractExtension
             ->getDefinition('ekyna_commerce.document.renderer_factory')
             ->replaceArgument(3, [
                 'shipment_remaining_date' => $config['shipment_remaining_date'],
-                'logo_path'               => '%ekyna_commerce.default.company_logo%',
                 'debug'                   => '%kernel.debug%',
             ]);
     }

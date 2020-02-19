@@ -7,6 +7,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Transformer\ShipmentAddressTransform
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\Address;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentAddress;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -42,7 +43,7 @@ class ShipmentAddressType extends AbstractType
     public function __construct(ShipmentAddressTransformer $transformer, ValidatorInterface $validator)
     {
         $this->transformer = $transformer;
-        $this->validator = $validator;
+        $this->validator   = $validator;
     }
 
     /**
@@ -50,6 +51,13 @@ class ShipmentAddressType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($options['admin_mode']) {
+            $builder->add('information', TextareaType::class, [
+                'label'    => 'ekyna_core.field.information',
+                'required' => false,
+            ]);
+        }
+
         $builder->addModelTransformer($this->transformer);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {

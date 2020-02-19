@@ -642,6 +642,8 @@ ekyna_commerce:
             loyalty_points: Loyalty points
             loyalty_logs: Loyalty logs
             loyalty_origin: Reason
+            graphics: Design
+            document_types: Use for
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Accountable&nbsp;service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Sales&nbsp;manager
@@ -659,7 +661,7 @@ ekyna_commerce:
                 subject: Potential fraudster detected
                 message: >
                     Customer {identity} has been detected as a potential fraudster during cart payment.<br>
-                    His statut as been set as "Frandster" and he can no longer use online payment methods.<br>
+                    His status as been set as "Fraudster" and he can no longer use online payment methods.
         message:
             create_user: >
                 You are about to create a user for the customer <strong>{identity}</strong>.

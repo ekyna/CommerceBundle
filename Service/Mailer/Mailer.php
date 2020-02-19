@@ -5,13 +5,12 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerFactory;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
+use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Document\ShipmentRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer as ShipmentLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer as SubjectLabelRenderer;
 use Ekyna\Bundle\CoreBundle\Service\SwiftMailer\ImapCopyPlugin;
@@ -20,6 +19,7 @@ use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
@@ -411,7 +411,7 @@ class Mailer
 
         // Shipments
         foreach ($notify->getShipments() as $shipment) {
-            $renderer = $this->rendererFactory->createRenderer($shipment, ShipmentRenderer::TYPE_BILL);
+            $renderer = $this->rendererFactory->createRenderer($shipment, CDocumentTypes::TYPE_SHIPMENT_BILL);
             $content = $renderer->render(RendererInterface::FORMAT_PDF);
             $filename = $renderer->getFilename() . '.pdf';
 
@@ -454,7 +454,7 @@ class Mailer
                 if ($source instanceof SupplierOrderInterface) {
                     $attachments[$filename] = $this->translator->trans(SupplierOrderAttachmentTypes::getLabel($type));
                 } else {
-                    $attachments[$filename] = $this->translator->trans(DocumentTypes::getLabel($type));
+                    $attachments[$filename] = $this->translator->trans(BDocumentTypes::getLabel($type));
                 }
             } else {
                 $attachments[$filename] = $attachment->getTitle();

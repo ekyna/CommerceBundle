@@ -154,6 +154,17 @@ table.header {
             padding: 5px 8px;
             line-height: 18px;
             vertical-align: top;
+
+            &.address {
+                padding-top: 10px;
+
+                hr {
+                    border: none;
+                    border-top: 1px dotted @border-color;
+                    padding:0;
+                    margin: 5px 0;
+                }
+            }
         }
 
         &.spacer {
@@ -167,13 +178,6 @@ table.header {
             > tr:nth-child(even) > td {
                 background: @background-alt-color;
             }
-        }
-
-        &.address {
-            width: 42%;
-            max-width: 42%;
-            padding-top: 10px;
-            line-height: 20px;
         }
 
         &.totals {
@@ -300,7 +304,7 @@ table.header {
         page-break-inside: avoid;
     }
 
-    hr {
+    body > hr, .wrapper > hr {
         display: none;
     }
 }

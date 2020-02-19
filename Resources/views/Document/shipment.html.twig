@@ -8,7 +8,11 @@
 {% block doc_title_content -%}
 {% spaceless %}
     <h1>
-        {{- ('ekyna_commerce.document.type.' ~ (subject.return ? 'return' : 'shipment') ~ '_' ~ type)|trans }}
+        {% if subject.return -%}
+            {{- 'ekyna_commerce.document.type.return_bill'|trans }}
+        {%- else -%}
+            {{- 'ekyna_commerce.document.type.shipment_bill'|trans }}
+        {%- endif %}
         {{ subject.number -}}
     </h1>
     <p>
@@ -25,7 +29,10 @@
             <strong>{{ subject.sale.voucherNumber }}</strong>.
         {%- endif %}
     </p>
-    {% endspaceless %}
+    {% if subject.sale.documentComment is not empty -%}
+        <p>{{ subject.sale.documentComment|nl2br }}</p>
+    {%- endif %}
+{% endspaceless %}
 {%- endblock doc_title_content %}
 
 
@@ -90,7 +97,7 @@
         {% for row in page -%}
             <tr{% if row.virtual %} class="virtual"{% endif %}{% if row.private %} style="color:#666"{% endif %}>
                 <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
-                    {%- if row.url is not empty -%}
+                    {%- if design.addLinks and row.url is not empty -%}
                         <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
                     {%- else -%}
                         <span title="{{ row.designation }}">{{ row.designation -}}</span>
@@ -111,7 +118,7 @@
         </tbody>
     </table>
 
-{% if type == 'bill' and not subject.return %}
+{% if type == constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_SHIPMENT_BILL') and not subject.return %}
     {% set remaining = subject|shipment_remaining_pages %}
     {% if remaining is not empty %}
     <hr>
@@ -144,7 +151,7 @@
         {% for row in page -%}
         <tr{% if row.virtual %} class="virtual"{% endif %}{% if row.private %} style="color:#666"{% endif %}>
             <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
-                {%- if row.url is not empty -%}
+                {%- if design.addLinks and row.url is not empty -%}
                     <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
                 {%- else -%}
                     <span title="{{ row.designation }}">{{ row.designation -}}</span>

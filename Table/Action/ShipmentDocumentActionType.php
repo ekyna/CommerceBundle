@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
@@ -79,6 +80,6 @@ class ShipmentDocumentActionType extends AbstractActionType
     {
         $resolver
             ->setRequired('type')
-            ->setAllowedValues('type', ['form', 'bill']);
+            ->setAllowedValues('type', DocumentTypes::getShipmentTypes());
     }
 }

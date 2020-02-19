@@ -1,11 +1,27 @@
 {% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
-{% set locale = subject.locale %}
+{% set design = subject|document_design(type|default(null)) %}
+{% set locale = design.locale %}
+
+
+{# --- PRE --- #}
+{% block doc_styles -%}
+<style type="text/css">
+{%- if design.primaryColor is not empty -%}
+h1, h2, .table thead th, .table tbody.totals th, .table.details tr > td.designation > a { color: {{ design.primaryColor }}; }
+{%- endif -%}
+{%- if design.secondaryColor is not empty -%}
+table.header, .footer, .table thead th, .table thead th:before, .table thead th:after, .table.details tr:last-child td { border-color: {{ design.secondaryColor }}; }
+{%- endif -%}
+</style>
+{%- endblock doc_styles %}
+
 
 {# --- PRE --- #}
 {% block doc_pre -%}
     {% do trans_set_locale(locale) %}
 {%- endblock doc_pre %}
+
 
 {# --- HEADER --- #}
 {% block doc_header -%}
@@ -13,9 +29,9 @@
     <tr>
         <td class="logo">
             {%- block logo -%}
-                <a href="{{ absolute_url('/') }}">
-                    <img alt="{{ get_setting('general.site_name') }}" src="{{ absolute_url(asset(logo_path)) }}">
-                </a>
+            {% if design.logoLink %}<a href="{{ absolute_url(design.logoLink) }}">{% endif %}
+                <img alt="{{ design.brandName }}" src="{{ absolute_url(design.logoPath) }}">
+            {% if design.logoLink %}</a>{% endif %}
             {%- endblock logo -%}
         </td>
         <td class="blank">
@@ -23,7 +39,11 @@
         </td>
         <td class="address">
             {%- block company -%}
-                {{ macro.render_company(locale) }}
+                {% if design.headerHtml is not empty %}
+                    {{ design.headerHtml|raw }}
+                {% else %}
+                    {{ macro.render_company(locale) }}
+                {% endif %}
             {%- endblock company -%}
         </td>
     </tr>
@@ -98,7 +118,7 @@
 {% block doc_footer -%}
 <div class="bloc footer">
     {% block doc_footer_content -%}
-        {{ subject|document_footer }}
+        {{ design.footerHtml|raw }}
     {%- endblock doc_footer_content %}
 </div>
 {%- endblock doc_footer %}

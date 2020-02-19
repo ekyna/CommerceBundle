@@ -14,22 +14,37 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
  */
 final class DocumentTypes extends AbstractConstants
 {
+    private const LABEL_PREFIX = 'ekyna_commerce.document.type.';
+
+
     /**
      * @inheritDoc
      */
-    static public function getConfig(): array
+    public static function getConfig(): array
     {
-        $document = 'ekyna_commerce.document.type.';
-
         return [
-            Types::TYPE_FORM         => [$document . Types::TYPE_FORM,         'default', CartInterface::class],
-            Types::TYPE_VOUCHER      => [$document . Types::TYPE_VOUCHER,      'default', QuoteInterface::class],
-            Types::TYPE_QUOTE        => [$document . Types::TYPE_QUOTE,        'default', QuoteInterface::class],
-            Types::TYPE_PROFORMA     => [$document . Types::TYPE_PROFORMA,     'default', OrderInterface::class],
-            Types::TYPE_CONFIRMATION => [$document . Types::TYPE_CONFIRMATION, 'default', OrderInterface::class],
-            Types::TYPE_INVOICE      => [$document . Types::TYPE_INVOICE,      'success', OrderInterface::class],
-            Types::TYPE_CREDIT       => [$document . Types::TYPE_CREDIT,       'warning', OrderInterface::class],
+            Types::TYPE_FORM          => [self::LABEL_PREFIX . Types::TYPE_FORM, 'default', CartInterface::class],
+            Types::TYPE_VOUCHER       => [self::LABEL_PREFIX . Types::TYPE_VOUCHER, 'default', QuoteInterface::class],
+            Types::TYPE_QUOTE         => [self::LABEL_PREFIX . Types::TYPE_QUOTE, 'default', QuoteInterface::class],
+            Types::TYPE_PROFORMA      => [self::LABEL_PREFIX . Types::TYPE_PROFORMA, 'default', OrderInterface::class],
+            Types::TYPE_CONFIRMATION  => [self::LABEL_PREFIX . Types::TYPE_CONFIRMATION, 'default', OrderInterface::class],
+
+            Types::TYPE_INVOICE       => [self::LABEL_PREFIX . Types::TYPE_INVOICE, 'success', OrderInterface::class],
+            Types::TYPE_CREDIT        => [self::LABEL_PREFIX . Types::TYPE_CREDIT, 'warning', OrderInterface::class],
+
+            Types::TYPE_SHIPMENT_FORM => [self::LABEL_PREFIX . Types::TYPE_SHIPMENT_FORM, 'default', OrderInterface::class],
+            Types::TYPE_SHIPMENT_BILL => [self::LABEL_PREFIX . Types::TYPE_SHIPMENT_BILL, 'default', OrderInterface::class],
         ];
+    }
+
+    /**
+     * Returns the invoice types choices.
+     *
+     * @return array
+     */
+    public static function getSaleChoices(): array
+    {
+        return self::getChoices(Types::getSaleTypes(), self::FILTER_RESTRICT);
     }
 
     /**
@@ -39,9 +54,16 @@ final class DocumentTypes extends AbstractConstants
      */
     public static function getInvoiceChoices(): array
     {
-        return [
-            'ekyna_commerce.document.type.' . Types::TYPE_INVOICE => Types::TYPE_INVOICE,
-            'ekyna_commerce.document.type.' . Types::TYPE_CREDIT  => Types::TYPE_CREDIT,
-        ];
+        return self::getChoices(Types::getInvoiceTypes(), self::FILTER_RESTRICT);
+    }
+
+    /**
+     * Returns the shipment types choices.
+     *
+     * @return array
+     */
+    public static function getShipmentChoices(): array
+    {
+        return self::getChoices(Types::getShipmentTypes(), self::FILTER_RESTRICT);
     }
 }

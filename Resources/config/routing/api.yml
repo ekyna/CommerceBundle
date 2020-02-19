@@ -1,3 +1,7 @@
+ekyna_commerce_api_customer:
+    resource: "api/customer.yml"
+    prefix: /customer
+
 ekyna_commerce_api_pricing:
     resource: "api/pricing.yml"
     prefix: /pricing

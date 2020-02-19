@@ -72,7 +72,7 @@ ekyna_commerce_order_shipment_admin_render:
     requirements:
         orderId: \d+
         orderShipmentId: \d+
-        type: form|bill
+        type: shipment_form|shipment_bill
         _format: html|pdf|jpg
 
 ekyna_commerce_order_shipment_admin_summary:

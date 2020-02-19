@@ -132,7 +132,7 @@ ekyna_commerce_admin_order_list_shipment_document:
     defaults:
         _format: pdf
     requirements:
-        type: form|bill
+        type: shipment_form|shipment_bill
         _format: pdf|html|jpg
 
 ekyna_commerce_admin_order_list_shipment_platform:

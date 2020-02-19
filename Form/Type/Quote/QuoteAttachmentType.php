@@ -25,7 +25,7 @@ class QuoteAttachmentType extends AttachmentType
         if ($options['admin_mode']) {
             $builder->add('type', ChoiceType::class, [
                 'label'    => 'ekyna_core.field.type',
-                'choices'  => BTypes::getChoices([CTypes::TYPE_VOUCHER], 1),
+                'choices'  => BTypes::getChoices([CTypes::TYPE_VOUCHER], BTypes::FILTER_RESTRICT),
                 'required' => false,
             ]);
         }

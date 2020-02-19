@@ -58,7 +58,6 @@ class RendererFactory
 
         $this->config = array_replace([
             'shipment_remaining_date' => true,
-            'logo_path'               => null,
             'debug'                   => false,
         ], $config);
     }

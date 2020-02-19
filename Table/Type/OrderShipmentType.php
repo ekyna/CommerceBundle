@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\CommerceBundle\Table\Action;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -163,11 +164,11 @@ class OrderShipmentType extends AbstractOrderListType
             ->addAction('remove', Action\ShipmentRemoveActionType::class)
             ->addAction('bills', Action\ShipmentDocumentActionType::class, [
                 'label' => 'ekyna_commerce.shipment.action.bills',
-                'type'  => 'bill',
+                'type'  => DocumentTypes::TYPE_SHIPMENT_BILL,
             ])
             ->addAction('forms', Action\ShipmentDocumentActionType::class, [
                 'label' => 'ekyna_commerce.shipment.action.forms',
-                'type'  => 'form',
+                'type'  => DocumentTypes::TYPE_SHIPMENT_FORM,
             ]);
     }
 }

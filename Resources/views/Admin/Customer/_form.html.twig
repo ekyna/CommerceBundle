@@ -5,6 +5,18 @@
             {{ 'ekyna_core.field.general'|trans }}
         </a>
     </li>
+    <li>
+        <a href="#customer-config" id="toggle-config" data-toggle="tab">
+            {{ 'ekyna_core.field.config'|trans }}
+        </a>
+    </li>
+    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
+    <li>
+        <a href="#customer-graphics" id="toggle-graphics" data-toggle="tab">
+            {{ 'ekyna_commerce.customer.field.graphics'|trans }}
+        </a>
+    </li>
+    {%- endif %}
 </ul>
 <div class="panel-body form-body">
     {{ bootstrap_set_style('horizontal') }}
@@ -23,23 +35,21 @@
                     {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {% if form.birthday is defined or form.newsletter is defined %}
             <div class="row">
-                {% if form.birthday is defined %}
-                    <div class="col-md-6">
-                        {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
-                {% endif %}
-                {% if form.newsletter is defined %}
-                    <div class="col-md-6">
-                        {{ form_row(form.newsletter, {'label_col': 4, 'widget_col': 8}) }}
-                    </div>
-                {% endif %}
+                {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
+                <div class="col-md-6">
+                    {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                {%- endif %}
+                {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
+                <div class="col-md-6">
+                    {{ form_row(form.newsletter, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                {%- endif %}
             </div>
-            {% endif %}
-
             {{ form_row(form.description) }}
-            <hr>
+        </div>
+        <div class="tab-pane" id="customer-config">
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.user, {'label_col': 4, 'widget_col': 8}) }}
@@ -99,6 +109,21 @@
             </div>
             {{ form_row(form.paymentMethods) }}
         </div>
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
+        <div class="tab-pane" id="customer-graphics">
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.brandLogo, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.brandColor, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            {{ form_row(form.brandUrl) }}
+            {{ form_row(form.documentFooter) }}
+            {{ form_row(form.documentTypes) }}
+        </div>
+        {%- endif %}
     </div>
     {{ form_rest(form) }}
 </div>

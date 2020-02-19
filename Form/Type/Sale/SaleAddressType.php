@@ -51,8 +51,8 @@ class SaleAddressType extends AbstractType
         ResourceRepositoryInterface $customerRepository,
         CustomerAddressRepositoryInterface $customerAddressRepository
     ) {
-        $this->serializer = $serializer;
-        $this->customerRepository = $customerRepository;
+        $this->serializer                = $serializer;
+        $this->customerRepository        = $customerRepository;
         $this->customerAddressRepository = $customerAddressRepository;
     }
 
@@ -62,10 +62,10 @@ class SaleAddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $propertyPath = 'invoiceAddress';
-        $required = true;
+        $required     = true;
 
         if ($options['delivery']) {
-            $required = false;
+            $required     = false;
             $propertyPath = 'deliveryAddress';
 
             $builder->add('sameAddress', Type\CheckboxType::class, [
@@ -105,6 +105,13 @@ class SaleAddressType extends AbstractType
             $customer = $sale->getCustomer();
             if (!$options['customer_field'] && !$customer) {
                 return;
+            }
+
+            if ($options['admin_mode'] || ($customer && $customer->getCustomerGroup()->isBusiness())) {
+                $form->get('address')->add('information', Type\TextareaType::class, [
+                    'label'    => 'ekyna_core.field.information',
+                    'required' => false,
+                ]);
             }
 
             $this->buildChoiceField($form, $customer);
@@ -178,8 +185,8 @@ class SaleAddressType extends AbstractType
                     $choices[(string)$address] = $address->getId();
                 }
 
-                $choiceOptions['disabled'] = false;
-                $choiceOptions['choices'] = $choices;
+                $choiceOptions['disabled']    = false;
+                $choiceOptions['choices']     = $choices;
                 $choiceOptions['choice_attr'] = function ($val) use ($addresses) {
                     if (!isset($addresses[$val])) {
                         return [];
@@ -204,7 +211,7 @@ class SaleAddressType extends AbstractType
     {
         if (0 < strlen($options['customer_field'])) {
             $view->vars['attr']['data-customer-field'] = $view->parent->vars['id'] . '_' . $options['customer_field'];
-            $view->vars['attr']['data-mode'] = $options['delivery'] ? 'delivery' : 'invoice';
+            $view->vars['attr']['data-mode']           = $options['delivery'] ? 'delivery' : 'invoice';
         }
 
         /** @var SaleInterface $sale */
@@ -225,7 +232,7 @@ class SaleAddressType extends AbstractType
                 'address_type'   => null,
                 'customer_field' => null,
             ])
-            ->setAllowedTypes('address_type', 'string')// TODO validate
+            ->setAllowedTypes('address_type', 'string')
             ->setAllowedTypes('customer_field', ['null', 'string']);
     }
 

@@ -644,6 +644,8 @@ ekyna_commerce:
             loyalty_points: Points de fidélité
             loyalty_logs: Historique fidélité
             loyalty_origin: Raison
+            graphics: Design
+            document_types: Utiliser pour
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
@@ -662,7 +664,7 @@ ekyna_commerce:
                 subject: Potientiel fraudeur détecté
                 message: >
                     Le client {identity} a été détecté comme fraudeur potentiel lors du paiement de son panier.<br>
-                    Son statut à été défini à "Fraudeur" et il n'a plus accès au réglement en ligne.<br>
+                    Son statut à été défini à "Fraudeur" et il n'a plus accès au réglement en ligne.
         message:
             create_user: >
                 Un utilisateur va être généré pour le client <strong>{identity}</strong>.

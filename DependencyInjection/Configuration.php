@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
+use Ekyna\Bundle\CommerceBundle\Model\DocumentDesign;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes;
@@ -169,6 +170,9 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('document')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->scalarNode('design_class')->defaultValue(DocumentDesign::class)->end()
+                        ->scalarNode('primary_color')->defaultValue('#999999')->end()
+                        ->scalarNode('secondary_color')->defaultValue('#dddddd')->end()
                         ->integerNode('row_height')->defaultValue(27)->end()
                         ->integerNode('row_desc_height')->defaultValue(47)->end()
                         ->integerNode('page_height')->defaultValue(1399)->end()
@@ -277,6 +281,9 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                         ->arrayNode(Features::SUPPORT)
+                            ->canBeEnabled()
+                        ->end()
+                        ->arrayNode(Features::CUSTOMER_GRAPHIC)
                             ->canBeEnabled()
                         ->end()
                     ->end()

@@ -32,15 +32,20 @@ class AddressRenderer
      * Renders the address.
      *
      * @param AddressInterface $address
-     * @param bool             $displayPhones
+     * @param array            $config
      *
      * @return string
      */
-    public function renderAddress(AddressInterface $address, $displayPhones = true)
+    public function renderAddress(AddressInterface $address, array $config = [])
     {
+        $config = array_replace([
+            'display_phones' => true,
+            'locale'         => null,
+        ], $config);
+
         return $this->templating->render('@EkynaCommerce/Show/address.html.twig', [
-            'address'        => $address,
-            'display_phones' => $displayPhones,
+            'address' => $address,
+            'config'  => $config,
         ]);
     }
 }
