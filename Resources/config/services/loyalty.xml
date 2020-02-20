@@ -57,11 +57,6 @@
             <tag name="console.command"/>
         </service>
 
-        <!-- Loyalty twig extension -->
-        <service id="Ekyna\Bundle\CommerceBundle\Twig\LoyaltyExtension" public="false">
-            <tag name="twig.extension"/>
-        </service>
-
     </services>
 
 </container>

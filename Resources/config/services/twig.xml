@@ -42,6 +42,16 @@
             <tag name="twig.extension"/>
         </service>
 
+        <!-- Loyalty twig extension -->
+        <service id="Ekyna\Bundle\CommerceBundle\Twig\LoyaltyExtension" public="false">
+            <tag name="twig.extension"/>
+        </service>
+
+        <!-- Twig extension -->
+        <service id="Ekyna\Bundle\CommerceBundle\Twig\NewsletterExtension">
+            <tag name="twig.extension"/>
+        </service>
+
         <!-- Payment extension -->
         <service id="Ekyna\Bundle\CommerceBundle\Twig\PaymentExtension" public="false">
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
@@ -86,6 +96,13 @@
         <!-- Supplier extension -->
         <service id="Ekyna\Bundle\CommerceBundle\Twig\SupplierExtension" public="false">
             <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
+            <tag name="twig.extension"/>
+        </service>
+
+        <!-- Support extension -->
+        <service id="ekyna_commerce.twig.support_extension"
+                 class="Ekyna\Bundle\CommerceBundle\Twig\SupportExtension"
+                 public="false">
             <tag name="twig.extension"/>
         </service>
 

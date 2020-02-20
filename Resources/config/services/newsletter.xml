@@ -119,11 +119,6 @@
             <tag name="twig.runtime"/>
         </service>
 
-        <!-- Twig extension -->
-        <service id="Ekyna\Bundle\CommerceBundle\Twig\NewsletterExtension">
-            <tag name="twig.extension"/>
-        </service>
-
     </services>
 
 </container>
