@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 
@@ -29,6 +30,16 @@ class SupplierOrderRenderer extends AbstractRenderer
         $subject = reset($this->subjects);
 
         return 'supplier_order_' . $subject->getNumber();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getParameters()
+    {
+        return [
+            'type' => DocumentTypes::TYPE_SUPPLIER_ORDER,
+        ];
     }
 
     /**

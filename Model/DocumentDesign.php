@@ -59,6 +59,7 @@ class DocumentDesign
      */
     private $addLinks = true;
 
+
     /**
      * Returns the type.
      *
