@@ -44,6 +44,8 @@ ekyna_commerce:
         last_name_is_mandatory: Veuillez saisir le nom.
     message:
         already_exists: Un message existe déjà pour cette méthode et ce statut.
+    newsletter:
+        at_least_one_audience: Veuillez sélectionner au moins une liste de diffusion.
     payment:
         method:
             not_null: Veuillez choisir un mode de paiement.

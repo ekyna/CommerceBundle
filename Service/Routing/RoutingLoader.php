@@ -7,11 +7,11 @@ use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class AccountLoader
+ * Class RoutingLoader
  * @package Ekyna\Bundle\CommerceBundle\Service\Routing
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class AccountLoader extends Loader
+class RoutingLoader extends Loader
 {
     /**
      * @var Features
@@ -43,30 +43,40 @@ class AccountLoader extends Loader
             throw new \RuntimeException('Do not add the "commerce account" routes loader twice.');
         }
 
+        $this->loaded = true;
+
         $collection = new RouteCollection();
+
+        $accountCollection = new RouteCollection();
+        $accountCollection->addPrefix('/my-account');
 
         if ($this->features->isEnabled(Features::LOYALTY)) {
             $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/account/loyalty.yml', 'yaml');
             $routes->addPrefix('/loyalty');
 
-            $collection->addCollection($routes);
+            $accountCollection->addCollection($routes);
         }
 
         if ($this->features->isEnabled(Features::NEWSLETTER)) {
+            $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/newsletter.yml', 'yaml');
+            $routes->addPrefix('/newsletter');
+            $collection->addCollection($routes);
+
             $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/account/newsletter.yml', 'yaml');
             $routes->addPrefix('/newsletter');
-
-            $collection->addCollection($routes);
+            $accountCollection->addCollection($routes);
         }
 
         if ($this->features->isEnabled(Features::SUPPORT)) {
             $routes = $this->import('@EkynaCommerceBundle/Resources/config/routing/front/account/ticket.yml', 'yaml');
             $routes->addPrefix('/tickets');
 
-            $collection->addCollection($routes);
+            $accountCollection->addCollection($routes);
         }
 
-        $this->loaded = true;
+        if (0 < $accountCollection->count()) {
+            $collection->addCollection($accountCollection);
+        }
 
         return $collection;
     }
@@ -76,6 +86,6 @@ class AccountLoader extends Loader
      */
     public function supports($resource, $type = null)
     {
-        return 'commerce_account' === $type;
+        return 'commerce_routing' === $type;
     }
 }

@@ -139,8 +139,7 @@
         </service>
 
         <!-- Routing loader -->
-        <service id="ekyna_commerce.routing.account_loader"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Routing\AccountLoader">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Routing\RoutingLoader" public="false">
             <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <tag name="routing.loader"/>
         </service>

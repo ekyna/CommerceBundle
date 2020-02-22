@@ -1,0 +1,40 @@
+{% extends '@EkynaCms/base.html.twig' %}
+
+{% block metas %}
+    {{ cms_metas() }}
+{% endblock %}
+
+{% block content %}
+    {{ cms_content() }}
+
+    <div class="container">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_label_col(3) }}
+        {{ bootstrap_set_widget_col(9) }}
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+            {{ form_row(form.email) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.firstName, {'label_col': 6, 'widget_col': 6}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.lastName, {'label_col': 6, 'widget_col': 6}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.birthday, {'label_col': 6, 'widget_col': 6}) }}
+                </div>
+            </div>
+            {{ form_row(form.audiences) }}
+            <div class="row">
+                <div class="col-md-9 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-check"></i>
+                        {{ 'ekyna_core.button.save'|trans }}
+                    </button>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

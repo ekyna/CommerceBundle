@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use Ekyna\Bundle\CommerceBundle\Event\RegistrationEvent;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
+use Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
 use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
 use FOS\UserBundle\Mailer\MailerInterface;
@@ -62,6 +63,11 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
      */
     private $session;
 
+    /**
+     * @var SubscriptionHelper
+     */
+    private $subscriptionHelper;
+
 
     /**
      * Constructor.
@@ -74,6 +80,7 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
      * @param UrlGeneratorInterface     $urlGenerator
      * @param TranslatorInterface       $translator
      * @param SessionInterface          $session
+     * @param SubscriptionHelper $subscriptionHelper
      */
     public function __construct(
         LocaleProviderInterface $localeProvider,
@@ -83,7 +90,8 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
         TokenGeneratorInterface $tokenGenerator,
         UrlGeneratorInterface $urlGenerator,
         TranslatorInterface $translator,
-        SessionInterface $session
+        SessionInterface $session,
+        SubscriptionHelper $subscriptionHelper = null
     ) {
         $this->localeProvider = $localeProvider;
         $this->currencyProvider = $currencyProvider;
@@ -93,6 +101,7 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
         $this->session = $session;
+        $this->subscriptionHelper = $subscriptionHelper;
     }
 
     /**
@@ -134,7 +143,17 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
      */
     public function onRegistrationCompleted(RegistrationEvent $event)
     {
-        $customer = $event->getRegistration()->getCustomer();
+        $registration = $event->getRegistration();
+        $customer = $registration->getCustomer();
+
+        if ($registration->isNewsletter() && $this->subscriptionHelper) {
+            // TODO Schedule subscription in a message bus
+            try {
+                $this->subscriptionHelper->subscribeCustomerToDefaultAudiences($customer);
+            } catch(\Exception $e) {
+                // Just fail silently
+            }
+        }
 
         $this->mailer->sendAdminCustomerRegistration($customer);
     }

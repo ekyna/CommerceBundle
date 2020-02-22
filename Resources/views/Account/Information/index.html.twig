@@ -34,8 +34,8 @@
         {{ macros.field('ekyna_core.field.email', customer.email, 3, 9) }}
         {{ macros.field('ekyna_core.field.identity', customer|identity, 3, 9) }}
 
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
         <div class="row">
-            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
             <div class="col-md-6">
                 {{- macros.field(
                     'ekyna_core.field.birthday',
@@ -43,17 +43,8 @@
                     6, 6
                 ) -}}
             </div>
-            {%- endif %}
-            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
-            <div class="col-md-6">
-                {{- macros.field(
-                    'ekyna_core.field.newsletter',
-                    (customer.newsletter ? 'ekyna_core.value.yes' : 'ekyna_core.value.no')|trans,
-                    6, 6
-                ) -}}
-            </div>
-            {%- endif %}
         </div>
+        {%- endif %}
 
         <div class="row">
             <div class="col-md-6">

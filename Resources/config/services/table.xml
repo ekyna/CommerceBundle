@@ -5,6 +5,14 @@
 
     <services>
 
+        <!-- Customer table type -->
+        <service id="ekyna_commerce.customer.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType"><!-- TODO use parameter defined by config builder -->
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
+            <argument>%ekyna_commerce.customer.class%</argument>
+            <tag name="table.type"/>
+        </service>
+
         <!-- Order payment table type -->
         <service id="ekyna_commerce.order_payment.table_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderPaymentType"><!-- TODO use parameter defined by config builder -->

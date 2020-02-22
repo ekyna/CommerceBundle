@@ -93,7 +93,7 @@ class AccountMenuSubscriber implements EventSubscriberInterface
 
         // Newsletter
         if ($this->features->isEnabled(Features::NEWSLETTER)) {
-            $menu->addChild('ekyna_commerce.account.newsletter.title', [
+            $menu->addChild('ekyna_commerce.newsletter.title', [
                 'route' => 'ekyna_commerce_account_newsletter_index',
             ]);
         }

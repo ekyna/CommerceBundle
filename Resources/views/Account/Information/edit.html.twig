@@ -18,6 +18,13 @@
 
         {{ form_row(form.email) }}
         {{ form_row(form.identity) }}
+        {%- if form.birthday is defined -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{- form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) -}}
+            </div>
+        </div>
+        {%- endif -%}
         <div class="row">
             <div class="col-md-6">
                 {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
@@ -42,9 +49,6 @@
                 {{ form_row(form.locale, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-
-        {% include "@EkynaCommerce/Account/Common/_form_marketing.html.twig" with {'form': form} only %}
-
         {{ bootstrap_set_sizing('md') }}
         {{ form_rest(form) }}
     </div>

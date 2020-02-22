@@ -161,8 +161,8 @@
                         }) }}
                     </div>
                 </div>
+                {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
                 <div class="row">
-                    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
                     <div class="col-md-6">
                         {{ show_row(customer.birthday, 'datetime', {
                             'label': 'ekyna_core.field.birthday',
@@ -171,19 +171,8 @@
                             'label_col': 4
                         }) }}
                     </div>
-                    {%- endif %}
-                    {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
-                    <div class="col-md-6">
-                        {{ show_row(customer.newsletter, 'boolean', {
-                            'label': 'ekyna_core.field.newsletter',
-                            'id': 'customer_newsletter',
-                            'color': true,
-                            'false_class': 'label label-default',
-                            'label_col': 4
-                        }) }}
-                    </div>
-                    {%- endif %}
                 </div>
+                {%- endif %}
                 {{ show_row(customer.description, 'textarea', {
                     'label': 'ekyna_commerce.field.description',
                     'id': 'customer_description'
@@ -550,7 +539,7 @@
             {%- endif %}
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
             <div class="tab-pane" id="customer-newsletter">
-                {{ newsletter_subscription({'customer': customer, 'public': false}) }}
+                {{ newsletter_customer_subscription({'customer': customer, 'public': false}) }}
             </div>
             {%- endif %}
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}

@@ -64,11 +64,10 @@ class RegistrationType extends AbstractType
         TokenStorageInterface $tokenStorage,
         Features $features,
         string $customerClass
-    )
-    {
-        $this->tokenStorage = $tokenStorage;
+    ) {
+        $this->tokenStorage  = $tokenStorage;
         $this->customerClass = $customerClass;
-        $this->features = $features;
+        $this->features      = $features;
     }
 
     /**
@@ -122,6 +121,16 @@ class RegistrationType extends AbstractType
                     ],
                 ],
             ]);
+
+        if ($this->features->isEnabled(Features::NEWSLETTER)) {
+            $builder->add('newsletter', Type\CheckboxType::class, [
+                'label'    => 'ekyna_commerce.account.registration.field.newsletter',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ]);
+        }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var Registration $registration */
@@ -273,15 +282,6 @@ class RegistrationType extends AbstractType
                 ],
             ]);
         }
-        if ($this->features->isEnabled(Features::NEWSLETTER)) {
-            $form->add('newsletter', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.account.marketing.newsletter',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ]);
-        }
 
         return $form;
     }
@@ -328,12 +328,12 @@ class RegistrationType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['user'] = null;
+        $view->vars['user']       = null;
         $view->vars['user_owner'] = null;
 
         /** @var Registration $registration */
         $registration = $form->getData();
-        $customer = $registration->getCustomer();
+        $customer     = $registration->getCustomer();
 
         if (null === $user = $customer->getUser()) {
             return;

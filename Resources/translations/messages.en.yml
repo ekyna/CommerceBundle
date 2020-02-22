@@ -199,13 +199,9 @@ ekyna_commerce:
                 invoice_name: Billing full name
                 invoice_email: Billing email
                 invoice_phone: Billing phone number
-                newsletter: I want to receive news et promotionnal offers
-        marketing:
-            engage: >
-                You wish to receive <strong>news</strong> about us and <strong>exclusive promotionnal offers</strong>?
-            newsletter: Subscribe
-        newsletter:
-            title: Newsletter
+                newsletter: I want to receive news and special offers by email
+        loyalty:
+            title: Loyalty points
         ticket:
             title: My tickets
             go_to_sale_details: >
@@ -803,6 +799,18 @@ ekyna_commerce:
         field:
             flash: Flash
             email: Email
+
+    newsletter:
+        title: Newsletter
+        audiences: Mailing lists
+        subscription:
+            title: Subscribe to our newsletter
+            content: To receive news and special offers !
+            success: You successfully subscribed to our newsletter
+        button:
+            subscribe: Subscribe
+            unsubscribe: Unsubscribe
+            more_options: More options
 
     notify:
         type:

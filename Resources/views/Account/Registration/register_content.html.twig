@@ -64,7 +64,13 @@
             </div>
         </div>
         {{ form_row(form.customer.identity) }}
-
+        {% if form.customer.birthday is defined -%}
+        <div class="row">
+            <div class="col-md-6">
+                {{- form_row(form.customer.birthday, {'label_col': 4, 'widget_col': 8}) -}}
+            </div>
+        </div>
+        {%- endif %}
         <div class="row">
             <div class="col-md-6">
                 {{ form_row(form.customer.phone, {'label_col': 4, 'widget_col': 8}) }}
@@ -81,7 +87,6 @@
                 {{ form_row(form.customer.locale, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-
         <div id="registration_invoiceContact">
             <div class="row">
                 <div class="col-md-10 col-md-push-2">
@@ -99,7 +104,6 @@
             </div>
         </div>
 
-
         <div class="row">
             <div class="col-md-10 col-md-push-2">
                 <h3>{{ 'ekyna_commerce.account.registration.invoice_address'|trans|raw }}</h3>
@@ -109,9 +113,12 @@
 
         <hr>
 
-        {% include "@EkynaCommerce/Account/Common/_form_marketing.html.twig" with {'form': form.customer} only %}
-
         {{ form_row(form.comment) }}
+
+        {% if form.newsletter is defined -%}
+            {{- form_row(form.newsletter) -}}
+        {%- endif %}
+
         <div class="row">
             <div class="col-md-6">
                 {{ form_row(form.captcha, {'label_col': 4, 'widget_col': 8}) }}

@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -22,6 +23,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CustomerType extends ResourceTableType
 {
+    /**
+     * @var Features
+     */
+    private $features;
+
+
+    /**
+     * Constructor.
+     *
+     * @param Features $features
+     * @param string $dataClass
+     */
+    public function __construct(Features $features, string $dataClass)
+    {
+        parent::__construct($dataClass);
+
+        $this->features = $features;
+    }
+
     /**
      * @inheritdoc
      */
@@ -93,14 +113,14 @@ class CustomerType extends ResourceTableType
                 'position' => 80,
             ])
             ->addColumn('inCharge', Type\Column\InChargeType::class, [
-                'position' => 90,
+                'position' => 100,
             ])
             ->addColumn('state', Type\Column\CustomerStateType::class, [
-                'position' => 100,
+                'position' => 110,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_core.field.created_at',
-                'position'    => 110,
+                'position'    => 120,
                 'time_format' => 'none',
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
@@ -123,6 +143,13 @@ class CustomerType extends ResourceTableType
                     ],
                 ],
             ]);
+
+        if ($this->features->isEnabled(Features::LOYALTY)) {
+            $builder->addColumn('loyaltyPoints', CType\Column\NumberType::class, [
+                'label'    => 'ekyna_commerce.customer.field.loyalty_points',
+                'position' => 90,
+            ]);
+        }
 
         if ($filters) {
             $builder

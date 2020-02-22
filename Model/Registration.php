@@ -37,6 +37,11 @@ class Registration
      */
     private $comment;
 
+    /**
+     * @var bool
+     */
+    private $newsletter = false;
+
 
     /**
      * Constructor.
@@ -53,7 +58,7 @@ class Registration
      *
      * @return CustomerInterface
      */
-    public function getCustomer()
+    public function getCustomer(): CustomerInterface
     {
         return $this->customer;
     }
@@ -65,7 +70,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setCustomer(CustomerInterface $customer)
+    public function setCustomer(CustomerInterface $customer): self
     {
         $this->customer = $customer;
 
@@ -75,9 +80,9 @@ class Registration
     /**
      * Returns the apply group.
      *
-     * @return CustomerGroupInterface
+     * @return CustomerGroupInterface|null
      */
-    public function getApplyGroup()
+    public function getApplyGroup(): ?CustomerGroupInterface
     {
         return $this->applyGroup;
     }
@@ -89,7 +94,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setApplyGroup(CustomerGroupInterface $group = null)
+    public function setApplyGroup(CustomerGroupInterface $group = null): self
     {
         $this->applyGroup = $group;
 
@@ -99,9 +104,9 @@ class Registration
     /**
      * Returns the invoice address.
      *
-     * @return CustomerAddressInterface
+     * @return CustomerAddressInterface|null
      */
-    public function getInvoiceAddress()
+    public function getInvoiceAddress(): ?CustomerAddressInterface
     {
         return $this->invoiceAddress;
     }
@@ -113,7 +118,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setInvoiceAddress(CustomerAddressInterface $invoiceAddress = null)
+    public function setInvoiceAddress(CustomerAddressInterface $invoiceAddress = null): self
     {
         $this->invoiceAddress = $invoiceAddress;
 
@@ -123,9 +128,9 @@ class Registration
     /**
      * Returns the invoice contact.
      *
-     * @return Contact
+     * @return Contact|null
      */
-    public function getInvoiceContact()
+    public function getInvoiceContact(): ?Contact
     {
         return $this->invoiceContact;
     }
@@ -137,7 +142,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setInvoiceContact(Contact $contact = null)
+    public function setInvoiceContact(Contact $contact = null): self
     {
         $this->invoiceContact = $contact;
 
@@ -147,9 +152,9 @@ class Registration
     /**
      * Returns the comment.
      *
-     * @return string
+     * @return string|null
      */
-    public function getComment()
+    public function getComment(): ?string
     {
         return $this->comment;
     }
@@ -161,9 +166,33 @@ class Registration
      *
      * @return Registration
      */
-    public function setComment($comment)
+    public function setComment(string $comment = null): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Returns the newsletter.
+     *
+     * @return bool
+     */
+    public function isNewsletter(): bool
+    {
+        return $this->newsletter;
+    }
+
+    /**
+     * Sets the newsletter.
+     *
+     * @param bool $newsletter
+     *
+     * @return Registration
+     */
+    public function setNewsletter(bool $newsletter): self
+    {
+        $this->newsletter = $newsletter;
 
         return $this;
     }

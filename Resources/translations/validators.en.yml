@@ -44,6 +44,8 @@ ekyna_commerce:
         last_name_is_mandatory: Please fill in the last name.
     message:
         already_exists: A message is already defined for this method an status.
+    newsletter:
+        at_least_one_audience: Please select at least one mailing list.
     payment:
         method:
             not_null: Please select a payment method.

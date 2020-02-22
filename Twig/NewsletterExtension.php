@@ -17,8 +17,13 @@ class NewsletterExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                'newsletter_subscription',
-                [SubscriptionHelper::class, 'render'],
+                'newsletter_customer_subscription',
+                [SubscriptionHelper::class, 'renderCustomerSubscription'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFunction(
+                'newsletter_quick_subscription',
+                [SubscriptionHelper::class, 'renderQuickSubscription'],
                 ['is_safe' => ['html']]
             ),
         ];

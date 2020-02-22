@@ -45,17 +45,25 @@
             <!-- Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\NewsletterGatewayRegistryPass -->
         </service>
 
+        <!-- Newsletter controller -->
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Front\NewsletterController">
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
         <!-- Subscription controller -->
         <service id="Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\SubscriptionController">
             <argument type="service" id="ekyna_commerce.customer.repository"/>
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper"/>
-            <tag name="controller.service_arguments"/><!-- TODO try to remove -->
+            <tag name="controller.service_arguments"/>
         </service>
 
         <!-- Webhook controller -->
         <service id="Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\WebhookController">
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Webhook\HandlerRegistry"/>
-            <tag name="controller.service_arguments"/><!-- TODO try to remove -->
+            <tag name="controller.service_arguments"/>
         </service>
 
         <!-- Audience updater -->
@@ -74,12 +82,14 @@
         </service>
         <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\MemberEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="ekyna_commerce.customer.repository"/>
+            <argument type="service" id="ekyna_resource.event_dispatcher"/>
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Listeners toggler -->
-        <service id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerToggler">
+        <service id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerGatewayToggler">
             <argument type="collection">
                 <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\AudienceEventSubscriber"/>
                 <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\MemberEventSubscriber"/>
@@ -90,6 +100,10 @@
         <service id="ekyna_commerce.audience.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\AudienceType">
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
+            <argument>%ekyna_commerce.audience.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <service id="Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\SubscriptionType">
             <argument>%ekyna_commerce.audience.class%</argument>
             <tag name="form.type"/>
         </service>
@@ -112,6 +126,8 @@
         <service id="Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper">
             <argument type="service" id="ekyna_commerce.audience.repository"/>
             <argument type="service" id="ekyna_commerce.member.repository"/>
+            <argument type="service" id="Symfony\Component\Form\FormFactoryInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
             <argument type="service" id="ekyna_resource.event_dispatcher"/>
             <argument type="service" id="Symfony\Component\Validator\Validator\ValidatorInterface"/>
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>

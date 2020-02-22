@@ -42,3 +42,6 @@ ekyna_commerce_account_invoice_download: /my-account/invoices/{number}/download.
 ekyna_commerce_account_loyalty_index: /my-account/loyalty
 ekyna_commerce_account_newsletter_index: /my-account/newsletter
 ekyna_commerce_account_ticket_index: /my-account/tickets
+
+ekyna_commerce_newsletter_subscription: /newsletter/subscription
+ekyna_commerce_newsletter_subscribed: /newsletter/subscribed

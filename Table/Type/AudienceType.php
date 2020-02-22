@@ -4,7 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Newsletter\Model\AudienceInterface;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
@@ -28,14 +30,22 @@ class AudienceType extends ResourceTableType
                 ],
             ])
             ->addColumn('public', CType\Column\BooleanType::class, [
-                'label'                 => 'ekyna_commerce.audience.field.public',
-                'route_name'            => 'ekyna_commerce_audience_admin_toggle',
-                'route_parameters'      => ['field' => 'public'],
-                'route_parameters_map'  => ['audienceId' => 'id'],
-                'true_class'            => 'label-primary',
-                'false_class'           => 'label-default',
-                'disable_property_path' => 'business',
-                'position'              => 20,
+                'label'                => 'ekyna_commerce.audience.field.public',
+                'route_name'           => 'ekyna_commerce_audience_admin_toggle',
+                'route_parameters'     => ['field' => 'public'],
+                'route_parameters_map' => ['audienceId' => 'id'],
+                'true_class'           => 'label-primary',
+                'false_class'          => 'label-default',
+                'position'             => 20,
+            ])
+            ->addColumn('default', CType\Column\BooleanType::class, [
+                'label'                => 'ekyna_core.field.default',
+                'route_name'           => 'ekyna_commerce_audience_admin_toggle',
+                'route_parameters'     => ['field' => 'default'],
+                'route_parameters_map' => ['audienceId' => 'id'],
+                'true_class'           => 'label-primary',
+                'false_class'          => 'label-default',
+                'position'             => 20,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
@@ -58,6 +68,12 @@ class AudienceType extends ResourceTableType
                             'audienceId' => 'id',
                         ],
                         'permission'           => 'delete',
+                        'disable'              => function (RowInterface $row) {
+                            /** @var AudienceInterface $audience */
+                            $audience = $row->getData();
+
+                            return $audience->isDefault();
+                        },
                     ],
                 ],
             ]);

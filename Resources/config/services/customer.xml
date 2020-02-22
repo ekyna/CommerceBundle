@@ -123,6 +123,7 @@
             <argument type="service" id="router"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="session"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper" on-invalid="null"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

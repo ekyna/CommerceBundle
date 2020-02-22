@@ -120,16 +120,6 @@ class InformationType extends AbstractType
             ]);
         }
 
-        if ($this->features->isEnabled(Features::NEWSLETTER)) {
-            $builder->add('newsletter', Type\CheckboxType::class, [
-                'label'    => 'ekyna_commerce.account.marketing.newsletter',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ]);
-        }
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
             $customer = $event->getData();

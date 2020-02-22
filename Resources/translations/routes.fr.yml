@@ -42,3 +42,6 @@ ekyna_commerce_account_invoice_download: /mon-compte/factures/{number}/telecharg
 ekyna_commerce_account_loyalty_index: /mon-compte/fidelite
 ekyna_commerce_account_newsletter_index: /mon-compte/newsletter
 ekyna_commerce_account_ticket_index: /mon-compte/tickets
+
+ekyna_commerce_newsletter_subscription: /newsletter/inscription
+ekyna_commerce_newsletter_subscribed: /newsletter/confirmation

@@ -2,8 +2,8 @@
 
 {% block account %}
 {% spaceless %}
-    <h3>{{ 'ekyna_commerce.account.newsletter.title'|trans|raw }}</h3>
+    <h3>{{ 'ekyna_commerce.newsletter.title'|trans|raw }}</h3>
     <hr>
-    {{ newsletter_subscription({'customer': customer}) }}
+    {{ newsletter_customer_subscription({'customer': customer}) }}
 {% endspaceless %}
 {% endblock account %}

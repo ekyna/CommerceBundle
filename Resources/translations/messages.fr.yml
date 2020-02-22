@@ -199,14 +199,7 @@ ekyna_commerce:
                 invoice_name: Contact facturation
                 invoice_email: Email facturation
                 invoice_phone: Téléphone facturation
-        marketing:
-            engage: >
-                Vous souhaitez vous tenir informé de notre <strong>actualité</strong> et
-                recevoir des <strong>offres promotionnelles exclusives</strong>, c'est par ici !
-            newsletter: Je m'abonne
-        newsletter:
-            title: Newsletter
-            subscriptions: Liste de diffusions
+                newsletter: Je souhaite recevoir des actualités et des offres par email
         loyalty:
             title: Mes points fidélité
         ticket:
@@ -832,6 +825,18 @@ ekyna_commerce:
         field:
             flash: Flash
             email: Email
+
+    newsletter:
+        title: Newsletter
+        audiences: Listes de diffusions
+        subscription:
+            title: Abonnez-vous à notre newsletter
+            content: Pour recevoir nos actualités et des offres spéciales !
+            success: Vous êtes bien inscris à notre newsletter
+        button:
+            subscribe: S'inscrire
+            unsubscribe: Se désinscrire
+            more_options: Plus d'options
 
     notify:
         type:

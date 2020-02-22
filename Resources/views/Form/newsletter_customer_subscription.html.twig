@@ -1,4 +1,4 @@
-<div id="newsletter-subscription" class="form-horizontal">
+<div id="newsletter-customer-subscription" class="form-horizontal">
     <div class="form-group">
         <label class="col-sm-3 control-label">{{ 'ekyna_core.field.email_address'|trans }}</label>
         <div class="col-sm-9">
@@ -12,7 +12,7 @@
     </div>
     <div class="form-group">
         <label for="email" class="col-sm-3 control-label">
-            {{ 'ekyna_commerce.account.newsletter.subscriptions'|trans }}
+            {{ 'ekyna_commerce.newsletter.audiences'|trans }}
         </label>
         <div class="col-sm-9">
             {% for audience in audiences -%}
@@ -28,7 +28,7 @@
     {# TODO Csrf protection #}
 </div>
 <script type="text/javascript">
-    require(['ekyna-commerce/newsletter-subscription'], function(Newsletter) {
-        Newsletter.init('#newsletter-subscription');
+    require(['ekyna-commerce/newsletter-customer-subscription'], function(Newsletter) {
+        Newsletter.init('#newsletter-customer-subscription');
     });
 </script>

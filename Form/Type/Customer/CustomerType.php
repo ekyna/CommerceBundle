@@ -149,16 +149,6 @@ class CustomerType extends ResourceFormType
             ]);
         }
 
-        if ($this->features->isEnabled(Features::NEWSLETTER)) {
-            $builder->add('newsletter', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.newsletter',
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ]);
-        }
-
         $formModifier = function (FormInterface $form, CustomerInterface $customer, $hasParent) {
             $form
                 ->add('companyNumber', Type\TextType::class, [

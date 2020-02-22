@@ -31,6 +31,3 @@ ekyna_commerce_account_payment_status:
     controller: Ekyna\Bundle\CommerceBundle\Controller\Account\PaymentController::status
     methods: GET
 
-ekyna_commerce_account_loader:
-    resource: .
-    type: commerce_account

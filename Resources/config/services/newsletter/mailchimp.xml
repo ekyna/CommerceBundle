@@ -23,7 +23,7 @@
             <argument type="service" id="Ekyna\Component\Commerce\Bridge\Mailchimp\Api"/>
             <argument type="service" id="ekyna_commerce.audience.repository"/>
             <argument type="service" id="ekyna_commerce.member.repository"/>
-            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerToggler"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerGatewayToggler"/>
             <argument type="service" id="ekyna_resource.event_dispatcher"/>
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
             <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
@@ -35,7 +35,7 @@
         <service id="Ekyna\Component\Commerce\Bridge\Mailchimp\Handler">
             <argument type="service" id="ekyna_commerce.audience.repository"/>
             <argument type="service" id="ekyna_commerce.member.repository"/>
-            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerToggler"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerGatewayToggler"/>
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Logger"/>
             <tag name="ekyna_commerce.newsletter_handler"/>

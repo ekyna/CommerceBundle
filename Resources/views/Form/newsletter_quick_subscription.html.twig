@@ -1,0 +1,39 @@
+{% apply spaceless %}
+<form id="newsletter-quick-subscription">
+    <p class="title">
+        {{- 'ekyna_commerce.newsletter.subscription.title'|trans|raw -}}
+    </p>
+    <p class="content">
+        {{- 'ekyna_commerce.newsletter.subscription.content'|trans|raw -}}
+    </p>
+    <p class="alert alert-success success" style="display:none">
+        {{- 'ekyna_commerce.newsletter.subscription.success'|trans|raw -}}
+    </p>
+    <div class="row">
+        <div class="col-sm-12">
+            <input type="email" class="form-control input-sm" id="email" name="email"
+                   placeholder="{{ 'ekyna_core.field.email_address'|trans }}" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <input type="hidden" name="key" value="{{ key }}">
+            {# TODO Csrf protection #}
+            <button type="submit" class="btn btn-primary btn-sm">
+                {{- 'ekyna_commerce.newsletter.button.subscribe'|trans -}}
+            </button>
+        </div>
+        <div class="col-sm-6">
+            <a class="btn btn-link btn-sm"
+               href="{{ path('ekyna_commerce_newsletter_subscription') }}">
+                {{- 'ekyna_commerce.newsletter.button.more_options'|trans -}}
+            </a>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    require(['ekyna-commerce/newsletter-quick-subscription'], function(Newsletter) {
+        Newsletter.init('#newsletter-quick-subscription');
+    });
+</script>
+{% endapply %}

@@ -35,18 +35,13 @@
                     {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
             <div class="row">
-                {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
                 <div class="col-md-6">
                     {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
-                {%- endif %}
-                {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
-                <div class="col-md-6">
-                    {{ form_row(form.newsletter, {'label_col': 4, 'widget_col': 8}) }}
-                </div>
-                {%- endif %}
             </div>
+            {%- endif %}
             {{ form_row(form.description) }}
         </div>
         <div class="tab-pane" id="customer-config">
