@@ -35,7 +35,7 @@ define([
                 $searchButton = $form.find('button.relay-point-search'),
                 $clearButton = $form.find('button.relay-point-clear'),
                 $method = $form.closest('form').find('.shipment-method, input[name="shipment[shipmentMethod]"]'),
-                $modalForm = null, $modalList = null, $modalButton = null, $selectSearchPoint = null,
+                $modalForm = null, $modalError = null, $modalList = null, $modalButton = null, $selectSearchPoint = null,
                 initial = $input.data('initial'), search = $input.data('search'),
                 support = false, gateway = false, platform = false,
                 dialog = null, queryTimeout = null, queryXhr = null,
@@ -69,6 +69,7 @@ define([
 
                 $modalList = dialog.getModalBody().find('.rp-list');
                 $modalForm = dialog.getModalBody().find('.rp-form');
+                $modalError = dialog.getModalBody().find('.rp-error');
                 $selectSearchPoint = dialog.getModalBody().find('.select-search-point');
                 $modalButton = dialog.getModalFooter().find('.btn-primary').prop('disabled', true);
 
@@ -278,6 +279,14 @@ define([
                     pointMarkers[i].setMap(null);
                 }
 
+                if (response.hasOwnProperty('error') && response.error) {
+                    $modalError.show().find('> div').html(response.error);
+                }
+
+                if (!response.hasOwnProperty('relay_points')) {
+                    return;
+                }
+
                 // Creates markers
                 pointMarkers = [];
                 $(response.relay_points).each(function (index, point) {
@@ -382,6 +391,8 @@ define([
             }
 
             function queryRelayPoints(data) {
+                $modalError.hide();
+
                 queryXhr = $.ajax({
                     url: Router.generate('ekyna_commerce_api_shipment_gateway_list_relay_points', {gateway: gateway}),
                     method: 'GET',

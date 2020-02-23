@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Api;
 
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
+use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Gateway\Model\Address;
 use Ekyna\Component\Commerce\Shipment\Gateway\RegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,11 +53,17 @@ class ShipmentGatewayController extends Controller
             ->setCity($request->query->get('city'));
             // TODO ->setCountry()
 
-        $response = $gateway->listRelayPoints($address, $weight);
-
-        $data = $this->get('serializer')->serialize([
-            'relay_points' => $response->getRelayPoints()
-        ], 'json', ['groups' => ['Default']]);
+        try {
+            $response = $gateway->listRelayPoints($address, $weight);
+            $data = $this->get('serializer')->serialize([
+                'relay_points' => $response->getRelayPoints()
+            ], 'json', ['groups' => ['Default']]);
+        } catch (ShipmentGatewayException $e) {
+            $data = json_encode([
+                'relay_points' => [],
+                'error'        => $e->getMessage(),
+            ]);
+        }
 
         return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
     }
