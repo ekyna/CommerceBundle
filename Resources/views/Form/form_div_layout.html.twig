@@ -93,7 +93,7 @@
 
 {%- block ekyna_commerce_adjustments_widget -%}
     {%- set attr = attr|merge({'class': 'ekyna-collection' }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -448,7 +448,7 @@
 
 {%- block ekyna_commerce_sale_items_widget -%}
     {%- set attr = attr|merge({'class': 'ekyna-collection' }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -802,7 +802,7 @@
 {%- block ekyna_commerce_shipment_prices_widget -%}
     {%- set class = attr.class|default('') -%}
     {%- set attr = attr|merge({'class': ('ekyna-collection ' ~ class)|trim }) -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -979,7 +979,7 @@
     {%- if errors|length > 0 -%}
         {%- set attr = attr|merge({'class': ('has-error ' ~ class)|trim }) -%}
     {%- endif -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}
@@ -1124,7 +1124,7 @@
     {%- if errors|length > 0 -%}
         {%- set attr = attr|merge({'class': ('has-error ' ~ class)|trim }) -%}
     {%- endif -%}
-    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('js')) ~ '"' -%}
+    {%- set delete_button_confirm = ' data-confirm="' ~ (form.vars.delete_button_confirm|trans|escape('html_attr')) ~ '"' -%}
 
     {# Prototype #}
     {%- if prototype is defined -%}

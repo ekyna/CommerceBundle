@@ -13,7 +13,7 @@
         <service id="ekyna_commerce.notify.recipient_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper">
             <argument type="service" id="ekyna_setting.manager"/>
-            <argument type="service" id="ekyna_admin.security.user_provider"/>
+            <argument type="service" id="Ekyna\Bundle\AdminBundle\Service\Security\UserProvider"/>
             <argument type="service" id="ekyna_admin.user.repository"/>
         </service>
 

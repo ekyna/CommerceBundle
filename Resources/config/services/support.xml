@@ -50,7 +50,7 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.ticket.number_generator"/>
             <call method="setUserProvider">
-                <argument type="service" id="ekyna_admin.security.user_provider"/>
+                <argument type="service" id="Ekyna\Bundle\AdminBundle\Service\Security\UserProvider"/>
             </call>
             <call method="setSettings">
                 <argument type="service" id="ekyna_setting.manager"/>

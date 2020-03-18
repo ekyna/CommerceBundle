@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
+use Ekyna\Bundle\AdminBundle\Menu\MenuBuilder;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,7 @@ class OrderListController extends Controller
         }
 
         $this->container
-            ->get('ekyna_admin.menu.builder')
+            ->get(MenuBuilder::class)
             ->breadcrumbAppend(
                 'ekyna_commerce.order_invoices_list',
                 $configuration->getResourceLabel(true),
@@ -102,7 +103,7 @@ class OrderListController extends Controller
         }
 
         $this->container
-            ->get('ekyna_admin.menu.builder')
+            ->get(MenuBuilder::class)
             ->breadcrumbAppend(
                 'ekyna_commerce.order_payments_list',
                 $configuration->getResourceLabel(true),
@@ -136,7 +137,7 @@ class OrderListController extends Controller
         }
 
         $this->container
-            ->get('ekyna_admin.menu.builder')
+            ->get(MenuBuilder::class)
             ->breadcrumbAppend(
                 'ekyna_commerce.order_shipments_list',
                 $configuration->getResourceLabel(true),

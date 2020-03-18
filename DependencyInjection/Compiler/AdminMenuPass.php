@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection\Compiler;
 
+use Ekyna\Bundle\AdminBundle\Menu\MenuPool;
 use Ekyna\Component\Commerce\Features;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -18,13 +19,13 @@ class AdminMenuPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('ekyna_admin.menu.pool')) {
+        if (!$container->hasDefinition(MenuPool::class)) {
             return;
         }
 
         $features = new Features($container->getParameter('ekyna_commerce.features'));
 
-        $pool = $container->getDefinition('ekyna_admin.menu.pool');
+        $pool = $container->getDefinition(MenuPool::class);
 
         $pool->addMethodCall('createGroup', [[
             'name'     => 'sales',

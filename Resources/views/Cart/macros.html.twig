@@ -70,7 +70,7 @@
             <td>
                 <a href="{{ path('ekyna_commerce_cart_attachment_remove', {'attachmentId': attachment.id}) }}"
                    title="{{ 'ekyna_commerce.checkout.button.attachment_remove'|trans }}"
-                   data-confirm="{{ 'ekyna_commerce.checkout.confirm.attachment_remove'|trans|escape('js') }}"
+                   data-confirm="{{ 'ekyna_commerce.checkout.confirm.attachment_remove'|trans|escape('html_attr') }}"
                    data-cart-xhr>
                     <i class="fa fa-remove text-danger"></i>
                 </a>

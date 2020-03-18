@@ -18,7 +18,7 @@
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Map\MapBuilder"/>
             <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
             <argument type="service" id="ekyna_commerce.customer.repository"/>
-            <argument type="service" id="ekyna_admin.menu.builder"/>
+            <argument type="service" id="Ekyna\Bundle\AdminBundle\Menu\MenuBuilder"/>
         </service>
 
     </services>
