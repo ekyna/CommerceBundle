@@ -65,17 +65,6 @@ class ExportType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $from = $this->invoiceRepository->findFirstInvoiceDate() ?? new \DateTime();
-        $to   = new \DateTime();
-
-        $years = $months = [];
-
-        $period = new \DatePeriod($from, new \DateInterval('P1Y'), $to);
-        /** @var \DateTime $date */
-        foreach ($period as $date) {
-            $years[$date->format('Y')] = $date->format('Y');
-        }
-
         $preferred = new \DateTime('-1 month');
 
         $builder
@@ -114,6 +103,7 @@ class ExportType extends AbstractType
         }
 
         $from = $this->invoiceRepository->findFirstInvoiceDate() ?? new \DateTime();
+        $from->modify('first day of january');
         $to   = new \DateTime();
 
         $choices = [];
