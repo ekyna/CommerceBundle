@@ -26,7 +26,7 @@
         {%- endif %}
     </p>
     {% if subject.comment is not empty -%}
-        <p>{{ subject.comment|nl2br }}</p>
+    <p>{{ subject.comment|nl2br }}</p>
     {%- endif %}
 {%- endblock doc_title_content %}
 
@@ -34,9 +34,5 @@
 {# --- DOC MISC --- #}
 {% block doc_misc -%}
     {{- macro.render_invoice_payments(subject) -}}
-    <div class="unbreakable">
-    {% for notice in subject|invoice_notices -%}
-        {{ notice|raw }}
-    {%- endfor %}
-    </div>
+    {{ parent() }}
 {%- endblock doc_misc %}

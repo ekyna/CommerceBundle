@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Menu\MenuBuilder;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,7 +76,7 @@ class OrderListController extends Controller
         }
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($invoices);
 
         return $renderer->respond($request);
@@ -169,7 +170,7 @@ class OrderListController extends Controller
         }
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($shipments, $request->attributes->get('type'));
 
         return $renderer->respond($request);

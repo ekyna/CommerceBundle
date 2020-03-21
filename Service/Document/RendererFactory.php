@@ -7,7 +7,6 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use Knp\Snappy\GeneratorInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -23,14 +22,9 @@ class RendererFactory
     protected $templating;
 
     /**
-     * @var GeneratorInterface
+     * @var PdfGenerator
      */
     protected $pdfGenerator;
-
-    /**
-     * @var GeneratorInterface
-     */
-    protected $imageGenerator;
 
     /**
      * @var array
@@ -41,20 +35,17 @@ class RendererFactory
     /**
      * Constructor.
      *
-     * @param EngineInterface    $templating
-     * @param GeneratorInterface $pdfGenerator
-     * @param GeneratorInterface $imageGenerator
-     * @param array              $config
+     * @param EngineInterface $templating
+     * @param PdfGenerator    $pdfGenerator
+     * @param array           $config
      */
     public function __construct(
         EngineInterface $templating,
-        GeneratorInterface $pdfGenerator,
-        GeneratorInterface $imageGenerator,
+        PdfGenerator $pdfGenerator,
         array $config = []
     ) {
         $this->templating = $templating;
         $this->pdfGenerator = $pdfGenerator;
-        $this->imageGenerator = $imageGenerator;
 
         $this->config = array_replace([
             'shipment_remaining_date' => true,
@@ -95,7 +86,6 @@ class RendererFactory
 
         $renderer->setTemplating($this->templating);
         $renderer->setPdfGenerator($this->pdfGenerator);
-        $renderer->setImageGenerator($this->imageGenerator);
         $renderer->setConfig($this->config);
 
         return $renderer;

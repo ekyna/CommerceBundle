@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\GatewayDataType;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -327,7 +328,7 @@ class SaleShipmentController extends AbstractSaleController
         $type = $request->attributes->get('type');
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($shipment, $type);
 
         return $renderer->respond($request);

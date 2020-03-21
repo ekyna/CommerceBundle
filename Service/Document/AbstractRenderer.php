@@ -5,7 +5,6 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Resource\Model\TimestampableInterface;
-use Knp\Snappy\GeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -24,14 +23,9 @@ abstract class AbstractRenderer implements RendererInterface
     protected $templating;
 
     /**
-     * @var GeneratorInterface
+     * @var PdfGenerator
      */
     protected $pdfGenerator;
-
-    /**
-     * @var GeneratorInterface
-     */
-    protected $imageGenerator;
 
     /**
      * @var array
@@ -89,21 +83,11 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * Sets the pdf generator.
      *
-     * @param GeneratorInterface $generator
+     * @param PdfGenerator $generator
      */
-    public function setPdfGenerator(GeneratorInterface $generator)
+    public function setPdfGenerator(PdfGenerator $generator)
     {
         $this->pdfGenerator = $generator;
-    }
-
-    /**
-     * Sets the image generator.
-     *
-     * @param GeneratorInterface $generator
-     */
-    public function setImageGenerator(GeneratorInterface $generator)
-    {
-        $this->imageGenerator = $generator;
     }
 
     /**
@@ -128,10 +112,12 @@ abstract class AbstractRenderer implements RendererInterface
         $path = sys_get_temp_dir() . '/' . uniqid() . '.' . $format;
 
         if ($format === RendererInterface::FORMAT_PDF) {
-            $this->pdfGenerator->generateFromHtml($content, $path);
+            $content = $this->pdfGenerator->generateFromHtml($content);
         } elseif ($format === RendererInterface::FORMAT_JPG) {
-            $this->imageGenerator->generateFromHtml($content, $path);
-        } elseif (!file_put_contents($path, $content)) {
+            throw new \RuntimeException("Not yet implemented.");
+        }
+
+        if (!file_put_contents($path, $content)) {
             throw new \RuntimeException("Failed to write content into file '$path'.");
         }
 
@@ -149,15 +135,18 @@ abstract class AbstractRenderer implements RendererInterface
 
         if ($format !== RendererInterface::FORMAT_HTML) {
             $options = [
-                'margin-top'    => "6mm",
-                'margin-right'  => "6mm",
-                'margin-bottom' => "6mm",
-                'margin-left'   => "6mm",
+                'margins' => [
+                    'top'    => 6,
+                    'right'  => 6,
+                    'bottom' => 6,
+                    'left'   => 6,
+                    'unit'   => 'mm',
+                ],
             ];
             if ($format === RendererInterface::FORMAT_PDF) {
-                return $this->pdfGenerator->getOutputFromHtml($content, $options);
+                $content = $this->pdfGenerator->generateFromHtml($content, $options);
             } elseif ($format === RendererInterface::FORMAT_JPG) {
-                return $this->imageGenerator->getOutputFromHtml($content, $options);
+                throw new \RuntimeException("Not yet implemented.");
             }
         }
 
@@ -196,7 +185,8 @@ abstract class AbstractRenderer implements RendererInterface
         if ($format === RendererInterface::FORMAT_PDF) {
             $response->headers->add(['Content-Type' => 'application/pdf']);
         } elseif ($format === RendererInterface::FORMAT_JPG) {
-            $response->headers->add(['Content-Type' => 'image/jpeg']);
+            throw new \RuntimeException("Not yet implemented.");
+            //$response->headers->add(['Content-Type' => 'image/jpeg']);
         }
 
         return $response;
@@ -228,10 +218,10 @@ abstract class AbstractRenderer implements RendererInterface
     protected function getContent(string $format): string
     {
         return $this->templating->render('@EkynaCommerce/Document/render.html.twig', array_replace([
-            'debug'     => $this->config['debug'],
-            'format'    => $format,
-            'subjects'  => $this->subjects,
-            'template'  => $this->getTemplate(),
+            'debug'    => $this->config['debug'],
+            'format'   => $format,
+            'subjects' => $this->subjects,
+            'template' => $this->getTemplate(),
         ], $this->getParameters()));
     }
 

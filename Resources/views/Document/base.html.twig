@@ -8,9 +8,9 @@
 {% block doc_styles -%}
 <style type="text/css">
 {%- if design.primaryColor is not empty -%}
-h1, h2, .table thead th, .table tbody.totals th, .table.details tr > td.designation > a { color: {{ design.primaryColor }}; }
-{%- endif -%}
-{%- if design.secondaryColor is not empty -%}
+h1, h2, .table thead th, .table tbody.totals th { color: {{ design.primaryColor }}; }
+{%- endif %}
+{% if design.secondaryColor is not empty -%}
 table.header, .footer, .table thead th, .table thead th:before, .table thead th:after, .table.details tr:last-child td { border-color: {{ design.secondaryColor }}; }
 {%- endif -%}
 </style>
@@ -96,21 +96,11 @@ table.header, .footer, .table thead th, .table thead th:before, .table thead th:
 
 {# --- MISC --- #}
 {% block doc_misc -%}
-    {#<table class="order-doc-bloc order-doc-inf">
-        <tbody>
-            <tr>
-                <td>{{ sale.paiementMethod.title }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="order-doc-bloc order-doc-inf">
-        <tbody>
-            <tr>
-                <td>{{ sale.comment|raw }}</td>
-            </tr>
-        </tbody>
-    </table>#}
+    <div class="unbreakable">
+    {% for notice in subject|document_notices -%}
+        {{ notice|raw }}
+    {%- endfor %}
+    </div>
 {%- endblock doc_misc %}
 
 

@@ -1100,6 +1100,7 @@ ekyna_commerce:
             private: Privée
             notice: Remarque commande
             mention: Mention document
+            mention_types: Mention sur documents
             footer: Pied de page document
         alert:
             empty_list: Aucun mode de paiement configuré
@@ -1222,7 +1223,7 @@ ekyna_commerce:
                 configure: Configurer l'article
                 new: Créer une ligne
                 edit: Modifier la ligne
-                prioritize: Réssigner le stock
+                prioritize: Réassigner le stock
                 remove: Supprimer la ligne
             item_adjustment:
                 new: Ajouter une remise de ligne

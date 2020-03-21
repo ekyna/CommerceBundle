@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -75,7 +76,7 @@ class InvoiceController extends AbstractController
         $invoice = $this->findInvoiceByCustomerAndNumber($customer, $request->attributes->get('number'));
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
         return $renderer->respond($request);

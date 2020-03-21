@@ -7,8 +7,10 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\PaymentMethodTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MessagesType;
+use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
 use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Component\Commerce\Payment\Entity;
 use Payum\Core\Bridge\Symfony\Form\Type\GatewayFactoriesChoiceType;
 use Payum\Core\Registry\RegistryInterface;
@@ -57,6 +59,13 @@ class PaymentMethodType extends ResourceFormType
             ->add('media', MediaChoiceType::class, [
                 'label' => 'ekyna_core.field.image',
                 'types' => MediaTypes::IMAGE,
+            ])
+            ->add('mentionTypes', ConstantChoiceType::class, [
+                'label'    => 'ekyna_commerce.payment_method.field.mention_types',
+                'class'    => DocumentTypes::class,
+                'accessor' => 'getSaleAndInvoiceChoices',
+                'multiple' => true,
+                'required' => false,
             ])
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => PaymentMethodTranslationType::class,

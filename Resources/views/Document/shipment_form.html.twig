@@ -1,8 +1,9 @@
-{% spaceless %}
+{% apply spaceless %}
 <!doctype html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Shipment forms</title>
     <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/shipment-form.css')) }}" rel="stylesheet" type="text/css" />
     <link href="{{ absolute_url(asset('bundles/ekynacore/css/fontawesome.css')) }}" rel="stylesheet" type="text/css" />
@@ -67,4 +68,4 @@
     {% endfor %}
 </body>
 </html>
-{% endspaceless %}
+{% endapply %}

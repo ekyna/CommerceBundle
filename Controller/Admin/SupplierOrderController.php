@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
@@ -312,7 +313,7 @@ class SupplierOrderController extends ResourceController
         $this->isGranted('VIEW', $order);
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($order);
 
         return $renderer->respond($request);

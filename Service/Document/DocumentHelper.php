@@ -8,6 +8,7 @@ use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
+use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use League\Flysystem\Filesystem;
 use OzdemirBurak\Iris\Color\Hex;
@@ -41,6 +42,11 @@ class DocumentHelper
     private $addressRenderer;
 
     /**
+     * @var TaxResolverInterface
+     */
+    private $taxResolver;
+
+    /**
      * @var array
      */
     private $config;
@@ -63,6 +69,7 @@ class DocumentHelper
      * @param Filesystem               $fileSystem
      * @param UrlGeneratorInterface    $urlGenerator
      * @param AddressRenderer          $addressRenderer
+     * @param TaxResolverInterface     $taxResolver
      * @param array                    $config
      * @param string                   $defaultLocale
      */
@@ -71,15 +78,17 @@ class DocumentHelper
         Filesystem $fileSystem,
         UrlGeneratorInterface $urlGenerator,
         AddressRenderer $addressRenderer,
+        TaxResolverInterface $taxResolver,
         array $config,
         string $defaultLocale
     ) {
-        $this->settings        = $settings;
-        $this->fileSystem      = $fileSystem;
-        $this->urlGenerator    = $urlGenerator;
+        $this->settings = $settings;
+        $this->fileSystem = $fileSystem;
+        $this->urlGenerator = $urlGenerator;
         $this->addressRenderer = $addressRenderer;
-        $this->config          = $config;
-        $this->defaultLocale   = $defaultLocale;
+        $this->taxResolver = $taxResolver;
+        $this->config = $config;
+        $this->defaultLocale = $defaultLocale;
     }
 
     /**
@@ -100,6 +109,40 @@ class DocumentHelper
         }
 
         return $design;
+    }
+
+    /**
+     * Returns the document notices.
+     *
+     * @param DocumentInterface $document
+     *
+     * @return string[]
+     */
+    public function getDocumentNotices(DocumentInterface $document): array
+    {
+        $notices = [];
+
+        $locale = $document->getLocale();
+        $sale = $document->getSale();
+
+        if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
+            $notices[] = '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';
+        }
+
+        if (!$method = $sale->getPaymentMethod()) {
+            return $notices;
+        }
+
+        if (!in_array($document->getType(), $method->getMentionTypes(), true)) {
+            return $notices;
+        }
+
+        $translation = $method->translate($locale);
+        if (!empty($mention = $translation->getMention())) {
+            $notices[] = $mention;
+        }
+
+        return $notices;
     }
 
     /**

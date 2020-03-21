@@ -3,7 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
 use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
@@ -290,7 +292,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         // Create an archived version of this invoice before recalculation
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
         $path = $renderer->create();
@@ -335,7 +337,7 @@ class SaleInvoiceController extends AbstractSaleController
         }
 
         // Recalculate
-        $this->get('ekyna_commerce.document.calculator')->calculate($invoice);
+        $this->get(DocumentCalculator::class)->calculate($invoice);
 
         // TODO use ResourceManager
         $event = $this->getOperator()->update($invoice);
@@ -410,7 +412,7 @@ class SaleInvoiceController extends AbstractSaleController
                 $invoice = clone $invoice;
                 $invoice->setCurrency($currency);
 
-                $this->get('ekyna_commerce.document.calculator')->calculate($invoice);
+                $this->get(DocumentCalculator::class)->calculate($invoice);
             }
         }
 
@@ -423,7 +425,7 @@ class SaleInvoiceController extends AbstractSaleController
         }
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
         return $renderer->respond($request);

@@ -8,6 +8,8 @@ use Ekyna\Bundle\AdminBundle\Controller\Resource\ToggleableTrait;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartStates;
 use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
@@ -18,6 +20,8 @@ use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\Util\AddressUtil;
+use Ekyna\Component\Commerce\Document\Builder\DocumentBuilder;
+use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
 use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
@@ -826,7 +830,7 @@ class SaleController extends AbstractSaleController
 
         try {
             $attachment = $this
-                ->get('ekyna_commerce.document.generator')
+                ->get(DocumentGenerator::class)
                 ->generate($sale, $type);
         } catch (InvalidArgumentException $e) {
             $this->addFlash('ekyna_commerce.sale.message.already_exists', 'warning');
@@ -878,10 +882,10 @@ class SaleController extends AbstractSaleController
             ->setLocale($request->query->get('locale'))
             ->setCurrency($request->query->get('currency'));
 
-        $this->get('ekyna_commerce.document.builder')->build($document);
-        $this->get('ekyna_commerce.document.calculator')->calculate($document);
+        $this->get(DocumentBuilder::class)->build($document);
+        $this->get(DocumentCalculator::class)->calculate($document);
 
-        $renderer = $this->get('ekyna_commerce.document.renderer_factory')->createRenderer($document);
+        $renderer = $this->get(RendererFactory::class)->createRenderer($document);
 
         return $renderer->respond($request);
     }

@@ -87,6 +87,10 @@
                     {{- show_row(paymentMethod.media, 'media', {
                         'label': 'ekyna_core.field.image'
                     }) -}}
+                    {{- show_row(paymentMethod.mentionTypes, 'constant_choice', {
+                        'label': 'ekyna_commerce.payment_method.field.mention_types',
+                        'class': 'Ekyna\\Bundle\\CommerceBundle\\Model\\DocumentTypes'
+                    }) -}}
                     {{- show_row(paymentMethod.translations, 'translations', {
                         'fields': {
                             'title': {'label': 'ekyna_core.field.title'},

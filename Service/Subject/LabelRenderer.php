@@ -4,8 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
 use Ekyna\Bundle\CommerceBundle\Event\SubjectLabelEvent;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
+use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Knp\Snappy\Pdf;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -27,9 +27,9 @@ class LabelRenderer
     private $templating;
 
     /**
-     * @var string
+     * @var PdfGenerator
      */
-    private $pdfBinaryPath;
+    private $pdfGenerator;
 
 
     /**
@@ -37,16 +37,16 @@ class LabelRenderer
      *
      * @param EventDispatcherInterface $dispatcher
      * @param EngineInterface          $templating
-     * @param string                   $path
+     * @param PdfGenerator             $pdfGenerator
      */
     public function __construct(
         EventDispatcherInterface $dispatcher,
         EngineInterface $templating,
-        string $path
+        PdfGenerator $pdfGenerator
     ) {
         $this->dispatcher = $dispatcher;
         $this->templating = $templating;
-        $this->pdfBinaryPath = $path;
+        $this->pdfGenerator = $pdfGenerator;
     }
 
     /**
@@ -64,9 +64,7 @@ class LabelRenderer
             'format' => $format,
         ]);
 
-        $generator = new Pdf($this->pdfBinaryPath);
-
-        return $generator->getOutputFromHtml($content, $this->getPdfOptionsByFormat($format));
+        return $this->pdfGenerator->generateFromHtml($content, $this->getPdfOptionsByFormat($format));
     }
 
     /**
@@ -103,23 +101,33 @@ class LabelRenderer
         switch ($format) {
             case SubjectLabel::FORMAT_LARGE:
                 return [
-                    'dpi'           => 300,
-                    'page-width'    => 62,
-                    'page-height'   => 100,
-                    'margin-bottom' => 0,
-                    'margin-left'   => 0,
-                    'margin-right'  => 0,
-                    'margin-top'    => 0,
+                    'paper'   => [
+                        'width'  => 62,
+                        'height' => 100,
+                        'unit'   => 'mm',
+                    ],
+                    'margins' => [
+                        'bottom' => 4,
+                        'left'   => 4,
+                        'right'  => 4,
+                        'top'    => 4,
+                        'unit'   => 'mm',
+                    ],
                 ];
             case SubjectLabel::FORMAT_SMALL:
                 return [
-                    'dpi'           => 300,
-                    'page-width'    => 62,
-                    'page-height'   => 29,
-                    'margin-bottom' => 0,
-                    'margin-left'   => 0,
-                    'margin-right'  => 0,
-                    'margin-top'    => 0,
+                    'paper'   => [
+                        'width'  => 62,
+                        'height' => 29,
+                        'unit'   => 'mm',
+                    ],
+                    'margins' => [
+                        'bottom' => 2,
+                        'left'   => 2,
+                        'right'  => 2,
+                        'top'    => 2,
+                        'unit'   => 'mm',
+                    ],
                 ];
         }
 

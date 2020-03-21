@@ -3,11 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
-use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
-use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigTest;
@@ -19,11 +17,6 @@ use Twig\TwigTest;
  */
 class InvoiceExtension extends AbstractExtension
 {
-    /**
-     * @var TaxResolverInterface
-     */
-    private $taxResolver;
-
     /**
      * @var DueDateResolverInterface
      */
@@ -38,16 +31,13 @@ class InvoiceExtension extends AbstractExtension
     /**
      * Constructor.
      *
-     * @param TaxResolverInterface            $taxResolver
      * @param DueDateResolverInterface        $dueDateResolver
      * @param InvoicePaymentResolverInterface $paymentResolver
      */
     public function __construct(
-        TaxResolverInterface $taxResolver,
         DueDateResolverInterface $dueDateResolver,
         InvoicePaymentResolverInterface $paymentResolver
     ) {
-        $this->taxResolver     = $taxResolver;
         $this->dueDateResolver = $dueDateResolver;
         $this->paymentResolver = $paymentResolver;
     }
@@ -79,10 +69,6 @@ class InvoiceExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
-                'invoice_notices',
-                [$this, 'getInvoiceNotices']
-            ),
-            new TwigFilter(
                 'invoice_payments',
                 [$this->paymentResolver, 'resolve']
             ),
@@ -107,38 +93,5 @@ class InvoiceExtension extends AbstractExtension
                 [$this->dueDateResolver, 'isInvoiceDue']
             ),
         ];
-    }
-
-    /**
-     * Returns the invoice notices.
-     *
-     * @param InvoiceInterface $invoice
-     *
-     * @return string[]
-     */
-    public function getInvoiceNotices(InvoiceInterface $invoice): array
-    {
-        $notices = [];
-
-        $locale = $invoice->getLocale();
-        $sale   = $invoice->getSale();
-
-        if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
-            $notices[] = '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';
-        }
-
-        if ($invoice->isCredit()) {
-            return $notices;
-        }
-
-        if ($method = $sale->getPaymentMethod()) {
-            $translation = $method->translate($locale);
-
-            if (!empty($mention = $translation->getMention())) {
-                $notices[] = $mention;
-            }
-        }
-
-        return $notices;
     }
 }

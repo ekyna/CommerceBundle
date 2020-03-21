@@ -24,7 +24,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="templating"/>
-            <argument>%knp_snappy.pdf.binary%</argument>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator"/>
         </service>
 
     </services>

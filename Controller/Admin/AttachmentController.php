@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
@@ -121,7 +122,7 @@ class AttachmentController extends ResourceController
         // Generates a new attachment
         try {
             $attachment = $this
-                ->get('ekyna_commerce.document.generator')
+                ->get(DocumentGenerator::class)
                 ->generate($sale, $type);
         } catch (InvalidArgumentException $e) {
             $this->addFlash('ekyna_commerce.sale.message.already_exists', 'warning');

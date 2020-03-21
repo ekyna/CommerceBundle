@@ -69,7 +69,7 @@
         <!-- Invoice recalculate command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\InvoiceRecalculateCommand">
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
-            <argument type="service" id="ekyna_commerce.document.calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"/>
             <argument type="service" id="ekyna_commerce.order_invoice.manager"/>
             <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="console.command"/>

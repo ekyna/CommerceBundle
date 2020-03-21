@@ -5,7 +5,6 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -17,22 +16,6 @@ use Twig\TwigFunction;
  */
 class DocumentExtension extends AbstractExtension
 {
-    /**
-     * @var SettingsManagerInterface
-     */
-    private $settings;
-
-
-    /**
-     * Constructor.
-     *
-     * @param SettingsManagerInterface $settings
-     */
-    public function __construct(SettingsManagerInterface $settings)
-    {
-        $this->settings = $settings;
-    }
-
     /**
      * @inheritdoc
      */
@@ -55,6 +38,10 @@ class DocumentExtension extends AbstractExtension
             new TwigFilter(
                 'document_design',
                 [DocumentHelper::class, 'getDocumentDesign']
+            ),
+            new TwigFilter(
+                'document_notices',
+                [DocumentHelper::class, 'getDocumentNotices']
             ),
             new TwigFilter(
                 'document_pages',

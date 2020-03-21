@@ -4,6 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
+use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Mailchimp;
@@ -33,6 +35,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureAccounting($config['accounting'], $container);
         $this->configureCache($config['cache'], $container);
         $this->configureDefaults($config['default'], $container);
+        $this->configurePdf($config['pdf'], $container);
         $this->configureDocument($config['document'], $container);
         $this->configureFeatures($config['feature'], $container);
         $this->configurePricing($config['pricing'], $container);
@@ -86,6 +89,19 @@ class EkynaCommerceExtension extends AbstractExtension
     }
 
     /**
+     * Configures PDF (generator).
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configurePdf(array $config, ContainerBuilder $container)
+    {
+        $container
+            ->getDefinition(PdfGenerator::class)
+            ->setArguments([$config['entry_point'], $config['token']]);
+    }
+
+    /**
      * Configures document.
      *
      * @param array            $config
@@ -95,7 +111,7 @@ class EkynaCommerceExtension extends AbstractExtension
     {
         $container
             ->getDefinition(DocumentHelper::class)
-            ->replaceArgument(4, array_replace([
+            ->replaceArgument(5, array_replace([
                 'logo_path' => '%ekyna_commerce.default.company_logo%',
             ], $config));
 
@@ -104,8 +120,8 @@ class EkynaCommerceExtension extends AbstractExtension
             ->replaceArgument(2, $config);
 
         $container
-            ->getDefinition('ekyna_commerce.document.renderer_factory')
-            ->replaceArgument(3, [
+            ->getDefinition(RendererFactory::class)
+            ->replaceArgument(2, [
                 'shipment_remaining_date' => $config['shipment_remaining_date'],
                 'debug'                   => '%kernel.debug%',
             ]);

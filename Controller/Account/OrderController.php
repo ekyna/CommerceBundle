@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
@@ -259,7 +260,7 @@ class OrderController extends AbstractController
         $shipment = $this->findShipmentByOrderAndId($order, $request->attributes->get('id'));
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($shipment);
 
         return $renderer->respond($request);
@@ -281,7 +282,7 @@ class OrderController extends AbstractController
         $invoice = $this->findInvoiceByOrderAndId($order, $request->attributes->get('id'));
 
         $renderer = $this
-            ->get('ekyna_commerce.document.renderer_factory')
+            ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
         return $renderer->respond($request);

@@ -26,7 +26,6 @@
         "symfony/psr-http-message-bridge": "~1.0",
         "zendframework/zend-diactoros": "~1.6",
         "behat/transliterator": "~1.2",
-        "knplabs/knp-snappy-bundle": "^1.4",
         "florianv/swap-bundle": "~3.0",
         "tecnickcom/tc-lib-barcode": "~1.0"
     },

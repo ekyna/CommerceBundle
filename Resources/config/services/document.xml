@@ -5,28 +5,30 @@
 
     <services>
 
+        <!-- PDF generator -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator">
+            <argument type="string"/><!-- Replaced by DI extension -->
+            <argument type="string"/><!-- Replaced by DI extension -->
+        </service>
+
         <!-- Document builder -->
-        <service id="ekyna_commerce.document.builder"
-                 class="Ekyna\Component\Commerce\Document\Builder\DocumentBuilder"
+        <service id="Ekyna\Component\Commerce\Document\Builder\DocumentBuilder"
                  lazy="true">
             <argument type="service" id="ekyna_resource.locale_provider"/>
             <argument type="service" id="libphonenumber.phone_number_util"/>
         </service>
 
         <!-- Document calculator -->
-        <service id="ekyna_commerce.document.calculator"
-                 class="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"
+        <service id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
         </service>
 
         <!-- Document renderer factory -->
-        <service id="ekyna_commerce.document.renderer_factory"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory"
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory"
                  lazy="true">
             <argument type="service" id="templating"/>
-            <argument type="service" id="knp_snappy.pdf"/>
-            <argument type="service" id="knp_snappy.image"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator"/>
             <argument type="collection"/><!-- Replaced by DI extension -->
         </service>
 
@@ -36,6 +38,7 @@
             <argument type="service" id="local_commerce_filesystem"/>
             <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"/>
             <argument type="collection"/><!-- Replaced by DI extension -->
             <argument>%locale%</argument>
             <tag name="twig.runtime"/>
@@ -50,12 +53,11 @@
         </service>
 
         <!-- Document generator -->
-        <service id="ekyna_commerce.document.generator"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator"
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.document.builder"/>
-            <argument type="service" id="ekyna_commerce.document.calculator"/>
-            <argument type="service" id="ekyna_commerce.document.renderer_factory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Document\Builder\DocumentBuilder"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="translator"/>
         </service>

@@ -58,6 +58,16 @@ final class DocumentTypes extends AbstractConstants
     }
 
     /**
+     * Returns the sale & invoice types choices.
+     *
+     * @return array
+     */
+    public static function getSaleAndInvoiceChoices(): array
+    {
+        return self::getChoices(Types::getSaleAndInvoiceTypes(), self::FILTER_RESTRICT);
+    }
+
+    /**
      * Returns the shipment types choices.
      *
      * @return array

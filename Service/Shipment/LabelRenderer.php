@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
+use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
-use Knp\Snappy\GeneratorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -26,7 +26,7 @@ class LabelRenderer
     private $templating;
 
     /**
-     * @var GeneratorInterface
+     * @var PdfGenerator
      */
     private $generator;
 
@@ -40,12 +40,12 @@ class LabelRenderer
      * Constructor.
      *
      * @param EngineInterface          $templating
-     * @param GeneratorInterface       $generator
+     * @param PdfGenerator             $generator
      * @param SettingsManagerInterface $settings
      */
     public function __construct(
         EngineInterface $templating,
-        GeneratorInterface $generator,
+        PdfGenerator $generator,
         SettingsManagerInterface $settings
     ) {
         $this->templating = $templating;
@@ -64,28 +64,46 @@ class LabelRenderer
     public function render(array $labels, $raw = false)
     {
         $layout = false;
+
         $options = [
-            'page-size'     => 'A4',
-            'margin-top'    => '0',
-            'margin-right'  => '0',
-            'margin-bottom' => '0',
-            'margin-left'   => '0',
+            'format'  => 'A4',
+            'paper'   => [
+                'width'  => null,
+                'height' => null,
+                'unit'   => 'mm',
+            ],
+            'margins' => [
+                'top'    => 6,
+                'right'  => 6,
+                'bottom' => 6,
+                'left'   => 6,
+                'unit'   => 'mm',
+            ],
         ];
 
         $config = $this->settings->getParameter('commerce.shipment_label');
 
         if (null !== $size = $config['size']) {
-            $options['page-size'] = $size;
+            $options['format'] = $size;
             $layout = $size === LabelRenderer::SIZE_A4;
         } elseif (!empty($config['width']) && !empty($config['height'])) {
-            $options['page-width'] = $config['width'] . 'mm';
-            $options['page-height'] = $config['height'] . 'mm';
+            $options['margins'] = [
+                'top'    => 6,
+                'right'  => 6,
+                'bottom' => 6,
+                'left'   => 6,
+                'unit'   => 'mm',
+            ];
+            $options['paper']['width'] = $config['width'];
+            $options['height']['height'] = $config['height'];
 
             if (!empty($config['margin'])) {
-                $options['margin-top'] = $config['margin'] . 'mm';
-                $options['margin-right'] = $config['margin'] . 'mm';
-                $options['margin-bottom'] = $config['margin'] . 'mm';
-                $options['margin-left'] = $config['margin'] . 'mm';
+                $options['margins'] = array_replace($options['margins'], [
+                    'top'    => $config['margin'],
+                    'right'  => $config['margin'],
+                    'bottom' => $config['margin'],
+                    'left'   => $config['margin'],
+                ]);
             }
         }
 
@@ -94,7 +112,7 @@ class LabelRenderer
             'labels' => $labels,
         ]);
 
-        $content = $this->generator->getOutputFromHtml($content, $options);
+        $content = $this->generator->generateFromHtml($content, $options);
 
         if ($raw) {
             return $content;

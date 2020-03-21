@@ -97,7 +97,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer"
                  lazy="true">
             <argument type="service" id="templating"/>
-            <argument type="service" id="knp_snappy.pdf"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator"/>
             <argument type="service" id="ekyna_setting.manager"/>
         </service>
 

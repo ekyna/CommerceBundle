@@ -46,7 +46,7 @@
                 <argument type="service" id="ekyna_commerce.invoice.builder"/>
             </call>
             <call method="setInvoiceCalculator">
-                <argument type="service" id="ekyna_commerce.document.calculator"/>
+                <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"/>
             </call>
         </service>
 

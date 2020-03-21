@@ -1077,6 +1077,7 @@ ekyna_commerce:
             notice: Order notice
             mention: Document mention
             footer: Document footer
+            mention_types: Mention on documents
         alert:
             empty_list: No payment method available
 

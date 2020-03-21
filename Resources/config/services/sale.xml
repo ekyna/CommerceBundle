@@ -39,7 +39,7 @@
                  lazy="true">
             <argument type="service" id="ekyna_commerce.order.number_generator"/>
             <argument type="service" id="ekyna_commerce.quote.number_generator"/>
-            <argument type="service" id="ekyna_commerce.document.generator"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <tag name="kernel.event_subscriber"/>
         </service>

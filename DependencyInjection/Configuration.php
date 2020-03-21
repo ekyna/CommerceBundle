@@ -189,6 +189,13 @@ class Configuration implements ConfigurationInterface
     {
         $node
             ->children()
+                ->arrayNode('pdf')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('entry_point')->isRequired()->end()
+                        ->scalarNode('token')->isRequired()->end()
+                    ->end()
+                ->end()
                 ->arrayNode('document')
                     ->addDefaultsIfNotSet()
                     ->children()

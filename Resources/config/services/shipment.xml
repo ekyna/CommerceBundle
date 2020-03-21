@@ -97,7 +97,7 @@
         <!-- Shipment invoice synchronizer -->
         <service id="Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer">
             <argument type="service" id="ekyna_commerce.invoice.builder"/>
-            <argument type="service" id="ekyna_commerce.document.calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
