@@ -296,6 +296,14 @@
 {%- endif %}
 {%- endblock doc_lines %}
 
+{# --- MISC --- #}
+{% block doc_misc -%}
+    <div class="unbreakable">
+        {% for notice in subject|document_notices -%}
+            {{ notice|raw }}
+        {%- endfor %}
+    </div>
+{%- endblock doc_misc %}
 
 {# --- POST --- #}
 {% block doc_post -%}

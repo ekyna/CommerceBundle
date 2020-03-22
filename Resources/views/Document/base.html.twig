@@ -95,13 +95,7 @@ table.header, .footer, .table thead th, .table thead th:before, .table thead th:
 
 
 {# --- MISC --- #}
-{% block doc_misc -%}
-    <div class="unbreakable">
-    {% for notice in subject|document_notices -%}
-        {{ notice|raw }}
-    {%- endfor %}
-    </div>
-{%- endblock doc_misc %}
+{% block doc_misc -%}{%- endblock doc_misc %}
 
 
 {# --- FOOTER --- #}

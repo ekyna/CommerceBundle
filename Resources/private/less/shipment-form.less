@@ -1,4 +1,4 @@
-@font-size: 14px;
+@font-size: 12px;
 @text-color: #333333;
 @head-color: #999999;
 @border-color: #dddddd;
@@ -12,17 +12,20 @@
 
 @background-alt-color: #f2f2f2;
 @ratio: 1.3;
-@margin: .6cm * @ratio;
+@margin: 2mm * @ratio;
 @width: 21cm * @ratio;
 @height: 29.7cm * @ratio;
 
-.wrapper {
+html, body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: @font-size;
-    line-height: 21px;
+    line-height: 1.6em;
     color: @text-color;
-    max-width: 1200px;
-    margin: 0 auto;
+}
+
+.wrapper {
+    max-width: 1000px;
+    margin: 0 auto @margin * 3 auto;
 }
 
 .bloc {
@@ -35,8 +38,12 @@ h1 {
     font-variant: small-caps;
     font-weight: normal;
     color: @head-color;
-    font-size: @font-size * 2.2;
-    margin: .5em 0;
+    font-size: @font-size * 2;
+    margin: 0 0 @font-size 0;
+
+    strong {
+        font-weight: 600;
+    }
 
     > small {
         display: inline-block;
@@ -50,22 +57,20 @@ h1 {
 
 .tags {
     position: absolute;
-    top: .1cm;
-    right: .1cm;
-    font-size: 18px;
+    top: @margin;
+    right: @margin;
+    max-width: 140px;
+    font-size: @font-size;
     text-align: right;
-
-    > span {
-        margin-left: 0.2cm;
-    }
 }
 
 .label {
-    display: inline;
-    padding: .2em .6em .3em;
-    font-size: 75%;
+    display: inline-block;
+    padding: 1px 6px;
+    margin: 0 0 6px 6px;
     color: #fff;
     border-radius: .25em;
+    text-align: center;
 
     &.label-default {
         background-color: @gray-light;
@@ -121,7 +126,7 @@ h1 {
     border: 1px solid #faebcc;
     border-radius: 4px;
     color: #8a6d3b;
-    padding: 15px;
+    padding: @margin;
 }
 
 table {
@@ -140,7 +145,7 @@ table {
             padding: 0 8px;
             position: relative;
             text-align: left;
-            font-size: @font-size - 1;
+            font-size: @font-size * 0.8;
             line-height: 21px !important;
             border-bottom: 1px solid @border-color;
 
@@ -174,14 +179,12 @@ table {
 
     tbody {
         td {
-            padding: 5px 8px;
+            padding: 3px 6px;
             vertical-align: top;
-            font-size: 18px;
-            line-height: 32px;
 
             span.input {
                 display: inline-block;
-                width: 50px;
+                width: 40px;
                 border: 1px solid @border-color !important;
                 background-color: #fff;
             }
