@@ -22,7 +22,7 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function homeAction()
+    public function homeAction(): Response
     {
         throw new NotFoundHttpException();
     }
@@ -30,7 +30,7 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request): Response
     {
         throw new NotFoundHttpException();
     }
@@ -38,7 +38,7 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function showAction(Request $request)
+    public function showAction(Request $request): Response
     {
         throw new NotFoundHttpException();
     }
@@ -46,7 +46,7 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request): Response
     {
         $this->isGranted('CREATE');
 
@@ -124,7 +124,7 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function editAction(Request $request)
+    public function editAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
@@ -198,9 +198,9 @@ class SaleShipmentController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function gatewayFormAction(Request $request)
+    public function gatewayFormAction(Request $request): Response
     {
         $context = $this->loadContext($request);
 
@@ -246,7 +246,7 @@ class SaleShipmentController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function removeAction(Request $request)
+    public function removeAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         /** @var \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface $shipment */
@@ -314,9 +314,9 @@ class SaleShipmentController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function renderAction(Request $request)
+    public function renderAction(Request $request): Response
     {
         $context = $this->loadContext($request);
 
@@ -339,9 +339,9 @@ class SaleShipmentController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
-    public function shipAction(Request $request)
+    public function shipAction(Request $request): Response
     {
         return $this->execute($request, 'ship');
     }
@@ -351,9 +351,9 @@ class SaleShipmentController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
-    public function cancelAction(Request $request)
+    public function cancelAction(Request $request): Response
     {
         return $this->execute($request, 'cancel');
     }
@@ -363,9 +363,9 @@ class SaleShipmentController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
-    public function completeAction(Request $request)
+    public function completeAction(Request $request): Response
     {
         return $this->execute($request, 'complete');
     }
@@ -375,9 +375,9 @@ class SaleShipmentController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
-    public function printLabelAction(Request $request)
+    public function printLabelAction(Request $request): Response
     {
         if ($request->isXmlHttpRequest()) {
             throw $this->createNotFoundException("XmlHttpRequest is not supported.");
@@ -423,7 +423,7 @@ class SaleShipmentController extends AbstractSaleController
      *
      * @return Response
      */
-    public function summaryAction(Request $request)
+    public function summaryAction(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
             throw $this->createNotFoundException();
@@ -468,9 +468,9 @@ class SaleShipmentController extends AbstractSaleController
      * @param Request $request
      * @param string  $action
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
-    protected function execute(Request $request, string $action)
+    protected function execute(Request $request, string $action): Response
     {
         if ($request->isXmlHttpRequest()) {
             throw $this->createNotFoundException("XmlHttpRequest is not supported.");

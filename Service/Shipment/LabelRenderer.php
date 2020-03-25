@@ -95,9 +95,9 @@ class LabelRenderer
                 'unit'   => 'mm',
             ];
             $options['paper']['width'] = $config['width'];
-            $options['height']['height'] = $config['height'];
+            $options['paper']['height'] = $config['height'];
 
-            if (!empty($config['margin'])) {
+            if (!is_null($config['margin'])) {
                 $options['margins'] = array_replace($options['margins'], [
                     'top'    => $config['margin'],
                     'right'  => $config['margin'],
