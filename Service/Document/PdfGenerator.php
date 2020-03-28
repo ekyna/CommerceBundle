@@ -87,25 +87,29 @@ class PdfGenerator
 
         $client = new Client();
 
-        try {
-            $response = $client->request('GET', $this->endpoint, [
-                'json'    => $options,
-                'headers' => [
-                    'X-AUTH-TOKEN' => $this->token,
-                ],
-            ]);
+        for ($i = 2; $i >= 0; $i--) {
+            try {
+                $response = $client->request('GET', $this->endpoint, [
+                    // TODO Timeouts
+                    'json'    => $options,
+                    'headers' => [
+                        'X-AUTH-TOKEN' => $this->token,
+                    ],
+                ]);
 
-            if (200 !== $response->getStatusCode()) {
-                throw new RuntimeException("PDF web service did not respond correctly.");
+                if (200 !== $response->getStatusCode()) {
+                    usleep(50000);
+                    continue;
+                }
+            } catch (Exception $e) {
+                if (0 == $i) {
+                    throw new RuntimeException("PDF web service did not respond correctly.");
+                }
             }
-        } catch (Exception $e) {
-            $test = $e->getMessage();
 
-            throw new RuntimeException(
-                "PDF web service did not respond correctly."
-            );
+            return $response->getBody()->getContents();
         }
 
-        return $response->getBody()->getContents();
+        throw new RuntimeException("Failed to generate PDF.");
     }
 }
