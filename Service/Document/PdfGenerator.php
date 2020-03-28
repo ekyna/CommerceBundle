@@ -64,7 +64,7 @@ class PdfGenerator
         return $this->generate(array_replace($options, ['html' => $html]));
     }
 
-    private function generate(array $options) : string
+    private function generate(array $options): string
     {
         $options = array_replace_recursive([
             'orientation' => 'portrait',
@@ -101,13 +101,13 @@ class PdfGenerator
                     usleep(50000);
                     continue;
                 }
+
+                return $response->getBody()->getContents();
             } catch (Exception $e) {
                 if (0 == $i) {
-                    throw new RuntimeException("PDF web service did not respond correctly.");
+                    throw new RuntimeException("Failed to generate PDF.");
                 }
             }
-
-            return $response->getBody()->getContents();
         }
 
         throw new RuntimeException("Failed to generate PDF.");
