@@ -131,6 +131,10 @@ class OrderType extends ResourceTableType
                 'position'    => 30,
                 'time_format' => 'none',
             ])
+            ->addColumn('paidAt', Type\Column\SalePaymentCompletedAtType::class, [
+                'position'    => 35,
+                'time_format' => 'none',
+            ])
             ->addColumn('title', CType\Column\TextType::class, [
                 'label'    => 'ekyna_core.field.title',
                 'position' => 40,

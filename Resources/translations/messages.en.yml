@@ -1303,6 +1303,7 @@ ekyna_commerce:
             outstanding_expired: Expired outstanding
             outstanding_limit: Outstanding limit
             outstanding_date: Limit Date
+            paid_at: Paid at
             coupon_code: Coupon code
             voucher_number: Voucher number
             origin_number: Origin number

@@ -1330,6 +1330,7 @@ ekyna_commerce:
             outstanding_expired: Encours expiré
             outstanding_limit: Limite d'encours
             outstanding_date: Date limite
+            paid_at: Réglé le
             coupon_code: Code promotion
             voucher_number: N° bon d'achat
             origin_number: N° d'origine
