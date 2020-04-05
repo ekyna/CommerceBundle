@@ -563,6 +563,8 @@ ekyna_commerce:
             remaining_with_date: The following products will be shipped from %date%.
             deposit: "%percent% deposit resulting in an amount of %amount%"
             deposit_remaining: The rest after receipt of the goods
+        message:
+            failed_to_generate: Failed to generate PDF.
 
     invoice:
         tab: Invoices and credits

@@ -56,6 +56,8 @@ class LabelRenderer
      * @param string $format
      *
      * @return string
+     *
+     * @throws \Ekyna\Component\Commerce\Exception\PdfException
      */
     public function render(array $labels, $format = SubjectLabel::FORMAT_LARGE)
     {

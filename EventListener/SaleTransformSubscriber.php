@@ -10,6 +10,7 @@ use Ekyna\Component\Commerce\Common\Event\SaleTransformEvents;
 use Ekyna\Component\Commerce\Common\Generator\GeneratorInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -144,10 +145,13 @@ class SaleTransformSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // TODO Catch generator exception ?
-        $attachment = $this->generator->generate($order, DocumentTypes::TYPE_CONFIRMATION);
-
-        $this->manager->persist($attachment);
+        try {
+            $attachment = $this->generator->generate($order, DocumentTypes::TYPE_CONFIRMATION);
+            $this->manager->persist($attachment);
+        } catch (PdfException $e) {
+            // Fail silently for now
+            // TODO Warn the admin / customer
+        }
     }
 
     /**
@@ -162,10 +166,13 @@ class SaleTransformSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // TODO Catch generator exception ?
-        $attachment = $this->generator->generate($quote, DocumentTypes::TYPE_QUOTE);
-
-        $this->manager->persist($attachment);
+        try {
+            $attachment = $this->generator->generate($quote, DocumentTypes::TYPE_QUOTE);
+            $this->manager->persist($attachment);
+        } catch (PdfException $e) {
+            // Fail silently for now
+            // TODO Warn the admin / customer
+        }
     }
 
     /**

@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Menu\MenuBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -72,14 +73,24 @@ class OrderListController extends Controller
         }
 
         if (empty($invoices)) {
-            return $this->redirectToRoute('ekyna_commerce_admin_order_list_invoice');
+            return $this->redirectToReferer(
+                $this->generateUrl('ekyna_commerce_admin_order_list_invoice')
+            );
         }
 
         $renderer = $this
             ->get(RendererFactory::class)
             ->createRenderer($invoices);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer(
+                $this->generateUrl('ekyna_commerce_admin_order_list_invoice')
+            );
+        }
     }
 
     /**
@@ -166,14 +177,24 @@ class OrderListController extends Controller
             ->findBy(['id' => (array)$request->query->get('id')]);
 
         if (empty($shipments)) {
-            return $this->redirectToRoute('ekyna_commerce_admin_order_list_shipment');
+            return $this->redirectToReferer(
+                $this->generateUrl('ekyna_commerce_admin_order_list_shipment')
+            );
         }
 
         $renderer = $this
             ->get(RendererFactory::class)
             ->createRenderer($shipments, $request->attributes->get('type'));
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer(
+                $this->generateUrl('ekyna_commerce_admin_order_list_shipment')
+            );
+        }
     }
 
     /**

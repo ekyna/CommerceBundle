@@ -11,6 +11,7 @@ use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
 use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
@@ -263,7 +264,15 @@ class OrderController extends AbstractController
             ->get(RendererFactory::class)
             ->createRenderer($shipment);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer(
+                $this->generateUrl('ekyna_commerce_account_order_index')
+            );
+        }
     }
 
     /**
@@ -285,7 +294,15 @@ class OrderController extends AbstractController
             ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer(
+                $this->generateUrl('ekyna_commerce_account_order_index')
+            );
+        }
     }
 
     /**

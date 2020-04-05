@@ -22,6 +22,8 @@ interface RendererInterface
      * @param string $format
      *
      * @return string The file path
+     *
+     * @throws \Ekyna\Component\Commerce\Exception\PdfException
      */
     public function create($format = RendererInterface::FORMAT_PDF);
 
@@ -31,6 +33,8 @@ interface RendererInterface
      * @param string $format
      *
      * @return string The content
+     *
+     * @throws \Ekyna\Component\Commerce\Exception\PdfException
      */
     public function render($format = RendererInterface::FORMAT_HTML);
 
@@ -40,6 +44,8 @@ interface RendererInterface
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Ekyna\Component\Commerce\Exception\PdfException
      */
     public function respond(Request $request);
 

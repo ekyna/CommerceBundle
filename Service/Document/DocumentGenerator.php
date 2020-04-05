@@ -75,6 +75,8 @@ class DocumentGenerator
      * @param string        $type
      *
      * @return \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface
+     *
+     * @throws \Ekyna\Component\Commerce\Exception\PdfException
      */
     public function generate(SaleInterface $sale, $type)
     {

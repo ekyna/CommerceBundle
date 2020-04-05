@@ -60,6 +60,8 @@ class LabelRenderer
      * @param bool                     $raw
      *
      * @return Response|string
+     *
+     * @throws \Ekyna\Component\Commerce\Exception\PdfException
      */
     public function render(array $labels, $raw = false)
     {

@@ -564,6 +564,8 @@ ekyna_commerce:
             remaining_with_date: Les éléments suivants vous seront livrés à partir du %date%.
             deposit: "Acompte de %percent% d'un montant de %amount%"
             deposit_remaining: Le reste à réception de la marchandise
+        message:
+            failed_to_generate: Erreur lors de la génération du PDF.
 
     invoice:
         tab: Factures et avoirs

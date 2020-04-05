@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Resource\Model\TimestampableInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -114,11 +115,11 @@ abstract class AbstractRenderer implements RendererInterface
         if ($format === RendererInterface::FORMAT_PDF) {
             $content = $this->pdfGenerator->generateFromHtml($content);
         } elseif ($format === RendererInterface::FORMAT_JPG) {
-            throw new \RuntimeException("Not yet implemented.");
+            throw new PdfException("Not yet implemented.");
         }
 
         if (!file_put_contents($path, $content)) {
-            throw new \RuntimeException("Failed to write content into file '$path'.");
+            throw new PdfException("Failed to write content into file '$path'.");
         }
 
         return $path;
@@ -146,7 +147,7 @@ abstract class AbstractRenderer implements RendererInterface
             if ($format === RendererInterface::FORMAT_PDF) {
                 $content = $this->pdfGenerator->generateFromHtml($content, $options);
             } elseif ($format === RendererInterface::FORMAT_JPG) {
-                throw new \RuntimeException("Not yet implemented.");
+                throw new PdfException("Not yet implemented.");
             }
         }
 
@@ -185,7 +186,7 @@ abstract class AbstractRenderer implements RendererInterface
         if ($format === RendererInterface::FORMAT_PDF) {
             $response->headers->add(['Content-Type' => 'application/pdf']);
         } elseif ($format === RendererInterface::FORMAT_JPG) {
-            throw new \RuntimeException("Not yet implemented.");
+            throw new PdfException("Not yet implemented.");
             //$response->headers->add(['Content-Type' => 'image/jpeg']);
         }
 
@@ -204,7 +205,7 @@ abstract class AbstractRenderer implements RendererInterface
             RendererInterface::FORMAT_PDF,
             RendererInterface::FORMAT_JPG,
         ])) {
-            throw new InvalidArgumentException("Unsupported format '$format'.");
+            throw new PdfException("Unsupported format '$format'.");
         }
     }
 

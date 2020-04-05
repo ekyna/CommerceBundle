@@ -2,9 +2,9 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
-use Exception;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use GuzzleHttp\Client;
-use RuntimeException;
+use Throwable;
 
 /**
  * Class PdfGenerator
@@ -45,25 +45,38 @@ class PdfGenerator
      * @param array  $options
      *
      * @return string
+     *
+     * @throws PdfException
      */
     public function generateFromUrl(string $url, array $options = []): string
     {
-        return $this->generate(array_replace($options, ['url' => $url]));
+        return $this->generate(array_replace($options, ['headers' => []], ['url' => $url]));
     }
 
     /**
-     * Generates a PDF form the given URL.
+     * Generates a PDF form the given HTML.
      *
      * @param string $html
      * @param array  $options
      *
      * @return string
+     *
+     * @throws PdfException
      */
     public function generateFromHtml(string $html, array $options = []): string
     {
         return $this->generate(array_replace($options, ['html' => $html]));
     }
 
+    /**
+     * Generates the PDF.
+     *
+     * @param array $options
+     *
+     * @return string
+     *
+     * @throws PdfException
+     */
     private function generate(array $options): string
     {
         $options = array_replace_recursive([
@@ -87,29 +100,30 @@ class PdfGenerator
 
         $client = new Client();
 
-        for ($i = 2; $i >= 0; $i--) {
+        for ($i = 1; $i <= 3; $i++) {
             try {
                 $response = $client->request('GET', $this->endpoint, [
-                    // TODO Timeouts
                     'json'    => $options,
+                    'timeout' => 10,
                     'headers' => [
                         'X-AUTH-TOKEN' => $this->token,
                     ],
                 ]);
 
                 if (200 !== $response->getStatusCode()) {
-                    usleep(50000);
-                    continue;
+                    throw new \Exception();
                 }
 
                 return $response->getBody()->getContents();
-            } catch (Exception $e) {
-                if (0 == $i) {
-                    throw new RuntimeException("Failed to generate PDF.");
+            } catch (Throwable $e) {
+                if (3 == $i) {
+                    throw new PdfException("Failed to generate PDF.");
                 }
             }
+
+            sleep($i);
         }
 
-        throw new RuntimeException("Failed to generate PDF.");
+        throw new PdfException("Failed to generate PDF.");
     }
 }

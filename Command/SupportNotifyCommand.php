@@ -93,7 +93,7 @@ class SupportNotifyCommand extends Command
             // Do not notify the customer twice for the same ticket.
             $ticketId = $message->getTicket()->getId();
             if (!in_array($ticketId, $ticketIds, true)) {
-                if (0 === $this->mailer->sendTicketMessageToCustomer($message)) {
+                if (!$this->mailer->sendTicketMessageToCustomer($message)) {
                     continue;
                 }
 

@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Entity\AbstractShipmentLabel;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayActions;
@@ -95,7 +96,11 @@ class ShipmentPrintLabelActionType extends AbstractActionType
         }
 
         if (!empty($labels)) {
-            return $this->labelRenderer->render($labels);
+            try {
+                return $this->labelRenderer->render($labels);
+            } catch (PdfException $e) {
+                $table->addError(new TableError($e->getMessage()));
+            }
         }
 
         return true;

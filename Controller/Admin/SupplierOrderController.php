@@ -11,6 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
@@ -179,10 +180,14 @@ class SupplierOrderController extends ResourceController
 
                 if (!$event->hasErrors()) {
                     if ($submit->isSendEmail()) {
-                        if ($this->get('ekyna_commerce.mailer')->sendSupplierOrderSubmit($submit)) {
-                            $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
-                        } else {
-                            $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
+                        try {
+                            if ($this->get('ekyna_commerce.mailer')->sendSupplierOrderSubmit($submit)) {
+                                $this->addFlash('ekyna_commerce.supplier_order.message.submit.success', 'success');
+                            } else {
+                                $this->addFlash('ekyna_commerce.supplier_order.message.submit.failure', 'danger');
+                            }
+                        } catch (PdfException $e) {
+                            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
                         }
                     }
 
@@ -316,7 +321,13 @@ class SupplierOrderController extends ResourceController
             ->get(RendererFactory::class)
             ->createRenderer($order);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer($this->generateResourcePath($order));
+        }
     }
 
     /**

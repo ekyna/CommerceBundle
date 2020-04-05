@@ -42,6 +42,7 @@ abstract class AbstractController extends Controller
             ], UrlGeneratorInterface::ABSOLUTE_URL));
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $provider->getCustomer();
     }
 

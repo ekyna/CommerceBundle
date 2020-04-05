@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -126,6 +127,10 @@ class AttachmentController extends ResourceController
                 ->generate($sale, $type);
         } catch (InvalidArgumentException $e) {
             $this->addFlash('ekyna_commerce.sale.message.already_exists', 'warning');
+
+            return $redirect;
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
 
             return $redirect;
         }

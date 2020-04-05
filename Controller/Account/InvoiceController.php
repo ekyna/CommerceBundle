@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -79,7 +80,15 @@ class InvoiceController extends AbstractController
             ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer(
+                $this->generateUrl('ekyna_commerce_account_invoice_index')
+            );
+        }
     }
 
     /**

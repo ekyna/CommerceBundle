@@ -21,6 +21,7 @@ use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
 use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
@@ -124,9 +125,9 @@ class Mailer
      *
      * @param CustomerInterface $customer
      *
-     * @return integer
+     * @return bool
      */
-    public function sendAdminFraudsterAlert(CustomerInterface $customer)
+    public function sendAdminFraudsterAlert(CustomerInterface $customer): bool
     {
         $body = $this->templating->render('@EkynaCommerce/Email/admin_fraudster_alert.html.twig', [
             'customer' => $customer,
@@ -134,7 +135,7 @@ class Mailer
 
         $subject = $this->translator->trans('ekyna_commerce.customer.notify.fraudster.subject');
 
-        return $this->mailer->send($this->createMessage($subject, $body));
+        return 0 < $this->mailer->send($this->createMessage($subject, $body));
     }
 
     /**
@@ -142,9 +143,9 @@ class Mailer
      *
      * @param CustomerInterface $customer
      *
-     * @return integer
+     * @return bool
      */
-    public function sendAdminCustomerRegistration(CustomerInterface $customer)
+    public function sendAdminCustomerRegistration(CustomerInterface $customer): bool
     {
         $body = $this->templating->render('@EkynaCommerce/Email/admin_customer_registration.html.twig', [
             'customer' => $customer,
@@ -152,7 +153,7 @@ class Mailer
 
         $subject = $this->translator->trans('ekyna_commerce.customer.notify.registration.subject');
 
-        return $this->mailer->send($this->createMessage($subject, $body));
+        return 0 < $this->mailer->send($this->createMessage($subject, $body));
     }
 
     /**
@@ -164,7 +165,7 @@ class Mailer
      *
      * @return bool
      */
-    public function sendCustomerBalance(CustomerInterface $customer, array $balance, string $csvPath = null)
+    public function sendCustomerBalance(CustomerInterface $customer, array $balance, string $csvPath = null): bool
     {
         if (empty($balance)) {
             return false;
@@ -206,8 +207,10 @@ class Mailer
      * @param SupplierOrderSubmit $submit
      *
      * @return bool
+     *
+     * @throws PdfException
      */
-    public function sendSupplierOrderSubmit(SupplierOrderSubmit $submit)
+    public function sendSupplierOrderSubmit(SupplierOrderSubmit $submit): bool
     {
         $order = $submit->getOrder();
 
@@ -254,16 +257,16 @@ class Mailer
      *
      * @param TicketMessageInterface $message
      *
-     * @return int
+     * @return bool
      */
-    public function sendTicketMessageToCustomer(TicketMessageInterface $message)
+    public function sendTicketMessageToCustomer(TicketMessageInterface $message): bool
     {
         if ($message->isCustomer()) {
             throw new LogicException("Expected admin message.");
         }
 
         if (!$message->isNotify()) {
-            return 0;
+            return false;
         }
 
         $customer = $message->getTicket()->getCustomer();
@@ -356,18 +359,17 @@ class Mailer
      *
      * @param Notify $notify
      *
-     * @return int
+     * @return bool
      */
-    public function sendNotify(Notify $notify)
+    public function sendNotify(Notify $notify): bool
     {
         if ($notify->isEmpty()) {
-            return 0;
+            return false;
         }
 
         $message = new \Swift_Message();
         $report = '';
         $attachments = [];
-
 
         // FROM
         $from = $notify->getFrom();
@@ -400,7 +402,14 @@ class Mailer
         // Invoices
         foreach ($notify->getInvoices() as $invoice) {
             $renderer = $this->rendererFactory->createRenderer($invoice);
-            $content = $renderer->render(RendererInterface::FORMAT_PDF);
+            try {
+                $content = $renderer->render(RendererInterface::FORMAT_PDF);
+            } catch (PdfException $e) {
+                $notify->setError(true);
+                $report .= "ERROR: failed to generate PDF for invoice {$invoice->getNumber()}\n";
+                continue;
+            }
+
             $filename = $renderer->getFilename() . '.pdf';
 
             $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
@@ -412,7 +421,14 @@ class Mailer
         // Shipments
         foreach ($notify->getShipments() as $shipment) {
             $renderer = $this->rendererFactory->createRenderer($shipment, CDocumentTypes::TYPE_SHIPMENT_BILL);
-            $content = $renderer->render(RendererInterface::FORMAT_PDF);
+            try {
+                $content = $renderer->render(RendererInterface::FORMAT_PDF);
+            } catch (PdfException $e) {
+                $notify->setError(true);
+                $report .= "ERROR: failed to generate PDF for shipment {$shipment->getNumber()}\n";
+                continue;
+            }
+
             $filename = $renderer->getFilename() . '.pdf';
 
             $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
@@ -425,15 +441,24 @@ class Mailer
 
         // Labels
         if (0 < $notify->getLabels()->count()) {
-            $content = $this->shipmentLabelRenderer->render($notify->getLabels(), true);
-            $filename = 'labels.pdf';
+            $content = null;
+            try {
+                $content = $this->shipmentLabelRenderer->render($notify->getLabels(), true);
+            } catch (PdfException $e) {
+                $notify->setError(true);
+                $report .= "ERROR: failed to generate PDF for labels\n";
+            }
 
-            $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+            if (!empty($content)) {
+                $filename = 'labels.pdf';
 
-            $attachments[$filename] = $this->translator->trans(
-                'ekyna_commerce.shipment_label.label.' . (1 < $notify->getLabels()->count() ? 'plural' : 'singular')
-            );
-            $report .= "Attachment: $filename\n";
+                $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+
+                $attachments[$filename] = $this->translator->trans(
+                    'ekyna_commerce.shipment_label.label.' . (1 < $notify->getLabels()->count() ? 'plural' : 'singular')
+                );
+                $report .= "Attachment: $filename\n";
+            }
         }
 
         $source = $notify->getSource();
@@ -467,30 +492,51 @@ class Mailer
         $report .= "Subject: {$notify->getSubject()}\n";
 
         // CONTENT
+        $content = null;
         if ($source instanceof SupplierOrderInterface) {
             // Supplier order form
             if ($notify->isIncludeForm()) {
                 $renderer = $this->rendererFactory->createRenderer($source);
-                $content = $renderer->render(RendererInterface::FORMAT_PDF);
-                $filename = $renderer->getFilename() . '.pdf';
+                $content = null;
+                try {
+                    $content = $renderer->render(RendererInterface::FORMAT_PDF);
+                } catch (PdfException $e) {
+                    $notify->setError(true);
+                    $report .= "ERROR: failed to generate PDF for supplier order {$source->getNumber()}\n";
+                }
 
-                $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+                if ($content) {
+                    $filename = $renderer->getFilename() . '.pdf';
 
-                $attachments[$filename] = $this->translator->trans('ekyna_commerce.document.type.form');
-                $report .= "Attachment: $filename\n";
+                    $message->attach(new \Swift_Attachment($content, $filename, 'application/pdf'));
+
+                    $attachments[$filename] = $this->translator->trans('ekyna_commerce.document.type.form');
+                    $report .= "Attachment: $filename\n";
+                }
             }
 
-            $content = $this->templating->render('@EkynaCommerce/Email/supplier_order_notify.html.twig', [
-                'notify'      => $notify,
-                'order'       => $source,
-                'attachments' => $attachments,
-            ]);
+            try {
+                $content = $this->templating->render('@EkynaCommerce/Email/supplier_order_notify.html.twig', [
+                    'notify'      => $notify,
+                    'order'       => $source,
+                    'attachments' => $attachments,
+                ]);
+            } catch (\RuntimeException $e) {
+                $notify->setError(true);
+                $report .= "ERROR: failed to generate HTML message for supplier order {$source->getNumber()}\n";
+            }
         } else {
-            $content = $this->templating->render('@EkynaCommerce/Email/sale_notify.html.twig', [
-                'notify'      => $notify,
-                'sale'        => $this->getNotifySale($notify),
-                'attachments' => $attachments,
-            ]);
+            $sale = $this->getNotifySale($notify);
+            try {
+                $content = $this->templating->render('@EkynaCommerce/Email/sale_notify.html.twig', [
+                    'notify'      => $notify,
+                    'sale'        => $sale,
+                    'attachments' => $attachments,
+                ]);
+            } catch (\RuntimeException $e) {
+                $notify->setError(true);
+                $report .= "ERROR: failed to generate HTML message for sale {$sale->getNumber()}\n";
+            }
         }
         $message->setBody($content, 'text/html');
 
@@ -500,12 +546,38 @@ class Mailer
 
         $notify->setReport($report);
 
+        // Don't send if it has error(s)
+        if ($notify->isError()) {
+            return 0;
+        }
+
         // Trigger IMAP copy
         if (!$notify->isTest()) {
             $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
         }
 
-        return $this->mailer->send($message);
+        return 0 < $this->mailer->send($message);
+    }
+
+    /**
+     * Sends the notify failure report.
+     *
+     * @param Notify $notify
+     */
+    public function sendNotifyFailure(Notify $notify): void
+    {
+        $message = new \Swift_Message();
+
+        $message
+            ->setSubject("Notification failed")
+            ->setBody("Notification failure\n\n" . $notify->getReport(), 'text/plain')
+            ->setFrom(
+                $this->settingsManager->getParameter('notification.from_email'),
+                $this->settingsManager->getParameter('notification.from_name')
+            )
+            ->setTo($notify->getFrom()->getEmail(), $notify->getFrom()->getName());
+
+       $this->mailer->send($message);
     }
 
     /**

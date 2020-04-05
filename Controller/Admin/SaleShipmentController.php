@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\GatewayDataType;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormError;
@@ -331,7 +332,13 @@ class SaleShipmentController extends AbstractSaleController
             ->get(RendererFactory::class)
             ->createRenderer($shipment, $type);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer($this->generateResourcePath($shipment->getSale()));
+        }
     }
 
     /**
@@ -404,16 +411,18 @@ class SaleShipmentController extends AbstractSaleController
 
             $this->addFlash($e->getMessage(), 'danger');
 
-            if (empty($redirect = $request->headers->get('referer'))) {
-                $redirect = $this->generateResourcePath($shipment->getSale());
-            }
-
-            return $this->redirect($redirect);
+            return $this->redirectToReferer($this->generateResourcePath($shipment->getSale()));
         }
 
-        return $this
-            ->get('ekyna_commerce.shipment.label_renderer')
-            ->render($labels);
+        try {
+            return $this
+                ->get('ekyna_commerce.shipment.label_renderer')
+                ->render($labels);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer($this->generateResourcePath($shipment->getSale()));
+        }
     }
 
     /**
@@ -498,10 +507,6 @@ class SaleShipmentController extends AbstractSaleController
             $this->addFlash($e->getMessage(), 'danger');
         }
 
-        if (empty($redirect = $request->headers->get('referer'))) {
-            $redirect = $this->generateResourcePath($shipment->getSale());
-        }
-
-        return $this->redirect($redirect);
+        return $this->redirectToReferer($this->generateResourcePath($shipment->getSale()));
     }
 }

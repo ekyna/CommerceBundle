@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
@@ -290,12 +291,20 @@ class SaleInvoiceController extends AbstractSaleController
             throw $this->createNotFoundException('Not yet supported.');
         }
 
+        $redirect = $this->generateResourcePath($sale);
+
         // Create an archived version of this invoice before recalculation
         $renderer = $this
             ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
-        $path = $renderer->create();
+        try {
+            $path = $renderer->create();
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirect($redirect);
+        }
 
         $this->getTranslator()->trans(DocumentTypes::getLabel($invoice->getType()));
 
@@ -328,7 +337,7 @@ class SaleInvoiceController extends AbstractSaleController
         if ($event->hasErrors()) {
             $event->toFlashes($this->getFlashBag());
 
-            return $this->redirect($this->generateResourcePath($sale));
+            return $this->redirect($redirect);
         }
 
         // Synchronizes with shipment
@@ -348,7 +357,7 @@ class SaleInvoiceController extends AbstractSaleController
             $event->toFlashes($this->getFlashBag());
         }
 
-        return $this->redirect($this->generateResourcePath($sale));
+        return $this->redirect($redirect);
     }
 
     /**
@@ -428,7 +437,13 @@ class SaleInvoiceController extends AbstractSaleController
             ->get(RendererFactory::class)
             ->createRenderer($invoice);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer($this->generateResourcePath($invoice->getSale()));
+        }
     }
 
     /**

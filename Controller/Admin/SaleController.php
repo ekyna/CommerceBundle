@@ -26,6 +26,7 @@ use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
@@ -836,6 +837,10 @@ class SaleController extends AbstractSaleController
             $this->addFlash('ekyna_commerce.sale.message.already_exists', 'warning');
 
             return $redirect;
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $redirect;
         }
 
         $config = $this
@@ -887,7 +892,13 @@ class SaleController extends AbstractSaleController
 
         $renderer = $this->get(RendererFactory::class)->createRenderer($document);
 
-        return $renderer->respond($request);
+        try {
+            return $renderer->respond($request);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirectToReferer($this->generateResourcePath($sale));
+        }
     }
 
     /**
