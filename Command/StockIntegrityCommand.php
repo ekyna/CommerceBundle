@@ -156,8 +156,9 @@ class StockIntegrityCommand extends Command
             $this->connection->commit();
         } catch (\Throwable $e) {
             $this->connection->rollBack();
+            $this->connection->close();
 
-            return;
+            throw $e;
         }
 
         // Updates subjects
