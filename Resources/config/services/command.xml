@@ -135,6 +135,7 @@
             <argument type="service" id="doctrine.dbal.default_connection"/>
             <argument type="service" id="ekyna_commerce.stock_subject_updater"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Stock\Overflow\OverflowHandler"/>
             <tag name="console.command"/>
         </service>
 
