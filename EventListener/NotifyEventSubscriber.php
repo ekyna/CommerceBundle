@@ -247,25 +247,43 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         $type = $notify->getType();
         $sale = $this->getSaleFromEvent($event);
-        $number = $sale ? $sale->getNumber() : '';
+        $saleNumber = $sale ? $sale->getNumber() : '';
+        $saleVoucher = $sale ? $sale->getVoucherNumber() : '';
         $locale = $sale ? $sale->getLocale() : null;
 
+        // Subject
         if (empty($notify->getSubject())) {
             $trans = sprintf('ekyna_commerce.notify.type.%s.subject', $type);
-            if ($trans != $subject = $this->translator->trans($trans, ['%number%' => $number], null, $locale)) {
+            if ($trans != $subject = $this->translator->trans($trans, ['%number%' => $saleNumber], null, $locale)) {
                 $notify->setSubject($subject);
             }
         }
 
+        // Message
         if (empty($notify->getCustomMessage())) {
             $trans = sprintf('ekyna_commerce.notify.type.%s.message', $type);
-            if ($trans != $message = $this->translator->trans($trans, [], null, $locale)) {
+            if ($trans != $message = $this->translator->trans($trans, ['%number%' => $saleNumber], null, $locale)) {
                 $notify->setCustomMessage($message);
             }
         }
 
         if ($notify->isEmpty()) {
             $event->abort();
+        }
+
+        // Add voucher number to subject and message
+        if (!empty($saleVoucher)) {
+            $voucherNotice = $this->translator->trans('ekyna_commerce.notify.field.voucher', [
+                '%number%' => $saleVoucher,
+            ], null, $locale);
+
+            if (false === strpos($notify->getSubject(), $saleVoucher)) {
+                $notify->setSubject($notify->getSubject() . ' (' . $voucherNotice . ')');
+            }
+
+            if (false === strpos($notify->getCustomMessage(), $saleVoucher)) {
+                $notify->setCustomMessage($notify->getCustomMessage() . '<br>' . $voucherNotice . '.');
+            }
         }
     }
 
@@ -377,7 +395,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         // Custom message
         if (!empty($message = $model->getMessage())) {
-            $notify->setCustomMessage($message);
+            $notify->setCustomMessage(str_replace('%number%', $sale->getNumber(), $message));
         }
 
         // Payment message
@@ -445,7 +463,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         // Custom message
         if (!empty($message = $model->getMessage())) {
-            $notify->setCustomMessage($message);
+            $notify->setCustomMessage(str_replace('%number%', $sale->getNumber(), $message));
         }
 
         // Payment message

@@ -878,6 +878,7 @@ ekyna_commerce:
             custom_message: Custom message
             include_view: Detailed view
             include_form: Attach order form
+            voucher: Voucher %number%
         recipient:
             website: Website
             user: You

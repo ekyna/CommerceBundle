@@ -900,6 +900,7 @@ ekyna_commerce:
             custom_message: Message personnalisé
             include_view: Détail
             include_form: Joindre le bon de commande
+            voucher: Bon de commande %number%
         recipient:
             website: Site internet
             user: Vous
