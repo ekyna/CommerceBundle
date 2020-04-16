@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
 use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Ekyna\Component\Commerce\Payment\Resolver\DueDateResolverInterface;
@@ -85,6 +86,9 @@ class InvoiceExtension extends AbstractExtension
     public function getTests()
     {
         return [
+            new TwigTest('invoice', function ($subject) {
+                return $subject instanceof InvoiceInterface;
+            }),
             new TwigTest('invoice_subject', function ($subject) {
                 return $subject instanceof InvoiceSubjectInterface;
             }),

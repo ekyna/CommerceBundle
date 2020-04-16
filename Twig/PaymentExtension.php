@@ -131,6 +131,9 @@ class PaymentExtension extends AbstractExtension
     public function getTests()
     {
         return [
+            new TwigTest('payment', function ($subject) {
+                return $subject instanceof PaymentInterface;
+            }),
             new TwigTest('payment_subject', function ($subject) {
                 return $subject instanceof PaymentSubjectInterface;
             }),

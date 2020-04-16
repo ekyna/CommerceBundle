@@ -96,7 +96,14 @@
 
 
 {%- macro render_shipment_method(subject) -%}
-    {%- if subject.sale.shipmentLabel or subject.sale.shipmentMethod -%}
+    {% if subject is shipment -%}
+        <span class="text-alt">{{ 'ekyna_commerce.shipment_method.label.singular'|trans|raw }}</span>
+        {{- '&nbsp;' -}}
+        <strong>
+            {{- subject.method.translate(subject.sale.locale).title -}}
+            &nbsp;({{ subject|shipment_weight|localizednumber }}&nbsp;kg)
+        </strong>.
+    {%- elseif subject.sale.shipmentLabel or subject.sale.shipmentMethod -%}
         <span class="text-alt">{{ 'ekyna_commerce.shipment_method.label.singular'|trans|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>

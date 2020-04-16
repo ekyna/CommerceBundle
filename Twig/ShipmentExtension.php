@@ -3,15 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentGatewayActions;
-use Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentDataInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
+use Ekyna\Component\Commerce\Shipment\Model;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -131,8 +127,14 @@ class ShipmentExtension extends AbstractExtension
     public function getTests()
     {
         return [
+            new TwigTest('shipment', function ($subject) {
+                return $subject instanceof Model\ShipmentInterface;
+            }),
+            new TwigTest('shipment_data', function ($subject) {
+                return $subject instanceof Model\ShipmentDataInterface;
+            }),
             new TwigTest('shipment_subject', function ($subject) {
-                return $subject instanceof ShipmentSubjectInterface;
+                return $subject instanceof Model\ShipmentSubjectInterface;
             }),
         ];
     }
@@ -140,11 +142,11 @@ class ShipmentExtension extends AbstractExtension
     /**
      * Renders the shipment tracking buttons.
      *
-     * @param ShipmentDataInterface $shipment
+     * @param Model\ShipmentDataInterface $shipment
      *
      * @return string
      */
-    public function renderShipmentTracking(ShipmentDataInterface $shipment)
+    public function renderShipmentTracking(Model\ShipmentDataInterface $shipment)
     {
         if (empty($number = $shipment->getTrackingNumber())) {
             return '';
@@ -169,11 +171,11 @@ class ShipmentExtension extends AbstractExtension
     /**
      * Returns the shipment gateway action buttons.
      *
-     * @param ShipmentInterface $shipment
+     * @param Model\ShipmentInterface $shipment
      *
      * @return array
      */
-    public function getGatewayButtons(ShipmentInterface $shipment)
+    public function getGatewayButtons(Model\ShipmentInterface $shipment)
     {
         $actions = $this->shipmentHelper->getGatewayShipmentActions($shipment);
 
@@ -208,21 +210,22 @@ class ShipmentExtension extends AbstractExtension
     /**
      * Renders the price list.
      *
-     * @param Environment                                   $env
-     * @param ShipmentMethodInterface|ShipmentZoneInterface $source
+     * @param Environment                                               $env
+     * @param Model\ShipmentMethodInterface|Model\ShipmentZoneInterface $source
      *
      * @return string
      */
     public function renderShipmentPrices(Environment $env, $source)
     {
-        if ($source instanceof ShipmentMethodInterface) {
+        if ($source instanceof Model\ShipmentMethodInterface) {
             $list = $this->priceListBuilder->buildByMethod($source);
-        } elseif ($source instanceof ShipmentZoneInterface) {
+        } elseif ($source instanceof Model\ShipmentZoneInterface) {
             $list = $this->priceListBuilder->buildByZone($source);
         } else {
-            throw new InvalidArgumentException(
-                "Expected instance of ShipmentMethodInterface or ShipmentZoneInterface."
-            );
+            throw new UnexpectedTypeException($source, [
+                Model\ShipmentMethodInterface::class,
+                Model\ShipmentZoneInterface::class,
+            ]);
         }
 
         return $env->render($this->priceTemplate, [

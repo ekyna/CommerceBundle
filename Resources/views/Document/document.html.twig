@@ -30,7 +30,9 @@
         {{ macro.render_voucher_number(subject) }}
         {{ macro.render_exchange_rate(subject) }}
         {{ macro.render_shipment_method(subject) }}
-        {{ macro.render_payment_term(subject) }}
+        {% if not subject.sale.sample -%}
+            {{ macro.render_payment_term(subject) }}
+        {%- endif %}
     </p>
     {% if subject.comment is not empty -%}
     <p>{{ subject.comment|nl2br }}</p>

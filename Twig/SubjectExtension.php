@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesserInterface;
+use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Twig\Extension\AbstractExtension;
@@ -80,6 +81,9 @@ class SubjectExtension extends AbstractExtension
     public function getTests()
     {
         return [
+            new TwigTest('subject', function ($subject) {
+                return $subject instanceof SubjectInterface;
+            }),
             new TwigTest(
                 'subject_set',
                 [$this->subjectHelper, 'hasSubject']
@@ -92,7 +96,7 @@ class SubjectExtension extends AbstractExtension
      *
      * @param SubjectRelativeInterface $relative
      *
-     * @return \Ekyna\Component\Commerce\Subject\Model\SubjectInterface|object
+     * @return SubjectInterface|object
      */
     public function getSubject(SubjectRelativeInterface $relative)
     {

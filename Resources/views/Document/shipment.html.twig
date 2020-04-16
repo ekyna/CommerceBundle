@@ -6,7 +6,7 @@
 
 {# --- TITLE --- #}
 {% block doc_title_content -%}
-{% spaceless %}
+{% apply spaceless %}
     <h1>
         {% if subject.return -%}
             {{- 'ekyna_commerce.document.type.return_bill'|trans }}
@@ -28,17 +28,18 @@
             <span class="text-alt">{{ 'ekyna_commerce.sale.field.voucher_number'|trans }}</span>&nbsp;
             <strong>{{ subject.sale.voucherNumber }}</strong>.
         {%- endif %}
+        {{ macro.render_shipment_method(subject) }}
     </p>
     {% if subject.sale.documentComment is not empty -%}
         <p>{{ subject.sale.documentComment|nl2br }}</p>
     {%- endif %}
-{% endspaceless %}
+{% endapply %}
 {%- endblock doc_title_content %}
 
 
 {# --- ADDRESSES --- #}
 {% block doc_addresses -%}
-{% spaceless %}
+{% apply spaceless %}
     <table class="bloc table addresses">
         <thead>
         <tr>
@@ -59,13 +60,13 @@
         </tr>
         </tbody>
     </table>
-{% endspaceless %}
+{% endapply %}
 {%- endblock doc_addresses %}
 
 
 {# --- LINES --- #}
 {% block doc_lines %}
-{% spaceless %}
+{% apply spaceless %}
     <table class="bloc table details">
         {% block doc_lines_header %}
         <thead>
@@ -173,5 +174,5 @@
     </table>
     {% endif %}
 {% endif %}
-{% endspaceless %}
+{% endapply %}
 {% endblock doc_lines %}

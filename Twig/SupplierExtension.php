@@ -91,6 +91,9 @@ class SupplierExtension extends AbstractExtension
     public function getTests()
     {
         return [
+            new TwigTest('supplier_order', function ($subject) {
+                return $subject instanceof SupplierOrderInterface;
+            }),
             new TwigTest('new_supplier_order', function (SupplierOrderInterface $order) {
                 return $order->getState() === SupplierOrderStates::STATE_NEW;
             }),

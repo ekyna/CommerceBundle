@@ -77,6 +77,18 @@ class SaleExtension extends AbstractExtension
     public function getTests()
     {
         return [
+            new TwigTest('sale', function($subject) {
+                return $subject instanceof Common\SaleInterface;
+            }),
+            new TwigTest('sale_cart', function($subject) {
+                return $subject instanceof CartInterface;
+            }),
+            new TwigTest('sale_quote', function($subject) {
+                return $subject instanceof QuoteInterface;
+            }),
+            new TwigTest('sale_order', function($subject) {
+                return $subject instanceof OrderInterface;
+            }),
             new TwigTest(
                 'sale_stockable_state',
                 [$this, 'isSaleStockableSale']
@@ -117,55 +129,7 @@ class SaleExtension extends AbstractExtension
                 'sale_with_attachment',
                 [$this, 'isSaleWithAttachment']
             ),
-            new TwigTest(
-                'sale_cart',
-                [$this, 'isSaleCart']
-            ),
-            new TwigTest(
-                'sale_quote',
-                [$this, 'isSaleQuote']
-            ),
-            new TwigTest(
-                'sale_order',
-                [$this, 'isSaleOrder']
-            ),
         ];
-    }
-
-    /**
-     * Returns whether the given sale is a cart.
-     *
-     * @param Common\SaleInterface $sale
-     *
-     * @return bool
-     */
-    public function isSaleCart(Common\SaleInterface $sale)
-    {
-        return $sale instanceof CartInterface;
-    }
-
-    /**
-     * Returns whether the given sale is a quote.
-     *
-     * @param Common\SaleInterface $sale
-     *
-     * @return bool
-     */
-    public function isSaleQuote(Common\SaleInterface $sale)
-    {
-        return $sale instanceof QuoteInterface;
-    }
-
-    /**
-     * Returns whether the given sale is an order.
-     *
-     * @param Common\SaleInterface $sale
-     *
-     * @return bool
-     */
-    public function isSaleOrder(Common\SaleInterface $sale)
-    {
-        return $sale instanceof OrderInterface;
     }
 
     /**
@@ -588,6 +552,7 @@ class SaleExtension extends AbstractExtension
         }
 
         foreach ($formats as $name => $format) {
+            /** @noinspection PhpRouteMissingInspection */
             $actions[$name] =
                 $this->urlGenerator->generate("ekyna_commerce_{$type}_admin_export", [
                     "{$type}Id" => $sale->getId(),
