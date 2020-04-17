@@ -3,11 +3,16 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectOrderExporter;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class AbstractSubjectController
@@ -23,12 +28,15 @@ abstract class AbstractSubjectController extends ResourceController
      *
      * @return Response
      */
-    public function refreshStockAction(Request $request)
+    public function refreshStockAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
-        /** @var SubjectInterface $subject */
+
         $subject = $context->getResource($resourceName);
+        if (!$subject instanceof SubjectInterface) {
+            throw new NotFoundHttpException();
+        }
 
         $this->isGranted('VIEW', $subject);
 
@@ -57,13 +65,48 @@ abstract class AbstractSubjectController extends ResourceController
     }
 
     /**
+     * Exports the orders that needs to be shipped for this subject.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function exportOrders(Request $request): Response
+    {
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+
+        $subject = $context->getResource($resourceName);
+        if (!$subject instanceof StockSubjectInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->isGranted('VIEW', $subject);
+
+        $path = $this->get(SubjectOrderExporter::class)->export($subject);
+
+        clearstatcache(true, $path);
+
+        $stream = new Stream($path);
+        $response = new BinaryFileResponse($stream);
+        $response->headers->set('Content-Type', 'text/csv');
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $subject->getReference() . '_pending-orders.csv'
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
+    }
+
+    /**
      * Updates the subject's stock data.
      *
      * @param SubjectInterface $subject
      *
      * @return bool Whether the subject has been updated.
      */
-    protected function updateStock(SubjectInterface $subject)
+    protected function updateStock(SubjectInterface $subject): bool
     {
         if (!$subject instanceof StockSubjectInterface) {
             return false;
@@ -79,7 +122,7 @@ abstract class AbstractSubjectController extends ResourceController
      *
      * @return Response
      */
-    public function labelAction(Request $request)
+    public function labelAction(Request $request): Response
     {
         $this->isGranted('VIEW');
 

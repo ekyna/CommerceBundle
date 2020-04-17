@@ -19,6 +19,13 @@
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
+        <!-- Subject order exporter -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectOrderExporter">
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument>%ekyna_commerce.order_item_stock_assignment.class%</argument>
+        </service>
+
         <!-- Subject label renderer -->
         <service id="ekyna_commerce.subject.label_renderer"
                  class="Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer">
