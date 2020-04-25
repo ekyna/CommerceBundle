@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.payment'|trans({'%number%': order.number})|raw }}</h3>
     <p>
         Du {{ order.createdAt|localizeddate('short', 'none') }}, {{ order|sale_state_badge }}
@@ -46,7 +46,7 @@
     {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer
     } only %}
-{% endspaceless %}
+{% endapply %}
 {% endblock %}
 
 

@@ -1,5 +1,5 @@
 {% macro render_stat_line(stat, class, style) %}
-{% spaceless %}
+{% apply spaceless %}
 <tr
     {%- if class is not empty %} class="{{ class }}"{% endif %}
     {%- if style is not empty %} style="{{ style }}"{% endif %}>
@@ -21,12 +21,12 @@
     <td>{{ stat.average|localizedcurrency(commerce_default_currency) }}</td>
 {% endif %}
 </tr>
-{% endspaceless %}
+{% endapply %}
 {% endmacro %}
 
 
 {% macro render_stat_panel(id, title, current, compare, aggregate) %}
-{% spaceless %}
+{% apply spaceless %}
 {% import _self as macros %}
 <div class="commerce-panel" id="{{ id }}">
     <h3>
@@ -96,12 +96,12 @@
     });
 </script>
 {%- endif %}
-{% endspaceless %}
+{% endapply %}
 {% endmacro %}
 
 
 {% macro render_stat_chart(id, config) %}
-{% spaceless %}
+{% apply spaceless %}
 <div class="commerce-chart">
     <canvas id="{{ id }}" width="400" height="120"></canvas>
     <script type="application/javascript">
@@ -110,5 +110,5 @@
     });
     </script>
 </div>
-{% endspaceless %}
+{% endapply %}
 {% endmacro %}

@@ -1,7 +1,7 @@
 {% macro view_controls(controls) %} data-controls='{{ controls|json_encode_data|raw }}'{% endmacro view_controls %}
 
 {% macro cart_information(cart) %}
-{% spaceless %}
+{% apply spaceless %}
     {%- if cart is null or cart.email is empty -%}
         <em>{{ 'ekyna_commerce.checkout.message.empty_information'|trans }}</em>
     {%- else -%}
@@ -11,45 +11,45 @@
         {{- cart|identity }}<br>
         <em>{{ cart.email }}</em>
     {%- endif -%}
-{% endspaceless %}
+{% endapply %}
 {% endmacro cart_information %}
 
 
 {% macro cart_invoice_address(cart) %}
-{% spaceless %}
+{% apply spaceless %}
     {%- if cart is null or cart.invoiceAddress is null -%}
         <em>{{ 'ekyna_commerce.checkout.message.empty_invoice'|trans }}</em>
     {%- else -%}
         {{ cart.invoiceAddress|address }}
     {%- endif -%}
-{% endspaceless %}
+{% endapply %}
 {% endmacro cart_invoice_address %}
 
 
 {% macro cart_delivery_address(cart) %}
-{% spaceless %}
+{% apply spaceless %}
     {%- if cart is null or cart.sameAddress or cart.deliveryAddress is null -%}
         <em>{{ 'ekyna_commerce.checkout.message.empty_delivery'|trans }}</em>
     {%- else -%}
         {{- cart.deliveryAddress|address -}}
     {%- endif -%}
-{% endspaceless %}
+{% endapply %}
 {% endmacro cart_delivery_address %}
 
 
 {% macro cart_comment(cart) %}
-{% spaceless %}
+{% apply spaceless %}
     {%- if cart is null or cart.comment is null -%}
         <em>{{ 'ekyna_commerce.checkout.message.empty_comment'|trans }}</em>
     {%- else -%}
         {{ cart.comment|nl2br }}<br>
     {%- endif -%}
-{% endspaceless %}
+{% endapply %}
 {% endmacro cart_comment %}
 
 
 {% macro cart_attachments(cart) %}
-{% spaceless %}
+{% apply spaceless %}
     {%- if cart is null or cart.attachments is empty -%}
         <em>{{ 'ekyna_commerce.checkout.message.empty_attachments'|trans }}</em>
     {%- else -%}
@@ -80,5 +80,5 @@
     </tbody>
     </table>
     {%- endif -%}
-{% endspaceless %}
+{% endapply %}
 {% endmacro cart_attachments %}

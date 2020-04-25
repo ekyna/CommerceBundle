@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
@@ -25,25 +24,18 @@ class SupplierType extends ResourceFormType
      */
     private $supplierProductRepository;
 
-    /**
-     * @var string
-     */
-    private $carrierClass;
-
 
     /**
      * Constructor.
      *
      * @param SupplierProductRepositoryInterface $repository
      * @param string                             $supplierClass
-     * @param string                             $carrierClass
      */
-    public function __construct(SupplierProductRepositoryInterface $repository, $supplierClass, $carrierClass)
+    public function __construct(SupplierProductRepositoryInterface $repository, string $supplierClass)
     {
         parent::__construct($supplierClass);
 
         $this->supplierProductRepository = $repository;
-        $this->carrierClass              = $carrierClass;
     }
 
     /**
@@ -62,10 +54,7 @@ class SupplierType extends ResourceFormType
             ->add('tax', Commerce\Pricing\TaxChoiceType::class, [
                 'required' => false,
             ])
-            ->add('carrier', ResourceType::class, [
-                'label'     => 'ekyna_commerce.supplier_carrier.label.singular',
-                'class'     => $this->carrierClass,
-                'required'  => false,
+            ->add('carrier', SupplierCarrierChoiceType::class, [
                 'allow_new' => true,
             ])
             ->add('identity', Commerce\Common\IdentityType::class, [

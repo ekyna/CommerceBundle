@@ -195,13 +195,13 @@ class OrderUpdateTotalsCommand extends Command
 
         try {
             if ($this->amounts) {
-                $changed |= $this->saleUpdater->updateAmountsTotal($order);
+                $changed |= $this->saleUpdater->updateAmountTotals($order);
             }
             if ($this->payments) {
-                $changed |= $this->saleUpdater->updatePaymentTotal($order);
+                $changed |= $this->saleUpdater->updatePaymentTotals($order);
             }
             if ($this->invoices) {
-                $changed |= $this->saleUpdater->updateInvoiceTotal($order);
+                $changed |= $this->saleUpdater->updateInvoiceTotals($order);
             }
 
             if ($changed) {

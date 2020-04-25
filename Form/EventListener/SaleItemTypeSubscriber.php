@@ -94,7 +94,6 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
             ->add('weight', Type\NumberType::class, [
                 'label'    => 'ekyna_core.field.weight', // TODO unit weight ?
                 'scale'    => 3,
-                'required' => false,
                 'disabled' => $item->isCompound(),
                 'attr'     => [
                     'placeholder' => 'ekyna_core.field.weight',
@@ -106,7 +105,6 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
             ->add('netPrice', PriceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.net_unit',
                 'currency' => $this->currency,
-                'required' => false,
                 'disabled' => $item->isCompound(),
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.sale.field.net_unit',
@@ -115,10 +113,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'error_bubbling' => true,
             ])
             ->add('taxGroup', TaxGroupChoiceType::class, [
-                'label'    => 'ekyna_commerce.field.tax_group',
-                'required' => false,
                 'disabled' => $hasChildren || $hasParent || $hasSubject,
-                'select2'  => false,
                 'attr'     => [
                     'placeholder' => 'ekyna_commerce.field.tax_group',
                 ],

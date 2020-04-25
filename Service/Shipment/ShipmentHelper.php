@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Ekyna\Bundle\ProductBundle\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Common\Model\AddressInterface;
+use Ekyna\Component\Commerce\Common\Repository\CountryRepositoryInterface;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Gateway;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
@@ -42,7 +44,7 @@ class ShipmentHelper implements
      *
      * @return Gateway\RegistryInterface
      */
-    public function getGatewayRegistry()
+    public function getGatewayRegistry(): Gateway\RegistryInterface
     {
         return $this->gatewayRegistry;
     }
@@ -54,7 +56,7 @@ class ShipmentHelper implements
      *
      * @return float
      */
-    public function getShipmentWeight(Shipment\ShipmentInterface $shipment)
+    public function getShipmentWeight(Shipment\ShipmentInterface $shipment): float
     {
         if (0 < $shipment->getWeight()) {
             return $shipment->getWeight();
@@ -66,7 +68,7 @@ class ShipmentHelper implements
     /**
      * @inheritDoc
      */
-    public function getCountryRepository()
+    public function getCountryRepository(): CountryRepositoryInterface
     {
         return $this->addressResolver->getCountryRepository();
     }
@@ -74,17 +76,21 @@ class ShipmentHelper implements
     /**
      * @inheritdoc
      */
-    public function resolveSenderAddress(Shipment\ShipmentInterface $shipment, bool $ignoreRelay = false)
-    {
+    public function resolveSenderAddress(
+        Shipment\ShipmentInterface $shipment,
+        bool $ignoreRelay = false
+    ): AddressInterface {
         return $this->addressResolver->resolveSenderAddress($shipment, $ignoreRelay);
     }
 
     /**
      * @inheritdoc
      */
-    public function resolveReceiverAddress(Shipment\ShipmentInterface $shipment, bool $ignoreRelay = false)
-    {
-        return $this->addressResolver->resolveReceiverAddress($shipment,$ignoreRelay);
+    public function resolveReceiverAddress(
+        Shipment\ShipmentInterface $shipment,
+        bool $ignoreRelay = false
+    ): AddressInterface {
+        return $this->addressResolver->resolveReceiverAddress($shipment, $ignoreRelay);
     }
 
     /**
@@ -92,9 +98,9 @@ class ShipmentHelper implements
      *
      * @param Shipment\ShipmentDataInterface $shipmentData
      *
-     * @return null|string
+     * @return string|null
      */
-    public function getTrackingUrl(Shipment\ShipmentDataInterface $shipmentData)
+    public function getTrackingUrl(Shipment\ShipmentDataInterface $shipmentData): ?string
     {
         if ($shipmentData instanceof Shipment\ShipmentInterface) {
             $shipment = $shipmentData;
@@ -122,9 +128,9 @@ class ShipmentHelper implements
      *
      * @param Shipment\ShipmentDataInterface $shipmentData
      *
-     * @return null|string
+     * @return string|string
      */
-    public function getProofUrl(Shipment\ShipmentDataInterface $shipmentData)
+    public function getProofUrl(Shipment\ShipmentDataInterface $shipmentData): ?string
     {
         if ($shipmentData instanceof Shipment\ShipmentInterface) {
             $shipment = $shipmentData;
@@ -154,7 +160,7 @@ class ShipmentHelper implements
      *
      * @return bool
      */
-    public function isShipmentDeleteable(Shipment\ShipmentInterface $shipment)
+    public function isShipmentDeleteable(Shipment\ShipmentInterface $shipment): bool
     {
         return Shipment\ShipmentStates::isDeletableState($shipment->getState());
     }
@@ -164,7 +170,7 @@ class ShipmentHelper implements
      *
      * @return array
      */
-    public function getPlatformsGlobalActions()
+    public function getPlatformsGlobalActions(): array
     {
         return $this->getPlatformsActions(Gateway\PlatformActions::getGlobalActions());
     }
@@ -174,7 +180,7 @@ class ShipmentHelper implements
      *
      * @return array
      */
-    public function getPlatformsMassActions()
+    public function getPlatformsMassActions(): array
     {
         return $this->getPlatformsActions(Gateway\PlatformActions::getMassActions());
     }
@@ -186,7 +192,7 @@ class ShipmentHelper implements
      *
      * @return array
      */
-    public function getGatewayShipmentActions(Shipment\ShipmentInterface $shipment)
+    public function getGatewayShipmentActions(Shipment\ShipmentInterface $shipment): array
     {
         return $this->getGatewayActions($shipment, Gateway\GatewayActions::getShipmentActions());
     }
@@ -198,7 +204,7 @@ class ShipmentHelper implements
      *
      * @return array
      */
-    public function getGatewayApiActions(Shipment\ShipmentInterface $shipment)
+    public function getGatewayApiActions(Shipment\ShipmentInterface $shipment): array
     {
         return $this->getGatewayActions($shipment, Gateway\GatewayActions::getApiActions());
     }
@@ -210,7 +216,7 @@ class ShipmentHelper implements
      *
      * @return array
      */
-    private function getPlatformsActions(array $filter)
+    private function getPlatformsActions(array $filter): array
     {
         $platforms = [];
 
@@ -233,7 +239,7 @@ class ShipmentHelper implements
      *
      * @return array
      */
-    private function getGatewayActions(Shipment\ShipmentInterface $shipment, array $filter)
+    private function getGatewayActions(Shipment\ShipmentInterface $shipment, array $filter): array
     {
         $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 

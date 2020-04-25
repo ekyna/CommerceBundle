@@ -2,6 +2,7 @@ ekyna_commerce:
     label: Commerce
 
     field:
+        balance: Solde
         eta: ETA
         sample: Échantillon
         description: Note interne
@@ -562,7 +563,7 @@ ekyna_commerce:
             due_date: Date d'échéance
             remaining_unknown: Les éléments suivants vous seront livrés ultérieurement.
             remaining_with_date: Les éléments suivants vous seront livrés à partir du %date%.
-            deposit: "Acompte de %percent% d'un montant de %amount%"
+            deposit: "Acompte de %percent% (d'un montant de %amount%)"
             deposit_remaining: Le reste à réception de la marchandise
         message:
             failed_to_generate: Erreur lors de la génération du PDF.
@@ -667,6 +668,9 @@ ekyna_commerce:
             graphics: Design
             document_types: Utiliser pour
             newsletter: Newsletter
+        short:
+            outstanding_balance: Encours
+            credit_balance: Avoir
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Service&nbsp;achat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Commercial
@@ -1869,6 +1873,8 @@ ekyna_commerce:
             customer: Particulier
             business: Entreprise
             notices: Mentions (facture)
+            sources: Pays expéditeurs
+            targets: Pays destinataires
         alert:
             no_item: Aucune règle de taxes configuré
 

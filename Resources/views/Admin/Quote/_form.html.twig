@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
     <li class="active">
         <a href="#quote-general" id="toggle-general" data-toggle="tab">
@@ -137,4 +137,4 @@
     {{ ivory_google_api() }}
     {{ form_rest(form) }}
 </div>
-{% endspaceless %}
+{% endapply %}

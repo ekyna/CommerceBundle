@@ -4,7 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\Transformer\ShipmentAddressTransformer;
-use Ekyna\Component\Commerce\Common\Repository\CountryRepositoryInterface;
+use Ekyna\Component\Commerce\Common\Model\AddressInterface;
+use Ekyna\Component\Commerce\Common\Model\CountryInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentAddress;
@@ -38,8 +39,7 @@ class ShipmentAddressResolver extends BaseResolver
      * Constructor.
      *
      * @param ShipmentAddressTransformer $transformer
-     * @param SettingsManagerInterface $settingsManager
-     * @param CountryRepositoryInterface $countryRepository
+     * @param SettingsManagerInterface   $settingsManager
      */
     public function __construct(ShipmentAddressTransformer $transformer, SettingsManagerInterface $settingsManager)
     {
@@ -51,7 +51,7 @@ class ShipmentAddressResolver extends BaseResolver
     /**
      * @inheritDoc
      */
-    protected function getCompanyAddress()
+    protected function getCompanyAddress(): AddressInterface
     {
         if (null !== $this->companyAddress) {
             return $this->companyAddress;
@@ -76,7 +76,7 @@ class ShipmentAddressResolver extends BaseResolver
             ->setPostalCode($siteAddress->getPostalCode())
             ->setCity($siteAddress->getCity())
             ->setCountry($country);
-            // TODO ->setState($this->findStateByName($siteAddress->getState()));
+        // TODO ->setState($this->findStateByName($siteAddress->getState()));
 
         if (null === $this->phoneUtil) {
             $this->phoneUtil = PhoneNumberUtil::getInstance();
@@ -96,12 +96,11 @@ class ShipmentAddressResolver extends BaseResolver
      *
      * @param string $code
      *
-     * @return \Ekyna\Component\Commerce\Common\Model\CountryInterface
+     * @return CountryInterface
      */
-    private function findCountryByCode($code)
+    private function findCountryByCode($code): CountryInterface
     {
-        /** @var \Ekyna\Component\Commerce\Common\Model\CountryInterface $country */
-        if (null === $country = $this->getCountryRepository()->findOneBy(['code' => $code])) {
+        if (null === $country = $this->getCountryRepository()->findOneByCode($code)) {
             throw new InvalidArgumentException("Unexpected country code.");
         }
 

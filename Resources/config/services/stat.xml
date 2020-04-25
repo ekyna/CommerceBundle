@@ -7,8 +7,11 @@
 
         <!-- Stat calculator -->
         <service id="Ekyna\Bundle\CommerceBundle\Service\Stat\StatCalculator" public="false">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory"/>
             <argument>%ekyna_commerce.order.class%</argument>
+            <argument>%ekyna_commerce.default.currency%</argument>
         </service>
 
         <!-- Stat updater -->

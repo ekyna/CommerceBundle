@@ -1,6 +1,6 @@
 {% import '@EkynaCommerce/Admin/Dashboard/_macro.html.twig' as macros %}
 
-{% spaceless %}
+{% apply spaceless %}
 <div class="row">
     <div class="col-lg-4 commerce-stat-day">
         {{ macros.render_stat_panel(
@@ -33,4 +33,4 @@
         {{ macros.render_stat_chart('yearly_revenues_chart', yearly_chart) }}
     </div>
 </div>
-{% endspaceless %}
+{% endapply %}

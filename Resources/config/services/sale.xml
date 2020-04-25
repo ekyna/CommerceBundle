@@ -50,7 +50,8 @@
                  lazy="true">
             <argument type="service" id="ekyna_commerce.common.address_builder"/>
             <argument type="service" id="ekyna_commerce.common.adjustment_builder"/>
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             <argument type="service" id="ekyna_commerce.common.weight_calculator"/>
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
             <argument type="service" id="ekyna_commerce.payment.calculator"/>
@@ -93,11 +94,10 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
 
-        <!-- Sale amount calculator -->
-        <service id="ekyna_commerce.common.amount_calculator"
-                 class="Ekyna\Component\Commerce\Common\Calculator\AmountCalculator">
-            <argument type="service" id="ekyna_commerce.common.context_provider"/>
+        <!-- Amount calculator factory -->
+        <service id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory">
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
         </service>
 
         <!-- Sale weight calculator -->
@@ -105,16 +105,16 @@
                  class="Ekyna\Component\Commerce\Common\Calculator\WeightCalculator"/>
 
         <!-- Sale margin calculator -->
-        <service id="ekyna_commerce.common.margin_calculator"
-                 class="Ekyna\Component\Commerce\Common\Calculator\MarginCalculator"
+        <service id="Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.subject.purchase_cost_guesser"/>
+            <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
             <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>
             <argument type="service" id="ekyna_commerce.shipment_price.resolver"/>
-            <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
-            <argument type="service" id="ekyna_commerce.subject.purchase_cost_guesser"/>
         </service>
 
         <!-- Generators -->
@@ -166,14 +166,14 @@
             <call method="setDueDateResolver">
                 <argument type="service" id="ekyna_commerce.payment.due_date_resolver"/>
             </call>
-            <call method="setCurrencyConverter">
-                <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
-            </call>
             <call method="setCurrencyProvider">
                 <argument type="service" id="ekyna_commerce.common.currency_provider"/>
             </call>
             <call method="setLocaleProvider">
-                <argument type="service" id="ekyna_resource.locale_provider"/>
+                <argument type="service" id="Ekyna\Component\Resource\Locale\LocaleProviderInterface"/>
+            </call>
+            <call method="setAmountCalculatorFactory">
+                <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             </call>
             <call method="setDefaultVatDisplayMode">
                 <argument>%ekyna_commerce.default.vat_display_mode%</argument>

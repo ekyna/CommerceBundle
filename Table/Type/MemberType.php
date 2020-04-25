@@ -4,9 +4,9 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\Column\ConstantChoiceType;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Newsletter\Model\MemberStatuses;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
@@ -17,25 +17,6 @@ use Ekyna\Component\Table\TableBuilderInterface;
  */
 class MemberType extends ResourceTableType
 {
-    /**
-     * @var string
-     */
-    private $audienceClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $memberClass
-     * @param string $audienceClass
-     */
-    public function __construct(string $memberClass, string $audienceClass)
-    {
-        parent::__construct($memberClass);
-
-        $this->audienceClass = $audienceClass;
-    }
-
     /**
      * @inheritDoc
      */
@@ -90,11 +71,9 @@ class MemberType extends ResourceTableType
                 'label'    => 'ekyna_core.field.email',
                 'position' => 10,
             ])
-            ->addFilter('audience', EntityType::class, [
-                'label'        => 'ekyna_commerce.audience.label.plural',
-                'class'        => $this->audienceClass,
-                'entity_label' => 'name',
-                'position'     => 20,
+            ->addFilter('audience', ResourceType::class, [
+                'resource' => 'ekyna_commerce.audience',
+                'position' => 20,
             ])
             ->addFilter('status', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_core.field.status',

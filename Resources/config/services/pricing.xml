@@ -17,6 +17,7 @@
         <service id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"
                  class="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolver">
             <argument type="service" id="ekyna_commerce.common.country_provider"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface"/>
             <argument type="service" id="ekyna_commerce.tax_rule.repository"/>
         </service>
         <service alias="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"

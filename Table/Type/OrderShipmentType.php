@@ -6,9 +6,9 @@ use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\CommerceBundle\Table\Action;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
@@ -31,11 +31,6 @@ class OrderShipmentType extends AbstractOrderListType
      */
     private $translator;
 
-    /**
-     * @var string
-     */
-    private $shipmentMethodClass;
-
 
     /**
      * Constructor.
@@ -43,19 +38,16 @@ class OrderShipmentType extends AbstractOrderListType
      * @param ShipmentHelper      $shipmentHelper
      * @param TranslatorInterface $translator
      * @param string              $class
-     * @param string              $shipmentMethodClass
      */
     public function __construct(
         ShipmentHelper $shipmentHelper,
         TranslatorInterface $translator,
-        $class,
-        $shipmentMethodClass
+        string $class
     ) {
         parent::__construct($class);
 
-        $this->shipmentHelper      = $shipmentHelper;
-        $this->translator          = $translator;
-        $this->shipmentMethodClass = $shipmentMethodClass;
+        $this->shipmentHelper = $shipmentHelper;
+        $this->translator = $translator;
     }
 
     /**
@@ -125,9 +117,8 @@ class OrderShipmentType extends AbstractOrderListType
                 'label'    => 'ekyna_commerce.shipment.field.return',
                 'position' => 20,
             ])
-            ->addFilter('method', EntityType::class, [
-                'label'    => 'ekyna_core.field.method',
-                'class'    => $this->shipmentMethodClass,
+            ->addFilter('method', ResourceType::class, [
+                'resource' => 'ekyna_commerce.shipment_method',
                 'position' => 30,
             ])
             ->addFilter('state', CType\Filter\ChoiceType::class, [

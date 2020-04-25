@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
@@ -16,22 +16,6 @@ use Ekyna\Component\Table\Util\ColumnSort;
  */
 class OrderPaymentType extends AbstractOrderListType
 {
-    /**
-     * @var string
-     */
-    private $paymentMethodClass;
-
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct($class, $paymentMethodClass)
-    {
-        parent::__construct($class);
-
-        $this->paymentMethodClass = $paymentMethodClass;
-    }
-
     /**
      * @inheritDoc
      */
@@ -93,9 +77,8 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'    => 'ekyna_commerce.refund.label.singular',
                 'position' => 20,
             ])
-            ->addFilter('method', EntityType::class, [
-                'label'    => 'ekyna_core.field.method',
-                'class'    => $this->paymentMethodClass,
+            ->addFilter('method', ResourceType::class, [
+                'resource' => 'ekyna_commerce.payment_method',
                 'position' => 40,
             ])
             ->addFilter('amount', CType\Filter\NumberType::class, [

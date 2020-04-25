@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {% set show_origin_customer = not customer.hasParent() %}
 <div class="table-responsive">
 <table class="table table-stripped">
@@ -71,4 +71,4 @@
     </tbody>
 </table>
 </div>
-{% endspaceless %}
+{% endapply %}

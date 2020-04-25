@@ -1,5 +1,5 @@
 {% macro show_subject(relative, label) %}{# TODO show 'commerce_subject' type #}
-{% spaceless %}
+{% apply spaceless %}
     <div class="row show-row">
         <div class="col-md-2 show-label">
             {{ label|default('ekyna_commerce.subject.label.singular')|trans }}
@@ -20,5 +20,5 @@
             </div>
         </div>
     </div>
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_subject %}

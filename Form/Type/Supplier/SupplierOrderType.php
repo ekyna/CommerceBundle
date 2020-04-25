@@ -2,15 +2,14 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
-use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates as BStates;
 use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\LogicException;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as CStates;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form;
@@ -26,41 +25,20 @@ class SupplierOrderType extends ResourceFormType
     /**
      * @var string
      */
-    protected $supplierClass;
-
-    /**
-     * @var string
-     */
     protected $supplierProductClass;
-
-    /**
-     * @var string
-     */
-    protected $carrierClass;
-
-    /**
-     * @var string
-     */
-    protected $defaultCurrency;
 
 
     /**
      * Constructor.
      *
-     * @param string $dataClass
-     * @param string $supplierClass
-     * @param string $supplierProductClass
-     * @param string $carrierClass
-     * @param string $defaultCurrency
+     * @param string $orderClass
+     * @param string $productClass
      */
-    public function __construct($dataClass, $supplierClass, $supplierProductClass, $carrierClass, $defaultCurrency)
+    public function __construct(string $orderClass, string $productClass)
     {
-        parent::__construct($dataClass);
+        parent::__construct($orderClass);
 
-        $this->supplierClass = $supplierClass;
-        $this->supplierProductClass = $supplierProductClass;
-        $this->carrierClass = $carrierClass;
-        $this->defaultCurrency = $defaultCurrency;
+        $this->supplierProductClass = $productClass;
     }
 
     /**
@@ -76,11 +54,7 @@ class SupplierOrderType extends ResourceFormType
 
             // Step 1: Supplier is not selected
             if (null === $supplier = $order->getSupplier()) {
-                $form
-                    ->add('supplier', ResourceType::class, [
-                        'label' => 'ekyna_commerce.supplier.label.singular',
-                        'class' => $this->supplierClass,
-                    ]);
+                $form->add('supplier', SupplierChoiceType::class);
 
                 return;
             }
@@ -94,18 +68,23 @@ class SupplierOrderType extends ResourceFormType
 
             // Step 2: Supplier is selected
             $form
-                ->add('supplier', ResourceType::class, [
-                    'label'    => 'ekyna_commerce.supplier.label.singular',
-                    'class'    => $this->supplierClass,
+                ->add('supplier', SupplierChoiceType::class, [
                     'disabled' => true,
+                    'attr'     => [
+                        'class' => 'order-supplier',
+                    ],
                 ])
-                ->add('carrier', ResourceType::class, [
-                    'label'     => 'ekyna_commerce.supplier_carrier.label.singular',
-                    'class'     => $this->carrierClass,
+                ->add('carrier', SupplierCarrierChoiceType::class, [
                     'required'  => false,
                     'allow_new' => true,
                     'attr'      => [
                         'class' => 'order-carrier',
+                    ],
+                ])
+                ->add('warehouse', Commerce\Stock\WarehouseChoiceType::class, [
+                    'disabled' => true, // TODO Temporary
+                    'attr' => [
+                        'class' => 'order-warehouse',
                     ],
                 ])
                 ->add('number', Type\TextType::class, [
@@ -114,35 +93,31 @@ class SupplierOrderType extends ResourceFormType
                     'disabled' => true,
                 ])
                 ->add('currency', Commerce\Common\CurrencyChoiceType::class, [
-                    'required' => false,
                     'disabled' => true,
                 ])
                 ->add('state', Type\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'choices'  => BStates::getChoices(),
-                    'required' => false,
                     'disabled' => true,
                 ])
                 // Supplier fields
-                ->add('shippingCost', MoneyType::class, [
-                    'label'    => 'ekyna_commerce.supplier_order.field.shipping_cost',
-                    'currency' => $currency->getCode(),
+                ->add('shippingCost', Commerce\Common\MoneyType::class, [
+                    'label'      => 'ekyna_commerce.supplier_order.field.shipping_cost',
+                    'base'   => $currency,
                 ])
-                ->add('discountTotal', MoneyType::class, [
+                ->add('discountTotal', Commerce\Common\MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.discount_total',
-                    'currency' => $currency->getCode(),
+                    'base' => $currency,
                 ])
-                ->add('taxTotal', MoneyType::class, [
+                ->add('taxTotal', Commerce\Common\MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.tax_total',
-                    'currency' => $currency->getCode(),
+                    'base' => $currency,
                     'disabled' => true,
-                    'required' => false,
                 ])
-                ->add('paymentTotal', MoneyType::class, [
+                ->add('paymentTotal', Commerce\Common\MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_total',
-                    'currency' => $currency->getCode(),
+                    'base' => $currency,
                     'disabled' => true,
-                    'required' => false,
                 ])
                 ->add('paymentDate', Type\DateType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.payment_date',
@@ -155,24 +130,20 @@ class SupplierOrderType extends ResourceFormType
                     'required' => false,
                 ])
                 // Forwarder
-                ->add('forwarderFee', MoneyType::class, [
+                ->add('forwarderFee', Commerce\Common\MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_fee',
-                    'currency' => $this->defaultCurrency,
                     'disabled' => !$hasCarrier,
                 ])
-                ->add('customsTax', MoneyType::class, [
+                ->add('customsTax', Commerce\Common\MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_tax',
-                    'currency' => $this->defaultCurrency,
                     'disabled' => !$hasCarrier,
                 ])
-                ->add('customsVat', MoneyType::class, [
+                ->add('customsVat', Commerce\Common\MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.customs_vat',
-                    'currency' => $this->defaultCurrency,
                     'disabled' => !$hasCarrier,
                 ])
-                ->add('forwarderTotal', MoneyType::class, [
+                ->add('forwarderTotal', Commerce\Common\MoneyType::class, [
                     'label'    => 'ekyna_commerce.supplier_order.field.forwarder_total',
-                    'currency' => $this->defaultCurrency,
                     'disabled' => true,
                     'required' => false,
                 ])
@@ -207,78 +178,82 @@ class SupplierOrderType extends ResourceFormType
                     'required' => false,
                 ]);
 
-            /* ----------- Supplier order compose ----------- */
-
-            /**
-             * @param EntityRepository $repository
-             *
-             * @return \Doctrine\ORM\QueryBuilder
-             */
-            $queryBuilder = function (EntityRepository $repository) use ($supplier) {
-                $qb = $repository->createQueryBuilder('sp');
-
-                return $qb
-                    ->andWhere($qb->expr()->eq('sp.supplier', ':supplier'))
-                    ->setParameter('supplier', $supplier);
-            };
-
-            $formatter = \NumberFormatter::create(\Locale::getDefault(), \NumberFormatter::CURRENCY);
-
-            /**
-             * @param \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $value
-             *
-             * @return string
-             */
-            $choiceLabel = function ($value) use ($formatter) {
-                return sprintf(
-                    '[%s] %s - %s (%s) ',
-                    $value->getReference(),
-                    $value->getDesignation(),
-                    $formatter->formatCurrency($value->getNetPrice(), $value->getSupplier()->getCurrency()->getCode()),
-                    round($value->getAvailableStock())
-                );
-            };
-
-            /**
-             * @param \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $value
-             *
-             * @return array
-             */
-            $choiceAttributes = function ($value) {
-                return [
-                    'data-designation' => $value->getDesignation(),
-                    'data-reference'   => $value->getReference(),
-                    'data-net-price'   => $value->getNetPrice(),
-                ];
-            };
-
-            $form
-                ->add('items', SupplierOrderItemsType::class, [
-                    'currency' => $supplier->getCurrency()->getCode(),
-                    'attr'     => [
-                        'class' => 'order-compose-items',
-                    ],
-                ])
-                ->add('quickAddSelect', EntityType::class, [
-                    'label'         => 'ekyna_commerce.supplier_product.label.singular',
-                    'class'         => $this->supplierProductClass,
-                    'query_builder' => $queryBuilder,
-                    'choice_label'  => $choiceLabel,
-                    'choice_attr'   => $choiceAttributes,
-                    'placeholder'   => false,
-                    'required'      => false,
-                    'mapped'        => false,
-                    'attr'          => [
-                        'class' => 'order-compose-quick-add-select',
-                    ],
-                ])
-                ->add('quickAddButton', Type\ButtonType::class, [
-                    'label' => 'ekyna_core.button.add',
-                    'attr'  => [
-                        'class' => 'order-compose-quick-add-button',
-                    ],
-                ]);
+            $this->buildComposeForm($form, $supplier);
         });
+    }
+
+    private function buildComposeForm(Form\FormInterface $form, SupplierInterface $supplier): void
+    {
+        /**
+         * @param EntityRepository $repository
+         *
+         * @return \Doctrine\ORM\QueryBuilder
+         */
+        $queryBuilder = function (EntityRepository $repository) use ($supplier) {
+            $qb = $repository->createQueryBuilder('sp');
+
+            return $qb
+                ->andWhere($qb->expr()->eq('sp.supplier', ':supplier'))
+                ->setParameter('supplier', $supplier);
+        };
+
+        $formatter = \NumberFormatter::create(\Locale::getDefault(), \NumberFormatter::CURRENCY);
+
+        /**
+         * @param \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $value
+         *
+         * @return string
+         */
+        $choiceLabel = function ($value) use ($formatter) {
+            return sprintf(
+                '[%s] %s - %s (%s) ',
+                $value->getReference(),
+                $value->getDesignation(),
+                $formatter->formatCurrency($value->getNetPrice(), $value->getSupplier()->getCurrency()->getCode()),
+                round($value->getAvailableStock())
+            );
+        };
+
+        /**
+         * @param \Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface $value
+         *
+         * @return array
+         */
+        $choiceAttributes = function ($value) {
+            return [
+                'data-designation' => $value->getDesignation(),
+                'data-reference'   => $value->getReference(),
+                'data-net-price'   => $value->getNetPrice(),
+                'data-tax-group'   => $value->getTaxGroup()->getId(),
+            ];
+        };
+
+        $form
+            ->add('items', SupplierOrderItemsType::class, [
+                'currency' => $supplier->getCurrency()->getCode(),
+                'attr'     => [
+                    'class' => 'order-compose-items',
+                ],
+            ])
+            ->add('quickAddSelect', EntityType::class, [
+                'label'         => 'ekyna_commerce.supplier_product.label.singular',
+                'class'         => $this->supplierProductClass,
+                'query_builder' => $queryBuilder,
+                'choice_label'  => $choiceLabel,
+                'choice_attr'   => $choiceAttributes,
+                'placeholder'   => false,
+                'required'      => false,
+                'mapped'        => false,
+                'attr'          => [
+                    'class' => 'order-compose-quick-add-select',
+                ],
+            ])
+            ->add('quickAddButton', Type\ButtonType::class, [
+                'label' => 'ekyna_core.button.add',
+                'attr'  => [
+                    'class' => 'order-compose-quick-add-button',
+                ],
+            ]);
     }
 
     /**

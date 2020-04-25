@@ -3,7 +3,7 @@
 {% import '@EkynaCommerce/Account/Sale/macros.html.twig' as macros %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
     <hr>
     <div class="pull-right">
@@ -114,7 +114,7 @@
         'orders': orders, 'customer': customer
     } only -%}
 
-{% endspaceless %}
+{% endapply %}
 {% endblock %}
 
 {% block stylesheets %}

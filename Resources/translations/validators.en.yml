@@ -47,8 +47,8 @@ ekyna_commerce:
     newsletter:
         at_least_one_audience: Please select at least one mailing list.
     payment:
-        method:
-            not_null: Please select a payment method.
+        refund_outstanding: Outstanding method cannot be used to refund (just cancel the outstanding payment).
+        method_is_required: Please select a payment method.
     invoice:
         hierarchy_integrity: Integrity error between the elements.
         null_credit_method: Please select a refund method.
@@ -97,6 +97,10 @@ ekyna_commerce:
         tax_group_integrity: Integrity error on tax group.
         quantity_is_lower_than_shipped: The quantity must be greater than or equal to the shipped quantity (min %min%).
         quantity_is_lower_than_invoiced: The quantity must be greater than or equal to the invoiced/canceled quantity (min %min%).
+        designation_is_required: Designation is required.
+        reference_is_required: Réference is required.
+        net_price_is_required: Price is required.
+        weight_is_required: Weight is required.
     subject:
         identity_subject_must_be_selected: Please select a subject.
     stock_unit:

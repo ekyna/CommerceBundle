@@ -57,10 +57,10 @@ class TaxRuleContext implements Context, KernelAwareContext
                     if (null === $country = $countryRepository->findOneByCode($code)) {
                         throw new \InvalidArgumentException("Failed to find the country with code '{$code}'.");
                     }
-                    $taxRule->addCountry($country);
+                    $taxRule->addTarget($country);
                 }
             } else {
-                $taxRule->addCountry($countryRepository->findDefault());
+                $taxRule->addTarget($countryRepository->findDefault());
             }
 
             // Taxes

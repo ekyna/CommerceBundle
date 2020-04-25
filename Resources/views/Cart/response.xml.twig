@@ -1,5 +1,5 @@
 {% import '@EkynaCommerce/Cart/macros.html.twig' as macros -%}
-{% spaceless %}
+{% apply spaceless %}
 <?xml version="1.0" encoding="utf-8"?>
 <response>
 {%- if cart is not same as(null) -%}
@@ -21,4 +21,4 @@
 {%- endif -%}
     <content type="cart"><![CDATA[{{ cart_checkout_content(cart) }}]]></content>
 </response>
-{% endspaceless %}
+{% endapply %}

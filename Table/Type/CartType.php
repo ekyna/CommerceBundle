@@ -5,15 +5,14 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
-use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
-use Ekyna\Component\Table\View;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -24,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CartType extends ResourceTableType
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
@@ -135,7 +134,8 @@ class CartType extends ResourceTableType
                     'property_path' => 'customer.companyNumber',
                     'position'      => 34,
                 ])
-                ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
+                ->addFilter('customerGroup', ResourceType::class, [
+                    'resource' => 'ekyna_commerce.customer_group',
                     'position' => 35,
                 ])
                 ->addFilter('subject', Type\Filter\SaleSubjectType::class, [

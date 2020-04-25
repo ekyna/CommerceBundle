@@ -16,7 +16,7 @@
 {% block subject %}{{ subject|raw }}{% endblock subject %}
 
 {% block body %}
-{% spaceless %}
+{% apply spaceless %}
     {% do trans_set_locale(locale) %}
     {% if coupons|length > 1 %}
         {{- 'ekyna_commerce.coupon.notify.customer.content_multiple'|trans|raw -}}
@@ -50,5 +50,5 @@
     })|raw -}}
     {{- get_setting('commerce.email_signature', locale)|raw -}}
     {% do trans_revert_locale() %}
-{% endspaceless %}
+{% endapply %}
 {% endblock body %}

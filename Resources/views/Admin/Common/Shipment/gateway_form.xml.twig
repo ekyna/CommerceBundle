@@ -1,11 +1,11 @@
 {% extends '@EkynaAdmin/base.xml.twig' %}
 
 {% block response %}
-{% spaceless %}
+{% apply spaceless %}
 <form>
     {{ bootstrap_set_style('horizontal') }}
     {{ bootstrap_set_col_size('md') }}
     <![CDATA[{{ form_widget(form.gatewayData) }}]]>
 </form>
-{% endspaceless %}
+{% endapply %}
 {% endblock response %}

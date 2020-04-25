@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.address.edit.title'|trans }}</h3>
 
     <hr>
@@ -22,5 +22,5 @@
 
     {% include '@EkynaCommerce/Account/Address/_list.html.twig' %}
 
-{% endspaceless %}
+{% endapply %}
 {% endblock account %}

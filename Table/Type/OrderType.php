@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates;
@@ -289,7 +290,8 @@ class OrderType extends ResourceTableType
                 'property_path' => 'customer.companyNumber',
                 'position'      => 34,
             ])
-            ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
+            ->addFilter('customerGroup', ResourceType::class, [
+                'resource' => 'ekyna_commerce.customer_group',
                 'position' => 35,
             ])
             ->addFilter('title', CType\Filter\TextType::class, [

@@ -46,7 +46,7 @@ class BalancePaymentType extends AbstractType
                 ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                     /** @var \Ekyna\Component\Commerce\Payment\Model\PaymentInterface $payment */
                     $payment = $event->getData();
-                    $form    = $event->getForm();
+                    $form = $event->getForm();
 
                     $fieldOptions = [
                         'label'    => 'ekyna_core.field.amount',
@@ -56,7 +56,10 @@ class BalancePaymentType extends AbstractType
 
                     if (!$payment->isRefund()) {
                         $fieldOptions['constraints'] = [
-                            new LessThanOrEqual(min($options['available_amount'], $payment->getAmount())),
+                            new LessThanOrEqual([
+                                'value'  => min($options['available_amount'], $payment->getAmount()),
+                                'groups' => ['Default', 'Checkout'],
+                            ]),
                         ];
                     }
 
@@ -80,7 +83,7 @@ class BalancePaymentType extends AbstractType
         $payment = $form->getData();
 
         $view->vars['currency_code'] = $payment->getCurrency()->getCode();
-        $view->vars['payment_term']  = $options['payment_term'];
+        $view->vars['payment_term'] = $options['payment_term'];
         $view->vars['available_amount'] = $options['available_amount'];
     }
 

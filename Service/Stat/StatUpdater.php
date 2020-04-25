@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
 use Ekyna\Component\Commerce\Stat\Entity\StockStat;
+use Ekyna\Component\Commerce\Stat\Repository;
 use Ekyna\Component\Commerce\Stat\Updater\AbstractStatUpdater;
 
 /**
@@ -21,12 +22,12 @@ class StatUpdater extends AbstractStatUpdater
     private $manager;
 
     /**
-     * @var \Ekyna\Component\Commerce\Stat\Repository\StockStatRepositoryInterface
+     * @var Repository\StockStatRepositoryInterface
      */
     private $stockStatRepository;
 
     /**
-     * @var \Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface
+     * @var Repository\OrderStatRepositoryInterface
      */
     private $orderStatRepository;
 
@@ -47,7 +48,7 @@ class StatUpdater extends AbstractStatUpdater
     /**
      * @inheritDoc
      */
-    protected function persist($object)
+    protected function persist($object): void
     {
         $this->manager->persist($object);
     }
@@ -55,7 +56,7 @@ class StatUpdater extends AbstractStatUpdater
     /**
      * @inheritDoc
      */
-    protected function getStockStatRepository()
+    protected function getStockStatRepository(): Repository\StockStatRepositoryInterface
     {
         if (null !== $this->stockStatRepository) {
             return $this->stockStatRepository;
@@ -67,7 +68,7 @@ class StatUpdater extends AbstractStatUpdater
     /**
      * @inheritDoc
      */
-    protected function getOrderStatRepository()
+    protected function getOrderStatRepository(): Repository\OrderStatRepositoryInterface
     {
         if (null !== $this->orderStatRepository) {
             return $this->orderStatRepository;

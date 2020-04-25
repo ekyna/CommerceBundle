@@ -20,28 +20,32 @@ class TaxGroupType extends ResourceFormType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('name', Type\TextType::class, [
-                'label' => 'ekyna_core.field.name',
-            ])
-            ->add('taxes', TaxChoiceType::class, [
-                'multiple'  => true,
-                'allow_new' => true,
-            ]);
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var \Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface $group */
             $group = $event->getData();
             $form = $event->getForm();
 
-            $form->add('default', Type\CheckboxType::class, [
-                'label'    => 'ekyna_core.field.default',
-                'required' => false,
-                'disabled' => $group->isDefault(),
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ]);
+            $disabled = !empty($group->getCode());
+
+            $form
+                ->add('default', Type\CheckboxType::class, [
+                    'label'    => 'ekyna_core.field.default',
+                    'required' => false,
+                    'disabled' => $group->isDefault(),
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('name', Type\TextType::class, [
+                    'label'    => 'ekyna_core.field.name',
+                    'disabled' => $disabled,
+                ])
+                ->add('taxes', TaxChoiceType::class, [
+                    'multiple'  => true,
+                    'allow_new' => true,
+                    'required'  => false,
+                    'disabled'  => $disabled,
+                ]);
         });
     }
 }

@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
@@ -31,9 +32,10 @@ class SupplierProductType extends ResourceFormType
             ->add('reference', Symfony\TextType::class, [
                 'label' => 'ekyna_core.field.reference',
             ])
+            ->add('taxGroup', TaxGroupChoiceType::class)
             ->add('weight', Symfony\NumberType::class, [
                 'label' => 'ekyna_core.field.weight',
-                'scale' => 2,
+                'scale' => 3,
                 'attr'  => [
                     'input_group' => ['append' => 'Kg'],
                 ],

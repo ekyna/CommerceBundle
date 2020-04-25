@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {% set map_params = {'label': null, 'map_width': 520, 'map_height': 160, 'map_zoom': 17, 'map_static': false} %}
 <div class="row">
     <div class="col-md-6">
@@ -75,5 +75,5 @@
     </div>
 </div>
 {%- endif %}
-{% endspaceless %}
+{% endapply %}
 {{ ivory_google_api() }}

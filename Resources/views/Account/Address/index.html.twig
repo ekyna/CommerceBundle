@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
 
     {% include '@EkynaCommerce/Account/Address/_list.html.twig' %}
 
@@ -22,5 +22,5 @@
         } %}
     {% endif %}
 
-{% endspaceless %}
+{% endapply %}
 {% endblock account %}

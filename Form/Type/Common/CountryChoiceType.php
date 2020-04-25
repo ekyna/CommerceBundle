@@ -49,9 +49,11 @@ class CountryChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @noinspection PhpParamsInspection */
         $builder->addModelTransformer(new ObjectToIdentifierTransformer(
             $this->countryProvider->getCountryRepository(),
-            'code', $options['multiple']
+            'code',
+            $options['multiple']
         ));
 
         if ($options['multiple']) {

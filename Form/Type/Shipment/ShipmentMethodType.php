@@ -53,9 +53,7 @@ class ShipmentMethodType extends ResourceFormType
             ->add('platformName', ShipmentPlatformChoiceType::class, [
                 'disabled' => true,
             ])
-            ->add('taxGroup', TaxGroupChoiceType::class, [
-                'label' => 'ekyna_commerce.tax_group.label.singular',
-            ])
+            ->add('taxGroup', TaxGroupChoiceType::class)
             ->add('media', MediaChoiceType::class, [
                 'label' => 'ekyna_core.field.image',
                 'types' => MediaTypes::IMAGE,

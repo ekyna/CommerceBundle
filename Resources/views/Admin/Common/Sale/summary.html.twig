@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {% set shipment = shipment|default(false) %}
 {% set invoice = invoice|default(false) %}
 {% import _self as macros %}
@@ -114,4 +114,4 @@
 </tbody>
 </table>
 
-{% endspaceless %}
+{% endapply %}

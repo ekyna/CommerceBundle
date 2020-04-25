@@ -8,3 +8,9 @@
     {#{{ admin_resource_btn(resource, 'list') }}#}
     {#{{ admin_resource_btn(resource, 'new') }}#}
 {% endblock actions %}
+
+{% block main %}
+    {{ form_start(form, {'attr': {'class': 'form-body bordeless'}}) }}
+    {% include form_template %}
+    {{ form_end(form) }}
+{% endblock main %}

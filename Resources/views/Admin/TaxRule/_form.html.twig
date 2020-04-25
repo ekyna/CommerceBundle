@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
     <li class="active">
         <a href="#tax-rule-general" id="toggle-general" data-toggle="tab">
@@ -28,11 +28,12 @@
                     {{ form_row(form.business, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
-            {{ form_row(form.countries) }}
+            {{ form_row(form.sources) }}
+            {{ form_row(form.targets) }}
             {{ form_row(form.taxes) }}
             {{ form_row(form.notices) }}
         </div>
     </div>
     {{ form_rest(form) }}
 </div>
-{% endspaceless %}
+{% endapply %}

@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 <div class="panel panel-default">
     {% if title is defined -%}
     <div class="panel-heading">
@@ -52,7 +52,7 @@
                 <td>{{ sale.refundedTotal|currency_quote(null, true) }}</td>
             </tr>
             <tr>
-                <th>{{ 'ekyna_commerce.customer.button.balance'|trans }}</th>
+                <th>{{ 'ekyna_commerce.field.balance'|trans }}</th>
                 <td>{{ (sale.invoiceTotal - sale.creditTotal - sale.paidTotal + sale.refundedTotal)|currency_quote(null, true) }}</td>
             </tr>
             <tr><th colspan="2">&nbsp;</th></tr>
@@ -92,4 +92,4 @@
     </div>
     {% do currency_configure() %}{# Reset currency renderer #}
 </div>
-{% endspaceless %}
+{% endapply %}

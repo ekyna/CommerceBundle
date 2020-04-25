@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Event\CheckoutEvent;
 use Ekyna\Bundle\GoogleBundle\Tracking\Commerce\Product;
 use Ekyna\Bundle\GoogleBundle\Tracking\Event;
 use Ekyna\Bundle\GoogleBundle\Tracking\TrackingPool;
+use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
@@ -26,21 +27,33 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
     private $pool;
 
     /**
+     * @var AmountCalculatorFactory
+     */
+    private $calculatorFactory;
+
+    /**
+     * @var string
+     */
+    private $defaultCurrency;
+
+    /**
      * @var AmountCalculatorInterface
      */
-    private $calculator;
+    private $amountCalculator;
 
 
     /**
      * Constructor.
      *
-     * @param TrackingPool              $pool
-     * @param AmountCalculatorInterface $calculator
+     * @param TrackingPool            $pool
+     * @param AmountCalculatorFactory $calculatorFactory
+     * @param string                  $defaultCurrency
      */
-    public function __construct(TrackingPool $pool, AmountCalculatorInterface $calculator)
+    public function __construct(TrackingPool $pool, AmountCalculatorFactory $calculatorFactory, string $defaultCurrency)
     {
         $this->pool = $pool;
-        $this->calculator = $calculator;
+        $this->calculatorFactory = $calculatorFactory;
+        $this->defaultCurrency = $defaultCurrency;
     }
 
     /**
@@ -90,18 +103,17 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
     {
         // TODO Find a way to do this only once
         $sale = $event->getSale();
-        $currency = $this->calculator->getDefaultCurrency();
 
         $event = $this->buildTrackingEvent($sale, Event::PURCHASE);
 
-        $result = $sale->getFinalResult($currency);
-        $shipping = $sale->getShipmentResult($currency);
+        $result = $this->getAmountCalculator()->calculateSale($sale);
+        $shipping = $this->getAmountCalculator()->calculateSaleShipment($sale);
 
         $event
             ->setTransactionId($sale->getNumber())
-            ->setValue((string)Money::round($result->getTotal(), $currency))
-            ->setTax((string)Money::round($result->getTax(), $currency))
-            ->setShipping((string)Money::round($shipping->getBase(), $currency));
+            ->setValue((string)Money::round($result->getTotal(), $this->defaultCurrency))
+            ->setTax((string)Money::round($result->getTax(), $this->defaultCurrency))
+            ->setShipping((string)Money::round($shipping->getBase(), $this->defaultCurrency));
     }
 
     /**
@@ -114,12 +126,6 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
      */
     private function buildTrackingEvent(SaleInterface $sale, string $type)
     {
-        $currency = $this->calculator->getDefaultCurrency();
-
-        if (!$sale->getFinalResult($currency)) {
-            $this->calculator->calculateSale($sale, $currency);
-        }
-
         $trackEvent = new Event($type);
 
         foreach ($sale->getItems() as $saleItem) {
@@ -139,17 +145,12 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
      */
     private function buildTrackingItem(Event $trackEvent, SaleItemInterface $saleItem)
     {
-        $currency = $this->calculator->getDefaultCurrency();
-
         if (!($saleItem->isCompound() && !$saleItem->hasPrivateChildren())) {
-            if (!$saleItem->getResult($currency)) {
-                $this->calculator->calculateSaleItem($saleItem, null, $currency);
-            }
+            $total = $this->getAmountCalculator()->calculateSaleItem($saleItem)->getBase();
 
-            $total = $saleItem->getResult($currency)->getBase();
             $quantity = intval($saleItem->getTotalQuantity());
 
-            $price = (string)Money::round($total / $quantity, $currency);
+            $price = (string)Money::round($total / $quantity, $this->defaultCurrency);
 
             $trackItem = new Product($saleItem->getReference(), $saleItem->getDesignation());
             $trackItem
@@ -166,6 +167,20 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
 
             $this->buildTrackingItem($trackEvent, $child);
         }
+    }
+
+    /**
+     * Returns the amount calculator.
+     *
+     * @return AmountCalculatorInterface
+     */
+    private function getAmountCalculator(): AmountCalculatorInterface
+    {
+        if ($this->amountCalculator) {
+            return $this->amountCalculator;
+        }
+
+        return $this->amountCalculator = $this->calculatorFactory->create($this->defaultCurrency);
     }
 
     /**

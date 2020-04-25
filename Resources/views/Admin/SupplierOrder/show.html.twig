@@ -1,7 +1,7 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
 {% block main %}
-{% spaceless %}
+{% apply spaceless %}
 <div class="actions">
     {% if (supplierOrder is not received_supplier_order) or (supplierOrder is not completed_supplier_order) -%}
         {{- ui_button('ekyna_commerce.supplier_order.button.submit', {
@@ -75,9 +75,11 @@
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.orderedAt, 'datetime', {
-                            'label': 'ekyna_commerce.supplier_order.field.ordered_at',
-                            'id': 'order_orderedAt',
+                        {{ show_row(supplierOrder.warehouse, 'entity', {
+                            'label': 'ekyna_commerce.warehouse.label.singular',
+                            'route': 'ekyna_commerce_warehouse_admin_show',
+                            'route_parameters_map': {'warehouseId': 'id'},
+                            'id': 'order_warehouse',
                             'label_col': 6
                         }) }}
                     </div>
@@ -251,20 +253,24 @@
                             'label_col': 6
                         }) }}
                     </div>
-                    <div class="col-md-8">
-                        {% set urls = [] %}
-                        {% if supplierOrder.trackingUrls is not empty -%}
-                            {% for url in supplierOrder.trackingUrls -%}
-                                {%- set urls = urls|merge(['<a href="' ~ url ~ '" target="_blank">' ~ url ~ '</a>']) -%}
-                            {%- endfor %}
-                        {%- endif %}
-                        {{ show_row(urls, 'collection', {
-                            'label': 'ekyna_commerce.supplier_order.field.tracking_urls',
-                            'id': 'order_trackingUrl',
-                            'label_col': 3
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder.orderedAt, 'datetime', {
+                            'label': 'ekyna_commerce.supplier_order.field.ordered_at',
+                            'id': 'order_orderedAt',
+                            'label_col': 6
                         }) }}
                     </div>
                 </div>
+                {% set urls = [] %}
+                {% if supplierOrder.trackingUrls is not empty -%}
+                    {% for url in supplierOrder.trackingUrls -%}
+                        {%- set urls = urls|merge(['<a href="' ~ url ~ '" target="_blank">' ~ url ~ '</a>']) -%}
+                    {%- endfor %}
+                {%- endif %}
+                {{ show_row(urls, 'collection', {
+                    'label': 'ekyna_commerce.supplier_order.field.tracking_urls',
+                    'id': 'order_trackingUrl'
+                }) }}
                 {{ show_row(supplierOrder.description, 'textarea', {
                     'label': 'ekyna_commerce.field.description',
                     'id': 'order_description',
@@ -281,7 +287,7 @@
         </div>
     </div>
 </div>
-{% endspaceless %}
+{% endapply %}
 {% endblock %}
 
 {% block side %}

@@ -3,16 +3,15 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Payment;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
-use Doctrine\ORM\EntityRepository;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates as BStates;
-use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form;
+use Symfony\Component\Form\Extension\Core\Type;
 
 /**
  * Class PaymentType
@@ -22,33 +21,7 @@ use Symfony\Component\Form;
 class PaymentType extends ResourceFormType
 {
     /**
-     * @var string
-     */
-    private $currencyClass;
-
-    /**
-     * @var string
-     */
-    private $methodClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $dataClass
-     * @param string $currencyClass
-     * @param string $methodClass
-     */
-    public function __construct($dataClass, $currencyClass, $methodClass)
-    {
-        parent::__construct($dataClass);
-
-        $this->currencyClass = $currencyClass;
-        $this->methodClass = $methodClass;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(Form\FormBuilderInterface $builder, array $options)
     {
@@ -62,6 +35,9 @@ class PaymentType extends ResourceFormType
             $payment = $event->getData();
             if (!$payment instanceof PaymentInterface) {
                 throw new LogicException("Expected instance of " . PaymentInterface::class);
+            }
+            if (null === $payment->getId()) {
+                throw new LogicException("This form should be only used to edit payment.");
             }
             if (null === $currency = $payment->getCurrency()) {
                 throw new LogicException("Payment currency must be set.");
@@ -83,44 +59,21 @@ class PaymentType extends ResourceFormType
                     'label'    => 'ekyna_core.field.number',
                     'disabled' => true,
                 ])
-                // TODO Use CurrencyChoiceType
-                ->add('currency', EntityType::class, [
-                    'label'         => 'ekyna_commerce.currency.label.singular',
-                    'class'         => $this->currencyClass,
-                    'disabled'      => true,
-                    'query_builder' => function (EntityRepository $repository) {
-                        $qb = $repository
-                            ->createQueryBuilder('m')
-                            ->andWhere('m.enabled = :enabled')
-                            ->setParameter('enabled', true);
-
-                        return $qb;
-                    },
-                ])
-                ->add('state', Type\ChoiceType::class, [
-                    'label'    => 'ekyna_core.field.status',
-                    'choices'  => BStates::getChoices(),
+                ->add('currency', CurrencyChoiceType::class, [
                     'disabled' => true,
                 ])
-                // TODO Use PaymentMethodChoiceType
-                ->add('method', EntityType::class, [
-                    'label'         => 'ekyna_commerce.payment_method.label.singular',
-                    'class'         => $this->methodClass,
-                    'disabled'      => $methodDisabled,
-                    'query_builder' => function (EntityRepository $repository) use ($methodDisabled) {
-                        $qb = $repository
-                            ->createQueryBuilder('m')
-                            ->andWhere('m.enabled = :enabled')
-                            ->setParameter('enabled', true);
-
-                        if (!$methodDisabled) {
-                            $qb
-                                ->andWhere('m.factoryName = :factoryName')
-                                ->setParameter('factoryName', Offline::FACTORY_NAME);
-                        }
-
-                        return $qb;
-                    },
+                ->add('state', ConstantChoiceType::class, [
+                    'label'    => 'ekyna_core.field.status',
+                    'class'    => BStates::class,
+                    'disabled' => true,
+                ])
+                ->add('method', PaymentMethodChoiceType::class, [
+                    'disabled'    => $methodDisabled,
+                    'enabled'     => true,            // Exclude disabled methods
+                    'public'      => false,           // Include private methods
+                    'offline'     => true,            // Include offline factories
+                    'credit'      => $methodDisabled, // If disabled, include credit factory
+                    'outstanding' => $methodDisabled, // If disabled, include outstanding factory
                 ])
                 ->add('completedAt', Type\DateTimeType::class, [
                     'label'    => 'ekyna_core.field.completed_at',

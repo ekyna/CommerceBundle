@@ -1,11 +1,11 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.title'|trans|raw }}</h3>
     <hr>
     {% include '@EkynaCommerce/Account/Order/_list.html.twig' with {
         'orders': orders, 'customer': customer
     } only %}
-{% endspaceless %}
+{% endapply %}
 {% endblock account %}

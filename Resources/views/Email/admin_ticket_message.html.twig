@@ -12,7 +12,7 @@
 {% block subject %}{{ subject|raw }}{% endblock subject %}
 
 {% block body %}
-{% spaceless %}
+{% apply spaceless %}
     {{ 'ekyna_commerce.ticket_message.notify.admin.content'|trans|raw }}
     <table border="0" cellpadding="0" cellspacing="0">
         <thead>
@@ -37,5 +37,5 @@
         </tbody>
     </table>
     {{- get_setting('commerce.email_signature')|raw -}}
-{% endspaceless %}
+{% endapply %}
 {% endblock body %}

@@ -35,13 +35,6 @@
             <tag name="form.js" selector=".commerce-sale" path="ekyna-commerce/form/sale"/>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.cart_payment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartPaymentType">
-            <argument>%ekyna_commerce.cart_payment.class%</argument>
-            <argument>%ekyna_commerce.currency.class%</argument>
-            <argument>%ekyna_commerce.payment_method.class%</argument>
-            <tag name="form.type"/>
-        </service>
 
         <!-- Country form type -->
         <service id="ekyna_commerce.country_choice.form_type"
@@ -75,7 +68,6 @@
         <service id="ekyna_commerce.customer_address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType">
             <argument>%ekyna_commerce.customer_address.class%</argument>
-            <argument>%ekyna_commerce.customer.class%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ekyna_commerce.customer_search.form_type"
@@ -148,13 +140,6 @@
             <argument>%ekyna_commerce.order.class%</argument>
             <tag name="form.type"/>
         </service>
-        <service id="ekyna_commerce.order_payment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType">
-            <argument>%ekyna_commerce.order_payment.class%</argument>
-            <argument>%ekyna_commerce.currency.class%</argument>
-            <argument>%ekyna_commerce.payment_method.class%</argument>
-            <tag name="form.type"/>
-        </service>
         <service id="ekyna_commerce.order_shipment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType">
             <argument type="service" id="ekyna_commerce.shipment.builder"/>
@@ -198,13 +183,6 @@
         <service id="ekyna_commerce.quote_search.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteSearchType">
             <argument>%ekyna_commerce.quote.class%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ekyna_commerce.quote_payment.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuotePaymentType">
-            <argument>%ekyna_commerce.quote_payment.class%</argument>
-            <argument>%ekyna_commerce.currency.class%</argument>
-            <argument>%ekyna_commerce.payment_method.class%</argument>
             <tag name="form.type"/>
         </service>
 
@@ -347,6 +325,19 @@
         <!-- Stock subject form type builder -->
         <service id="ekyna_commerce.stock_subject.form_type.builder"
                  class="%ekyna_commerce.stock_subject.form_type.builder.class%"/>
+        <!-- Stock warehouse form type -->
+        <service id="ekyna_commerce.warehouse.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType">
+            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface"/>
+            <argument>%ekyna_commerce.warehouse.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <!-- Stock warehouse choice type -->
+        <service id="ekyna_commerce.warehouse_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseChoiceType">
+            <argument>%ekyna_commerce.warehouse.class%</argument>
+            <tag name="form.type"/>
+        </service>
 
         <!-- (Relative) Subject choice type -->
         <service id="ekyna_commerce.subject_choice.form_type"
@@ -370,13 +361,18 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierType">
             <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
             <argument>%ekyna_commerce.supplier.class%</argument>
-            <argument>%ekyna_commerce.supplier_carrier.class%</argument>
             <tag name="form.type"/>
         </service>
         <!-- Supplier choice form type -->
         <service id="ekyna_commerce.supplier_choice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierChoiceType">
             <argument>%ekyna_commerce.supplier.class%</argument>
+            <tag name="form.type"/>
+        </service>
+        <!-- Supplier carrier choice type -->
+        <service id="ekyna_commerce.supplier_carrier_choice.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierCarrierChoiceType">
+            <argument>%ekyna_commerce.supplier_carrier.class%</argument>
             <tag name="form.type"/>
         </service>
         <!-- Supplier delivery item type -->
@@ -392,10 +388,7 @@
         <service id="ekyna_commerce.supplier_order.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType">
             <argument>%ekyna_commerce.supplier_order.class%</argument>
-            <argument>%ekyna_commerce.supplier.class%</argument>
             <argument>%ekyna_commerce.supplier_product.class%</argument>
-            <argument>%ekyna_commerce.supplier_carrier.class%</argument>
-            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector=".commerce-supplier-order" path="ekyna-commerce/form/supplier-order"/>
             <tag name="form.js" selector=".commerce-supplier-order" path="ekyna-commerce/form/supplier-order-compose"/>
@@ -413,12 +406,6 @@
             <argument>%ekyna_commerce.supplier_product.class%</argument>
             <tag name="form.type"/>
         </service>
-        <!-- Supplier order compose type -->
-        <!--<service id="ekyna_commerce.supplier_order_compose.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderComposeType">
-            <argument>%ekyna_commerce.supplier_product.class%</argument>
-            <tag name="form.type"/>
-        </service>-->
         <!-- Supplier order create form flow -->
         <service id="ekyna_commerce.supplier_order.create_form_flow"
                  class="Ekyna\Bundle\CommerceBundle\Form\SupplierOrderCreateFlow"
@@ -429,8 +416,6 @@
         <service id="ekyna_commerce.supplier_order_submit.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType">
             <argument>%ekyna_commerce.supplier_order.class%</argument>
-            <argument>%ekyna_commerce.supplier_carrier.class%</argument>
-            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector=".commerce-supplier-submit" path="ekyna-commerce/form/supplier-order"/>
         </service>
@@ -440,13 +425,6 @@
             <argument>%locales%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector=".commerce-supplier-template" path="ekyna-commerce/form/supplier-template-choice"/>
-        </service>
-        <!-- Warehouse form type -->
-        <service id="ekyna_commerce.warehouse.form_type"
-                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType">
-            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface"/>
-            <argument>%ekyna_commerce.warehouse.class%</argument>
-            <tag name="form.type"/>
         </service>
 
         <!-- Sale add item form flow -->

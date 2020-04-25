@@ -69,6 +69,14 @@ class SupplierType extends ResourceTableType
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
+                        'label'                => 'ekyna_commerce.supplier_product.button.new',
+                        'icon'                 => 'plus',
+                        'class'                => 'primary',
+                        'route_name'           => 'ekyna_commerce_supplier_product_admin_new',
+                        'route_parameters_map' => ['supplierId' => 'id'],
+                        'permission'           => 'create',
+                    ],
+                    [
                         'label'                => 'ekyna_core.button.edit',
                         'class'                => 'warning',
                         'route_name'           => 'ekyna_commerce_supplier_admin_edit',

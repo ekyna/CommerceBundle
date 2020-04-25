@@ -68,6 +68,7 @@ class SupplierOrderItemContext implements Context, KernelAwareContext
                 ->setDesignation($product->getDesignation())
                 ->setReference($product->getReference())
                 ->setNetPrice($product->getNetPrice())
+                ->setWeight($product->getWeight())
                 ->setQuantity($row['quantity']);
 
             $items[] = $item;

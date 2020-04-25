@@ -18,7 +18,8 @@
         <service id="ekyna_commerce.event_listener.google_tracking"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\GoogleTrackingEventSubscriber">
             <argument type="service" id="ekyna_google.tracking.pool"/>
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <tag name="kernel.event_subscriber"/>
         </service>
 

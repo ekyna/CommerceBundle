@@ -19,10 +19,45 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Payment -->
+        <service id="ekyna_commerce.payment.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\PaymentValidator">
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
+        <!-- Payment method -->
+        <service id="ekyna_commerce.payment_method.validator"
+                 class="Ekyna\Bundle\CommerceBundle\Validator\Constraints\PaymentMethodValidator">
+            <argument type="service" id="payum"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
         <!-- Relay point validator -->
         <service id="ekyna_commerce.relay_point.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\RelayPointValidator">
             <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
+        <!-- Sale validator -->
+        <service id="ekyna_commerce.sale.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleValidator">
+            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
+        <!-- Sale item validators -->
+        <service id="ekyna_commerce.sale_item_configure.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemAvailabilityValidator">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="ekyna_commerce.availability_helper"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+        <service id="ekyna_commerce.sale_item.validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemValidator">
+            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
+            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <tag name="validator.constraint_validator" />
         </service>
 
@@ -52,34 +87,6 @@
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SupplierProductValidator">
             <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <tag name="validator.constraint_validator" />
-        </service>
-
-        <!-- Sale validator -->
-        <service id="ekyna_commerce.sale.validator"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleValidator">
-            <argument type="service" id="ekyna_commerce.shipment.gateway_registry"/>
-            <tag name="validator.constraint_validator" />
-        </service>
-
-        <!-- Sale item validators -->
-        <service id="ekyna_commerce.sale_item_configure.validator"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemAvailabilityValidator">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <argument type="service" id="ekyna_commerce.availability_helper"/>
-            <tag name="validator.constraint_validator" />
-        </service>
-        <service id="ekyna_commerce.sale_item.validator"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemValidator">
-            <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
-            <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
-            <tag name="validator.constraint_validator" />
-        </service>
-
-        <!-- Payment method -->
-        <service id="ekyna_commerce.payment_method.validator"
-                 class="Ekyna\Bundle\CommerceBundle\Validator\Constraints\PaymentMethodValidator">
-            <argument type="service" id="payum"/>
             <tag name="validator.constraint_validator" />
         </service>
 

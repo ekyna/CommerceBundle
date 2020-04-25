@@ -14,8 +14,9 @@
                  class="Ekyna\Component\Commerce\Common\View\ViewBuilder"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.common.view_type_registry"/>
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
-            <argument type="service" id="ekyna_commerce.common.margin_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
         </service>
 
@@ -47,7 +48,10 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Common\SaleViewType"
                  parent="ekyna_commerce.abstract_view_type">
             <call method="setLocaleProvider">
-                <argument type="service" id="ekyna_resource.locale_provider"/>
+                <argument type="service" id="Ekyna\Component\Resource\Locale\LocaleProviderInterface"/>
+            </call>
+            <call method="setAmountCalculatorFactory">
+                <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             </call>
             <tag name="ekyna_commerce.view_type"/>
         </service>

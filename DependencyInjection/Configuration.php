@@ -1501,7 +1501,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Pricing\Entity\Tax')->end()
                     ->scalarNode('controller')->end()
                     ->scalarNode('operator')->end()
-                    ->scalarNode('repository')->end()
+                    ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\TaxRepository')->end()
                     ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxType')->end()
                     ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\TaxType')->end()
                     ->scalarNode('parent')->end()

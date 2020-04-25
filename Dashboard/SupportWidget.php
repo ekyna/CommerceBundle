@@ -65,7 +65,7 @@ class SupportWidget extends AbstractWidgetType
                 'exportable'   => false,
                 'configurable' => false,
                 'profileable'  => false,
-                'source'       => new ArraySource($this->ticketRepository->findOpened()),
+                'source'       => new ArraySource($this->ticketRepository->findNotClosed()),
             ]);
 
         $tickets->handleRequest($this->requestStack->getCurrentRequest());

@@ -4,11 +4,12 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
-use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type\Filter\EntityType;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
@@ -21,25 +22,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SupplierProductType extends ResourceTableType
 {
-    /**
-     * @var string
-     */
-    private $supplierClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $class
-     * @param string $supplierClass
-     */
-    public function __construct($class, $supplierClass)
-    {
-        parent::__construct($class);
-
-        $this->supplierClass = $supplierClass;
-    }
-
     /**
      * Builds the table for the given subject.
      *
@@ -106,7 +88,7 @@ class SupplierProductType extends ResourceTableType
                         'supplierId'        => 'supplier.id',
                         'supplierProductId' => 'id',
                     ],
-                    'position'             => 10,
+                    'position'             => 0,
                 ])
                 ->addFilter('designation', CType\Filter\TextType::class, [
                     'label'    => 'ekyna_core.field.designation',
@@ -128,10 +110,9 @@ class SupplierProductType extends ResourceTableType
                     ],
                     'position'             => 0,
                 ])
-                ->addFilter('supplier', EntityType::class, [
-                    'label' => 'ekyna_commerce.supplier.label.singular',
-                    'class' => $this->supplierClass,
-                    'position'             => 0,
+                ->addFilter('supplier', ResourceType::class, [
+                    'resource' => 'ekyna_commerce.supplier',
+                    'position' => 10,
                 ]);
         }
 
@@ -147,35 +128,43 @@ class SupplierProductType extends ResourceTableType
                 'sortable'      => true,
                 'position'      => 30,
             ])
+            ->addColumn('taxGroup', DType\Column\EntityType::class, [
+                'label'                => 'ekyna_commerce.tax_group.label.singular',
+                'entity_label'         => 'name',
+                'route_name'           => 'ekyna_commerce_tax_group_admin_show',
+                'route_parameters_map' => ['taxGroupId' => 'id'],
+                'position'             => 40,
+            ])
             ->addColumn('weight', CType\Column\NumberType::class, [
                 'label'     => 'ekyna_core.field.weight',
                 'precision' => 3,
                 'append'    => 'kg',
                 'sortable'  => true,
-                'position'  => 40,
+                'position'  => 50,
             ])
             ->addColumn('availableStock', CType\Column\NumberType::class, [
                 'label'     => 'ekyna_commerce.supplier_product.field.available',
                 'precision' => 0,
                 'sortable'  => true,
-                'position'  => 50,
+                'position'  => 60,
             ])
             ->addColumn('orderedStock', CType\Column\NumberType::class, [
                 'label'     => 'ekyna_commerce.supplier_product.field.ordered',
                 'precision' => 0,
                 'sortable'  => true,
-                'position'  => 60,
+                'position'  => 70,
             ])
             ->addColumn('estimatedDateOfArrival', CType\Column\DateTimeType::class, [
                 'label'       => 'ekyna_commerce.supplier_product.field.eda',
                 'time_format' => 'none',
                 'sortable'    => true,
-                'position'    => 70,
+                'position'    => 80,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
+                        'icon'                 => 'pencil',
                         'class'                => 'warning',
                         'route_name'           => 'ekyna_commerce_supplier_product_admin_edit',
                         'route_parameters_map' => [
@@ -186,6 +175,7 @@ class SupplierProductType extends ResourceTableType
                     ],
                     [
                         'label'                => 'ekyna_core.button.remove',
+                        'icon'                 => 'trash',
                         'class'                => 'danger',
                         'route_name'           => 'ekyna_commerce_supplier_product_admin_remove',
                         'route_parameters_map' => [
@@ -204,21 +194,25 @@ class SupplierProductType extends ResourceTableType
                 'label'    => 'ekyna_commerce.field.buy_net_price',
                 'position' => 30,
             ])
+            ->addFilter('taxGroup', ResourceType::class, [
+                'resource' => 'ekyna_commerce.tax_group',
+                'position' => 40,
+            ])
             ->addFilter('weight', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_core.field.weight',
-                'position' => 40,
+                'position' => 50,
             ])
             ->addFilter('availableStock', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.field.available_stock',
-                'position' => 50,
+                'position' => 60,
             ])
             ->addFilter('orderedStock', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_commerce.supplier_product.field.ordered_stock',
-                'position' => 60,
+                'position' => 70,
             ])
             ->addFilter('estimatedDateOfArrival', CType\Filter\DateTimeType::class, [
                 'label'    => 'ekyna_commerce.field.replenishment_eda',
-                'position' => 70,
+                'position' => 80,
             ]);
     }
 

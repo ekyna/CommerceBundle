@@ -27,6 +27,21 @@
             <argument>%kernel.debug%</argument>
         </service>
 
+        <!-- Order updater -->
+        <service id="Ekyna\Component\Commerce\Order\Updater\OrderUpdaterInterface"
+                 class="Ekyna\Component\Commerce\Order\Updater\OrderUpdater"
+                 public="false">
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory"/>
+        </service>
+
+        <!-- Order margin invalidator generator -->
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\Order\OrderMarginInvalidator">
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument>%ekyna_commerce.order_item_stock_assignment.class%</argument>
+            <argument>%ekyna_commerce.order.class%</argument>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <!-- Order event listener -->
         <service id="ekyna_commerce.order.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber"
@@ -39,9 +54,6 @@
             </call>
             <call method="setStockAssigner">
                 <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
-            </call>
-            <call method="setMarginCalculator">
-                <argument type="service" id="ekyna_commerce.common.margin_calculator"/>
             </call>
             <call method="setOrderRepository">
                 <argument type="service" id="ekyna_commerce.order.repository"/>
@@ -57,6 +69,9 @@
             </call>
             <call method="setInChargeResolver">
                 <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>
+            </call>
+            <call method="setOrderUpdater">
+                <argument type="service" id="Ekyna\Component\Commerce\Order\Updater\OrderUpdaterInterface"/>
             </call>
             <tag name="resource.event_subscriber"/>
         </service>
@@ -124,6 +139,13 @@
         <service id="ekyna_commerce.order_invoice_line.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceLineEventSubscriber"
                  parent="ekyna_commerce.invoice_line.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Order stock unit event listener -->
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\StockUnitEventSubscriber"
+                 public="false">
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\Order\OrderMarginInvalidator"/>
             <tag name="resource.event_subscriber"/>
         </service>
 

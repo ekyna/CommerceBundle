@@ -7,7 +7,7 @@
 
 
 {% block content %}
-{% spaceless %}
+{% apply spaceless %}
     <div class="container checkout">
         {{ cms_title() }}
         {{ cms_content() }}
@@ -70,5 +70,5 @@
             </a>
         </div>
     </div>
-{% endspaceless %}
+{% endapply %}
 {% endblock content %}

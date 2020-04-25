@@ -36,7 +36,9 @@
         <!-- Supplier order calculator -->
         <service id="ekyna_commerce.supplier_order.calculator"
                  class="Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculator">
-            <argument>%ekyna_commerce.default.currency%</argument>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"/>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
         <!-- Supplier order number generator -->
@@ -46,6 +48,15 @@
             <argument>10</argument>
             <argument>\Sym</argument>
             <argument>%kernel.debug%</argument>
+        </service>
+
+        <!-- Supplier product event listener -->
+        <service id="ekyna_commerce.supplier_product.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierProductEventSubscriber"
+                 public="false">
+            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier* abstract event listener -->
@@ -66,32 +77,37 @@
         <!-- Supplier order event listener -->
         <service id="ekyna_commerce.supplier_order.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener"
+                 public="false">
             <argument type="service" id="ekyna_commerce.supplier_order.number_generator"/>
             <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
             <argument type="service" id="ekyna_commerce.supplier_order.state_resolver"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="ekyna_commerce.warehouse.repository"/>
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier order item event listener -->
         <service id="ekyna_commerce.supplier_order_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderItemEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener"
+                 public="false">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier delivery event listener -->
         <service id="ekyna_commerce.supplier_delivery.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener"
+                 public="false">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier delivery item event listener -->
         <service id="ekyna_commerce.supplier_delivery_item.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener">
+                 parent="ekyna_commerce.supplier.abstract_listener"
+                 public="false">
             <tag name="resource.event_subscriber"/>
         </service>
 

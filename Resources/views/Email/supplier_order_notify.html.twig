@@ -5,11 +5,11 @@
 {% endblock subject %}
 
 {% block body %}
-{% spaceless %}
+{% apply spaceless %}
     {% if notify.customMessage is not empty -%}
         {{ notify.customMessage|raw }}
     {%- endif %}
 
     {{- get_setting('commerce.email_signature', order.supplier.locale)|raw -}}
-{% endspaceless %}
+{% endapply %}
 {% endblock body %}

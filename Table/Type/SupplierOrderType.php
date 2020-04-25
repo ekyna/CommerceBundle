@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -21,33 +22,7 @@ use Ekyna\Component\Table\View\RowView;
 class SupplierOrderType extends ResourceTableType
 {
     /**
-     * @var string
-     */
-    private $supplierClass;
-
-    /**
-     * @var string
-     */
-    private $carrierClass;
-
-
-    /**
-     * Constructor.
-     *
-     * @param string $supplierOrderClass
-     * @param string $supplierClass
-     * @param string $carrierClass
-     */
-    public function __construct($supplierOrderClass, $supplierClass, $carrierClass)
-    {
-        parent::__construct($supplierOrderClass);
-
-        $this->supplierClass = $supplierClass;
-        $this->carrierClass = $carrierClass;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
@@ -149,17 +124,13 @@ class SupplierOrderType extends ResourceTableType
                 'position' => 20,
                 'time'     => false,
             ])
-            ->addFilter('supplier', DType\Filter\EntityType::class, [
-                'label'        => 'ekyna_commerce.supplier.label.singular',
-                'class'        => $this->supplierClass,
-                'entity_label' => 'name',
-                'position'     => 30,
+            ->addFilter('supplier', ResourceType::class, [
+                'resource' => 'ekyna_commerce.supplier',
+                'position' => 30,
             ])
-            ->addFilter('carrier', DType\Filter\EntityType::class, [
-                'label'        => 'ekyna_commerce.supplier_carrier.label.singular',
-                'class'        => $this->carrierClass,
-                'entity_label' => 'name',
-                'position'     => 40,
+            ->addFilter('carrier', ResourceType::class, [
+                'resource' => 'ekyna_commerce.supplier_carrier',
+                'position' => 40,
             ])
             ->addFilter('state', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.field.status',

@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.information.edit.title'|trans }}</h3>
 
     <hr>
@@ -54,5 +54,5 @@
     </div>
     {{ form_end(form) }}
 
-{% endspaceless %}
+{% endapply %}
 {% endblock account %}

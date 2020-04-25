@@ -21,7 +21,8 @@
         <!-- Document calculator -->
         <service id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
         <!-- Document renderer factory -->

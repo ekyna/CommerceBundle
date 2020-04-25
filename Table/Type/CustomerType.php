@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Features;
@@ -33,7 +34,7 @@ class CustomerType extends ResourceTableType
      * Constructor.
      *
      * @param Features $features
-     * @param string $dataClass
+     * @param string   $dataClass
      */
     public function __construct(Features $features, string $dataClass)
     {
@@ -101,17 +102,21 @@ class CustomerType extends ResourceTableType
                 'position'             => 50,
             ])
             ->addColumn('creditBalance', CType\Column\NumberType::class, [
-                'label'    => 'ekyna_commerce.customer.field.credit_balance',
+                'label'    => 'ekyna_commerce.customer.short.credit_balance',
                 'position' => 60,
             ])
-            ->addColumn('outstandingBalance', CType\Column\NumberType::class, [
+            ->addColumn('outstandingBalance', Type\Column\CustomerOutstandingType::class, [
+                'label'    => 'ekyna_commerce.customer.short.outstanding_balance',
+                'position' => 70,
+            ])
+            /*->addColumn('outstandingBalance', CType\Column\NumberType::class, [
                 'label'    => 'ekyna_commerce.customer.field.outstanding_balance',
                 'position' => 70,
             ])
             ->addColumn('outstandingLimit', CType\Column\NumberType::class, [
                 'label'    => 'ekyna_commerce.sale.field.outstanding_limit',
                 'position' => 80,
-            ])
+            ])*/
             ->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 100,
             ])
@@ -192,7 +197,8 @@ class CustomerType extends ResourceTableType
                     'mode'     => CType\Filter\BooleanType::MODE_IS_NULL,
                     'position' => 60,
                 ])
-                ->addFilter('customerGroup', Type\Filter\CustomerGroupType::class, [
+                ->addFilter('customerGroup', ResourceType::class, [
+                    'resource' => 'ekyna_commerce.customer_group',
                     'position' => 70,
                 ])
                 ->addFilter('creditBalance', CType\Filter\NumberType::class, [
@@ -209,6 +215,11 @@ class CustomerType extends ResourceTableType
                 ])
                 ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                     'position' => 110,
+                ])
+                ->addFilter('defaultPaymentMethod', ResourceType::class, [
+                    'label'    => 'ekyna_commerce.customer.field.default_payment_method',
+                    'resource' => 'ekyna_commerce.payment_method',
+                    'position' => 115,
                 ])
                 ->addFilter('state', CType\Filter\ChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',

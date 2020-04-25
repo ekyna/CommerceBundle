@@ -12,8 +12,8 @@
             <call method="setContextProvider">
                 <argument type="service" id="ekyna_commerce.common.context_provider"/>
             </call>
-            <call method="setAmountCalculator">
-                <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <call method="setCalculatorFactory">
+                <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             </call>
         </service>
 

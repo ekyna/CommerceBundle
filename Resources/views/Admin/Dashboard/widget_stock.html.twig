@@ -1,6 +1,6 @@
 {% import '@EkynaCommerce/Admin/Dashboard/_macro.html.twig' as macros %}
 
-{% spaceless %}
+{% apply spaceless %}
 <div class="commerce-panel">
     <h3>
         {{ 'ekyna_commerce.dashboard.stat.title.stock'|trans }} <span>
@@ -13,4 +13,4 @@
     </h3>
 </div>
 {{ macros.render_stat_chart('stock_values', stock_chart) }}
-{% endspaceless %}
+{% endapply %}

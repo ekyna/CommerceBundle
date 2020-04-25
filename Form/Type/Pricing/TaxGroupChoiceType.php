@@ -108,6 +108,7 @@ class TaxGroupChoiceType extends AbstractType
                 'choice_value' => 'id',
                 'choice_attr'  => $choiceAttr,
                 'choice_label' => $choiceLabel,
+                'select2'      => false,
                 'attr'         => [
                     'class' => 'tax-group-choice',
                 ],
@@ -116,7 +117,9 @@ class TaxGroupChoiceType extends AbstractType
                 $value = (array)$value;
 
                 if (!isset($value['placeholder'])) {
-                    $value['placeholder'] = 'ekyna_commerce.tax_group.label.' . ($options['multiple'] ? 'plural' : 'singular');
+                    $value['placeholder'] =
+                        'ekyna_commerce.tax_group.label.' .
+                        ($options['multiple'] ? 'plural' : 'singular');
                 }
 
                 return $value;

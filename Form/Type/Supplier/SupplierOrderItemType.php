@@ -4,9 +4,10 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
 use Braincrafted\Bundle\BootstrapBundle\Form\Type\MoneyType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
 use Ekyna\Bundle\CoreBundle\Form\Type\HiddenEntityType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -61,6 +62,11 @@ class SupplierOrderItemType extends ResourceFormType
                 'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'order-item-net-price',
+                ],
+            ])
+            ->add('taxGroup', TaxGroupChoiceType::class, [
+                'attr' => [
+                    'class' => 'order-item-tax-group',
                 ],
             ])
             ->add('quantity', Symfony\NumberType::class, [

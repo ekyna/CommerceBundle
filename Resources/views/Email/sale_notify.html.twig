@@ -1,7 +1,7 @@
 {% extends "email.html.twig" %}
 
 {% block stylesheets %}
-{% spaceless %}
+{% apply spaceless %}
     {{ parent() }}
     {% if notify.includeView != 'none' %}
     <style type="text/css">
@@ -11,7 +11,7 @@
     </style>
     <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/sale-view.css')) }}" rel="stylesheet" type="text/css"/>
     {% endif %}
-{% endspaceless %}
+{% endapply %}
 {% endblock stylesheets %}
 
 {% block subject %}
@@ -19,7 +19,7 @@
 {% endblock subject %}
 
 {% block body %}
-{% spaceless %}
+{% apply spaceless %}
     {% do trans_set_locale(sale.locale) %}
     {% if notify.includeView == 'before' -%}
         {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
@@ -64,5 +64,5 @@
         })|raw }}
     </p>
     {% do trans_revert_locale() %}
-{% endspaceless %}
+{% endapply %}
 {% endblock body %}

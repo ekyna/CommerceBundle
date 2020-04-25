@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {% if 0 < distance %}({{ distance }} m) {% endif %}
 {% if company is not empty %}<strong><em>{{ company }}</em></strong><br>{% endif %}
 {{ street }}
@@ -8,4 +8,4 @@
 <br>{{ country }}{#{% if state is not empty %}, {{ state }}{% endif %}#}
 {% if phone is not empty %}<br>{{ phone }}{% endif %}
 {% if mobile is not empty %}<br>{{ mobile }}{% endif %}
-{% endspaceless %}
+{% endapply %}

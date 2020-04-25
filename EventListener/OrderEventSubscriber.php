@@ -57,7 +57,7 @@ class OrderEventSubscriber extends BaseSubscriber
      *
      * @param ResourceEventInterface $event
      */
-    public function onInitialize(ResourceEventInterface $event)
+    public function onInitialize(ResourceEventInterface $event): void
     {
         parent::onInitialize($event);
 
@@ -70,7 +70,7 @@ class OrderEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
-    public function onPreDelete(ResourceEventInterface $event)
+    public function onPreDelete(ResourceEventInterface $event): void
     {
         try {
             parent::onPreDelete($event);
@@ -85,7 +85,7 @@ class OrderEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
-    public function onPreUpdate(ResourceEventInterface $event)
+    public function onPreUpdate(ResourceEventInterface $event): void
     {
         try {
             parent::onPreUpdate($event);
@@ -99,7 +99,7 @@ class OrderEventSubscriber extends BaseSubscriber
      *
      * @param OrderInterface $sale
      */
-    protected function handleInsert(SaleInterface $sale)
+    protected function handleInsert(SaleInterface $sale): bool
     {
         $changed = parent::handleInsert($sale);
 
@@ -113,7 +113,7 @@ class OrderEventSubscriber extends BaseSubscriber
      *
      * @param OrderInterface $sale
      */
-    protected function handleUpdate(SaleInterface $sale)
+    protected function handleUpdate(SaleInterface $sale): bool
     {
         $changed = parent::handleUpdate($sale);
 
@@ -127,7 +127,7 @@ class OrderEventSubscriber extends BaseSubscriber
      *
      * @param OrderInterface $sale
      */
-    protected function handleContentChange(SaleInterface $sale)
+    protected function handleContentChange(SaleInterface $sale): bool
     {
         $changed = parent::handleContentChange($sale);
 
@@ -150,7 +150,7 @@ class OrderEventSubscriber extends BaseSubscriber
      *
      * @return bool Whether the order items tags has change.
      */
-    private function mergeItemTags(OrderItemInterface $item, Collection $tags)
+    private function mergeItemTags(OrderItemInterface $item, Collection $tags): bool
     {
         $changed = false;
         if ($item->hasChildren()) {

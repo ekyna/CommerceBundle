@@ -1,18 +1,16 @@
-<div class="form-body">
-    {{ bootstrap_set_style('horizontal') }}
-    {{ bootstrap_set_col_size('md') }}
-    {{ form_errors(form, {'global_errors': true}) }}
-    <table class="table table-alt-head">
-        <thead>
-        <tr>
-            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-            <th>{{ 'ekyna_core.field.type'|trans }}</th>
-            <th>{{ 'ekyna_core.field.mode'|trans }}</th>
-            <th>{{ 'ekyna_core.field.amount'|trans }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        {{ form_widget(form)|replace({'__controls__': ''})|raw }}
-    </table>
-    {{ form_rest(form) }}
-</div>
+{{ bootstrap_set_style('horizontal') }}
+{{ bootstrap_set_col_size('md') }}
+{{ form_errors(form, {'global_errors': true}) }}
+<table class="table table-alt-head">
+    <thead>
+    <tr>
+        <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+        <th>{{ 'ekyna_core.field.type'|trans }}</th>
+        <th>{{ 'ekyna_core.field.mode'|trans }}</th>
+        <th>{{ 'ekyna_core.field.amount'|trans }}</th>
+        <th></th>
+    </tr>
+    </thead>
+    {{ form_widget(form)|replace({'__controls__': ''})|raw }}
+</table>
+{{ form_rest(form) }}

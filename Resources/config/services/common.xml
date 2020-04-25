@@ -77,9 +77,11 @@
             <argument type="service" id="ekyna_resource.locale_provider"/>
             <argument type="service" id="ekyna_commerce.common.currency_provider"/>
             <argument type="service" id="ekyna_commerce.common.country_provider"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface"/>
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument>%ekyna_commerce.default.vat_display_mode%</argument>
             <argument>%ekyna_commerce.context.class%</argument>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
         </service>
 
         <!-- Context event subscriber -->
@@ -136,8 +138,9 @@
         <!-- Coupon setter -->
         <service id="Ekyna\Bundle\CommerceBundle\Service\Common\CouponHelper">
             <argument type="service" id="ekyna_commerce.coupon.repository"/>
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
+            <argument>%ekyna_commerce.default.currency%</argument>
             <call method="setFormatterFactory">
                 <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             </call>

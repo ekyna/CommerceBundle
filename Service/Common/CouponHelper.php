@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
-use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorInterface;
+use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Helper\CouponHelper as BaseHelper;
 use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Repository\CouponRepositoryInterface;
@@ -26,15 +26,17 @@ class CouponHelper extends BaseHelper
      * Constructor.
      *
      * @param CouponRepositoryInterface $repository
-     * @param AmountCalculatorInterface $calculator
+     * @param AmountCalculatorFactory   $factory
      * @param TranslatorInterface       $translator
+     * @param string                    $currency
      */
     public function __construct(
         CouponRepositoryInterface $repository,
-        AmountCalculatorInterface $calculator,
-        TranslatorInterface $translator
+        AmountCalculatorFactory $factory,
+        TranslatorInterface $translator,
+        string $currency
     ) {
-        parent::__construct($repository, $calculator);
+        parent::__construct($repository, $factory, $currency);
 
         $this->translator = $translator;
     }

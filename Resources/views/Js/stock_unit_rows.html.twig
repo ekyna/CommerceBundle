@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {% for stock_unit in stock_units %}
     {% set stock_unit_id = prefix ~ '_' ~ loop.index0 %}
     <tbody>
@@ -88,4 +88,4 @@
         </td>
     </tr>
 {% endfor %}
-{% endspaceless %}
+{% endapply %}

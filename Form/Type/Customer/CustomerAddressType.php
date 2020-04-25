@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
-use Ekyna\Bundle\AdminBundle\Form\Type\ResourceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,31 +18,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CustomerAddressType extends ResourceFormType
 {
     /**
-     * @var string
-     */
-    private $customerClass;
-
-
-    /**
      * Constructor.
      *
      * @param string $addressClass
-     * @param string $customerClass
      */
-    public function __construct($addressClass, $customerClass)
+    public function __construct($addressClass)
     {
         parent::__construct($addressClass);
-
-        $this->customerClass = $customerClass;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['defaults']) {
-            $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 /** @var \Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface $address */
                 $address = $event->getData();
                 $form = $event->getForm();
@@ -67,15 +57,6 @@ class CustomerAddressType extends ResourceFormType
                     ]);
             });
         }
-
-        if ($options['customer_form']) {
-            $builder->add('customer', ResourceType::class, [
-                'label'     => 'ekyna_commerce.customer.label.singular',
-                'class'     => $this->customerClass,
-                'allow_new' => true,
-                'select2'   => $options['select2'],
-            ]);
-        }
     }
 
     /**
@@ -86,9 +67,7 @@ class CustomerAddressType extends ResourceFormType
         parent::configureOptions($resolver);
 
         $resolver
-            ->setDefault('customer_form', false)
             ->setDefault('defaults', true)
-            ->setAllowedTypes('customer_form', 'bool')
             ->setAllowedTypes('defaults', 'bool');
     }
 

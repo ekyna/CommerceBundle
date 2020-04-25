@@ -37,7 +37,7 @@ class QuoteEventSubscriber extends BaseSubscriber
      *
      * @param SubjectHelperInterface $subjectHelper
      */
-    public function setSubjectHelper(SubjectHelperInterface $subjectHelper)
+    public function setSubjectHelper(SubjectHelperInterface $subjectHelper): void
     {
         $this->subjectHelper = $subjectHelper;
     }
@@ -47,7 +47,7 @@ class QuoteEventSubscriber extends BaseSubscriber
      *
      * @param InChargeResolver $inChargeResolver
      */
-    public function setInChargeResolver(InChargeResolver $inChargeResolver)
+    public function setInChargeResolver(InChargeResolver $inChargeResolver): void
     {
         $this->inChargeResolver = $inChargeResolver;
     }
@@ -57,7 +57,7 @@ class QuoteEventSubscriber extends BaseSubscriber
      *
      * @param ResourceEventInterface $event
      */
-    public function onInitialize(ResourceEventInterface $event)
+    public function onInitialize(ResourceEventInterface $event): void
     {
         parent::onInitialize($event);
 
@@ -70,7 +70,7 @@ class QuoteEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
-    public function onPreDelete(ResourceEventInterface $event)
+    public function onPreDelete(ResourceEventInterface $event): void
     {
         try {
             parent::onPreDelete($event);
@@ -87,7 +87,7 @@ class QuoteEventSubscriber extends BaseSubscriber
      *
      * @param QuoteInterface $sale
      */
-    protected function handleInsert(SaleInterface $sale)
+    protected function handleInsert(SaleInterface $sale): bool
     {
         $changed = parent::handleInsert($sale);
 
@@ -101,7 +101,7 @@ class QuoteEventSubscriber extends BaseSubscriber
      *
      * @param QuoteInterface $sale
      */
-    protected function handleUpdate(SaleInterface $sale)
+    protected function handleUpdate(SaleInterface $sale): bool
     {
         $changed = parent::handleUpdate($sale);
 
@@ -115,7 +115,7 @@ class QuoteEventSubscriber extends BaseSubscriber
      *
      * @param QuoteInterface $sale
      */
-    protected function handleContentChange(SaleInterface $sale)
+    protected function handleContentChange(SaleInterface $sale): bool
     {
         $changed = parent::handleContentChange($sale);
 
@@ -138,7 +138,7 @@ class QuoteEventSubscriber extends BaseSubscriber
      *
      * @return bool Whether the order items tags has change.
      */
-    private function mergeItemTags(QuoteItemInterface $item, Collection $tags)
+    private function mergeItemTags(QuoteItemInterface $item, Collection $tags): bool
     {
         $changed = false;
         if ($item->hasChildren()) {

@@ -49,18 +49,18 @@ class TicketType extends ResourceTableType
                 'label'    => 'ekyna_core.field.subject',
                 'position' => 40,
             ])
-            ->addColumn('inCharge', Column\InChargeType::class, [
-                'position' => 50,
-            ])
-            ->addColumn('customer', Column\CustomerType::class, [
-                'position' => 60,
-            ])
             ->addColumn('orders', Column\OrderType::class, [
                 'multiple' => true,
-                'position' => 70,
+                'position' => 50,
             ])
             ->addColumn('quotes', Column\QuoteType::class, [
                 'multiple' => true,
+                'position' => 60,
+            ])
+            ->addColumn('customer', Column\CustomerType::class, [
+                'position' => 70,
+            ])
+            ->addColumn('inCharge', Column\InChargeType::class, [
                 'position' => 80,
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
@@ -98,17 +98,17 @@ class TicketType extends ResourceTableType
                 'label'    => 'ekyna_core.field.subject',
                 'position' => 40,
             ])
-            ->addFilter('inCharge', Filter\InChargeType::class, [
+            ->addFilter('orders', Filter\OrderType::class, [
                 'position' => 50,
             ])
-            ->addFilter('customer', Filter\CustomerType::class, [
+            ->addFilter('quotes', Filter\QuoteType::class, [
                 'position' => 60,
             ])
-            ->addFilter('orders', Filter\OrderType::class, [
+            ->addFilter('customer', Filter\CustomerType::class, [
                 'position' => 70,
             ])
-            ->addFilter('quotes', Filter\QuoteType::class, [
-                'position' => 80,
+            ->addFilter('inCharge', Filter\InChargeType::class, [
+                'position' => 50,
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => 'ekyna_core.field.created_at',

@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.balance.title'|trans }}</h3>
     <hr>
     {{ customer|payment_method_notice }}
@@ -9,7 +9,7 @@
         'balance': balance,
         'form': form
     } only %}
-{% endspaceless %}
+{% endapply %}
 {% endblock account %}
 
 {% block javascripts %}

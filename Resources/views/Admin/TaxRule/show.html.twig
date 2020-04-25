@@ -48,9 +48,15 @@
                         }) }}
                     </div>
                 </div>
+                {{ show_row(taxRule.sources, 'entity', {
+                    'label': 'ekyna_commerce.tax_rule.field.sources',
+                    'id': 'tax_rule_sources',
+                    'route': 'ekyna_commerce_country_admin_show',
+                    'route_parameters_map': {'countryId': 'id'}
+                }) }}
                 {{ show_row(taxRule.countries, 'entity', {
-                    'label': 'ekyna_commerce.country.label.plural',
-                    'id': 'tax_rule_countries',
+                    'label': 'ekyna_commerce.tax_rule.field.targets',
+                    'id': 'tax_rule_targets',
                     'route': 'ekyna_commerce_country_admin_show',
                     'route_parameters_map': {'countryId': 'id'}
                 }) }}

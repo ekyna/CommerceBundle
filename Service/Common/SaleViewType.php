@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
+use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Common\View\LineView;
@@ -21,15 +22,30 @@ class SaleViewType extends AbstractViewType
      */
     private $localeProvider;
 
+    /**
+     * @var AmountCalculatorFactory
+     */
+    private $amountCalculatorFactory;
+
 
     /**
-     * Sets the localeProvider.
+     * Sets the locale provider.
      *
      * @param LocaleProviderInterface $provider
      */
-    public function setLocaleProvider(LocaleProviderInterface $provider)
+    public function setLocaleProvider(LocaleProviderInterface $provider): void
     {
         $this->localeProvider = $provider;
+    }
+
+    /**
+     * Sets the amount calculator factory.
+     *
+     * @param AmountCalculatorFactory $amountCalculatorFactory
+     */
+    public function setAmountCalculatorFactory(AmountCalculatorFactory $amountCalculatorFactory): void
+    {
+        $this->amountCalculatorFactory = $amountCalculatorFactory;
     }
 
     /**
@@ -132,7 +148,9 @@ class SaleViewType extends AbstractViewType
      */
     public function buildShipmentView(Model\SaleInterface $sale, View\LineView $view, array $options)
     {
-        if (0 >= $sale->getShipmentResult($options['currency'])->getTotal()) {
+        $result = $this->amountCalculatorFactory->create($options['currency'])->calculateSaleShipment($sale);
+
+        if (0 >= $result->getTotal()) {
             $free = $this->trans('ekyna_commerce.checkout.shipment.free_shipping');
             $view->setBase($free);
             $view->setTotal($free);

@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {%- if config.locale is not null -%}
     {%- do trans_set_locale(config.locale) -%}
 {%- endif -%}
@@ -56,4 +56,4 @@
 {%- if config.locale is not null -%}
     {% do trans_revert_locale() %}
 {% endif %}
-{% endspaceless %}
+{% endapply %}

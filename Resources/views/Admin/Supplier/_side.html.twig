@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
         {{ 'ekyna_commerce.supplier.label.singular'|trans }}
@@ -26,7 +26,7 @@
         </table>
     </div>
 </div>
-{% endspaceless %}
+{% endapply %}
 
 {#<p><strong>{{ supplier.name }}</strong> ({{ supplier.locale|language }}</p>
 <p>{{ supplier.email }}</p>

@@ -3,8 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Commerce\Common\Entity\Country;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
@@ -74,11 +74,9 @@ class TaxType extends ResourceTableType
                 'label'    => 'ekyna_core.field.rate',
                 'position' => 20,
             ])
-            ->addFilter('country', DType\Filter\EntityType::class, [
-                'label'        => 'ekyna_core.field.country',
-                'class'        => Country::class,
-                'entity_label' => 'name',
-                'position'     => 30,
+            ->addFilter('country', ResourceType::class, [
+                'resource' => 'ekyna_commerce.country',
+                'position' => 30,
             ]);
     }
 }

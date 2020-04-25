@@ -10,7 +10,7 @@
 {% endblock actions %}
 
 {% block main %}
-{% spaceless %}
+{% apply spaceless %}
 
     {% if not refund %}
     <p style="font-size:18px;">
@@ -75,7 +75,7 @@
         'prefix': 'refund'
     } %}
 
-{% endspaceless %}
+{% endapply %}
 {% endblock main %}
 
 {% block side %}

@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
     <p class="h4 checkout-heading">
         {% set currency = sale.currency.code -%}
         {% set amount = sale|payment_expected_amount -%}
@@ -27,4 +27,4 @@
     </div>
     {%- endfor %}
     <script type="text/javascript">require(['ekyna-commerce/payment-forms']);</script>
-{% endspaceless %}
+{% endapply %}

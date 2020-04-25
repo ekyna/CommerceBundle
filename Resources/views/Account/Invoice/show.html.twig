@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-    {% spaceless %}
+    {% apply spaceless %}
         <h3>{{ 'ekyna_commerce.account.invoice.show'|trans({'%number%': invoice.number})|raw }}</h3>
         <p>
             {{ 'ekyna_core.field.created_at'|trans }} <em>{{ invoice.createdAt|localizeddate('short', 'none') }}</em>.
@@ -59,7 +59,7 @@
             'invoices': invoices
         } only %}
 
-    {% endspaceless %}
+    {% endapply %}
 {% endblock %}
 
 {% block stylesheets %}

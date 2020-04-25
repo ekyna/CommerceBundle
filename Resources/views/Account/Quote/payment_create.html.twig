@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.quote.payment'|trans({'%number%': quote.number})|raw }}</h3>
     <p>
         Du {{ quote.createdAt|localizeddate('short', 'none') }}, {{ quote|sale_state_badge }}
@@ -46,7 +46,7 @@
     {%- include '@EkynaCommerce/Account/Quote/_list.html.twig' with {
         'quotes': quotes, 'customer': customer
     } only -%}
-{% endspaceless %}
+{% endapply %}
 {% endblock %}
 
 

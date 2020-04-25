@@ -2,6 +2,7 @@ ekyna_commerce:
     label: Commerce
 
     field:
+        balance: Balance
         eta: ETA
         sample: Sample
         description: Internal note
@@ -561,7 +562,7 @@ ekyna_commerce:
             due_date: Due date
             remaining_unknown: The following products will be shipped later.
             remaining_with_date: The following products will be shipped from %date%.
-            deposit: "%percent% deposit resulting in an amount of %amount%"
+            deposit: "%percent% deposit (resulting in an amount of %amount%)"
             deposit_remaining: The rest after receipt of the goods
         message:
             failed_to_generate: Failed to generate PDF.
@@ -666,6 +667,9 @@ ekyna_commerce:
             graphics: Design
             document_types: Use for
             newsletter: Newsletter
+        short:
+            outstanding_balance: Outstanding
+            credit_balance: Credit
         help:
             hierarchy: >
                 ◊&nbsp;&nbsp;Accountable&nbsp;service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ♦&nbsp;&nbsp;Sales&nbsp;manager
@@ -1842,6 +1846,8 @@ ekyna_commerce:
             customer: Customer
             business: Business
             notices: Notices (invoice)
+            sources: Sender countries
+            targets: Recipient countries
         alert:
             no_item: No tax rule configured.
 

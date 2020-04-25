@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\Util\ColumnSort;
 
 /**
  * Class TaxRuleType
@@ -20,6 +21,7 @@ class TaxRuleType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
+            ->addDefaultSort('priority', ColumnSort::DESC)
             ->addColumn('name', BType\Column\AnchorType::class, [
                 'label'                => 'ekyna_core.field.name',
                 'route_name'           => 'ekyna_commerce_tax_rule_admin_show',

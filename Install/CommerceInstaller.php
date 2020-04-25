@@ -51,15 +51,15 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing taxes:</info>');
-        $installer->installTaxes($country);
+        $installer->installTaxes();
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing tax group:</info>');
-        $installer->installTaxGroups($country);
+        $installer->installTaxGroups();
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing tax rules:</info>');
-        $installer->installTaxRules($country);
+        $installer->installTaxRules();
         $output->writeln('');
 
         $output->writeln('<info>[Commerce] Installing customer groups:</info>');

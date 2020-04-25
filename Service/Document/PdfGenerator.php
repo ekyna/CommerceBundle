@@ -104,7 +104,7 @@ class PdfGenerator
             try {
                 $response = $client->request('GET', $this->endpoint, [
                     'json'    => $options,
-                    'timeout' => 10,
+                    'timeout' => 30,
                     'headers' => [
                         'X-AUTH-TOKEN' => $this->token,
                     ],

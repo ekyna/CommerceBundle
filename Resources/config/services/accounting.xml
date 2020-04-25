@@ -12,7 +12,7 @@
             <argument type="service" id="ekyna_commerce.order_payment.repository"/>
             <argument type="service" id="ekyna_commerce.accounting.repository"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"/>
             <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>

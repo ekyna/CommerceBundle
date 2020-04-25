@@ -25,7 +25,7 @@ class SupplierChoiceType extends AbstractType
      *
      * @param string $supplierClass
      */
-    public function __construct($supplierClass)
+    public function __construct(string $supplierClass)
     {
         $this->supplierClass = $supplierClass;
     }

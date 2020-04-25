@@ -1,106 +1,106 @@
 {% macro show_stock_mode(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject|stock_subject_mode_badge, 'text', {
         'label': 'ekyna_core.field.mode',
         'id': 'subject_stockMode'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_stock_mode %}
 
 
 {% macro show_stock_state(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject|stock_subject_state_badge, 'text', {
         'label': 'ekyna_core.field.status',
         'id': 'subject_stockState'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_stock_state %}
 
 
 {% macro show_in_stock(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.inStock, 'number', {
         'label': 'ekyna_commerce.field.in_stock',
         'id': 'subject_inStock'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_in_stock %}
 
 
 {% macro show_available_stock(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.availableStock, 'number', {
         'label': 'ekyna_commerce.field.available_stock',
         'id': 'subject_availableStock'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_available_stock %}
 
 
 {% macro show_virtual_stock(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.virtualStock, 'number', {
         'label': 'ekyna_commerce.field.virtual_stock',
         'id': 'subject_virtualStock'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_virtual_stock %}
 
 
 {% macro show_stock_floor(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.stockFloor, 'number', {
         'label': 'ekyna_commerce.stock_subject.field.floor',
         'id': 'subject_stockFloor'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_stock_floor %}
 
 
 {% macro show_minimum_order_quantity(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.minimumOrderQuantity, 'number', {
         'label': 'ekyna_commerce.stock_subject.field.minimum_order_quantity',
         'id': 'subject_minimumOrderQuantity'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_minimum_order_quantity %}
 
 
 {% macro show_eda(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.estimatedDateOfArrival, 'datetime', {
         'label': 'ekyna_commerce.field.replenishment_eda',
         'id': 'subject_estimatedDateOfArrival',
         'time': false
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_eda %}
 
 
 {% macro show_replenishment_time(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.replenishmentTime, 'number', {
         'label': 'ekyna_commerce.stock_subject.field.replenishment_time',
         'id': 'subject_replenishmentTime'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_replenishment_time %}
 
 
 {% macro show_geocode(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.geocode, 'text', {
         'label': 'ekyna_commerce.field.geocode',
         'id': 'subject_geocode'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_geocode %}
 
 
 {% macro show_quote_only(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.quoteOnly, 'boolean', {
         'label': 'ekyna_commerce.stock_subject.field.quote_only',
         'id': 'subject_quoteOnly',
@@ -108,12 +108,12 @@
         'true_class': 'label label-warning',
         'false_class': 'label label-success'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_quote_only %}
 
 
 {% macro show_end_of_life(subject, options = {}) %}
-{% spaceless %}
+{% apply spaceless %}
     {{ show_row(subject.endOfLife, 'boolean', {
         'label': 'ekyna_commerce.stock_subject.field.end_of_life',
         'id': 'subject_endOfLife',
@@ -121,7 +121,7 @@
         'true_class': 'label label-warning',
         'false_class': 'label label-success'
     }|merge(options)) }}
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_end_of_life %}
 
 
@@ -205,7 +205,7 @@
 {%- endmacro show_package_depth -%}
 
 {% macro show_stock_view(subject, prefix) %}
-{% spaceless %}
+{% apply spaceless %}
     {% import _self as macros %}
     {% set prefix = prefix|default('subject') %}
     <div class="row">
@@ -348,5 +348,5 @@
             }) }}
         </div>
     </div>
-{% endspaceless %}
+{% endapply %}
 {% endmacro show_stock_view %}

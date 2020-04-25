@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.quote.voucher'|trans({'%number%': quote.number})|raw }}</h3>
 
     <hr>
@@ -22,5 +22,5 @@
         'quotes': quotes, 'customer': customer
     } only %}
 
-{% endspaceless %}
+{% endapply %}
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% macro field(label, value, label_col, widget_col, symbol) %}
-{% spaceless %}
+{% apply spaceless %}
     <div class="form-group form-group-sm">
         <label class="control-label col-md-{{ label_col }} control-label-sm">
             {{- label|trans|raw }}{% if symbol %}&nbsp;{{ symbol|raw }}{% endif -%}
@@ -12,13 +12,13 @@
             </p>
         </div>
     </div>
-{% endspaceless %}
+{% endapply %}
 {% endmacro field %}
 
 {% import _self as macros %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     {% do currency_configure(customer) %}
 
     {% if currency_get_quote() != currency_get_base() -%}
@@ -144,5 +144,5 @@
         </a>
     </p>
     {% do currency_configure() %}
-{% endspaceless %}
+{% endapply %}
 {% endblock account %}

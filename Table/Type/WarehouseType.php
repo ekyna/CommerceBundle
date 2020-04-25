@@ -3,8 +3,8 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Commerce\Common\Entity\Country;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Type as DType;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
@@ -78,11 +78,9 @@ class WarehouseType extends ResourceTableType
                 'label'    => 'ekyna_core.field.name',
                 'position' => 10,
             ])
-            ->addFilter('countries', DType\Filter\EntityType::class, [
-                'label'        => 'ekyna_core.field.country',
-                'class'        => Country::class,
-                'entity_label' => 'name',
-                'position'     => 20,
+            ->addFilter('countries', ResourceType::class, [
+                'resource' => 'ekyna_commerce.country',
+                'position' => 20,
             ])
             ->addFilter('office', CType\Filter\BooleanType::class, [
                 'label'    => 'ekyna_commerce.warehouse.field.office',

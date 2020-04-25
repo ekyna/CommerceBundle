@@ -26,7 +26,7 @@ class CustomerGroupChoiceType extends AbstractType
      *
      * @param string $customerGroupClass
      */
-    public function __construct($customerGroupClass)
+    public function __construct(string $customerGroupClass)
     {
         $this->customerGroupClass = $customerGroupClass;
     }

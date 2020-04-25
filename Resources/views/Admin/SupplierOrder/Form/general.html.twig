@@ -17,13 +17,18 @@
         {{ form_row(form.carrier, {'label_col': 6, 'widget_col': 6}) }}
     </div>
     <div class="col-md-4">
-        {{ form_row(form.estimatedDateOfArrival, {'label_col': 6, 'widget_col': 6}) }}
+        {{ form_row(form.warehouse, {'label_col': 6, 'widget_col': 6}) }}
     </div>
 </div>
 <hr>
 {% include '@EkynaCommerce/Admin/SupplierOrder/Form/fields.html.twig' %}
-{{ form_row(form.trackingUrls, {'label_col': 3, 'widget_col': 9}) }}
-{{ form_row(form.description, {'label_col': 3, 'widget_col': 9}) }}
+<div class="row">
+    <div class="col-md-4">
+        {{ form_row(form.estimatedDateOfArrival, {'label_col': 6, 'widget_col': 6}) }}
+    </div>
+</div>
+{{ form_row(form.trackingUrls) }}
+{{ form_row(form.description) }}
 <hr>
 {{ form_widget(form.items) }}
 <div class="row">

@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.attachment'|trans({'%number%': order.number})|raw }}</h3>
 
     <hr>
@@ -27,5 +27,5 @@
         'orders': orders, 'customer': customer
     } only %}
 
-{% endspaceless %}
+{% endapply %}
 {% endblock %}

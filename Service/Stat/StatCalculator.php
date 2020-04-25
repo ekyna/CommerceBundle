@@ -2,13 +2,18 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Stat;
 
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\AbstractQuery;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
+use Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
+use Ekyna\Component\Commerce\Common\Util\Money;
+use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
+use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatFilter;
 use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
@@ -28,31 +33,60 @@ class StatCalculator implements StatCalculatorInterface
     protected $registry;
 
     /**
+     * @var AmountCalculatorFactory
+     */
+    protected $amountCalculatorFactory;
+
+    /**
+     * @var MarginCalculatorFactory
+     */
+    protected $marginCalculatorFactory;
+
+    /**
      * @var string
      */
     protected $orderClass;
 
     /**
-     * @var EntityRepository
+     * @var string
      */
-    protected $stockUnitRepository;
+    protected $defaultCurrency;
 
     /**
-     * @var EntityRepository
+     * @var bool
      */
-    protected $orderRepository;
+    protected $skipMode = false;
 
 
     /**
      * Constructor.
      *
-     * @param RegistryInterface $registry
-     * @param string            $orderClass
+     * @param RegistryInterface       $registry
+     * @param AmountCalculatorFactory $amountCalculatorFactory
+     * @param MarginCalculatorFactory $marginCalculatorFactory
+     * @param string                  $orderClass
+     * @param string                  $defaultCurrency
      */
-    public function __construct(RegistryInterface $registry, string $orderClass)
-    {
-        $this->registry   = $registry;
+    public function __construct(
+        RegistryInterface $registry,
+        AmountCalculatorFactory $amountCalculatorFactory,
+        MarginCalculatorFactory $marginCalculatorFactory,
+        string $orderClass,
+        string $defaultCurrency
+    ) {
+        $this->registry = $registry;
+        $this->amountCalculatorFactory = $amountCalculatorFactory;
+        $this->marginCalculatorFactory = $marginCalculatorFactory;
         $this->orderClass = $orderClass;
+        $this->defaultCurrency = $defaultCurrency;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setSkipMode(bool $skip): void
+    {
+        $this->skipMode = $skip;
     }
 
     /**
@@ -60,7 +94,11 @@ class StatCalculator implements StatCalculatorInterface
      */
     public function calculateStockStats(): array
     {
-        $qb = $this->getStockUnitRepository()->createQueryBuilder('u');
+        $qb = $this
+            ->registry
+            ->getEntityManagerForClass(AbstractStockUnit::class)
+            ->createQueryBuilder();
+
         $ex = $qb->expr();
 
         return $qb
@@ -68,6 +106,7 @@ class StatCalculator implements StatCalculatorInterface
                 'SUM((u.receivedQuantity + u.adjustedQuantity - u.shippedQuantity) * u.netPrice) as in_value',
                 'SUM((u.soldQuantity - u.shippedQuantity) * u.netPrice) as sold_value',
             ])
+            ->from(AbstractStockUnit::class, 'u')
             ->andWhere($ex->in('u.state', ':state'))
             ->getQuery()
             ->useQueryCache(true)
@@ -78,7 +117,7 @@ class StatCalculator implements StatCalculatorInterface
     /**
      * @inheritdoc
      */
-    public function calculateDayOrderStats(\DateTime $date, StatFilter $filter = null): array
+    public function calculateDayOrderStats(DateTime $date, StatFilter $filter = null): array
     {
         $from = clone $date;
         $from->setTime(0, 0, 0, 0);
@@ -86,13 +125,13 @@ class StatCalculator implements StatCalculatorInterface
         $to = clone $date;
         $to->setTime(23, 59, 59, 999999);
 
-        return $this->calculateOrderStats($from, $to, $filter);
+        return $this->calculateOrdersStats($from, $to, $filter);
     }
 
     /**
      * @inheritdoc
      */
-    public function calculateMonthOrderStats(\DateTime $date, StatFilter $filter = null): array
+    public function calculateMonthOrderStats(DateTime $date, StatFilter $filter = null): array
     {
         $from = clone $date;
         $from
@@ -104,13 +143,13 @@ class StatCalculator implements StatCalculatorInterface
             ->modify('last day of this month')
             ->setTime(23, 59, 59, 999999);
 
-        return $this->calculateOrderStats($from, $to, $filter);
+        return $this->calculateOrdersStats($from, $to, $filter);
     }
 
     /**
      * @inheritdoc
      */
-    public function calculateYearOrderStats(\DateTime $date, StatFilter $filter = null): array
+    public function calculateYearOrderStats(DateTime $date, StatFilter $filter = null): array
     {
         $from = clone $date;
         $from
@@ -122,7 +161,7 @@ class StatCalculator implements StatCalculatorInterface
             ->modify('last day of december ' . $date->format('Y'))
             ->setTime(23, 59, 59, 999999);
 
-        return $this->calculateOrderStats($from, $to, $filter);
+        return $this->calculateOrdersStats($from, $to, $filter);
     }
 
     /**
@@ -144,18 +183,31 @@ class StatCalculator implements StatCalculatorInterface
     }
 
     /**
-     * @inheritdoc
+     * Calculates the order stats.
+     *
+     * @param DateTime        $from
+     * @param DateTime        $to
+     * @param StatFilter|null $filter
+     *
+     * @return array
      */
-    protected function calculateOrderStats(\DateTime $from, \DateTime $to, StatFilter $filter = null): array
+    protected function calculateOrdersStats(DateTime $from, DateTime $to, StatFilter $filter = null): array
     {
-        $data = $this->createStatQuery($filter)
+        $query = $this
+            ->createStatQuery($filter)
             ->setParameter('from', $from, Types::DATETIME_MUTABLE)
-            ->setParameter('to', $to, Types::DATETIME_MUTABLE)
-            ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
+            ->setParameter('to', $to, Types::DATETIME_MUTABLE);
+
+        if ($filter && !empty($filter->getSubjects())) {
+            $orders = $query->getResult(AbstractQuery::HYDRATE_SCALAR);
+            $data = $this->calculateOrders(array_column($orders, 'id'), $filter);
+        } else {
+            $data = $query->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
+        }
 
         if ($data) {
             $result = [
-                'revenue'  => (string)round($data['net'] - $data['shipping'], 3),
+                'revenue'  => (string)round($data['revenue'] - $data['shipping'], 3),
                 'shipping' => (string)round($data['shipping'], 3),
                 'margin'   => (string)round($data['margin'], 3),
                 'orders'   => (string)$data['orders'],
@@ -164,25 +216,121 @@ class StatCalculator implements StatCalculatorInterface
                 'details'  => [],
             ];
 
-            $query = $this->createDetailQuery($filter);
-            foreach (SaleSources::getSources() as $source) {
-                $data = $query
-                    ->setParameter('from', $from, Types::DATETIME_MUTABLE)
-                    ->setParameter('to', $to, Types::DATETIME_MUTABLE)
-                    ->setParameter('source', $source)
-                    ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
+            if (!($filter && !empty($filter->getSubjects()))) {
+                $query = $this->createDetailQuery($filter);
+                foreach (SaleSources::getSources() as $source) {
+                    $data = $query
+                        ->setParameter('from', $from, Types::DATETIME_MUTABLE)
+                        ->setParameter('to', $to, Types::DATETIME_MUTABLE)
+                        ->setParameter('source', $source)
+                        ->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
 
-                if ($data) {
-                    $result['details'][$source] = (string)round($data['net'] - $data['shipping'], 3);
-                } else {
-                    $result['details'][$source] = '0';
+                    if ($data) {
+                        $result['details'][$source] = (string)round($data['net'] - $data['shipping'], 3);
+                    } else {
+                        $result['details'][$source] = '0';
+                    }
                 }
             }
 
             return $result;
         }
 
-        return null;
+        return [];
+    }
+
+    /**
+     * Calculates the order stats.
+     *
+     * @param int[]      $orders
+     * @param StatFilter $filter
+     *
+     * @return array
+     */
+    protected function calculateOrders(array $orders, StatFilter $filter): array
+    {
+        $manager = $this->registry->getEntityManagerForClass($this->orderClass);
+        /** @var OrderRepositoryInterface $repository */
+        $repository = $manager->getRepository($this->orderClass);
+
+        $data = [
+            'revenue'  => 0,
+            'shipping' => 0,
+            'margin'   => 0,
+            'orders'   => 0,
+            'items'    => 0,
+            'average'  => 0,
+        ];
+
+        if ($this->skipMode) {
+            $amountCalculator = $this->amountCalculatorFactory->create($this->defaultCurrency, true, $filter);
+            $marginCalculator = $this->marginCalculatorFactory->create($this->defaultCurrency, true, $filter);
+        } else {
+            $amountCalculator = $this->amountCalculatorFactory->create($this->defaultCurrency, true);
+            $marginCalculator = $this->marginCalculatorFactory->create($this->defaultCurrency, true);
+        }
+
+        foreach ($orders as $id) {
+            if (!$order = $repository->findOneById($id)) {
+                throw new \LogicException("Order #$id not found.");
+            }
+
+            if ($this->skipMode && $this->hasSkippedItem($order->getItems()->toArray(), $filter)) {
+                $manager->clear();
+                continue;
+            }
+
+            // TODO calculate revenue based on sold quantities (assignments)
+            $result = $amountCalculator->calculateSale($order, true);
+
+            // Ignore order if not skip mode and gross amount equals to zero
+            if (!$this->skipMode && 0 === Money::compare($result->getGross(), 0, $this->defaultCurrency)) {
+                $manager->clear();
+                continue;
+            }
+
+            $data['revenue'] += $result->getBase();
+            $data['shipping'] += $amountCalculator->calculateSaleShipment($order)->getGross();
+
+            if ($margin = $marginCalculator->calculateSale($order)) {
+                $data['margin'] += $amount = $margin->getAmount();
+            }
+
+            $data['orders'] += 1;
+
+            $manager->clear(); // TODO Dangerous
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param OrderItemInterface[] $items
+     * @param StatFilter           $filter
+     *
+     * @return bool
+     */
+    protected function hasSkippedItem(array $items, StatFilter $filter): bool
+    {
+        foreach ($items as $item) {
+            if (!$item->hasSubjectIdentity()) {
+                if (!$filter->isExcludeSubjects()) {
+                    return true;
+                }
+
+                continue;
+            }
+
+            if (!$filter->isExcludeSubjects() xor $filter->hasSubject($item->getSubjectIdentity())) {
+                return true;
+            }
+
+            if ($this->hasSkippedItem($item->getChildren()->toArray(), $filter)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -194,18 +342,28 @@ class StatCalculator implements StatCalculatorInterface
      */
     protected function createStatQuery(StatFilter $filter = null): Query
     {
-        $qb = $this->getOrderRepository()->createQueryBuilder('o');
+        $qb = $this
+            ->registry
+            ->getEntityManagerForClass($this->orderClass)
+            ->createQueryBuilder();
+
         $ex = $qb->expr();
 
-        $qb
-            ->select([
-                'SUM(o.netTotal) as net',
+        if ($filter && !empty($filter->getSubjects())) {
+            $qb->select('o.id');
+        } else {
+            $qb->select([
+                'SUM(o.revenueTotal) as revenue',
                 'SUM(o.shipmentAmount) as shipping',
                 'SUM(o.marginTotal) as margin',
                 'COUNT(o.id) as orders',
                 'SUM(o.itemsCount) as items',
                 'AVG(o.netTotal) as average',
-            ])
+            ]);
+        }
+
+        $qb
+            ->from($this->orderClass, 'o')
             ->andWhere($ex->eq('o.sample', ':sample'))
             ->andWhere($ex->in('o.state', ':state'))
             ->andWhere($ex->between('o.createdAt', ':from', ':to'))
@@ -231,10 +389,15 @@ class StatCalculator implements StatCalculatorInterface
      */
     protected function createDetailQuery(StatFilter $filter = null): Query
     {
-        $qb    = $this->getOrderRepository()->createQueryBuilder('o');
+        $qb = $this
+            ->registry
+            ->getEntityManagerForClass($this->orderClass)
+            ->createQueryBuilder();
+
         $ex = $qb->expr();
 
         $qb
+            ->from($this->orderClass, 'o')
             ->select([
                 'SUM(o.netTotal) as net',
                 'SUM(o.shipmentAmount) as shipping',
@@ -280,35 +443,5 @@ class StatCalculator implements StatCalculatorInterface
 
             $qb->setParameter('countries', $countries);
         }
-    }
-
-    /**
-     * Returns the stock unit repository.
-     *
-     * @return EntityRepository
-     */
-    protected function getStockUnitRepository(): EntityRepository
-    {
-        if (null !== $this->stockUnitRepository) {
-            return $this->stockUnitRepository;
-        }
-
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->stockUnitRepository = $this->registry->getRepository(AbstractStockUnit::class);
-    }
-
-    /**
-     * Returns the order repository.
-     *
-     * @return EntityRepository
-     */
-    protected function getOrderRepository(): EntityRepository
-    {
-        if (null !== $this->orderRepository) {
-            return $this->orderRepository;
-        }
-
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->orderRepository = $this->registry->getRepository($this->orderClass);
     }
 }

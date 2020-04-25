@@ -1,7 +1,7 @@
 {% extends '@EkynaCommerce/Account/layout.html.twig' %}
 
 {% block account %}
-{% spaceless %}
+{% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.ticket.title'|trans|raw }}</h3>
     <hr>
     {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
@@ -10,7 +10,7 @@
     <div class="alert alert-info">
         <p>{{ 'ekyna_commerce.account.ticket.go_to_sale_details'|trans }}</p>
     </div>
-{% endspaceless %}
+{% endapply %}
 {% endblock account %}
 
 {% block stylesheets %}

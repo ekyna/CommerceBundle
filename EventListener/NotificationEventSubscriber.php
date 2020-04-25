@@ -5,8 +5,8 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
@@ -124,14 +124,9 @@ class NotificationEventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        $listeners = [
-            KernelEvents::TERMINATE => ['onKernelTerminate', 1024], // Before Symfony EmailSenderListener
+        return [
+            KernelEvents::TERMINATE  => ['onKernelTerminate', 1024], // Before Symfony EmailSenderListener
+            ConsoleEvents::TERMINATE => ['onKernelTerminate', 1024], // Before Symfony EmailSenderListener
         ];
-
-        if (class_exists('Symfony\Component\Console\ConsoleEvents')) {
-            $listeners[ConsoleEvents::TERMINATE] = ['onKernelTerminate', 1024]; // Before Symfony EmailSenderListener
-        }
-
-        return $listeners;
     }
 }

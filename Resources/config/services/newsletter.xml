@@ -108,14 +108,6 @@
             <tag name="form.type"/>
         </service>
 
-        <!-- Table types -->
-        <service id="ekyna_commerce.member.table_type"
-                 class="Ekyna\Bundle\CommerceBundle\Table\Type\MemberType" public="true">
-            <argument>%ekyna_commerce.member.class%</argument>
-            <argument>%ekyna_commerce.audience.class%</argument>
-            <tag name="table.type"/>
-        </service>
-
         <!-- Synchronize command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\NewsletterSynchronizeCommand">
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Synchronizer\SynchronizerRegistry"/>

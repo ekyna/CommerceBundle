@@ -43,7 +43,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 $collection = $this.find('.order-compose-items').eq(0),
                 $selector = $this.find('.order-compose-quick-add-select').eq(0),
                 $button = $this.find('.order-compose-quick-add-button').eq(0),
-                keys = ['designation', 'reference', 'net-price'];
+                keys = ['designation', 'reference', 'net-price', 'tax-group'];
 
             // Init order item widgets
             $collection

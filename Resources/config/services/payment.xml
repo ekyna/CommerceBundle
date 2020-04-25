@@ -17,7 +17,7 @@
         <!-- Payment calculator -->
         <service id="ekyna_commerce.payment.calculator"
                  class="Ekyna\Component\Commerce\Payment\Calculator\PaymentCalculator">
-            <argument type="service" id="ekyna_commerce.common.amount_calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
         </service>
 
@@ -41,6 +41,7 @@
         <service id="ekyna_commerce.payment.outstanding_releaser"
                  class="Ekyna\Component\Commerce\Payment\Releaser\OutstandingReleaser">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface"/>
             <argument>%ekyna_commerce.default.currency%</argument>
         </service>
 

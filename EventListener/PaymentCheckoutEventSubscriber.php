@@ -149,6 +149,14 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
             return;
         }
+        // Abort if child customer
+        if ($customer->hasParent()) {
+            $event->stopPropagation();
+
+            return;
+        }
+
+        // TODO Refactor with \Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\PaymentValidator
 
         $payment = $event->getPayment();
         $options = $event->getFormOptions();
@@ -164,6 +172,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
                 return;
             }
             // Abort if deposit is not paid
+            // TODO No: customer can pay the deposit with its credit balance
             if (0 < $sale->getDepositTotal()) {
                 if (-1 === Money::compare($sale->getPaidTotal(), $sale->getDepositTotal(), $this->defaultCurrency)) {
                     $event->stopPropagation();
@@ -173,7 +182,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
             }
 
             // Customer available fund
-            $available = (float)$customer->getCreditBalance();
+            $available = $customer->getCreditBalance();
 
             // If customer available fund is lower than the payment amount
             if ($available < $payment->getRealAmount()) {
@@ -241,8 +250,8 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
             }
         }
 
-        // If sale has a customer limit
-        if (0 < $limit = $sale->getOutstandingLimit()) {
+        // If sale has a outstanding limit
+        if ((0 < $limit = $sale->getOutstandingLimit()) && $customer->isOutstandingOverflow()) {
             // Use sale's balance
             $balance = -$sale->getOutstandingAccepted() - $sale->getOutstandingExpired();
         } else {
@@ -251,7 +260,8 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
             $balance = $customer->getOutstandingBalance();
         }
 
-        $available = (float)($limit + $balance);
+        $available = $limit + $balance;
+
         // Abort if non available fund
         if (0 >= $available) {
             $event->stopPropagation();

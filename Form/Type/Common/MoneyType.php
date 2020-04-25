@@ -98,11 +98,15 @@ class MoneyType extends AbstractType
         /** @var ExchangeSubjectInterface $subject */
         $subject = $options['subject'];
         if ($subject) {
-            return $this->currencyConverter->getSubjectExchangeRate($subject, $options['base'], $options['quote']);
+            return $this
+                ->currencyConverter
+                ->getSubjectExchangeRate($subject, $options['base'], $options['quote']);
         }
 
         if ($quote = $options['quote']) {
-            return $this->currencyConverter->getRate($options['base'], $quote);
+            return $this
+                ->currencyConverter
+                ->getRate($options['base'], $quote);
         }
 
         throw new RuntimeException("You must define 'subject' or 'quote' option.");
@@ -143,8 +147,23 @@ class MoneyType extends AbstractType
                     return $currency->getCode();
                 }
 
+                if (is_null($value)) {
+                    $value = $options['base'];
+                }
+
                 if ($value instanceof CurrencyInterface) {
                     return $value->getCode();
+                }
+
+                return $value;
+            })
+            ->setNormalizer('empty_data', function (Options $options, $value) {
+                if (!is_callable($value) && !is_null($value)) {
+                    return $value;
+                }
+
+                if ($options['required']) {
+                    return "0.0";
                 }
 
                 return $value;

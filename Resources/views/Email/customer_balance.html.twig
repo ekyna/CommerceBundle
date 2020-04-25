@@ -12,7 +12,7 @@
 {% block subject %}{{ subject|raw }}{% endblock subject %}
 
 {% block body %}
-{% spaceless %}
+{% apply spaceless %}
     {% do trans_set_locale(locale) %}
     <p>{{ 'ekyna_commerce.notify.type.balance.message'|trans }}</p>
     <table>
@@ -38,5 +38,5 @@
 
     {{- get_setting('commerce.email_signature', locale)|raw -}}
     {% do trans_revert_locale() %}
-{% endspaceless %}
+{% endapply %}
 {% endblock body %}
