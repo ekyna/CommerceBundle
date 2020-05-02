@@ -236,6 +236,10 @@ class OrderUpdateTotalsCommand extends Command
             } else {
                 $output->writeln('<comment>skipped</comment>');
             }
+
+            if ($this->totalCount % 20 === 0) {
+                $this->manager->clear();
+            }
         } catch (\Exception $e) {
             $output->writeln('<error>error</error>');
         } catch (\Throwable $e) {
