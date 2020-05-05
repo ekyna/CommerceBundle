@@ -70,7 +70,7 @@
             <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <argument type="service" id="ekyna_resource.locale_provider"/>
-            <argument type="service" id="libphonenumber.phone_number_util"/>
+            <argument type="service" id="libphonenumber\PhoneNumberUtil"/>
         </service>
 
         <!-- Invoice payment resolver -->
