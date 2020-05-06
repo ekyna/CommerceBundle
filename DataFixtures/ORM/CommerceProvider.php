@@ -17,6 +17,8 @@ use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterfac
 use Ekyna\Component\Commerce\Order\Entity\OrderAddress;
 use Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface;
 use Ekyna\Component\Commerce\Pricing\Repository\TaxGroupRepositoryInterface;
+use Ekyna\Component\Commerce\Stock\Model\WarehouseInterface;
+use Ekyna\Component\Commerce\Stock\Repository\WarehouseRepositoryInterface;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
@@ -56,6 +58,11 @@ class CommerceProvider
     private $customerAddressRepository;
 
     /**
+     * @var WarehouseRepositoryInterface
+     */
+    private $warehouseRepository;
+
+    /**
      * @var SubjectProviderRegistryInterface
      */
     private $providerRegistry;
@@ -74,6 +81,7 @@ class CommerceProvider
      * @param TaxGroupRepositoryInterface        $taxGroupRepository
      * @param CustomerGroupRepositoryInterface   $customerGroupRepository
      * @param CustomerAddressRepositoryInterface $customerAddressRepository
+     * @param WarehouseRepositoryInterface       $warehouseRepository
      * @param SubjectProviderRegistryInterface   $providerRegistry
      */
     public function __construct(
@@ -82,6 +90,7 @@ class CommerceProvider
         TaxGroupRepositoryInterface $taxGroupRepository,
         CustomerGroupRepositoryInterface $customerGroupRepository,
         CustomerAddressRepositoryInterface $customerAddressRepository,
+        WarehouseRepositoryInterface $warehouseRepository,
         SubjectProviderRegistryInterface $providerRegistry
     ) {
         $this->countryRepository = $countryRepository;
@@ -89,6 +98,8 @@ class CommerceProvider
         $this->taxGroupRepository = $taxGroupRepository;
         $this->customerGroupRepository = $customerGroupRepository;
         $this->customerAddressRepository = $customerAddressRepository;
+        $this->warehouseRepository = $warehouseRepository;
+
         $this->providerRegistry = $providerRegistry;
     }
 
@@ -100,6 +111,18 @@ class CommerceProvider
     public function defaultTaxGroup(): TaxGroupInterface
     {
         return $this->taxGroupRepository->findDefault();
+    }
+
+    /**
+     * Returns the tax group by its code.
+     *
+     * @param string $code
+     *
+     * @return TaxGroupInterface
+     */
+    public function taxGroupByCode(string $code): TaxGroupInterface
+    {
+        return $this->taxGroupRepository->findOneByCode($code);
     }
 
     /**
@@ -146,6 +169,16 @@ class CommerceProvider
         }
 
         throw new \RuntimeException('Customer group not found.');
+    }
+
+    /**
+     * Returns the default warehouse repository.
+     *
+     * @return WarehouseInterface
+     */
+    public function defaultWarehouse(): WarehouseInterface
+    {
+        return $this->warehouseRepository->findDefault();
     }
 
     /**

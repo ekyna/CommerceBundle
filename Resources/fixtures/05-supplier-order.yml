@@ -6,6 +6,7 @@ Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface:
         currency: <currencyByCode('EUR')>
         state: 'validated'
         orderedAt: <datetime('now')>
+        warehouse: <defaultWarehouse()>
 
 Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface:
     supplier_order_item_1_1:

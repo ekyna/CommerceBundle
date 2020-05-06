@@ -5,16 +5,19 @@
 
     <services>
 
-        <service id="Ekyna\Bundle\CommerceBundle\DataFixtures\CommerceProcessor" public="false">
+        <defaults autoconfigure="false" autowire="false" public="false" />
+
+        <service id="Ekyna\Bundle\CommerceBundle\DataFixtures\CommerceProcessor">
             <tag name="fidry_alice_data_fixtures.processor"/>
         </service>
 
-        <service id="Ekyna\Bundle\CommerceBundle\DataFixtures\ORM\CommerceProvider" public="false">
+        <service id="Ekyna\Bundle\CommerceBundle\DataFixtures\ORM\CommerceProvider">
             <argument type="service" id="ekyna_commerce.country.repository"/>
             <argument type="service" id="ekyna_commerce.currency.repository"/>
             <argument type="service" id="ekyna_commerce.tax_group.repository"/>
             <argument type="service" id="ekyna_commerce.customer_group.repository"/>
             <argument type="service" id="ekyna_commerce.customer_address.repository"/>
+            <argument type="service" id="ekyna_commerce.warehouse.repository"/>
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <tag name="nelmio_alice.faker.provider"/>
         </service>
