@@ -8,6 +8,7 @@ use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Commerce\Exception;
 use Ekyna\Component\Commerce\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class OrderInvoiceController
@@ -21,9 +22,9 @@ class OrderListController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function invoice(Request $request)
+    public function invoice(Request $request): Response
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order');
 
@@ -55,9 +56,9 @@ class OrderListController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function invoiceDocument(Request $request)
+    public function invoiceDocument(Request $request): Response
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_invoice');
 
@@ -98,9 +99,9 @@ class OrderListController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function payment(Request $request)
+    public function payment(Request $request): Response
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_payment');
 
@@ -132,9 +133,9 @@ class OrderListController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function shipment(Request $request)
+    public function shipment(Request $request): Response
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_shipment');
 
@@ -166,9 +167,9 @@ class OrderListController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function shipmentDocument(Request $request)
+    public function shipmentDocument(Request $request): Response
     {
         $this->isGranted('VIEW', 'ekyna_commerce_order_shipment');
 
@@ -202,9 +203,9 @@ class OrderListController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
-    public function shipmentPlatform(Request $request)
+    public function shipmentPlatform(Request $request): Response
     {
         $platformName = $request->attributes->get('name');
         $actionName = $request->attributes->get('action');

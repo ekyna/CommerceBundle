@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Ekyna\Bundle\CommerceBundle\Model\SubjectOrderExport;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectOrderExporter;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
@@ -83,7 +84,10 @@ abstract class AbstractSubjectController extends ResourceController
 
         $this->isGranted('VIEW', $subject);
 
-        $path = $this->get(SubjectOrderExporter::class)->export($subject);
+        $data = new SubjectOrderExport();
+        $data->addSubject($subject);
+
+        $path = $this->get(SubjectOrderExporter::class)->export($data);
 
         clearstatcache(true, $path);
 

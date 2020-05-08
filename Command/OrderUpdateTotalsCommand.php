@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
@@ -185,7 +186,7 @@ class OrderUpdateTotalsCommand extends Command
         $this->lastId = (int)$input->getOption('from');
 
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion("Recalculate and update orders from id $id ?", false);
+        $question = new ConfirmationQuestion("Recalculate and update orders from id $this->lastId ?", false);
         if (!$helper->ask($input, $output, $question)) {
             return 0;
         }
@@ -228,6 +229,8 @@ class OrderUpdateTotalsCommand extends Command
             }
 
             if ($changed) {
+                $order->setUpdatedAt(new DateTime());
+
                 $this->manager->persist($order);
                 $this->manager->flush();
 

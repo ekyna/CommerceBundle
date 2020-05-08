@@ -1,6 +1,11 @@
 {% extends '@EkynaAdmin/Entity/Default/list.html.twig' %}
 
-{#{% block javascripts %}
+{% block actions %}
+    {{- ui_button('ekyna_commerce.order.header.export_to_deliver', {
+        'type': 'link',
+        'path': path('ekyna_commerce_order_admin_export_to_deliver'),
+        'icon': 'download',
+        'fa_icon': true
+    }) -}}
     {{ parent() }}
-    <script type="text/javascript">require(['ekyna-commerce/sale-admin-list']);</script>
-{% endblock javascripts %}#}
+{% endblock %}

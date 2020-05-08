@@ -819,7 +819,7 @@ class Configuration implements ConfigurationInterface
                         'notify.html'    => '@EkynaCommerce/Admin/Order/notify.html',
                     ])->end()
                     ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\Order')->end()
-                    ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\SaleController')->end()
+                    ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderController')->end()
                     ->scalarNode('operator')->end()
                     ->scalarNode('repository')->defaultValue('Ekyna\Bundle\CommerceBundle\Repository\OrderRepository')->end()
                     ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType')->end()

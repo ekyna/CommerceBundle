@@ -79,6 +79,16 @@
         </property>
     </class>
 
+    <!-- Subject order export -->
+
+    <class name="Ekyna\Bundle\CommerceBundle\Model\SubjectOrderExport">
+        <property name="subjects">
+            <constraint name="Count">
+                <option name="min">1</option>
+            </constraint>
+        </property>
+    </class>
+
     <!-- Notify model -->
 
     <class name="Ekyna\Bundle\CommerceBundle\Entity\NotifyModel">

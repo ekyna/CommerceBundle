@@ -963,6 +963,7 @@ ekyna_commerce:
             transform: Transform the order <small>%number% into %target%</small>
             duplicate: Duplicate the order <small>%number% into %target%</small>
             notify: Notify the order <small>%number%</small>
+            export_to_deliver: Export orders to be delivered
         button:
             list: Orders list
             show: Order details

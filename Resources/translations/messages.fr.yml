@@ -986,6 +986,7 @@ ekyna_commerce:
             transform: Transformer la commande <small>%number% en %target%</small>
             duplicate: Dupliquer la commande <small>%number% en %target%</small>
             notify: Notifier la commande <small>%number%</small>
+            export_to_deliver: Exporter les commandes à livrer
         button:
             list: Liste des commandes
             show: Détail de la commande

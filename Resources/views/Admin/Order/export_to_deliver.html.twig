@@ -1,0 +1,21 @@
+{% extends '@EkynaAdmin/Entity/sided.html.twig' %}
+
+{% block page_title %}{{ 'ekyna_commerce.order.header.export_to_deliver'|trans|raw }} - {{ parent() }}{% endblock page_title %}
+
+{% block title %}
+    <h1>{{ 'ekyna_commerce.order.header.export_to_deliver'|trans|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block main %}
+{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+<div class="form-body">
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ bootstrap_set_label_col(2) }}
+    {{ bootstrap_set_widget_col(10) }}
+    {{ form_widget(form) }}
+</div>
+{{ form_end(form) }}
+{% endblock main %}
