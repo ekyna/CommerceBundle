@@ -222,7 +222,7 @@ class SubjectOrderExporter
                    o.email, 
                    o.is_sample, 
                    DATE(o.created_at) as created_at,
-                   d.quantity
+                   SUM(d.quantity) as quantity
             FROM (
                 SELECT 
                     IFNULL(i1.order_id, 
@@ -247,6 +247,7 @@ class SubjectOrderExporter
                 HAVING SUM(a.sold_quantity)>SUM(a.shipped_quantity)
             ) as d
             JOIN $orderTable AS o ON o.id=d.id
+            GROUP BY o.id
             ORDER BY o.created_at DESC
             SQL
         );
