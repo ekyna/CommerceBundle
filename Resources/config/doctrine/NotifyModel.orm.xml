@@ -16,7 +16,7 @@
         <field name="paymentMessage" column="payment_message" type="boolean" nullable="true"/>
         <field name="shipmentMessage" column="shipment_message" type="boolean" nullable="true"/>
         <field name="includeView" column="include_view" type="string" length="8" nullable="true"/>
-        <field name="documentTypes" column="document_types" type="simple_array"/>
+        <field name="documentTypes" column="document_types" type="simple_array" nullable="true"/>
         <field name="enabled" column="enabled" type="boolean"/>
 
     </mapped-superclass>

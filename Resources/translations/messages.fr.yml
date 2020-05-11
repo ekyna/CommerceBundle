@@ -871,6 +871,12 @@ ekyna_commerce:
                     Nous avons bien reçu le réglement de votre commande.
             payment_expired:
                 label: Encours échu
+            shipment_ready:
+                label: Expédition prête au retrait
+                subject: Retrait de votre commande %number%
+                message: >
+                    Nous avons préparé votre commande : vous pouvez venir la retirer dans nos locaux. Vous trouverez
+                    en pièce jointe à ce mail votre bon de livraison.
             shipment_shipped:
                 label: Expédition complète
                 subject: Expédition de votre commande %number%

@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\CommerceBundle\Table\Column\NotifyModelTypeType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -23,10 +24,7 @@ class NotifyModelType extends ResourceTableType
             ->setFilterable(false)
             ->setExportable(false)
             ->setSortable(false)
-            ->addColumn('type', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.type',
-                'route_name'           => 'ekyna_commerce_notify_model_admin_show',
-                'route_parameters_map' => ['notifyModelId' => 'id'],
+            ->addColumn('type', NotifyModelTypeType::class, [
                 'position'             => 10,
             ])
             ->addColumn('enabled', CType\Column\BooleanType::class, [

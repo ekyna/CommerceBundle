@@ -7,15 +7,15 @@ use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
+use Ekyna\Component\Commerce\Common\Event\NotifyEvent;
+use Ekyna\Component\Commerce\Common\Event\NotifyEvents;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
+use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
-use Ekyna\Component\Commerce\Common\Event\NotifyEvent;
-use Ekyna\Component\Commerce\Common\Event\NotifyEvents;
-use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
@@ -223,15 +223,14 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             case NotificationTypes::PAYMENT_CAPTURED:
             case NotificationTypes::PAYMENT_EXPIRED:
                 $this->buildPaymentContent($event, $model);
-
                 break;
 
+            case NotificationTypes::SHIPMENT_READY:
             case NotificationTypes::SHIPMENT_SHIPPED:
             case NotificationTypes::SHIPMENT_PARTIAL:
             case NotificationTypes::RETURN_PENDING:
             case NotificationTypes::RETURN_RECEIVED:
                 $this->buildShipmentContent($event, $model);
-
                 break;
         }
     }
@@ -565,9 +564,9 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     {
         return [
             NotifyEvents::BUILD => [
-                ['buildSubject', 1],
-                ['buildRecipients', 0],
-                ['buildContent', -1],
+                ['buildSubject', -1],
+                ['buildRecipients', -2],
+                ['buildContent', -3],
                 ['finalize', -2048],
             ],
         ];

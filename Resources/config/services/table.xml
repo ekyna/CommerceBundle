@@ -17,14 +17,14 @@
         <service id="ekyna_commerce.order_shipment.table_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderShipmentType"><!-- TODO use parameter defined by config builder -->
             <argument type="service" id="ekyna_commerce.shipment_helper"/>
-            <argument type="service" id="translator"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
             <argument>%ekyna_commerce.order_shipment.class%</argument>
             <tag name="table.type"/>
         </service>
 
         <!-- Cart(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\CartType">
-            <argument type="service" id="router"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <tag name="table.column_type"/>
         </service>
 
@@ -53,21 +53,27 @@
             <tag name="table.column_type"/>
         </service>
 
+        <!-- Notify model type column type -->
+        <service id="Ekyna\Bundle\CommerceBundle\Table\Column\NotifyModelTypeType">
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
+            <tag name="table.column_type"/>
+        </service>
+
         <!-- Order(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\OrderType">
-            <argument type="service" id="router"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <tag name="table.column_type"/>
         </service>
 
         <!-- Order invoice(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\OrderInvoiceType">
-            <argument type="service" id="router"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <tag name="table.column_type"/>
         </service>
 
         <!-- Order shipment(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\OrderShipmentType">
-            <argument type="service" id="router"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <tag name="table.column_type"/>
         </service>
 
@@ -106,7 +112,7 @@
 
         <!-- Quote(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\QuoteType">
-            <argument type="service" id="router"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <tag name="table.column_type"/>
         </service>
 
@@ -190,13 +196,13 @@
 
         <!-- Shipment document action type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Action\ShipmentDocumentActionType">
-            <argument type="service" id="router"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <tag name="table.action_type"/>
         </service>
 
         <!-- Invoice form action type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType">
-            <argument type="service" id="router"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <tag name="table.action_type"/>
         </service>
 
@@ -215,13 +221,13 @@
         <!-- Supplier order payment column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderPaymentType">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
-            <argument type="service" id="translator"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
             <tag name="table.column_type"/>
         </service>
 
         <!-- Supplier order tracking column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\SupplierOrderTrackingType">
-            <argument type="service" id="translator"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
             <tag name="table.column_type"/>
         </service>
 

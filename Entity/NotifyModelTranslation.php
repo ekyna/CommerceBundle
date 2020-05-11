@@ -32,7 +32,7 @@ class NotifyModelTranslation extends AbstractTranslation
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -40,9 +40,9 @@ class NotifyModelTranslation extends AbstractTranslation
     /**
      * Returns the subject.
      *
-     * @return string
+     * @return string|null
      */
-    public function getSubject()
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
@@ -50,11 +50,11 @@ class NotifyModelTranslation extends AbstractTranslation
     /**
      * Sets the subject.
      *
-     * @param string $subject
+     * @param string|null $subject
      *
      * @return NotifyModelTranslation
      */
-    public function setSubject($subject)
+    public function setSubject(string $subject = null): self
     {
         $this->subject = $subject;
 
@@ -64,9 +64,9 @@ class NotifyModelTranslation extends AbstractTranslation
     /**
      * Returns the message.
      *
-     * @return string
+     * @return string|null
      */
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->message;
     }
@@ -74,11 +74,11 @@ class NotifyModelTranslation extends AbstractTranslation
     /**
      * Sets the message.
      *
-     * @param string $message
+     * @param string|null $message
      *
      * @return NotifyModelTranslation
      */
-    public function setMessage($message)
+    public function setMessage(string $message = null): self
     {
         $this->message = $message;
 

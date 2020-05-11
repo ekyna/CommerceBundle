@@ -46,13 +46,15 @@ class NotifyModel extends AbstractTranslatable
     /**
      * @var bool
      */
-    private $enabled;
+    private $enabled = false;
 
 
     /**
-     * @inheritDoc
+     * Returns the string representation.
+     *
+     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->type;
     }
@@ -62,7 +64,7 @@ class NotifyModel extends AbstractTranslatable
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -72,7 +74,7 @@ class NotifyModel extends AbstractTranslatable
      *
      * @return string
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -84,7 +86,7 @@ class NotifyModel extends AbstractTranslatable
      *
      * @return NotifyModel
      */
-    public function setType($type)
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -94,9 +96,9 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Returns whether to include the payment message.
      *
-     * @return bool
+     * @return bool|null
      */
-    public function isPaymentMessage()
+    public function isPaymentMessage(): ?bool
     {
         return $this->paymentMessage;
     }
@@ -104,11 +106,11 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Sets whether to include the payment message.
      *
-     * @param bool $include
+     * @param bool|null $include
      *
      * @return NotifyModel
      */
-    public function setPaymentMessage($include)
+    public function setPaymentMessage(bool $include = null): self
     {
         $this->paymentMessage = $include;
 
@@ -118,9 +120,9 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Returns whether to include the shipment message.
      *
-     * @return bool
+     * @return bool|null
      */
-    public function isShipmentMessage()
+    public function isShipmentMessage(): ?bool
     {
         return $this->shipmentMessage;
     }
@@ -128,11 +130,11 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Sets whether to include the shipment message.
      *
-     * @param bool $include
+     * @param bool|null $include
      *
      * @return NotifyModel
      */
-    public function setShipmentMessage($include)
+    public function setShipmentMessage(bool $include = null): self
     {
         $this->shipmentMessage = $include;
 
@@ -142,9 +144,9 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Returns the include view.
      *
-     * @return string
+     * @return string|null
      */
-    public function getIncludeView()
+    public function getIncludeView(): ?string
     {
         return $this->includeView;
     }
@@ -152,11 +154,11 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Sets the include view.
      *
-     * @param string $mode
+     * @param string|null $mode
      *
      * @return NotifyModel
      */
-    public function setIncludeView($mode)
+    public function setIncludeView(string $mode = null): self
     {
         $this->includeView = $mode;
 
@@ -166,9 +168,9 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Returns the document types.
      *
-     * @return array
+     * @return array|null
      */
-    public function getDocumentTypes()
+    public function getDocumentTypes(): ?array
     {
         return $this->documentTypes;
     }
@@ -176,11 +178,11 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Sets the document types.
      *
-     * @param array $types
+     * @param array|null $types
      *
      * @return NotifyModel
      */
-    public function setDocumentTypes(array $types)
+    public function setDocumentTypes(array $types = null): self
     {
         $this->documentTypes = $types;
 
@@ -192,7 +194,7 @@ class NotifyModel extends AbstractTranslatable
      *
      * @return bool
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }
@@ -204,9 +206,9 @@ class NotifyModel extends AbstractTranslatable
      *
      * @return NotifyModel
      */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled): self
     {
-        $this->enabled = (bool)$enabled;
+        $this->enabled = $enabled;
 
         return $this;
     }
@@ -214,9 +216,9 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Returns the translated subject.
      *
-     * @return string
+     * @return string|null
      */
-    public function getSubject()
+    public function getSubject(): ?string
     {
         return $this->translate()->getSubject();
     }
@@ -224,9 +226,9 @@ class NotifyModel extends AbstractTranslatable
     /**
      * Returns the translated message.
      *
-     * @return string
+     * @return string|null
      */
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->translate()->getMessage();
     }

@@ -845,6 +845,13 @@ ekyna_commerce:
                     We have received the payment of your order.
             payment_expired:
                 label: Expired outstanding
+            shipment_ready:
+                label: Shipment ready to pick up
+                subject: Your order %number% is ready
+                # TODO
+                message: >
+                    Nous avons préparé votre commande : vous pouvez venir la retirer dans nos locaux. Vous trouverez
+                    en pièce jointe à ce mail votre bon de livraison.
             shipment_shipped:
                 label: Shipment
                 subject: Your order %number% shipment
