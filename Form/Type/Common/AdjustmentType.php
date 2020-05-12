@@ -26,8 +26,9 @@ class AdjustmentType extends ResourceFormType
     {
         $builder
             ->add('designation', Type\TextType::class, [
-                'label'  => 'ekyna_core.field.designation',
-                'attr'   => [
+                'label'    => 'ekyna_core.field.designation',
+                'required' => false,
+                'attr'     => [
                     'placeholder' => 'ekyna_core.field.designation',
                 ],
             ])
@@ -50,9 +51,9 @@ class AdjustmentType extends ResourceFormType
                 ],
             ])
             ->add('amount', Type\NumberType::class, [
-                'label'  => 'ekyna_core.field.value',
-                'scale'  => 2,
-                'attr'   => [
+                'label' => 'ekyna_core.field.value',
+                'scale' => 2,
+                'attr'  => [
                     'placeholder' => 'ekyna_core.field.value',
                 ],
             ])

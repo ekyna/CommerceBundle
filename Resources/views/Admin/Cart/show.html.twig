@@ -73,13 +73,6 @@
                 {% include '@EkynaCommerce/Admin/Common/Sale/show_general.html.twig' with {'sale': cart} %}
                 <div class="row">
                     <div class="col-md-6">
-                        {{ show_row(cart.weightTotal, 'number', {
-                            'label': 'ekyna_commerce.sale.field.weight_total',
-                            'append': 'kg',
-                            'label_col': 4
-                        }) }}
-                    </div>
-                    <div class="col-md-6">
                         {{ show_row(cart.expiresAt, 'datetime', {
                             'label': 'ekyna_core.field.expires_at',
                             'time': false,
