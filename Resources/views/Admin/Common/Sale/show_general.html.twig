@@ -95,20 +95,25 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        {{ show_row(sale.company, 'text', {
+        {%- if sale.companyNumber is not empty %}
+            {% set company = sale.company ~ ' (' ~ sale.companyNumber ~ ')' %}
+        {%- else -%}
+            {% set company = sale.company %}
+        {% endif -%}
+        {{ show_row(company, 'text', {
             'label': 'ekyna_core.field.company',
             'id': 'sale_company',
             'label_col': 4
         }) }}
     </div>
     <div class="col-md-6">
-        {{ show_row(sale.customerGroup, 'entity', {
+        {{- show_row(sale.customerGroup, 'entity', {
             'label': 'ekyna_commerce.customer_group.label.singular',
             'id': 'sale_customerGroup',
             'route': 'ekyna_commerce_customer_group_admin_show',
             'route_parameters': {'customerGroupId': sale.customerGroup.id},
             'label_col': 4
-        }) }}
+        }) -}}
     </div>
 </div>
 {% include '@EkynaCommerce/Admin/Common/Pricing/_show_vat_fields.html.twig' with {'subject': sale, 'prefix': 'sale'} %}

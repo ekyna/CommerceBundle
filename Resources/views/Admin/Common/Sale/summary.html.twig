@@ -1,4 +1,87 @@
 {% apply spaceless %}
+<table class="header">
+<tbody>
+    <tr>
+        <td class="header"><h1>{{ number }}</h1></td>
+        <td class=" flags-icons text-right">{{ flags|raw }}<br>{{ tags|raw }}</td>
+    </tr>
+</tbody>
+</table>
+<table>
+<tbody>
+    <tr>
+        <td>
+            <dl class="dl-horizontal">
+                {% if company is not empty -%}
+                <dt>{{ 'ekyna_core.field.company'|trans }}</dt>
+                <dd>{{ company }}{% if company_number is not empty %} ({{ company_number }}){% endif %}</dd>
+                {%- else -%}
+                <dt>{{ 'ekyna_commerce.customer.label.singular'|trans }}</dt>
+                <dd>{{ first_name }} {{ last_name }}</dd>
+                {%- endif %}
+                <dt>{{ 'ekyna_core.field.email'|trans }}</dt>
+                <dd><a href="mailto:{{ email }}">{{ email }}</a></dd>
+                {% if payment_term is not empty -%}
+                <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
+                <dd>{{ payment_term }}</dd>
+                {%- endif %}
+            </dl>
+        </td>
+        <td>
+            <dl class="dl-horizontal">
+                <dt>{{ 'ekyna_commerce.customer_group.label.singular'|trans }}</dt>
+                <dd>{{ customer_group }}</dd>
+                <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>
+                <dd>{{ created_at|localizeddate('short', 'none') }}</dd>
+                {% if outstanding_date is not empty -%}
+                <dt>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</dt>
+                <dd>{{ outstanding_date|localizeddate('short', 'none') }}</dd>
+                {%- endif %}
+            </dl>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <dl class="dl-horizontal">
+                <dt>{{ 'ekyna_core.field.status'|trans }}</dt>
+                <dd>{{ state_badge|raw }}</dd>
+                <dt>{{ 'ekyna_core.field.total'|trans }}</dt>
+                <dd>{{ total|localizedcurrency(currency) }}</dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>{{ 'ekyna_commerce.sale.field.payment_state'|trans }}</dt>
+                <dd>{{ payment_state_badge|raw }}</dd>
+                <dt>{{ 'ekyna_commerce.sale.field.paid_total'|trans }}</dt>
+                <dd>{{ paid_total|localizedcurrency(currency) }}</dd>
+                <dt>{{ 'ekyna_commerce.sale.field.refunded_total'|trans }}</dt>
+                <dd>{{ refunded_total|localizedcurrency(currency) }}</dd>
+
+            </dl>
+        </td>
+        <td>
+            {% if invoice_state_badge is defined -%}
+                <dl class="dl-horizontal">
+                    <dt>{{ 'ekyna_commerce.sale.field.invoice_state'|trans }}</dt>
+                    <dd>{{ invoice_state_badge|raw }}</dd>
+                    <dt>{{ 'ekyna_commerce.sale.field.invoice_total'|trans }}</dt>
+                    <dd>{{ invoice_total|localizedcurrency(currency) }}</dd>
+                    <dt>{{ 'ekyna_commerce.sale.field.credit_total'|trans }}</dt>
+                    <dd>{{ credit_total|localizedcurrency(currency) }}</dd>
+                    <dt>{{ 'ekyna_commerce.sale.field.balance'|trans }}</dt>
+                    <dd>{{ (invoice_total - credit_total - paid_total + refunded_total)|localizedcurrency(currency) }}</dd>
+                </dl>
+            {%- endif %}
+            {% if shipment_state_badge is defined -%}
+                <dl class="dl-horizontal">
+                    <dt>{{ 'ekyna_commerce.sale.field.shipment_state'|trans }}</dt>
+                    <dd>{{ shipment_state_badge|raw }}</dd>
+                </dl>
+            {%- endif %}
+        </td>
+    </tr>
+</tbody>
+</table>
+
 {% set shipment = shipment|default(false) %}
 {% set invoice = invoice|default(false) %}
 {% import _self as macros %}
@@ -50,68 +133,132 @@
 {%- endfor %}
 </tbody>
 </table>
-{% if invoices is defined and invoices is not empty -%}
+
+{% if payments is not empty -%}
+<p><strong>{{ 'ekyna_commerce.payment.label.plural'|trans }}</strong></p>
 <table class="table table-condensed table-alt-head">
-    <thead>
-    <tr>
-        <th>{{ 'ekyna_core.field.number'|trans }}</th>
-        <th>{{ 'ekyna_commerce.sale.field.ati_total'|trans }}</th>
-        <th>{{ 'ekyna_core.field.created_at'|trans }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for invoice in invoices -%}
-        <tr>
-            <td>{{ invoice.number }}</td>
-            <td>{{ invoice.grand_total }}</td>
-            <td>{{ invoice.created_at|localizeddate('short', 'short') }}</td>
-        </tr>
-    {%- endfor %}
-    </tbody>
-</table>
-{%- endif %}
-<table style="width: 100%">
 <tbody>
+{% for payment in payments -%}
     <tr>
+        <td>{{ payment.number }}</td>
+        <td>{{ payment.method }}</td>
+        <td>{{ payment.state_badge|raw }}</td>
+        <td>{{ payment.amount|localizedcurrency(payment.currency) }}</td>
         <td>
-            <div>
-                <dl class="dl-horizontal">
-                    <dt>{{ 'ekyna_core.field.created_at'|trans }}</dt>
-                    <dd>{{ created_at|localizeddate('short', 'short') }}</dd>
-                    {% if payment_term is not empty -%}
-                    <dt>{{ 'ekyna_commerce.payment_term.label.singular'|trans }}</dt>
-                    <dd>{{ payment_term }}</dd>
-                    {%- endif %}
-                    {% if outstanding_date is not empty -%}
-                    <dt>{{ 'ekyna_commerce.sale.field.outstanding_date'|trans }}</dt>
-                    <dd>{{ outstanding_date|localizeddate('short', 'none') }}</dd>
-                    {%- endif %}
-                    {% if shipped_at is not empty -%}
-                    <dt>{{ 'ekyna_commerce.shipment.field.shipped_at'|trans }}</dt>
-                    <dd>{{ shipped_at|localizeddate('short', 'short') }}</dd>
-                    {%- endif %}
-                    {% if invoiced_at is not empty -%}
-                    <dt>{{ 'ekyna_commerce.invoice.field.invoiced_at'|trans }}</dt>
-                    <dd>{{ invoiced_at|localizeddate('short', 'short') }}</dd>
-                    {%- endif %}
-                    {% if description is not empty -%}
-                    <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
-                    <dd>{{ description|nl2br|raw }}</dd>
-                    {%- endif %}
-                    {% if comment is not empty -%}
-                    <dt>{{ 'ekyna_core.field.comment'|trans }}</dt>
-                    <dd>{{ comment|nl2br|raw }}</dd>
-                    {%- endif %}
-                    {% if preparation_note is not empty -%}
-                    <dt>{{ 'ekyna_commerce.sale.field.preparation_note'|trans }}</dt>
-                    <dd>{{ preparation_note|nl2br|raw }}</dd>
-                    {%- endif %}
-                </dl>
-            </div>
+            {%- if payment.completed_at is not null -%}
+                {{ payment.completed_at|localizeddate('short', 'none') }}
+            {%- endif -%}
         </td>
-        <td class="flags-icons text-right">{{ flags|raw }}<br>{{ tags|raw }}</td>
     </tr>
+{%- endfor %}
 </tbody>
 </table>
+{%- endif %}
+
+{% if refunds is not empty -%}
+<p><strong>{{ 'ekyna_commerce.refund.label.plural'|trans }}</strong></p>
+<table class="table table-condensed table-alt-head">
+<tbody>
+{% for refund in refunds -%}
+    <tr>
+        <td>{{ refund.number }}</td>
+        <td>{{ refund.method }}</td>
+        <td>{{ refund.amount|localizedcurrency(refund.currency) }}</td>
+        <td>{{ refund.state_badge|raw }}</td>
+        <td>
+            {%- if refund.completed_at is not null -%}
+                {{ refund.completed_at|localizeddate('short', 'none') }}
+            {%- endif -%}
+        </td>
+    </tr>
+{%- endfor %}
+</tbody>
+</table>
+{%- endif %}
+
+{% if invoices is defined and invoices is not empty -%}
+<p><strong>{{ 'ekyna_commerce.invoice.label.plural'|trans }}</strong></p>
+<table class="table table-condensed table-alt-head">
+<tbody>
+{% for invoice in invoices -%}
+    <tr>
+        <td>{{ invoice.number }}</td>
+        <td>{{ invoice.grand_total|localizedcurrency(invoice.currency) }}</td>
+        <td>{{ invoice.created_at|localizeddate('short', 'none') }}</td>
+    </tr>
+{%- endfor %}
+</tbody>
+</table>
+{%- endif %}
+
+{% if credits is defined and credits is not empty -%}
+<p><strong>{{ 'ekyna_commerce.credit.label.plural'|trans }}</strong></p>
+<table class="table table-condensed table-alt-head">
+<tbody>
+{% for credit in credits -%}
+    <tr>
+        <td>{{ credit.number }}</td>
+        <td>{{ credit.grand_total|localizedcurrency(credit.currency) }}</td>
+        <td>{{ credit.created_at|localizeddate('short', 'none') }}</td>
+    </tr>
+{%- endfor %}
+</tbody>
+</table>
+{%- endif %}
+
+{% if shipments is defined and shipments is not empty -%}
+<p><strong>{{ 'ekyna_commerce.shipment.label.plural'|trans }}</strong></p>
+<table class="table table-condensed table-alt-head">
+<tbody>
+{% for shipment in shipments -%}
+    <tr>
+        <td>{{ shipment.number }}</td>
+        <td>{{ shipment.method }}</td>
+        <td>{{ shipment.state|shipment_state_badge }}</td>
+        <td>
+            {%- if shipment.shipped_at is not null -%}
+                {{ shipment.shipped_at|localizeddate('short', 'none') }}
+            {%- endif -%}
+        </td>
+    </tr>
+{%- endfor %}
+</tbody>
+</table>
+{%- endif %}
+
+{% if returns is defined and returns is not empty -%}
+<p><strong>{{ 'ekyna_commerce.return.label.plural'|trans }}</strong></p>
+<table class="table table-condensed table-alt-head">
+<tbody>
+{% for return in returns -%}
+    <tr>
+        <td>{{ return.number }}</td>
+        <td>{{ return.method }}</td>
+        <td>{{ return.state|shipment_state_badge }}</td>
+        <td>
+            {%- if return.shipped_at is not null -%}
+                {{ return.shipped_at|localizeddate('short', 'none') }}
+            {%- endif -%}
+        </td>
+    </tr>
+{%- endfor %}
+</tbody>
+</table>
+{%- endif %}
+
+<dl class="dl-horizontal">
+    {% if description is not empty -%}
+    <dt>{{ 'ekyna_commerce.field.description'|trans }}</dt>
+    <dd>{{ description|nl2br|raw }}</dd>
+    {%- endif %}
+    {% if comment is not empty -%}
+    <dt>{{ 'ekyna_core.field.comment'|trans }}</dt>
+    <dd>{{ comment|nl2br|raw }}</dd>
+    {%- endif %}
+    {% if preparation_note is not empty -%}
+    <dt>{{ 'ekyna_commerce.sale.field.preparation_note'|trans }}</dt>
+    <dd>{{ preparation_note|nl2br|raw }}</dd>
+    {%- endif %}
+</dl>
 
 {% endapply %}

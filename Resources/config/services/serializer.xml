@@ -59,6 +59,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\SaleNormalizer"
                  parent="ekyna_resource.serializer.resource_normalizer"
                  public="false">
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper"/>
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>

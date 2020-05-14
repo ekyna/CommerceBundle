@@ -48,13 +48,20 @@
                 </div>
             </div>
             {{ form_row(form.identity) }}
-            {{ form_row(form.email) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.email, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.companyNumber, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">
@@ -100,10 +107,10 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.sample, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.taxExempt, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.taxExempt, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.sample, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <hr>

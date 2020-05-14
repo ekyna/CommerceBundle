@@ -15,6 +15,10 @@
                 <td>{{ customer.company }}</td>
             </tr>
             <tr>
+                <th>{{ 'ekyna_commerce.customer.field.company_number'|trans }}</th>
+                <td>{{ customer.companyNumber }}</td>
+            </tr>
+            <tr>
                 <th>{{ 'ekyna_commerce.customer.label.singular'|trans }}</th>
                 <td>
                     <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}">

@@ -5,7 +5,12 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
 use Ekyna\Bundle\CmsBundle\Service\Renderer\TagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer as BaseNormalizer;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceSubjectInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentSubjectInterface;
 
 /**
  * Class SaleNormalizer
@@ -15,9 +20,14 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleNormalizer
 class SaleNormalizer extends BaseNormalizer
 {
     /**
+     * @var ConstantsHelper
+     */
+    private $constantsHelper;
+
+    /**
      * @var FlagRenderer
      */
-    private $commonRenderer;
+    private $flagRenderer;
 
     /**
      * @var TagRenderer
@@ -28,11 +38,13 @@ class SaleNormalizer extends BaseNormalizer
     /**
      * Constructor.
      *
-     * @param FlagRenderer    $commonRenderer
+     * @param ConstantsHelper $constantsHelper
+     * @param FlagRenderer    $flagRenderer
      */
-    public function __construct(FlagRenderer $commonRenderer)
+    public function __construct(ConstantsHelper $constantsHelper, FlagRenderer $flagRenderer)
     {
-        $this->commonRenderer = $commonRenderer;
+        $this->constantsHelper = $constantsHelper;
+        $this->flagRenderer    = $flagRenderer;
     }
 
     /**
@@ -43,7 +55,27 @@ class SaleNormalizer extends BaseNormalizer
         $data = parent::normalize($sale, $format, $context);
 
         if ($this->contextHasGroup('Summary', $context)) {
-            $data['flags'] = $this->commonRenderer->renderSaleFlags($sale, ['badge' => false]);
+            $data['state_badge'] = $this
+                ->constantsHelper
+                ->renderSaleStateBadge($sale);
+
+            $data['payment_state_badge'] = $this
+                ->constantsHelper
+                ->renderPaymentStateBadge($sale->getPaymentState());
+
+            if ($sale instanceof InvoiceSubjectInterface) {
+                $data['invoice_state_badge'] = $this
+                    ->constantsHelper
+                    ->renderInvoiceStateBadge($sale->getInvoiceState());
+            }
+
+            if ($sale instanceof ShipmentSubjectInterface) {
+                $data['shipment_state_badge'] = $this
+                    ->constantsHelper
+                    ->renderShipmentStateBadge($sale->getShipmentState());
+            }
+
+            $data['flags'] = $this->flagRenderer->renderSaleFlags($sale, ['badge' => false]);
 
             if ($sale instanceof TagsSubjectInterface) {
                 $data['tags'] = $this->getTagRenderer()->renderTags($sale, ['text' => false, 'badge' => false]);
@@ -51,6 +83,30 @@ class SaleNormalizer extends BaseNormalizer
                 $data['tags'] = '';
             }
         }
+
+        return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function normalizePayment(PaymentInterface $payment): array
+    {
+        $data =  parent::normalizePayment($payment);
+
+        $data['state_badge'] = $this->constantsHelper->renderPaymentStateBadge($payment);
+
+        return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function normalizeShipment(ShipmentInterface $shipment): array
+    {
+        $data =  parent::normalizeShipment($shipment);
+
+        $data['state_badge'] = $this->constantsHelper->renderShipmentStateBadge($shipment);
 
         return $data;
     }

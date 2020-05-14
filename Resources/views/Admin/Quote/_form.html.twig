@@ -45,13 +45,20 @@
                 </div>
             </div>
             {{ form_row(form.identity) }}
-            {{ form_row(form.email) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.email, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.company, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.customerGroup, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.companyNumber, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">
@@ -64,30 +71,32 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.autoShipping, {'label_col': 6, 'widget_col': 6}) }}
+                <div class="col-md-6">
+                    {{ form_row(form.shipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
-                <div class="col-md-4">
-                    {{ form_row(form.autoDiscount, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.autoNotify, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.taxExempt, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.expiresAt, {'label_col': 6, 'widget_col': 6}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.editable, {'label_col': 6, 'widget_col': 6}) }}
+                <div class="col-md-6">
+                    {{ form_row(form.paymentMethod, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
+                    {{ form_row(form.autoShipping, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.depositTotal, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.autoDiscount, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
                     {{ form_row(form.paymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.autoNotify, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.outstandingLimit, {'label_col': 4, 'widget_col': 8}) }}
@@ -95,10 +104,15 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.shipmentMethod, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.taxExempt, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
                 <div class="col-md-6">
-                    {{ form_row(form.depositTotal, {'label_col': 4, 'widget_col': 8}) }}
+                    {{ form_row(form.expiresAt, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.editable, {'label_col': 4, 'widget_col': 8}) }}
                 </div>
             </div>
             <hr>

@@ -73,6 +73,10 @@ class SaleType extends ResourceFormType
                     'autocomplete' => 'organization',
                 ],
             ])
+            ->add('companyNumber', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.customer.field.company_number',
+                'required' => false,
+            ])
             ->add('identity', IdentityType::class, [
                 'required' => false,
                 'section'  => 'sale',

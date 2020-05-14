@@ -50,17 +50,21 @@ class ShipmentPriceType extends ResourceFormType
     {
         $builder
             ->add('weight', NumberType::class, [
-                'label'  => 'ekyna_core.field.weight',
-                'attr'   => [
+                'label'      => 'ekyna_core.field.weight',
+                'required'   => true,
+                'empty_data' => '0',
+                'attr'       => [
                     'placeholder' => 'ekyna_core.field.weight',
                     'input_group' => ['append' => 'kg'],
                     'min'         => 0,
                 ],
             ])
             ->add('netPrice', NumberType::class, [
-                'label'  => 'ekyna_commerce.field.net_price',
-                'scale'  => 5,
-                'attr'   => [
+                'label'      => 'ekyna_commerce.field.net_price',
+                'required'   => true,
+                'scale'      => 5,
+                'empty_data' => '0',
+                'attr'       => [
                     'placeholder' => 'ekyna_commerce.field.net_price',
                     'input_group' => ['append' => '€'],  // TODO by currency
                 ],
@@ -98,7 +102,7 @@ class ShipmentPriceType extends ResourceFormType
                 }
 
                 $view->vars['attr'] = array_merge($view->vars['attr'], [
-                    'data-'.$filterBy => is_null($filterValue) ? 'null' : $filterValue->getId()
+                    'data-' . $filterBy => is_null($filterValue) ? 'null' : $filterValue->getId(),
                 ]);
             }
         }

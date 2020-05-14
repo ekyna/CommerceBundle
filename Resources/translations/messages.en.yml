@@ -1314,6 +1314,7 @@ ekyna_commerce:
             refunded_total: Refunded total
             invoice_total: Invoices total
             credit_total: Credits total
+            balance: Balance
             outstanding_accepted: Accepted outstanding
             outstanding_expired: Expired outstanding
             outstanding_limit: Outstanding limit
@@ -1412,6 +1413,9 @@ ekyna_commerce:
             credit_method: Payment method that will be associated to the generated credit.
             unsupported_action: Cette action n'est pas prise en charge par la plateforme.
         alert:
+            unlocked_items: >
+                Some lines are unlocked : theses products (actually
+                invisible) will be visible on the document.
             no_item: No shipment configured
         platforms: Gateways
 
