@@ -47,9 +47,13 @@ class WarehouseType extends ResourceTableType
                 'label'    => 'ekyna_core.field.default',
                 'position' => 40,
             ])
+            ->addColumn('enabled', CType\Column\BooleanType::class, [
+                'label'    => 'ekyna_core.field.enabled',
+                'position' => 50,
+            ])
             ->addColumn('priority', CType\Column\NumberType::class, [
                 'label'     => 'ekyna_core.field.priority',
-                'position'  => 50,
+                'position'  => 60,
                 'precision' => 0,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
@@ -90,9 +94,13 @@ class WarehouseType extends ResourceTableType
                 'label'    => 'ekyna_core.field.default',
                 'position' => 40,
             ])
+            ->addFilter('enabled', CType\Filter\BooleanType::class, [
+                'label'    => 'ekyna_core.field.enabled',
+                'position' => 50,
+            ])
             ->addFilter('priority', CType\Filter\NumberType::class, [
                 'label'    => 'ekyna_core.field.priority',
-                'position' => 50,
+                'position' => 60,
             ]);
     }
 }

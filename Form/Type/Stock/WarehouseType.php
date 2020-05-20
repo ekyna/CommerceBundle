@@ -65,6 +65,14 @@ class WarehouseType extends ResourceFormType
                     'align_with_widget' => true,
                 ],
             ])
+            ->add('enabled', Type\CheckboxType::class, [
+                'label'    => 'ekyna_core.field.enabled',
+                'required' => false,
+                'disabled' => !$this->authorization->isGranted('ROLE_SUPER_ADMIN'),
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('priority', Type\IntegerType::class, [
                 'label' => 'ekyna_core.field.priority',
             ])

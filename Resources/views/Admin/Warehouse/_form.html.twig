@@ -20,14 +20,19 @@
                 {{ form_row(form.name) }}
                 {{ form_row(form.countries) }}
                 <div class="row">
-                    <div class="col-md-4">
-                        {{ form_row(form.office, {'label_col': 6, 'widget_col': 6}) }}
+                    <div class="col-md-6">
+                        {{ form_row(form.office, {'label_col': 4, 'widget_col': 8}) }}
                     </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.default, {'label_col': 6, 'widget_col': 6}) }}
+                    <div class="col-md-6">
+                        {{ form_row(form.default, {'label_col': 4, 'widget_col': 8}) }}
                     </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.priority, {'label_col': 6, 'widget_col': 6}) }}
+                <div class="row">
+                </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.enabled, {'label_col': 4, 'widget_col': 8}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.priority, {'label_col': 4, 'widget_col': 8}) }}
                     </div>
                 </div>
             </div>

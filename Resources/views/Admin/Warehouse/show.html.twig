@@ -30,24 +30,33 @@
                         'route_parameters_map': {'countryId': 'id'}
                     }) -}}
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             {{- show_row(warehouse.office, 'boolean', {
                                 'label': 'ekyna_commerce.warehouse.field.office',
-                                'label_col': 6,
+                                'label_col': 4,
                                 'color': true
                             }) -}}
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             {{- show_row(warehouse.default, 'boolean', {
                                 'label': 'ekyna_core.field.default',
-                                'label_col': 6,
+                                'label_col': 4,
                                 'color': true
                             }) -}}
                         </div>
-                        <div class="col-md-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{- show_row(warehouse.enabled, 'boolean', {
+                                'label': 'ekyna_core.field.enabled',
+                                'label_col': 4,
+                                'color': true
+                            }) -}}
+                        </div>
+                        <div class="col-md-6">
                             {{- show_row(warehouse.priority, 'number', {
                                 'label': 'ekyna_core.field.priority',
-                                'label_col': 6
+                                'label_col': 4
                             }) -}}
                         </div>
                     </div>
