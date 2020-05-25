@@ -19,6 +19,9 @@ class OrderInvoiceType extends InvoiceType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefault('line_type', OrderInvoiceLineType::class);
+        $resolver->setDefaults([
+            'line_type' => OrderInvoiceLineType::class,
+            'item_type' => OrderInvoiceItemType::class,
+        ]);
     }
 }

@@ -70,7 +70,7 @@ class InvoiceTreeType extends AbstractType
         $resolver
             ->setRequired(['entry_type'])
             ->setDefaults([
-                'label'         => 'ekyna_commerce.sale_item.label.plural',
+                'label'         => 'ekyna_commerce.invoice.field.lines',
                 'invoice'       => null,
                 'entry_options' => [],
             ])

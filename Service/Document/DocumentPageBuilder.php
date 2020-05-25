@@ -51,7 +51,7 @@ class DocumentPageBuilder
         ShipmentSubjectCalculatorInterface $shipmentCalculator,
         array $config = []
     ) {
-        $this->subjectHelper      = $subjectHelper;
+        $this->subjectHelper = $subjectHelper;
         $this->shipmentCalculator = $shipmentCalculator;
 
         $this->config = array_replace([
@@ -77,10 +77,10 @@ class DocumentPageBuilder
 
         $lines = $document->getLinesByType(Document\DocumentLineTypes::TYPE_GOOD);
 
-        $groups      = [];
-        $group       = ['height' => 0, 'rows' => []];
+        $groups = [];
+        $group = ['height' => 0, 'rows' => []];
         $totalHeight = 0;
-        $parentIds   = [];
+        $parentIds = [];
 
         foreach ($lines as $line) {
             $item = $line->getSaleItem();
@@ -88,7 +88,7 @@ class DocumentPageBuilder
                 continue;
             }
 
-            $level  = 0;
+            $level = 0;
             $parent = $item;
             while (null !== $parent = $parent->getParent()) {
                 $level++;
@@ -104,7 +104,7 @@ class DocumentPageBuilder
                 //  New group
                 if ($level - 1 == 0 && !empty($group['rows'])) {
                     $groups[] = $group;
-                    $group    = ['height' => 0, 'rows' => []];
+                    $group = ['height' => 0, 'rows' => []];
                 }
 
                 $reference = $parent->getReference();
@@ -129,10 +129,11 @@ class DocumentPageBuilder
                     'discountRates' => null,
                 ];
 
-                $rowHeight       = empty($row['description']) ? $this->config['row_height']
+                $rowHeight = empty($row['description']) ? $this->config['row_height']
                     : $this->config['row_desc_height'];
+
                 $group['height'] += $rowHeight;
-                $totalHeight     += $rowHeight;
+                $totalHeight += $rowHeight;
 
                 $parentIds[] = $parent->getId();
             }
@@ -140,7 +141,7 @@ class DocumentPageBuilder
             //  New group
             if ($level == 0 && !empty($group['rows'])) {
                 $groups[] = $group;
-                $group    = ['height' => 0, 'rows' => []];
+                $group = ['height' => 0, 'rows' => []];
             }
 
             // Add row
@@ -160,10 +161,36 @@ class DocumentPageBuilder
                 'discountRates' => $line->getDiscountRates(),
             ];
 
-            $rowHeight       = empty($row['description']) ? $this->config['row_height']
-                : $this->config['row_desc_height'];
+            $rowHeight = empty($row['description']) ? $this->config['row_height'] : $this->config['row_desc_height'];
+
             $group['height'] += $rowHeight;
-            $totalHeight     += $rowHeight;
+            $totalHeight += $rowHeight;
+        }
+
+        $group = ['height' => 0, 'rows' => []];
+
+        foreach ($document->getItems() as $item) {
+            // Add row
+            $group['rows'][] = $row = [
+                'level'         => 0,
+                'virtual'       => false,
+                'reference'     => $item->getReference(),
+                'designation'   => $item->getDesignation(),
+                'description'   => $item->getDescription(),
+                'url'           => null,
+                'quantity'      => $item->getQuantity(),
+                'unit'          => $item->getUnit($ati),
+                'gross'         => $item->getGross($ati),
+                'discount'      => $item->getDiscount($ati),
+                'base'          => $item->getBase($ati),
+                'taxRates'      => $item->getTaxRates(),
+                'discountRates' => $item->getDiscountRates(),
+            ];
+
+            $rowHeight = empty($row['description']) ? $this->config['row_height'] : $this->config['row_desc_height'];
+
+            $group['height'] += $rowHeight;
+            $totalHeight += $rowHeight;
         }
 
         //  Add group if not empty
@@ -187,10 +214,10 @@ class DocumentPageBuilder
         /** @var Shipment\ShipmentItemInterface[] $lines */
         $lines = $shipment->getItems()->toArray();
 
-        $groups      = [];
-        $group       = ['height' => 0, 'rows' => []];
+        $groups = [];
+        $group = ['height' => 0, 'rows' => []];
         $totalHeight = 0;
-        $parentIds   = [];
+        $parentIds = [];
 
         foreach ($lines as $line) {
             $item = $line->getSaleItem();
@@ -198,7 +225,7 @@ class DocumentPageBuilder
                 continue;
             }
 
-            $level  = 0;
+            $level = 0;
             $parent = $item;
             while (null !== $parent = $parent->getParent()) {
                 $level++;
@@ -214,7 +241,7 @@ class DocumentPageBuilder
                 //  New group
                 if ($level - 1 == 0 && !empty($group['rows'])) {
                     $groups[] = $group;
-                    $group    = ['height' => 0, 'rows' => []];
+                    $group = ['height' => 0, 'rows' => []];
                 }
 
                 // Add parent row
@@ -229,7 +256,7 @@ class DocumentPageBuilder
                 ];
 
                 $group['height'] += $this->config['row_height'];
-                $totalHeight     += $this->config['row_height'];
+                $totalHeight += $this->config['row_height'];
 
                 $parentIds[] = $parent->getId();
             }
@@ -237,7 +264,7 @@ class DocumentPageBuilder
             //  New group
             if ($level == 0 && !empty($group['rows'])) {
                 $groups[] = $group;
-                $group    = ['height' => 0, 'rows' => []];
+                $group = ['height' => 0, 'rows' => []];
             }
 
             // Add row
@@ -252,7 +279,7 @@ class DocumentPageBuilder
             ];
 
             $group['height'] += $this->config['row_height'];
-            $totalHeight     += $this->config['row_height'];
+            $totalHeight += $this->config['row_height'];
         }
 
         //  Add group if not empty
@@ -282,10 +309,10 @@ class DocumentPageBuilder
             return [];
         }
 
-        $groups      = [];
-        $group       = ['height' => 0, 'rows' => []];
+        $groups = [];
+        $group = ['height' => 0, 'rows' => []];
         $totalHeight = 0;
-        $parentIds   = [];
+        $parentIds = [];
 
         foreach ($list->getEntries() as $entry) {
             $item = $entry->getSaleItem();
@@ -293,7 +320,7 @@ class DocumentPageBuilder
                 continue;
             }
 
-            $level  = 0;
+            $level = 0;
             $parent = $item;
             while (null !== $parent = $parent->getParent()) {
                 $level++;
@@ -309,7 +336,7 @@ class DocumentPageBuilder
                 //  New group
                 if ($level - 1 == 0 && !empty($group['rows'])) {
                     $groups[] = $group;
-                    $group    = ['height' => 0, 'rows' => []];
+                    $group = ['height' => 0, 'rows' => []];
                 }
 
                 // Add parent row
@@ -323,7 +350,7 @@ class DocumentPageBuilder
                     'quantity'    => null,
                 ];
                 $group['height'] += $this->config['row_height'];
-                $totalHeight     += $this->config['row_height'];
+                $totalHeight += $this->config['row_height'];
 
                 $parentIds[] = $parent->getId();
             }
@@ -331,7 +358,7 @@ class DocumentPageBuilder
             //  New group
             if ($level == 0 && !empty($group['rows'])) {
                 $groups[] = $group;
-                $group    = ['height' => 0, 'rows' => []];
+                $group = ['height' => 0, 'rows' => []];
             }
 
             // Add row
@@ -345,7 +372,7 @@ class DocumentPageBuilder
                 'quantity'    => $entry->getQuantity(),
             ];
             $group['height'] += $this->config['row_height'];
-            $totalHeight     += $this->config['row_height'];
+            $totalHeight += $this->config['row_height'];
         }
 
         //  Add group if not empty
@@ -370,8 +397,8 @@ class DocumentPageBuilder
      */
     private function buildPages(array $groups, int $totalHeight, int $oid): array
     {
-        $pages             = $page = [];
-        $pageHeight        = 0;
+        $pages = $page = [];
+        $pageHeight = 0;
         $lastPageMaxOffset = 250; // Totals and Taxes rows
         foreach ($groups as $group) {
             $max = $this->config['page_height'] - $this->config['title_height'] - $this->config['footer_height'];
@@ -391,11 +418,11 @@ class DocumentPageBuilder
                 || ($pageHeight + $group['height'] > $max)
             ) {
                 $pages[] = $page;
-                $page    = [];
+                $page = [];
 
-                $totalHeight             -= $pageHeight;
+                $totalHeight -= $pageHeight;
                 $this->heightCache[$oid] = $pageHeight;
-                $pageHeight              = 0;
+                $pageHeight = 0;
             }
 
             $pageHeight += $group['height'];
@@ -405,7 +432,7 @@ class DocumentPageBuilder
         }
 
         if (!empty($page)) {
-            $pages[]                 = $page;
+            $pages[] = $page;
             $this->heightCache[$oid] = $pageHeight;
         }
 

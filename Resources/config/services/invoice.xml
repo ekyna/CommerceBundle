@@ -62,6 +62,21 @@
             </call>
         </service>
 
+        <!-- Invoice item abstract listener -->
+        <service id="ekyna_commerce.invoice_item.abstract_listener"
+                 class="Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceItemListener"
+                 abstract="true" lazy="true">
+            <call method="setPersistenceHelper">
+                <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            </call>
+            <call method="setContextProvider">
+                <argument type="service" id="ekyna_commerce.common.context_provider"/>
+            </call>
+            <call method="setTaxResolver">
+                <argument type="service" id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"/>
+            </call>
+        </service>
+
         <!-- Invoice builder -->
         <service id="ekyna_commerce.invoice.builder"
                  class="Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder"

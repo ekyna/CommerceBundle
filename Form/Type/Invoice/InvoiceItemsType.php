@@ -2,34 +2,25 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
+use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class InvoiceLinesType
+ * Class InvoiceItemsType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Invoice
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class InvoiceLinesType extends AbstractType
+class InvoiceItemsType extends AbstractType
 {
-    /**
-     * @inheritDoc
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
-    {
-        $view->vars['headers'] = false;
-    }
-
     /**
      * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label' => 'ekyna_commerce.invoice.field.lines',
+            'label'          => 'ekyna_commerce.invoice.field.items',
+            'prototype_name' => '__item__',
         ]);
     }
 
@@ -38,7 +29,7 @@ class InvoiceLinesType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'ekyna_commerce_invoice_lines';
+        return 'ekyna_commerce_invoice_items';
     }
 
     /**

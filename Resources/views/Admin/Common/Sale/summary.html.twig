@@ -10,7 +10,7 @@
 <table>
 <tbody>
     <tr>
-        <td>
+        <td style="width:50%">
             <dl class="dl-horizontal">
                 {% if company is not empty -%}
                 <dt>{{ 'ekyna_core.field.company'|trans }}</dt>
@@ -27,7 +27,7 @@
                 {%- endif %}
             </dl>
         </td>
-        <td>
+        <td style="width:50%">
             <dl class="dl-horizontal">
                 <dt>{{ 'ekyna_commerce.customer_group.label.singular'|trans }}</dt>
                 <dd>{{ customer_group }}</dd>
@@ -41,7 +41,7 @@
         </td>
     </tr>
     <tr>
-        <td>
+        <td style="width:50%">
             <dl class="dl-horizontal">
                 <dt>{{ 'ekyna_core.field.status'|trans }}</dt>
                 <dd>{{ state_badge|raw }}</dd>
@@ -58,7 +58,7 @@
 
             </dl>
         </td>
-        <td>
+        <td style="width:50%">
             {% if invoice_state_badge is defined -%}
                 <dl class="dl-horizontal">
                     <dt>{{ 'ekyna_commerce.sale.field.invoice_state'|trans }}</dt>

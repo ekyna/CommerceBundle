@@ -585,13 +585,15 @@ ekyna_commerce:
             synchronize: Synchroniser avec l'expédition
             unlink: Délier
         field:
-            lines: Lignes
+            lines: Lignes commande
+            items: Lignes supplémentaires
             goods_base: Marchandises HT
             shipment_base: Frais de port HT
             payment_method: Mode de remboursement
             invoiced_at: Date de facturation
             sale_total: Total Cde
             sale_paid: Réglé
+            ignore_stock: Ne pas créditer les stock
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
             recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).

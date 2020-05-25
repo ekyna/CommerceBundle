@@ -7,15 +7,28 @@
         <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
     </tr>
     </thead>
+    {%- if lines is not empty -%}
+    <tbody>
+    {%- for line in lines -%}
+        <tr>
+            <td>{{ line.designation }}</td>
+            <td>{{ line.reference }}</td>
+            <td>{{ line.quantity|localizednumber }}{% if 0 < line.total %} / {{ line.total|localizednumber }}{% endif %}</td>{# TODO Packaging format #}
+        </tr>
+    {%- endfor -%}
+    </tbody>
+    {%- endif -%}
+    {%- if items is not empty -%}
     <tbody>
     {% for item in items -%}
         <tr>
             <td>{{ item.designation }}</td>
             <td>{{ item.reference }}</td>
-            <td>{{ item.quantity|localizednumber }}{% if 0 < item.total %} / {{ item.total|localizednumber }}{% endif %}</td>{# TODO Packaging format #}
+            <td>{{ item.quantity|localizednumber }}</td>
         </tr>
     {%- endfor %}
     </tbody>
+    {%- endif -%}
 </table>
 {% if description %}
 <div>

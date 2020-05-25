@@ -122,6 +122,15 @@
             <tag name="serializer.denormalizer"/>
         </service>
 
+        <!-- Invoice Item normalizer -->
+        <service id="ekyna_commerce.invoice_item.normalizer"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNormalizer"
+                 parent="ekyna_resource.serializer.resource_normalizer"
+                 public="false">
+            <tag name="serializer.normalizer"/>
+            <tag name="serializer.denormalizer"/>
+        </service>
+
         <!-- Stock unit normalizer -->
         <service id="ekyna_commerce.stock_unit.normalizer"
                  class="Ekyna\Bundle\CommerceBundle\Service\Serializer\StockUnitNormalizer"

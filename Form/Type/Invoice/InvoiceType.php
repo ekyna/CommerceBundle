@@ -77,9 +77,27 @@ class InvoiceType extends ResourceFormType
                     throw new RuntimeException("Not yet supported.");
                 };
 
+                if ($invoice->isCredit()) {
+                    $form->add('ignoreStock', Type\CheckboxType::class, [
+                        'label' => 'ekyna_commerce.invoice.field.ignore_stock',
+                        'required' => false,
+                        'attr' => [
+                            'align_with_widget' => true,
+                        ]
+                    ]);
+                }
+
                 $disabledLines = true;
                 if (null === $invoice->getShipment()) {
+                    $form->add('items', InvoiceItemsType::class, [
+                        'entry_type'    => $options['item_type'],
+                        'entry_options' => [
+                            'invoice'    => $invoice,
+                        ],
+                    ]);
+
                     $this->builder->build($invoice);
+
                     $disabledLines = false;
                 }
 
@@ -112,7 +130,11 @@ class InvoiceType extends ResourceFormType
         parent::configureOptions($resolver);
 
         $resolver
-            ->setRequired(['line_type'])
-            ->setAllowedTypes('line_type', 'string');
+            ->setRequired([
+                'line_type',
+                'item_type',
+            ])
+            ->setAllowedTypes('line_type', 'string')
+            ->setAllowedTypes('item_type', 'string');
     }
 }

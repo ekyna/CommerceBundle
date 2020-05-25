@@ -11,7 +11,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
         this.each(function() {
 
             var $invoice = $(this),
-                $quantities = $invoice.find('.invoice-items > tbody > tr input'),
+                $quantities = $invoice.find('.invoice-lines > tbody > tr input'),
                 $toggle = $invoice.find('#toggle-quantities');
 
             console.log('invoiceWidget', $quantities.length);
@@ -28,7 +28,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     var $input = $(this),
                         quantity = parseInt($input.val()),
                         $children = $invoice
-                            .find('.invoice-items > tbody > tr input[data-parent="' + $input.attr('id') + '"]');
+                            .find('.invoice-lines > tbody > tr input[data-parent="' + $input.attr('id') + '"]');
 
                     if (isNaN(quantity)) quantity = 0;
 

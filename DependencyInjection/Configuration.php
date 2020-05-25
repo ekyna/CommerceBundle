@@ -988,6 +988,14 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('parent')->defaultValue('ekyna_commerce.order_invoice')->end()
                     ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceLineType')->end()
                 ->end()
+            ->end()
+            ->arrayNode('order_invoice_item')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Order\Entity\OrderInvoiceItem')->end()
+                    ->scalarNode('parent')->defaultValue('ekyna_commerce.order_invoice')->end()
+                    ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceItemType')->end()
+                ->end()
             ->end();
     }
 

@@ -135,10 +135,17 @@
             <tag name="resource.event_subscriber"/>
         </service>
 
-        <!-- Order invoice item event listener -->
+        <!-- Order invoice line event listener -->
         <service id="ekyna_commerce.order_invoice_line.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceLineEventSubscriber"
                  parent="ekyna_commerce.invoice_line.abstract_listener">
+            <tag name="resource.event_subscriber"/>
+        </service>
+
+        <!-- Order invoice item event listener -->
+        <service id="ekyna_commerce.order_invoice_item.event_subscriber"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceItemEventSubscriber"
+                 parent="ekyna_commerce.invoice_item.abstract_listener">
             <tag name="resource.event_subscriber"/>
         </service>
 
