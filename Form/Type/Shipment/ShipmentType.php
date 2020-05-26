@@ -54,8 +54,8 @@ class ShipmentType extends ResourceFormType
     public function __construct(
         ShipmentBuilderInterface $shipmentBuilder,
         AuthorizationCheckerInterface $authorizationChecker,
-        $dataClass,
-        $defaultCurrency
+        string $dataClass,
+        string $defaultCurrency
     ) {
         parent::__construct($dataClass);
 

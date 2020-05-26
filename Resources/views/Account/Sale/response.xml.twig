@@ -1,6 +1,6 @@
 {% import '@EkynaCommerce/Account/Sale/macros.html.twig' as macros -%}
 
-{%- spaceless -%}
+{%- apply spaceless -%}
 <?xml version="1.0" encoding="utf-8"?>
 <response>
     <fields>
@@ -10,4 +10,4 @@
     </fields>
     <view><![CDATA[{{ render_sale_view(sale_view) }}]]></view>
 </response>
-{%- endspaceless -%}
+{%- endapply -%}

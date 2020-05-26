@@ -180,7 +180,7 @@
 
 
 {%- macro render_invoice_payments(subject) -%}
-{%- spaceless -%}
+{%- apply spaceless -%}
     {% set payments = subject|invoice_payments -%}
     {%- if payments is not empty -%}
     <h2>
@@ -200,7 +200,7 @@
         </tr>
         </thead>
         <tbody class="stripped">
-        {% for payment in payments -%}
+        {% for payment in payments %}{% if payment.payment is not null -%}
         <tr>
             <td>{{ payment.payment.getNumber() }}</td>
             <td>{{ payment.payment.getMethod().title }}</td>
@@ -209,7 +209,7 @@
                 {{- payment.amount|localizedcurrency(payment.payment.getCurrency().code) -}}
             </td>
         </tr>
-        {%- endfor %}
+        {%- endif %}{%- endfor %}
         </tbody>
         <tbody class="totals">
         <tr>
@@ -219,5 +219,5 @@
         </tbody>
     </table>
     {% endif %}
-{%- endspaceless -%}
+{%- endapply -%}
 {%- endmacro -%}
