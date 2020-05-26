@@ -167,6 +167,11 @@ class DocumentPageBuilder
             $totalHeight += $rowHeight;
         }
 
+        //  Add group if not empty
+        if (!empty($group['rows'])) {
+            $groups[] = $group;
+        }
+
         $group = ['height' => 0, 'rows' => []];
 
         foreach ($document->getItems() as $item) {
