@@ -2,17 +2,17 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Notify;
 
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
-use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
-use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\AdminBundle\Repository\UserRepositoryInterface;
 use Ekyna\Bundle\AdminBundle\Service\Security\UserProviderInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\SettingBundle\Manager\SettingsManager;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\RecipientList;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 
@@ -38,6 +38,11 @@ class RecipientHelper
      */
     private $userRepository;
 
+    /**
+     * @var array
+     */
+    private $config;
+
 
     /**
      * Constructor.
@@ -45,15 +50,20 @@ class RecipientHelper
      * @param SettingsManager         $settings
      * @param UserProviderInterface   $userProvider
      * @param UserRepositoryInterface $userRepository
+     * @param array                   $config
      */
     public function __construct(
         SettingsManager $settings,
         UserProviderInterface $userProvider,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        array $config
     ) {
-        $this->settings = $settings;
-        $this->userProvider = $userProvider;
+        $this->settings       = $settings;
+        $this->userProvider   = $userProvider;
         $this->userRepository = $userRepository;
+        $this->config         = array_replace([
+            'administrators' => false,
+        ], $config);
     }
 
     /**
@@ -81,13 +91,7 @@ class RecipientHelper
 
         $from->add($this->createWebsiteRecipient());
 
-        if ($sale instanceof OrderInterface/* || $sale instanceof QuoteInterface*/) {
-            if ($inCharge = $sale->getInCharge()) {
-                $from->add($this->createRecipient($inCharge, Recipient::TYPE_IN_CHARGE));
-            } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
-                $from->add($recipient);
-            }
-        }
+        $this->addSaleInCharge($from, $sale);
 
         return $from->all();
     }
@@ -117,13 +121,8 @@ class RecipientHelper
                 $list->add($this->createRecipient($customer, Recipient::TYPE_SALESMAN));
             }
         }
-        if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
-            if ($inCharge = $sale->getInCharge()) {
-                $list->add($this->createRecipient($inCharge, Recipient::TYPE_IN_CHARGE));
-            } elseif (null !== $recipient = $this->createCurrentUserRecipient()) {
-                $list->add($recipient);
-            }
-        }
+
+        $this->addSaleInCharge($list, $sale);
 
         return $list->all();
     }
@@ -246,7 +245,13 @@ class RecipientHelper
     {
         if ($element instanceof UserInterface) {
             $type = $element === $this->userProvider->getUser() ? Recipient::TYPE_USER : $type;
-            return new Recipient($element->getEmail(), $element->getFirstName() . ' ' . $element->getLastName(), $type, $element);
+
+            return new Recipient(
+                $element->getEmail(),
+                $element->getFirstName() . ' ' . $element->getLastName(),
+                $type,
+                $element
+            );
         }
 
         if ($element instanceof SaleInterface || $element instanceof CustomerInterface) {
@@ -274,9 +279,42 @@ class RecipientHelper
      */
     private function addAdministrators(RecipientList $list)
     {
+        if (!$this->config['administrators']) {
+            return;
+        }
+
         $administrators = $this->userRepository->findAllActive();
         foreach ($administrators as $administrator) {
             $list->add($this->createRecipient($administrator, Recipient::TYPE_ADMINISTRATOR));
         }
+    }
+
+    /**
+     * Adds the sale's 'in charge' user to the given list.
+     *
+     * @param RecipientList $list
+     * @param SaleInterface $sale
+     */
+    private function addSaleInCharge(RecipientList $list, SaleInterface $sale)
+    {
+        if (!$this->config['administrators']) {
+            return;
+        }
+
+        if (!$sale instanceof InChargeSubjectInterface) {
+            return;
+        }
+
+        if ($inCharge = $sale->getInCharge()) {
+            $list->add($this->createRecipient($inCharge, Recipient::TYPE_IN_CHARGE));
+
+            return;
+        }
+
+        if (!$user = $this->userProvider->getUser()) {
+            return;
+        }
+
+        $list->add($this->createRecipient($user, Recipient::TYPE_USER));
     }
 }

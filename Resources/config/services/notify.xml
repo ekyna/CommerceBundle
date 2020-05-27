@@ -15,6 +15,7 @@
             <argument type="service" id="ekyna_setting.manager"/>
             <argument type="service" id="Ekyna\Bundle\AdminBundle\Service\Security\UserProvider"/>
             <argument type="service" id="ekyna_admin.user.repository"/>
+            <argument>%ekyna_commerce.default.notify%</argument>
         </service>
 
         <!-- Notify builder -->

@@ -62,6 +62,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.default.fraud', $config['fraud']);
         $container->setParameter('ekyna_commerce.default.expiration.cart', $config['expiration']['cart']);
         $container->setParameter('ekyna_commerce.default.expiration.quote', $config['expiration']['quote']);
+        $container->setParameter('ekyna_commerce.default.notify', $config['notify']);
     }
 
     /**
