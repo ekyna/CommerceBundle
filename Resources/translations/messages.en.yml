@@ -1239,6 +1239,7 @@ ekyna_commerce:
                 configure: Configure the product
                 edit: Edit the line
                 remove: Remove the line
+                sync_subject: Sync with product
                 information: Show information
                 detail: Show details
             item_adjustment:
@@ -1256,6 +1257,9 @@ ekyna_commerce:
             duplicate: Confirm duplication ?
             item:
                 remove: Are you sure you want to remove this product ?
+                sync_subject: >
+                    Are you sure you want to update this line data from the associated product ?
+                    (Non-reversible operation).
             adjustment:
                 remove: Are you sure you want to remove this discount ?
         prepare:

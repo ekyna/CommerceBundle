@@ -200,7 +200,7 @@ class OrderViewType extends AbstractViewType
         if (!($item->isCompound() && !$item->hasPrivateChildren())) {
             $lines = [];
 
-            $shipped = $this->shipmentCalculator->calculateShippedQuantity($item);
+            $shipped  = $this->shipmentCalculator->calculateShippedQuantity($item);
             $returned = $this->shipmentCalculator->calculateReturnedQuantity($item);
 
             if (0 < $returned) {
@@ -243,15 +243,16 @@ class OrderViewType extends AbstractViewType
         }
 
         // Manual adjustments
-        if (!$item->getSubjectIdentity()->hasIdentity() || (
-                !$sale->isAutoDiscount() && !$sale->isSample() &&
-                !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
+        if (!$item->getSubjectIdentity()->hasIdentity()
+            || (
+                !$sale->isAutoDiscount() && !$sale->isSample()
+                && !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
             )
         ) {
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
             if (false !== $adjustment) {
                 $routePrefix = 'ekyna_commerce_order_item_adjustment_admin_';
-                $parameters = [
+                $parameters  = [
                     'orderId'               => $item->getSale()->getId(),
                     'orderItemId'           => $item->getId(),
                     'orderItemAdjustmentId' => $adjustment->getId(),
@@ -285,9 +286,9 @@ class OrderViewType extends AbstractViewType
             }
         }
 
-        $locked = $item->isImmutable() ||
-            $this->invoiceCalculator->isInvoiced($item) ||
-            $this->shipmentCalculator->isShipped($item);
+        $locked = $item->isImmutable()
+            || $this->invoiceCalculator->isInvoiced($item)
+            || $this->shipmentCalculator->isShipped($item);
 
         // If no parent
         if (!$item->getParent()) {
@@ -334,7 +335,7 @@ class OrderViewType extends AbstractViewType
         }
 
         // Edit action
-        if (!$locked) {
+        // if (!$locked) {
             $editPath = $this->generateUrl('ekyna_commerce_order_item_admin_edit', [
                 'orderId'     => $item->getSale()->getId(),
                 'orderItemId' => $item->getId(),
@@ -344,7 +345,7 @@ class OrderViewType extends AbstractViewType
                 'data-sale-modal' => null,
                 'class'           => 'text-warning',
             ]));
-        }
+        //}
 
         // Configure action
         if (!$locked && !$item->isImmutable() && !$item->getParent()) {
@@ -376,6 +377,21 @@ class OrderViewType extends AbstractViewType
                 'title'           => $this->trans('ekyna_commerce.sale.button.prioritize'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',
+            ]));
+        }
+
+        // Sync with subject
+        if ($item->getSubjectIdentity()->hasIdentity()) {
+            // Prioritize button
+            $syncPath = $this->generateUrl('ekyna_commerce_order_item_admin_sync_subject', [
+                'orderId'     => $sale->getId(),
+                'orderItemId' => $item->getId(),
+            ]);
+            $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
+                'title'         => $this->trans('ekyna_commerce.sale.button.item.sync_subject'),
+                'confirm'       => $this->trans('ekyna_commerce.sale.confirm.item.sync_subject'),
+                'data-sale-xhr' => null,
+                'class'         => 'text-warning',
             ]));
         }
 
@@ -414,7 +430,7 @@ class OrderViewType extends AbstractViewType
         $adjustable = $adjustment->getAdjustable();
         if ($adjustable instanceof Order\OrderInterface) {
             $routePrefix = 'ekyna_commerce_order_adjustment_admin_';
-            $parameters = [
+            $parameters  = [
                 'orderId'           => $adjustable->getId(),
                 'orderAdjustmentId' => $adjustment->getId(),
             ];

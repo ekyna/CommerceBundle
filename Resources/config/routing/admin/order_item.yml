@@ -52,6 +52,14 @@ ekyna_commerce_order_item_admin_prioritize:
         orderId: \d+
         orderItemId: \d+
 
+ekyna_commerce_order_item_admin_sync_subject:
+    path: /{orderItemId}/sync-subject
+    defaults: { _controller: "ekyna_commerce.order_item.controller:syncSubjectAction" }
+    methods: [POST]
+    requirements:
+        orderId: \d+
+        orderItemId: \d+
+
 ekyna_commerce_order_item_admin_remove:
     path: /{orderItemId}/remove
     defaults: { _controller: "ekyna_commerce.order_item.controller:removeAction" }

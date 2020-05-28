@@ -1261,6 +1261,7 @@ ekyna_commerce:
                 new: Ajouter une ligne
                 configure: Configurer l'article
                 edit: Modifier la ligne
+                sync_subject: Synchroniser avec le produit
                 remove: Supprimer la ligne
                 information: Afficher les information
                 detail: Afficher le détail
@@ -1279,6 +1280,9 @@ ekyna_commerce:
             duplicate: Confirmer la duplication ?
             item:
                 remove: Souhaitez-vous réellement supprimer cette article ?
+                sync_subject: >
+                    Souhaitez-vous réellement mettre à jour cette ligne d'après les données de l'article associé ?
+                    (Opération non réversible).
             adjustment:
                 remove: Souhaitez-vous réellement supprimer cette remise ?
         prepare:

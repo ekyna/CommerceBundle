@@ -7,8 +7,11 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemPrioritizeType;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -21,7 +24,7 @@ class SaleItemController extends AbstractSaleController
     /**
      * {@inheritdoc}
      */
-    public function homeAction()
+    public function homeAction(): Response
     {
         throw new NotFoundHttpException();
     }
@@ -29,7 +32,7 @@ class SaleItemController extends AbstractSaleController
     /**
      * {@inheritdoc}
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request): Response
     {
         throw new NotFoundHttpException();
     }
@@ -37,7 +40,7 @@ class SaleItemController extends AbstractSaleController
     /**
      * {@inheritdoc}
      */
-    public function showAction(Request $request)
+    public function showAction(Request $request): Response
     {
         throw new NotFoundHttpException();
     }
@@ -45,7 +48,7 @@ class SaleItemController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function addAction(Request $request)
+    public function addAction(Request $request): Response
     {
         $this->isGranted('CREATE');
 
@@ -155,7 +158,7 @@ class SaleItemController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request): Response
     {
         $this->isGranted('CREATE');
 
@@ -245,14 +248,14 @@ class SaleItemController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function configureAction(Request $request)
+    public function configureAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        /** @var SaleItemInterface $item */
         $item = $context->getResource($resourceName);
 
         $saleName = $this->getParentConfiguration()->getResourceName();
@@ -336,12 +339,12 @@ class SaleItemController extends AbstractSaleController
     /**
      * @inheritdoc
      */
-    public function editAction(Request $request)
+    public function editAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        /** @var SaleItemInterface $item */
         $item = $context->getResource($resourceName);
 
         $saleName = $this->getParentConfiguration()->getResourceName();
@@ -422,12 +425,12 @@ class SaleItemController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function moveUpAction(Request $request)
+    public function moveUpAction(Request $request): Response
     {
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        /** @var SaleItemInterface $item */
         $item = $context->getResource($this->config->getResourceName());
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
@@ -453,12 +456,12 @@ class SaleItemController extends AbstractSaleController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function moveDownAction(Request $request)
+    public function moveDownAction(Request $request): Response
     {
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        /** @var SaleItemInterface $item */
         $item = $context->getResource($this->config->getResourceName());
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
@@ -495,7 +498,7 @@ class SaleItemController extends AbstractSaleController
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        /** @var SaleItemInterface $item */
         $item = $context->getResource($resourceName);
 
         $prioritizer = $this->get('ekyna_commerce.stock_prioritizer');
@@ -554,14 +557,70 @@ class SaleItemController extends AbstractSaleController
     }
 
     /**
-     * @inheritdoc
+     * Sale item 'sync from subject' action.
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function removeAction(Request $request)
+    public function syncSubjectAction(Request $request): Response
     {
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleItemInterface $item */
+        /** @var SaleItemInterface $item */
+        $item = $context->getResource($resourceName);
+
+        $saleName = $this->getParentConfiguration()->getResourceName();
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        $sale = $context->getResource($saleName);
+
+        if ($item->isImmutable()) {
+            throw new NotFoundHttpException('Item is immutable.');
+        }
+
+        $this->isGranted('EDIT', $sale);
+
+        if ($this->syncItem($item)) {
+            // TODO use ResourceManager
+            $this->getOperator()->update($item);
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->buildXhrSaleViewResponse($sale);
+        }
+
+        return $this->redirectToReferer($this->generateResourcePath($sale, 'show'));
+    }
+
+    /**
+     * Syncs the item with it's subject recursively.
+     *
+     * @param SaleItemInterface $item
+     *
+     * @return bool
+     */
+    private function syncItem(SaleItemInterface $item): bool
+    {
+        $helper = $this->get(SubjectHelperInterface::class);
+        $changed = $helper->sync($item);
+
+        foreach ($item->getChildren() as $child) {
+            $changed |= $this->syncItem($child);
+        }
+
+        return $changed;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAction(Request $request): Response
+    {
+        $context = $this->loadContext($request);
+        $resourceName = $this->config->getResourceName();
+
+        /** @var SaleItemInterface $item */
         $item = $context->getResource($resourceName);
 
         $saleName = $this->getParentConfiguration()->getResourceName();

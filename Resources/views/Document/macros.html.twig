@@ -181,7 +181,7 @@
 
 {%- macro render_invoice_payments(subject) -%}
 {%- apply spaceless -%}
-    {% set payments = subject|invoice_payments -%}
+    {% set payments = subject|invoice_payments(false) -%}
     {%- if payments is not empty -%}
     <h2>
         {%- if subject.credit -%}
