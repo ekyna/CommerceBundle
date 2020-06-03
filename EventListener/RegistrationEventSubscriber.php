@@ -220,19 +220,21 @@ class RegistrationEventSubscriber implements EventSubscriberInterface
          * (User may have been created by OAuthProvider)
          * @see \Ekyna\Bundle\UserBundle\Service\OAuth\FOSUserProvider::loadUserByOAuthUserResponse
          */
-        if (null === $user->getId()) {
-            $user->setEnabled(false);
-            if (null === $user->getConfirmationToken()) {
-                $user->setConfirmationToken($this->tokenGenerator->generateToken());
-            }
-
-            $this->fosMailer->sendConfirmationEmailMessage($user);
-
-            $this->session->set('fos_user_send_confirmation_email/email', $user->getEmail());
-
-            $url = $this->urlGenerator->generate('fos_user_registration_check_email');
-            $event->setResponse(new RedirectResponse($url));
+        if ($user->getId()) {
+            return;
         }
+
+        $user->setEnabled(false);
+        if (null === $user->getConfirmationToken()) {
+            $user->setConfirmationToken($this->tokenGenerator->generateToken());
+        }
+
+        $this->fosMailer->sendConfirmationEmailMessage($user);
+
+        $this->session->set('fos_user_send_confirmation_email/email', $user->getEmail());
+
+        $url = $this->urlGenerator->generate('fos_user_registration_check_email');
+        $event->setResponse(new RedirectResponse($url));
     }
 
     /**

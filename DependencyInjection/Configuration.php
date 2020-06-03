@@ -50,6 +50,7 @@ class Configuration implements ConfigurationInterface
         $this->addCommonResourcesSection($resourceNode);
         $this->addCustomerResourcesSection($resourceNode);
         $this->addNewsletterResourcesSection($resourceNode);
+        $this->addNotifyResourcesSection($resourceNode);
         $this->addOrderResourcesSection($resourceNode);
         $this->addPaymentResourcesSection($resourceNode);
         $this->addShipmentResourcesSection($resourceNode);
@@ -648,27 +649,6 @@ class Configuration implements ConfigurationInterface
     private function addCustomerResourcesSection(NodeBuilder $node)
     {
         $node
-            ->arrayNode('customer_address')
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->variableNode('templates')->defaultValue([
-                        '_form.html'  => '@EkynaCommerce/Admin/CustomerAddress/_form.html',
-                        'edit.html'   => '@EkynaCommerce/Admin/CustomerAddress/edit.html',
-                        'import.html' => '@EkynaCommerce/Admin/CustomerAddress/import.html',
-                        'new.html'    => '@EkynaCommerce/Admin/CustomerAddress/new.html',
-                        'remove.html' => '@EkynaCommerce/Admin/CustomerAddress/remove.html',
-                        'show.html'   => '@EkynaCommerce/Admin/CustomerAddress/show.html',
-                    ])->end()
-                    ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerAddress')->end()
-                    ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerAddressController')->end()
-                    ->scalarNode('operator')->end()
-                    ->scalarNode('repository')->defaultValue('Ekyna\Bundle\CommerceBundle\Repository\CustomerAddressRepository')->end()
-                    ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType')->end()
-                    ->scalarNode('table')->end()
-                    ->scalarNode('parent')->defaultValue('ekyna_commerce.customer')->end()
-                    ->scalarNode('event')->end()
-                ->end()
-            ->end()
             ->arrayNode('customer')
                 ->addDefaultsIfNotSet()
                 ->children()
@@ -687,6 +667,45 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType')->end()
                     ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerType')->end()
                     ->scalarNode('parent')->end()
+                    ->scalarNode('event')->end()
+                ->end()
+            ->end()
+            ->arrayNode('customer_address')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->variableNode('templates')->defaultValue([
+                        '_form.html'  => '@EkynaCommerce/Admin/CustomerAddress/_form.html',
+                        'edit.html'   => '@EkynaCommerce/Admin/CustomerAddress/edit.html',
+                        'import.html' => '@EkynaCommerce/Admin/CustomerAddress/import.html',
+                        'new.html'    => '@EkynaCommerce/Admin/CustomerAddress/new.html',
+                        'remove.html' => '@EkynaCommerce/Admin/CustomerAddress/remove.html',
+                    ])->end()
+                    ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerAddress')->end()
+                    ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\CustomerAddressController')->end()
+                    ->scalarNode('operator')->end()
+                    ->scalarNode('repository')->defaultValue('Ekyna\Bundle\CommerceBundle\Repository\CustomerAddressRepository')->end()
+                    ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType')->end()
+                    ->scalarNode('table')->end()
+                    ->scalarNode('parent')->defaultValue('ekyna_commerce.customer')->end()
+                    ->scalarNode('event')->end()
+                ->end()
+            ->end()
+            ->arrayNode('customer_contact')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->variableNode('templates')->defaultValue([
+                        '_form.html'  => '@EkynaCommerce/Admin/CustomerContact/_form.html',
+                        'edit.html'   => '@EkynaCommerce/Admin/CustomerContact/edit.html',
+                        'new.html'    => '@EkynaCommerce/Admin/CustomerContact/new.html',
+                        'remove.html' => '@EkynaCommerce/Admin/CustomerContact/remove.html',
+                    ])->end()
+                    ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Customer\Entity\CustomerContact')->end()
+                    ->scalarNode('controller')->end()
+                    ->scalarNode('operator')->end()
+                    ->scalarNode('repository')->end()
+                    ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerContactType')->end()
+                    ->scalarNode('table')->end()
+                    ->scalarNode('parent')->defaultValue('ekyna_commerce.customer')->end()
                     ->scalarNode('event')->end()
                 ->end()
             ->end()
@@ -713,35 +732,6 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('fields')
                                 ->prototype('scalar')->end()
                                 ->defaultValue(['title'])
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-            ->arrayNode('notify_model')
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->variableNode('templates')->defaultValue([
-                        '_form.html' => '@EkynaCommerce/Admin/NotifyModel/_form.html',
-                        'show.html'  => '@EkynaCommerce/Admin/NotifyModel/show.html',
-                        'test.html'  => '@EkynaCommerce/Admin/NotifyModel/test.html',
-                    ])->end()
-                    ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\NotifyModel')->end()
-                    ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\NotifyModelController')->end()
-                    ->scalarNode('operator')->end()
-                    ->scalarNode('repository')->end()
-                    ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyModelType')->end()
-                    ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\NotifyModelType')->end()
-                    ->scalarNode('parent')->end()
-                    ->scalarNode('event')->end()
-                    ->arrayNode('translation')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\NotifyModelTranslation')->end()
-                            ->scalarNode('repository')->end()
-                            ->arrayNode('fields')
-                                ->prototype('scalar')->end()
-                                ->defaultValue(['subject', 'message'])
                             ->end()
                         ->end()
                     ->end()
@@ -802,6 +792,45 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('parent')->end()
                     ->scalarNode('event')->end()
                 ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `notify resources` section.
+     *
+     * @param NodeBuilder $node
+     */
+    private function addNotifyResourcesSection(NodeBuilder $node)
+    {
+        $node
+            ->arrayNode('notify_model')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->variableNode('templates')->defaultValue([
+                '_form.html' => '@EkynaCommerce/Admin/NotifyModel/_form.html',
+                'show.html'  => '@EkynaCommerce/Admin/NotifyModel/show.html',
+                'test.html'  => '@EkynaCommerce/Admin/NotifyModel/test.html',
+            ])->end()
+            ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\NotifyModel')->end()
+            ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\NotifyModelController')->end()
+            ->scalarNode('operator')->end()
+            ->scalarNode('repository')->end()
+            ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyModelType')->end()
+            ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\NotifyModelType')->end()
+            ->scalarNode('parent')->end()
+            ->scalarNode('event')->end()
+            ->arrayNode('translation')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\NotifyModelTranslation')->end()
+            ->scalarNode('repository')->end()
+            ->arrayNode('fields')
+            ->prototype('scalar')->end()
+            ->defaultValue(['subject', 'message'])
+            ->end()
+            ->end()
+            ->end()
+            ->end()
             ->end();
     }
 

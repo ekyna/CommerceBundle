@@ -274,7 +274,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
         $methods = [
             'Retrait en magasin' => [
-                'platform'    => 'noop',
+                'platform'    => 'in_store',
                 'image'       => 'in-store.png',
                 'description' => '<p>Vous pourrez retirer votre colis à notre magasin ...</p>',
                 'enabled'     => true,

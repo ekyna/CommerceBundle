@@ -9,7 +9,6 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
-use Ekyna\Bundle\CommerceBundle\Model\Contact;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
@@ -65,9 +64,9 @@ class RegistrationType extends AbstractType
         Features $features,
         string $customerClass
     ) {
-        $this->tokenStorage  = $tokenStorage;
+        $this->tokenStorage = $tokenStorage;
         $this->customerClass = $customerClass;
-        $this->features      = $features;
+        $this->features = $features;
     }
 
     /**
@@ -77,10 +76,9 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add($this->createCustomerForm($builder))
-            ->add($this->createInvoiceContactForm($builder))
             ->add('applyGroup', CustomerGroupChoiceType::class, [
                 'label'         => 'ekyna_commerce.account.registration.field.apply_group',
-                'select2'       => false,
+                'expanded'      => true,
                 'choice_label'  => 'title',
                 'query_builder' => function (EntityRepository $er) {
                     $qb = $er->createQueryBuilder('cg');
@@ -89,6 +87,9 @@ class RegistrationType extends AbstractType
                         ->andWhere($qb->expr()->eq('cg.registration', true))
                         ->orderBy('cg.id', 'ASC');
                 },
+                'attr'          => [
+                    'help_text' => 'ekyna_commerce.account.registration.help.apply_group',
+                ],
             ])
             ->add('invoiceAddress', CustomerAddressType::class, [
                 'label'      => false,
@@ -106,6 +107,8 @@ class RegistrationType extends AbstractType
                 'required' => false,
             ])
             ->add('captcha', EWZRecaptchaType::class, [
+                'label'       => '&nbsp;',
+                'required'    => false,
                 'mapped'      => false,
                 'constraints' => [new IsTrue()],
             ])
@@ -243,14 +246,20 @@ class RegistrationType extends AbstractType
 
         $form
             ->add('company', Type\TextType::class, [
-                'label'    => 'ekyna_core.field.company',
+                'label'    => 'ekyna_commerce.account.registration.field.company',
                 'required' => false,
                 'attr'     => [
                     'maxlength'    => 35,
                     'autocomplete' => 'organization',
                 ],
             ])
-            ->add('vatNumber', VatNumberType::class)
+            ->add('companyNumber', Type\TextType::class, [
+                'label'    => 'ekyna_commerce.customer.field.company_number',
+                'required' => false,
+            ])
+            ->add('vatNumber', VatNumberType::class, [
+                'required' => false,
+            ])
             ->add('identity', IdentityType::class, [
                 'required' => true,
             ])
@@ -287,53 +296,16 @@ class RegistrationType extends AbstractType
     }
 
     /**
-     * Creates the invoice contact form.
-     *
-     * @param FormBuilderInterface $builder
-     *
-     * @return FormBuilderInterface
-     */
-    private function createInvoiceContactForm(FormBuilderInterface $builder)
-    {
-        $form = $builder->create('invoiceContact', null, [
-            'data_class' => Contact::class,
-            'compound'   => true,
-        ]);
-
-        $form
-            ->add('identity', IdentityType::class, [
-                'required' => true,
-                'section'  => 'billing',
-            ])
-            ->add('email', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.account.registration.field.invoice_email',
-                'required' => false,
-                'attr'     => [
-                    'autocomplete' => 'billing email',
-                ],
-            ])
-            ->add('phone', Type\TextType::class, [
-                'label'    => 'ekyna_commerce.account.registration.field.invoice_phone',
-                'required' => false,
-                'attr'     => [
-                    'autocomplete' => 'billing tel-national',
-                ],
-            ]);
-
-        return $form;
-    }
-
-    /**
      * @inheritDoc
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['user']       = null;
+        $view->vars['user'] = null;
         $view->vars['user_owner'] = null;
 
         /** @var Registration $registration */
         $registration = $form->getData();
-        $customer     = $registration->getCustomer();
+        $customer = $registration->getCustomer();
 
         if (null === $user = $customer->getUser()) {
             return;

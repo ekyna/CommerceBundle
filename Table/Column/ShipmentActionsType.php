@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentGatewayActions;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\TableBundle\Extension\Type\Column\ActionsType;
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Table\Column\AbstractColumnType;
@@ -59,6 +60,7 @@ class ShipmentActionsType extends AbstractColumnType
             $buttons[] = [
                 'label'      => ShipmentGatewayActions::getLabel($action),
                 'icon'       => ShipmentGatewayActions::getIcon($action),
+                'fa_icon'    => false,
                 'class'      => ShipmentGatewayActions::getTheme($action),
                 'confirm'    => ShipmentGatewayActions::getConfirm($action),
                 'target'     => ShipmentGatewayActions::getTarget($action),
@@ -72,25 +74,68 @@ class ShipmentActionsType extends AbstractColumnType
             ];
         }
 
-        if ($shipment->getState() === ShipmentStates::STATE_PREPARATION) {
-            $buttons[] = [
-                'label'      => 'ekyna_core.button.edit',
-                'icon'       => 'pencil',
-                'class'      => 'warning',
-                'confirm'    => null,
-                'target'     => null,
-                'route'      => 'ekyna_commerce_order_shipment_admin_edit',
-                'parameters' => [
-                    'orderId'         => $shipment->getSale()->getId(),
-                    'orderShipmentId' => $shipment->getId(),
-                ],
-                'disabled'   => false,
-                //'permission' => 'EDIT', // TODO see admin actions type extension
-            ];
-        } elseif (!ShipmentStates::isStockableState($shipment->getState())) {
+        // Bill document
+        $buttons[] = [
+            'label'      => 'ekyna_commerce.document.type.' . ($shipment->isReturn() ? 'return' : 'shipment') . '_bill',
+            'icon'       => 'file',
+            'fa_icon'    => 'true',
+            'class'      => 'primary',
+            'confirm'    => null,
+            'target'     => '_blank',
+            'route'      => 'ekyna_commerce_order_shipment_admin_render',
+            'parameters' => [
+                'orderId'         => $shipment->getSale()->getId(),
+                'orderShipmentId' => $shipment->getId(),
+                'type'            => DocumentTypes::TYPE_SHIPMENT_BILL,
+            ],
+            'disabled'   => false,
+            //'permission' => 'EDIT', // TODO see admin actions type extension
+        ];
+
+        if (!ShipmentStates::isStockableState($shipment->getState())) {
+            if (!$shipment->isReturn() && !$shipment->getSale()->isReleased()) {
+                // Form document
+                $buttons[] = [
+                    'label'      => 'ekyna_commerce.document.type.shipment_form',
+                    'icon'       => 'check-square-o',
+                    'fa_icon'    => 'true',
+                    'class'      => 'primary',
+                    'confirm'    => null,
+                    'target'     => '_blank',
+                    'route'      => 'ekyna_commerce_order_shipment_admin_render',
+                    'parameters' => [
+                        'orderId'         => $shipment->getSale()->getId(),
+                        'orderShipmentId' => $shipment->getId(),
+                        'type'            => DocumentTypes::TYPE_SHIPMENT_FORM,
+                    ],
+                    'disabled'   => false,
+                    //'permission' => 'EDIT', // TODO see admin actions type extension
+                ];
+            }
+
+            if ($shipment->getState() === ShipmentStates::STATE_PREPARATION) {
+                $buttons[] = [
+                    'label'      => 'ekyna_core.button.edit',
+                    'icon'       => 'pencil',
+                    'fa_icon'    => 'true',
+                    'class'      => 'warning',
+                    'confirm'    => null,
+                    'target'     => null,
+                    'route'      => 'ekyna_commerce_order_shipment_admin_edit',
+                    'parameters' => [
+                        'orderId'         => $shipment->getSale()->getId(),
+                        'orderShipmentId' => $shipment->getId(),
+                    ],
+                    'disabled'   => false,
+                    //'permission' => 'EDIT', // TODO see admin actions type extension
+                ];
+            }
+
+            // Remove
             $buttons[] = [
                 'label'      => 'ekyna_core.button.remove',
                 'icon'       => 'trash',
+                'fa_icon'    => 'true',
                 'class'      => 'danger',
                 'confirm'    => null,
                 'target'     => null,

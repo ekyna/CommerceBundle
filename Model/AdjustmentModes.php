@@ -28,7 +28,7 @@ final class AdjustmentModes extends AbstractConstants
     /**
      * @return string
      */
-    static public function getDefaultChoice(): string
+    static public function getDefaultChoice(): ?string
     {
         return Modes::MODE_PERCENT;
     }

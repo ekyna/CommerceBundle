@@ -49,6 +49,11 @@
                 {{ 'ekyna_commerce.customer_address.label.plural'|trans }}
             </a>
         </li>
+        <li>
+            <a href="#customer-contacts" id="toggle-contacts" data-toggle="tab">
+                {{ 'ekyna_commerce.customer_contact.label.plural'|trans }}
+            </a>
+        </li>
         {% if customer.children|length > 0 %}
             <li>
                 <a href="#customer-children" id="toggle-children" data-toggle="tab">
@@ -320,22 +325,22 @@
             </div>
             <div class="tab-pane" id="customer-addresses">
                 <div class="actions">
-                    {{ ui_button('ekyna_commerce.customer_address.button.new', {
+                    {{- ui_button('ekyna_commerce.customer_address.button.new', {
                         'type': 'link',
                         'icon': 'plus',
                         'theme': 'primary',
                         'path': path('ekyna_commerce_customer_address_admin_new', {
                             'customerId': customer.id
                         })
-                    }) }}
-                    {{ ui_button('ekyna_commerce.customer_address.button.import', {
+                    }) -}}
+                    {{- ui_button('ekyna_commerce.customer_address.button.import', {
                         'type': 'link',
                         'icon': 'import',
                         'theme': 'default',
                         'path': path('ekyna_commerce_customer_address_admin_import', {
                             'customerId': customer.id
                         })
-                    }) }}
+                    }) -}}
                 </div>
                 {% for address in customer.addresses %}
                     {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
@@ -399,6 +404,35 @@
                 {% else %}
                     <p>{{ 'ekyna_commerce.customer_address.alert.no_item'|trans }}</p>
                 {% endfor %}
+            </div>
+            <div class="tab-pane" id="customer-contacts">
+                <div class="actions">
+                    {{- ui_button('ekyna_commerce.customer_contact.button.new', {
+                        'type': 'link',
+                        'icon': 'plus',
+                        'theme': 'primary',
+                        'path': path('ekyna_commerce_customer_contact_admin_new', {
+                            'customerId': customer.id
+                        })
+                    }) -}}
+                </div>
+                {% for contact in customer.contacts -%}
+                    {% if loop.index0 % 2 == 0 %}<div class="row">{% endif -%}
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="customer_contact_{{ loop.index0 }}">
+                                {{- contact|customer_contact -}}
+                            </div>
+                            <div class="panel-footer">
+                                {{ admin_resource_btn(contact, 'edit', {'size': 'xs', 'short': true}) }}
+                                {{ admin_resource_btn(contact, 'remove', {'size': 'xs', 'short': true}, {'style': 'float:right'}) }}
+                            </div>
+                        </div>
+                    </div>
+                    {%- if loop.index % 2 == 0 or loop.last %}</div>{% endif %}
+                {%- else -%}
+                    <p>{{ 'ekyna_commerce.customer_contact.alert.no_item'|trans }}</p>
+                {%- endfor %}
             </div>
             {% if customer.children|length > 0 %}
             <div class="tab-pane" id="customer-children">

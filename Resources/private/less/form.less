@@ -1,3 +1,21 @@
+@import (reference) "../../../../../../../node_modules/bootstrap/less/variables.less";
+@import (reference) "../../../../../../../node_modules/bootstrap/less/mixins/buttons.less";
+
+#registration_applyGroup {
+    > input {
+        display: none;
+
+        &:checked + label {
+            .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+        }
+    }
+
+    > label {
+        padding: 6px 12px;
+        margin: 0 15px 15px 0;
+    }
+}
+
 .commerce-sale-items {
     p {
         margin-bottom: 0;

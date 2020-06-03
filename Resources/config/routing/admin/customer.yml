@@ -80,3 +80,7 @@ ekyna_commerce_customer_admin_find:
 ekyna_commerce_customer_address_admin:
     resource: customer_address.yml
     prefix: /{customerId}/addresses
+
+ekyna_commerce_customer_contact_admin:
+    resource: customer_contact.yml
+    prefix: /{customerId}/contacts

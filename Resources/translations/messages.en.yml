@@ -194,13 +194,18 @@ ekyna_commerce:
             invoice_contact: Billing contact <small><em>(If different)</em></small>
             invoice_address: Adresse facturation
             field:
+                company: Company name
                 email_confirm: Email confirm
                 password_confirm: Password confirm
-                apply_group: You are
+                apply_group: Account type
                 invoice_name: Billing full name
                 invoice_email: Billing email
                 invoice_phone: Billing phone number
                 newsletter: I want to receive news and special offers by email
+            help:
+                apply_group: >
+                    Choose your account type : we will validate your request
+                    and apply preferential pricing if appropriate.
         loyalty:
             title: Loyalty points
         ticket:
@@ -739,6 +744,25 @@ ekyna_commerce:
         alert:
             no_item: No address configured
 
+    customer_contact:
+        label:
+            singular: Customer contact
+            plural: Customer contacts
+        header:
+            list: Contacts <small>List of contacts</small>
+            show: Contact details <small>%name%</small>
+            new: Create a new contact
+            edit: Edit the contact <small>%name%</small>
+            remove: Remove the contact <small>%name%</small>
+        button:
+            list: Contacts list
+            show: Contact details
+            new: New contact
+            edit: Edit the contact
+            remove: Remove the contact
+        alert:
+            no_item: No contact configured
+
     customer_group:
         label:
             singular: Customer group
@@ -898,6 +922,7 @@ ekyna_commerce:
             administrator: Administrator
             in_charge: In charge
             customer: Customer
+            contact: Contact
             salesman: Salesman
             accountable: Accountable service
             supplier: Supplier
@@ -907,8 +932,10 @@ ekyna_commerce:
             before: Before the message
         message:
             attachment_list: Email attachments list
-            customer_area: >
-                Find all information about your quotes and orders in your <a href="%url%">customer area</a>.
+            customer_area:
+                default: Find all information about your quotes and orders in your customer area.
+                order: Find all information about your order in your customer area.
+                quote: Find all information about your quote in your customer area.
             sent: The email has been sent.
 
     notification:
@@ -916,7 +943,7 @@ ekyna_commerce:
             singular: Notification
             plural: Notifications
         alert:
-            no_item: Aucune notification enregistré
+            no_item: No notification configured
 
     notify_model:
         label:

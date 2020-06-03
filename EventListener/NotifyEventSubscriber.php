@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
+use Ekyna\Bundle\UserBundle\Service\Security\LoginTokenManager;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Event\NotifyEvent;
 use Ekyna\Component\Commerce\Common\Event\NotifyEvents;
@@ -23,6 +24,7 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -48,6 +50,16 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     private $shipmentHelper;
 
     /**
+     * @var LoginTokenManager
+     */
+    private $loginTokenManager;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
+    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -59,18 +71,24 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      * @param ResourceRepositoryInterface $modelRepository
      * @param RecipientHelper             $recipientHelper
      * @param ShipmentHelper              $shipmentHelper
+     * @param LoginTokenManager           $loginTokenManager
+     * @param UrlGeneratorInterface       $urlGenerator
      * @param TranslatorInterface         $translator
      */
     public function __construct(
         ResourceRepositoryInterface $modelRepository,
         RecipientHelper $recipientHelper,
         ShipmentHelper $shipmentHelper,
+        LoginTokenManager $loginTokenManager,
+        UrlGeneratorInterface $urlGenerator,
         TranslatorInterface $translator
     ) {
-        $this->modelRepository = $modelRepository;
-        $this->recipientHelper = $recipientHelper;
-        $this->shipmentHelper = $shipmentHelper;
-        $this->translator      = $translator;
+        $this->modelRepository   = $modelRepository;
+        $this->recipientHelper   = $recipientHelper;
+        $this->shipmentHelper    = $shipmentHelper;
+        $this->loginTokenManager = $loginTokenManager;
+        $this->urlGenerator      = $urlGenerator;
+        $this->translator        = $translator;
     }
 
     /**
@@ -78,7 +96,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @param NotifyEvent $event
      */
-    public function buildRecipients(NotifyEvent $event)
+    public function buildRecipients(NotifyEvent $event): void
     {
         $notify = $event->getNotify();
 
@@ -102,12 +120,8 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         // Sender
         $from = $this->recipientHelper->createWebsiteRecipient();
         if ($notify->getType() === NotificationTypes::MANUAL) {
-            if ($sale instanceof OrderInterface || $sale instanceof QuoteInterface) {
-                if ($inCharge = $sale->getInCharge()) {
-                    $from = $this->recipientHelper->createRecipient($inCharge, Recipient::TYPE_IN_CHARGE);
-                } elseif (null !== $recipient = $this->recipientHelper->createCurrentUserRecipient()) {
-                    $from = $recipient;
-                }
+            if ($recipient = $this->recipientHelper->createInChargeRecipient($sale)) {
+                $from = $recipient;
             }
         }
         $notify->setFrom($from);
@@ -115,6 +129,14 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         // Recipient
         if ($customer = $sale->getCustomer()) {
             $notify->addRecipient($this->recipientHelper->createRecipient($customer, Recipient::TYPE_CUSTOMER));
+
+            foreach ($customer->getContacts() as $contact) {
+                if (!in_array($notify->getType(), $contact->getNotifications(), true)) {
+                    continue;
+                }
+
+                $notify->addCopy($this->recipientHelper->createRecipient($contact, Recipient::TYPE_CUSTOMER));
+            }
 
             if (!$sale instanceof OrderInterface) {
                 return;
@@ -144,7 +166,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @param NotifyEvent $event
      */
-    public function buildSubject(NotifyEvent $event)
+    public function buildSubject(NotifyEvent $event): void
     {
         $notify = $event->getNotify();
 
@@ -201,7 +223,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @param NotifyEvent $event
      */
-    public function buildContent(NotifyEvent $event)
+    public function buildContent(NotifyEvent $event): void
     {
         $notify = $event->getNotify();
 
@@ -245,11 +267,54 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * Builds the notify button.
+     *
+     * @param NotifyEvent $event
+     */
+    public function buildButton(NotifyEvent $event): void
+    {
+        $notify = $event->getNotify();
+
+        if (null === $source = $notify->getSource()) {
+            return;
+        }
+
+        if ($source instanceof OrderInterface) {
+            $label = 'ekyna_commerce.notify.message.customer_area.order';
+            $route = 'ekyna_commerce_account_order_show';
+        } elseif ($source instanceof QuoteInterface) {
+            $label = 'ekyna_commerce.notify.message.customer_area.quote';
+            $route = 'ekyna_commerce_account_quote_show';
+        } else {
+            return;
+        }
+
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        if (null === $customer = $source->getCustomer()) {
+            return;
+        }
+
+        if (null === $user = $customer->getUser()) {
+            return;
+        }
+
+        $after = $this
+            ->urlGenerator
+            ->generate($route, ['number' => $source->getNumber()]);
+
+        $url = $this->loginTokenManager->generateLoginUrl($user, $after);
+
+        $notify
+            ->setButtonLabel($label)
+            ->setButtonUrl($url);
+    }
+
+    /**
      * Notify post build event handler.
      *
      * @param NotifyEvent $event
      */
-    public function finalize(NotifyEvent $event)
+    public function finalize(NotifyEvent $event): void
     {
         $notify = $event->getNotify();
 
@@ -275,6 +340,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             }
         }
 
+        // Abort if subject or message is empty
         if ($notify->isEmpty()) {
             $event->abort();
         }
@@ -293,6 +359,17 @@ class NotifyEventSubscriber implements EventSubscriberInterface
                 $notify->setCustomMessage($notify->getCustomMessage() . '<br>' . $voucherNotice . '.');
             }
         }
+
+        // Default button url and label
+        if (empty($notify->getButtonUrl())) {
+            $url = $this
+                ->urlGenerator
+                ->generate('ekyna_user_account_index', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $notify
+                ->setButtonLabel('ekyna_commerce.notify.message.customer_area.default')
+                ->setButtonUrl($url);
+        }
     }
 
     /**
@@ -302,7 +379,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @return NotifyModel|null
      */
-    protected function getModel(Notify $notify)
+    protected function getModel(Notify $notify): ?NotifyModel
     {
         $criteria = ['type' => $notify->getType()];
 
@@ -323,7 +400,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @return SaleInterface|null
      */
-    protected function getSaleFromEvent(NotifyEvent $event)
+    protected function getSaleFromEvent(NotifyEvent $event): ?SaleInterface
     {
         $source = $event->getNotify()->getSource();
 
@@ -342,7 +419,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      * @param NotifyEvent $event
      * @param NotifyModel $model
      */
-    protected function buildOrderContent(NotifyEvent $event, NotifyModel $model)
+    protected function buildOrderContent(NotifyEvent $event, NotifyModel $model): void
     {
         $notify = $event->getNotify();
         $sale   = $this->getSaleFromEvent($event);
@@ -387,7 +464,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      * @param NotifyEvent $event
      * @param NotifyModel $model
      */
-    protected function buildPaymentContent(NotifyEvent $event, NotifyModel $model)
+    protected function buildPaymentContent(NotifyEvent $event, NotifyModel $model): void
     {
         $notify = $event->getNotify();
 
@@ -435,7 +512,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      * @param NotifyEvent $event
      * @param NotifyModel $model
      */
-    protected function buildShipmentContent(NotifyEvent $event, NotifyModel $model)
+    protected function buildShipmentContent(NotifyEvent $event, NotifyModel $model): void
     {
         $notify = $event->getNotify();
 
@@ -506,7 +583,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @return string
      */
-    private function buildTrackingMessage(ShipmentInterface $shipment): string
+    protected function buildTrackingMessage(ShipmentInterface $shipment): string
     {
         $tracking = [];
         if ($shipment->hasParcels()) {
@@ -542,7 +619,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @return bool Whether the payment message has been added.
      */
-    protected function addPaymentMessage(Notify $notify, PaymentInterface $payment)
+    protected function addPaymentMessage(Notify $notify, PaymentInterface $payment): bool
     {
         if (null === $message = $payment->getMethod()->getMessageByState($payment->getState())) {
             return false;
@@ -565,7 +642,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @return bool Whether the shipment message has been added.
      */
-    protected function addShipmentMessage(Notify $notify, ShipmentInterface $shipment)
+    protected function addShipmentMessage(Notify $notify, ShipmentInterface $shipment): bool
     {
         if (null === $message = $shipment->getMethod()->getMessageByState($shipment->getState())) {
             return false;
@@ -589,7 +666,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      *
      * @return bool Whether at last one attachment has been added.
      */
-    protected function addAttachments(Notify $notify, SaleInterface $sale, array $types)
+    protected function addAttachments(Notify $notify, SaleInterface $sale, array $types): bool
     {
         $added = false;
 
@@ -620,6 +697,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
                 ['buildSubject', -1],
                 ['buildRecipients', -2],
                 ['buildContent', -3],
+                ['buildButton', -4],
                 ['finalize', -2048],
             ],
         ];

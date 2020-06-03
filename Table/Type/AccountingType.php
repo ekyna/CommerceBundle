@@ -20,7 +20,7 @@ class AccountingType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addDefaultSort('position')
+            ->addDefaultSort('number')
             ->setSortable(false)
             ->setFilterable(false)
             ->setPerPageChoices([100])

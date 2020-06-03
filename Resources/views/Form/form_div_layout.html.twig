@@ -295,6 +295,38 @@
 {%- endblock ekyna_commerce_checkout_payment_image -%}
 
 
+{%- block ekyna_commerce_customer_contact_widget -%}
+    <div {{ block('widget_container_attributes') }}>
+        {{- form_row(form.identity) -}}
+        {{- form_row(form.email) -}}
+        {{- form_row(form.phone) -}}
+        {{- form_row(form.notifications) -}}
+    </div>
+{%- endblock ekyna_commerce_customer_contact_widget -%}
+
+
+{%- block ekyna_commerce_customer_group_widget -%}
+    {% if expanded %}
+    <div {{ block('widget_container_attributes') }}>
+    {%- for child in form -%}
+        {{- form_widget(child) -}}
+        {% with child.vars %}
+        <label {% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}>
+            {%- if translation_domain is same as(false) -%}
+                {{- label|raw -}}
+            {%- else -%}
+                {{- label|trans({}, translation_domain)|raw -}}
+            {%- endif -%}
+        </label>
+        {% endwith %}
+    {%- endfor -%}
+    </div>
+    {%- else -%}
+        {{- block('choice_widget') -}}
+    {%- endif -%}
+{%- endblock ekyna_commerce_customer_group_widget -%}
+
+
 {%- block ekyna_commerce_identity_widget -%}
     <div class="input-group commerce-identity">
         {{- form_widget(form.gender) -}}

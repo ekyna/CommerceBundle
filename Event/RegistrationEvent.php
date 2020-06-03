@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Event;
 
 use Ekyna\Bundle\CommerceBundle\Model\Registration;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -33,6 +34,7 @@ class RegistrationEvent extends Event
      * Constructor.
      *
      * @param Registration $registration
+     * @param Request      $request
      */
     public function __construct(Registration $registration)
     {
@@ -44,7 +46,7 @@ class RegistrationEvent extends Event
      *
      * @return Registration
      */
-    public function getRegistration()
+    public function getRegistration(): Registration
     {
         return $this->registration;
     }
@@ -52,9 +54,9 @@ class RegistrationEvent extends Event
     /**
      * Returns the response.
      *
-     * @return Response
+     * @return Response|null
      */
-    public function getResponse()
+    public function getResponse(): ?Response
     {
         return $this->response;
     }
@@ -66,7 +68,7 @@ class RegistrationEvent extends Event
      *
      * @return RegistrationEvent
      */
-    public function setResponse($response)
+    public function setResponse(Response $response = null): RegistrationEvent
     {
         $this->response = $response;
 

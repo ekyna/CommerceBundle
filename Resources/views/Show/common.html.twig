@@ -1,6 +1,7 @@
+{% block address %}
 {% apply spaceless %}
-{%- if config.locale is not null -%}
-    {%- do trans_set_locale(config.locale) -%}
+{%- if options.locale is not null -%}
+    {%- do trans_set_locale(options.locale) -%}
 {%- endif -%}
 {% if address.company is not empty -%}
     <strong><em>{{ address.company }}</em></strong><br>
@@ -40,7 +41,7 @@
     {%- endif %}
 {% endif %}
 
-{% if config.display_phones -%}
+{% if options.display_phones -%}
     {% if address.phone is not empty -%}
         <br><abbr title="{{ 'ekyna_core.field.phone'|trans }}">T:</abbr> {{ address.phone|phone_number_format -}}
     {%- endif %}
@@ -53,7 +54,33 @@
     <hr>{{ attribute(address, 'information')|nl2br }}
 {%- endif -%}
 
-{%- if config.locale is not null -%}
+{%- if options.locale is not null -%}
     {% do trans_revert_locale() %}
 {% endif %}
 {% endapply %}
+{% endblock address %}
+
+
+{% block customer_contact %}
+{% apply spaceless %}
+    <dl class="dl-horizontal">
+        <dt>{{ 'ekyna_core.field.name'|trans }}</dt>
+        <dd>{{ contact|identity }}</dd>
+        <dt>{{ 'ekyna_core.field.email'|trans }}</dt>
+        <dd>{{ contact.email }}</dd>
+        {% if options.display_phones and contact.phone is not empty -%}
+        <dt>{{ 'ekyna_core.field.phone'|trans }}</dt>
+        <dd>{{ contact.phone|phone_number_format -}}</dd>
+        {%- endif %}
+        <dt>{{ 'ekyna_commerce.notification.label.plural'|trans }}</dt>
+        <dd>
+            {% for type in contact.notifications -%}
+                {{ type|notify_type_label -}}
+                {% if not loop.last %}, {% endif -%}
+            {% else %}
+                <em>{{ 'ekyna_commerce.notification.alert.no_item'|trans }}</em>
+            {%- endfor %}
+        </dd>
+    </dl>
+{% endapply %}
+{% endblock customer_contact %}

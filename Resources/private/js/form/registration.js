@@ -27,8 +27,9 @@ define(['jquery', 'validator'], function($, Validator) {
             password_second: '#registration_customer_plainPassword_second',
             company: '#registration_customer_company',
             vat_number: '#registration_customer_vatNumber',
-            apply_group: '#registration_applyGroup',
-            invoice_contact: '#registration_invoiceContact'
+            apply_group: '#registration_applyGroup > input',
+            business: '#registration_business',
+            regular: '#registration_regular',
         };
 
         this.each(function() {
@@ -44,7 +45,8 @@ define(['jquery', 'validator'], function($, Validator) {
                 $company = $this.find(config.company),
                 $vatNumber = $this.find(config.vat_number),
                 $applyGroup = $this.find(config.apply_group),
-                $invoiceContact = $this.find(config.invoice_contact);
+                $regular = $this.find(config.regular),
+                $business = $this.find(config.business);
 
             /* -------------------------------- User -------------------------------- */
 
@@ -100,22 +102,29 @@ define(['jquery', 'validator'], function($, Validator) {
             /* -------------------------------- Business -------------------------------- */
 
             function updateBusinessFields() {
-                var $groupOption = $applyGroup.find('option[value="' + $applyGroup.val() + '"]');
+                console.log($applyGroup.val());
+                var $groupOption = $applyGroup.filter(':checked');
                 if (1 === $groupOption.size()) {
                     if (1 === parseInt($groupOption.data('business'))) {
-                        toggleRequired($vatNumber, true);
                         toggleRequired($company, true);
-                        $invoiceContact.slideDown();
-                    } else {
-                        toggleRequired($vatNumber, false);
-                        toggleRequired($company, false);
-                        $invoiceContact.slideUp(function() {
-                            $invoiceContact.find('select,input').each(function() {
+                        $regular.slideUp(function() {
+                            $regular.find('select,input').each(function() {
                                 $(this).val(null);
                             });
                         });
+                        $business.slideDown();
+
+                        return;
                     }
                 }
+
+                $regular.slideDown();
+                $business.slideUp(function() {
+                    $business.find('select,input').each(function() {
+                        $(this).val(null);
+                    });
+                });
+                toggleRequired($company, false);
             }
 
             $this.on('change', config.apply_group, updateBusinessFields);

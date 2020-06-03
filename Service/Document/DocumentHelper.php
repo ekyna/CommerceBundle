@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Bundle\CommerceBundle\Model\DocumentDesign;
-use Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
@@ -37,9 +37,9 @@ class DocumentHelper
     private $urlGenerator;
 
     /**
-     * @var AddressRenderer
+     * @var CommonRenderer
      */
-    private $addressRenderer;
+    private $commonRenderer;
 
     /**
      * @var TaxResolverInterface
@@ -68,7 +68,7 @@ class DocumentHelper
      * @param SettingsManagerInterface $settings
      * @param Filesystem               $fileSystem
      * @param UrlGeneratorInterface    $urlGenerator
-     * @param AddressRenderer          $addressRenderer
+     * @param CommonRenderer           $commonRenderer
      * @param TaxResolverInterface     $taxResolver
      * @param array                    $config
      * @param string                   $defaultLocale
@@ -77,7 +77,7 @@ class DocumentHelper
         SettingsManagerInterface $settings,
         Filesystem $fileSystem,
         UrlGeneratorInterface $urlGenerator,
-        AddressRenderer $addressRenderer,
+        CommonRenderer $commonRenderer,
         TaxResolverInterface $taxResolver,
         array $config,
         string $defaultLocale
@@ -85,7 +85,7 @@ class DocumentHelper
         $this->settings = $settings;
         $this->fileSystem = $fileSystem;
         $this->urlGenerator = $urlGenerator;
-        $this->addressRenderer = $addressRenderer;
+        $this->commonRenderer = $commonRenderer;
         $this->taxResolver = $taxResolver;
         $this->config = $config;
         $this->defaultLocale = $defaultLocale;
@@ -234,7 +234,7 @@ class DocumentHelper
             ->setLogoLink($customer->getBrandUrl())
             ->setAddLinks(false);
 
-        $design->setHeaderHtml($this->addressRenderer->renderAddress($customer->getDefaultInvoiceAddress(), [
+        $design->setHeaderHtml($this->commonRenderer->renderAddress($customer->getDefaultInvoiceAddress(), [
             'locale' => $design->getLocale(),
         ]));
 

@@ -194,13 +194,21 @@ ekyna_commerce:
             invoice_contact: Contact facturation <small><em>(Si différent)</em></small>
             invoice_address: Adresse facturation
             field:
+                company: Raison sociale
                 email_confirm: Confirmation email
                 password_confirm: Conf. mot de passe
-                apply_group: Vous êtes
+                apply_group: Type de compte
                 invoice_name: Contact facturation
                 invoice_email: Email facturation
                 invoice_phone: Téléphone facturation
                 newsletter: Je souhaite recevoir des actualités et des offres par email
+            help:
+                apply_group: >
+                    Choisissez votre type de compte : nous validerons votre demande
+                    pour appliquer des tarifs préférentiels le cas échéant.
+                company_numbers: >
+                    Vous pourrez compléter ces informations plus tard,
+                    mais ces numéros seront nécéssaires pour la facturation.
         loyalty:
             title: Mes points fidélité
         ticket:
@@ -741,6 +749,25 @@ ekyna_commerce:
         alert:
             no_item: Aucune adresse configuré
 
+    customer_contact:
+        label:
+            singular: Contact de client
+            plural: Contacts de client
+        header:
+            list: Contacts <small>Liste des contacts</small>
+            show: Détail du contact <small>%name%</small>
+            new: Créer un nouveau contact
+            edit: Modifier le contact <small>%name%</small>
+            remove: Supprimer le contact <small>%name%</small>
+        button:
+            list: Liste des contacts
+            show: Détail du contact
+            new: Nouveau contact
+            edit: Modifier le contact
+            remove: Supprimer le contact
+        alert:
+            no_item: Aucun contact configuré
+
     customer_group:
         label:
             singular: Groupe de clients
@@ -919,6 +946,7 @@ ekyna_commerce:
             administrator: Administrateur
             in_charge: Responsable
             customer: Client
+            contact: Contact
             salesman: Commercial
             accountable: Service achat
             supplier: Fournisseur
@@ -928,9 +956,10 @@ ekyna_commerce:
             before: Avant le message
         message:
             attachment_list: Liste des pièces jointes à cet email
-            customer_area: >
-                Retrouvez toutes les informations concernant vos
-                devis et commandes dans votre <a href="%url%">espace client</a>.
+            customer_area:
+                default: Retrouvez toutes les informations concernant vos devis et commandes dans votre espace client.
+                order: Retrouvez toutes les informations concernant votre commande dans votre espace client.
+                quote: Retrouvez toutes les informations concernant votre devis dans votre espace client.
             sent: L'email a été envoyé.
 
     notification:
@@ -938,7 +967,7 @@ ekyna_commerce:
             singular: Notification
             plural: Notifications
         alert:
-            no_item: Aucune notification enregistré
+            no_item: Aucune notification configuré
 
     notify_model:
         label:

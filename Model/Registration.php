@@ -51,6 +51,7 @@ class Registration
     public function __construct(CustomerInterface $customer)
     {
         $this->customer = $customer;
+        $this->applyGroup = $customer->getCustomerGroup();
     }
 
     /**

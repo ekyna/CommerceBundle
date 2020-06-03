@@ -58,11 +58,11 @@
         {{ render_sale_view(sale|sale_view({'taxes_view': false})) }}
     {%- endif %}
 
+    {% if notify.buttonUrl is not empty -%}
     <p style="text-align: center;">
-        {{ 'ekyna_commerce.notify.message.customer_area'|trans({
-            '%url%': url('ekyna_user_account_index')
-        })|raw }}
+        <a class="button" href="{{ notify.buttonUrl }}">{{ notify.buttonLabel|trans }}</a>
     </p>
+    {%- endif %}
     {% do trans_revert_locale() %}
 {% endapply %}
 {% endblock body %}

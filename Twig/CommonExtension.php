@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
@@ -27,7 +27,12 @@ class CommonExtension extends AbstractExtension
         return [
             new TwigFilter(
                 'address',
-                [AddressRenderer::class, 'renderAddress'],
+                [CommonRenderer::class, 'renderAddress'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
+                'customer_contact',
+                [CommonRenderer::class, 'renderCustomerContact'],
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(

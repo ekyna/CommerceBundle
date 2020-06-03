@@ -67,6 +67,10 @@ class RegistrationController extends Controller
         $event = new RegistrationEvent($registration);
         $dispatcher->dispatch(RegistrationEvent::REGISTRATION_INITIALIZE, $event);
 
+        if ($targetPath = $request->query->get('target_path')) {
+            $this->get('session')->set('fos_user_send_confirmation_email/target_path', $targetPath);
+        }
+
         $form = $this->createForm(RegistrationType::class, $registration, [
             'action' => $this->generateUrl('fos_user_registration_register'),
             'method' => 'POST',
@@ -208,7 +212,9 @@ class RegistrationController extends Controller
         $targetUrl = $this->generateUrl('ekyna_user_account_index');
         $token = $this->get('security.token_storage')->getToken();
 
-        if (null !== $token && $token instanceof UsernamePasswordToken) {
+        if ($path = $this->get('session')->get('fos_user_send_confirmation_email/target_path')) {
+            $targetUrl = $this->generateUrl($path);
+        } elseif (null !== $token && $token instanceof UsernamePasswordToken) {
             $key = sprintf('_security.%s.target_path', $token->getProviderKey());
             if ($this->get('session')->has($key)) {
                 $targetUrl = $this->get('session')->get($key);

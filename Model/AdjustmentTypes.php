@@ -29,7 +29,7 @@ final class AdjustmentTypes extends AbstractConstants
     /**
      * @return string
      */
-    static public function getDefaultChoice(): string
+    static public function getDefaultChoice(): ?string
     {
         return Types::TYPE_DISCOUNT;
     }

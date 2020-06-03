@@ -24,20 +24,15 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
-        <!-- Notify helper -->
-        <!--<service id="ekyna_commerce.notify.helper"
-                 class="Ekyna\Component\Commerce\Common\Notify\NotifyHelper">
-            <argument type="service" id="ekyna_commerce.notify.builder"/>
-            <argument type="service" id="ekyna_commerce.notify.queue"/>
-        </service>-->
-
         <!-- Notify event subscriber -->
         <service id="ekyna_commerce.notify.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\NotifyEventSubscriber">
             <argument type="service" id="ekyna_commerce.notify_model.repository"/>
             <argument type="service" id="ekyna_commerce.notify.recipient_helper"/>
             <argument type="service" id="ekyna_commerce.shipment_helper"/>
-            <argument type="service" id="translator"/>
+            <argument type="service" id="Ekyna\Bundle\UserBundle\Service\Security\LoginTokenManager"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

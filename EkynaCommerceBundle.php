@@ -49,6 +49,7 @@ class EkynaCommerceBundle extends AbstractBundle
             Commerce\Customer\Model\CustomerInterface::class         => 'ekyna_commerce.customer.class',
             Commerce\Customer\Model\CustomerGroupInterface::class    => 'ekyna_commerce.customer_group.class',
             Commerce\Customer\Model\CustomerAddressInterface::class  => 'ekyna_commerce.customer_address.class',
+            Commerce\Customer\Model\CustomerContactInterface::class  => 'ekyna_commerce.customer_contact.class',
             Commerce\Newsletter\Model\AudienceInterface::class       => 'ekyna_commerce.audience.class',
             Commerce\Newsletter\Model\MemberInterface::class         => 'ekyna_commerce.member.class',
             Commerce\Order\Model\OrderInterface::class               => 'ekyna_commerce.order.class',

@@ -184,8 +184,8 @@
         </service>
 
         <!-- Address renderer -->
-        <service id="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer">
-            <argument type="service" id="templating"/>
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer">
+            <argument type="service" id="Twig\Environment"/>
             <tag name="twig.runtime" />
         </service>
 
@@ -218,7 +218,7 @@
         <!-- Sale XLS exporter -->
         <service id="Ekyna\Component\Commerce\Common\Export\SaleXlsExporter">
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
-            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer"/>
             <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
         </service>
 

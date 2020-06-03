@@ -46,13 +46,6 @@ class RegistrationValidator extends ConstraintValidator
                     ->atPath('customer.company')
                     ->addViolation();
             }
-            if (empty($customer->getVatNumber())) {
-                $this
-                    ->context
-                    ->buildViolation($constraint->vat_number_is_mandatory)
-                    ->atPath('customer.vatNumber')
-                    ->addViolation();
-            }
         }
 
         if ($invoiceContact = $registration->getInvoiceContact()) {

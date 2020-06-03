@@ -38,7 +38,7 @@
             <argument type="service" id="Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface"/>
             <argument type="service" id="local_commerce_filesystem"/>
             <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
-            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\AddressRenderer"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer"/>
             <argument type="service" id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"/>
             <argument type="collection"/><!-- Replaced by DI extension -->
             <argument>%locale%</argument>
