@@ -11,6 +11,8 @@ use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
+use Ekyna\Component\Commerce\Common\Notify\NotifyBuilder;
+use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
 use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
@@ -412,7 +414,7 @@ class SupplierOrderController extends ResourceController
             return $this->redirect($this->generateResourcePath($resource));
         }
 
-        $builder = $this->get('ekyna_commerce.notify.builder');
+        $builder = $this->get(NotifyBuilder::class);
 
         $notify = $builder->create(NotificationTypes::MANUAL, $resource);
 
@@ -423,7 +425,7 @@ class SupplierOrderController extends ResourceController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->get('ekyna_commerce.notify.queue')->add($notify);
+            $this->get(NotifyQueue::class)->enqueue($notify);
 
             $this->addFlash('ekyna_commerce.notify.message.sent', 'success');
 

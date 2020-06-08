@@ -8,6 +8,8 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
+use Ekyna\Component\Commerce\Common\Notify\NotifyBuilder;
+use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
@@ -104,14 +106,14 @@ class NotifyModelController extends ResourceController
                 ->setType($resource->getType());
 
             if ($this->setSource($notify)) {
-                if ($this->get('ekyna_commerce.notify.builder')->build($notify)) {
+                if ($this->get(NotifyBuilder::class)->build($notify)) {
                     $notify
                         ->clearRecipients()
                         ->addRecipient(new Recipient($form->getData()['email']));
 
                     $this
-                        ->get('ekyna_commerce.notify.queue')
-                        ->add($notify);
+                        ->get(NotifyQueue::class)
+                        ->enqueue($notify);
 
                     $this->addFlash('ekyna_commerce.notify_model.message.test_success', 'success');
 
@@ -150,13 +152,13 @@ class NotifyModelController extends ResourceController
             case NotificationTypes::CART_REMIND:
                 $source = $this
                     ->get('ekyna_commerce.cart.repository')
-                    ->findOneBy([], ['expiresAt' => 'ASC'], 1);
+                    ->findOneBy([], ['expiresAt' => 'ASC']);
                 break;
 
             case NotificationTypes::QUOTE_REMIND:
                 $source = $this
                     ->get('ekyna_commerce.quote.repository')
-                    ->findOneBy([], ['expiresAt' => 'ASC'], 1);
+                    ->findOneBy([], ['expiresAt' => 'ASC']);
                 break;
 
             case NotificationTypes::PAYMENT_EXPIRED:

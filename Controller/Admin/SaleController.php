@@ -19,6 +19,8 @@ use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
+use Ekyna\Component\Commerce\Common\Notify\NotifyBuilder;
+use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
 use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilder;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
@@ -542,7 +544,7 @@ class SaleController extends AbstractSaleController
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
-        $builder = $this->get('ekyna_commerce.notify.builder');
+        $builder = $this->get(NotifyBuilder::class);
 
         $notify = $builder->create(NotificationTypes::MANUAL, $sale);
 
@@ -553,7 +555,7 @@ class SaleController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->get('ekyna_commerce.notify.queue')->add($notify);
+            $this->get(NotifyQueue::class)->enqueue($notify);
 
             $this->addFlash('ekyna_commerce.notify.message.sent', 'success');
 

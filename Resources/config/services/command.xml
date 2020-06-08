@@ -97,7 +97,7 @@
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
             <argument type="service" id="ekyna_commerce.sale_updater"/>
             <argument type="service" id="Ekyna\Component\Commerce\Order\Updater\OrderUpdaterInterface"/>
-            <argument type="service" id="ekyna_commerce.notify.queue"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Notify\NotifyQueue"/>
             <argument>%ekyna_commerce.order.class%</argument>
             <tag name="console.command"/>
         </service>

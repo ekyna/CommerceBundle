@@ -5,9 +5,15 @@
 
     <services>
 
+        <!-- Notify builder -->
+        <service id="Ekyna\Component\Commerce\Common\Notify\NotifyBuilder">
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
+        </service>
+
         <!-- Notify queue -->
-        <service id="ekyna_commerce.notify.queue"
-                 class="Ekyna\Component\Commerce\Common\Notify\NotifyQueue"/>
+        <service id="Ekyna\Component\Commerce\Common\Notify\NotifyQueue">
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Notify\NotifyBuilder"/>
+        </service>
 
         <!-- Notify helper -->
         <service id="ekyna_commerce.notify.recipient_helper"
@@ -16,12 +22,6 @@
             <argument type="service" id="Ekyna\Bundle\AdminBundle\Service\Security\UserProvider"/>
             <argument type="service" id="ekyna_admin.user.repository"/>
             <argument>%ekyna_commerce.default.notify%</argument>
-        </service>
-
-        <!-- Notify builder -->
-        <service id="ekyna_commerce.notify.builder"
-                 class="Ekyna\Component\Commerce\Common\Notify\NotifyBuilder">
-            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <!-- Notify event subscriber -->
@@ -39,7 +39,7 @@
         <!-- Notification event subscriber -->
         <service id="ekyna_commerce.notification.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\NotificationEventSubscriber">
-            <argument type="service" id="ekyna_commerce.notify.queue"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Notify\NotifyQueue"/>
             <argument type="service" id="ekyna_commerce.mailer"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
@@ -51,8 +51,8 @@
                  class="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
                  abstract="true">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_tracker"/>
-            <argument type="service" id="ekyna_commerce.notify.queue"/>
-            <argument type="service" id="ekyna_commerce.notify.builder"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Notify\NotifyQueue"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Notify\NotifyBuilder"/>
         </service>
 
         <!-- Order listener -->
