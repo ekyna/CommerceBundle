@@ -24,7 +24,7 @@ class InformationType extends AbstractType
         $builder
             ->add('company', Type\TextType::class, [
                 'label'    => 'ekyna_core.field.company',
-                'required' => true,
+                'required' => false,
                 'attr'     => [
                     'placeholder'  => 'ekyna_commerce.address.field.company',
                     'maxlength'    => 35,

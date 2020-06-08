@@ -273,6 +273,8 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      */
     public function buildButton(NotifyEvent $event): void
     {
+        return;
+
         $notify = $event->getNotify();
 
         if (null === $source = $notify->getSource()) {

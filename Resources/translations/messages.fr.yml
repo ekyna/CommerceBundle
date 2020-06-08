@@ -206,9 +206,6 @@ ekyna_commerce:
                 apply_group: >
                     Choisissez votre type de compte : nous validerons votre demande
                     pour appliquer des tarifs préférentiels le cas échéant.
-                company_numbers: >
-                    Vous pourrez compléter ces informations plus tard,
-                    mais ces numéros seront nécéssaires pour la facturation.
         loyalty:
             title: Mes points fidélité
         ticket:
