@@ -5,11 +5,16 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentDesign;
 use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
+use Ekyna\Component\Commerce\Common\Model\MentionSubjectInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
+use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use League\Flysystem\Filesystem;
 use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -47,6 +52,11 @@ class DocumentHelper
     private $taxResolver;
 
     /**
+     * @var SubjectHelperInterface
+     */
+    private $subjectHelper;
+
+    /**
      * @var array
      */
     private $config;
@@ -70,6 +80,7 @@ class DocumentHelper
      * @param UrlGeneratorInterface    $urlGenerator
      * @param CommonRenderer           $commonRenderer
      * @param TaxResolverInterface     $taxResolver
+     * @param SubjectHelperInterface   $subjectHelper
      * @param array                    $config
      * @param string                   $defaultLocale
      */
@@ -79,16 +90,18 @@ class DocumentHelper
         UrlGeneratorInterface $urlGenerator,
         CommonRenderer $commonRenderer,
         TaxResolverInterface $taxResolver,
+        SubjectHelperInterface $subjectHelper,
         array $config,
         string $defaultLocale
     ) {
-        $this->settings = $settings;
-        $this->fileSystem = $fileSystem;
-        $this->urlGenerator = $urlGenerator;
+        $this->settings       = $settings;
+        $this->fileSystem     = $fileSystem;
+        $this->urlGenerator   = $urlGenerator;
         $this->commonRenderer = $commonRenderer;
-        $this->taxResolver = $taxResolver;
-        $this->config = $config;
-        $this->defaultLocale = $defaultLocale;
+        $this->taxResolver    = $taxResolver;
+        $this->subjectHelper  = $subjectHelper;
+        $this->config         = $config;
+        $this->defaultLocale  = $defaultLocale;
     }
 
     /**
@@ -112,37 +125,136 @@ class DocumentHelper
     }
 
     /**
-     * Returns the document notices.
+     * Returns the document mentions.
      *
      * @param DocumentInterface $document
      *
      * @return string[]
      */
-    public function getDocumentNotices(DocumentInterface $document): array
+    public function getDocumentMentions(DocumentInterface $document): array
     {
-        $notices = [];
+        $mentions = [];
 
-        $locale = $document->getLocale();
-        $sale = $document->getSale();
+        foreach ($document->getLinesByType(DocumentLineTypes::TYPE_GOOD) as $line) {
+            $list = $this->getSaleItemMentions($line->getSaleItem(), $document->getType(), $document->getLocale());
+
+            if (empty($list)) {
+                continue;
+            }
+
+            $list = array_map(function($html) {
+                return strip_tags(strtr($html, ['</p>' => '<br>']), '<br><a><span><em><strong>');
+            }, $list);
+
+            $mentions[] = sprintf('<p><strong>%s</strong> : %s</p>', $line->getDesignation(), implode(' ', $list));
+        }
+
+        return array_merge($mentions, $this->getSaleMentions(
+            $document->getSale(), $document->getType(), $document->getLocale())
+        );
+    }
+
+    /**
+     * Returns the shipment mentions.
+     *
+     * @param ShipmentInterface $shipment
+     *
+     * @return array
+     */
+    public function getShipmentMentions(ShipmentInterface $shipment): array
+    {
+        $type = DocumentTypes::TYPE_SHIPMENT_BILL;
+        $locale = $shipment->getSale()->getLocale();
+
+        $mentions = [];
+        foreach ($shipment->getItems() as $item) {
+            $list = $this->getSaleItemMentions($item->getSaleItem(), $type, $locale);
+
+            if (empty($list)) {
+                continue;
+            }
+
+            $mentions[] = sprintf(
+                '<p><strong>%s</strong> : %s</p>',
+                $item->getSaleItem()->getDesignation(),
+                implode(' ', $list)
+            );
+        }
+
+        return array_merge($mentions, $this->getSaleMentions($shipment->getSale(), $type, $locale));
+    }
+
+    /**
+     * Returns the sale's mentions.
+     *
+     * @param SaleInterface $sale
+     * @param string        $type
+     * @param string|null   $locale
+     *
+     * @return array
+     */
+    public function getSaleMentions(SaleInterface $sale, string $type, string $locale = null): array
+    {
+        $mentions = [];
 
         if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
-            $notices[] = '<p class="text-right">' . implode('<br>', $rule->getNotices()) . '</p>';
+            $mentions = $this->getMentions($rule, $type, $locale);
         }
 
         if (!$method = $sale->getPaymentMethod()) {
-            return $notices;
+            return $mentions;
         }
 
-        if (!in_array($document->getType(), $method->getMentionTypes(), true)) {
-            return $notices;
+        return array_merge($mentions, $this->getMentions($method, $type, $locale));
+    }
+
+    /**
+     * Returns the sale item's mentions.
+     *
+     * @param SaleItemInterface $item
+     * @param string            $type
+     * @param string|null       $locale
+     *
+     * @return array
+     */
+    public function getSaleItemMentions(SaleItemInterface $item, string $type, string $locale = null): array
+    {
+        if (null === $subject = $this->subjectHelper->resolve($item, false)) {
+            return [];
         }
 
-        $translation = $method->translate($locale);
-        if (!empty($mention = $translation->getMention())) {
-            $notices[] = $mention;
+        if (!$subject instanceof MentionSubjectInterface) {
+            return [];
         }
 
-        return $notices;
+        return $this->getMentions($subject, $type, $locale);
+    }
+
+    /**
+     * Returns the mentions.
+     *
+     * @param MentionSubjectInterface $subject
+     * @param string                  $type
+     * @param string|null             $locale
+     *
+     * @return array
+     */
+    public function getMentions(MentionSubjectInterface $subject, string $type, string $locale = null): array
+    {
+        $list = [];
+        foreach ($subject->getMentions() as $mention) {
+            if (!in_array($type, $mention->getDocumentTypes(), true)) {
+                continue;
+            }
+
+            if (empty($content = $mention->translate($locale)->getContent())) {
+                continue;
+            }
+
+            $list[] = $content;
+        }
+
+        return $list;
     }
 
     /**

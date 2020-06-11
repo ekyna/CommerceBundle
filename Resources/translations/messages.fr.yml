@@ -552,6 +552,9 @@ ekyna_commerce:
             remove: Supprimer l'avoir
 
     document:
+        label:
+            singular: Document
+            plural: Documents
         type:
             form: Bon de commande
             voucher: Bon d'achat
@@ -849,6 +852,13 @@ ekyna_commerce:
             unsubscribed: Désinscrit
         alert:
             empty_list: Aucun membre configuré
+
+    mention:
+        label:
+            singular: Mention document
+            plural: Mentions document
+        alert:
+            empty_list: Aucune mention configuré
 
     message:
         label:

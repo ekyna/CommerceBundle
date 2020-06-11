@@ -1,5 +1,7 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
+{% import '@EkynaCommerce/Admin/macros.html.twig' as _commerce %}
+
 {% block main -%}
     <div class="actions">
         {{- admin_resource_btn(paymentMethod, 'edit') -}}
@@ -87,10 +89,6 @@
                     {{- show_row(paymentMethod.media, 'media', {
                         'label': 'ekyna_core.field.image'
                     }) -}}
-                    {{- show_row(paymentMethod.mentionTypes, 'constant_choice', {
-                        'label': 'ekyna_commerce.payment_method.field.mention_types',
-                        'class': 'Ekyna\\Bundle\\CommerceBundle\\Model\\DocumentTypes'
-                    }) -}}
                     {{- show_row(paymentMethod.translations, 'translations', {
                         'fields': {
                             'title': {'label': 'ekyna_core.field.title'},
@@ -104,11 +102,6 @@
                                 'type': 'textarea',
                                 'options': {'html': true}
                             },
-                            'mention': {
-                                'label': 'ekyna_commerce.payment_method.field.mention',
-                                'type': 'textarea',
-                                'options': {'html': true}
-                            },
                             'footer': {
                                 'label': 'ekyna_commerce.payment_method.field.footer',
                                 'type': 'textarea',
@@ -116,6 +109,7 @@
                             }
                         }
                     }) -}}
+                    {{- _commerce.show_mentions(paymentMethod) -}}
                 </div>
                 <div class="tab-pane" id="payment-method-messages">
                     <ul class="nav nav-tabs">

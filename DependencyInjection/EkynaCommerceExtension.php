@@ -112,7 +112,7 @@ class EkynaCommerceExtension extends AbstractExtension
     {
         $container
             ->getDefinition(DocumentHelper::class)
-            ->replaceArgument(5, array_replace([
+            ->replaceArgument(6, array_replace([
                 'logo_path' => '%ekyna_commerce.default.company_logo%',
             ], $config));
 

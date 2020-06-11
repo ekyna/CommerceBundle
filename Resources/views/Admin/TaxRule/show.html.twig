@@ -1,5 +1,7 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
+{% import '@EkynaCommerce/Admin/macros.html.twig' as _commerce %}
+
 {% block main %}
 <div class="actions">
     {{ admin_resource_btn(taxRule, 'edit') }}
@@ -54,7 +56,7 @@
                     'route': 'ekyna_commerce_country_admin_show',
                     'route_parameters_map': {'countryId': 'id'}
                 }) }}
-                {{ show_row(taxRule.countries, 'entity', {
+                {{ show_row(taxRule.targets, 'entity', {
                     'label': 'ekyna_commerce.tax_rule.field.targets',
                     'id': 'tax_rule_targets',
                     'route': 'ekyna_commerce_country_admin_show',
@@ -66,20 +68,7 @@
                     'route': 'ekyna_commerce_tax_admin_show',
                     'route_parameters_map': {'taxId': 'id'}
                 }) }}
-                <div class="row show-row">
-                    <div class="col-md-2 show-label">
-                        {{ 'ekyna_commerce.tax_rule.field.notices'|trans }}
-                    </div>
-                    <div class="col-md-10">
-                        <div class="show-widget show-widget-block" id="tax_rule_notices">
-                            {% for notice in taxRule.notices %}
-                                {{ notice }}{% if not loop.last %}<br>{% endif %}
-                            {% else %}
-                                {{ 'ekyna_core.value.undefined'|trans }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
+                {{ _commerce.show_mentions(taxRule) }}
             </div>
         </div>
     </div>

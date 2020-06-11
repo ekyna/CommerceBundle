@@ -27,7 +27,7 @@ class PaymentTermTranslationType extends AbstractType
             ->add('description', TinymceType::class, [
                 'label'    => 'ekyna_core.field.description',
 //                'admin_helper' => 'CMS_PAGE_CONTENT',
-                'theme'    => 'front',
+                'theme'    => 'light',
                 'required' => false,
             ]);
     }

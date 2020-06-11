@@ -31,15 +31,9 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      */
     public function install(Command $command, InputInterface $input, OutputInterface $output)
     {
-        $installer = new Installer(
-            $this->container->get('doctrine.orm.entity_manager'),
-            $this->container->get('ekyna_commerce.customer_group.repository'),
-            $this->container->get('ekyna_commerce.country.repository'),
-            $this->container->get('ekyna_commerce.supplier_template.repository'),
-            $output
-        );
+        $installer = new Installer($this->container->get('doctrine'), $output);
 
-        $country = $this->container->getParameter('ekyna_commerce.default.country');
+        $country  = $this->container->getParameter('ekyna_commerce.default.country');
         $currency = $this->container->getParameter('ekyna_commerce.default.currency');
 
         $output->writeln('<info>[Commerce] Installing countries:</info>');
@@ -90,7 +84,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      */
     private function createImageFolder()
     {
-        $em = $this->container->get('doctrine.orm.default_entity_manager');
+        $em               = $this->container->get('doctrine.orm.default_entity_manager');
         $folderRepository = $this->container->get('ekyna_media.folder.repository');
 
         if (null === $rootFolder = $folderRepository->findRoot()) {
@@ -131,9 +125,9 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
         //$registry = $this->container->get('payum');
         $methodRepository = $this->container->get('ekyna_commerce.payment_method.repository');
-        $mediaRepository = $this->container->get('ekyna_media.media.repository');
+        $mediaRepository  = $this->container->get('ekyna_media.media.repository');
 
-        $folder = $this->createImageFolder();
+        $folder   = $this->createImageFolder();
         $imageDir = realpath(__DIR__ . '/../Resources/install/payment-method');
 
         $methods = [
@@ -169,7 +163,7 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         }
 
         $paypalFactory = null;
-        if(class_exists('Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory')) {
+        if (class_exists('Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory')) {
             $paypalFactory = 'paypal_express_checkout';
         } /*elseif (class_exists('Payum\Paypal\Rest\PaypalRestGatewayFactory')) {
             $paypalFactory = 'paypal_rest';
@@ -263,13 +257,13 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
         $em = $this->container->get('doctrine.orm.default_entity_manager');
 
         $methodRepository = $this->container->get('ekyna_commerce.shipment_method.repository');
-        $mediaRepository = $this->container->get('ekyna_media.media.repository');
+        $mediaRepository  = $this->container->get('ekyna_media.media.repository');
 
         $defaultTaxGroup = $this->container
             ->get('ekyna_commerce.tax_group.repository')
             ->findDefault();
 
-        $folder = $this->createImageFolder();
+        $folder   = $this->createImageFolder();
         $imageDir = realpath(__DIR__ . '/../Resources/install/shipment-method');
 
         $methods = [

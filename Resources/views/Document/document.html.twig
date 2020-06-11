@@ -301,8 +301,8 @@
 {# --- MISC --- #}
 {% block doc_misc -%}
     <div class="unbreakable">
-        {% for notice in subject|document_notices -%}
-            {{ notice|raw }}
+        {% for mention in subject|document_mentions -%}
+            {{ mention|raw }}
         {%- endfor %}
     </div>
 {%- endblock doc_misc %}

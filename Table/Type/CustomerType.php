@@ -188,6 +188,11 @@ class CustomerType extends ResourceTableType
                     'property_path' => 'addresses.city',
                     'position'      => 53,
                 ])
+                ->addFilter('country', ResourceType::class, [
+                    'resource'      => 'ekyna_commerce.country',
+                    'property_path' => 'addresses.country',
+                    'position'      => 54,
+                ])
                 ->addFilter('phone', Type\Filter\PhoneNumberType::class, [
                     'label'    => 'ekyna_core.field.phone',
                     'position' => 56,

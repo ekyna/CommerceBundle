@@ -6,6 +6,7 @@ use A2lix\TranslationFormBundle\Form\Type\TranslationsFormsType;
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\EventListener\PaymentMethodTypeSubscriber;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MentionsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MessagesType;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\MediaBundle\Form\Type\MediaChoiceType;
@@ -29,13 +30,14 @@ class PaymentMethodType extends ResourceFormType
      */
     private $registry;
 
+
     /**
      * Constructor.
      *
      * @param string            $class
      * @param RegistryInterface $registry
      */
-    public function __construct($class, RegistryInterface $registry)
+    public function __construct(string $class, RegistryInterface $registry)
     {
         parent::__construct($class);
 
@@ -60,13 +62,6 @@ class PaymentMethodType extends ResourceFormType
                 'label' => 'ekyna_core.field.image',
                 'types' => MediaTypes::IMAGE,
             ])
-            ->add('mentionTypes', ConstantChoiceType::class, [
-                'label'    => 'ekyna_commerce.payment_method.field.mention_types',
-                'class'    => DocumentTypes::class,
-                'accessor' => 'getSaleAndInvoiceChoices',
-                'multiple' => true,
-                'required' => false,
-            ])
             ->add('translations', TranslationsFormsType::class, [
                 'form_type'      => PaymentMethodTranslationType::class,
                 'form_options'   => [
@@ -74,6 +69,10 @@ class PaymentMethodType extends ResourceFormType
                 ],
                 'label'          => false,
                 'error_bubbling' => false,
+            ])
+            ->add('mentions', MentionsType::class, [
+                'mention_class'     => Entity\PaymentMethodMention::class,
+                'translation_class' => Entity\PaymentMethodMentionTranslation::class,
             ])
             ->add('messages', MessagesType::class, [
                 'message_class'     => Entity\PaymentMessage::class,

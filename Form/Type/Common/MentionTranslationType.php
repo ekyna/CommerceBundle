@@ -7,23 +7,21 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class MessageTranslationType
+ * Class MentionTranslationType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Common
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class MessageTranslationType extends AbstractType
+class MentionTranslationType extends AbstractType
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('content', TinymceType::class, [
-                'label'    => 'ekyna_core.field.content',
-//                'admin_helper' => 'CMS_PAGE_CONTENT',
-                'theme'    => 'light',
-                'required' => false,
-            ]);
+        $builder->add('content', TinymceType::class, [
+            'label'    => 'ekyna_core.field.content',
+            'required' => false,
+            'theme'    => 'light',
+        ]);
     }
 }

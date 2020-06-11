@@ -22,17 +22,12 @@ class PaymentMethodTranslationType extends AbstractType
         $builder
             ->add('notice', TinymceType::class, [
                 'label' => 'ekyna_commerce.payment_method.field.notice',
-                'theme' => 'front',
-                //'admin_helper' => 'CMS_PAGE_CONTENT',
-            ])
-            ->add('mention', TinymceType::class, [
-                'label' => 'ekyna_commerce.payment_method.field.mention',
-                'theme' => 'front',
+                'theme' => 'light',
                 //'admin_helper' => 'CMS_PAGE_CONTENT',
             ])
             ->add('footer', TinymceType::class, [
                 'label' => 'ekyna_commerce.payment_method.field.footer',
-                'theme' => 'front',
+                'theme' => 'light',
                 //'admin_helper' => 'CMS_PAGE_CONTENT',
             ]);
     }

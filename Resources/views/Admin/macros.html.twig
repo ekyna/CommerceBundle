@@ -22,3 +22,37 @@
     </div>
 {% endapply %}
 {% endmacro show_subject %}
+
+
+{% macro show_mentions(subject, label) %}
+{% apply spaceless %}
+    <div class="row show-row">
+        <div class="col-md-2 show-label">
+            {{- label|default('ekyna_commerce.mention.label.plural')|trans -}}
+        </div>
+        <div class="col-md-10">
+            <div class="show-widget">
+            {% for mention in subject.mentions -%}
+                {{- show_row(mention.documentTypes, 'constant_choice', {
+                    'label': 'ekyna_commerce.document.label.plural',
+                    'class': 'Ekyna\\Bundle\\CommerceBundle\\Model\\DocumentTypes'
+                }) -}}
+                {{- show_row(mention.translations, 'translations', {
+                    'fields': {
+                        'content': {
+                            'label': 'ekyna_core.field.content',
+                            'type': 'textarea',
+                            'options': {
+                                'html': true,
+                            }
+                        }
+                    }
+                }) -}}
+            {%- else -%}
+                <em>{{ 'ekyna_commerce.mention.alert.empty_list'|trans }}</em>
+            {%- endfor %}
+            </div>
+        </div>
+    </div>
+{% endapply %}
+{% endmacro show_mentions %}

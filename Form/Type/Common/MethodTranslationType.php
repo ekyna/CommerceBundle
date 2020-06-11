@@ -26,7 +26,7 @@ class MethodTranslationType extends AbstractType
             ])
             ->add('description', TinymceType::class, [
                 'label' => 'ekyna_core.field.description',
-                'theme' => 'front'
+                'theme' => 'light'
                 //'admin_helper' => 'CMS_PAGE_CONTENT',
             ]);
     }

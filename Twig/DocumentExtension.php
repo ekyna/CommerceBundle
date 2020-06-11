@@ -40,8 +40,12 @@ class DocumentExtension extends AbstractExtension
                 [DocumentHelper::class, 'getDocumentDesign']
             ),
             new TwigFilter(
-                'document_notices',
-                [DocumentHelper::class, 'getDocumentNotices']
+                'document_mentions',
+                [DocumentHelper::class, 'getDocumentMentions']
+            ),
+            new TwigFilter(
+                'shipment_mentions',
+                [DocumentHelper::class, 'getShipmentMentions']
             ),
             new TwigFilter(
                 'document_pages',

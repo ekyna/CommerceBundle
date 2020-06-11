@@ -279,6 +279,10 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if ($source instanceof PaymentInterface || $source instanceof ShipmentInterface) {
+            $source = $source->getSale();
+        }
+
         if ($source instanceof OrderInterface) {
             $label = 'ekyna_commerce.notify.message.customer_area.order';
             $route = 'ekyna_commerce_account_order_show';

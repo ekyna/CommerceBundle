@@ -176,3 +176,12 @@
 {% endif %}
 {% endapply %}
 {% endblock doc_lines %}
+
+{# --- MISC --- #}
+{% block doc_misc -%}
+    <div class="unbreakable">
+        {% for mention in subject|shipment_mentions -%}
+            {{ mention|raw }}
+        {%- endfor %}
+    </div>
+{%- endblock doc_misc %}

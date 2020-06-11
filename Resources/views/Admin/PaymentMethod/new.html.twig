@@ -59,8 +59,8 @@
             {% if flow.getCurrentStepNumber() == 2 %}
                 <div class="tab-pane" id="payment-method-content">
                     {{ form_row(form.media) }}
-                    {{ form_row(form.mentionTypes) }}
                     {{ form_row(form.translations, {'label_col': 0, 'widget_col': 12}) }}
+                    {{ form_row(form.mentions) }}
                 </div>
                 <div class="tab-pane" id="payment-method-messages">
                     {{ form_widget(form.messages) }}

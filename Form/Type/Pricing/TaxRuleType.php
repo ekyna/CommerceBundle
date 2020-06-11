@@ -4,7 +4,8 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
-use Ekyna\Bundle\CoreBundle\Form\Type\CollectionType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MentionsType;
+use Ekyna\Component\Commerce\Pricing\Entity;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -71,12 +72,9 @@ class TaxRuleType extends ResourceFormType
                     'allow_new' => true,
                     'disabled'  => $disabled,
                 ])
-                ->add('notices', CollectionType::class, [
-                    'label'        => 'ekyna_commerce.tax_rule.field.notices',
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                    'allow_sort'   => true,
-                    'disabled'     => $disabled,
+                ->add('mentions', MentionsType::class, [
+                    'mention_class'     => Entity\TaxRuleMention::class,
+                    'translation_class' => Entity\TaxRuleMentionTranslation::class,
                 ]);
         });
     }
