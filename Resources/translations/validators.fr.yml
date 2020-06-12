@@ -35,6 +35,8 @@ ekyna_commerce:
         unexpected_payment_method: Mode de paiement inattendu.
         vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
         unique_user: Cet utilisateur est déjà attribué à un autre client.
+    customer_contact:
+        same_email_as_customer: Veuillez saisir une adresse email différente de celle de du client
     gender:
         invalid: Ce titre n'est pas un titre valide.
     identity:

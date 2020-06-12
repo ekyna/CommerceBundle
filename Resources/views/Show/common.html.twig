@@ -81,6 +81,8 @@
                 <em>{{ 'ekyna_commerce.notification.alert.no_item'|trans }}</em>
             {%- endfor %}
         </dd>
+        <dt>{{ 'ekyna_core.field.description'|trans }}</dt>
+        <dd>{{ contact.description|nl2br -}}</dd>
     </dl>
 {% endapply %}
 {% endblock customer_contact %}

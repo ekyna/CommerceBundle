@@ -42,6 +42,10 @@ class CustomerContactType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
+            ])
+            ->add('description', Type\TextareaType::class, [
+                'label'    => 'ekyna_commerce.field.description',
+                'required' => false,
             ]);
     }
 

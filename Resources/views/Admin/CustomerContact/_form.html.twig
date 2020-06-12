@@ -12,7 +12,23 @@
     {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
         <div class="tab-pane active" id="contact-general">
-            {{ form_widget(form) }}
+            {{ form_row(form.identity) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.email, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.phone, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.notifications, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.description, {'label_col': 4, 'widget_col': 8}) }}
+                </div>
+            </div>
         </div>
     </div>
     {{ form_rest(form) }}
