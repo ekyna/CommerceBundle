@@ -1,6 +1,6 @@
-{% apply spaceless %}
-{% for stock_unit in stock_units %}
-    {% set stock_unit_id = prefix ~ '_' ~ loop.index0 %}
+{% apply spaceless -%}
+{% for stock_unit in stock_units -%}
+    {% set stock_unit_id = prefix ~ '_' ~ loop.index0 -%}
     <tbody>
     <tr id="{{ stock_unit_id }}">
         <td id="{{ stock_unit_id ~ '_state' }}">{{ stock_unit.state_badge|raw }}</td>
@@ -9,35 +9,38 @@
         <td id="{{ stock_unit_id ~ '_receivedQuantity' }}" class="text-right">{{ stock_unit.received }}</td>
         <td id="{{ stock_unit_id ~ '_adjustedQuantity' }}" class="text-right">{{ stock_unit.adjusted }}</td>
         <td id="{{ stock_unit_id ~ '_soldQuantity' }}" class="text-right">{{ stock_unit.sold }}</td>
-        <td id="{{ stock_unit_id ~ '_shippedQuantity' }}" class="text-right">{{ stock_unit.shipped }}</td>
+        <td id="{{ stock_unit_id ~ '_shippedQuantity' }}" class="text-right">
+            {{- stock_unit.shipped -}}
+            {%- if 0 < stock_unit.locked %}&nbsp;<strong class="text-purple">(<i class="fa fa-lock"></i>&nbsp;{{ stock_unit.locked }})</strong>{% endif -%}
+        </td>
         <td id="{{ stock_unit_id ~ '_estimatedDateOfArrival' }}">{{ stock_unit.eda|raw }}</td>
         <td id="{{ stock_unit_id ~ '_netPrice' }}" class="text-right">{{ stock_unit.net_price|raw }}</td>
         <td class="actions">
-        {% for action in stock_unit.actions %}
+        {% for action in stock_unit.actions -%}
             <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
-                {{ action.label|raw }}
+                {{- action.label|raw -}}
             </a>
-        {% endfor %}
-        {% if stock_unit.adjustments is not empty %}
+        {%- endfor %}
+        {% if stock_unit.adjustments is not empty -%}
             <a href="javascript: void(0)"
                class="btn btn-xs btn-default"
                data-toggle-details="{{ stock_unit_id ~ '_adjustments' }}">
                 <i class="fa fa-info-circle"></i>
             </a>
-        {% endif %}
-        {% if stock_unit.assignments is not empty %}
+        {%- endif %}
+        {% if stock_unit.assignments is not empty -%}
             <a href="javascript: void(0)"
                class="btn btn-xs btn-default"
                data-toggle-details="{{ stock_unit_id ~ '_assignments' }}">
                 <i class="fa fa-tasks"></i>
             </a>
-        {% endif %}
+        {%- endif %}
         </td>
     </tr>
     </tbody>
-    {% if stock_unit.adjustments is not empty %}
+    {% if stock_unit.adjustments is not empty -%}
     <tbody id="{{ stock_unit_id ~ '_adjustments' }}" style="display: none">
-    {% for adjustment in stock_unit.adjustments %}
+    {% for adjustment in stock_unit.adjustments -%}
         <tr>
             <td colspan="4" class="text-right">{{ adjustment.type_badge|raw }}</td>
             <td class="text-right">{{ adjustment.quantity }}</td>
@@ -51,41 +54,38 @@
             {% endfor %}
             </td>
         </tr>
-    {% endfor %}
+    {%- endfor %}
     </tbody>
-    {% endif %}
-    {% if stock_unit.assignments is not empty %}
+    {%- endif %}
+    {% if stock_unit.assignments is not empty -%}
     <tbody id="{{ stock_unit_id ~ '_assignments' }}" style="display: none">
-    {% for assignment in stock_unit.assignments %}
+    {% for assignment in stock_unit.assignments -%}
         <tr {% if assignment.order_id is defined %}data-summary="{{ {'route': 'ekyna_commerce_order_admin_summary', 'parameters': {
                 'orderId': assignment.order_id
             }}|json_encode }}"{% endif %}>
             <td colspan="5"></td>
+            <td class="text-right">{{ assignment.sold }}</td>
             <td class="text-right">
-            {% if assignment.preparation %}
-                <strong class="text-danger">{{ assignment.sold }}</strong>
-            {% else %}
-                {{ assignment.sold }}
-            {% endif %}
+                {{- assignment.shipped -}}
+                {%- if 0 < assignment.locked %}&nbsp;<strong class="text-purple">(<i class="fa fa-lock"></i>&nbsp;{{ assignment.locked }})</strong>{% endif -%}
             </td>
-            <td class="text-right">{{ assignment.shipped }}</td>
             <td colspan="2"></td>
             <td class="actions">
-            {% for action in assignment.actions %}
+            {% for action in assignment.actions -%}
                 <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
-                    {{ action.label|raw }}
+                    {{- action.label|raw -}}
                 </a>
-            {% endfor %}
+            {%- endfor %}
             </td>
         </tr>
-    {% endfor %}
+    {%- endfor %}
     </tbody>
-    {% endif %}
-{% else %}
+    {%- endif %}
+{%- else -%}
     <tr>
         <td colspan="10" class="text-center">
             <em>No stock unit available</em>
         </td>
     </tr>
-{% endfor %}
-{% endapply %}
+{%- endfor -%}
+{%- endapply -%}

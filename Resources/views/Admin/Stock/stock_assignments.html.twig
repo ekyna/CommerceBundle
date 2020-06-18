@@ -12,22 +12,16 @@
             <th>{{ 'ekyna_commerce.stock_unit.field.shipped_quantity'|trans }}</th>
             <th>{{ 'ekyna_commerce.field.estimated_date_of_arrival'|trans }}</th>
             <th>{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
-            <th></th>
+            {% if actions %}<th></th>{% endif %}
         </tr>
         </thead>
         <tbody>
         {% include '@EkynaCommerce/Admin/Stock/stock_assignment_rows.html.twig' with {
             'prefix': prefix,
             'stock_assignments': stockAssignments,
+            'actions': actions
         } only %}
         </tbody>
     </table>
 </div>
-{#{% if script -%}
-<script type="text/javascript">
-    require(['ekyna-commerce/stock-units'], function(StockUnits) {
-        new StockUnits('{{ id }}');
-    });
-</script>
-{%- endif %}#}
 {% endapply %}

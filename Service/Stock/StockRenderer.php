@@ -66,12 +66,12 @@ class StockRenderer
         $assignmentTemplate = '@EkynaCommerce/Admin/Stock/stock_assignments.html.twig',
         $subjectTemplate = '@EkynaCommerce/Admin/Stock/subjects_stock.html.twig'
     ) {
-        $this->resolver = $resolver;
-        $this->normalizer = $normalizer;
-        $this->templating = $templating;
-        $this->unitTemplate = $unitTemplate;
+        $this->resolver           = $resolver;
+        $this->normalizer         = $normalizer;
+        $this->templating         = $templating;
+        $this->unitTemplate       = $unitTemplate;
         $this->assignmentTemplate = $assignmentTemplate;
-        $this->subjectTemplate = $subjectTemplate;
+        $this->subjectTemplate    = $subjectTemplate;
     }
 
     /**
@@ -84,9 +84,14 @@ class StockRenderer
      */
     public function renderStockAssignments(array $assignments, array $options = [])
     {
-        $template = isset($options['template']) ? $options['template'] : $this->assignmentTemplate;
-        $prefix = isset($options['prefix']) ? $options['prefix'] : 'stockAssignments';
-        $id = isset($options['id']) ? $options['id'] : $prefix . '_' . uniqid();
+        $options = array_replace([
+            'template' => $this->assignmentTemplate,
+            'prefix'   => 'stockAssignments',
+            'class'    => null,
+            'actions'  => true,
+        ], $options);
+
+        $id = isset($options['id']) ? $options['id'] : $options['prefix'] . '_' . uniqid();
 
         $classes = ['table', 'table-striped', 'table-hover', 'table-alt-head'];
         if (isset($options['class'])) {
@@ -95,11 +100,12 @@ class StockRenderer
 
         $normalized = $this->normalizer->normalize($assignments, 'json', ['groups' => ['StockAssignment']]);
 
-        return $this->templating->render($template, [
+        return $this->templating->render($options['template'], [
             'stockAssignments' => $normalized,
-            'prefix'           => $prefix,
+            'prefix'           => $options['prefix'],
             'id'               => $id,
             'classes'          => implode(' ', $classes),
+            'actions'          => $options['actions'],
         ]);
     }
 
@@ -114,7 +120,7 @@ class StockRenderer
     public function renderSubjectsStock(array $subjects, array $options = [])
     {
         $template = isset($options['template']) ? $options['template'] : $this->subjectTemplate;
-        $id = isset($options['id']) ? $options['id'] : 'subject';
+        $id       = isset($options['id']) ? $options['id'] : 'subject';
 
         $classes = ['table', 'table-striped', 'table-hover'];
         if (isset($options['class'])) {
@@ -138,12 +144,15 @@ class StockRenderer
      */
     public function renderSubjectStockUnits(StockSubjectInterface $subject, array $options = [])
     {
-        $template = isset($options['template']) ? $options['template'] : $this->unitTemplate;
-        $prefix = isset($options['prefix']) ? $options['prefix'] : 'stockUnits';
-        $id = isset($options['id']) ? $options['id'] : $prefix . '_' . uniqid();
-        $script = isset($options['script']) ? (bool)$options['script'] : false;
+        $options = array_replace([
+            'template' => $this->unitTemplate,
+            'prefix'   => 'stockUnits',
+            'script'   => false,
+            'class'    => null,
+            'actions'  => true,
+        ], $options);
 
-        $manual = $subject->getStockMode() === StockSubjectModes::MODE_MANUAL;
+        $id = isset($options['id']) ? $options['id'] : $options['prefix'] . '_' . uniqid();
 
         $classes = ['table', 'table-striped', 'table-hover'];
         if (isset($options['class'])) {
@@ -152,13 +161,14 @@ class StockRenderer
 
         $normalized = $this->normalizer->normalize($subject, 'json', ['groups' => ['StockView']]);
 
-        return $this->templating->render($template, [
+        return $this->templating->render($options['template'], [
             'stockUnits' => $normalized['stock_units'],
-            'prefix'     => $prefix,
+            'prefix'     => $options['prefix'],
             'id'         => $id,
             'classes'    => implode(' ', $classes),
-            'manual'     => $manual,
-            'script'     => $script,
+            'manual'     => $subject->getStockMode() === StockSubjectModes::MODE_MANUAL,
+            'script'     => $options['script'],
+            'actions'    => $options['actions'],
         ]);
     }
 }

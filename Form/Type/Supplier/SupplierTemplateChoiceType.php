@@ -39,7 +39,7 @@ class SupplierTemplateChoiceType extends AbstractType
     public function __construct(string $class, array $locales)
     {
         $this->templateClass = $class;
-        $this->locales = $locales;
+        $this->locales       = $locales;
     }
 
     /**
@@ -93,7 +93,10 @@ class SupplierTemplateChoiceType extends AbstractType
     {
         $resolver
             ->setRequired('order')
-            ->setDefault('mapped', false)
+            ->setDefaults([
+                'required' => false,
+                'mapped'   => false,
+            ])
             ->setAllowedTypes('order', SupplierOrderInterface::class);
     }
 

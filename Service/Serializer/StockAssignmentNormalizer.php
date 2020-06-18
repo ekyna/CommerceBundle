@@ -54,11 +54,7 @@ class StockAssignmentNormalizer extends BaseNormalizer
 
         $actions = [];
 
-        if ($this->contextHasGroup('StockAssignment', $context)) {
-            $data = array_replace($data, [
-                'ready' => $assignment->isFullyShipped() || $assignment->isFullyShippable(),
-            ]);
-        } elseif ($this->contextHasGroup('StockView', $context)) {
+        if ($this->contextHasGroup('StockView', $context)) {
             $order = $assignment->getSaleItem()->getSale();
 
             $actions[] = [

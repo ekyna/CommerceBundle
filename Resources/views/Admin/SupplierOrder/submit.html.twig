@@ -19,13 +19,17 @@
         {{ bootstrap_set_style('horizontal') }}
         {{ bootstrap_set_col_size('md') }}
         <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.order.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
+            <div class="col-md-4">
+                {{ form_row(form.order.estimatedDateOfArrival, {'label_col': 6, 'widget_col': 6}) }}
             </div>
-            <div class="col-md-6">
-                {{ form_row(form.order.carrier, {'label_col': 4, 'widget_col': 8}) }}
+            <div class="col-md-4">
+                {{ form_row(form.order.carrier, {'label_col': 6, 'widget_col': 6}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.order.warehouse, {'label_col': 6, 'widget_col': 6}) }}
             </div>
         </div>
+        <hr>
         {% include '@EkynaCommerce/Admin/SupplierOrder/Form/fields.html.twig' with {'form': form.order} only %}
         {{ form_row(form.order.trackingUrls) }}
         {{ form_row(form.order.description) }}

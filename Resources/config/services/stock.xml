@@ -145,6 +145,7 @@
             <argument type="service" id="ekyna_commerce.stock_unit.manager"/>
             <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
+            <argument type="service" id="ekyna_commerce.stock_assignment.dispatcher"/>
             <argument type="service" id="ekyna_commerce.stock.logger"/>
         </service>
 

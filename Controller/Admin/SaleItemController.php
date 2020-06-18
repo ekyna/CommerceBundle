@@ -575,10 +575,6 @@ class SaleItemController extends AbstractSaleController
         /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
         $sale = $context->getResource($saleName);
 
-        if ($item->isImmutable()) {
-            throw new NotFoundHttpException('Item is immutable.');
-        }
-
         $this->isGranted('EDIT', $sale);
 
         if ($this->syncItem($item)) {
