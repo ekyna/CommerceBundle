@@ -91,7 +91,7 @@ class ShipmentType extends ResourceFormType
                 }
 
                 $privileged = $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
-                $locked     = !$privileged && ShipmentStates::isStockableState($shipment->getState());
+                $locked     = !$privileged && ShipmentStates::isStockableState($shipment, false);
 
                 if (!$locked) {
                     $this->shipmentBuilder->build($shipment);
@@ -195,7 +195,7 @@ class ShipmentType extends ResourceFormType
 
         // For items layout
         $view->vars['return_mode'] = $shipment->isReturn();
-        $view->vars['privileged']  = ShipmentStates::isStockableState($shipment->getState())
+        $view->vars['privileged']  = ShipmentStates::isStockableState($shipment, false)
             && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
         FormUtil::addClass($view, 'shipment');

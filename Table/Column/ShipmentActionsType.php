@@ -92,7 +92,7 @@ class ShipmentActionsType extends AbstractColumnType
             //'permission' => 'EDIT', // TODO see admin actions type extension
         ];
 
-        if (!ShipmentStates::isStockableState($shipment->getState())) {
+        if (!ShipmentStates::isStockableState($shipment, false)) {
             if (!$shipment->isReturn() && !$shipment->getSale()->isReleased()) {
                 // Form document
                 $buttons[] = [

@@ -63,7 +63,7 @@ class ShipmentCancelActionType extends AbstractActionType
             foreach ($shipments as $shipment) {
                 $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 
-                if (ShipmentStates::isStockableState($shipment->getState())) {
+                if (ShipmentStates::isStockableState($shipment, false)) {
                     $gateway->cancel($shipment);
                 } elseif ($shipment->getState() !== ShipmentStates::STATE_CANCELED) {
                     $shipment->setState(ShipmentStates::STATE_CANCELED);
