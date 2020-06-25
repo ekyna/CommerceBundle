@@ -113,7 +113,6 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.subject_helper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
-            <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.updater"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
