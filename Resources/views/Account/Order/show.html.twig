@@ -5,6 +5,11 @@
 {% block account %}
 {% apply spaceless %}
     <h3>{{ 'ekyna_commerce.account.order.show'|trans({'%number%': order.number})|raw }}</h3>
+    {% if order.sample %}
+    <p>
+        <span class="label label-purple">{{- 'ekyna_commerce.field.sample'|trans -}}</span>
+    </p>
+    {% endif %}
     <hr>
     <div class="pull-right">
     {{- ui_dropdown({

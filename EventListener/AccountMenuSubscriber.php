@@ -84,6 +84,13 @@ class AccountMenuSubscriber implements EventSubscriberInterface
             'route' => 'ekyna_commerce_account_address_index',
         ]);
 
+        // Contact
+        if ($this->features->getConfig(Features::CUSTOMER_CONTACT . '.account')) {
+            $menu->addChild('ekyna_commerce.account.contact.title', [
+                'route' => 'ekyna_commerce_account_contact_index',
+            ]);
+        }
+
         // Loyalty
         if ($this->features->isEnabled(Features::LOYALTY)) {
             $menu->addChild('ekyna_commerce.account.loyalty.title', [

@@ -1,0 +1,17 @@
+{% extends '@EkynaCommerce/Account/layout.html.twig' %}
+
+{% block account %}
+{% apply spaceless %}
+
+    {% include '@EkynaCommerce/Account/Contact/_list.html.twig' %}
+
+    <hr>
+
+    <p>
+        <a href="{{ path('ekyna_commerce_account_contact_add') }}" class="btn btn-sm btn-primary">
+            {{ 'ekyna_commerce.account.contact.add.title'|trans }}
+        </a>
+    </p>
+
+{% endapply %}
+{% endblock account %}

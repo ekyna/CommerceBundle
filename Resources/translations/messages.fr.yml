@@ -134,6 +134,18 @@ ekyna_commerce:
                 title: Supprimer l'adresse
                 confirm: Êtes-vous sûr de vouloir supprimer cette adresse ?
                 success: L'adresse a bien été supprimée.
+        contact:
+            title: Mes contacts
+            add:
+                title: Ajouter un contact
+                success: Le contact a bien été enregistré.
+            edit:
+                title: Modifier le contact
+                success: Le contact a bien été modifié.
+            remove:
+                title: Supprimer le contact
+                confirm: Êtes-vous sûr de vouloir supprimer ce contact ?
+                success: Le contact a bien été supprimé.
         information:
             title: Mes informations
             edit:
@@ -141,6 +153,8 @@ ekyna_commerce:
                 success: Vos informations ont bien été enregistrées.
         balance:
             title: Solde de compte
+        welcome:
+            title: Bonjour %identity%
         state:
             title: Situation de mon compte
         order:
@@ -900,6 +914,11 @@ ekyna_commerce:
                     Votre commande a bien été enregistrée et sera traitée dans les plus brefs délais.
             quote_remind:
                 label: Rappel devis proche expiration
+            payment_authorized:
+                label: Paiement (hors ligne) authorisé
+                subject: Réglement de votre commande %number%
+                message: >
+                    Nous avons bien reçu le réglement de votre commande.
             payment_captured:
                 label: Paiement (hors ligne) accepté
                 subject: Réglement de votre commande %number%
@@ -1077,6 +1096,9 @@ ekyna_commerce:
             pending:
                 label: En attente
                 message: Votre paiement est en attente.
+            authorized:
+                label: Autorisé
+                message: Votre paiement est autorisé.
             captured:
                 label: Accepté
                 message: Votre paiement est accepté.
@@ -1095,9 +1117,6 @@ ekyna_commerce:
             payedout:
                 label: Fond versés
                 message: Les fonds ont été versés.
-            authorized:
-                label: Autorisé
-                message: Votre paiement est autorisé.
             expired:
                 label: Expiré
                 message: Votre paiement a expiré.
@@ -1117,6 +1136,9 @@ ekyna_commerce:
             hang:
                 label: Attendre
                 confirm: Êtes-vous sûr de vouloir mettre ce paiement EN ATTENTE ?
+            authorize:
+                label: Autoriser
+                confirm: Êtes-vous sûr de vouloir AUTORISER ce paiement ?
             accept:
                 label: Accepter
                 confirm: Êtes-vous sûr de vouloir ACCEPTER ce paiement ?
@@ -1428,6 +1450,7 @@ ekyna_commerce:
             width: Largeur
             height: Hauteur
             margin: Marges
+            download: Forcer le téléchargement
 
     shipment:
         label:

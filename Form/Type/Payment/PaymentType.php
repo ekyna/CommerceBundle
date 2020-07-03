@@ -46,7 +46,7 @@ class PaymentType extends ResourceFormType
                 throw new LogicException("Payment method must be set.");
             }
 
-            $methodDisabled = !$method->isManual();
+            $methodDisabled = !$method->isManual() || PaymentStates::isPaidState($payment, true);
             $amountDisabled = !($method->isManual() || $method->isOutstanding() || $method->isCredit());
 
             $form

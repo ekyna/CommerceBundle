@@ -27,6 +27,9 @@
         <service id="ekyna_commerce.invoice.subject_calculator"
                  class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculator">
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <call method="setShipmentCalculator">
+                <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
+            </call>
         </service>
 
         <!-- Invoice abstract listener -->

@@ -366,7 +366,7 @@ class StatCalculator implements StatCalculatorInterface
             ->from($this->orderClass, 'o')
             ->andWhere($ex->eq('o.sample', ':sample'))
             ->andWhere($ex->in('o.state', ':state'))
-            ->andWhere($ex->between('o.createdAt', ':from', ':to'))
+            ->andWhere($ex->between('o.acceptedAt', ':from', ':to'))
             ->setParameter('sample', false)
             ->setParameter('state', [
                 OrderStates::STATE_COMPLETED,
@@ -378,7 +378,6 @@ class StatCalculator implements StatCalculatorInterface
 
         return $qb->getQuery();
     }
-
 
     /**
      * Returns the detail query.
@@ -405,7 +404,7 @@ class StatCalculator implements StatCalculatorInterface
             ->andWhere($ex->eq('o.sample', ':sample'))
             ->andWhere($ex->in('o.state', ':state'))
             ->andWhere($ex->eq('o.source', ':source'))
-            ->andWhere($ex->between('o.createdAt', ':from', ':to'))
+            ->andWhere($ex->between('o.acceptedAt', ':from', ':to'))
             ->setParameter('sample', false)
             ->setParameter('state', [
                 OrderStates::STATE_COMPLETED,

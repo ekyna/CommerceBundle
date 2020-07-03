@@ -167,6 +167,17 @@ class NotifyModelController extends ResourceController
                     ->findOneBy(['state' => PaymentStates::STATE_EXPIRED], ['id' => 'DESC']);
                 break;
 
+            case NotificationTypes::PAYMENT_AUTHORIZED:
+                $method = $this
+                    ->get('ekyna_commerce.payment_method.repository')
+                    ->findOneBy(['factoryName' => 'offline'], []);
+                if (null !== $method) {
+                    $source = $this
+                        ->get('ekyna_commerce.order_payment.repository')
+                        ->findOneBy(['state' => PaymentStates::STATE_AUTHORIZED, 'method' => $method], ['id' => 'DESC']);
+                }
+                break;
+
             case NotificationTypes::PAYMENT_CAPTURED:
                 $method = $this
                     ->get('ekyna_commerce.payment_method.repository')

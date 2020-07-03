@@ -16,6 +16,11 @@ ekyna_commerce_account_address_add: /my-account/addresses/add
 ekyna_commerce_account_address_edit: /my-account/addresses/edit/{addressId}
 ekyna_commerce_account_address_remove: /my-account/addresses/remove/{addressId}
 
+ekyna_commerce_account_contact_index: /my-account/contacts
+ekyna_commerce_account_contact_add: /my-account/contacts/add
+ekyna_commerce_account_contact_edit: /my-account/contacts/edit/{contactId}
+ekyna_commerce_account_contact_remove: /my-account/contacts/remove/{contactId}
+
 ekyna_commerce_account_quote_index: /my-account/quotes
 ekyna_commerce_account_quote_show: /my-account/quotes/{number}
 ekyna_commerce_account_quote_voucher: /my-account/quotes/{number}/voucher

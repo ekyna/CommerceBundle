@@ -122,7 +122,7 @@ class CommonExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'commerce_feature',
-                [Features::class, 'isEnabled']
+                [Features::class, 'getConfig']
             ),
         ];
     }

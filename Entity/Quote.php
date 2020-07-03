@@ -11,6 +11,8 @@ use Ekyna\Component\Commerce\Quote\Entity\Quote as BaseQuote;
  * Class Quote
  * @package Ekyna\Bundle\CommerceBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @property Model\CustomerInterface $customer
  */
 class Quote extends BaseQuote implements Model\QuoteInterface
 {
@@ -80,6 +82,12 @@ class Quote extends BaseQuote implements Model\QuoteInterface
      */
     public function getAllTags()
     {
-        return array_unique(array_merge($this->tags->getValues(), $this->itemsTags->getValues()));
+        $tags = array_unique(array_merge($this->tags->getValues(), $this->itemsTags->getValues()));
+
+        if (!$this->customer || $this->customer->getTags()->isEmpty()) {
+            return $tags;
+        }
+
+        return array_unique(array_merge($tags, $this->customer->getTags()->getValues()));
     }
 }

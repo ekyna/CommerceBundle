@@ -25,7 +25,9 @@
                 <a href="{{ path }}">{{ order.number }}</a>
             </td>
             <td>
-                {%- if order.voucherNumber is not empty -%}
+                {%- if order.sample -%}
+                    <span class="label label-purple">{{ 'ekyna_commerce.field.sample'|trans }}</span>
+                {%- elseif order.voucherNumber is not empty -%}
                     {{ order.voucherNumber }}
                 {%- else -%}
                     &dash;
@@ -47,7 +49,11 @@
                 {{- order|sale_state_badge -}}
             </td>
             <td>
-                {{- order.paymentState|payment_state_badge -}}
+                {%- if order.sample -%}
+                    &dash;
+                {%- else -%}
+                    {{- order.paymentState|payment_state_badge -}}
+                {%- endif -%}
             </td>
             <td>
                 {{- order.shipmentState|shipment_state_badge -}}

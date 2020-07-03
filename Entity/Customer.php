@@ -2,35 +2,43 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
-use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Customer\Entity\Customer as BaseCustomer;
+use Ekyna\Bundle\CmsBundle\Model as Cms;
 
 /**
  * Class Customer
  * @package Ekyna\Bundle\CommerceBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class Customer extends BaseCustomer implements CustomerInterface
+class Customer extends BaseCustomer implements Model\CustomerInterface
 {
-    use InChargeSubjectTrait;
+    use Model\InChargeSubjectTrait,
+        Cms\TagsSubjectTrait;
 
     /**
      * @var UserInterface
      */
     protected $user;
 
-    /**
-     * @var UserInterface
-     */
-    protected $inCharge;
 
+    /**
+     * Constructor.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->tags = new ArrayCollection();
+    }
 
     /**
      * @inheritdoc
      */
-    public function getUser()
+    public function getUser(): ?UserInterface
     {
         return $this->user;
     }
@@ -38,7 +46,7 @@ class Customer extends BaseCustomer implements CustomerInterface
     /**
      * @inheritdoc
      */
-    public function setUser(UserInterface $user = null)
+    public function setUser(UserInterface $user = null): Model\CustomerInterface
     {
         $this->user = $user;
 

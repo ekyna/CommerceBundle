@@ -14,6 +14,10 @@ ekyna_commerce_account_address:
     resource: "account/address.yml"
     prefix:   /addresses
 
+ekyna_commerce_account_contact:
+    resource: "account/contact.yml"
+    prefix:   /contacts
+
 ekyna_commerce_account_quote:
     resource: "account/quote.yml"
     prefix:   /quotes

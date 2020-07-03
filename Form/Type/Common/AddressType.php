@@ -5,7 +5,6 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
 use Ekyna\Bundle\GoogleBundle\Form\Type\CoordinateType;
-use Ekyna\Component\Commerce\Common\Country\CountryProviderInterface;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -21,22 +20,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class AddressType extends AbstractType
 {
-    /**
-     * @var CountryProviderInterface
-     */
-    private $countryProvider;
-
-
-    /**
-     * Constructor.
-     *
-     * @param CountryProviderInterface $countryProvider
-     */
-    public function __construct(CountryProviderInterface $countryProvider)
-    {
-        $this->countryProvider = $countryProvider;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -176,31 +159,27 @@ class AddressType extends AbstractType
             ])*/
 
         if ($options['phones']) {
-            $country = $this->countryProvider->getCurrentCountry();
-
             $builder
                 ->add('phone', PhoneNumberType::class, [
-                    'label'           => 'ekyna_core.field.phone',
-                    'required'        => $options['phone_required'],
-                    'country_field'   => 'country',
-                    'default_country' => $country,
-                    'attr'            => [
+                    'label'         => 'ekyna_core.field.phone',
+                    'required'      => $options['phone_required'],
+                    'country_field' => 'country',
+                    'attr'          => [
                         'class' => 'address-phone',
                     ],
-                    'number_attr'     => [
+                    'number_attr'   => [
                         'autocomplete' => $section . 'tel-national',
                     ],
                 ])
                 ->add('mobile', PhoneNumberType::class, [
-                    'label'           => 'ekyna_core.field.mobile',
-                    'required'        => $options['mobile_required'],
-                    'type'            => PhoneType::MOBILE,
-                    'country_field'   => 'country',
-                    'default_country' => $country,
-                    'attr'            => [
+                    'label'         => 'ekyna_core.field.mobile',
+                    'required'      => $options['mobile_required'],
+                    'type'          => PhoneType::MOBILE,
+                    'country_field' => 'country',
+                    'attr'          => [
                         'class' => 'address-mobile',
                     ],
-                    'number_attr'     => [
+                    'number_attr'   => [
                         'autocomplete' => $section . 'tel-national',
                     ],
                 ]);

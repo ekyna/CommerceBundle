@@ -30,10 +30,11 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
     public function buildSettings(SettingsBuilder $builder)
     {
         $labelDefaults = [
-            'size'   => 'A4',
-            'width'  => null,
-            'height' => null,
-            'margin' => null,
+            'size'     => 'A4',
+            'width'    => null,
+            'height'   => null,
+            'margin'   => null,
+            'download' => false,
         ];
 
         $labelResolver = new OptionsResolver();
@@ -42,7 +43,8 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
             ->setAllowedTypes('size', ['string', 'null'])
             ->setAllowedTypes('width', ['int', 'null'])
             ->setAllowedTypes('height', ['int', 'null'])
-            ->setAllowedTypes('margin', ['int', 'null']);
+            ->setAllowedTypes('margin', ['int', 'null'])
+            ->setAllowedTypes('download', ['bool', 'null']);
 
         $builder
             ->setDefaults(array_merge([

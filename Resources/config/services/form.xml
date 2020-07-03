@@ -23,7 +23,6 @@
         <!-- Address form type -->
         <service id="ekyna_commerce.address.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType">
-            <argument type="service" id="ekyna_commerce.common.country_provider"/>
             <tag name="form.type"/>
         </service>
 
@@ -161,6 +160,12 @@
             <argument>%ekyna_commerce.order_invoice.class%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector=".invoice" path="ekyna-commerce/form/invoice"/>
+        </service>
+
+        <!-- Phone number (core bundle) type extension -->
+        <service id="Ekyna\Bundle\CommerceBundle\Form\Extension\PhoneNumberTypeExtension">
+            <argument type="service" id="ekyna_commerce.common.country_provider"/>
+            <tag name="form.type_extension" extended-type="Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType"/>
         </service>
 
         <!-- Price form type -->

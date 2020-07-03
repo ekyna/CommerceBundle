@@ -9,3 +9,7 @@
     {#{{ admin_resource_btn(resource, 'new') }}#}
 {% endblock actions %}
 
+{% block side %}
+    {{ parent() }}
+    {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' %}
+{% endblock side %}

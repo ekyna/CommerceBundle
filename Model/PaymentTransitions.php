@@ -21,11 +21,12 @@ final class PaymentTransitions extends AbstractConstants
         $suffix = '.label';
 
         return [
-            Transitions::TRANSITION_CANCEL => [$prefix . Transitions::TRANSITION_CANCEL . $suffix, 'warning'],
-            Transitions::TRANSITION_HANG   => [$prefix . Transitions::TRANSITION_HANG .   $suffix, 'warning'],
-            Transitions::TRANSITION_ACCEPT => [$prefix . Transitions::TRANSITION_ACCEPT . $suffix, 'success'],
-            Transitions::TRANSITION_REJECT => [$prefix . Transitions::TRANSITION_REJECT . $suffix, 'danger'],
-            Transitions::TRANSITION_REFUND => [$prefix . Transitions::TRANSITION_REFUND . $suffix, 'primary'],
+            Transitions::TRANSITION_CANCEL    => [$prefix . Transitions::TRANSITION_CANCEL . $suffix,    'grey'],
+            Transitions::TRANSITION_HANG      => [$prefix . Transitions::TRANSITION_HANG . $suffix,      'orange'],
+            Transitions::TRANSITION_AUTHORIZE => [$prefix . Transitions::TRANSITION_AUTHORIZE . $suffix, 'light-green'],
+            Transitions::TRANSITION_ACCEPT    => [$prefix . Transitions::TRANSITION_ACCEPT . $suffix,    'green'],
+            Transitions::TRANSITION_REJECT    => [$prefix . Transitions::TRANSITION_REJECT . $suffix,    'red'],
+            Transitions::TRANSITION_REFUND    => [$prefix . Transitions::TRANSITION_REFUND . $suffix,    'indigo'],
         ];
     }
 

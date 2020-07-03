@@ -44,9 +44,14 @@ class SupplierType extends ResourceTableType
                 'property_path' => 'currency.code',
                 'position'      => 40,
             ])
-            ->addColumn('locale', CType\Column\TextType::class, [
-                'label'    => 'ekyna_core.field.locale',
+            ->addColumn('country', BType\Column\LocaleType::class, [
+                'label'    => 'ekyna_core.field.country',
+                'property_path' => 'address.country.code',
                 'position' => 50,
+            ])
+            ->addColumn('locale', BType\Column\LocaleType::class, [
+                'label'    => 'ekyna_core.field.locale',
+                'position' => 51,
             ])
             ->addColumn('tax', DType\Column\EntityType::class, [
                 'label'                => 'ekyna_commerce.tax.label.singular',

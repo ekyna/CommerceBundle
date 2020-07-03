@@ -61,6 +61,13 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Sale step validator -->
+        <service id="ekyna_commerce.sale_step_validator"
+                 class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidator"
+                 lazy="true">
+            <argument type="service" id="validator"/>
+        </service>
+
         <!-- Shipment validator -->
         <service id="ekyna_commerce.shipment.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ShipmentValidator">

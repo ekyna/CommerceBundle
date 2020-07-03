@@ -23,11 +23,11 @@ final class PaymentStates extends AbstractConstants
         return [
             States::STATE_NEW         => [$prefix.States::STATE_NEW.$suffix,         'brown'],
             States::STATE_PENDING     => [$prefix.States::STATE_PENDING.$suffix,     'orange'],
-            States::STATE_CAPTURED    => [$prefix.States::STATE_CAPTURED.$suffix,    'light-green'],
+            States::STATE_AUTHORIZED  => [$prefix.States::STATE_AUTHORIZED.$suffix,  'light-green'],
+            States::STATE_CAPTURED    => [$prefix.States::STATE_CAPTURED.$suffix,    'green'],
             States::STATE_CANCELED    => [$prefix.States::STATE_CANCELED.$suffix,    'default'],
             States::STATE_FAILED      => [$prefix.States::STATE_FAILED.$suffix,      'red'],
             States::STATE_REFUNDED    => [$prefix.States::STATE_REFUNDED.$suffix,    'indigo'],
-            States::STATE_AUTHORIZED  => [$prefix.States::STATE_AUTHORIZED.$suffix,  'light-green'],
             States::STATE_SUSPENDED   => [$prefix.States::STATE_SUSPENDED.$suffix,   'orange'],
             States::STATE_EXPIRED     => [$prefix.States::STATE_EXPIRED.$suffix,     'red'],
             States::STATE_UNKNOWN     => [$prefix.States::STATE_UNKNOWN.$suffix,     'default'],

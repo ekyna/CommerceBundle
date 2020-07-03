@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Setting;
 
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,6 +47,13 @@ class ShipmentLabelType extends AbstractType
                 'required' => false,
                 'attr'     => [
                     'input_group' => ['append' => 'mm'],
+                ],
+            ])
+            ->add('download', CheckboxType::class, [
+                'label'    => 'ekyna_commerce.setting.shipment_label.download',
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
                 ],
             ]);
     }

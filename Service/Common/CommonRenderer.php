@@ -48,7 +48,7 @@ class CommonRenderer
      * Renders the address.
      *
      * @param AddressInterface $address
-     * @param array            $options
+     * @param array            $options ('display_phones' and 'locale')
      *
      * @return string
      */
@@ -69,7 +69,7 @@ class CommonRenderer
      * Renders the customer contact.
      *
      * @param CustomerContactInterface $contact
-     * @param array                    $options
+     * @param array                    $options ('display_phones', 'locale' and 'admin')
      *
      * @return string
      */
@@ -78,6 +78,7 @@ class CommonRenderer
         $options = array_replace([
             'display_phones' => true,
             'locale'         => null,
+            'admin'          => false,
         ], $options);
 
         return $this->getTemplate()->renderBlock('customer_contact', [

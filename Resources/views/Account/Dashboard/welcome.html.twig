@@ -1,0 +1,6 @@
+<p class="lead">
+    {{- 'ekyna_commerce.account.welcome.title'|trans({'%identity%': customer|identity(false)}) -}}
+</p>
+<div style="margin-bottom: 20px">
+    {{- cms_block('commerce_account_welcome', null, {'default_content': '<p>&nbsp;</p>'}) -}}
+</div>

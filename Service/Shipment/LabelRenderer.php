@@ -5,7 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Bundle\SettingBundle\Manager\SettingsManagerInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -21,7 +23,7 @@ class LabelRenderer
 
 
     /**
-     * @var  EngineInterface
+     * @var EngineInterface
      */
     private $templating;
 
@@ -118,6 +120,20 @@ class LabelRenderer
 
         if ($raw) {
             return $content;
+        }
+
+        if ($config['download']) {
+            $file = sys_get_temp_dir() . '/print-label.pdf';
+            if (file_exists($file)) {
+                unlink($file);
+            }
+            file_put_contents($file, $content);
+
+            $response = new BinaryFileResponse($file);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'print-label.pdf');
+
+            return $response;
         }
 
         return new Response($content, 200, [

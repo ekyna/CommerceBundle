@@ -11,6 +11,8 @@ use Ekyna\Component\Commerce\Order\Entity\Order as BaseOrder;
  * Class Order
  * @package Ekyna\Bundle\CommerceBundle\Entity
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @property Model\CustomerInterface $customer
  */
 class Order extends BaseOrder implements Model\OrderInterface
 {
@@ -79,6 +81,12 @@ class Order extends BaseOrder implements Model\OrderInterface
      */
     public function getAllTags()
     {
-        return array_unique(array_merge($this->tags->getValues(), $this->itemsTags->getValues()));
+        $tags = array_unique(array_merge($this->tags->getValues(), $this->itemsTags->getValues()));
+
+        if (!$this->customer || $this->customer->getTags()->isEmpty()) {
+            return $tags;
+        }
+
+        return array_unique(array_merge($tags, $this->customer->getTags()->getValues()));
     }
 }

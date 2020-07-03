@@ -9,12 +9,14 @@ use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
 use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
+use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\PdfException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
-use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +36,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -53,7 +55,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function showAction(Request $request)
+    public function showAction(Request $request): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -131,7 +133,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function paymentCreateAction(Request $request)
+    public function paymentCreateAction(Request $request): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -194,7 +196,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function paymentCancelAction(Request $request)
+    public function paymentCancelAction(Request $request): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -212,7 +214,9 @@ class OrderController extends AbstractController
             return $this->redirect($cancelUrl);
         }
 
-        if (!PaymentTransitions::isUserCancellable($payment)) {
+        $helper = $this->get('ekyna_commerce.payment_helper');
+
+        if (!$helper->isUserCancellable($payment)) {
             return $this->redirect($cancelUrl);
         }
 
@@ -230,9 +234,7 @@ class OrderController extends AbstractController
                 'ekyna_commerce_account_payment_status', [], UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-            return $this
-                ->get('ekyna_commerce.payment_helper')
-                ->cancel($payment, $statusUrl);
+            return $helper->cancel($payment, $statusUrl);
         }
 
         $orders = $this->findOrdersByCustomer($customer);
@@ -252,7 +254,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function shipmentDownloadAction(Request $request)
+    public function shipmentDownloadAction(Request $request): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -282,7 +284,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function invoiceDownloadAction(Request $request)
+    public function invoiceDownloadAction(Request $request): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -312,7 +314,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function attachmentCreateAction(Request $request)
+    public function attachmentCreateAction(Request $request): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -364,7 +366,7 @@ class OrderController extends AbstractController
      *
      * @return Response
      */
-    public function attachmentDownloadAction(Request $request)
+    public function attachmentDownloadAction(Request $request): Response
     {
         $customer = $this->getCustomerOrRedirect();
 
@@ -397,7 +399,7 @@ class OrderController extends AbstractController
      *
      * @return array|OrderInterface[]
      */
-    protected function findOrdersByCustomer(CustomerInterface $customer)
+    protected function findOrdersByCustomer(CustomerInterface $customer): array
     {
         if ($customer->hasParent()) {
             return $this
@@ -418,7 +420,7 @@ class OrderController extends AbstractController
      *
      * @return OrderInterface
      */
-    protected function findOrderByCustomerAndNumber(CustomerInterface $customer, $number)
+    protected function findOrderByCustomerAndNumber(CustomerInterface $customer, string $number): OrderInterface
     {
         $order = $this
             ->get('ekyna_commerce.order.repository')
@@ -439,11 +441,10 @@ class OrderController extends AbstractController
      *
      * @return OrderPaymentInterface
      */
-    protected function findPaymentByOrderAndKey(OrderInterface $order, $key)
+    protected function findPaymentByOrderAndKey(OrderInterface $order, string $key): OrderPaymentInterface
     {
         $payment = $this
             ->get('ekyna_commerce.order_payment.repository')
-            // TODO repository method
             ->findOneBy([
                 'order' => $order,
                 'key'   => $key,
@@ -453,6 +454,7 @@ class OrderController extends AbstractController
             throw $this->createNotFoundException('Payment not found.');
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $payment;
     }
 
@@ -460,11 +462,11 @@ class OrderController extends AbstractController
      * Finds the attachment by order and id.
      *
      * @param OrderInterface $order
-     * @param integer        $id
+     * @param int        $id
      *
-     * @return \Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface
+     * @return ShipmentInterface
      */
-    protected function findShipmentByOrderAndId(OrderInterface $order, $id)
+    protected function findShipmentByOrderAndId(OrderInterface $order, int $id): ShipmentInterface
     {
         $shipment = $this
             ->get('ekyna_commerce.order_shipment.repository')
@@ -477,6 +479,7 @@ class OrderController extends AbstractController
             throw $this->createNotFoundException('Shipment not found.');
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $shipment;
     }
 
@@ -484,11 +487,11 @@ class OrderController extends AbstractController
      * Finds the invoice by order and id.
      *
      * @param OrderInterface $order
-     * @param integer        $id
+     * @param int        $id
      *
-     * @return \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface
+     * @return InvoiceInterface
      */
-    protected function findInvoiceByOrderAndId(OrderInterface $order, $id)
+    protected function findInvoiceByOrderAndId(OrderInterface $order, int $id): InvoiceInterface
     {
         $invoice = $this
             ->get('ekyna_commerce.order_invoice.repository')
@@ -501,6 +504,7 @@ class OrderController extends AbstractController
             throw $this->createNotFoundException('Invoice not found.');
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $invoice;
     }
 
@@ -508,11 +512,11 @@ class OrderController extends AbstractController
      * Finds the attachment by order and id.
      *
      * @param OrderInterface $order
-     * @param integer        $id
+     * @param int            $id
      *
-     * @return \Ekyna\Component\Commerce\Common\Model\AttachmentInterface
+     * @return AttachmentInterface
      */
-    protected function findAttachmentByOrderAndId(OrderInterface $order, $id)
+    protected function findAttachmentByOrderAndId(OrderInterface $order, int $id): AttachmentInterface
     {
         $attachment = $this
             ->get('ekyna_commerce.order_attachment.repository')
@@ -525,6 +529,7 @@ class OrderController extends AbstractController
             throw $this->createNotFoundException('Attachment not found.');
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $attachment;
     }
 }

@@ -294,6 +294,7 @@ class AddressController extends AbstractController
         $id = intval($request->attributes->get('addressId'));
 
         if (0 < $id) {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
             return $this
                 ->get('ekyna_commerce.customer_address.repository')
                 ->findOneBy([

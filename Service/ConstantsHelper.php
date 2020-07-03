@@ -7,8 +7,8 @@ use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
-use Ekyna\Component\Commerce\Document\Model as Document;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Document\Model as Document;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -770,21 +770,25 @@ class ConstantsHelper extends AbstractConstantsHelper
      * Renders the identity.
      *
      * @param Common\IdentityInterface $identity
-     * @param bool                     $long
+     * @param bool                     $gender null: short<br>true: long<br>false: none
      *
      * @return string
      */
-    public function renderIdentity(Common\IdentityInterface $identity, $long = false): string
+    public function renderIdentity(Common\IdentityInterface $identity, bool $gender = null): string
     {
-        if (0 == strlen($identity->getFirstName()) && 0 == $identity->getLastName()) {
+        if (empty($identity->getFirstName()) && empty($identity->getLastName())) {
             return sprintf('<em>%s</em>', $this->translator->trans('ekyna_core.value.undefined'));
         }
 
-        $gender = $identity->getGender()
-            ? $this->translator->trans($this->getGenderLabel($identity->getGender(), $long))
+        if (false === $gender) {
+            return trim(sprintf('%s %s', $identity->getFirstName(), $identity->getLastName()));
+        }
+
+        $label = $identity->getGender()
+            ? $this->translator->trans($this->getGenderLabel($identity->getGender(), !!$gender))
             : null;
 
-        return trim(sprintf('%s %s %s', $gender, $identity->getLastName(), $identity->getFirstName()));
+        return trim(sprintf('%s %s %s', $label, $identity->getFirstName(), $identity->getLastName()));
     }
 
     /**

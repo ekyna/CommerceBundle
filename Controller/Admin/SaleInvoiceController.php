@@ -123,6 +123,7 @@ class SaleInvoiceController extends AbstractSaleController
             $this->config->getTemplate('new.html'),
             $context->getTemplateVars([
                 'form' => $form->createView(),
+                'sale' => $sale,
             ])
         );
     }

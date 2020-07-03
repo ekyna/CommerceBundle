@@ -13,11 +13,11 @@ use Ekyna\Bundle\CoreBundle\Form\Type\ConfirmType;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
 use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
+use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuotePaymentInterface;
 use Symfony\Component\Form\FormError;
@@ -119,7 +119,7 @@ class QuoteController extends AbstractSaleController
 
         clearstatcache(true, $path);
 
-        $response = new BinaryFileResponse(new Stream($path));
+        $response = new BinaryFileResponse(new Stream($path)); // TODO Stream is useless
 
         $disposition = $response
             ->headers
@@ -347,7 +347,9 @@ class QuoteController extends AbstractSaleController
             'number' => $quote->getNumber(),
         ]);
 
-        if (!PaymentTransitions::isUserCancellable($payment)) {
+        $helper = $this->get('ekyna_commerce.payment_helper');
+
+        if (!$helper->isUserCancellable($payment)) {
             return $this->redirect($cancelUrl);
         }
 
@@ -365,9 +367,7 @@ class QuoteController extends AbstractSaleController
                 'ekyna_commerce_account_payment_status', [], UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-            return $this
-                ->get('ekyna_commerce.payment_helper')
-                ->cancel($payment, $statusUrl);
+            return $helper->cancel($payment, $statusUrl);
         }
 
         $quotes = $this->findQuotesByCustomer($customer);
@@ -573,7 +573,7 @@ class QuoteController extends AbstractSaleController
      *
      * @return array|QuoteInterface[]
      */
-    protected function findQuotesByCustomer(CustomerInterface $customer)
+    protected function findQuotesByCustomer(CustomerInterface $customer): array
     {
         return $this
             ->get('ekyna_commerce.quote.repository')
@@ -588,7 +588,7 @@ class QuoteController extends AbstractSaleController
      *
      * @return QuoteInterface
      */
-    protected function findQuoteByCustomerAndNumber(CustomerInterface $customer, $number)
+    protected function findQuoteByCustomerAndNumber(CustomerInterface $customer, string $number): QuoteInterface
     {
         $quote = $this
             ->get('ekyna_commerce.quote.repository')
@@ -609,7 +609,7 @@ class QuoteController extends AbstractSaleController
      *
      * @return QuotePaymentInterface
      */
-    protected function findPaymentByQuoteAndKey(QuoteInterface $quote, $key)
+    protected function findPaymentByQuoteAndKey(QuoteInterface $quote, string $key): QuotePaymentInterface
     {
         $payment = $this
             ->get('ekyna_commerce.quote_payment.repository')
@@ -623,6 +623,7 @@ class QuoteController extends AbstractSaleController
             throw $this->createNotFoundException('Payment not found.');
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $payment;
     }
 
@@ -630,11 +631,11 @@ class QuoteController extends AbstractSaleController
      * Finds the attachment by quote and id.
      *
      * @param QuoteInterface $quote
-     * @param integer        $id
+     * @param int        $id
      *
-     * @return \Ekyna\Component\Commerce\Common\Model\AttachmentInterface
+     * @return AttachmentInterface
      */
-    protected function findAttachmentByQuoteAndId(QuoteInterface $quote, $id)
+    protected function findAttachmentByQuoteAndId(QuoteInterface $quote, int $id): AttachmentInterface
     {
         $attachment = $this
             ->get('ekyna_commerce.quote_attachment.repository')
@@ -647,6 +648,7 @@ class QuoteController extends AbstractSaleController
             throw $this->createNotFoundException('Attachment not found.');
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $attachment;
     }
 

@@ -1,36 +1,43 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
+{% import '@EkynaCms/Admin/show_macros.html.twig' as _cms %}
+
 {% block main %}
-<div class="actions">
-    {% if customer.user is null %}
-        {{ ui_button('ekyna_commerce.customer.button.create_user', {
+<div class="main-header">
+    <div class="infos">
+        {{- customer|cms_tags({'text': false}) -}}
+    </div>
+    <div class="actions">
+        {% if customer.user is null -%}
+            {{ ui_button('ekyna_commerce.customer.button.create_user', {
+                'type': 'link',
+                'path': path('ekyna_commerce_customer_admin_create_user', {'customerId': customer.id}),
+                'theme': 'primary',
+                'icon': 'user'
+            }) }}
+        {%- elseif is_granted('VIEW', customer.user) -%}
+            {{ ui_button('ekyna_user.user.button.use_session', {
+                'type': 'link',
+                'path': path('ekyna_user_user_admin_use_session', {'userId': customer.user.id}),
+                'theme': 'primary',
+                'icon': 'eye-open'
+            }, {
+                'onclick': ('return confirm(\'' ~ ('ekyna_user.user.alert.use_session'|trans({
+                    '{email}': customer.user.email
+                })|escape('js')) ~ '\')'),
+                'target': '_blank'
+            }) }}
+        {%- endif %}
+        {{ ui_button('ekyna_commerce.customer.button.balance', {
             'type': 'link',
-            'path': path('ekyna_commerce_customer_admin_create_user', {'customerId': customer.id}),
-            'theme': 'primary',
-            'icon': 'user'
+            'path': path('ekyna_commerce_customer_admin_balance', {'customerId': customer.id}),
+            'theme': 'default',
+            'icon': 'balance-scale',
+            'fa_icon': true
         }) }}
-    {% elseif is_granted('VIEW', customer.user) %}
-        {{ ui_button('ekyna_user.user.button.use_session', {
-            'type': 'link',
-            'path': path('ekyna_user_user_admin_use_session', {'userId': customer.user.id}),
-            'theme': 'primary',
-            'icon': 'eye-open'
-        }, {
-            'onclick': ('return confirm(\'' ~ ('ekyna_user.user.alert.use_session'|trans({
-                '{email}': customer.user.email
-            })|escape('js')) ~ '\')'),
-            'target': '_blank'
-        }) }}
-    {% endif %}
-    {{ ui_button('ekyna_commerce.customer.button.balance', {
-        'type': 'link',
-        'path': path('ekyna_commerce_customer_admin_balance', {'customerId': customer.id}),
-        'theme': 'default',
-        'icon': 'balance-scale',
-        'fa_icon': true
-    }) }}
-    {{ admin_resource_btn(customer, 'edit') }}
-    {{ admin_resource_btn(customer, 'remove') }}
+        {{ admin_resource_btn(customer, 'edit') }}
+        {{ admin_resource_btn(customer, 'remove') }}
+    </div>
 </div>
 <div class="show show-with-tabs" data-tab-key="{{ resource_id }}">
     <ul class="nav nav-tabs">
@@ -49,18 +56,20 @@
                 {{ 'ekyna_commerce.customer_address.label.plural'|trans }}
             </a>
         </li>
+        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_CONTACT')) -%}
         <li>
             <a href="#customer-contacts" id="toggle-contacts" data-toggle="tab">
                 {{ 'ekyna_commerce.customer_contact.label.plural'|trans }}
             </a>
         </li>
-        {% if customer.children|length > 0 %}
+        {% endif %}
+        {% if customer.children|length > 0 -%}
             <li>
                 <a href="#customer-children" id="toggle-children" data-toggle="tab">
                     {{ 'ekyna_commerce.customer.field.children'|trans }}
                 </a>
             </li>
-        {% endif %}
+        {%- endif %}
         <li>
             <a href="#customer-quotes" id="toggle-quotes" data-toggle="tab">
                 {{ 'ekyna_commerce.quote.label.plural'|trans }}
@@ -182,6 +191,7 @@
                     'label': 'ekyna_commerce.field.description',
                     'id': 'customer_description'
                 }) }}
+                {{ _cms.show_tags(customer) }}
             </div>
             <div class="tab-pane" id="customer-config">
                 <div class="row">
@@ -405,6 +415,7 @@
                     <p>{{ 'ekyna_commerce.customer_address.alert.no_item'|trans }}</p>
                 {% endfor %}
             </div>
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_CONTACT')) -%}
             <div class="tab-pane" id="customer-contacts">
                 <div class="actions">
                     {{- ui_button('ekyna_commerce.customer_contact.button.new', {
@@ -421,7 +432,7 @@
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-body" id="customer_contact_{{ loop.index0 }}">
-                                {{- contact|customer_contact -}}
+                                {{- contact|customer_contact({'admin': true}) -}}
                             </div>
                             <div class="panel-footer">
                                 {{ admin_resource_btn(contact, 'edit', {'size': 'xs', 'short': true}) }}
@@ -434,6 +445,7 @@
                     <p>{{ 'ekyna_commerce.customer_contact.alert.no_item'|trans }}</p>
                 {%- endfor %}
             </div>
+            {%- endif %}
             {% if customer.children|length > 0 %}
             <div class="tab-pane" id="customer-children">
                 <div class="sub-header">

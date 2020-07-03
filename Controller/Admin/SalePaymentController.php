@@ -144,7 +144,7 @@ class SalePaymentController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+            /** @var SaleInterface $sale */
             $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
             // TODO use ResourceManager
@@ -213,7 +213,7 @@ class SalePaymentController extends AbstractSaleController
             }
 
             if (!$event->hasErrors()) {
-                /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+                /** @var SaleInterface $sale */
                 $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
                 if ($isXhr) {
@@ -279,16 +279,20 @@ class SalePaymentController extends AbstractSaleController
         );
 
         switch ($request->attributes->get('action')) {
+            case 'authorize' :
+                return $helper->authorize($payment, $statusUrl);
             case 'accept' :
                 return $helper->accept($payment, $statusUrl);
             case 'refund' :
                 return $helper->refund($payment, $statusUrl);
+            case 'reject' :
+                return $helper->reject($payment, $statusUrl);
             case 'cancel' :
                 return $helper->cancel($payment, $statusUrl);
             case 'hang' :
                 return $helper->hang($payment, $statusUrl);
-            default:
-                throw $this->createNotFoundException("Unexpected payment action.");
         }
+
+        throw $this->createNotFoundException("Unexpected payment action.");
     }
 }

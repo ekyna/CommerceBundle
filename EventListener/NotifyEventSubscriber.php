@@ -251,6 +251,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
                 $this->buildOrderContent($event, $model);
                 break;
 
+            case NotificationTypes::PAYMENT_AUTHORIZED:
             case NotificationTypes::PAYMENT_CAPTURED:
             case NotificationTypes::PAYMENT_EXPIRED:
                 $this->buildPaymentContent($event, $model);

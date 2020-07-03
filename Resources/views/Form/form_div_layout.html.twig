@@ -298,9 +298,20 @@
 {%- block ekyna_commerce_customer_contact_widget -%}
     <div {{ block('widget_container_attributes') }}>
         {{- form_row(form.identity) -}}
-        {{- form_row(form.email) -}}
-        {{- form_row(form.phone) -}}
-        {{- form_row(form.notifications) -}}
+        <div class="row">
+            <div class="col-md-6">
+                {{- form_row(form.email, {'label_col': 4, 'widget_col': 8}) -}}
+                {{- form_row(form.title, {'label_col': 4, 'widget_col': 8}) -}}
+                {{- form_row(form.phone, {'label_col': 4, 'widget_col': 8}) -}}
+            </div>
+            <div class="col-md-6">
+                {{- form_row(form.notifications, {'label_col': 4, 'widget_col': 8}) -}}
+            </div>
+        </div>
+        {% if form.description is defined -%}
+            {{- form_row(form.description) -}}
+        {%- endif %}
+        {{- form_rest(form) -}}
     </div>
 {%- endblock ekyna_commerce_customer_contact_widget -%}
 

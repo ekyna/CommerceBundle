@@ -2,10 +2,10 @@
 
 <hr>
 
-{% if buttons is not defined %}{% set buttons = true %}{% endif %}
+{%- if buttons is not defined %}{% set buttons = true %}{% endif -%}
 
-{% for address in addresses %}
-    {%- if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
+{% for address in addresses -%}
+    {%- if loop.index0 % 2 == 0 %}<div class="row">{% endif -%}
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-body">
@@ -67,5 +67,5 @@
             {%- endif -%}
         </div>
     </div>
-    {%- if (loop.index0 % 2 == 1) or loop.last %}</div>{% endif %}
-{% endfor %}
+    {%- if (loop.index0 % 2 == 1) or loop.last %}</div>{% endif -%}
+{%- endfor -%}

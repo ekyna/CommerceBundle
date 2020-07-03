@@ -20,7 +20,7 @@ ekyna_commerce_quote_payment_admin_action:
     requirements:
         quoteId: \d+
         quotePaymentId: \d+
-        action: accept|cancel|hang|reject|refund
+        action: cancel|authorize|accept|hang|reject|refund
 
 ekyna_commerce_quote_payment_admin_remove:
     path: /{quotePaymentId}/remove

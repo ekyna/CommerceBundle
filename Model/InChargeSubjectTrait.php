@@ -22,7 +22,7 @@ trait InChargeSubjectTrait
      *
      * @return UserInterface
      */
-    public function getInCharge()
+    public function getInCharge(): ?UserInterface
     {
         return $this->inCharge;
     }
@@ -34,7 +34,7 @@ trait InChargeSubjectTrait
      *
      * @return $this|InChargeSubjectInterface
      */
-    public function setInCharge(UserInterface $inCharge = null)
+    public function setInCharge(UserInterface $inCharge = null): InChargeSubjectInterface
     {
         $this->inCharge = $inCharge;
 

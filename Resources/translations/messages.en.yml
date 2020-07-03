@@ -141,6 +141,8 @@ ekyna_commerce:
                 success: Your information has been saved.
         balance:
             title: Account balance
+        welcome:
+            title: Hello %identity%
         state:
             title: My account status
         order:
@@ -874,6 +876,11 @@ ekyna_commerce:
                     Your order as been registered et will be processed as soon as possible.
             quote_remind:
                 label: Near expiration quote reminder
+            payment_authorized:
+                label: (Offline) payment authorized
+                subject: Order %number% payment
+                message: >
+                    We have received the payment of your order.
             payment_captured:
                 label: (Offline) payment accepted
                 subject: Order %number% payment
@@ -1055,6 +1062,9 @@ ekyna_commerce:
             pending:
                 label: Pending
                 message: Your payment is pending.
+            authorized:
+                label: Authorized
+                message: Your payment has been authorized.
             captured:
                 label: Accepted
                 message: Your payment has been accepted.
@@ -1073,9 +1083,6 @@ ekyna_commerce:
             payedout: # TODO
                 label: Provided funds
                 message: Funds has been provided.
-            authorized:
-                label: Authorized
-                message: Your payment has been authorized.
             expired:
                 label: Expired
                 message: Your payment is expired.
@@ -1095,6 +1102,9 @@ ekyna_commerce:
             hang:
                 label: Hang
                 confirm: Are you sure you want to mark this payment as "PENDING" ?
+            authorize:
+                label: Authorize
+                confirm: Are you sure you want to AUTHORIZE this payment ?
             accept:
                 label: Accept
                 confirm: Are you sure you want to ACCEPT this payment ?
@@ -1403,6 +1413,7 @@ ekyna_commerce:
             width: Width
             height: Height
             margin: Margins
+            download: Force download
 
     shipment:
         label:

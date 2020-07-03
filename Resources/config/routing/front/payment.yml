@@ -37,3 +37,8 @@ ekyna_commerce_payment_hang:
     path: /hang/{payum_token}
     controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\HangController::hang
     options: { i18n: false }
+
+ekyna_commerce_payment_reject:
+    path: /reject/{payum_token}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Payment\RejectController::reject
+    options: { i18n: false }

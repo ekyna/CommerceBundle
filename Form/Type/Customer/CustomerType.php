@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
+use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
@@ -110,6 +111,10 @@ class CustomerType extends ResourceFormType
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,
+            ])
+            ->add('tags', TagChoiceType::class, [
+                'required' => false,
+                'multiple' => true,
             ]);
 
         if ($this->features->isEnabled(Features::CUSTOMER_GRAPHIC)) {

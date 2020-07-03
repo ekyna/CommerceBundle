@@ -16,6 +16,11 @@ ekyna_commerce_account_address_add: /mon-compte/adresses/ajouter
 ekyna_commerce_account_address_edit: /mon-compte/adresses/modifier/{addressId}
 ekyna_commerce_account_address_remove: /mon-compte/adresses/supprimer/{addressId}
 
+ekyna_commerce_account_contact_index: /mon-compte/contacts
+ekyna_commerce_account_contact_add: /mon-compte/contacts/ajouter
+ekyna_commerce_account_contact_edit: /mon-compte/contacts/modifier/{contactId}
+ekyna_commerce_account_contact_remove: /mon-compte/contacts/supprimer/{contactId}
+
 ekyna_commerce_account_quote_index: /mon-compte/devis
 ekyna_commerce_account_quote_show: /mon-compte/devis/{number}
 ekyna_commerce_account_quote_voucher: /mon-compte/devis/{number}/bon-achat

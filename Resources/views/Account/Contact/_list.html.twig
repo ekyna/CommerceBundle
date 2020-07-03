@@ -1,0 +1,30 @@
+<h3>{{ title|default('ekyna_commerce.account.contact.title')|trans }}</h3>
+
+<hr>
+
+{% if buttons is not defined %}{% set buttons = true %}{% endif %}
+
+{% for contact in contacts %}
+    {%- if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p>{{ contact|customer_contact }}</p>
+                {% set customer = contact.customer %}
+            </div>
+            {%- if buttons -%}
+            <div class="panel-footer">
+                <a href="{{ path('ekyna_commerce_account_contact_edit', {'contactId': contact.id}) }}"
+                   class="btn btn-xs btn-default">
+                    {{- 'ekyna_core.button.edit'|trans -}}
+                </a>
+                <a href="{{ path('ekyna_commerce_account_contact_remove', {'contactId': contact.id}) }}"
+                   class="btn btn-xs btn-default pull-right">
+                    {{- 'ekyna_core.button.remove'|trans -}}
+                </a>
+            </div>
+            {%- endif -%}
+        </div>
+    </div>
+    {%- if (loop.index0 % 2 == 1) or loop.last %}</div>{% endif %}
+{% endfor %}
