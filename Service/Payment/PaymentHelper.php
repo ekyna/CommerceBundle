@@ -97,7 +97,7 @@ class PaymentHelper
         $method = $payment->getMethod();
 
         $key = sprintf(
-            'gateway_%s_%s_%_transitions',
+            'gateway_%s_%s_%s_transitions',
             $method->getGatewayName(),
             $payment->getState(),
             $admin ? 'admin' : 'customer'
