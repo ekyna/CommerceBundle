@@ -96,7 +96,12 @@ class PaymentHelper
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
         $method = $payment->getMethod();
 
-        $key = sprintf('gateway_%s_%_transitions', $method->getGatewayName(), $admin ? 'admin' : 'customer');
+        $key = sprintf(
+            'gateway_%s_%s_%_transitions',
+            $method->getGatewayName(),
+            $payment->getState(),
+            $admin ? 'admin' : 'customer'
+        );
 
         if (!$this->debug && $this->cache->hasItem($key)) {
             try {
