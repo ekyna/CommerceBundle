@@ -5,9 +5,12 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
 use Ekyna\Component\Commerce\Exception\PdfException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer;
+use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +60,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         $isXhr = $request->isXmlHttpRequest();
 
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        /** @var InvoiceInterface $invoice */
         $invoice = $this->createNew($context);
         $context->addResource('resource', $invoice);
 
@@ -136,7 +139,7 @@ class SaleInvoiceController extends AbstractSaleController
         $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource($resourceName);
 
         if ($invoice->getShipment()) {
@@ -160,7 +163,7 @@ class SaleInvoiceController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+            /** @var SaleInterface $sale */
             $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
             // TODO use ResourceManager
@@ -211,7 +214,7 @@ class SaleInvoiceController extends AbstractSaleController
         $context = $this->loadContext($request);
 
         $resourceName = $this->config->getResourceName();
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource($resourceName);
 
         $this->isGranted('DELETE', $invoice);
@@ -229,7 +232,7 @@ class SaleInvoiceController extends AbstractSaleController
             }
 
             if (!$event->hasErrors()) {
-                /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+                /** @var SaleInterface $sale */
                 $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
                 if ($isXhr) {
@@ -270,6 +273,54 @@ class SaleInvoiceController extends AbstractSaleController
     }
 
     /**
+     * Archives the invoice.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function archiveAction(Request $request): Response
+    {
+        $context = $this->loadContext($request);
+
+        /** @var InvoiceInterface $invoice */
+        $invoice = $context->getResource();
+
+        if ($isXhr = $request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException('Not yet supported.');
+        }
+
+        $this->isGranted('EDIT', $invoice);
+
+        /** @var SaleInterface $sale */
+        $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+
+        $redirect = $this->generateResourcePath($sale);
+
+        try {
+            $event = $this->archive($invoice);
+        } catch (PdfException $e) {
+            $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+            return $this->redirect($redirect);
+        }
+
+        if ($event->hasErrors()) {
+            $event->toFlashes($this->getFlashBag());
+
+            return $this->redirect($redirect);
+        }
+
+        if ($isXhr) {
+            return $this->buildXhrSaleViewResponse($sale);
+        } else {
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        return $this->redirect($redirect);
+    }
+
+    /**
      * Recalculate action.
      *
      * @param Request $request
@@ -280,10 +331,10 @@ class SaleInvoiceController extends AbstractSaleController
     {
         $context = $this->loadContext($request);
 
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource();
 
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
         $this->isGranted('EDIT', $invoice);
@@ -294,47 +345,15 @@ class SaleInvoiceController extends AbstractSaleController
 
         $redirect = $this->generateResourcePath($sale);
 
-        // Create an archived version of this invoice before recalculation
-        $renderer = $this
-            ->get(RendererFactory::class)
-            ->createRenderer($invoice);
-
+        // Create an archived copy of this invoice before recalculation
         try {
-            $path = $renderer->create();
+            $event = $this->archive($invoice);
         } catch (PdfException $e) {
             $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
 
             return $this->redirect($redirect);
         }
 
-        $this->getTranslator()->trans(DocumentTypes::getLabel($invoice->getType()));
-
-        /** @var \Ekyna\Component\Resource\Configuration\ConfigurationInterface $config */
-        $config = $this->get(str_replace('invoice', 'attachment', $this->config->getResourceId()) . '.configuration');
-        /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepository $repository */
-        $repository = $this->get($config->getServiceKey('repository'));
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface $attachment */
-        $attachment = $repository->createNew();
-
-        $title = sprintf(
-            '[archived] %s %s',
-            $this->getTranslator()->trans(DocumentTypes::getLabel($invoice->getType())),
-            $invoice->getNumber()
-        );
-
-        $filename = sprintf('%s-%s.pdf', $invoice->getType(), $invoice->getNumber());
-
-        $attachment
-            ->setSale($sale)
-            ->setTitle($title)
-            ->setFile(new File($path))
-            ->setRename($filename)
-            ->setInternal(true);
-
-        /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $operator */
-        $operator = $this->get($config->getServiceKey('operator'));
-
-        $event = $operator->create($attachment);
         if ($event->hasErrors()) {
             $event->toFlashes($this->getFlashBag());
 
@@ -372,9 +391,9 @@ class SaleInvoiceController extends AbstractSaleController
     {
         $context = $this->loadContext($request);
 
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource();
-        /** @var \Ekyna\Component\Commerce\Common\Model\SaleInterface $sale */
+        /** @var SaleInterface $sale */
         $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
 
         $this->isGranted('EDIT', $invoice);
@@ -411,7 +430,7 @@ class SaleInvoiceController extends AbstractSaleController
     {
         $context = $this->loadContext($request);
 
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource();
 
         $this->isGranted('VIEW', $invoice);
@@ -461,7 +480,7 @@ class SaleInvoiceController extends AbstractSaleController
         }
 
         $context = $this->loadContext($request);
-        /** @var \Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface $invoice */
+        /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource();
 
         $this->isGranted('VIEW', $invoice);
@@ -491,5 +510,50 @@ class SaleInvoiceController extends AbstractSaleController
         $response->setContent($content);
 
         return $response;
+    }
+
+    /**
+     * Archives the invoice.
+     *
+     * @param InvoiceInterface $invoice
+     *
+     * @return ResourceEventInterface
+     * @throws PdfException
+     */
+    private function archive(InvoiceInterface $invoice): ResourceEventInterface
+    {
+        $path = $this
+            ->get(RendererFactory::class)
+            ->createRenderer($invoice)
+            ->create();
+
+        $this->getTranslator()->trans(DocumentTypes::getLabel($invoice->getType()));
+
+        /** @var \Ekyna\Component\Resource\Configuration\ConfigurationInterface $config */
+        $config = $this->get(str_replace('invoice', 'attachment', $this->config->getResourceId()) . '.configuration');
+        /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepository $repository */
+        $repository = $this->get($config->getServiceKey('repository'));
+        /** @var \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface $attachment */
+        $attachment = $repository->createNew();
+
+        $title = sprintf(
+            '[archived] %s %s',
+            $this->getTranslator()->trans(DocumentTypes::getLabel($invoice->getType())),
+            $invoice->getNumber()
+        );
+
+        $filename = sprintf('%s-%s.pdf', $invoice->getType(), $invoice->getNumber());
+
+        $attachment
+            ->setSale($invoice->getSale())
+            ->setTitle($title)
+            ->setFile(new File($path))
+            ->setRename($filename)
+            ->setInternal(true);
+
+        /** @var \Ekyna\Component\Resource\Operator\ResourceOperatorInterface $operator */
+        $operator = $this->get($config->getServiceKey('operator'));
+
+        return $operator->create($attachment);
     }
 }

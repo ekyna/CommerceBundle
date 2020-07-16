@@ -338,7 +338,6 @@ ekyna_commerce:
             new: New attachment
             edit: Edit the attachment
             remove: Remove the attachment
-            archive: Archive
             update: Update
         alert:
             no_item: Not attachment configured

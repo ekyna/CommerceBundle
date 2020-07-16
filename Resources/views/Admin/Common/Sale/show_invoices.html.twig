@@ -72,6 +72,12 @@
                        target="_blank">
                         <span class="fa fa-download"></span>
                     </a>
+                    <a href="{{ admin_resource_path(invoice, 'archive') }}"
+                       id="{{ invoiceId }}_archive"
+                       class="btn btn-default btn-xs"
+                       title="{{ 'ekyna_core.button.archive'|trans }}">
+                        <span class="fa fa-archive"></span>
+                    </a>
                     <a href="{{ admin_resource_path(invoice, 'recalculate') }}"
                        id="{{ invoiceId }}_recalculate"
                        class="btn btn-warning btn-xs"

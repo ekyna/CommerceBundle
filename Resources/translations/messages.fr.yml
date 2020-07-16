@@ -351,7 +351,6 @@ ekyna_commerce:
             new: Nouvelle pièce jointe
             edit: Modifier la pièce jointe
             remove: Supprimer la pièce jointe
-            archive: Archiver
             update: Ré-éditer
         alert:
             no_item: Aucune pièce jointe configuré

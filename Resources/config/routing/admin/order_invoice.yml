@@ -21,6 +21,15 @@ ekyna_commerce_order_invoice_admin_remove:
         orderId: \d+
         orderInvoiceId: \d+
 
+ekyna_commerce_order_invoice_admin_archive:
+    path: /{orderInvoiceId}/archive
+    defaults:
+        _controller: "ekyna_commerce.order_invoice.controller:archiveAction"
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        orderInvoiceId: \d+
+
 ekyna_commerce_order_invoice_admin_recalculate:
     path: /{orderInvoiceId}/recalculate
     defaults:
