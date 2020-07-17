@@ -29,7 +29,7 @@ class NotifyModelType extends ResourceFormType
         $builder
             ->add('type', Type\ChoiceType::class, [
                 'label'   => 'ekyna_core.field.type',
-                'choices' => BTypes::getChoices([CTypes::MANUAL]),
+                'choices' => BTypes::getChoices(),
             ])
             ->add('paymentMessage', Type\ChoiceType::class, [
                 'label'       => 'ekyna_commerce.notify.field.payment_message',

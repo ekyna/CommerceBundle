@@ -30,6 +30,10 @@ ekyna_commerce:
         factory_name: Passerelle
         internal: Interne
         revenue: Chiffre d'affaire
+        template: Modèle
+
+    placeholder:
+        template: Choisissez un modèle
 
     notice:
         exchange: >
@@ -1800,9 +1804,6 @@ ekyna_commerce:
             tracking_urls: Tracking
             send_email: Envoyer l'email au fournisseur
             send_labels: Envoyer les étiquettes
-            template: Modèle
-        placeholder:
-            template: Choisissez un modèle
         alert:
             no_item: Aucune commande fournisseur configuré
             empty: Aucun article configuré

@@ -64,6 +64,7 @@ ekyna_commerce:
         pick_at_least_one_recipient: Please pick at least one recipient.
         is_empty: Please fill in the message.
     notify_model:
+        subject_required: Subject is required for 'manual' type.
         duplicate_type: A template already exist for this type.
     order:
         sample_with_payments_or_invoices: A sample order cannot have payments or invoices.

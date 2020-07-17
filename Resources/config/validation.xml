@@ -100,10 +100,7 @@
                 </option>
             </constraint>
         </property>
-        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
-            <option name="fields">type</option>
-            <option name="message">ekyna_commerce.notify_model.duplicate_type</option>
-        </constraint>
+        <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\NotifyModel"/>
         <property name="translations">
             <constraint name="Valid"/>
         </property>

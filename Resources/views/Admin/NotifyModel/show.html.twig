@@ -1,6 +1,13 @@
 {% extends '@EkynaAdmin/Entity/Default/show.html.twig' %}
 
-{% block main %}
+{% block page_title %}{{ resource|trans }} - {{ parent() }}{% endblock page_title %}
+
+{% block title -%}
+    {{ admin_resource_pin(resource) }}
+    <h1>{{ (trans_prefix ~ '.header.show')|trans({'%name%': resource|trans})|raw }}</h1>
+{%- endblock title %}
+
+{% block main -%}
 <div class="actions">
     {{ ui_button('ekyna_commerce.notify_model.button.test', {
         'theme': 'primary',
@@ -93,4 +100,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{%- endblock %}

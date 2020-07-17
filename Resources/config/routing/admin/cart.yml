@@ -103,6 +103,16 @@ ekyna_commerce_cart_admin_notify:
     requirements:
         cartId: \d+
 
+ekyna_commerce_cart_admin_notify_model:
+    path: /{cartId}/notify-model/{id}
+    defaults: { _controller: "ekyna_commerce.cart.controller:notifyModelAction" }
+    methods: [GET]
+    requirements:
+        cartId: \d+
+        id: \d+
+    options:
+        expose: true
+
 ekyna_commerce_cart_admin_export:
     path: /{cartId}/export.{_format}
     defaults: { _controller: "ekyna_commerce.cart.controller:exportAction" }

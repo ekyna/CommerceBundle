@@ -125,6 +125,16 @@ ekyna_commerce_order_admin_notify:
     requirements:
         orderId: \d+
 
+ekyna_commerce_order_admin_notify_model:
+    path: /{orderId}/notify-model/{id}
+    defaults: { _controller: "ekyna_commerce.order.controller:notifyModelAction" }
+    methods: [GET]
+    requirements:
+        orderId: \d+
+        id: \d+
+    options:
+        expose: true
+
 ekyna_commerce_order_admin_export:
     path: /{orderId}/export.{_format}
     defaults: { _controller: "ekyna_commerce.order.controller:exportAction" }

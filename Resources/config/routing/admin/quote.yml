@@ -103,6 +103,16 @@ ekyna_commerce_quote_admin_notify:
     requirements:
         quoteId: \d+
 
+ekyna_commerce_quote_admin_notify_model:
+    path: /{quoteId}/notify-model/{id}
+    defaults: { _controller: "ekyna_commerce.quote.controller:notifyModelAction" }
+    methods: [GET]
+    requirements:
+        quoteId: \d+
+        id: \d+
+    options:
+        expose: true
+
 ekyna_commerce_quote_admin_export:
     path: /{quoteId}/export/{_format}
     defaults: { _controller: "ekyna_commerce.quote.controller:exportAction" }

@@ -478,7 +478,7 @@ class SupplierOrderController extends ResourceController
             '%date%'   => $order->getOrderedAt() ? $formatter->date($order->getOrderedAt()) : null,
         ];
 
-        $locale = $request->query->get('_locale', 'en');
+        $locale = $request->query->get('_locale', $this->getParameter('locale'));
 
         $translation = $template->translate($locale);
 

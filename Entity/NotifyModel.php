@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Entity;
 
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Resource\Model\AbstractTranslatable;
 
 /**
@@ -56,7 +57,11 @@ class NotifyModel extends AbstractTranslatable
      */
     public function __toString(): string
     {
-        return $this->type;
+        if ($this->type === NotificationTypes::MANUAL) {
+            return $this->getSubject();
+        }
+
+        return sprintf('ekyna_commerce.notify.type.%s.label', $this->type);
     }
 
     /**

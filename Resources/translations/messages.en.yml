@@ -30,6 +30,10 @@ ekyna_commerce:
         factory_name: Gateway
         internal: Internal
         revenue: Revenue
+        template: Template
+
+    placeholder:
+        template: Pick a template
 
     notice:
         exchange: >
@@ -1765,9 +1769,6 @@ ekyna_commerce:
             tracking_urls: Tracking
             send_email: Send email to supplier
             send_labels: Attach products labels
-            template: Template
-        placeholder:
-            template: Pick a template
         alert:
             no_item: No supplier order configured
             empty: No item configured

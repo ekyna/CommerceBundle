@@ -470,6 +470,59 @@
 {%- endblock ekyna_commerce_method_choice_widget -%}
 
 
+{%- block ekyna_commerce_notify_widget -%}
+    {{ form_row(form.from) }}
+    {{ form_row(form.recipients) }}
+    {{ form_row(form.extraRecipients) }}
+    {{ form_row(form.copies) }}
+    {{ form_row(form.extraCopies) }}
+    <hr>
+    {% if form.invoices is defined -%}
+        {{ form_row(form.invoices) }}
+    {%- endif %}
+    {% if form.shipments is defined -%}
+        {{ form_row(form.shipments) }}
+    {%- endif %}
+    {% if form.attachments is defined -%}
+        {{ form_row(form.attachments) }}
+    {%- endif %}
+    {% if form.paymentMessage is defined -%}
+        {{ form_row(form.paymentMessage) }}
+    {%- endif %}
+    {% if form.shipmentMessage is defined -%}
+        {{ form_row(form.shipmentMessage) }}
+    {%- endif %}
+    {% if form.includeView is defined -%}
+        {{ form_row(form.includeView) }}
+    {% elseif form.includeForm is defined -%}
+        {{ form_row(form.includeForm) }}
+    {%- endif %}
+    <hr>
+    {% if form.model is defined -%}
+        {{ form_row(form.model) }}
+    {%- elseif form.template is defined -%}
+        {{ form_row(form.template) }}
+    {%- endif %}
+    {{ form_row(form.subject) }}
+    {{ form_row(form.customMessage) }}
+    {{ form_rest(form) }}
+{%- endblock ekyna_commerce_notify_widget -%}
+
+
+{%- block ekyna_commerce_notify_model_choice_widget -%}
+    <div class="row commerce-notify-model"
+         data-sale-id="{{ form.vars.sale_id }}"
+         data-sale-type="{{ form.vars.sale_type }}">
+        <div class="col-md-9">
+            {{- form_widget(form.model) -}}
+        </div>
+        <div class="col-md-3">
+            {{- form_widget(form.locale) -}}
+        </div>
+    </div>
+{%- endblock ekyna_commerce_notify_model_choice_widget -%}
+
+
 {%- block ekyna_commerce_sale_address_widget -%}
     <div class="commerce-sale-address"{{ block('widget_container_attributes') }}>
         {%- if form.sameAddress is defined -%}
@@ -1229,10 +1282,10 @@
 
 {%- block ekyna_commerce_supplier_template_choice_widget -%}
     <div class="row commerce-supplier-template" data-order-id='{{ form.vars.order_id }}'>
-        <div class="col-md-8">
+        <div class="col-md-9">
             {{- form_widget(form.template) -}}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             {{- form_widget(form.locale) -}}
         </div>
     </div>

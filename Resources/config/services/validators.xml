@@ -19,6 +19,13 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <!-- Notify model method -->
+        <service id="Ekyna\Bundle\CommerceBundle\Validator\Constraints\NotifyModelValidator">
+            <argument type="service" id="ekyna_commerce.notify_model.repository"/>
+            <argument>%locale%</argument>
+            <tag name="validator.constraint_validator" />
+        </service>
+
         <!-- Payment -->
         <service id="ekyna_commerce.payment.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\PaymentValidator">

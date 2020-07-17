@@ -57,9 +57,10 @@ class SupplierTemplateChoiceType extends AbstractType
 
         $builder
             ->add('template', EntityType::class, [
-                'label'       => 'ekyna_commerce.supplier_order.field.template',
-                'placeholder' => 'ekyna_commerce.supplier_order.placeholder.template',
+                'label'       => 'ekyna_commerce.field.template',
+                'placeholder' => 'ekyna_commerce.placeholder.template',
                 'class'       => $this->templateClass,
+                'required'    => false,
                 'select2'     => false,
                 'attr'        => [
                     'class' => 'template-choice',

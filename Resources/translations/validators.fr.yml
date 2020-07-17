@@ -66,6 +66,7 @@ ekyna_commerce:
         pick_at_least_one_recipient: Veuillez choisir ou saisir au moins un destinataire.
         is_empty: Veuillez saisir un message.
     notify_model:
+        subject_required: Le sujet est requis pour les modèles de type 'manuel'.
         duplicate_type: Un modèle existe déjà pour ce type.
     order:
         sample_with_payments_or_invoices: Une commande échantillon ne peut avoir de paiement ou de facture.

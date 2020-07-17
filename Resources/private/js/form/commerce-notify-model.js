@@ -5,28 +5,32 @@ define(['jquery', 'routing', 'tinymce'], function ($, router) {
         throw 'Tinymce is not available.';
     }
 
+
     /**
-     * Supplier order template widget
+     * Notify model choice widget
      */
-    $.fn.supplierOrderTemplateWidget = function () {
+    $.fn.notifyModelChoiceWidget = function () {
 
         this.each(function () {
             var $this = $(this),
                 $form = $this.closest('form'),
-                $template = $this.find('.template-choice'),
+                $model = $this.find('.model-choice'),
                 $locale = $this.find('.locale-choice'),
                 $subject = $form.find('.notify-subject'),
-                $message = $form.find('.notify-message');
+                $message = $form.find('.notify-message'),
+                type = $this.data('sale-type');
 
             var editor, id = $message.attr('id');
 
             $this.on('change', 'select', function () {
+                var parameters = {
+                    'id': $model.val(),
+                    '_locale': $locale.val()
+                };
+                parameters[type + 'Id'] = $this.data('sale-id');
+
                 $.getJSON(
-                    router.generate('ekyna_commerce_supplier_order_admin_template', {
-                        'supplierOrderId': $this.data('order-id'),
-                        'id': $template.val(),
-                        '_locale': $locale.val()
-                    }),
+                    router.generate('ekyna_commerce_' + type + '_admin_notify_model', parameters),
                     function (data) {
                         if (data.hasOwnProperty('subject')) {
                             $subject.val(data.subject);
@@ -49,7 +53,7 @@ define(['jquery', 'routing', 'tinymce'], function ($, router) {
 
     return {
         init: function ($element) {
-            $element.supplierOrderTemplateWidget();
+            $element.notifyModelChoiceWidget();
         }
     }
 });

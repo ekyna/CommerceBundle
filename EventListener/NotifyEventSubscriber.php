@@ -122,55 +122,52 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $isManual = $notify->getType() === NotificationTypes::MANUAL;
+
         // Sender
         $from = $this->recipientHelper->createWebsiteRecipient();
-        if ($notify->getType() === NotificationTypes::MANUAL) {
-            if ($recipient = $this->recipientHelper->createInChargeRecipient($sale)) {
-                $from = $recipient;
-            }
+        if ($isManual && ($recipient = $this->recipientHelper->createInChargeRecipient($sale))) {
+            $from = $recipient;
         }
         $notify->setFrom($from);
 
         // Recipient
-        if ($customer = $sale->getCustomer()) {
-            if (
-                NotificationTypes::MANUAL === $notify->getType()
-                || in_array($notify->getType(), $customer->getNotifications(), true)
-            ) {
-                $notify->addRecipient($this->recipientHelper->createRecipient($customer, Recipient::TYPE_CUSTOMER));
+        if (!$customer = $sale->getCustomer()) {
+            $notify->addRecipient($this->recipientHelper->createRecipient($sale, Recipient::TYPE_CUSTOMER));
+
+            return;
+        }
+
+        if ($isManual || in_array($notify->getType(), $customer->getNotifications(), true)) {
+            $notify->addRecipient($this->recipientHelper->createRecipient($customer, Recipient::TYPE_CUSTOMER));
+        }
+
+        if ($isManual) {
+            return;
+        }
+
+        foreach ($customer->getContacts() as $contact) {
+            if (!in_array($notify->getType(), $contact->getNotifications(), true)) {
+                continue;
             }
 
-            foreach ($customer->getContacts() as $contact) {
-                if (!in_array($notify->getType(), $contact->getNotifications(), true)) {
-                    continue;
-                }
+            $notify->addRecipient($this->recipientHelper->createRecipient($contact, Recipient::TYPE_CONTACT));
+            $notify->setUnsafe(true);
+        }
 
-                $notify->addRecipient($this->recipientHelper->createRecipient($contact, Recipient::TYPE_CUSTOMER));
-                $notify->setUnsafe(true);
-            }
+        if (!$sale instanceof OrderInterface) {
+            return;
+        }
 
-            if (!$sale instanceof OrderInterface) {
-                return;
-            }
+        if (null === $origin = $sale->getOriginCustomer()) {
+            return;
+        }
 
-            if (null === $origin = $sale->getOriginCustomer()) {
-                return;
-            }
-
-            $originNotifyTypes = [
-                NotificationTypes::ORDER_ACCEPTED,
-                NotificationTypes::SHIPMENT_COMPLETE,
-                NotificationTypes::SHIPMENT_PARTIAL,
-            ];
-            if (!in_array($notify->getType(), $originNotifyTypes, true)) {
-                return;
-            }
-
+        if (in_array($notify->getType(), $origin->getNotifications(), true)) {
             $notify->addRecipient($this->recipientHelper->createRecipient($origin, Recipient::TYPE_SALESMAN));
             $notify->setUnsafe(true);
-        } else {
-            $notify->addRecipient($this->recipientHelper->createRecipient($sale, Recipient::TYPE_CUSTOMER));
         }
+
     }
 
     /**
@@ -348,15 +345,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      */
     public function finalize(NotifyEvent $event): void
     {
-        $notify = $event->getNotify();
-
-        // Abort if recipients is empty
-        if ($notify->getRecipients()->isEmpty()) {
-            $event->abort();
-
-            return;
-        }
-
+        $notify      = $event->getNotify();
         $type        = $notify->getType();
         $sale        = $this->getSaleFromEvent($event);
         $saleNumber  = $sale ? $sale->getNumber() : '';
@@ -422,6 +411,10 @@ class NotifyEventSubscriber implements EventSubscriberInterface
      */
     protected function getModel(Notify $notify): ?NotifyModel
     {
+        if ($notify->getType() === NotificationTypes::MANUAL) {
+            return null;
+        }
+
         $criteria = ['type' => $notify->getType()];
 
         if (!$notify->isTest()) {

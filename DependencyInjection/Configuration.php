@@ -817,9 +817,11 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
             ->variableNode('templates')->defaultValue([
-                '_form.html' => '@EkynaCommerce/Admin/NotifyModel/_form.html',
-                'show.html'  => '@EkynaCommerce/Admin/NotifyModel/show.html',
-                'test.html'  => '@EkynaCommerce/Admin/NotifyModel/test.html',
+                '_form.html'  => '@EkynaCommerce/Admin/NotifyModel/_form.html',
+                'show.html'   => '@EkynaCommerce/Admin/NotifyModel/show.html',
+                'edit.html'   => '@EkynaCommerce/Admin/NotifyModel/edit.html',
+                'remove.html' => '@EkynaCommerce/Admin/NotifyModel/remove.html',
+                'test.html'   => '@EkynaCommerce/Admin/NotifyModel/test.html',
             ])->end()
             ->scalarNode('entity')->defaultValue('Ekyna\Bundle\CommerceBundle\Entity\NotifyModel')->end()
             ->scalarNode('controller')->defaultValue('Ekyna\Bundle\CommerceBundle\Controller\Admin\NotifyModelController')->end()

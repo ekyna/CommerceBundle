@@ -306,6 +306,9 @@ class NotifyType extends AbstractType
                     'align_with_widget' => true,
                     'help_text'         => 'ekyna_commerce.notify_model.help.include_view',
                 ],
+            ])
+            ->add('model', NotifyModelChoiceType::class, [
+                'sale' => $sale,
             ]);
     }
 

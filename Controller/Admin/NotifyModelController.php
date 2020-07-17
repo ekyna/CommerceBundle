@@ -42,7 +42,7 @@ class NotifyModelController extends ResourceController
         /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $resource */
         $resource = $context->getResource($resourceName);
 
-        $this->isGranted('DELETE', $resource);
+        $this->isGranted('EDIT', $resource);
 
         if ($request->isXmlHttpRequest()) {
             throw $this->createNotFoundException('XHR not yet supported');

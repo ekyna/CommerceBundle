@@ -8,6 +8,7 @@ use Ekyna\Bundle\AdminBundle\Controller\Resource\ToggleableTrait;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleTransformType;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
@@ -37,6 +38,7 @@ use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Stream;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -130,7 +132,7 @@ class SaleController extends AbstractSaleController
         $response->setVary(['Accept', 'Accept-Encoding']);
         $response->setExpires(new \DateTime('+3 min'));
 
-        $html = false;
+        $html   = false;
         $accept = $request->getAcceptableContentTypes();
 
         if (in_array('application/json', $accept, true)) {
@@ -175,7 +177,7 @@ class SaleController extends AbstractSaleController
         $this->isGranted('EDIT', $sale);
 
         $isXhr = $request->isXmlHttpRequest();
-        $form = $this->createShipmentEditForm($sale, !$isXhr);
+        $form  = $this->createShipmentEditForm($sale, !$isXhr);
 
         $form->handleRequest($request);
 
@@ -323,7 +325,7 @@ class SaleController extends AbstractSaleController
 
         /** @var \Ekyna\Component\Commerce\Common\Resolver\StateResolverInterface $resolver */
         $resolver = $this->get($this->config->getServiceKey('state_resolver'));
-        $changed |= $resolver->resolve($sale);
+        $changed  |= $resolver->resolve($sale);
 
         if ($changed) {
             $event = $this->getOperator()->update($sale);
@@ -385,7 +387,7 @@ class SaleController extends AbstractSaleController
             throw $this->createNotFoundException('Not yet supported.');
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sourceSale */
         $sourceSale = $context->getResource($resourceName);
@@ -455,7 +457,7 @@ class SaleController extends AbstractSaleController
             throw $this->createNotFoundException('Not yet supported.');
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sourceSale */
         $sourceSale = $context->getResource($resourceName);
@@ -539,7 +541,7 @@ class SaleController extends AbstractSaleController
             throw $this->createNotFoundException('Not yet supported.');
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
@@ -576,6 +578,74 @@ class SaleController extends AbstractSaleController
     }
 
     /**
+     * Notify model action.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function notifyModelAction(Request $request): Response
+    {
+        $context = $this->loadContext($request);
+
+        /** @var SaleInterface $sale */
+        $sale = $context->getResource();
+
+        $this->isGranted('VIEW', $sale);
+
+        /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
+        $model = $this
+            ->get('ekyna_commerce.notify_model.repository')
+            ->find($request->attributes->get('id'));
+        if (!$model) {
+            throw $this->createNotFoundException("Model not found");
+        }
+
+        if ($sale instanceof OrderInterface) {
+            $saleType = 'order';
+        } elseif ($sale instanceof QuoteInterface) {
+            $saleType = 'quote';
+        } elseif ($sale instanceof CartInterface) {
+            $saleType = 'cart';
+        } else {
+            throw new InvalidArgumentException("Unexpected sale class.");
+        }
+
+        $replacements = [
+            '%type%'   => $saleType,
+            '%number%' => $sale->getNumber(),
+        ];
+
+        $modelType = $model->getType();
+        $locale = $request->query->get('_locale', $this->getParameter('locale'));
+
+        $translation = $model->translate($locale);
+
+        if (!empty($subject = $translation->getSubject())) {
+            $subject = strtr($translation->getSubject(), $replacements);
+        } elseif ($modelType !== NotificationTypes::MANUAL) {
+            $trans = sprintf('ekyna_commerce.notify.type.%s.subject', $modelType);
+            if ($trans === $subject = $this->getTranslator()->trans($trans, $replacements, null, $locale)) {
+                $subject = '';
+            }
+        }
+
+        if (!empty($message = $translation->getMessage())) {
+            $message = strtr($translation->getMessage(), $replacements);
+        } elseif ($modelType !== NotificationTypes::MANUAL) {
+            $trans = sprintf('ekyna_commerce.notify.type.%s.message', $modelType);
+            if ($trans === $message = $this->getTranslator()->trans($trans, $replacements, null, $locale)) {
+                $message = '';
+            }
+        }
+
+        return new JsonResponse([
+            'subject' => $subject,
+            'message' => $message,
+        ]);
+    }
+
+    /**
      * Export (single) action.
      *
      * @param Request $request
@@ -584,7 +654,7 @@ class SaleController extends AbstractSaleController
      */
     public function exportAction(Request $request): Response
     {
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
@@ -592,7 +662,7 @@ class SaleController extends AbstractSaleController
         $format = $request->getRequestFormat('csv');
         if ($format === 'csv') {
             $exporter = $this->get(SaleCsvExporter::class);
-        } elseif($format === 'xls') {
+        } elseif ($format === 'xls') {
             $exporter = $this->get(SaleXlsExporter::class);
         } else {
             throw new InvalidArgumentException("Unexpected format '$format'");
@@ -637,7 +707,7 @@ class SaleController extends AbstractSaleController
             throw $this->createNotFoundException("Not yet supported.");
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
@@ -671,7 +741,7 @@ class SaleController extends AbstractSaleController
             throw $this->createNotFoundException('Not supported.');
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
@@ -720,12 +790,12 @@ class SaleController extends AbstractSaleController
             throw $this->createNotFoundException('Not supported.');
         }
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
-        $type = $request->attributes->get('type');
+        $type      = $request->attributes->get('type');
         $available = SaleDocumentUtil::getSaleEditableDocumentTypes($sale);
         if (!in_array($type, $available, true)) {
             throw $this->createNotFoundException('Unsuppoerted type');
@@ -766,7 +836,7 @@ class SaleController extends AbstractSaleController
         $action = $this->generateResourcePath($sourceSale, 'transform', ['target' => $target]);
 
         $translator = $this->getTranslator();
-        $message = $translator->trans('ekyna_commerce.sale.confirm.transform', [
+        $message    = $translator->trans('ekyna_commerce.sale.confirm.transform', [
             '%target%' => $translator->trans('ekyna_commerce.' . $target . '.label.singular'),
         ]);
 
@@ -828,7 +898,7 @@ class SaleController extends AbstractSaleController
         ]);
 
         $translator = $this->getTranslator();
-        $message = $translator->trans('ekyna_commerce.sale.confirm.duplicate');
+        $message    = $translator->trans('ekyna_commerce.sale.confirm.duplicate');
 
         return $form
             ->add('confirm', Type\CheckboxType::class, [
