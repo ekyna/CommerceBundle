@@ -79,12 +79,12 @@
         {%- endif %}
         <dt>{{ 'ekyna_commerce.notification.label.plural'|trans }}</dt>
         <dd>
-            {% for type in contact.notifications -%}
+            {%- for type in contact.notifications -%}
                 {{ type|notify_type_label -}}
                 {% if not loop.last %}, {% endif -%}
-            {% else %}
+            {%- else -%}
                 <em>{{ 'ekyna_commerce.notification.alert.no_item'|trans }}</em>
-            {%- endfor %}
+            {%- endfor -%}
         </dd>
         {% if options.admin -%}
         <dt>{{ 'ekyna_core.field.description'|trans }}</dt>

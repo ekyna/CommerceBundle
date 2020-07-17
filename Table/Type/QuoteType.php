@@ -13,10 +13,8 @@ use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
-use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
-use Ekyna\Component\Table\View;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -137,80 +135,82 @@ class QuoteType extends ResourceTableType
             ]);
         }
 
-        if ($filters) {
-            $builder
-                ->addFilter('number', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.number',
-                    'position' => 10,
-                ])
-                ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
-                    'label'    => 'ekyna_core.field.created_at',
-                    'position' => 20,
-                    'time'     => false,
-                ])
-                ->addFilter('email', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.email',
-                    'position' => 30,
-                ])
-                ->addFilter('company', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.company',
-                    'position' => 31,
-                ])
-                ->addFilter('firstName', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.first_name',
-                    'position' => 32,
-                ])
-                ->addFilter('lastName', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.last_name',
-                    'position' => 33,
-                ])
-                ->addFilter('companyNumber', CType\Filter\TextType::class, [
-                    'label'         => 'ekyna_commerce.customer.field.company_number',
-                    'property_path' => 'customer.companyNumber',
-                    'position'      => 34,
-                ])
-                ->addFilter('customerGroup', ResourceType::class, [
-                    'resource' => 'ekyna_commerce.customer_group',
-                    'position' => 35,
-                ])
-                ->addFilter('title', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_core.field.title',
-                    'position' => 40,
-                ])
-                ->addFilter('voucherNumber', CType\Filter\TextType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.voucher_number',
-                    'position' => 45,
-                ])
-                ->addFilter('grandTotal', CType\Filter\NumberType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.ati_total',
-                    'position' => 50,
-                ])
-                ->addFilter('paidTotal', CType\Filter\NumberType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.paid_total',
-                    'position' => 60,
-                ])
-                ->addFilter('state', CType\Filter\ChoiceType::class, [
-                    'label'    => 'ekyna_commerce.field.status',
-                    'choices'  => Model\OrderStates::getChoices(),
-                    'position' => 70,
-                ])
-                ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
-                    'label'    => 'ekyna_commerce.sale.field.payment_state',
-                    'choices'  => Model\PaymentStates::getChoices(),
-                    'position' => 80,
-                ])
-                /*->addFilter('inCharge', Type\Filter\InChargeType::class, [
-                    'position' => 90,
-                ])*/
-                ->addFilter('tags', Type\Filter\SaleTagsType::class, [
-                    'label'    => 'ekyna_cms.tag.label.plural',
-                    'position' => 100,
-                ])
-                ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
-                    'label'    => 'Article',
-                    'position' => 150,
-                ]);
+        if (!$filters) {
+            return;
         }
+        $builder
+            ->addFilter('number', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.number',
+                'position' => 10,
+            ])
+            ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
+                'label'    => 'ekyna_core.field.created_at',
+                'position' => 20,
+                'time'     => false,
+            ])
+            ->addFilter('email', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.email',
+                'position' => 30,
+            ])
+            ->addFilter('company', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.company',
+                'position' => 31,
+            ])
+            ->addFilter('firstName', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.first_name',
+                'position' => 32,
+            ])
+            ->addFilter('lastName', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.last_name',
+                'position' => 33,
+            ])
+            ->addFilter('companyNumber', CType\Filter\TextType::class, [
+                'label'         => 'ekyna_commerce.customer.field.company_number',
+                'property_path' => 'customer.companyNumber',
+                'position'      => 34,
+            ])
+            ->addFilter('customerGroup', ResourceType::class, [
+                'resource' => 'ekyna_commerce.customer_group',
+                'position' => 35,
+            ])
+            ->addFilter('title', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_core.field.title',
+                'position' => 40,
+            ])
+            ->addFilter('voucherNumber', CType\Filter\TextType::class, [
+                'label'    => 'ekyna_commerce.sale.field.voucher_number',
+                'position' => 45,
+            ])
+            ->addFilter('grandTotal', CType\Filter\NumberType::class, [
+                'label'    => 'ekyna_commerce.sale.field.ati_total',
+                'position' => 50,
+            ])
+            ->addFilter('paidTotal', CType\Filter\NumberType::class, [
+                'label'    => 'ekyna_commerce.sale.field.paid_total',
+                'position' => 60,
+            ])
+            ->addFilter('state', CType\Filter\ChoiceType::class, [
+                'label'    => 'ekyna_commerce.field.status',
+                'choices'  => Model\OrderStates::getChoices(),
+                'position' => 70,
+            ])
+            ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
+                'label'    => 'ekyna_commerce.sale.field.payment_state',
+                'choices'  => Model\PaymentStates::getChoices(),
+                'position' => 80,
+            ])
+            /*->addFilter('inCharge', Type\Filter\InChargeType::class, [
+                'position' => 90,
+            ])*/
+            ->addFilter('tags', Type\Filter\SaleTagsType::class, [
+                'label'    => 'ekyna_cms.tag.label.plural',
+                'position' => 100,
+            ])
+            ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
+                'label'    => 'Article',
+                'position' => 150,
+            ]);
+
     }
 
     /**

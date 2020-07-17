@@ -714,7 +714,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('operator')->end()
                     ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerContactRepository')->end()
                     ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerContactType')->end()
-                    ->scalarNode('table')->end()
+                    ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\CustomerContactType')->end()
                     ->scalarNode('parent')->defaultValue('ekyna_commerce.customer')->end()
                     ->scalarNode('event')->end()
                 ->end()

@@ -18,6 +18,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
@@ -99,13 +100,16 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     public function buildRecipients(NotifyEvent $event): void
     {
         $notify = $event->getNotify();
-
         $source = $notify->getSource();
+
+        // Supplier order case
         if ($source instanceof SupplierOrderInterface) {
+            // Sender
             if (null !== $recipient = $this->recipientHelper->createCurrentUserRecipient()) {
                 $notify->setFrom($recipient);
             }
 
+            // Recipient
             if (null !== $supplier = $source->getSupplier()) {
                 $notify->addRecipient($this->recipientHelper->createRecipient($supplier, Recipient::TYPE_SUPPLIER));
             }
@@ -113,6 +117,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Sale case
         if (null === $sale = $this->getSaleFromEvent($event)) {
             return;
         }
@@ -128,14 +133,20 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         // Recipient
         if ($customer = $sale->getCustomer()) {
-            $notify->addRecipient($this->recipientHelper->createRecipient($customer, Recipient::TYPE_CUSTOMER));
+            if (
+                NotificationTypes::MANUAL === $notify->getType()
+                || in_array($notify->getType(), $customer->getNotifications(), true)
+            ) {
+                $notify->addRecipient($this->recipientHelper->createRecipient($customer, Recipient::TYPE_CUSTOMER));
+            }
 
             foreach ($customer->getContacts() as $contact) {
                 if (!in_array($notify->getType(), $contact->getNotifications(), true)) {
                     continue;
                 }
 
-                $notify->addCopy($this->recipientHelper->createRecipient($contact, Recipient::TYPE_CUSTOMER));
+                $notify->addRecipient($this->recipientHelper->createRecipient($contact, Recipient::TYPE_CUSTOMER));
+                $notify->setUnsafe(true);
             }
 
             if (!$sale instanceof OrderInterface) {
@@ -148,7 +159,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
             $originNotifyTypes = [
                 NotificationTypes::ORDER_ACCEPTED,
-                NotificationTypes::SHIPMENT_SHIPPED,
+                NotificationTypes::SHIPMENT_COMPLETE,
                 NotificationTypes::SHIPMENT_PARTIAL,
             ];
             if (!in_array($notify->getType(), $originNotifyTypes, true)) {
@@ -156,6 +167,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             }
 
             $notify->addRecipient($this->recipientHelper->createRecipient($origin, Recipient::TYPE_SALESMAN));
+            $notify->setUnsafe(true);
         } else {
             $notify->addRecipient($this->recipientHelper->createRecipient($sale, Recipient::TYPE_CUSTOMER));
         }
@@ -258,11 +270,16 @@ class NotifyEventSubscriber implements EventSubscriberInterface
                 break;
 
             case NotificationTypes::SHIPMENT_READY:
-            case NotificationTypes::SHIPMENT_SHIPPED:
+            case NotificationTypes::SHIPMENT_COMPLETE:
             case NotificationTypes::SHIPMENT_PARTIAL:
             case NotificationTypes::RETURN_PENDING:
             case NotificationTypes::RETURN_RECEIVED:
                 $this->buildShipmentContent($event, $model);
+                break;
+
+            case NotificationTypes::INVOICE_COMPLETE:
+            case NotificationTypes::INVOICE_PARTIAL:
+                $this->buildInvoiceContent($event, $model);
                 break;
         }
     }
@@ -280,7 +297,11 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($source instanceof PaymentInterface || $source instanceof ShipmentInterface) {
+        if (
+            $source instanceof PaymentInterface
+            || $source instanceof ShipmentInterface
+            || $source instanceof InvoiceInterface
+        ) {
             $source = $source->getSale();
         }
 
@@ -303,11 +324,17 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $after = $this
-            ->urlGenerator
-            ->generate($route, ['number' => $source->getNumber()]);
+        if (!($notify->isUnsafe() || NotificationTypes::MANUAL === $notify->getType())) {
+            $after = $this
+                ->urlGenerator
+                ->generate($route, ['number' => $source->getNumber()]);
 
-        $url = $this->loginTokenManager->generateLoginUrl($user, $after);
+            $url = $this->loginTokenManager->generateLoginUrl($user, $after);
+        } else {
+            $url = $this
+                ->urlGenerator
+                ->generate($route, ['number' => $source->getNumber()], UrlGeneratorInterface::ABSOLUTE_URL);
+        }
 
         $notify
             ->setButtonLabel($label)
@@ -322,6 +349,13 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     public function finalize(NotifyEvent $event): void
     {
         $notify = $event->getNotify();
+
+        // Abort if recipients is empty
+        if ($notify->getRecipients()->isEmpty()) {
+            $event->abort();
+
+            return;
+        }
 
         $type        = $notify->getType();
         $sale        = $this->getSaleFromEvent($event);
@@ -348,6 +382,8 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         // Abort if subject or message is empty
         if ($notify->isEmpty()) {
             $event->abort();
+
+            return;
         }
 
         // Add voucher number to subject and message
@@ -411,7 +447,11 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         if ($source instanceof SaleInterface) {
             return $source;
-        } elseif ($source instanceof PaymentInterface || $source instanceof ShipmentInterface) {
+        } elseif (
+            $source instanceof PaymentInterface
+            || $source instanceof ShipmentInterface
+            || $source instanceof InvoiceInterface
+        ) {
             return $source->getSale();
         }
 
@@ -572,6 +612,54 @@ class NotifyEventSubscriber implements EventSubscriberInterface
 
         // Shipment message
         if ($model->isShipmentMessage()) {
+            $this->addShipmentMessage($notify, $shipment);
+        }
+
+        // Attachments
+        if (!empty($types = $model->getDocumentTypes())) {
+            $this->addAttachments($notify, $sale, $types);
+        }
+    }
+
+    /**
+     * Builds invoice content.
+     *
+     * @param NotifyEvent $event
+     * @param NotifyModel $model
+     */
+    protected function buildInvoiceContent(NotifyEvent $event, NotifyModel $model): void
+    {
+        $notify = $event->getNotify();
+
+        if (null === $invoice = $notify->getSource()) {
+            throw new RuntimeException("Notify source is not set.");
+        }
+
+        if (!$invoice instanceof InvoiceInterface) {
+            throw new RuntimeException("Expected instance of " . InvoiceInterface::class);
+        }
+
+        $sale = $this->getSaleFromEvent($event);
+
+        $notify->addInvoice($invoice);
+
+        // Custom message
+        if (!empty($message = $model->getMessage())) {
+            $message = str_replace('%number%', $sale->getNumber(), $message);
+        }
+
+        if (!empty($message)) {
+            $notify->setCustomMessage($message);
+        }
+
+        // Payment message
+        $payments = $sale->getPayments(true);
+        if ($model->isPaymentMessage() && !$payments->isEmpty()) {
+            $this->addPaymentMessage($notify, $payments->last());
+        }
+
+        // Shipment message
+        if ($model->isShipmentMessage() && $shipment = $invoice->getShipment()) {
             $this->addShipmentMessage($notify, $shipment);
         }
 

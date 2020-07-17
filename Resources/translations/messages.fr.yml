@@ -931,7 +931,7 @@ ekyna_commerce:
                 message: >
                     Nous avons préparé votre commande : vous pouvez venir la retirer dans nos locaux. Vous trouverez
                     en pièce jointe à ce mail votre bon de livraison.
-            shipment_shipped:
+            shipment_complete:
                 label: Expédition complète
                 subject: Expédition de votre commande %number%
                 message: >
@@ -943,6 +943,16 @@ ekyna_commerce:
                 message: >
                     Nous venons de procéder à l'expédition <strong>partielle</strong> de votre commande.
                     Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
+            invoice_complete:
+                label: Facture complète
+                subject: Facture pour votre commande %number%
+                message: >
+                    Veuillez trouver en pièce jointe à ce mail votre facture.
+            invoice_partial:
+                label: Facture partielle
+                subject: Facture partielle pour votre commande %number%
+                message: >
+                    Veuillez trouver en pièce jointe à ce mail votre facture.
             return_pending:
                 label: Retour en attente
                 subject: Retour de votre commande %number%

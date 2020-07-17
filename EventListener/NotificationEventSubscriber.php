@@ -8,6 +8,7 @@ use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Symfony\Component\Console\ConsoleEvents;
@@ -97,7 +98,11 @@ class NotificationEventSubscriber implements EventSubscriberInterface
 
         if ($source instanceof SaleInterface) {
             $sale = $source;
-        } elseif ($source instanceof PaymentInterface || $source instanceof ShipmentInterface) {
+        } elseif (
+            $source instanceof PaymentInterface ||
+            $source instanceof ShipmentInterface ||
+            $source instanceof InvoiceInterface
+        ) {
             $sale = $source->getSale();
         } else {
             return;
@@ -114,6 +119,8 @@ class NotificationEventSubscriber implements EventSubscriberInterface
             $notification->setData($source->getNumber(), 'payment');
         } elseif ($source instanceof ShipmentInterface) {
             $notification->setData($source->getNumber(), 'shipment');
+        } elseif ($source instanceof InvoiceInterface) {
+            $notification->setData($source->getNumber(), 'invoice');
         }
 
         $this->manager->persist($notification);

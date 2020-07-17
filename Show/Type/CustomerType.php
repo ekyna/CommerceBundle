@@ -40,6 +40,6 @@ class CustomerType extends AbstractType
      */
     public function getWidgetPrefix()
     {
-        return 'customer';
+        return 'commerce_customer';
     }
 }

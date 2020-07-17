@@ -68,7 +68,7 @@ class CustomerEventSubscriber extends BaseSubscriber
      *
      * @param ResourceEventInterface $event
      */
-    public function onInitialize(ResourceEventInterface $event)
+    public function onInitialize(ResourceEventInterface $event): void
     {
         /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
         $customer = $this->getCustomerFromEvent($event);
@@ -86,7 +86,7 @@ class CustomerEventSubscriber extends BaseSubscriber
     /**
      * @inheritDoc
      */
-    public function onUpdate(ResourceEventInterface $event)
+    public function onUpdate(ResourceEventInterface $event): void
     {
         parent::onUpdate($event);
 
@@ -100,7 +100,7 @@ class CustomerEventSubscriber extends BaseSubscriber
     /**
      * @inheritDoc
      */
-    protected function updateFromParent(CustomerInterface $customer)
+    protected function updateFromParent(CustomerInterface $customer): bool
     {
         $changed = parent::updateFromParent($customer);
 

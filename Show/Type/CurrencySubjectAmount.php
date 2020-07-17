@@ -46,6 +46,6 @@ class CurrencySubjectAmount extends AbstractType
      */
     public function getWidgetPrefix()
     {
-        return 'currency_subject_amount';
+        return 'commerce_currency_subject_amount';
     }
 }

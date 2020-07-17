@@ -1,7 +1,7 @@
 {%- block widget_attributes -%}{% for key, value in attr %} {{ key }}="{{ value }}"{% endfor -%}{% endblock widget_attributes -%}
 
 
-{%- block customer_widget -%}
+{%- block commerce_customer_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
     {%- if value -%}
@@ -12,10 +12,29 @@
         <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
     {%- endif -%}
     </div>
-{%- endblock customer_widget -%}
+{%- endblock commerce_customer_widget -%}
 
 
-{%- block phone_widget -%}
+{%- block commerce_notifications_widget -%}
+    {%- set attr = attr|merge({'class': ('show-widget show-widget-block ' ~ attr.class|default(''))|trim }) -%}
+    <div{{ block('widget_attributes') }}>
+        <ul class="list-unstyled">
+        {% for label, type in types -%}
+            <li>
+                {%- if type in value -%}
+                    <i class="fa fa-check text-success"></i>
+                {%- else -%}
+                    <i class="fa fa-remove text-danger"></i>
+                {%- endif %}
+                {{ label|trans -}}
+            </li>
+        {%- endfor %}
+        </ul>
+    </div>
+{%- endblock commerce_notifications_widget -%}
+
+
+{%- block commerce_phone_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
         {%- if value is not empty -%}
@@ -24,10 +43,10 @@
             &nbsp;&nbsp;
         {%- endif -%}
     </div>
-{%- endblock phone_widget -%}
+{%- endblock commerce_phone_widget -%}
 
 
-{%- block currency_subject_amount_widget -%}
+{%- block commerce_currency_subject_amount_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
         {%- if value is not empty -%}
@@ -40,12 +59,12 @@
             &nbsp;&nbsp;
         {%- endif -%}
     </div>
-{%- endblock currency_subject_amount_widget -%}
+{%- endblock commerce_currency_subject_amount_widget -%}
 
 
-{%- block vat_display_mode_widget -%}
+{%- block commerce_vat_display_mode_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
         <span class="label label-{{ theme }}">{{ value|trans }}</span>
     </div>
-{%- endblock vat_display_mode_widget -%}
+{%- endblock commerce_vat_display_mode_widget -%}

@@ -3,9 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Customer;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
-use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BTypes;
+use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BNotifications;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
-use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CTypes;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CNotification;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Component\Commerce\Customer\Entity\CustomerContact;
 use Symfony\Component\Form\AbstractType;
@@ -47,8 +47,8 @@ class CustomerContactType extends AbstractType
             ])
             ->add('notifications', ConstantChoiceType::class, [
                 'label'    => 'ekyna_commerce.notification.label.plural',
-                'class'    => BTypes::class,
-                'filter'   => [CTypes::MANUAL],
+                'class'    => BNotifications::class,
+                'filter'   => [CNotification::MANUAL],
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,

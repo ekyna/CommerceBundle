@@ -196,7 +196,7 @@ class NotifyModelController extends ResourceController
                     ->findOneBy(['return' => false, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC']);
                 break;
 
-            case NotificationTypes::SHIPMENT_SHIPPED:
+            case NotificationTypes::SHIPMENT_COMPLETE:
                 $source = $this
                     ->get('ekyna_commerce.order_shipment.repository')
                     ->findOneBy(['return' => false, 'state' => ShipmentStates::STATE_SHIPPED], ['id' => 'DESC']);

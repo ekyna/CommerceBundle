@@ -95,7 +95,7 @@ class RegistrationController extends Controller
                 /** @noinspection PhpMethodParametersCountMismatchInspection */
                 $userManager->updateUser($user, false);
 
-                $em = $this->get('ekyna_commerce.customer_address.manager');
+                $em = $this->get('ekyna_commerce.customer.manager');
                 $em->persist($customer);
                 $em->flush();
 

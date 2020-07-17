@@ -4,15 +4,16 @@ namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
 use Ekyna\Bundle\AdminBundle\Show\View;
-use Ekyna\Bundle\CommerceBundle\Model\VatDisplayModes;
+use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BTypes;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CTypes;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class VatDisplayModeType
+ * Class NotificationsType
  * @package Ekyna\Bundle\CommerceBundle\Show\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class VatDisplayModeType extends AbstractType
+class NotificationsType extends AbstractType
 {
     /**
      * @inheritDoc
@@ -21,13 +22,7 @@ class VatDisplayModeType extends AbstractType
     {
         parent::build($view, $value, $options);
 
-        if (null !== $value) {
-            $view->vars['value'] = VatDisplayModes::getLabel($value);
-            $view->vars['theme'] = VatDisplayModes::getTheme($value);
-        } else {
-            $view->vars['value'] = 'ekyna_core.field.default';
-            $view->vars['theme'] = 'default';
-        }
+        $view->vars['types'] = BTypes::getChoices([CTypes::MANUAL]);
     }
 
     /**
@@ -35,7 +30,7 @@ class VatDisplayModeType extends AbstractType
      */
     protected function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('label', 'ekyna_commerce.pricing.field.vat_display_mode');
+        $resolver->setDefault('label', 'ekyna_commerce.notification.label.plural');
     }
 
     /**
@@ -43,6 +38,6 @@ class VatDisplayModeType extends AbstractType
      */
     public function getWidgetPrefix()
     {
-        return 'commerce_vat_display_mode';
+        return 'commerce_notifications';
     }
 }

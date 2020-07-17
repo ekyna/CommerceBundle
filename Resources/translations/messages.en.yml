@@ -894,30 +894,42 @@ ekyna_commerce:
                 message: >
                     Nous avons préparé votre commande : vous pouvez venir la retirer dans nos locaux. Vous trouverez
                     en pièce jointe à ce mail votre bon de livraison.
-            shipment_shipped:
+            shipment_complete:
                 label: Shipment
                 subject: Your order %number% shipment
                 # TODO
                 message: >
                     Nous venons de procéder à l'expédition de votre commande. Vous trouverez en pièce jointe à ce mail
                     votre bon de livraison. Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
-            # TODO
             shipment_partial:
                 label: Partial shipment
                 subject: Your order %number% partial shipment
+                # TODO
                 message: >
                     Nous venons de procéder à l'expédition <strong>partielle</strong> de votre commande.
                     Rendez-vous dans votre espace client pour consulter le suivi d'expédition.
-            # TODO
+            invoice_complete:
+                label: Invoice
+                subject: Your order %number% invoice
+                # TODO
+                message: >
+                    Veuillez trouver en pièce jointe à ce mail votre facture.
+            invoice_partial:
+                label: Partial invoice
+                subject: Your order %number% partial invoice
+                # TODO
+                message: >
+                    Veuillez trouver en pièce jointe à ce mail votre facture.
             return_pending:
                 label: Pending return
                 subject: Your order %number% return
+                # TODO
                 message: >
                     Vous pouvez procéder au retour de votre commande, d'après le bon de retour en pièce jointe à ce mail.
-            # TODO
             return_received:
                 label: Received return
                 subject: Your order %number% return
+                # TODO
                 message: >
                     Nous avons bien reçu les articles que vous nous avez retourné.
         field:

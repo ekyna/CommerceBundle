@@ -90,10 +90,10 @@ class CustomerController extends ResourceController
 
         $form = $this
             ->createForm(BalanceType::class, $balance, [
-                'action'     => $this->generateUrl('ekyna_commerce_customer_admin_balance', [
+                'action' => $this->generateUrl('ekyna_commerce_customer_admin_balance', [
                     'customerId' => $customer->getId(),
                 ]),
-                'method'     => 'POST',
+                'method' => 'POST',
             ])
             ->add('submit', Type\SubmitType::class, [
                 'label' => 'ekyna_core.button.apply',
@@ -178,9 +178,9 @@ class CustomerController extends ResourceController
 
         $form = $this
             ->createForm(CustomerExportType::class, $data, [
-                'action'     => $this->generateUrl('ekyna_commerce_customer_admin_export'),
-                'method'     => 'POST',
-                'attr'       => ['class' => 'form-horizontal'],
+                'action' => $this->generateUrl('ekyna_commerce_customer_admin_export'),
+                'method' => 'POST',
+                'attr'   => ['class' => 'form-horizontal'],
             ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [

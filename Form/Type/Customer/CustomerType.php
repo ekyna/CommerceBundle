@@ -14,12 +14,14 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
+use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BNotifications;
 use Ekyna\Bundle\CoreBundle\Form\Type\ColorPickerType;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\CoreBundle\Form\Type\TinymceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
 use Ekyna\Bundle\UserBundle\Form\Type\UserSearchType;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CNotifications;
 use Ekyna\Component\Commerce\Features;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -108,6 +110,14 @@ class CustomerType extends ResourceFormType
             ])
             ->add('currency', CurrencyChoiceType::class)
             ->add('locale', LocaleChoiceType::class)
+            ->add('notifications', ConstantChoiceType::class, [
+                'label'    => 'ekyna_commerce.notification.label.plural',
+                'class'    => BNotifications::class,
+                'filter'   => [CNotifications::MANUAL],
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+            ])
             ->add('description', Type\TextareaType::class, [
                 'label'    => 'ekyna_commerce.field.description',
                 'required' => false,

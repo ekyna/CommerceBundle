@@ -117,13 +117,17 @@
         </service>
 
         <!-- Show types -->
+        <service id="ekyna_commerce.show.currency_subject_amount_type"
+                 class="Ekyna\Bundle\CommerceBundle\Show\Type\CurrencySubjectAmount">
+            <tag name="ekyna_admin.show.type" alias="currency_subject_amount"/>
+        </service>
         <service id="ekyna_commerce.show.customer_type"
                  class="Ekyna\Bundle\CommerceBundle\Show\Type\CustomerType">
             <tag name="ekyna_admin.show.type" alias="customer"/>
         </service>
-        <service id="ekyna_commerce.show.currency_subject_amount_type"
-                 class="Ekyna\Bundle\CommerceBundle\Show\Type\CurrencySubjectAmount">
-            <tag name="ekyna_admin.show.type" alias="currency_subject_amount"/>
+        <service id="ekyna_commerce.show.notifications"
+                 class="Ekyna\Bundle\CommerceBundle\Show\Type\NotificationsType">
+            <tag name="ekyna_admin.show.type" alias="notifications"/>
         </service>
         <service id="ekyna_commerce.show.phone_type"
                  class="Ekyna\Bundle\CommerceBundle\Show\Type\PhoneType">

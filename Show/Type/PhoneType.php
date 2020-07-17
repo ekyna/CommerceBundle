@@ -31,6 +31,6 @@ class PhoneType extends AbstractType
      */
     public function getWidgetPrefix()
     {
-        return 'phone';
+        return 'commerce_phone';
     }
 }

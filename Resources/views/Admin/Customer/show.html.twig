@@ -191,6 +191,7 @@
                     'label': 'ekyna_commerce.field.description',
                     'id': 'customer_description'
                 }) }}
+                {{ show_row(customer.notifications, 'notifications') }}
                 {{ _cms.show_tags(customer) }}
             </div>
             <div class="tab-pane" id="customer-config">
@@ -334,23 +335,26 @@
                 }) }}
             </div>
             <div class="tab-pane" id="customer-addresses">
-                <div class="actions">
-                    {{- ui_button('ekyna_commerce.customer_address.button.new', {
-                        'type': 'link',
-                        'icon': 'plus',
-                        'theme': 'primary',
-                        'path': path('ekyna_commerce_customer_address_admin_new', {
-                            'customerId': customer.id
-                        })
-                    }) -}}
-                    {{- ui_button('ekyna_commerce.customer_address.button.import', {
-                        'type': 'link',
-                        'icon': 'import',
-                        'theme': 'default',
-                        'path': path('ekyna_commerce_customer_address_admin_import', {
-                            'customerId': customer.id
-                        })
-                    }) -}}
+                <div class="sub-header">
+                    <div class="actions pull-right">
+                        {{- ui_button('ekyna_commerce.customer_address.button.import', {
+                            'type': 'link',
+                            'icon': 'import',
+                            'theme': 'default',
+                            'path': path('ekyna_commerce_customer_address_admin_import', {
+                                'customerId': customer.id
+                            })
+                        }) -}}
+                        {{- ui_button('ekyna_commerce.customer_address.button.new', {
+                            'type': 'link',
+                            'icon': 'plus',
+                            'theme': 'primary',
+                            'path': path('ekyna_commerce_customer_address_admin_new', {
+                                'customerId': customer.id
+                            })
+                        }) -}}
+                    </div>
+                    <h2>{{ 'ekyna_commerce.customer_address.label.plural'|trans|raw }}</h2>
                 </div>
                 {% for address in customer.addresses %}
                     {% if loop.index0 % 2 == 0 %}<div class="row">{% endif %}
@@ -417,7 +421,7 @@
             </div>
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_CONTACT')) -%}
             <div class="tab-pane" id="customer-contacts">
-                <div class="actions">
+                <div class="sub-header">
                     {{- ui_button('ekyna_commerce.customer_contact.button.new', {
                         'type': 'link',
                         'icon': 'plus',
@@ -425,7 +429,8 @@
                         'path': path('ekyna_commerce_customer_contact_admin_new', {
                             'customerId': customer.id
                         })
-                    }) -}}
+                    }, {'class': 'pull-right'}) -}}
+                    <h2>{{ 'ekyna_commerce.customer_contact.label.plural'|trans|raw }}</h2>
                 </div>
                 {% for contact in customer.contacts -%}
                     {% if loop.index0 % 2 == 0 %}<div class="row">{% endif -%}
@@ -449,44 +454,38 @@
             {% if customer.children|length > 0 %}
             <div class="tab-pane" id="customer-children">
                 <div class="sub-header">
-                    <h2>{{ 'ekyna_commerce.customer.header.children'|trans|raw }}</h2>
-                </div>
-                <div class="actions">
                     {{ admin_resource_btn('ekyna_commerce.customer', 'new', {
                         'label': 'ekyna_commerce.customer.button.new',
                         'path': path('ekyna_commerce_customer_admin_new', {
                             'parent': customer.id,
                         })
-                    }) }}
+                    }, {'class': 'pull-right'}) }}
+                    <h2>{{ 'ekyna_commerce.customer.header.children'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_children) }}
             </div>
             {% endif %}
             <div class="tab-pane" id="customer-quotes">
                 <div class="sub-header">
-                    <h2>{{ 'ekyna_commerce.customer.header.quotes'|trans|raw }}</h2>
-                </div>
-                <div class="actions">
                     {{ admin_resource_btn('ekyna_commerce.quote', 'new', {
                         'label': 'ekyna_commerce.quote.button.new',
                         'path': path('ekyna_commerce_quote_admin_new', {
                             'customer': customer.id,
                         })
-                    }) }}
+                    }, {'class': 'pull-right'}) }}
+                    <h2>{{ 'ekyna_commerce.customer.header.quotes'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_quotes) }}
             </div>
             <div class="tab-pane" id="customer-orders">
                 <div class="sub-header">
-                    <h2>{{ 'ekyna_commerce.customer.header.orders'|trans|raw }}</h2>
-                </div>
-                <div class="actions">
                     {{ admin_resource_btn('ekyna_commerce.order', 'new', {
                         'label': 'ekyna_commerce.order.button.new',
                         'path': path('ekyna_commerce_order_admin_new', {
                             'customer': customer.id,
                         })
-                    }) }}
+                    }, {'class': 'pull-right'}) }}
+                    <h2>{{ 'ekyna_commerce.customer.header.orders'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_orders) }}
             </div>

@@ -47,8 +47,7 @@
         </service>
 
         <!-- Abstract entity listener -->
-        <service id="ekyna_commerce.notify.entity_listener"
-                 class="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
+        <service id="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
                  abstract="true">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_tracker"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Notify\NotifyQueue"/>
@@ -56,24 +55,31 @@
         </service>
 
         <!-- Order listener -->
-        <service id="ekyna_commerce.notify.order_listener"
-                 class="Ekyna\Component\Commerce\Common\Listener\OrderNotifyListener"
-                 parent="ekyna_commerce.notify.entity_listener">
-            <tag name="doctrine.orm.entity_listener" />
+        <service id="Ekyna\Component\Commerce\Common\Listener\OrderNotifyListener"
+                 parent="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
+                 public="false">
+            <tag name="doctrine.orm.entity_listener"/>
         </service>
 
         <!-- Order payment listener -->
-        <service id="ekyna_commerce.notify.order_payment_listener"
-                 class="Ekyna\Component\Commerce\Common\Listener\PaymentNotifyListener"
-                 parent="ekyna_commerce.notify.entity_listener">
-            <tag name="doctrine.orm.entity_listener" />
+        <service id="Ekyna\Component\Commerce\Common\Listener\PaymentNotifyListener"
+                 parent="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
+                 public="false">
+            <tag name="doctrine.orm.entity_listener"/>
         </service>
 
         <!-- Order shipment listener -->
-        <service id="ekyna_commerce.notify.order_shipment_listener"
-                 class="Ekyna\Component\Commerce\Common\Listener\ShipmentNotifyListener"
-                 parent="ekyna_commerce.notify.entity_listener">
-            <tag name="doctrine.orm.entity_listener" />
+        <service id="Ekyna\Component\Commerce\Common\Listener\ShipmentNotifyListener"
+                 parent="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
+                 public="false">
+            <tag name="doctrine.orm.entity_listener"/>
+        </service>
+
+        <!-- Order invoice listener -->
+        <service id="Ekyna\Component\Commerce\Common\Listener\InvoiceNotifyListener"
+                 parent="Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener"
+                 public="false">
+            <tag name="doctrine.orm.entity_listener"/>
         </service>
 
     </services>

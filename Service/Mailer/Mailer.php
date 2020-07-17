@@ -24,6 +24,7 @@ use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
@@ -649,7 +650,11 @@ class Mailer
 
         if ($source instanceof SaleInterface) {
             return $source;
-        } elseif ($source instanceof PaymentInterface || $source instanceof ShipmentInterface) {
+        } elseif (
+            $source instanceof PaymentInterface ||
+            $source instanceof ShipmentInterface ||
+            $source instanceof InvoiceInterface
+        ) {
             return $source->getSale();
         }
 

@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Install;
 
+use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BNotifyTypes;
 use Ekyna\Bundle\InstallBundle\Install\AbstractInstaller;
 use Ekyna\Bundle\InstallBundle\Install\OrderedInstallerInterface;
 use Ekyna\Bundle\MediaBundle\Model\FolderInterface;
@@ -9,6 +10,7 @@ use Ekyna\Bundle\MediaBundle\Model\MediaTypes;
 use Ekyna\Component\Commerce\Bridge\Payum\CreditBalance\Constants as Credit;
 use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outstanding;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CNotifyTypes;
 use Ekyna\Component\Commerce\Install\Installer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -74,6 +76,10 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
 
         $output->writeln('<info>[Commerce] Installing shipment methods:</info>');
         $this->installShipmentMethods($output);
+        $output->writeln('');
+
+        $output->writeln('<info>[Commerce] Installing notification models:</info>');
+        $this->installNotificationModels($output);
         $output->writeln('');
     }
 
@@ -323,6 +329,46 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
             $output->writeln('created.');
 
             $position++;
+        }
+
+        $em->flush();
+    }
+
+    /**
+     * Installs the default notifications models.
+     *
+     * @param OutputInterface $output
+     */
+    private function installNotificationModels(OutputInterface $output): void
+    {
+        $em         = $this->container->get('doctrine.orm.default_entity_manager');
+        $translator = $this->container->get('translator');
+        $repository = $this->container->get('ekyna_commerce.notify_model.repository');
+
+        foreach (BNotifyTypes::getChoices([CNotifyTypes::MANUAL]) as $label => $type) {
+            $name = $translator->trans($label);
+
+            $output->write(sprintf(
+                '- <comment>%s</comment> %s ',
+                $name,
+                str_pad('.', 44 - mb_strlen($name), '.', STR_PAD_LEFT)
+            ));
+
+            if ($repository->findOneBy(['type' => $type])) {
+                $output->writeln('already exists.');
+
+                continue;
+            }
+
+            /** @var \Ekyna\Bundle\CommerceBundle\Entity\NotifyModel $model */
+            $model = $repository->createNew();
+            $model
+                ->setType($type)
+                ->setEnabled(false);
+
+            $em->persist($model);
+
+            $output->writeln('created.');
         }
 
         $em->flush();
