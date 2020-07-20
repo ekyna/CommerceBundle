@@ -55,7 +55,7 @@ class SaleInvoiceController extends AbstractSaleController
     {
         $this->isGranted('CREATE');
 
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
         $isXhr = $request->isXmlHttpRequest();
@@ -136,14 +136,14 @@ class SaleInvoiceController extends AbstractSaleController
      */
     public function editAction(Request $request)
     {
-        $context = $this->loadContext($request);
+        $context      = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
 
         /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource($resourceName);
 
         if ($invoice->getShipment()) {
-            $message =  'ekyna_commerce.invoice.alert.' . $invoice->getType() . '_edit_prevented';
+            $message = 'ekyna_commerce.invoice.alert.' . $invoice->getType() . '_edit_prevented';
 
             $this->addFlash($message, 'warning');
 
@@ -220,7 +220,7 @@ class SaleInvoiceController extends AbstractSaleController
         $this->isGranted('DELETE', $invoice);
 
         $isXhr = $request->isXmlHttpRequest();
-        $form = $this->createRemoveResourceForm($context, null, !$isXhr);
+        $form  = $this->createRemoveResourceForm($context, null, !$isXhr);
 
         $form->handleRequest($request);
 
@@ -249,7 +249,7 @@ class SaleInvoiceController extends AbstractSaleController
 
         if ($isXhr) {
             $modal = $this->createModal('remove', 'ekyna_commerce.' . $invoice->getType() . '.header.remove');
-            $vars = $context->getTemplateVars();
+            $vars  = $context->getTemplateVars();
             unset($vars['form_template']);
             $modal
                 ->setSize(Modal::SIZE_NORMAL)
@@ -364,6 +364,9 @@ class SaleInvoiceController extends AbstractSaleController
         if ($shipment = $invoice->getShipment()) {
             $this->get(InvoiceSynchronizer::class)->synchronize($shipment, true);
         }
+
+        // Update data
+        $this->get('ekyna_commerce.invoice.builder')->update($invoice);
 
         // Recalculate
         $this->get(DocumentCalculator::class)->calculate($invoice);
@@ -489,7 +492,7 @@ class SaleInvoiceController extends AbstractSaleController
         $response->setVary(['Accept', 'Accept-Encoding']);
         $response->setExpires(new \DateTime('+5 min'));
 
-        $html = false;
+        $html   = false;
         $accept = $request->getAcceptableContentTypes();
 
         if (in_array('application/json', $accept, true)) {
