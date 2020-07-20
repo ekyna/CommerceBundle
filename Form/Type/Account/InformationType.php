@@ -6,8 +6,11 @@ use Braincrafted\Bundle\BootstrapBundle\Form\Type\FormActionsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\IdentityType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
+use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BNotifications;
 use Ekyna\Bundle\CoreBundle\Form\Type\PhoneNumberType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CNotifications;
 use Ekyna\Component\Commerce\Features;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
@@ -33,11 +36,6 @@ class InformationType extends AbstractType
      * @var string
      */
     private $customerClass;
-
-    /**
-     * @var array
-     */
-    private $config;
 
 
     /**
@@ -83,6 +81,14 @@ class InformationType extends AbstractType
             ])
             ->add('currency', CurrencyChoiceType::class)
             ->add('locale', LocaleChoiceType::class)
+            ->add('notifications', ConstantChoiceType::class, [
+                'label'    => 'ekyna_commerce.notification.label.plural',
+                'class'    => BNotifications::class,
+                'filter'   => [CNotifications::MANUAL],
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+            ])
             ->add('actions', FormActionsType::class, [
                 'buttons' => [
                     'save'   => [

@@ -2,8 +2,11 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
+use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BTypes;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
+use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CTypes;
 use Ekyna\Component\Commerce\Customer\Model\CustomerContactInterface;
+use Ekyna\Component\Commerce\Customer\Model\NotificationsInterface;
 use Twig\Environment;
 use Twig\TemplateWrapper;
 
@@ -52,7 +55,7 @@ class CommonRenderer
      *
      * @return string
      */
-    public function renderAddress(AddressInterface $address, array $options = [])
+    public function renderAddress(AddressInterface $address, array $options = []): string
     {
         $options = array_replace([
             'display_phones' => true,
@@ -73,7 +76,7 @@ class CommonRenderer
      *
      * @return string
      */
-    public function renderCustomerContact(CustomerContactInterface $contact, array $options = [])
+    public function renderCustomerContact(CustomerContactInterface $contact, array $options = []): string
     {
         $options = array_replace([
             'display_phones' => true,
@@ -84,6 +87,29 @@ class CommonRenderer
         return $this->getTemplate()->renderBlock('customer_contact', [
             'contact' => $contact,
             'options' => $options,
+        ]);
+    }
+
+    /**
+     * Renders the subject's notifications.
+     *
+     * @param NotificationsInterface $subject
+     * @param array                  $options
+     *
+     * @return string
+     */
+    public function renderNotifications(NotificationsInterface $subject, array $options = []): string
+    {
+        $options = array_replace([
+            'inline' => false,
+            'locale' => null,
+        ], $options);
+
+
+        return $this->getTemplate()->renderBlock('notifications', [
+            'types'         => BTypes::getChoices([CTypes::MANUAL]),
+            'notifications' => $subject->getNotifications(),
+            'options'       => $options,
         ]);
     }
 

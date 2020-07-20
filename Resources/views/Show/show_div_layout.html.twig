@@ -18,18 +18,7 @@
 {%- block commerce_notifications_widget -%}
     {%- set attr = attr|merge({'class': ('show-widget show-widget-block ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
-        <ul class="list-unstyled">
-        {% for label, type in types -%}
-            <li>
-                {%- if type in value -%}
-                    <i class="fa fa-check text-success"></i>
-                {%- else -%}
-                    <i class="fa fa-remove text-danger"></i>
-                {%- endif %}
-                {{ label|trans -}}
-            </li>
-        {%- endfor %}
-        </ul>
+        {{ value|notifications }}
     </div>
 {%- endblock commerce_notifications_widget -%}
 

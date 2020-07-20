@@ -125,6 +125,18 @@
             </div>
         </div>
         {% endif %}
+
+        <div class="form-group form-group-sm">
+            <label class="control-label col-md-3 control-label-sm">
+                {{ 'ekyna_commerce.notification.label.plural'|trans }}
+            </label>
+            <div class="col-md-9">
+                <div class="form-control input-sm" style="height:auto">
+                    {{- customer|notifications -}}
+                </div>
+            </div>
+        </div>
+
     </div>
 
     {% if currency_get_quote() != currency_get_base() -%}

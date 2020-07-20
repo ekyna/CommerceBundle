@@ -119,7 +119,7 @@ class OrderType extends AbstractColumnType
             return false;
         }
 
-        $property = $adapter->getQueryBuilderPath($column->getConfig()->getPropertyPath()) . 'number';
+        $property = $adapter->getQueryBuilderPath($column->getConfig()->getPropertyPath()) . '.number';
 
         $adapter
             ->getQueryBuilder()

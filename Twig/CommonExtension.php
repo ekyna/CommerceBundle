@@ -36,6 +36,11 @@ class CommonExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
+                'notifications',
+                [CommonRenderer::class, 'renderNotifications'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
                 'identity',
                 [ConstantsHelper::class, 'renderIdentity'],
                 ['is_safe' => ['html']]

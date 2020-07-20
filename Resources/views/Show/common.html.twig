@@ -96,3 +96,26 @@
 {% endif %}
 {% endapply %}
 {% endblock customer_contact %}
+
+{% block notifications %}
+{% apply spaceless %}
+{%- if options.locale is not null -%}
+    {%- do trans_set_locale(options.locale) -%}
+{%- endif -%}
+    <ul class="list-unstyled">
+        {% for label, type in types -%}
+        <li>
+            {%- if type in notifications -%}
+                <i class="fa fa-check text-success"></i>
+            {%- else -%}
+                <i class="fa fa-remove text-danger"></i>
+            {%- endif %}&nbsp;
+            {{ label|trans -}}
+        </li>
+        {%- endfor %}
+    </ul>
+{%- if options.locale is not null -%}
+    {% do trans_revert_locale() %}
+{% endif %}
+{% endapply %}
+{% endblock notifications %}
