@@ -20,7 +20,7 @@ ekyna_commerce_cart_payment_admin_action:
     requirements:
         cartId: \d+
         cartPaymentId: \d+
-        action: cancel|authorize|accept|hang|reject|refund
+        action: cancel|authorize|accept|payout|hang|reject|refund
 
 ekyna_commerce_cart_payment_admin_remove:
     path: /{cartPaymentId}/remove

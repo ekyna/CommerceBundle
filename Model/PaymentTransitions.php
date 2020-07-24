@@ -25,6 +25,7 @@ final class PaymentTransitions extends AbstractConstants
             Transitions::TRANSITION_HANG      => [$prefix . Transitions::TRANSITION_HANG . $suffix,      'orange'],
             Transitions::TRANSITION_AUTHORIZE => [$prefix . Transitions::TRANSITION_AUTHORIZE . $suffix, 'light-green'],
             Transitions::TRANSITION_ACCEPT    => [$prefix . Transitions::TRANSITION_ACCEPT . $suffix,    'green'],
+            Transitions::TRANSITION_PAYOUT    => [$prefix . Transitions::TRANSITION_PAYOUT . $suffix,    'teal'],
             Transitions::TRANSITION_REJECT    => [$prefix . Transitions::TRANSITION_REJECT . $suffix,    'red'],
             Transitions::TRANSITION_REFUND    => [$prefix . Transitions::TRANSITION_REFUND . $suffix,    'indigo'],
         ];

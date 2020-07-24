@@ -322,7 +322,6 @@ class OrderType extends ResourceTableType
             ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'choices'  => Model\PaymentStates::getChoices([
-                    PaymentStates::STATE_AUTHORIZED,
                     PaymentStates::STATE_EXPIRED,
                     PaymentStates::STATE_SUSPENDED,
                     PaymentStates::STATE_UNKNOWN,

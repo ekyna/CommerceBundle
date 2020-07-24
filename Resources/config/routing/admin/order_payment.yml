@@ -20,7 +20,7 @@ ekyna_commerce_order_payment_admin_action:
     requirements:
         orderId: \d+
         orderPaymentId: \d+
-        action: cancel|authorize|accept|hang|reject|refund
+        action: cancel|authorize|accept|payout|hang|reject|refund
 
 ekyna_commerce_order_payment_admin_remove:
     path: /{orderPaymentId}/remove

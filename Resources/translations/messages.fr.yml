@@ -927,6 +927,11 @@ ekyna_commerce:
                 subject: Réglement de votre commande %number%
                 message: >
                     Nous avons bien reçu le réglement de votre commande.
+            payment_payedout:
+                label: Paiement (hors ligne) fonds versés
+                subject: Réglement de votre commande %number%
+                message: >
+                    Nous avons bien reçu le réglement de votre commande.
             payment_expired:
                 label: Encours échu
             shipment_ready:
@@ -1155,6 +1160,9 @@ ekyna_commerce:
             accept:
                 label: Accepter
                 confirm: Êtes-vous sûr de vouloir ACCEPTER ce paiement ?
+            payout:
+                label: Fonds versés
+                confirm: Êtes-vous sûr de vouloir passer ce paiement au statut FONDS VERSÉS ?
             reject:
                 label: Refuser
                 confirm: Êtes-vous sûr de vouloir REFUSER ce paiement ?

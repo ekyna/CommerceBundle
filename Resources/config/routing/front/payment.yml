@@ -8,6 +8,11 @@ ekyna_commerce_payment_authorize:
     controller: Payum\Bundle\PayumBundle\Controller\AuthorizeController::doAction
     options: { i18n: false }
 
+ekyna_commerce_payment_payout:
+    path: /payout/{payum_token}
+    controller: Payum\Bundle\PayumBundle\Controller\PayoutController::doAction
+    options: { i18n: false }
+
 ekyna_commerce_payment_cancel:
     path: /cancel/{payum_token}
     controller: Payum\Bundle\PayumBundle\Controller\CancelController::doAction

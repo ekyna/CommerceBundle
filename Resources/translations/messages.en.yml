@@ -889,6 +889,11 @@ ekyna_commerce:
                 subject: Order %number% payment
                 message: >
                     We have received the payment of your order.
+            payment_payedout:
+                label: (Offline) payment payed out
+                subject: Order %number% payment
+                message: >
+                    We have received the payment of your order.
             payment_expired:
                 label: Expired outstanding
             shipment_ready:
@@ -1095,8 +1100,8 @@ ekyna_commerce:
             suspended:
                 label: Suspended
                 message: Your payment has been suspended.
-            payedout: # TODO
-                label: Provided funds
+            payedout:
+                label: Payed out
                 message: Funds has been provided.
             expired:
                 label: Expired
@@ -1123,6 +1128,9 @@ ekyna_commerce:
             accept:
                 label: Accept
                 confirm: Are you sure you want to ACCEPT this payment ?
+            payout:
+                label: Payout
+                confirm: Are you sure you want to mark this payment as PAYED OUT ?
             reject:
                 label: Reject
                 confirm: Are you sure you want to REFUSE this payment ?

@@ -189,6 +189,17 @@ class NotifyModelController extends ResourceController
                 }
                 break;
 
+            case NotificationTypes::PAYMENT_PAYEDOUT:
+                $method = $this
+                    ->get('ekyna_commerce.payment_method.repository')
+                    ->findOneBy(['factoryName' => 'offline'], []);
+                if (null !== $method) {
+                    $source = $this
+                        ->get('ekyna_commerce.order_payment.repository')
+                        ->findOneBy(['state' => PaymentStates::STATE_PAYEDOUT, 'method' => $method], ['id' => 'DESC']);
+                }
+                break;
+
             case NotificationTypes::SHIPMENT_PARTIAL:
                 // TODO Partial ...
                 $source = $this

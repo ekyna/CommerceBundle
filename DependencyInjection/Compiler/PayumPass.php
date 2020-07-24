@@ -27,6 +27,7 @@ class PayumPass implements CompilerPassInterface
         $definition->addMethodCall('setGenericTokenFactoryPaths', [[
             'capture'   => 'ekyna_commerce_payment_capture',
             'authorize' => 'ekyna_commerce_payment_authorize',
+            'payout'    => 'ekyna_commerce_payment_payout',
             'notify'    => 'ekyna_commerce_payment_notify',
             'cancel'    => 'ekyna_commerce_payment_cancel',
             'refund'    => 'ekyna_commerce_payment_refund',

@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 use Ekyna\Bundle\CoreBundle\Modal\Modal;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -81,9 +82,10 @@ class SalePaymentController extends AbstractSaleController
 
         $checkoutManager = $this->get('ekyna_commerce.payment.checkout_manager');
 
-        $action = $this->generateResourcePath($this->config->getResourceId(), 'new', array_merge($context->getIdentifiers(), [
-            'refund' => $refund ? 1 : 0,
-        ]));
+        $action = $this->generateResourcePath($this->config->getResourceId(), 'new',
+            array_merge($context->getIdentifiers(), [
+                'refund' => $refund ? 1 : 0,
+            ]));
 
         $checkoutManager->initialize($sale, $action, $refund, true);
 
@@ -279,17 +281,19 @@ class SalePaymentController extends AbstractSaleController
         );
 
         switch ($request->attributes->get('action')) {
-            case 'authorize' :
+            case PaymentTransitions::TRANSITION_AUTHORIZE :
                 return $helper->authorize($payment, $statusUrl);
-            case 'accept' :
+            case PaymentTransitions::TRANSITION_ACCEPT :
                 return $helper->accept($payment, $statusUrl);
-            case 'refund' :
+            case PaymentTransitions::TRANSITION_PAYOUT :
+                return $helper->payout($payment, $statusUrl);
+            case PaymentTransitions::TRANSITION_REFUND :
                 return $helper->refund($payment, $statusUrl);
-            case 'reject' :
+            case PaymentTransitions::TRANSITION_REJECT :
                 return $helper->reject($payment, $statusUrl);
-            case 'cancel' :
+            case PaymentTransitions::TRANSITION_CANCEL :
                 return $helper->cancel($payment, $statusUrl);
-            case 'hang' :
+            case PaymentTransitions::TRANSITION_HANG :
                 return $helper->hang($payment, $statusUrl);
         }
 

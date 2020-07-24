@@ -25,6 +25,7 @@ class NotificationTypes extends AbstractConstants
             Types::ORDER_ACCEPTED     => [$prefix . Types::ORDER_ACCEPTED . $suffix],
             Types::PAYMENT_AUTHORIZED => [$prefix . Types::PAYMENT_AUTHORIZED . $suffix],
             Types::PAYMENT_CAPTURED   => [$prefix . Types::PAYMENT_CAPTURED . $suffix],
+            Types::PAYMENT_PAYEDOUT   => [$prefix . Types::PAYMENT_PAYEDOUT . $suffix],
             Types::PAYMENT_EXPIRED    => [$prefix . Types::PAYMENT_EXPIRED . $suffix],
             Types::SHIPMENT_READY     => [$prefix . Types::SHIPMENT_READY . $suffix],
             Types::SHIPMENT_COMPLETE  => [$prefix . Types::SHIPMENT_COMPLETE . $suffix],

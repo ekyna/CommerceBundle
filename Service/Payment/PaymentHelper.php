@@ -230,6 +230,27 @@ class PaymentHelper
     }
 
     /**
+     * Marks the payment as "payed out".
+     *
+     * @param PaymentInterface $payment
+     * @param string           $afterUrl
+     *
+     * @return Response
+     */
+    public function payout(PaymentInterface $payment, string $afterUrl): Response
+    {
+        $this->validateUrl($afterUrl);
+
+        if (null !== $response = $this->dispatch($payment, PaymentEvents::PAYOUT, $afterUrl)) {
+            return $response;
+        }
+
+        $token = $this->createToken($payment, 'ekyna_commerce_payment_payout', $afterUrl);
+
+        return new RedirectResponse($token->getTargetUrl());
+    }
+
+    /**
      * Refunds the payment.
      *
      * @param PaymentInterface $payment
