@@ -111,15 +111,13 @@ class OrderType extends AbstractColumnType
         ActiveSort $activeSort,
         array $options
     ) {
-        if ($options['multiple']) {
-            return false;
-        }
-
         if (!$adapter instanceof EntityAdapter) {
             return false;
         }
 
-        $property = $adapter->getQueryBuilderPath($column->getConfig()->getPropertyPath()) . '.number';
+        $property = $column->getConfig()->getPropertyPath();
+        $property .= empty($property) ? 'number' : '.number';
+        $property = $adapter->getQueryBuilderPath($property);
 
         $adapter
             ->getQueryBuilder()
@@ -150,14 +148,7 @@ class OrderType extends AbstractColumnType
 
                     return $options['multiple'] ? 'orders' : 'order';
                 },
-            ])
-            ->setNormalizer('sortable', function (Options $options, $value) {
-                if ($options['multiple']) {
-                    return false;
-                }
-
-                return $value;
-            });
+            ]);
     }
 
     /**

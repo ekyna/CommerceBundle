@@ -23,6 +23,7 @@ class InChargeType extends AbstractColumnType
             'entity_label'         => 'shortName',
             'route_name'           => 'ekyna_admin_user_admin_show',
             'route_parameters_map' => ['userId' => 'id'],
+            'sortable'             => false,
         ]);
     }
 

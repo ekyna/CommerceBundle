@@ -45,6 +45,7 @@ class CustomerType extends AbstractColumnType
             'route_parameters_map' => [
                 'customerId' => 'customer.id',
             ],
+            'sortable' => false,
         ]);
     }
 

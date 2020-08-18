@@ -4,9 +4,12 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
+use Ekyna\Component\Table\Context\ActiveSort;
 use Ekyna\Component\Table\Extension\Core\Type\Column\ColumnType;
+use Ekyna\Component\Table\Source\AdapterInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
@@ -65,7 +68,7 @@ class QuoteType extends AbstractColumnType
 
             return;
         }
-        
+
         if ($quotes instanceof Collection) {
             $quotes = $quotes->toArray();
         } elseif (!is_array($quotes)) {
@@ -97,6 +100,30 @@ class QuoteType extends AbstractColumnType
         }
 
         $view->vars['value'] = $output;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function applySort(
+        AdapterInterface $adapter,
+        ColumnInterface $column,
+        ActiveSort $activeSort,
+        array $options
+    ) {
+        if (!$adapter instanceof EntityAdapter) {
+            return false;
+        }
+
+        $property = $column->getConfig()->getPropertyPath();
+        $property .= empty($property) ? 'number' : '.number';
+        $property = $adapter->getQueryBuilderPath($property);
+
+        $adapter
+            ->getQueryBuilder()
+            ->addOrderBy($property, $activeSort->getDirection());
+
+        return true;
     }
 
     /**
