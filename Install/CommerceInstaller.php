@@ -33,7 +33,9 @@ class CommerceInstaller extends AbstractInstaller implements OrderedInstallerInt
      */
     public function install(Command $command, InputInterface $input, OutputInterface $output)
     {
-        $installer = new Installer($this->container->get('doctrine'), $output);
+        $classes = $this->container->getParameter('ekyna_resource.interfaces');
+
+        $installer = new Installer($this->container->get('doctrine'), $classes, $output);
 
         $country  = $this->container->getParameter('ekyna_commerce.default.country');
         $currency = $this->container->getParameter('ekyna_commerce.default.currency');
