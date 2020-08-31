@@ -7,30 +7,30 @@
 
         <defaults autowire="false" autoconfigure="false" public="false"/>
 
-        <!-- Mailchimp API -->
-        <service id="Ekyna\Component\Commerce\Bridge\Mailchimp\Api">
+        <!-- SendInBlue API -->
+        <service id="Ekyna\Component\Commerce\Bridge\SendInBlue\Api">
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Logger"/>
             <argument type="string"/>
         </service>
 
-        <!-- Mailchimp gateway -->
-        <service id="Ekyna\Component\Commerce\Bridge\Mailchimp\Gateway">
-            <argument type="service" id="Ekyna\Component\Commerce\Bridge\Mailchimp\Api"/>
+        <!-- SendInBlue gateway -->
+        <service id="Ekyna\Component\Commerce\Bridge\SendInBlue\Gateway">
+            <argument type="service" id="Ekyna\Component\Commerce\Bridge\SendInBlue\Api"/>
             <tag name="ekyna_commerce.newsletter_gateway"/>
         </service>
 
-        <!-- Mailchimp synchronizer -->
-        <service id="Ekyna\Component\Commerce\Bridge\Mailchimp\Synchronizer"
+        <!-- SendInBlue synchronizer -->
+        <service id="Ekyna\Component\Commerce\Bridge\SendInBlue\Synchronizer"
                  parent="Ekyna\Component\Commerce\Newsletter\Synchronizer\AbstractSynchronizer"
                  autowire="false" autoconfigure="false" public="false">
             <call method="setApi">
-                <argument type="service" id="Ekyna\Component\Commerce\Bridge\Mailchimp\Api"/>
+                <argument type="service" id="Ekyna\Component\Commerce\Bridge\SendInBlue\Api"/>
             </call>
             <tag name="ekyna_commerce.newsletter_synchronizer"/>
         </service>
 
-        <!-- Mailchimp webhook handler -->
-        <service id="Ekyna\Component\Commerce\Bridge\Mailchimp\Handler"
+        <!-- SendInBlue webhook handler -->
+        <service id="Ekyna\Component\Commerce\Bridge\SendInBlue\Handler"
                  parent="Ekyna\Component\Commerce\Newsletter\Webhook\AbstractHandler"
                  autowire="false" autoconfigure="false" public="false">
             <tag name="ekyna_commerce.newsletter_handler"/>

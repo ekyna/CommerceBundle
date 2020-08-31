@@ -62,8 +62,10 @@ class NewsletterController
             return new RedirectResponse($this->urlGenerator->generate('ekyna_commerce_newsletter_subscribed'));
         }
 
+        $form = $this->subscriptionHelper->getSubscriptionForm();
+
         return new Response($this->engine->render('@EkynaCommerce/Newsletter/subscription.html.twig', [
-            'form' => $this->subscriptionHelper->getSubscriptionForm()->createView(),
+            'form' => $form ? $form->createView() : null,
         ]));
     }
 

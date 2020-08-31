@@ -1,4 +1,11 @@
 ekyna_commerce_api_newsletter_webhook:
+    path: /webhook/{name}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\WebhookController
+    methods: [GET, POST]
+    requirements:
+        name: '[0-9A-Za-z]+'
+
+ekyna_commerce_api_newsletter_webhook_audience:
     path: /webhook/{name}/{key}
     controller: Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\WebhookController
     methods: [GET, POST]

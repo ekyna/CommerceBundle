@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter;
 
-use Ekyna\Component\Commerce\Newsletter\Model\Subscription;
+use Ekyna\Component\Commerce\Newsletter\Model\NewsletterSubscription;
 use Ekyna\Component\Commerce\Newsletter\Repository\AudienceRepositoryInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -79,7 +79,7 @@ class SubscriptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Subscription::class,
+            'data_class' => NewsletterSubscription::class,
         ]);
     }
 }

@@ -26,6 +26,10 @@ class NewsletterExtension extends AbstractExtension
                 [SubscriptionHelper::class, 'renderQuickSubscription'],
                 ['is_safe' => ['html']]
             ),
+            new TwigFunction(
+                'newsletter_member_subscriptions',
+                [SubscriptionHelper::class, 'renderMemberSubscriptions']
+            ),
         ];
     }
 }

@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Mailchimp;
+use Ekyna\Component\Commerce\Bridge\SendInBlue;
 use Ekyna\Component\Commerce\Cart;
 use Ekyna\Component\Commerce\Customer;
 use Ekyna\Component\Commerce\Features;
@@ -145,6 +146,7 @@ class EkynaCommerceExtension extends AbstractExtension
             $this->loader->load('services/newsletter.xml');
 
             $this->configureMailchimp($config[Features::NEWSLETTER]['mailchimp'], $container);
+            $this->configureSendInBlue($config[Features::NEWSLETTER]['sendinblue'], $container);
         }
     }
 
@@ -162,7 +164,7 @@ class EkynaCommerceExtension extends AbstractExtension
 
         if (!class_exists('DrewM\\MailChimp\\MailChimp')) {
             throw new LogicException(
-                "To use mailchimp newsletter gateway, you must install drewm/mailchimp-api first.\n" .
+                "To use MailChimp newsletter gateway, you must install drewm/mailchimp-api first.\n" .
                 "Please run: composer require drewm/mailchimp-api"
             );
         }
@@ -171,6 +173,32 @@ class EkynaCommerceExtension extends AbstractExtension
 
         $container
             ->getDefinition(Mailchimp\Api::class)
+            ->replaceArgument(1, $config['api_key']);
+    }
+
+    /**
+     * Configures sendInBlue newsletter gateway.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureSendInBlue(array $config, ContainerBuilder $container): void
+    {
+        if (empty($config['api_key'])) {
+            return;
+        }
+
+        if (!class_exists('SendinBlue\\Client\\Configuration')) {
+            throw new LogicException(
+                "To use SendInBlue newsletter gateway, you must install sendinblue/api-v3-sdk first.\n" .
+                "Please run: composer require sendinblue/api-v3-sdk \"6.x.x\""
+            );
+        }
+
+        $this->loader->load('services/newsletter/sendinblue.xml');
+
+        $container
+            ->getDefinition(SendInBlue\Api::class)
             ->replaceArgument(1, $config['api_key']);
     }
 

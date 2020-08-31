@@ -24,13 +24,13 @@ class WebhookController
      *
      * @param HandlerRegistry $registry
      */
-    public function __construct(HandlerRegistry $registry = null)
+    public function __construct(HandlerRegistry $registry)
     {
         $this->registry = $registry;
     }
 
     /**
-     * @inheritDoc
+     * Newsletter webhook action.
      */
     public function __invoke(Request $request): Response
     {

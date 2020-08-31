@@ -13,6 +13,19 @@
             <tag name="monolog.logger" channel="newsletter"/>
         </service>
 
+        <!-- Subscription metadata -->
+        <service id="ekyna_commerce.metadata.subscription"
+                 class="Doctrine\ORM\Mapping\ClassMetadata">
+            <factory service="Doctrine\ORM\EntityManagerInterface" method="getClassMetadata"/>
+            <argument>Ekyna\Component\Commerce\Newsletter\Entity\Subscription</argument>
+        </service>
+
+        <!-- Subscription repository -->
+        <service id="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SubscriptionRepository">
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument type="service" id="ekyna_commerce.metadata.subscription"/>
+        </service>
+
         <!-- Audience repository -->
         <service id="ekyna_commerce.audience.repository"
                  class="Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\AudienceRepository">
@@ -22,6 +35,7 @@
                 <argument type="service" id="Ekyna\Component\Resource\Locale\LocaleProviderInterface"/>
             </call>
             <tag name="doctrine.event_listener" event="onClear" lazy="true" />
+            <tag name="doctrine.repository_service"/>
         </service>
 
         <!-- Gateway registry -->
@@ -31,11 +45,33 @@
             <!-- Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\NewsletterGatewayRegistryPass -->
         </service>
 
+        <!-- Abstract synchronizer -->
+        <service id="Ekyna\Component\Commerce\Newsletter\Synchronizer\AbstractSynchronizer" abstract="true">
+            <argument type="service" id="ekyna_commerce.audience.repository"/>
+            <argument type="service" id="ekyna_commerce.member.repository"/>
+            <argument type="service" id="ekyna_commerce.subscription.repository"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerGatewayToggler"/>
+            <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Logger"/>
+        </service>
+
         <!-- Synchronizer registry -->
         <!--suppress XmlServiceArgumentInspection -->
         <service id="Ekyna\Component\Commerce\Newsletter\Synchronizer\SynchronizerRegistry">
             <!-- Service locator injected my compiler pass -->
             <!-- Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\NewsletterGatewayRegistryPass -->
+        </service>
+
+        <!-- Abstract handler -->
+        <service id="Ekyna\Component\Commerce\Newsletter\Webhook\AbstractHandler" abstract="true">
+            <argument type="service" id="ekyna_commerce.audience.repository"/>
+            <argument type="service" id="ekyna_commerce.member.repository"/>
+            <argument type="service" id="ekyna_commerce.subscription.repository"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\EventListener\ListenerGatewayToggler"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Logger"/>
         </service>
 
         <!-- Webhook handler registry -->
@@ -84,6 +120,10 @@
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="ekyna_commerce.customer.repository"/>
             <argument type="service" id="ekyna_resource.event_dispatcher"/>
+            <tag name="resource.event_subscriber"/>
+        </service>
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SubscriptionEventSubscriber">
+            <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
             <tag name="resource.event_subscriber"/>
         </service>
@@ -93,6 +133,7 @@
             <argument type="collection">
                 <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\AudienceEventSubscriber"/>
                 <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\MemberEventSubscriber"/>
+                <argument type="service" id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SubscriptionEventSubscriber"/>
             </argument>
         </service>
 
@@ -118,7 +159,9 @@
         <service id="Ekyna\Bundle\CommerceBundle\Service\Newsletter\SubscriptionHelper">
             <argument type="service" id="ekyna_commerce.audience.repository"/>
             <argument type="service" id="ekyna_commerce.member.repository"/>
+            <argument type="service" id="ekyna_commerce.subscription.repository"/>
             <argument type="service" id="Symfony\Component\Form\FormFactoryInterface"/>
+            <argument type="service" id="table.factory"/>
             <argument type="service" id="Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry"/>
             <argument type="service" id="ekyna_resource.event_dispatcher"/>
             <argument type="service" id="Symfony\Component\Validator\Validator\ValidatorInterface"/>

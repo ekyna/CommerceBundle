@@ -826,11 +826,13 @@ ekyna_commerce:
             new: New member
             edit: Edit member
             remove: Remove member
+        alert:
+            empty_list: No member configured
+
+    subscription:
         status:
             subscribed: Subscribed
             unsubscribed: Unsubscribed
-        alert:
-            empty_list: No member configured
 
     mention:
         label:
@@ -854,6 +856,7 @@ ekyna_commerce:
             title: Subscribe to our newsletter
             content: To receive news and special offers !
             success: You successfully subscribed to our newsletter
+            unavailable: Newsletter subscription is not yet available
         button:
             subscribe: Subscribe
             unsubscribe: Unsubscribe

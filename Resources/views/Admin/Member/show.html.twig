@@ -17,19 +17,23 @@
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="member-general">
-                {{ show_row(member.audience, 'entity', {
-                    'label': 'ekyna_commerce.audience.label.singular',
-                    'id': 'member_audience',
-                    'route': 'ekyna_commerce_audience_admin_show',
-                    'route_parameters_map': {'audienceId': 'id'}
-                }) }}
                 {{ show_row(member.email, 'text', {
                     'label': 'ekyna_core.field.email_address'
                 }) }}
                 {{ show_row(member.status, 'constant_choice', {
-                    'class': 'Ekyna\\Component\\Commerce\\Newsletter\\Model\\MemberStatuses',
+                    'class': 'Ekyna\\Bundle\\CommerceBundle\\Model\\SubscriptionStatus',
                     'theme': true
                 }) }}
+                <div class="row show-row">
+                    <div class="col-md-2 show-label" title="{{ 'ekyna_commerce.audience.label.plural'|trans }}">
+                        {{- 'ekyna_commerce.audience.label.plural'|trans -}}
+                    </div>
+                    <div class="col-md-10">
+                        <div class="show-widget show-widget-block">
+                            {{ ekyna_table_render(newsletter_member_subscriptions(member)) }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

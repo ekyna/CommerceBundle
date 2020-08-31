@@ -864,11 +864,13 @@ ekyna_commerce:
             new: Nouveau membre
             edit: Modifier le membre
             remove: Supprimer le membre
+        alert:
+            empty_list: Aucun membre configuré
+
+    subscription:
         status:
             subscribed: Inscrit
             unsubscribed: Désinscrit
-        alert:
-            empty_list: Aucun membre configuré
 
     mention:
         label:
@@ -892,6 +894,7 @@ ekyna_commerce:
             title: Abonnez-vous à notre newsletter
             content: Pour recevoir nos actualités et des offres spéciales !
             success: Vous êtes bien inscris à notre newsletter
+            unavailable: L'inscription à la newsletter n'est pas encore disponible.
         button:
             subscribe: S'inscrire
             unsubscribe: Se désinscrire

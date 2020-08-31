@@ -3,18 +3,17 @@
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Table\Type\Column\ConstantChoiceType;
-use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Bundle\CommerceBundle\Model\SubscriptionStatus;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\AbstractTableType;
 use Ekyna\Component\Table\TableBuilderInterface;
 
 /**
- * Class MemberType
+ * Class SubscriptionType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class MemberType extends ResourceTableType
+class SubscriptionType extends AbstractTableType
 {
     /**
      * @inheritDoc
@@ -22,13 +21,17 @@ class MemberType extends ResourceTableType
     public function buildTable(TableBuilderInterface $builder, array $options)
     {
         $builder
-            ->addColumn('email', BType\Column\AnchorType::class, [
-                'label'                => 'ekyna_core.field.email_address',
-                'route_name'           => 'ekyna_commerce_member_admin_show',
-                'route_parameters_map' => [
-                    'memberId' => 'id',
-                ],
-                'position'             => 10,
+            ->setSortable(false)
+            ->setBatchable(false)
+            ->setConfigurable(false)
+            ->setExportable(false)
+            ->setFilterable(false)
+            ->setProfileable(false)
+            ->addColumn('audience', BType\Column\AnchorType::class, [
+                'label'                => 'ekyna_commerce.audience.label.plural',
+                'route_name'           => 'ekyna_commerce_audience_admin_show',
+                'route_parameters_map' => ['audienceId' => 'audience.id'],
+                'position'             => 20,
             ])
             ->addColumn('status', ConstantChoiceType::class, [
                 'label'    => 'ekyna_core.field.status',
@@ -36,7 +39,7 @@ class MemberType extends ResourceTableType
                 'theme'    => true,
                 'position' => 30,
             ])
-            ->addColumn('actions', BType\Column\ActionsType::class, [
+            /*->addColumn('actions', BType\Column\ActionsType::class, [
                 'buttons' => [
                     [
                         'label'                => 'ekyna_core.button.edit',
@@ -44,7 +47,7 @@ class MemberType extends ResourceTableType
                         'class'                => 'warning',
                         'route_name'           => 'ekyna_commerce_member_admin_edit',
                         'route_parameters_map' => [
-                            'memberId' => 'id',
+                            'memberId' => 'member.id',
                         ],
                         'permission'           => 'edit',
                     ],
@@ -56,13 +59,9 @@ class MemberType extends ResourceTableType
                         'route_parameters_map' => [
                             'memberId' => 'id',
                         ],
-                        'permission'           => 'delete',
+                        'permission'           => 'member.delete',
                     ],
                 ],
-            ])
-            ->addFilter('email', CType\Filter\TextType::class, [
-                'label'    => 'ekyna_core.field.email',
-                'position' => 10,
-            ]);
+            ])*/;
     }
 }

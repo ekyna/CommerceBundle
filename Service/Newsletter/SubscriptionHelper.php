@@ -3,23 +3,30 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Newsletter;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\SubscriptionType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Newsletter\SubscriptionType as SubscriptionFormType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Table\Type\SubscriptionType as SubscriptionTableType;
+use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\NewsletterException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Newsletter\Event\MemberEvents;
+use Ekyna\Component\Commerce\Newsletter\Event\SubscriptionEvents;
 use Ekyna\Component\Commerce\Newsletter\Gateway\GatewayInterface;
 use Ekyna\Component\Commerce\Newsletter\Gateway\GatewayRegistry;
 use Ekyna\Component\Commerce\Newsletter\Model\MemberInterface;
-use Ekyna\Component\Commerce\Newsletter\Model\MemberStatuses;
-use Ekyna\Component\Commerce\Newsletter\Model\Subscription;
+use Ekyna\Component\Commerce\Newsletter\Model\NewsletterSubscription;
+use Ekyna\Component\Commerce\Newsletter\Model\SubscriptionStatus;
 use Ekyna\Component\Commerce\Newsletter\Repository\AudienceRepositoryInterface;
 use Ekyna\Component\Commerce\Newsletter\Repository\MemberRepositoryInterface;
+use Ekyna\Component\Commerce\Newsletter\Repository\SubscriptionRepositoryInterface;
 use Ekyna\Component\Resource\Dispatcher\ResourceEventDispatcherInterface;
 use Ekyna\Component\Resource\Event\ResourceEvent;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
 use Ekyna\Component\Resource\Model\ResourceInterface;
+use Ekyna\Component\Table\Extension\Core\Source\ArraySource;
+use Ekyna\Component\Table\FactoryInterface;
+use Ekyna\Component\Table\View\TableView;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -45,9 +52,19 @@ class SubscriptionHelper
     private $memberRepository;
 
     /**
+     * @var SubscriptionRepositoryInterface
+     */
+    private $subscriptionRepository;
+
+    /**
      * @var FormFactoryInterface
      */
     private $formFactory;
+
+    /**
+     * @var FactoryInterface
+     */
+    private $tableFactory;
 
     /**
      * @var GatewayRegistry
@@ -85,7 +102,9 @@ class SubscriptionHelper
      *
      * @param AudienceRepositoryInterface      $audienceRepository
      * @param MemberRepositoryInterface        $memberRepository
+     * @param SubscriptionRepositoryInterface  $subscriptionRepository
      * @param FormFactoryInterface             $formFactory
+     * @param FactoryInterface                 $tableFactory
      * @param GatewayRegistry                  $gatewayRegistry
      * @param ResourceEventDispatcherInterface $dispatcher
      * @param ValidatorInterface               $validator
@@ -95,35 +114,49 @@ class SubscriptionHelper
     public function __construct(
         AudienceRepositoryInterface $audienceRepository,
         MemberRepositoryInterface $memberRepository,
+        SubscriptionRepositoryInterface $subscriptionRepository,
         FormFactoryInterface $formFactory,
+        FactoryInterface $tableFactory,
         GatewayRegistry $gatewayRegistry,
         ResourceEventDispatcherInterface $dispatcher,
         ValidatorInterface $validator,
         EntityManagerInterface $manager,
         EngineInterface $engine
     ) {
-        $this->audienceRepository = $audienceRepository;
-        $this->memberRepository   = $memberRepository;
-        $this->formFactory        = $formFactory;
-        $this->gatewayRegistry    = $gatewayRegistry;
-        $this->dispatcher         = $dispatcher;
-        $this->validator          = $validator;
-        $this->manager            = $manager;
-        $this->engine             = $engine;
+        $this->audienceRepository     = $audienceRepository;
+        $this->memberRepository       = $memberRepository;
+        $this->subscriptionRepository = $subscriptionRepository;
+        $this->formFactory            = $formFactory;
+        $this->tableFactory           = $tableFactory;
+        $this->gatewayRegistry        = $gatewayRegistry;
+        $this->dispatcher             = $dispatcher;
+        $this->validator              = $validator;
+        $this->manager                = $manager;
+        $this->engine                 = $engine;
     }
 
     /**
      * Returns the subscription form.
      *
-     * @return FormInterface
+     * @return FormInterface|null
      */
-    public function getSubscriptionForm(): FormInterface
+    public function getSubscriptionForm(): ?FormInterface
     {
         if ($this->form) {
             return $this->form;
         }
 
-        return $this->form = $this->formFactory->create(SubscriptionType::class);
+        try {
+            $audience = $this->audienceRepository->findDefault();
+        } catch (CommerceExceptionInterface $e) {
+            return null;
+        }
+
+        $data = new NewsletterSubscription();
+
+        $data->addAudience($audience);
+
+        return $this->form = $this->formFactory->create(SubscriptionFormType::class, $data);
     }
 
     /**
@@ -135,56 +168,85 @@ class SubscriptionHelper
      */
     public function handleSubscription(Request $request): bool
     {
-        $form = $this->getSubscriptionForm();
+        if (!$form = $this->getSubscriptionForm()) {
+            return false;
+        }
 
         $form->handleRequest($request);
 
         $success = false;
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Subscription $subscription */
-            $subscription = $form->getData();
+            /** @var NewsletterSubscription $data */
+            $data = $form->getData();
 
-            foreach ($subscription->getAudiences() as $audience) {
-                if (!$member = $this->memberRepository->findOneByAudienceAndEmail($audience,
-                    $subscription->getEmail())) {
-                    /** @var MemberInterface $member */
-                    $member = $this->memberRepository->createNew();
-                    $member->setAudience($audience);
+            if (!$member = $this->memberRepository->findOneByEmail($data->getEmail())) {
+                $member = $this->memberRepository->createNew();
+                $member->setEmail($data->getEmail());
 
-                    // Initializes the member
-                    $event = $this->dispatch(MemberEvents::INITIALIZE, $member);
-                    if ($event->isPropagationStopped()) {
-                        foreach ($event->getErrors() as $error) {
-                            $form->addError(new FormError($error->getMessage()));
-                        }
-
-                        continue;
+                // Pre create the member
+                $event = $this->dispatch(MemberEvents::PRE_CREATE, $member);
+                if ($event->hasErrors()) {
+                    foreach ($event->getErrors() as $error) {
+                        $form->addError(new FormError($error->getMessage()));
                     }
+
+                    return false;
+                }
+            }
+
+            foreach ($data->getAudiences() as $audience) {
+                if (!$subscription = $member->getSubscription($audience)) {
+                    $subscription = $this->subscriptionRepository->createNew();
+                    $subscription
+                        ->setAudience($audience)
+                        ->setMember($member);
                 }
 
-                $member->setStatus(MemberStatuses::SUBSCRIBED);
+                $subscription->setStatus(SubscriptionStatus::SUBSCRIBED);
 
                 // Create member through gateway
                 $gateway = $this->gatewayRegistry->get($audience->getGateway());
-                if ($gateway->supports(GatewayInterface::CREATE_MEMBER)) {
-                    $gateway->createMember($member, $subscription);
+                if ($gateway->supports(GatewayInterface::CREATE_SUBSCRIPTION)) {
+                    $gateway->createSubscription($subscription, $data);
                 }
 
-                $this->manager->persist($member);
+                $this->manager->persist($subscription);
 
                 $success = true;
             }
 
+            $this->manager->persist($member);
+
             try {
                 $this->manager->flush();
             } /** @noinspection PhpRedundantCatchClauseInspection */ catch (NewsletterException $e) {
-                $form->addError(new FormError('The server encoutered an error.'));
+                $form->addError(new FormError('The server encountered an error.'));
 
                 return false;
             }
         }
 
         return $success;
+    }
+
+    /**
+     * Renders the member subscriptions.
+     *
+     * @param MemberInterface $member
+     *
+     * @return TableView
+     */
+    public function renderMemberSubscriptions(MemberInterface $member): TableView
+    {
+        $table = $this
+            ->tableFactory
+            ->createTable('member_subscriptions', SubscriptionTableType::class, [
+                'source' => new ArraySource($member->getSubscriptions()->toArray()),
+            ]);
+
+        $table->handleRequest();
+
+        return $table->createView();
     }
 
     /**
@@ -211,6 +273,8 @@ class SubscriptionHelper
             $parameters['email']    = $customer->getEmail();
         }
 
+        $member = $this->memberRepository->findOneByEmail($parameters['email']);
+
         $audiences = [];
         foreach ($this->findAudiences($parameters['public']) as $audience) {
             $datum = [
@@ -219,12 +283,18 @@ class SubscriptionHelper
                 'subscribed' => false,
             ];
 
-            if (!empty($parameters['email'])) {
-                $member = $this->memberRepository->findOneByAudienceAndEmail($audience, $parameters['email']);
+            if (!$member) {
+                $audiences[] = $datum;
+                continue;
+            }
 
-                if ($member && $member->getStatus() === MemberStatuses::SUBSCRIBED) {
-                    $datum['subscribed'] = true;
-                }
+            if (!$subscription = $member->getSubscription($audience)) {
+                $audiences[] = $datum;
+                continue;
+            }
+
+            if ($subscription->getStatus() === SubscriptionStatus::SUBSCRIBED) {
+                $datum['subscribed'] = true;
             }
 
             $audiences[] = $datum;
@@ -291,9 +361,10 @@ class SubscriptionHelper
      */
     public function subscribe(string $key, string $email): array
     {
+        // Find audience
         $audience = $this->audienceRepository->findOneByKey($key);
-
         if (!$audience) {
+            // Audience not found
             return [
                 'success' => false,
                 'errors'  => [
@@ -302,22 +373,14 @@ class SubscriptionHelper
             ];
         }
 
-        $member = $this->memberRepository->findOneByAudienceAndEmail($audience, $email);
-
-        if ($member && ($member->getStatus() === MemberStatuses::SUBSCRIBED)) {
-            return [
-                'success' => true,
-            ];
-        }
-
+        // Find member
+        $member = $this->memberRepository->findOneByEmail($email);
         if (!$member) {
-            /** @var MemberInterface $member */
+            // Member not found -> create member
             $member = $this->memberRepository->createNew();
-            $member
-                ->setAudience($audience)
-                ->setEmail($email);
+            $member->setEmail($email);
 
-            $event = $this->dispatch(MemberEvents::INITIALIZE, $member);
+            $event = $this->dispatch(MemberEvents::PRE_CREATE, $member);
 
             if ($event->isPropagationStopped()) {
                 $error = array_map(function (ResourceMessage $message) {
@@ -331,14 +394,51 @@ class SubscriptionHelper
                 return [
                     'success' => false,
                     'errors'  => [
-                        'global' => $error,
+                        'global' => implode(' ', $error),
                     ],
                 ];
             }
         }
 
-        $member->setStatus(MemberStatuses::SUBSCRIBED);
+        // Find subscription
+        $subscription = $member->getSubscription($audience);
+        if (!$subscription) {
+            // subscription not found -> create subscription
+            $subscription = $this->subscriptionRepository->createNew();
+            $subscription
+                ->setAudience($audience)
+                ->setMember($member);
 
+            $event = $this->dispatch(SubscriptionEvents::PRE_CREATE, $subscription);
+            if ($event->isPropagationStopped()) {
+                $error = array_map(function (ResourceMessage $message) {
+                    return $message->getMessage();
+                }, $event->getErrors());
+
+                if (empty($error)) {
+                    $error = 'The server encountered an error.';
+                }
+
+                return [
+                    'success' => false,
+                    'errors'  => [
+                        'global' => implode(' ', $error),
+                    ],
+                ];
+            }
+        }
+
+        // If subscribed
+        if ($subscription->getStatus() === SubscriptionStatus::SUBSCRIBED) {
+            return [
+                'success' => true,
+            ];
+        }
+
+        // Set status to subscribed
+        $subscription->setStatus(SubscriptionStatus::SUBSCRIBED);
+
+        // Validate member
         $list = $this->validator->validate($member);
         if ($list->count()) {
             $errors = [];
@@ -381,23 +481,31 @@ class SubscriptionHelper
      */
     public function unsubscribe(string $key, string $email): array
     {
+        $success = [
+            'success' => true,
+        ];
+
         $audience = $this->audienceRepository->findOneByKey($key);
 
         if (!$audience) {
-            return [
-                'success' => true,
-            ];
+            return $success;
         }
 
-        $member = $this->memberRepository->findOneByAudienceAndEmail($audience, $email);
+        $member = $this->memberRepository->findOneByEmail($email);
 
-        if (!$member || ($member->getStatus() === MemberStatuses::UNSUBSCRIBED)) {
-            return [
-                'success' => true,
-            ];
+        if (!$member) {
+            return $success;
         }
 
-        $member->setStatus(MemberStatuses::UNSUBSCRIBED);
+        if (!$subscription = $member->getSubscription($audience)) {
+            return $success;
+        }
+
+        if ($subscription->getStatus() === SubscriptionStatus::UNSUBSCRIBED) {
+            return $success;
+        }
+
+        $subscription->setStatus(SubscriptionStatus::UNSUBSCRIBED);
 
         try {
             $this->manager->persist($member);
@@ -411,13 +519,13 @@ class SubscriptionHelper
             ];
         }
 
-        return [
-            'success' => true,
-        ];
+        return $success;
     }
 
     /**
      * Returns the audiences.
+     *
+     * @param bool $public
      *
      * @return array
      */
