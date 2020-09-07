@@ -6,14 +6,24 @@
     <services>
 
         <!-- Widget helper -->
-        <service id="ekyna_commerce.widget_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper">
             <argument type="service" id="ekyna_user.user.provider"/>
             <argument type="service" id="ekyna_commerce.common.context_provider"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyRendererInterface"/>
-            <argument type="service" id="router"/>
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="translator"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <argument type="service" id="Symfony\Component\Form\FormFactoryInterface"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
+            <argument>%locales%</argument>
+            <argument type="collection"/><!-- Replaced by DI extension -->
+        </service>
+
+        <!-- Widget renderer -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer">
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper"/>
+            <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
+            <argument type="collection"/><!-- Replaced by DI extension -->
+            <tag name="twig.runtime"/>
         </service>
 
         <!-- Subject helper -->

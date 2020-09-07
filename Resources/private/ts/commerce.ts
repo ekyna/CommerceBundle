@@ -23,11 +23,11 @@ interface AddToCartEvent {
     modal: Ekyna.Modal
 }
 
-function dispatchAddToCartEvent(data: any, jqXHR:JQueryXHR, modal: Ekyna.Modal) {
-    let event:AddToCartEvent = {
+function dispatchAddToCartEvent(data: any, jqXHR: JQueryXHR, modal: Ekyna.Modal) {
+    let event: AddToCartEvent = {
         type: Modal.prototype.getContentType(jqXHR),
         data: data,
-        jqXHR : jqXHR,
+        jqXHR: jqXHR,
         success: '1' == jqXHR.getResponseHeader('X-Commerce-Success'),
         modal: modal
     };
@@ -43,16 +43,19 @@ function init(config) {
         customer: {
             selector: '#customer-widget',
             event: 'ekyna_commerce.customer',
+            template: Templates['@EkynaCommerce/Js/widget.html.twig'],
             debug: false
         },
         cart: {
             selector: '#cart-widget',
             event: 'ekyna_commerce.cart',
+            template: Templates['@EkynaCommerce/Js/widget.html.twig'],
             debug: false,
         },
         context: {
             selector: '#context-widget',
             event: 'ekyna_commerce.context',
+            template: Templates['@EkynaCommerce/Js/widget.html.twig'],
             debug: false,
         }
     }, config);

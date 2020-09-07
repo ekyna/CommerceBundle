@@ -2,17 +2,13 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Controller;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Widget\ContextType;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Class WidgetController
@@ -27,55 +23,28 @@ class WidgetController
     private $helper;
 
     /**
-     * @var EngineInterface
+     * @var WidgetRenderer
      */
-    private $templating;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private $renderer;
 
     /**
      * @var string
      */
     private $homeRoute;
 
-    /**
-     * @var array
-     */
-    private $locales;
-
 
     /**
      * Constructor.
      *
-     * @param WidgetHelper          $helper
-     * @param EngineInterface       $templating
-     * @param FormFactoryInterface  $formFactory
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param string                $homeRoute
-     * @param array                 $locales
+     * @param WidgetHelper   $helper
+     * @param WidgetRenderer $renderer
+     * @param string         $homeRoute
      */
-    public function __construct(
-        WidgetHelper $helper,
-        EngineInterface $templating,
-        FormFactoryInterface $formFactory,
-        UrlGeneratorInterface $urlGenerator,
-        string $homeRoute,
-        array $locales
-    ) {
-        $this->helper = $helper;
-        $this->templating = $templating;
-        $this->formFactory = $formFactory;
-        $this->urlGenerator = $urlGenerator;
+    public function __construct(WidgetHelper $helper, WidgetRenderer $renderer, string $homeRoute)
+    {
+        $this->helper    = $helper;
+        $this->renderer  = $renderer;
         $this->homeRoute = $homeRoute;
-        $this->locales = $locales;
     }
 
     /**
@@ -85,9 +54,9 @@ class WidgetController
      *
      * @return JsonResponse
      */
-    public function customerWidget(Request $request)
+    public function customerWidget(Request $request): Response
     {
-        $this->assertXhr($request);
+        $this->assertRequest($request, true);
 
         return new JsonResponse($this->helper->getCustomerWidgetData());
     }
@@ -99,15 +68,11 @@ class WidgetController
      *
      * @return Response
      */
-    public function customerDropdown(Request $request)
+    public function customerDropdown(Request $request): Response
     {
-        $this->assertXhr($request);
+        $this->assertRequest($request, true);
 
-        $content = $this->templating->render('@EkynaCommerce/Widget/customer.html.twig', [
-            'user' => $this->helper->getUser(),
-        ]);
-
-        $response = new Response($content);
+        $response = new Response($this->renderer->renderCustomerDropdown());
         $response->setPrivate();
 
         return $response;
@@ -120,9 +85,9 @@ class WidgetController
      *
      * @return JsonResponse
      */
-    public function cartWidget(Request $request)
+    public function cartWidget(Request $request): Response
     {
-        $this->assertXhr($request);
+        $this->assertRequest($request, true);
 
         return new JsonResponse($this->helper->getCartWidgetData());
     }
@@ -134,17 +99,11 @@ class WidgetController
      *
      * @return Response
      */
-    public function cartDropdown(Request $request)
+    public function cartDropdown(Request $request): Response
     {
-        $this->assertXhr($request);
+        $this->assertRequest($request, true);
 
-        $cart = $this->helper->getCart();
-
-        $content = $this->templating->render('@EkynaCommerce/Widget/cart.html.twig', [
-            'cart' => $cart,
-        ]);
-
-        $response = new Response($content);
+        $response = new Response($this->renderer->renderCartDropDown());
         $response->setPrivate();
 
         return $response;
@@ -157,9 +116,9 @@ class WidgetController
      *
      * @return JsonResponse
      */
-    public function contextWidget(Request $request)
+    public function contextWidget(Request $request): Response
     {
-        $this->assertXhr($request);
+        $this->assertRequest($request, true);
 
         return new JsonResponse($this->helper->getContextWidgetData());
     }
@@ -171,17 +130,11 @@ class WidgetController
      *
      * @return Response
      */
-    public function contextDropdown(Request $request)
+    public function contextDropdown(Request $request): Response
     {
-        $this->assertXhr($request);
+        $this->assertRequest($request, true);
 
-        $form = $this->createContextForm($request)->createView();
-
-        $content = $this->templating->render('@EkynaCommerce/Widget/context.html.twig', [
-            'form' => $form,
-        ]);
-
-        $response = new Response($content);
+        $response = new Response($this->renderer->renderContextDropDown());
         $response->setPrivate();
 
         return $response;
@@ -192,37 +145,21 @@ class WidgetController
      *
      * @param Request $request
      *
-     * @return RedirectResponse
+     * @return Response
      */
-    public function contextChange(Request $request)
+    public function contextChange(Request $request): Response
     {
-        if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException();
+        $this->assertRequest($request, false);
+
+        if ($response = $this->helper->handleContextChange($request)) {
+            return $response;
         }
 
-        $form = $this->createContextForm($request);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $new = $form->getData();
-
-            $this
-                ->helper
-                ->getContextProvider()
-                ->changeCurrencyAndCountry($new['currency'], $new['country'], $new['locale']);
-
-            if (!empty($new['route'])) {
-                $parameters = $new['param'] ?? [];
-                $parameters['_locale'] = $new['locale'];
-
-                return new RedirectResponse($this->urlGenerator->generate($new['route'], $parameters));
-            }
-        }
-
-        return new RedirectResponse($this->urlGenerator->generate($this->homeRoute, [
+        $url = $this->helper->getUrlGenerator()->generate($this->homeRoute, [
             '_locale' => $this->helper->getLocale(),
-        ]));
+        ]);
+
+        return new RedirectResponse($url, Response::HTTP_FOUND);
     }
 
     /**
@@ -232,16 +169,11 @@ class WidgetController
      *
      * @return RedirectResponse
      */
-    public function currencyChange(Request $request)
+    public function currencyChange(Request $request): Response
     {
-        if ($request->isXmlHttpRequest()) {
-            throw new NotFoundHttpException();
-        }
+        $this->assertRequest($request, false);
 
-        // Change current currency
-        if ($code = $request->request->get('currency')) {
-            $this->helper->getContextProvider()->changeCurrencyAndCountry($code);
-        }
+        $this->helper->handleCurrencyChange($request);
 
         if ($referer = $request->headers->get('referer')) {
             if ($parts = parse_url($referer)) {
@@ -251,34 +183,18 @@ class WidgetController
             }
         }
 
-        return new RedirectResponse("/");
+        return new RedirectResponse("/", Response::HTTP_FOUND);
     }
 
-    private function getContextFormData(Request $request): array
+    /**
+     * Request assertion.
+     *
+     * @param Request $request
+     * @param bool    $xhr
+     */
+    private function assertRequest(Request $request, bool $xhr = true): void
     {
-        return [
-            'currency' => $this->helper->getCurrency(),
-            'country'  => $this->helper->getCountry(),
-            'locale'   => $this->helper->getLocale(),
-            'route'    => $request->query->get('route'),
-            'param'    => $request->query->get('param'),
-        ];
-    }
-
-    private function createContextForm(Request $request): FormInterface
-    {
-        return $this
-            ->formFactory
-            ->create(ContextType::class, $this->getContextFormData($request), [
-                'method'  => 'POST',
-                'action'  => $this->helper->getUrlGenerator()->generate('ekyna_commerce_widget_context_change'),
-                'locales' => $this->locales,
-            ]);
-    }
-
-    private function assertXhr(Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
+        if ($xhr xor $request->isXmlHttpRequest()) {
             throw new NotFoundHttpException();
         }
     }

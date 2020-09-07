@@ -23,8 +23,6 @@
 
         <!-- Widget extension -->
         <service id="Ekyna\Bundle\CommerceBundle\Twig\WidgetExtension" public="false">
-            <argument type="service" id="ekyna_commerce.widget_helper"/>
-            <argument type="collection"/><!-- TODO Config -->
             <tag name="twig.extension"/>
         </service>
 

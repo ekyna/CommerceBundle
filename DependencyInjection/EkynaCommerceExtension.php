@@ -6,6 +6,8 @@ use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
+use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Mailchimp;
@@ -41,6 +43,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureFeatures($config['feature'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
+        $this->configureWidget($config['widget'], $container);
         $this->configureSaleFactory($container);
 
         if (in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
@@ -240,21 +243,6 @@ class EkynaCommerceExtension extends AbstractExtension
     }
 
     /**
-     * Configures the stock.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function configureStock(array $config, ContainerBuilder $container)
-    {
-        $container->setParameter('ekyna_commerce.stock_subject_defaults', $config['subject_default']);
-
-        $container
-            ->getDefinition('ekyna_commerce.availability_helper')
-            ->replaceArgument(2, $config['availability']['in_stock_limit']);
-    }
-
-    /**
      * Configures the sale factory classes.
      *
      * @param ContainerBuilder $container
@@ -302,6 +290,38 @@ class EkynaCommerceExtension extends AbstractExtension
                 Order\Model\OrderShipmentInterface::class => '%ekyna_commerce.order_shipment_item.class%',
             ],
         ]);
+    }
+
+    /**
+     * Configures the stock.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureStock(array $config, ContainerBuilder $container)
+    {
+        $container->setParameter('ekyna_commerce.stock_subject_defaults', $config['subject_default']);
+
+        $container
+            ->getDefinition('ekyna_commerce.availability_helper')
+            ->replaceArgument(2, $config['availability']['in_stock_limit']);
+    }
+
+    /**
+     * Configures the widgets.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureWidget(array $config, ContainerBuilder $container)
+    {
+        $container
+            ->getDefinition(WidgetHelper::class)
+            ->replaceArgument(8, $config['data']);
+
+        $container
+            ->getDefinition(WidgetRenderer::class)
+            ->replaceArgument(2, $config['template']);
     }
 
     /**

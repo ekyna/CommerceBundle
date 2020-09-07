@@ -95,12 +95,9 @@
 
         <!-- Widget controller -->
         <service id="Ekyna\Bundle\CommerceBundle\Controller\WidgetController">
-            <argument type="service" id="ekyna_commerce.widget_helper"/>
-            <argument type="service" id="templating"/>
-            <argument type="service" id="form.factory"/>
-            <argument type="service" id="router"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer"/>
             <argument>%ekyna_cms.home_route%</argument>
-            <argument>%ekyna_cms.public_locales%</argument>
         </service>
 
     </services>

@@ -36,15 +36,14 @@ class Configuration implements ConfigurationInterface
         $this->addFeatureSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
+        $this->addWidgetSection($rootNode);
 
         // Resources
-
         $resourceNode = $rootNode
             ->children()
                 ->arrayNode('pools')
                     ->addDefaultsIfNotSet()
                     ->children();
-
 
         $this->addCartResourcesSection($resourceNode);
         $this->addCommonResourcesSection($resourceNode);
@@ -446,6 +445,71 @@ class Configuration implements ConfigurationInterface
                                 ->integerNode('minimum_order_quantity')->defaultValue(1)->end()
                                 ->booleanNode('quote_only')->defaultFalse()->end()
                                 ->booleanNode('end_of_life')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `stock` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addWidgetSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('widget')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('data')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->arrayNode('cart')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('id')->defaultValue('cart-widget')->end()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.widget.cart.title')->end()
+                                        ->scalarNode('title')->defaultValue('ekyna_commerce.widget.cart.title')->end()
+                                        ->scalarNode('trans_domain')->defaultNull()->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('context')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('id')->defaultValue('context-widget')->end()
+                                        ->scalarNode('label')->defaultValue('<span class="country-flag %%1$s" title="%%2$s"></span><span class="currency">%%3$s</span><span class="locale">%%4$s</span>')->end()
+                                        ->scalarNode('title')->defaultValue('ekyna_commerce.widget.context.title')->end()
+                                        ->scalarNode('trans_domain')->defaultNull()->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('customer')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('id')->defaultValue('customer-widget')->end()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.widget.customer.title')->end()
+                                        ->scalarNode('title')->defaultValue('ekyna_commerce.widget.customer.title')->end()
+                                        ->scalarNode('trans_domain')->defaultNull()->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('currency')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('id')->defaultValue('currency-widget')->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('template')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('widget')->defaultValue('@EkynaCommerce/Js/widget.html.twig')->end()
+                                ->scalarNode('cart')->defaultValue('@EkynaCommerce/Widget/cart.html.twig')->end()
+                                ->scalarNode('context')->defaultValue('@EkynaCommerce/Widget/context.html.twig')->end()
+                                ->scalarNode('currency')->defaultValue('@EkynaCommerce/Widget/currency.html.twig')->end()
+                                ->scalarNode('customer')->defaultValue('@EkynaCommerce/Widget/customer.html.twig')->end()
                             ->end()
                         ->end()
                     ->end()
