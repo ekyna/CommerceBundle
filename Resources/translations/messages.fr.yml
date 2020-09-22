@@ -309,6 +309,7 @@ ekyna_commerce:
             unpaid: Impayé
             exchange_gain: Gain de change
             exchange_loss: Perte de change
+            adjustment: Ajustement
         alert:
             no_item: Aucun compte configuré
 
