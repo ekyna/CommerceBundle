@@ -41,7 +41,7 @@
         <!-- Sale item event listener -->
         <service id="acme_product.sale_item.event_subscriber"
                  class="Acme\ProductBundle\EventListener\SaleItemEventSubscriber">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

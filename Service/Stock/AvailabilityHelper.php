@@ -29,25 +29,25 @@ class AvailabilityHelper extends AbstractAvailabilityHelper
      *
      * @param FormatterFactory    $formatterFactory
      * @param TranslatorInterface $translator
-     * @param string              $prefix
      * @param int                 $inStockLimit
+     * @param string              $prefix
      */
     public function __construct(
         FormatterFactory $formatterFactory,
         TranslatorInterface $translator,
-        $inStockLimit = 100,
-        $prefix = 'ekyna_commerce.stock_subject.availability.'
+        int $inStockLimit = 100,
+        string $prefix = 'ekyna_commerce.stock_subject.availability.'
     ) {
         parent::__construct($formatterFactory, $inStockLimit);
 
         $this->translator = $translator;
-        $this->prefix = $prefix;
+        $this->prefix     = $prefix;
     }
 
     /**
      * @inheritdoc
      */
-    public function translate($id, array $parameters = [], $short = false)
+    public function translate(string $id, array $parameters = [], $short = false): string
     {
         return $this->translator->trans($this->prefix . ($short ? 'short.' : 'long.') . $id, $parameters);
     }

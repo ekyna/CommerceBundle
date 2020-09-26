@@ -45,7 +45,7 @@
         <service id="ekyna_commerce.stock_unit.resolver"
                  class="Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.cache"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
         </service>
@@ -111,7 +111,7 @@
         <service id="ekyna_commerce.stock_unit.assigner"
                  class="Ekyna\Component\Commerce\Stock\Assigner\StockUnitAssigner">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.updater"/>
@@ -136,8 +136,7 @@
         </service>
 
         <!-- Stock prioritizer -->
-        <service id="ekyna_commerce.stock_prioritizer"
-                 class="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"
+        <service id="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
@@ -146,7 +145,13 @@
             <argument type="service" id="ekyna_commerce.stock_assignment.manager"/>
             <argument type="service" id="ekyna_commerce.stock_assignment.dispatcher"/>
             <argument type="service" id="ekyna_commerce.stock.logger"/>
+            <tag name="twig.runtime"/>
         </service>
+        <service id="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface"
+                 alias="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"/>
+        <!-- TODO Remove -->
+        <service id="ekyna_commerce.stock_prioritizer"
+                 alias="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"/>
 
         <!-- Stock renderer -->
         <service id="ekyna_commerce.stock.stock_renderer"
@@ -158,11 +163,13 @@
             <argument>%ekyna_commerce.stock_unit.list_template%</argument>
             <argument>%ekyna_commerce.stock_assignment.list_template%</argument>
             <argument>%ekyna_commerce.subject_stock.list_template%</argument>
+            <tag name="twig.runtime"/>
         </service>
 
         <!-- Warehouse provider -->
         <service id="Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider" public="false">
             <argument type="service" id="ekyna_commerce.warehouse.repository"/>
+            <tag name="twig.runtime"/>
         </service>
         <service id="Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface"
                  alias="Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider"/>

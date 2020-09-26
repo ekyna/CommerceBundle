@@ -54,7 +54,7 @@
         <service id="ekyna_commerce.supplier_product.event_subscriber"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierProductEventSubscriber"
                  public="false">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
             <tag name="resource.event_subscriber"/>
         </service>

@@ -72,7 +72,7 @@
                  public="false">
             <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <tag name="serializer.normalizer"/>
             <tag name="serializer.denormalizer"/>
         </service>

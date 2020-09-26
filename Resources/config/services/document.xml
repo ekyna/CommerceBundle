@@ -40,7 +40,7 @@
             <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer"/>
             <argument type="service" id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="collection"/><!-- Replaced by DI extension -->
             <argument>%locale%</argument>
             <tag name="twig.runtime"/>
@@ -48,7 +48,7 @@
 
         <!-- Document rows builder -->
         <service id="Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="ekyna_commerce.shipment.subject_calculator"/>
             <argument type="collection"/><!-- Replaced by DI extension -->
             <tag name="twig.runtime"/>

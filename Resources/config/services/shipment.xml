@@ -36,7 +36,7 @@
         <service id="ekyna_commerce.shipment.subject_calculator"
                  class="Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculator"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <call method="setInvoiceCalculator">
                 <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             </call>

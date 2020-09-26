@@ -45,6 +45,8 @@ ekyna_commerce:
     button:
         print_label: Étiquette
         toggle_quantities: Tout / Aucun
+        add_to_cart: Ajouter au panier
+        pre_order: Pré-commander
 
     status:
         accepted: Acceptée
@@ -385,9 +387,9 @@ ekyna_commerce:
             remove: Supprimer le panier
             transform: Transformer le panier
             notify: Notifier le panier
-            add: Ajouter au panier
             continue: Continuer mes achats
             cart: Voir mon panier
+            add: Ajouter au panier
         alert:
             no_item: Aucun panier configuré
         message:

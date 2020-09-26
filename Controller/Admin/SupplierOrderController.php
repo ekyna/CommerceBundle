@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Notify\NotifyBuilder;
@@ -356,7 +357,7 @@ class SupplierOrderController extends ResourceController
             return 0 < $id;
         });
 
-        $helper   = $this->get('ekyna_commerce.subject_helper');
+        $helper   = $this->get(SubjectHelper::class);
         $subjects = [];
 
         foreach ($order->getItems() as $item) {

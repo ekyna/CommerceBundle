@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Subject;
 use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
 use Ekyna\Bundle\CoreBundle\Modal;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -42,9 +43,9 @@ class SubjectController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function addToCart(Request $request)
+    public function addToCart(Request $request): Response
     {
         $provider = $request->attributes->get('provider');
         $identifier = $request->attributes->get('identifier');

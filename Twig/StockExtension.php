@@ -3,11 +3,11 @@
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
-use Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
-use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
-use Ekyna\Component\Commerce\Stock\Provider\WarehouseProviderInterface;
+use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer;
+use Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -20,47 +20,6 @@ use Twig\TwigTest;
  */
 class StockExtension extends AbstractExtension
 {
-    /**
-     * @var StockRenderer
-     */
-    private $stockRenderer;
-
-    /**
-     * @var AvailabilityHelperInterface
-     */
-    private $availabilityHelper;
-
-    /**
-     * @var StockPrioritizerInterface
-     */
-    private $stockPrioritizer;
-
-    /**
-     * @var WarehouseProviderInterface
-     */
-    private $warehouseProvider;
-
-
-    /**
-     * Constructor.
-     *
-     * @param StockRenderer               $stockRenderer
-     * @param AvailabilityHelperInterface $availabilityHelper
-     * @param StockPrioritizerInterface   $stockPrioritizer
-     * @param WarehouseProviderInterface  $warehouseProvider
-     */
-    public function __construct(
-        StockRenderer $stockRenderer,
-        AvailabilityHelperInterface $availabilityHelper,
-        StockPrioritizerInterface $stockPrioritizer,
-        WarehouseProviderInterface $warehouseProvider
-    ) {
-        $this->stockRenderer = $stockRenderer;
-        $this->availabilityHelper = $availabilityHelper;
-        $this->stockPrioritizer = $stockPrioritizer;
-        $this->warehouseProvider = $warehouseProvider;
-    }
-
     /**
      * @inheritdoc
      */
@@ -99,12 +58,12 @@ class StockExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'stock_subject_availability',
-                [$this->availabilityHelper, 'getAvailabilityMessage'],
+                [AvailabilityHelper::class, 'getAvailabilityMessage'],
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
                 'stock_can_prioritize',
-                [$this->stockPrioritizer, 'canPrioritizeSale']
+                [StockPrioritizer::class, 'canPrioritizeSale']
             ),
         ];
     }
@@ -133,17 +92,17 @@ class StockExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'render_subject_stock_units',
-                [$this->stockRenderer, 'renderSubjectStockUnits'],
+                [StockRenderer::class, 'renderSubjectStockUnits'],
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'render_subjects_stock',
-                [$this->stockRenderer, 'renderSubjectsStock'],
+                [StockRenderer::class, 'renderSubjectsStock'],
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'commerce_warehouse',
-                [$this->warehouseProvider, 'getWarehouse']
+                [WarehouseProvider::class, 'getWarehouse']
             ),
         ];
     }

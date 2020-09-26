@@ -27,24 +27,31 @@
         </service>
 
         <!-- Subject helper -->
-        <service id="ekyna_commerce.subject_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"
-                 lazy="true">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
-            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
+            <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
+            <tag name="twig.runtime"/>
         </service>
         <service id="Ekyna\Component\Commerce\Subject\SubjectHelperInterface"
-                 alias="ekyna_commerce.subject_helper"/>
+                 alias="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
+        <!-- TODO Remove -->
+        <service id="ekyna_commerce.subject_helper"
+                 alias="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
 
         <!-- Availability helper -->
-        <service id="ekyna_commerce.availability_helper"
-                 class="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"
-                 lazy="true">
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper">
             <argument type="service" id="ekyna_commerce.util.formatter_factory"/>
             <argument type="service" id="translator"/>
             <argument>100</argument>
+            <tag name="twig.runtime"/>
         </service>
+        <service id="\Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface"
+                 alias="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"/>
+        <!-- TODO Remove -->
+        <service id="ekyna_commerce.availability_helper"
+                 alias="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"/>
 
         <!-- Constants helper -->
         <service id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper">
@@ -57,7 +64,7 @@
         <service id="ekyna_commerce.sale_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\SaleHelper"
                  lazy="true">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="ekyna_commerce.sale_factory"/>
             <argument type="service" id="ekyna_commerce.sale_updater"/>
             <argument type="service" id="ekyna_commerce.common.view_builder"/>
@@ -71,7 +78,7 @@
             <argument type="service" id="ekyna_commerce.sale_helper"/>
             <argument type="service" id="ekyna_commerce.cart.session_provider"/>
             <argument type="service" id="ekyna_core.modal"/>
-            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
             <argument>%ekyna_commerce.cart_item.class%</argument>
             <argument>%kernel.debug%</argument>
         </service>
@@ -90,7 +97,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper"
                  lazy="true">
             <argument type="service" id="payum"/>
-            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
             <argument type="service" id="ekyna_commerce.cache"/>
             <argument>%kernel.debug%</argument>
         </service>
@@ -112,7 +119,7 @@
         <service id="ekyna_commerce.shipment.label_renderer"
                  class="Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer"
                  lazy="true">
-            <argument type="service" id="templating"/>
+            <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator"/>
             <argument type="service" id="ekyna_setting.manager"/>
         </service>

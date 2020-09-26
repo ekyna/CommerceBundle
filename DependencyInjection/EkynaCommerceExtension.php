@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Mailchimp;
@@ -303,7 +304,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.stock_subject_defaults', $config['subject_default']);
 
         $container
-            ->getDefinition('ekyna_commerce.availability_helper')
+            ->getDefinition(AvailabilityHelper::class)
             ->replaceArgument(2, $config['availability']['in_stock_limit']);
     }
 

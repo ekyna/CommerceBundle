@@ -48,7 +48,7 @@
                             {{- item.saleItem.designation -}}
                         </td>
                         <td class="text-right">
-                            {% set subject = item.saleItem|subject_get %}
+                            {% set subject = item.saleItem|subject_get(false) %}
                             {% if subject is not null %}{{ subject|cms_tags({'text': false, 'badge': false}) }}{% endif %}
                         </td>
                         <td>{{ item.saleItem.reference }}</td>

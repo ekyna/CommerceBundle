@@ -57,8 +57,8 @@
         <!-- Sale item validators -->
         <service id="ekyna_commerce.sale_item_configure.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemAvailabilityValidator">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <argument type="service" id="ekyna_commerce.availability_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"/>
             <tag name="validator.constraint_validator" />
         </service>
         <service id="ekyna_commerce.sale_item.validator"
@@ -100,7 +100,7 @@
         <service id="ekyna_commerce.supplier_product.validator"
                  class="Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SupplierProductValidator">
             <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <tag name="validator.constraint_validator" />
         </service>
 

@@ -45,6 +45,8 @@ ekyna_commerce:
     button:
         print_label: Print label
         toggle_quantities: All / None
+        add_to_cart: Add to cart
+        pre_order: Pre order
 
     status:
         accepted: Accepted

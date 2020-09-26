@@ -6,7 +6,7 @@
         </div>
         <div class="col-md-10">
             <div class="show-widget show-widget-inline">
-                {% set subject = relative|subject_get %}
+                {% set subject = relative|subject_get(false) %}
                 {% if subject is null %}
                     <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
                 {% else %}

@@ -23,8 +23,8 @@
         <!-- Availability view type -->
         <service id="ekyna_commerce.sale.availability_view_type"
                  class="Ekyna\Component\Commerce\Common\View\AvailabilityViewType">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
-            <argument type="service" id="ekyna_commerce.availability_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"/>
             <tag name="ekyna_commerce.view_type"/>
         </service>
 
@@ -39,7 +39,7 @@
                 <argument type="service" id="translator"/>
             </call>
             <call method="setSubjectHelper">
-                <argument type="service" id="ekyna_commerce.subject_helper"/>
+                <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             </call>
         </service>
 

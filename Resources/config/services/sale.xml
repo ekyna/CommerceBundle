@@ -110,7 +110,7 @@
             <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             <argument type="service" id="ekyna_commerce.invoice.subject_calculator"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="ekyna_commerce.subject.purchase_cost_guesser"/>
             <argument type="service" id="ekyna_commerce.shipment_address.resolver"/>
             <argument type="service" id="ekyna_commerce.shipment.weight_calculator"/>

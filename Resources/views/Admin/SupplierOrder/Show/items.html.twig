@@ -64,7 +64,7 @@
             {% if item.product is null -%}
                 <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
             {% else %}
-                {% set subject = item.product|subject_get %}
+                {% set subject = item.product|subject_get(false) %}
                 {% if subject is null %}
                     <em>{{ 'ekyna_core.value.undefined'|trans }}</em>
                 {% else %}

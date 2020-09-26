@@ -65,7 +65,7 @@
                 <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             </call>
             <call method="setSubjectHelper">
-                <argument type="service" id="ekyna_commerce.subject_helper"/>
+                <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             </call>
             <call method="setInChargeResolver">
                 <argument type="service" id="ekyna_commerce.common.in_charge_resolver"/>

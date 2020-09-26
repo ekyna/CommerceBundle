@@ -8,7 +8,7 @@
         <!-- Add to cart event subscriber -->
         <service id="ekyna_commerce.add_to_cart.event_subscriber"
                  class="Ekyna\Bundle\CommerceBundle\EventListener\AddToCartEventSubscriber">
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="translator"/>
             <argument type="service" id="router"/>
             <tag name="kernel.event_subscriber"/>

@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 
 /**
  * Class SupplierProductContext
@@ -44,7 +45,7 @@ class SupplierProductContext implements Context, KernelAwareContext
     {
         /** @var \Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface $acmeProductRepository */
         $acmeProductRepository = $this->getContainer()->get('acme_product.product.repository');
-        $subjectHelper = $this->getContainer()->get('ekyna_commerce.subject_helper');
+        $subjectHelper = $this->getContainer()->get(SubjectHelper::class);
         $supplierRepository = $this->getContainer()->get('ekyna_commerce.supplier.repository');
         $supplierProductRepository = $this->getContainer()->get('ekyna_commerce.supplier_product.repository');
 

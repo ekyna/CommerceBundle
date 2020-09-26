@@ -112,7 +112,7 @@
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory"/>
             <argument type="service" id="ekyna_commerce.shipment.label_renderer"/>
             <argument type="service" id="ekyna_commerce.subject.label_renderer"/>
-            <argument type="service" id="ekyna_commerce.subject_helper"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="local_commerce_filesystem"/>
         </service>
 
