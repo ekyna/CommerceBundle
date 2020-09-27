@@ -169,7 +169,7 @@ class EkynaCommerceExtension extends AbstractExtension
         if (!class_exists('DrewM\\MailChimp\\MailChimp')) {
             throw new LogicException(
                 "To use MailChimp newsletter gateway, you must install drewm/mailchimp-api first.\n" .
-                "Please run: composer require drewm/mailchimp-api"
+                "Please run: composer require drewm/mailchimp-api:^2.5"
             );
         }
 
@@ -195,7 +195,7 @@ class EkynaCommerceExtension extends AbstractExtension
         if (!class_exists('SendinBlue\\Client\\Configuration')) {
             throw new LogicException(
                 "To use SendInBlue newsletter gateway, you must install sendinblue/api-v3-sdk first.\n" .
-                "Please run: composer require sendinblue/api-v3-sdk \"6.x.x\""
+                "Please run: composer require sendinblue/api-v3-sdk:^6.4"
             );
         }
 
