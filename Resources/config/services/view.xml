@@ -53,6 +53,9 @@
             <call method="setAmountCalculatorFactory">
                 <argument type="service" id="Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory"/>
             </call>
+            <call method="setAuthorizationChecker">
+                <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface"/>
+            </call>
             <tag name="ekyna_commerce.view_type"/>
         </service>
 

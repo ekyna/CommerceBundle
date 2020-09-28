@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Common\View\LineView;
 use Ekyna\Component\Commerce\Common\View\SaleView;
 use Ekyna\Component\Resource\Locale\LocaleProviderInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class SaleViewType
@@ -26,6 +27,11 @@ class SaleViewType extends AbstractViewType
      * @var AmountCalculatorFactory
      */
     private $amountCalculatorFactory;
+
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
 
 
     /**
@@ -49,6 +55,16 @@ class SaleViewType extends AbstractViewType
     }
 
     /**
+     * Sets the authorization checker.
+     *
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     */
+    public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker): void
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
+    /**
      * @inheritDoc
      */
     public function configureOptions(Model\SaleInterface $sale, SaleView $view, array &$options)
@@ -61,6 +77,10 @@ class SaleViewType extends AbstractViewType
         }
         if (!isset($options['ati'])) {
             $options['ati'] = $sale->isAtiDisplayMode();
+        }
+
+        if ($this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            return;
         }
 
         if ($sale->isReleased()) {
