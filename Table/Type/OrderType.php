@@ -319,6 +319,10 @@ class OrderType extends ResourceTableType
                 'choices'  => Model\OrderStates::getChoices(),
                 'position' => 80,
             ])
+            ->addFilter('paymentMethod', ResourceType::class, [
+                'resource' => 'ekyna_commerce.payment_method',
+                'position' => 90,
+            ])
             ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.payment_state',
                 'choices'  => Model\PaymentStates::getChoices([
@@ -326,7 +330,7 @@ class OrderType extends ResourceTableType
                     PaymentStates::STATE_SUSPENDED,
                     PaymentStates::STATE_UNKNOWN,
                 ]),
-                'position' => 90,
+                'position' => 100,
             ])
             ->addFilter('shipmentState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.shipment_state',
@@ -335,7 +339,7 @@ class OrderType extends ResourceTableType
                     ShipmentStates::STATE_SHIPPED,
                     ShipmentStates::STATE_NONE,
                 ]),
-                'position' => 100,
+                'position' => 110,
             ])
             ->addFilter('invoiceState', CType\Filter\ChoiceType::class, [
                 'label'    => 'ekyna_commerce.sale.field.invoice_state',
@@ -343,7 +347,7 @@ class OrderType extends ResourceTableType
                     //InvoiceStates::STATE_NEW,
                     InvoiceStates::STATE_INVOICED,
                 ]),
-                'position' => 110,
+                'position' => 120,
             ])
             /*->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 120,

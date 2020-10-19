@@ -7,9 +7,9 @@
         }) }}
     </div>
     <div class="col-md-3">
-        {{ show_row(sale.grandTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.ati_total',
-            'class': 'sale-grand-total',
+        {{ show_row(sale.paidTotal, 'currency_subject_amount', {
+            'label': 'ekyna_commerce.sale.field.paid_total',
+            'class': 'sale-paid-total',
             'subject': sale,
             'label_col': 6
         }) }}

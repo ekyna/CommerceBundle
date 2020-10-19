@@ -44,8 +44,7 @@
         <tr>
             <td colspan="4" class="text-right">{{ adjustment.type_badge|raw }}</td>
             <td class="text-right">{{ adjustment.quantity }}</td>
-            <td colspan="2">{{ adjustment.reason_label }}</td>
-            <td colspan="2">{{ adjustment.note }}</td>
+            <td colspan="4"><em>{{ adjustment.created_at }}</em> {{ adjustment.reason_label }}{% if adjustment.note is not empty %} : {{ adjustment.note }}{% endif %}</td>
             <td class="actions">
             {% for action in adjustment.actions %}
                 <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
