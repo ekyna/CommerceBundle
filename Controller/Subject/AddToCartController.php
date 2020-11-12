@@ -9,11 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class SubjectController
+ * Class AddToCartController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Subject
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SubjectController
+class AddToCartController
 {
     /**
      * @var Modal\Renderer
@@ -35,7 +35,7 @@ class SubjectController
     public function __construct(Modal\Renderer $modalRenderer, CartHelper $cartHelper)
     {
         $this->modalRenderer = $modalRenderer;
-        $this->cartHelper = $cartHelper;
+        $this->cartHelper    = $cartHelper;
     }
 
     /**
@@ -45,9 +45,9 @@ class SubjectController
      *
      * @return Response
      */
-    public function addToCart(Request $request): Response
+    public function __invoke(Request $request): Response
     {
-        $provider = $request->attributes->get('provider');
+        $provider   = $request->attributes->get('provider');
         $identifier = $request->attributes->get('identifier');
 
         $subject = $this->cartHelper->getSaleHelper()->getSubjectHelper()->find($provider, $identifier);

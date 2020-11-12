@@ -47,6 +47,7 @@ ekyna_commerce:
         toggle_quantities: Tout / Aucun
         add_to_cart: Ajouter au panier
         pre_order: Pré-commander
+        resupply_alert: Alerte réassort
 
     status:
         accepted: Acceptée
@@ -1297,6 +1298,22 @@ ekyna_commerce:
         message:
             choose: Veuillez choisir un point relais.
 
+    resupply_alert:
+        subscribe:
+            message: >
+                Saisissez votre adresse email et validez ce formulaire pour recevoir
+                une notification lorsque cet article sera de nouveau disponible.
+            success: >
+                Votre demande a bien été prise en compte : vous recevrez
+                une notification lorsque cet article sera de nouveau disponible.
+        unsubscribe:
+            message: >
+                Vous êtes déjà enregistré pour recevoir une notification sur
+                la disponibilité de cet article. Souhaitez-vous vous désinscrire ?
+            confirm: Confirmer la désinscription
+            success: >
+                Votre demande a bien été prise en compte: vous ne recevrez plus
+                de notification concernant la disponibilité de cet article.
     return:
         label:
             singular: Retour

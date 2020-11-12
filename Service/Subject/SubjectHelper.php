@@ -4,10 +4,11 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
 use Ekyna\Bundle\AdminBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
-use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
+use Ekyna\Component\Commerce\Subject\Model\SubjectReferenceInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelper as BaseHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -31,25 +32,35 @@ class SubjectHelper extends BaseHelper
      */
     private $translator;
 
+    /**
+     * @var array
+     */
+    private $config;
+
 
     /**
      * Constructor.
      *
      * @param SubjectProviderRegistryInterface $registry
      * @param EventDispatcherInterface         $eventDispatcher
+     * @param Features                         $features
      * @param ResourceHelper                   $resourceHelper
      * @param TranslatorInterface              $translator
+     * @param array                            $config
      */
     public function __construct(
         SubjectProviderRegistryInterface $registry,
         EventDispatcherInterface $eventDispatcher,
+        Features $features,
         ResourceHelper $resourceHelper,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        array $config = []
     ) {
-        parent::__construct($registry, $eventDispatcher);
+        parent::__construct($registry, $eventDispatcher, $features);
 
         $this->resourceHelper = $resourceHelper;
-        $this->translator = $translator;
+        $this->translator     = $translator;
+        $this->config         = $config;
     }
 
     /**
@@ -62,31 +73,11 @@ class SubjectHelper extends BaseHelper
      */
     public function renderAddToCartButton(SubjectInterface $subject, array $options = []): string
     {
-        $options = array_replace_recursive([
-            'class'        => '',
-            'icon'         => null,
-            'attr'         => [],
-            'add_to_cart'  => [
-                'label' => 'ekyna_commerce.button.add_to_cart',
-                'class' => 'add_to_cart',
-            ],
-            'pre_order'    => [
-                'label' => 'ekyna_commerce.button.pre_order',
-                'class' => 'pre_order',
-            ],
-            'out_of_stock' => [
-                'label' => 'ekyna_commerce.stock_subject.availability.long.out_of_stock',
-                'class' => 'out_of_stock',
-            ],
-            'quote_only'   => [
-                'label' => 'ekyna_commerce.stock_subject.availability.long.quote_only',
-                'class' => 'quote_only',
-            ],
-            'end_of_life'  => [
-                'label' => 'ekyna_commerce.stock_subject.availability.long.end_of_life',
-                'class' => 'end_of_life',
-            ],
-        ], $options);
+        $options = array_replace_recursive(
+            $this->addToCartDefaults(),
+            $this->config['add_to_cart'],
+            $options
+        );
 
         $attr = $options['attr'];
         if (!isset($attr['href'])) {
@@ -96,45 +87,48 @@ class SubjectHelper extends BaseHelper
             $attr['href'] = $href;
         }
 
-        $type = null;
+        $type     = null;
         $disabled = false;
 
         $mode = $subject->getStockMode();
         if (0 === $min = $subject->getMinimumOrderQuantity()) {
             $min = 1;
         }
-        $aQty = $subject->getAvailableStock();
-        $vQty = $subject->getVirtualStock();
-        $eda = $subject->getEstimatedDateOfArrival();
+        $aQty  = $subject->getAvailableStock();
+        $vQty  = $subject->getVirtualStock();
+        $eda   = $subject->getEstimatedDateOfArrival();
         $today = (new \DateTime())->setTime(23, 59, 59, 999999);
 
         /** @see \Ekyna\Component\Commerce\Stock\Helper\AbstractAvailabilityHelper::getAvailability */
         if (!$subject instanceof StockSubjectInterface) {
-            $type = $options['add_to_cart'];
+            $type                     = $options['add_to_cart'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif ($subject->isQuoteOnly()) {
-            $type = $options['quote_only'];
+            $type     = $options['quote_only'];
             $disabled = true;
         } elseif ($mode === StockSubjectModes::MODE_DISABLED) {
-            $type = $options['add_to_cart'];
+            $type                     = $options['add_to_cart'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif ($min <= $aQty) {
-            $type = $options['add_to_cart'];
+            $type                     = $options['add_to_cart'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif (($min <= $vQty) && $eda && ($today < $eda)) {
-            $type = $options['pre_order'];
+            $type                     = $options['pre_order'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif ($subject->isEndOfLife()) {
-            $type = $options['end_of_life'];
+            $type     = $options['end_of_life'];
             $disabled = true;
+        } elseif ($this->features->isEnabled(Features::RESUPPLY_ALERT)) { // TODO Check stock mode ?
+            $type                        = $options['resupply_alert'];
+            $attr['data-resupply-alert'] = $this->generateResupplyAlertUrl($subject);
         } else {
-            $type = $options['out_of_stock'];
+            $type     = $options['out_of_stock'];
             $disabled = true;
         }
 
         $classes = explode(' ', $options['class']);
         if ($disabled) {
-            $classes[] = 'disabled';
+            $classes[]        = 'disabled';
             $attr['disabled'] = 'disabled';
         }
         array_push($classes, ...explode(' ', $type['class']));
@@ -157,7 +151,7 @@ class SubjectHelper extends BaseHelper
     /**
      * @inheritDoc
      */
-    public function generateAddToCartUrl($subject, $path = true): ?string
+    public function generateAddToCartUrl($subject, bool $path = true): ?string
     {
         $subject = $this->resolveSubject($subject);
 
@@ -176,14 +170,18 @@ class SubjectHelper extends BaseHelper
     /**
      * @inheritDoc
      */
-    public function generateResupplyAlertUrl($subject, $path = true): ?string
+    public function generateResupplyAlertUrl($subject, bool $path = true): ?string
     {
+        if (!$this->features->isEnabled(Features::RESUPPLY_ALERT)) {
+            return null;
+        }
+
         $subject = $this->resolveSubject($subject);
 
         $type = $path ? UrlGeneratorInterface::ABSOLUTE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
         return $this->resourceHelper->getUrlGenerator()->generate(
-            'ekyna_commerce_subject_resupply_alert',
+            'ekyna_commerce_subject_resupply_alert_subscribe',
             [
                 'provider'   => $subject::getProviderName(),
                 'identifier' => $subject->getIdentifier(),
@@ -229,13 +227,13 @@ class SubjectHelper extends BaseHelper
     /**
      * Resolves the subject.
      *
-     * @param SubjectRelativeInterface|SubjectInterface $subject
+     * @param SubjectReferenceInterface|SubjectInterface $subject
      *
-     * @return SubjectInterface
+     * @return SubjectInterface|null
      */
-    private function resolveSubject($subject)
+    private function resolveSubject($subject): ?SubjectInterface
     {
-        if ($subject instanceof SubjectRelativeInterface) {
+        if ($subject instanceof SubjectReferenceInterface) {
             if (null === $subject = $this->resolve($subject, false)) {
                 return null;
             }
@@ -246,5 +244,39 @@ class SubjectHelper extends BaseHelper
         }
 
         return $subject;
+    }
+
+    /**
+     * Returns the 'add to cart' button default config.
+     *
+     * @return array
+     */
+    private function addToCartDefaults(): array
+    {
+        return [
+            'class'        => '',
+            'icon'         => null,
+            'attr'         => [],
+            'add_to_cart'  => [
+                'label' => 'ekyna_commerce.button.add_to_cart',
+                'class' => 'add_to_cart',
+            ],
+            'pre_order'    => [
+                'label' => 'ekyna_commerce.button.pre_order',
+                'class' => 'pre_order',
+            ],
+            'out_of_stock' => [
+                'label' => 'ekyna_commerce.stock_subject.availability.long.out_of_stock',
+                'class' => 'out_of_stock',
+            ],
+            'quote_only'   => [
+                'label' => 'ekyna_commerce.stock_subject.availability.long.quote_only',
+                'class' => 'quote_only',
+            ],
+            'end_of_life'  => [
+                'label' => 'ekyna_commerce.stock_subject.availability.long.end_of_life',
+                'class' => 'end_of_life',
+            ],
+        ];
     }
 }

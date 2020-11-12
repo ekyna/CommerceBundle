@@ -1393,6 +1393,23 @@
 {%- endblock ekyna_commerce_recipient_widget -%}
 
 
+{%- block ekyna_commerce_resupply_alert_subscribe_widget -%}
+    <div class="alert alert-info">
+        <p>{{ 'ekyna_commerce.resupply_alert.subscribe.message'|trans }}</p>
+    </div>
+    {{ form_row(form.email) }}
+{%- endblock ekyna_commerce_resupply_alert_subscribe_widget -%}
+
+
+{%- block ekyna_commerce_resupply_alert_unsubscribe_widget -%}
+    <div class="alert alert-warning">
+        <p>{{ 'ekyna_commerce.resupply_alert.unsubscribe.message'|trans }}</p>
+    </div>
+    {{ form_row(form.email) }}
+    {{ form_row(form.confirm) }}
+{%- endblock ekyna_commerce_resupply_alert_unsubscribe_widget -%}
+
+
 {%- block ekyna_commerce_vat_number_widget -%}
     {%- if form.vars.config is defined -%}
     <div class="input-group commerce-vat-number" data-config='{{ form.vars.config|json_encode }}'>

@@ -30,8 +30,10 @@
         <service id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper">
             <argument type="service" id="ekyna_commerce.subject.provider_registry"/>
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
             <argument type="service" id="ekyna_admin.helper.resource_helper"/>
             <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
+            <argument type="collection"/><!-- Replaced by DI extension -->
             <tag name="twig.runtime"/>
         </service>
         <service id="Ekyna\Component\Commerce\Subject\SubjectHelperInterface"
@@ -47,11 +49,20 @@
             <argument>100</argument>
             <tag name="twig.runtime"/>
         </service>
-        <service id="\Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface"
+        <service id="Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface"
                  alias="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"/>
         <!-- TODO Remove -->
         <service id="ekyna_commerce.availability_helper"
                  alias="Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper"/>
+
+        <!-- Availability helper -->
+        <service id="Ekyna\Bundle\CommerceBundle\Service\Stock\ResupplyAlertHelper">
+            <argument type="service" id="ekyna_commerce.resupply_alert.repository"/>
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
+            <argument type="service" id="Symfony\Component\Form\FormFactoryInterface"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+        </service>
 
         <!-- Constants helper -->
         <service id="Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper">

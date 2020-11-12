@@ -109,6 +109,23 @@ function init(config) {
     }
 
     $(document)
+        // Resupply alert modal
+        .on('click', 'a[data-resupply-alert]:not([data-resupply-alert=""])', function (e: JQueryEventObject) {
+            if (e.ctrlKey || e.shiftKey || e.button === 2) {
+                return true;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            let modal: Ekyna.Modal = new Modal();
+            modal.load({
+                url: $(e.currentTarget).data('resupply-alert'),
+                method: 'GET'
+            });
+
+            return false;
+        })
         // Sale item modal
         .on('click', 'a[data-add-to-cart]:not([data-add-to-cart=""])', function (e: JQueryEventObject) {
             if (e.ctrlKey || e.shiftKey || e.button === 2) {

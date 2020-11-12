@@ -47,6 +47,7 @@ ekyna_commerce:
         toggle_quantities: All / None
         add_to_cart: Add to cart
         pre_order: Pre order
+        resupply_alert: Resupply alert
 
     status:
         accepted: Accepted
@@ -1263,6 +1264,23 @@ ekyna_commerce:
             plural: Relay points
         message:
             choose: Please select a relay poit.
+
+    resupply_alert:
+        subscribe:
+            message: >
+                Fill your email address and submit this form to receive a notification
+                when this product will be available.
+            success: >
+                Your subscription has been saved : you will receive a notification
+                when this product will be available.
+        unsubscribe:
+            message: >
+                You already subscribed to availability notification for this product.
+                Do you want to unsubscribe ?
+            confirm: Confirm unsubscription
+            success: >
+                Your subscription has been canceled. You will no longer receive
+                availability notification for this product.
 
     return:
         label:

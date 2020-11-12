@@ -599,6 +599,7 @@ class SaleItemController extends AbstractSaleController
     private function syncItem(SaleItemInterface $item): bool
     {
         $helper = $this->get(SubjectHelperInterface::class);
+
         $changed = $helper->sync($item);
 
         foreach ($item->getChildren() as $child) {

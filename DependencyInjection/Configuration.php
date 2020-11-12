@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
         $this->addFeatureSection($rootNode);
         $this->addPricingSection($rootNode);
         $this->addStockSection($rootNode);
+        $this->addSubjectSection($rootNode);
         $this->addWidgetSection($rootNode);
 
         // Resources
@@ -52,10 +53,11 @@ class Configuration implements ConfigurationInterface
         $this->addNotifyResourcesSection($resourceNode);
         $this->addOrderResourcesSection($resourceNode);
         $this->addPaymentResourcesSection($resourceNode);
-        $this->addShipmentResourcesSection($resourceNode);
-        $this->addSupplierResourcesSection($resourceNode);
-        $this->addQuoteResourcesSection($resourceNode);
         $this->addPricingResourcesSection($resourceNode);
+        $this->addQuoteResourcesSection($resourceNode);
+        $this->addShipmentResourcesSection($resourceNode);
+        $this->addStockResourcesSection($resourceNode);
+        $this->addSupplierResourcesSection($resourceNode);
         $this->addSupportResourcesSection($resourceNode);
 
         return $treeBuilder;
@@ -341,12 +343,14 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode(Features::CUSTOMER_CONTACT)
                             ->canBeEnabled()
                             ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->booleanNode('account')
-                                        ->defaultValue(false)
-                                    ->end()
+                            ->children()
+                                ->booleanNode('account')
+                                    ->defaultValue(false)
                                 ->end()
                             ->end()
+                        ->end()
+                        ->arrayNode(Features::RESUPPLY_ALERT)
+                            ->canBeEnabled()
                         ->end()
                     ->end()
                 ->end()
@@ -445,6 +449,76 @@ class Configuration implements ConfigurationInterface
                                 ->integerNode('minimum_order_quantity')->defaultValue(1)->end()
                                 ->booleanNode('quote_only')->defaultFalse()->end()
                                 ->booleanNode('end_of_life')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    /**
+     * Adds `subject` section.
+     *
+     * @param ArrayNodeDefinition $node
+     */
+    private function addSubjectSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('subject')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('add_to_cart')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('class')->defaultValue('')->end()
+                                ->scalarNode('icon')->defaultNull()->end()
+                                ->arrayNode('attr')
+                                    ->useAttributeAsKey('name')
+                                    ->prototype('scalar')->end()
+                                ->end()
+                                ->arrayNode('add_to_cart')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.button.add_to_cart')->end()
+                                        ->scalarNode('class')->defaultValue('add_to_cart')->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('pre_order')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.button.pre_order')->end()
+                                        ->scalarNode('class')->defaultValue('pre_order')->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('resupply_alert')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.button.resupply_alert')->end()
+                                        ->scalarNode('class')->defaultValue('resupply_alert')->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('out_of_stock')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.stock_subject.availability.long.out_of_stock')->end()
+                                        ->scalarNode('class')->defaultValue('out_of_stock')->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('quote_only')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.stock_subject.availability.long.quote_only')->end()
+                                        ->scalarNode('class')->defaultValue('quote_only')->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('end_of_life')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('label')->defaultValue('ekyna_commerce.stock_subject.availability.long.end_of_life')->end()
+                                        ->scalarNode('class')->defaultValue('end_of_life')->end()
+                                    ->end()
+                                ->end()
                             ->end()
                         ->end()
                     ->end()
@@ -1335,6 +1409,42 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * Adds `stock resources` section.
+     *
+     * @param NodeBuilder $node
+     */
+    private function addStockResourcesSection(NodeBuilder $node)
+    {
+        $node
+            ->arrayNode('resupply_alert')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Stock\Entity\ResupplyAlert')->end()
+                    ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ResupplyAlertRepository')->end()
+                    ->scalarNode('controller')->end()
+                    ->scalarNode('form')->end()
+                    ->scalarNode('table')->end()
+                    ->scalarNode('parent')->end()
+                ->end()
+            ->end()
+            ->arrayNode('warehouse')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->variableNode('templates')->defaultValue([
+                        '_form.html' => '@EkynaCommerce/Admin/Warehouse/_form.html',
+                        'show.html'  => '@EkynaCommerce/Admin/Warehouse/show.html',
+                    ])->end()
+                    ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Stock\Entity\Warehouse')->end()
+                    ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\WarehouseRepository')->end()
+                    ->scalarNode('controller')->end()
+                    ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType')->end()
+                    ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\WarehouseType')->end()
+                    ->scalarNode('parent')->end()
+                ->end()
+            ->end();
+    }
+
+    /**
      * Adds `supplier resources` section.
      *
      * @param NodeBuilder $node
@@ -1493,21 +1603,6 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                ->end()
-            ->end()
-            ->arrayNode('warehouse')
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->variableNode('templates')->defaultValue([
-                        '_form.html' => '@EkynaCommerce/Admin/Warehouse/_form.html',
-                        'show.html'  => '@EkynaCommerce/Admin/Warehouse/show.html',
-                    ])->end()
-                    ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Stock\Entity\Warehouse')->end()
-                    ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\WarehouseRepository')->end()
-                    ->scalarNode('controller')->end()
-                    ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType')->end()
-                    ->scalarNode('table')->defaultValue('Ekyna\Bundle\CommerceBundle\Table\Type\WarehouseType')->end()
-                    ->scalarNode('parent')->end()
                 ->end()
             ->end();
     }

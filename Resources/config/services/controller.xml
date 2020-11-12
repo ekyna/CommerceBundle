@@ -87,10 +87,19 @@
             <argument type="service" id="ekyna_commerce.payment_helper"/>
         </service>
 
-        <!-- Subject controller -->
-        <service id="Ekyna\Bundle\CommerceBundle\Controller\Subject\SubjectController">
+        <!-- Subject add to cart controller -->
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Subject\AddToCartController">
             <argument type="service" id="ekyna_core.modal"/>
             <argument type="service" id="ekyna_commerce.cart_helper"/>
+        </service>
+
+        <!-- Subject resupply alert controller -->
+        <service id="Ekyna\Bundle\CommerceBundle\Controller\Subject\ResupplyAlertController">
+            <argument type="service" id="ekyna_core.modal"/>
+            <argument type="service" id="ekyna_commerce.customer.security_provider"/>
+            <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Stock\ResupplyAlertHelper"/>
+            <argument type="service" id="Symfony\Component\Templating\EngineInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Features"/>
         </service>
 
         <!-- Widget controller -->

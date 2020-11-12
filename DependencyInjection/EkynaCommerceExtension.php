@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
@@ -44,6 +45,7 @@ class EkynaCommerceExtension extends AbstractExtension
         $this->configureFeatures($config['feature'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureStock($config['stock'], $container);
+        $this->configureSubject($config['subject'], $container);
         $this->configureWidget($config['widget'], $container);
         $this->configureSaleFactory($container);
 
@@ -294,7 +296,7 @@ class EkynaCommerceExtension extends AbstractExtension
     }
 
     /**
-     * Configures the stock.
+     * Configures the stock services.
      *
      * @param array            $config
      * @param ContainerBuilder $container
@@ -309,7 +311,20 @@ class EkynaCommerceExtension extends AbstractExtension
     }
 
     /**
-     * Configures the widgets.
+     * Configures the subject services.
+     *
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureSubject(array $config, ContainerBuilder $container)
+    {
+        $container
+            ->getDefinition(SubjectHelper::class)
+            ->replaceArgument(5, $config);
+    }
+
+    /**
+     * Configures the widgets services.
      *
      * @param array            $config
      * @param ContainerBuilder $container
