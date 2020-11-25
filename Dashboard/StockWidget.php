@@ -121,7 +121,7 @@ class StockWidget extends AbstractWidgetType
             'col_lg_min' => 4,
             'col_md'     => 4,
             'col_lg'     => 4,
-            'css_path'   => '/bundles/ekynacommerce/css/admin-dashboard.css',
+            'css_path'   => 'bundles/ekynacommerce/css/admin-dashboard.css',
         ]);
     }
 

@@ -76,7 +76,7 @@ class DebtWidget extends AbstractWidgetType
             'frame'    => false,
             'position' => 9997,
             'col_md'   => 8,
-            'css_path' => '/bundles/ekynacommerce/css/admin-dashboard.css',
+            'css_path' => 'bundles/ekynacommerce/css/admin-dashboard.css',
         ]);
     }
 

@@ -289,7 +289,7 @@
         <img src="{{ payment.method.media.path|imagine_filter('commerce_method') }}"
              alt="{{ payment.method.media.title }}" class="img-responsive">
     {%- else -%}
-        <img src="{{ asset('bundles/ekynacommerce/img/money.png') }}"
+        <img src="{{ absolute_url(asset('bundles/ekynacommerce/img/money.png')) }}"
              alt="{{ payment.method.title }}" class="img-responsive">
     {%- endif -%}
 {%- endblock ekyna_commerce_checkout_payment_image -%}
@@ -434,7 +434,7 @@
                                 <img src="{{ method.media.path|imagine_filter('commerce_method') }}"
                                      alt="{{ method.media.title }}" class="img-responsive">
                             {%- else -%}
-                                <img src="{{ asset(default_image_path) }}" alt="{{ default_image_alt|trans }}"
+                                <img src="{{ absolute_url(asset(default_image_path)) }}" alt="{{ default_image_alt|trans }}"
                                      class="img-responsive">
                             {%- endif -%}
                         </label>

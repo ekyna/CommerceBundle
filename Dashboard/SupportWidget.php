@@ -86,7 +86,7 @@ class SupportWidget extends AbstractWidgetType
             'title'    => 'ekyna_commerce.ticket.label.plural',
             'position' => 1000,
             'col_md'   => 12,
-            'css_path' => '/bundles/ekynacommerce/css/support.css',
+            'css_path' => 'bundles/ekynacommerce/css/support.css',
         ]);
     }
 

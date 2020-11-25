@@ -64,7 +64,7 @@ class ExportWidget extends AbstractWidgetType
         $resolver->setDefaults([
             'frame'    => false,
             'position' => 9996,
-            'css_path' => '/bundles/ekynacommerce/css/admin-dashboard.css',
+            'css_path' => 'bundles/ekynacommerce/css/admin-dashboard.css',
         ]);
     }
 

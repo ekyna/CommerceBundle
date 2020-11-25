@@ -16,7 +16,7 @@
 {% block stylesheets %}
     {{ parent() }}
     {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
-        <link href="{{ asset('bundles/ekynacommerce/css/support.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/support.css')) }}" rel="stylesheet" type="text/css"/>
     {%- endif %}
 {% endblock %}
 

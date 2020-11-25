@@ -275,7 +275,7 @@ class StatWidget extends AbstractWidgetType
         $resolver->setDefaults([
             'frame'    => false,
             'position' => 9999,
-            'css_path' => '/bundles/ekynacommerce/css/admin-dashboard.css',
+            'css_path' => 'bundles/ekynacommerce/css/admin-dashboard.css',
         ]);
     }
 

@@ -52,5 +52,5 @@
 
 {% block stylesheets -%}
     {{ parent() }}
-    <link href="{{ asset('bundles/ekynacommerce/css/checkout.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/checkout.css')) }}" type="text/css" rel="stylesheet"/>
 {%- endblock stylesheets %}

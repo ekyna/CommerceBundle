@@ -9,6 +9,7 @@ import * as Form from 'ekyna-form';
 import * as Ui from 'ekyna-ui';
 import * as Bootstrap from 'bootstrap';
 import * as Modal from 'ekyna-modal';
+import * as Flags from 'ekyna-flags';
 
 //noinspection JSUnusedLocalSymbols
 let bs = Bootstrap;
@@ -72,16 +73,7 @@ function init(config) {
     if (config.context) {
         config.context.debug = config.debug;
         contextWidget = new Widget(config.context);
-
-        /** Same in src/Ekyna/Bundle/CoreBundle/Resources/private/js/form/phone-number.js */
-        if (0 === $('link#core-flags-stylesheet').length) {
-            let stylesheet = document.createElement('link');
-            stylesheet.id = 'core-flags-stylesheet';
-            stylesheet.href = '/bundles/ekynacore/css/flags.css';
-            stylesheet.type = 'text/css';
-            stylesheet.rel = 'stylesheet';
-            $('head').append(stylesheet);
-        }
+        Flags.load();
     }
 
     if (customerWidget || cartWidget || contextWidget) {
