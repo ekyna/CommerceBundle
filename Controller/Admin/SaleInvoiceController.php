@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -211,6 +212,10 @@ class SaleInvoiceController extends AbstractSaleController
      */
     public function removeAction(Request $request)
     {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
+            throw new AccessDeniedHttpException('You are not allowed to delete this resource.');
+        }
+
         $context = $this->loadContext($request);
 
         $resourceName = $this->config->getResourceName();
@@ -225,6 +230,25 @@ class SaleInvoiceController extends AbstractSaleController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var SaleInterface $sale */
+            $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
+
+            $redirect = $this->generateResourcePath($sale);
+
+            try {
+                $event = $this->archive($invoice);
+            } catch (PdfException $e) {
+                $this->addFlash('ekyna_commerce.document.message.failed_to_generate', 'danger');
+
+                return $this->redirect($redirect);
+            }
+
+            if ($event->hasErrors()) {
+                $event->toFlashes($this->getFlashBag());
+
+                return $this->redirect($redirect);
+            }
+
             // TODO use ResourceManager
             $event = $this->getOperator()->delete($invoice);
             if (!$isXhr) {
@@ -232,14 +256,11 @@ class SaleInvoiceController extends AbstractSaleController
             }
 
             if (!$event->hasErrors()) {
-                /** @var SaleInterface $sale */
-                $sale = $context->getResource($this->getParentConfiguration()->getResourceName());
-
                 if ($isXhr) {
                     return $this->buildXhrSaleViewResponse($sale);
                 }
 
-                return $this->redirect($this->generateResourcePath($sale));
+                return $this->redirect($redirect);
             } else {
                 foreach ($event->getErrors() as $error) {
                     $form->addError(new FormError($error->getMessage()));

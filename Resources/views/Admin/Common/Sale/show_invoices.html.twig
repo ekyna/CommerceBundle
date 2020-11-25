@@ -98,12 +98,14 @@
                         <span class="fa fa-pencil"></span>
                     </a>
                     {%- endif %}
+                    {% if is_granted('ROLE_SUPER_ADMIN') -%}
                     <a href="{{ admin_resource_path(invoice, 'remove') }}"
                        id="{{ invoiceId }}_remove"
                        class="btn btn-danger btn-xs"
                        title="{{ 'ekyna_core.button.remove'|trans }}">
                         <span class="fa fa-trash"></span>
                     </a>
+                    {%- endif %}
                 </td>
             </tr>
         {% else %}

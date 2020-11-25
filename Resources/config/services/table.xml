@@ -22,6 +22,14 @@
             <tag name="table.type"/>
         </service>
 
+        <!-- Order invoice table type -->
+        <service id="ekyna_commerce.order_invoice.table_type"
+                 class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType"><!-- TODO use parameter defined by config builder -->
+            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface"/>
+            <argument>%ekyna_commerce.order_invoice.class%</argument>
+            <tag name="table.type"/>
+        </service>
+
         <!-- Cart(s) column type -->
         <service id="Ekyna\Bundle\CommerceBundle\Table\Column\CartType">
             <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
