@@ -52,12 +52,21 @@
 {%- endif %}
 <div class="row">
     <div class="col-md-4">
-        {{ show_row(sale.invoiceTotal, 'currency_subject_amount', {
-            'label': 'ekyna_commerce.sale.field.invoice_total',
-            'class': 'sale-invoice-total',
-            'subject': sale,
-            'label_col': 6
-        }) }}
+        {% if sale is sale_with_invoice -%}
+            {{ show_row(sale.invoiceTotal, 'currency_subject_amount', {
+                'label': 'ekyna_commerce.sale.field.invoice_total',
+                'class': 'sale-invoice-total',
+                'subject': sale,
+                'label_col': 6
+            }) }}
+        {%- else -%}
+            {{ show_row(sale.grandTotal, 'currency_subject_amount', {
+                'label': 'ekyna_commerce.sale.field.ati_total',
+                'class': 'sale-grand-total',
+                'subject': sale,
+                'label_col': 6
+            }) }}
+        {%- endif %}
     </div>
     <div class="col-md-4">
         {{ show_row(sale.paidTotal, 'currency_subject_amount', {
