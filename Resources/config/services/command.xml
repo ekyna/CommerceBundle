@@ -145,7 +145,7 @@
         <!-- Stock integrity command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\StockIntegrityCommand">
             <argument type="service" id="doctrine.dbal.default_connection"/>
-            <argument type="service" id="ekyna_commerce.stock_subject_updater"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface"/>
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
             <argument type="service" id="Ekyna\Component\Commerce\Stock\Overflow\OverflowHandler"/>
             <argument type="service" id="swiftmailer.mailer.report"/>

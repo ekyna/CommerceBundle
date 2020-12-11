@@ -6,10 +6,10 @@ use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
+use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
-use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\AbstractExtension;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Bridge\Mailchimp;
@@ -20,6 +20,7 @@ use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order;
 use Ekyna\Component\Commerce\Pricing\Api;
 use Ekyna\Component\Commerce\Quote;
+use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 
@@ -52,6 +53,23 @@ class EkynaCommerceExtension extends AbstractExtension
         if (in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
             $this->loader->load('services_dev_test.xml');
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        parent::prepend($container);
+
+        $container->prependExtensionConfig('doctrine', [
+            'dbal' => [
+                'types' => DoctrineBundleMapping::buildTypesConfiguration(),
+            ],
+            'orm'  => [
+                'mappings' => DoctrineBundleMapping::buildMappingConfiguration(),
+            ],
+        ]);
     }
 
     /**
@@ -303,7 +321,9 @@ class EkynaCommerceExtension extends AbstractExtension
      */
     private function configureStock(array $config, ContainerBuilder $container)
     {
-        $container->setParameter('ekyna_commerce.stock_subject_defaults', $config['subject_default']);
+        $container
+            ->getDefinition(StockSubjectUpdaterInterface::class)
+            ->replaceArgument(2, $config['subject_default']);
 
         $container
             ->getDefinition(AvailabilityHelper::class)
@@ -338,22 +358,5 @@ class EkynaCommerceExtension extends AbstractExtension
         $container
             ->getDefinition(WidgetRenderer::class)
             ->replaceArgument(2, $config['template']);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function prepend(ContainerBuilder $container)
-    {
-        parent::prepend($container);
-
-        $container->prependExtensionConfig('doctrine', [
-            'dbal' => [
-                'types' => DoctrineBundleMapping::buildTypesConfiguration(),
-            ],
-            'orm'  => [
-                'mappings' => DoctrineBundleMapping::buildMappingConfiguration(),
-            ],
-        ]);
     }
 }

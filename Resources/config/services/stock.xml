@@ -129,10 +129,11 @@
         </service>
 
         <!-- Stock subject updater -->
-        <service id="ekyna_commerce.stock_subject_updater"
+        <service id="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface"
                  class="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater">
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.supplier_product.repository"/>
+            <argument type="collection"/><!-- Replaced by DI extension -->
         </service>
 
         <!-- Stock prioritizer -->

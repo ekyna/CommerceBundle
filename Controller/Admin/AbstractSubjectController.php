@@ -7,6 +7,7 @@ use Ekyna\Bundle\CommerceBundle\Model\SubjectOrderExport;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectOrderExporter;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
+use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Stream;
@@ -116,7 +117,7 @@ abstract class AbstractSubjectController extends ResourceController
             return false;
         }
 
-        return $this->get('ekyna_commerce.stock_subject_updater')->update($subject);
+        return $this->get(StockSubjectUpdaterInterface::class)->update($subject);
     }
 
     /**

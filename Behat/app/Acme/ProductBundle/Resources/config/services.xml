@@ -34,7 +34,7 @@
         <service id="acme_product.product.event_subscriber"
                  class="Acme\ProductBundle\EventListener\ProductEventSubscriber">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <argument type="service" id="ekyna_commerce.stock_subject_updater"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdaterInterface"/>
             <tag name="resource.event_subscriber"/>
         </service>
 
