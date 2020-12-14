@@ -64,6 +64,13 @@ ekyna_commerce_supplier_order_admin_notify:
     requirements:
         supplierOrderId: \d+
 
+ekyna_commerce_supplier_order_admin_recalculate:
+    path: /{supplierOrderId}/recalculate
+    defaults: { _controller: "ekyna_commerce.supplier_order.controller:recalculateAction" }
+    methods: [GET]
+    requirements:
+        supplierOrderId: \d+
+
 ekyna_commerce_supplier_order_admin_template:
     path: /{supplierOrderId}/template/{id}
     defaults:

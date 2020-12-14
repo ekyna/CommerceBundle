@@ -163,7 +163,7 @@
 
         <!-- Stock unit price update command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\StockUnitPriceUpdateCommand">
-            <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface"/>
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
             <tag name="console.command"/>
         </service>

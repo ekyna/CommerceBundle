@@ -18,7 +18,9 @@ use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
+use Ekyna\Component\Commerce\Supplier\Updater\SupplierOrderUpdaterInterface;
 use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +36,7 @@ class SupplierOrderController extends ResourceController
     /**
      * @inheritdoc
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request): Response
     {
         if ($request->isXmlHttpRequest()) {
             throw new NotFoundHttpException('Supplier order creation through XMLHttpRequest is not yet implemented.');
@@ -45,7 +47,7 @@ class SupplierOrderController extends ResourceController
         $context = $this->loadContext($request);
 
         /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface $resource */
-        $resource     = $this->createNew($context);
+        $resource = $this->createNew($context);
         $resourceName = $this->config->getResourceName();
         $context->addResource($resourceName, $resource);
 
@@ -115,9 +117,9 @@ class SupplierOrderController extends ResourceController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function submitAction(Request $request)
+    public function submitAction(Request $request): Response
     {
         $this->isGranted('EDIT');
 
@@ -171,7 +173,7 @@ class SupplierOrderController extends ResourceController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $dispatcher = $this->get('ekyna_resource.event_dispatcher');
-            $event      = $dispatcher->createResourceEvent($resource);
+            $event = $dispatcher->createResourceEvent($resource);
             $dispatcher->dispatch(SupplierOrderEvents::PRE_SUBMIT, $event);
 
             if (!$event->hasErrors()) {
@@ -224,7 +226,7 @@ class SupplierOrderController extends ResourceController
      *
      * @return Response
      */
-    public function cancelAction(Request $request)
+    public function cancelAction(Request $request): Response
     {
         if ($request->isXmlHttpRequest()) {
             throw $this->createNotFoundException();
@@ -263,7 +265,7 @@ class SupplierOrderController extends ResourceController
      *
      * @return Response
      */
-    public function summaryAction(Request $request)
+    public function summaryAction(Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
             throw $this->createNotFoundException();
@@ -305,13 +307,44 @@ class SupplierOrderController extends ResourceController
     }
 
     /**
+     * Recalculate action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function recalculateAction(Request $request): Response
+    {
+        $context = $this->loadContext($request);
+
+        /** @var SupplierOrderInterface $order */
+        $order = $context->getResource();
+
+        $this->isGranted('EDIT', $order);
+
+        if ($order->getState() === SupplierOrderStates::STATE_COMPLETED) {
+            return $this->redirectToReferer($this->generateResourcePath($order));
+        }
+
+        $updater = $this->get(SupplierOrderUpdaterInterface::class);
+
+        if ($updater->updateTotals($order)) {
+            $event = $this->getOperator()->update($order);
+
+            $event->toFlashes($this->getFlashBag());
+        }
+
+        return $this->redirectToReferer($this->generateResourcePath($order));
+    }
+
+    /**
      * Render action.
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function renderAction(Request $request)
+    public function renderAction(Request $request): Response
     {
         $context = $this->loadContext($request);
 
@@ -340,7 +373,7 @@ class SupplierOrderController extends ResourceController
      *
      * @return Response
      */
-    public function labelAction(Request $request)
+    public function labelAction(Request $request): Response
     {
         $context = $this->loadContext($request);
 
@@ -357,7 +390,7 @@ class SupplierOrderController extends ResourceController
             return 0 < $id;
         });
 
-        $helper   = $this->get(SubjectHelper::class);
+        $helper = $this->get(SubjectHelper::class);
         $subjects = [];
 
         foreach ($order->getItems() as $item) {
@@ -378,7 +411,7 @@ class SupplierOrderController extends ResourceController
             $labels[0]->setGeocode($geocode);
         }
 
-        $date  = $order->getOrderedAt() ?? new \DateTime();
+        $date = $order->getOrderedAt() ?? new \DateTime();
         $extra = sprintf('%s (%s)', $order->getNumber(), $date->format('Y-m-d'));
         foreach ($labels as $label) {
             $label->setExtra($extra);
@@ -398,13 +431,13 @@ class SupplierOrderController extends ResourceController
      *
      * @return Response
      */
-    public function notifyAction(Request $request)
+    public function notifyAction(Request $request): Response
     {
         if ($request->isXmlHttpRequest()) {
             throw $this->createNotFoundException('Not yet supported.');
         }
 
-        $context      = $this->loadContext($request);
+        $context = $this->loadContext($request);
         $resourceName = $this->config->getResourceName();
         /** @var SupplierOrderInterface $resource */
         $resource = $context->getResource($resourceName);
@@ -453,7 +486,7 @@ class SupplierOrderController extends ResourceController
      *
      * @return JsonResponse
      */
-    public function templateAction(Request $request)
+    public function templateAction(Request $request): Response
     {
         $context = $this->loadContext($request);
 
@@ -498,8 +531,11 @@ class SupplierOrderController extends ResourceController
      *
      * @return \Symfony\Component\Form\FormInterface
      */
-    protected function createNotifyForm(SupplierOrderInterface $order, Notify $notification, $footer = true)
-    {
+    protected function createNotifyForm(
+        SupplierOrderInterface $order,
+        Notify $notification,
+        bool $footer = true
+    ): FormInterface {
         $action = $this->generateResourcePath($order, 'notify');
 
         $form = $this->createForm(NotifyType::class, $notification, [

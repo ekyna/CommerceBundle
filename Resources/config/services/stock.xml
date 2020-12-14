@@ -122,7 +122,7 @@
         <service id="ekyna_commerce.stock_unit.linker"
                  class="Ekyna\Component\Commerce\Stock\Linker\StockUnitLinker">
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
-            <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface"/>
             <argument type="service" id="ekyna_commerce.stock_unit.updater"/>
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>

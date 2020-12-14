@@ -27,6 +27,13 @@
             'path': admin_resource_path(supplierOrder, 'notify')
         }) }}
     {% endif -%}
+    {% if supplierOrder is not completed_supplier_order -%}
+        {{ ui_button('ekyna_core.button.recalculate', {
+            'theme': 'default',
+            'type': 'link',
+            'path': admin_resource_path(supplierOrder, 'recalculate')
+        }) }}
+    {% endif -%}
     {{- ui_button('ekyna_commerce.supplier_order.button.render', {
         'path': path('ekyna_commerce_supplier_order_admin_render', {'supplierOrderId': supplierOrder.id, '_format': 'pdf'}),
         'type': 'link',

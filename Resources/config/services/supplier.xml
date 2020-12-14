@@ -33,14 +33,6 @@
         <service id="ekyna_commerce.supplier_order.state_resolver"
                  class="Ekyna\Component\Commerce\Supplier\Resolver\SupplierOrderStateResolver"/>
 
-        <!-- Supplier order calculator -->
-        <service id="ekyna_commerce.supplier_order.calculator"
-                 class="Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculator">
-            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
-            <argument type="service" id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"/>
-            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
-        </service>
-
         <!-- Supplier order number generator -->
         <service id="ekyna_commerce.supplier_order.number_generator"
                  class="Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator">
@@ -50,9 +42,25 @@
             <argument>%kernel.debug%</argument>
         </service>
 
+        <!-- Supplier order calculator -->
+        <service id="Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface"
+                 class="Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculator">
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface"/>
+            <tag name="doctrine.event_listener" event="onClear" lazy="true" />
+        </service>
+
+        <!-- Supplier order updater -->
+        <service id="Ekyna\Component\Commerce\Supplier\Updater\SupplierOrderUpdaterInterface"
+                 class="Ekyna\Component\Commerce\Supplier\Updater\SupplierOrderUpdater">
+            <argument type="service" id="ekyna_commerce.supplier_order.number_generator"/>
+            <argument type="service" id="ekyna_commerce.supplier_order.state_resolver"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+        </service>
+
         <!-- Supplier product event listener -->
-        <service id="ekyna_commerce.supplier_product.event_subscriber"
-                 class="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierProductEventSubscriber"
+        <service id="Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierProductEventSubscriber"
                  public="false">
             <argument type="service" id="Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper"/>
             <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
@@ -60,8 +68,7 @@
         </service>
 
         <!-- Supplier* abstract event listener -->
-        <service id="ekyna_commerce.supplier.abstract_listener"
-                 class="Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener"
+        <service id="Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener"
                  abstract="true">
             <call method="setPersistenceHelper">
                 <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
@@ -75,38 +82,31 @@
         </service>
 
         <!-- Supplier order event listener -->
-        <service id="ekyna_commerce.supplier_order.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener"
+        <service id="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber"
+                 parent="Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener"
                  public="false">
-            <argument type="service" id="ekyna_commerce.supplier_order.number_generator"/>
-            <argument type="service" id="ekyna_commerce.supplier_order.calculator"/>
-            <argument type="service" id="ekyna_commerce.supplier_order.state_resolver"/>
-            <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Supplier\Updater\SupplierOrderUpdaterInterface"/>
             <argument type="service" id="ekyna_commerce.warehouse.repository"/>
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier order item event listener -->
-        <service id="ekyna_commerce.supplier_order_item.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderItemEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener"
+        <service id="Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderItemEventSubscriber"
+                 parent="Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener"
                  public="false">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier delivery event listener -->
-        <service id="ekyna_commerce.supplier_delivery.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener"
+        <service id="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryEventSubscriber"
+                 parent="Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener"
                  public="false">
             <tag name="resource.event_subscriber"/>
         </service>
 
         <!-- Supplier delivery item event listener -->
-        <service id="ekyna_commerce.supplier_delivery_item.event_subscriber"
-                 class="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscriber"
-                 parent="ekyna_commerce.supplier.abstract_listener"
+        <service id="Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscriber"
+                 parent="Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener"
                  public="false">
             <tag name="resource.event_subscriber"/>
         </service>
