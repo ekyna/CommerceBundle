@@ -58,7 +58,7 @@ class NotifyModel extends AbstractTranslatable
     public function __toString(): string
     {
         if ($this->type === NotificationTypes::MANUAL) {
-            return $this->getSubject();
+            return $this->getSubject() ?: 'New notification model';
         }
 
         return sprintf('ekyna_commerce.notify.type.%s.label', $this->type);
@@ -69,7 +69,7 @@ class NotifyModel extends AbstractTranslatable
      *
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

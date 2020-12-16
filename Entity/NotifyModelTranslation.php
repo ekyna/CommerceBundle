@@ -12,11 +12,6 @@ use Ekyna\Component\Resource\Model\AbstractTranslation;
 class NotifyModelTranslation extends AbstractTranslation
 {
     /**
-     * @var int
-     */
-    private $id;
-
-    /**
      * @var string
      */
     private $subject;
@@ -26,16 +21,6 @@ class NotifyModelTranslation extends AbstractTranslation
      */
     private $message;
 
-
-    /**
-     * Returns the id.
-     *
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     /**
      * Returns the subject.
