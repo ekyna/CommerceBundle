@@ -14,13 +14,14 @@ use Ekyna\Component\Commerce\Subject\SubjectHelper as BaseHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Throwable;
 
 /**
  * Class SubjectHelper
  * @package Ekyna\Bundle\CommerceBundle\Service\Subject
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SubjectHelper extends BaseHelper
+class SubjectHelper extends BaseHelper implements SubjectHelperInterface
 {
     /**
      * @var ResourceHelper
@@ -59,8 +60,8 @@ class SubjectHelper extends BaseHelper
         parent::__construct($registry, $eventDispatcher, $features);
 
         $this->resourceHelper = $resourceHelper;
-        $this->translator     = $translator;
-        $this->config         = $config;
+        $this->translator = $translator;
+        $this->config = $config;
     }
 
     /**
@@ -87,48 +88,48 @@ class SubjectHelper extends BaseHelper
             $attr['href'] = $href;
         }
 
-        $type     = null;
+        $type = null;
         $disabled = false;
 
         $mode = $subject->getStockMode();
         if (0 === $min = $subject->getMinimumOrderQuantity()) {
             $min = 1;
         }
-        $aQty  = $subject->getAvailableStock();
-        $vQty  = $subject->getVirtualStock();
-        $eda   = $subject->getEstimatedDateOfArrival();
+        $aQty = $subject->getAvailableStock();
+        $vQty = $subject->getVirtualStock();
+        $eda = $subject->getEstimatedDateOfArrival();
         $today = (new \DateTime())->setTime(23, 59, 59, 999999);
 
         /** @see \Ekyna\Component\Commerce\Stock\Helper\AbstractAvailabilityHelper::getAvailability */
         if (!$subject instanceof StockSubjectInterface) {
-            $type                     = $options['add_to_cart'];
+            $type = $options['add_to_cart'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif ($subject->isQuoteOnly()) {
-            $type     = $options['quote_only'];
+            $type = $options['quote_only'];
             $disabled = true;
         } elseif ($mode === StockSubjectModes::MODE_DISABLED) {
-            $type                     = $options['add_to_cart'];
+            $type = $options['add_to_cart'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif ($min <= $aQty) {
-            $type                     = $options['add_to_cart'];
+            $type = $options['add_to_cart'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif (($min <= $vQty) && $eda && ($today < $eda)) {
-            $type                     = $options['pre_order'];
+            $type = $options['pre_order'];
             $attr['data-add-to-cart'] = $this->generateAddToCartUrl($subject);
         } elseif ($subject->isEndOfLife()) {
-            $type     = $options['end_of_life'];
+            $type = $options['end_of_life'];
             $disabled = true;
         } elseif ($this->features->isEnabled(Features::RESUPPLY_ALERT)) { // TODO Check stock mode ?
             $type                        = $options['resupply_alert'];
             $attr['data-resupply-alert'] = $this->generateResupplyAlertUrl($subject);
         } else {
-            $type     = $options['out_of_stock'];
+            $type = $options['out_of_stock'];
             $disabled = true;
         }
 
         $classes = explode(' ', $options['class']);
         if ($disabled) {
-            $classes[]        = 'disabled';
+            $classes[] = 'disabled';
             $attr['disabled'] = 'disabled';
         }
         array_push($classes, ...explode(' ', $type['class']));
@@ -153,7 +154,9 @@ class SubjectHelper extends BaseHelper
      */
     public function generateAddToCartUrl($subject, bool $path = true): ?string
     {
-        $subject = $this->resolveSubject($subject);
+        if (null === $subject = $this->resolveSubject($subject)) {
+            return null;
+        }
 
         $type = $path ? UrlGeneratorInterface::ABSOLUTE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
@@ -176,7 +179,9 @@ class SubjectHelper extends BaseHelper
             return null;
         }
 
-        $subject = $this->resolveSubject($subject);
+        if (null === $subject = $this->resolveSubject($subject)) {
+            return null;
+        }
 
         $type = $path ? UrlGeneratorInterface::ABSOLUTE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
@@ -219,9 +224,15 @@ class SubjectHelper extends BaseHelper
      */
     public function generatePrivateUrl($subject, bool $path = true): ?string
     {
-        $subject = $this->resolveSubject($subject);
+        if (null === $subject = $this->resolveSubject($subject)) {
+            return null;
+        }
 
-        return $this->resourceHelper->generateResourcePath($subject, 'show', [], !$path);
+        try {
+            return $this->resourceHelper->generateResourcePath($subject, 'show', [], !$path);
+        } catch (Throwable $e) {
+            return null;
+        }
     }
 
     /**
@@ -254,26 +265,30 @@ class SubjectHelper extends BaseHelper
     private function addToCartDefaults(): array
     {
         return [
-            'class'        => '',
-            'icon'         => null,
-            'attr'         => [],
-            'add_to_cart'  => [
+            'class'          => '',
+            'icon'           => null,
+            'attr'           => [],
+            'add_to_cart'    => [
                 'label' => 'ekyna_commerce.button.add_to_cart',
                 'class' => 'add_to_cart',
             ],
-            'pre_order'    => [
+            'pre_order'      => [
                 'label' => 'ekyna_commerce.button.pre_order',
                 'class' => 'pre_order',
             ],
-            'out_of_stock' => [
+            'resupply_alert' => [
+                'label' => 'ekyna_commerce.button.resupply_alert',
+                'class' => 'resupply_alert',
+            ],
+            'out_of_stock'   => [
                 'label' => 'ekyna_commerce.stock_subject.availability.long.out_of_stock',
                 'class' => 'out_of_stock',
             ],
-            'quote_only'   => [
+            'quote_only'     => [
                 'label' => 'ekyna_commerce.stock_subject.availability.long.quote_only',
                 'class' => 'quote_only',
             ],
-            'end_of_life'  => [
+            'end_of_life'    => [
                 'label' => 'ekyna_commerce.stock_subject.availability.long.end_of_life',
                 'class' => 'end_of_life',
             ],

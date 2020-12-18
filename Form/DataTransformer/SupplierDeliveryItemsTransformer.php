@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\CommerceBundle\Form\DataTransformer;
 
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
-use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryInterface;
 use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
 use Ekyna\Component\Resource\Doctrine\ORM\ResourceRepositoryInterface;

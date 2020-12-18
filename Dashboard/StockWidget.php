@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
 use Ekyna\Component\Commerce\Stat\Entity\StockStat;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Environment;
 
 /**
  * Class StockWidget
@@ -39,7 +40,7 @@ class StockWidget extends AbstractWidgetType
     /**
      * @inheritDoc
      */
-    public function render(WidgetInterface $widget, \Twig_Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig)
     {
         $current = $this->getStockStatRepository()->findOneByDay();
 
@@ -47,6 +48,47 @@ class StockWidget extends AbstractWidgetType
             'current'     => $current,
             'stock_chart' => $this->buildStockChart(),
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults([
+            'frame'      => false,
+            'position'   => 9998,
+            'class'      => 'commerce-stock',
+            'col_md_min' => 4,
+            'col_lg_min' => 4,
+            'col_md'     => 4,
+            'col_lg'     => 4,
+            'css_path'   => 'bundles/ekynacommerce/css/admin-dashboard.css',
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return 'commerce_stock';
+    }
+
+    /**
+     * Returns the order repository.
+     *
+     * @return \Ekyna\Component\Commerce\Stat\Repository\StockStatRepositoryInterface
+     */
+    protected function getStockStatRepository()
+    {
+        if (null !== $this->stockStatRepository) {
+            return $this->stockStatRepository;
+        }
+
+        return $this->stockStatRepository = $this->registry->getRepository(StockStat::class);
     }
 
     /**
@@ -91,7 +133,7 @@ class StockWidget extends AbstractWidgetType
                 ],
             ],
             'options' => [
-                'title' => ['display' => false],
+                'title'  => ['display' => false],
                 'scales' => [
                     'yAxes' => [
                         [
@@ -104,46 +146,5 @@ class StockWidget extends AbstractWidgetType
                 ],
             ],
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        parent::configureOptions($resolver);
-
-        $resolver->setDefaults([
-            'frame'      => false,
-            'position'   => 9998,
-            'class'      => 'commerce-stock',
-            'col_md_min' => 4,
-            'col_lg_min' => 4,
-            'col_md'     => 4,
-            'col_lg'     => 4,
-            'css_path'   => 'bundles/ekynacommerce/css/admin-dashboard.css',
-        ]);
-    }
-
-    /**
-     * Returns the order repository.
-     *
-     * @return \Ekyna\Component\Commerce\Stat\Repository\StockStatRepositoryInterface
-     */
-    protected function getStockStatRepository()
-    {
-        if (null !== $this->stockStatRepository) {
-            return $this->stockStatRepository;
-        }
-
-        return $this->stockStatRepository = $this->registry->getRepository(StockStat::class);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        return 'commerce_stock';
     }
 }

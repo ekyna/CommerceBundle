@@ -10,6 +10,7 @@ use Ekyna\Component\Table\Extension\Core\Source\ArraySource;
 use Ekyna\Component\Table\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Environment;
 
 /**
  * Class SupportWidget
@@ -54,7 +55,7 @@ class SupportWidget extends AbstractWidgetType
     /**
      * @inheritDoc
      */
-    public function render(WidgetInterface $widget, \Twig_Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig)
     {
         $tickets = $this
             ->tableFactory

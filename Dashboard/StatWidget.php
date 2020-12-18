@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
 use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Environment;
 
 /**
  * Class StatisticsWidget
@@ -41,7 +42,7 @@ class StatWidget extends AbstractWidgetType
     /**
      * @inheritDoc
      */
-    public function render(WidgetInterface $widget, \Twig_Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig)
     {
         $repository = $this->getOrderStatRepository();
 
@@ -75,6 +76,42 @@ class StatWidget extends AbstractWidgetType
             'aggregate_year' => $aggregateYear,
             'yearly_chart'   => $yearlyChart,
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults([
+            'frame'    => false,
+            'position' => 9999,
+            'css_path' => 'bundles/ekynacommerce/css/admin-dashboard.css',
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return 'commerce_stat';
+    }
+
+    /**
+     * Returns the order repository.
+     *
+     * @return \Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface
+     */
+    protected function getOrderStatRepository()
+    {
+        if (null !== $this->orderStatRepository) {
+            return $this->orderStatRepository;
+        }
+
+        return $this->orderStatRepository = $this->registry->getRepository(OrderStat::class);
     }
 
     /**
@@ -263,41 +300,5 @@ class StatWidget extends AbstractWidgetType
                 ],
             ],
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        parent::configureOptions($resolver);
-
-        $resolver->setDefaults([
-            'frame'    => false,
-            'position' => 9999,
-            'css_path' => 'bundles/ekynacommerce/css/admin-dashboard.css',
-        ]);
-    }
-
-    /**
-     * Returns the order repository.
-     *
-     * @return \Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface
-     */
-    protected function getOrderStatRepository()
-    {
-        if (null !== $this->orderStatRepository) {
-            return $this->orderStatRepository;
-        }
-
-        return $this->orderStatRepository = $this->registry->getRepository(OrderStat::class);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        return 'commerce_stat';
     }
 }

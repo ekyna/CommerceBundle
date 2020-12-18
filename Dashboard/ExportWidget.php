@@ -8,6 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Environment;
 
 /**
  * Class AccountingWidget
@@ -42,7 +43,7 @@ class ExportWidget extends AbstractWidgetType
     /**
      * @inheritDoc
      */
-    public function render(WidgetInterface $widget, \Twig_Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig)
     {
         $form = $this->factory->create(ExportType::class, null, [
             'action' => $this->urlGenerator->generate('ekyna_commerce_export_admin_accounting'),

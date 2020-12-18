@@ -8,6 +8,7 @@ use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderRepositoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Environment;
 
 /**
  * Class DebtWidget
@@ -52,7 +53,7 @@ class DebtWidget extends AbstractWidgetType
     /**
      * @inheritDoc
      */
-    public function render(WidgetInterface $widget, \Twig_Environment $twig)
+    public function render(WidgetInterface $widget, Environment $twig)
     {
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_debt.html.twig', [
             'due_invoices'     => $this->invoiceRepository->getDueTotal(),
